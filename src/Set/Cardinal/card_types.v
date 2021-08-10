@@ -228,7 +228,7 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
         rewrite <- neg_plus in eq.
         rewrite mult_lrneg in eq.
         classic_contradiction contr.
-        apply mult_rr0 in eq.
+        apply mult_1_a_b_ba in eq.
         2: {
             intros contr2.
             rewrite plus_0_anb_a_b in contr2.
@@ -242,7 +242,7 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
             apply (not_trivial eq).
         }
         rewrite <- mult_lneg in eq.
-        apply mult_rrdiv in eq.
+        apply mult_1_ab_db_a in eq.
         2: exact a_nz.
         apply (f_equal neg) in eq.
         rewrite neg_neg in eq.

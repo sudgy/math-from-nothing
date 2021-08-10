@@ -193,132 +193,120 @@ Theorem mult_llinv : ∀ a b, 0 ≠ b → /b * (b * a) = a.
     apply mult_lid.
 Qed.
 
-Theorem mult_llmove : ∀ a b c, 0 ≠ a → a * b = c → b = /a * c.
-    intros a b c a_nz eq.
-    apply lmult with (/a) in eq.
-    rewrite mult_llinv in eq by exact a_nz.
-    exact eq.
+Theorem mult_llmove : ∀ a b c, 0 ≠ a → a * b = c ↔ b = /a * c.
+    intros a b c a_nz.
+    split; intros eq.
+    -   apply lmult with (/a) in eq.
+        rewrite mult_llinv in eq by exact a_nz.
+        exact eq.
+    -   apply lmult with a in eq.
+        rewrite mult_lrinv in eq by exact a_nz.
+        exact eq.
 Qed.
-Theorem mult_lrmove : ∀ a b c, 0 ≠ b → a * b = c → a = c / b.
-    intros a b c b_nz eq.
-    apply rmult with (/b) in eq.
-    rewrite mult_rrinv in eq by exact b_nz.
-    exact eq.
+Theorem mult_lrmove : ∀ a b c, 0 ≠ b → a * b = c ↔ a = c / b.
+    intros a b c b_nz.
+    split; intros eq.
+    -   apply rmult with (/b) in eq.
+        rewrite mult_rrinv in eq by exact b_nz.
+        exact eq.
+    -   apply rmult with b in eq.
+        rewrite mult_rlinv in eq by exact b_nz.
+        exact eq.
 Qed.
-Theorem mult_rlmove : ∀ a b c, 0 ≠ b → a = b * c → /b * a = c.
-    intros a b c b_nz eq.
-    apply lmult with (/b) in eq.
-    rewrite mult_llinv in eq by exact b_nz.
-    exact eq.
+Theorem mult_rlmove : ∀ a b c, 0 ≠ b → a = b * c ↔ /b * a = c.
+    intros a b c b_nz.
+    split; intros eq.
+    -   apply lmult with (/b) in eq.
+        rewrite mult_llinv in eq by exact b_nz.
+        exact eq.
+    -   apply lmult with b in eq.
+        rewrite mult_lrinv in eq by exact b_nz.
+        exact eq.
 Qed.
-Theorem mult_rrmove : ∀ a b c, 0 ≠ c → a = b * c → a / c = b.
-    intros a b c c_nz eq.
-    apply rmult with (/c) in eq.
-    rewrite mult_rrinv in eq by exact c_nz.
-    exact eq.
-Qed.
-
-Theorem mult_lldiv : ∀ a b, 0 ≠ a → a * b = 1 → b = /a.
-    intros a b a_nz eq.
-    apply mult_llmove in eq.
-    2: exact a_nz.
-    rewrite mult_rid in eq.
-    exact eq.
-Qed.
-Theorem mult_lrdiv : ∀ a b, 0 ≠ b → a * b = 1 → a = /b.
-    intros a b b_nz eq.
-    apply mult_lrmove in eq.
-    2: exact b_nz.
-    rewrite mult_lid in eq.
-    exact eq.
-Qed.
-Theorem mult_rldiv : ∀ a b, 0 ≠ a → 1 = a * b → /a = b.
-    intros a b a_nz eq.
-    apply mult_rlmove in eq.
-    2: exact a_nz.
-    rewrite mult_rid in eq.
-    exact eq.
-Qed.
-Theorem mult_rrdiv : ∀ a b, 0 ≠ b → 1 = a * b → /b = a.
-    intros a b b_nz eq.
-    apply mult_rrmove in eq.
-    2: exact b_nz.
-    rewrite mult_lid in eq.
-    exact eq.
+Theorem mult_rrmove : ∀ a b c, 0 ≠ c → a = b * c ↔ a / c = b.
+    intros a b c c_nz.
+    split; intros eq.
+    -   apply rmult with (/c) in eq.
+        rewrite mult_rrinv in eq by exact c_nz.
+        exact eq.
+    -   apply rmult with c in eq.
+        rewrite mult_rlinv in eq by exact c_nz.
+        exact eq.
 Qed.
 
-Theorem mult_ll0 : ∀ a b, 0 ≠ b → a * b = b → a = 1.
-    intros a b b_nz eq.
-    apply mult_lrmove in eq.
-    2: exact b_nz.
-    rewrite mult_rinv in eq by exact b_nz.
-    exact eq.
+Theorem mult_1_ab_da_b : ∀ a b, 0 ≠ a → 1 = a * b ↔ /a = b.
+    intros a b a_nz.
+    rewrite mult_rlmove by exact a_nz.
+    rewrite mult_rid.
+    reflexivity.
 Qed.
-Theorem mult_lr0 : ∀ a b, 0 ≠ a → a * b = a → b = 1.
-    intros a b a_nz eq.
-    apply mult_llmove in eq.
-    2: exact a_nz.
-    rewrite mult_linv in eq by exact a_nz.
-    exact eq.
+Theorem mult_1_ab_db_a : ∀ a b, 0 ≠ b → 1 = a * b ↔ /b = a.
+    intros a b b_nz.
+    rewrite mult_rrmove by exact b_nz.
+    rewrite mult_lid.
+    reflexivity.
 Qed.
-Theorem mult_rl0 : ∀ a b, 0 ≠ b → b = a * b → 1 = a.
-    intros a b b_nz eq.
-    apply mult_rrmove in eq.
-    2: exact b_nz.
-    rewrite mult_rinv in eq by exact b_nz.
-    exact eq.
+Theorem mult_1_ab_a_db : ∀ a b, 0 ≠ b → 1 = a * b ↔ a = /b.
+    intros a b b_nz.
+    rewrite mult_rrmove by exact b_nz.
+    rewrite mult_lid.
+    split; intro eq; symmetry; exact eq.
 Qed.
-Theorem mult_rr0 : ∀ a b, 0 ≠ a → a = a * b → 1 = b.
-    intros a b a_nz eq.
-    apply mult_rlmove in eq.
-    2: exact a_nz.
-    rewrite mult_linv in eq by exact a_nz.
-    exact eq.
+Theorem mult_1_ab_b_da : ∀ a b, 0 ≠ a → 1 = a * b ↔ b = /a.
+    intros a b a_nz.
+    rewrite mult_rlmove by exact a_nz.
+    rewrite mult_rid.
+    split; intro eq; symmetry; exact eq.
 Qed.
 
-Theorem mult_eq_ldiv : ∀ a b, 0 ≠ a → a = b → 1 = /a * b.
-    intros a b a_nz eq.
-    rewrite <- (mult_rid a) in eq.
-    apply mult_llmove in eq.
-    2: exact a_nz.
-    exact eq.
+Theorem mult_1_a_ab_b : ∀ a b, 0 ≠ b → 1 = a ↔ a * b = b.
+    intros a b b_nz.
+    rewrite mult_lrmove by exact b_nz.
+    rewrite mult_rinv by exact b_nz.
+    split; intro eq; symmetry; exact eq.
 Qed.
-Theorem mult_eq_rdiv : ∀ a b, 0 ≠ b → a = b → 1 = a / b.
-    intros a b b_nz eq.
-    rewrite <- (mult_lid b) in eq.
-    symmetry in eq.
-    apply mult_lrmove in eq.
-    2: exact b_nz.
-    exact eq.
+Theorem mult_1_a_ba_b : ∀ a b, 0 ≠ b → 1 = a ↔ b * a = b.
+    intros a b b_nz.
+    rewrite mult_llmove by exact b_nz.
+    rewrite mult_linv by exact b_nz.
+    split; intro eq; symmetry; exact eq.
+Qed.
+Theorem mult_1_a_b_ab : ∀ a b, 0 ≠ b → 1 = a ↔ b = a * b.
+    intros a b b_nz.
+    rewrite mult_rrmove by exact b_nz.
+    rewrite mult_rinv by exact b_nz.
+    reflexivity.
+Qed.
+Theorem mult_1_a_b_ba : ∀ a b, 0 ≠ b → 1 = a ↔ b = b * a.
+    intros a b b_nz.
+    rewrite mult_rlmove by exact b_nz.
+    rewrite mult_linv by exact b_nz.
+    reflexivity.
 Qed.
 
-Theorem mult_llneg_eq : ∀ a b, 0 ≠ a → /a * b = 1 → b = a.
-    intros a b a_nz eq.
-    apply mult_lldiv in eq.
-    2: apply div_nz; exact a_nz.
-    rewrite div_div in eq by exact a_nz.
-    exact eq.
+Theorem mult_1_dab_a_b : ∀ a b, 0 ≠ a → 1 = /a * b ↔ a = b.
+    intros a b a_nz.
+    rewrite mult_1_ab_da_b by (apply div_nz; exact a_nz).
+    rewrite div_div by exact a_nz.
+    reflexivity.
 Qed.
-Theorem mult_lrneg_eq : ∀ a b, 0 ≠ b → a / b = 1 → a = b.
-    intros a b b_nz eq.
-    apply mult_lrdiv in eq.
-    2: apply div_nz; exact b_nz.
-    rewrite div_div in eq by exact b_nz.
-    exact eq.
+Theorem mult_1_adb_a_b : ∀ a b, 0 ≠ b → 1 = a / b ↔ a = b.
+    intros a b b_nz.
+    rewrite mult_1_ab_a_db by (apply div_nz; exact b_nz).
+    rewrite div_div by exact b_nz.
+    reflexivity.
 Qed.
-Theorem mult_rlneg_eq : ∀ a b, 0 ≠ a → 1 = /a * b → a = b.
-    intros a b a_nz eq.
-    apply mult_rldiv in eq.
-    2: apply div_nz; exact a_nz.
-    rewrite div_div in eq by exact a_nz.
-    exact eq.
+Theorem mult_1_dab_b_a : ∀ a b, 0 ≠ a → 1 = /a * b ↔ b = a.
+    intros a b a_nz.
+    rewrite mult_1_ab_b_da by (apply div_nz; exact a_nz).
+    rewrite div_div by exact a_nz.
+    reflexivity.
 Qed.
-Theorem mult_rrneg_eq : ∀ a b, 0 ≠ b → 1 = a / b → b = a.
-    intros a b b_nz eq.
-    apply mult_rrdiv in eq.
-    2: apply div_nz; exact b_nz.
-    rewrite div_div in eq by exact b_nz.
-    exact eq.
+Theorem mult_1_adb_b_a : ∀ a b, 0 ≠ b → 1 = a / b ↔ b = a.
+    intros a b b_nz.
+    rewrite mult_1_ab_db_a by (apply div_nz; exact b_nz).
+    rewrite div_div by exact b_nz.
+    reflexivity.
 Qed.
 
 (* begin hide *)
