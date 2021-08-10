@@ -415,7 +415,7 @@ Theorem square_one_one : ∀ a, a * a = 1 → a = 1 ∨ a = -(1).
         apply square_one_one_pos; assumption.
     -   right.
         rewrite <- (neg_neg a).
-        apply neg_eq.
+        rewrite <- neg_eq.
         apply square_one_one_pos.
         +   apply lt_neg in a_neg.
             rewrite neg_zero in a_neg.
@@ -1112,18 +1112,18 @@ Theorem lt_square : ∀ a b, 0 <= a → 0 <= b → a < b ↔ a*a < b*b.
         +   rewrite <- le_square by assumption.
             apply ab.
         +   intros contr.
-            apply plus_eq_rneg in contr.
+            rewrite <- (plus_0_anb_b_a) in contr.
             rewrite dif_squares in contr.
             apply mult_0 in contr.
             destruct contr as [eq|eq].
-            *   apply plus_rlneg in eq.
+            *   apply plus_0_ab_a_nb in eq.
                 subst b.
                 apply pos_neg in b_pos.
                 rewrite neg_neg in b_pos.
                 pose proof (antisym a_pos b_pos); subst a.
                 rewrite neg_zero in ab.
                 destruct ab; contradiction.
-            *   apply plus_rrneg_eq in eq.
+            *   rewrite plus_0_anb_b_a in eq.
                 subst.
                 destruct ab; contradiction.
     -   intros ab.

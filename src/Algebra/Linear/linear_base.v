@@ -88,8 +88,8 @@ Theorem scalar_lanni : ∀ v, 0 · v = 0.
     assert (0 · v = 0 · v) as eq by reflexivity.
     rewrite <- (plus_lid 0) in eq at 1.
     rewrite scalar_rdist in eq.
-    apply plus_ll0 in eq.
-    exact eq.
+    apply plus_0_a_ab_b in eq.
+    symmetry; exact eq.
 Qed.
 
 Theorem scalar_ranni : ∀ a, a · 0 = 0.
@@ -97,8 +97,8 @@ Theorem scalar_ranni : ∀ a, a · 0 = 0.
     assert (a · 0 = a · 0) as eq by reflexivity.
     rewrite <- (plus_lid 0) in eq at 1.
     rewrite scalar_ldist in eq.
-    apply plus_ll0 in eq.
-    exact eq.
+    apply plus_0_a_ab_b in eq.
+    symmetry; exact eq.
 Qed.
 
 Theorem scalar_lneg : ∀ a b, -a · b = -(a · b).

@@ -158,12 +158,14 @@ Qed.
 Lemma int_mult_lcancel : ∀ a b c, 0 ≠ c → c * a = c * b → a = b.
     intros a b c c_neq_0 eq.
     rewrite neq_sym in c_neq_0.
-    apply plus_eq_rneg in eq.
+    apply plus_0_anb_a_b in eq.
     rewrite <- mult_rneg in eq.
     rewrite <- ldist in eq.
     symmetry in eq.
+    (* TODO: symmetrize this *)
     destruct (int_mult_0 eq) as [eq2|eq2]; try contradiction.
-    apply plus_lrneg_eq.
+    symmetry in eq2.
+    rewrite plus_0_anb_a_b in eq2.
     exact eq2.
 Qed.
 

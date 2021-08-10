@@ -190,7 +190,7 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
     {
         intros x [x_gt x_lt].
         intros contr.
-        apply plus_rrneg_eq in contr.
+        rewrite plus_0_anb_b_a in contr.
         apply square_one_one in contr.
         destruct contr; subst.
         -   destruct x_lt; contradiction.
@@ -231,9 +231,7 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
         apply mult_rr0 in eq.
         2: {
             intros contr2.
-            apply plus_rlneg in contr2.
-            apply neg_eq in contr2.
-            do 2 rewrite neg_neg in contr2.
+            rewrite plus_0_anb_a_b in contr2.
             contradiction.
         }
         assert (0 ≠ a) as a_nz.

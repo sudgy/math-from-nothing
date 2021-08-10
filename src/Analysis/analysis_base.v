@@ -97,8 +97,7 @@ Next Obligation.
     split.
     -   intro eq.
         apply (abs_def (x - y)) in eq.
-        symmetry in eq.
-        apply plus_lrneg_eq.
+        apply plus_0_anb_a_b.
         exact eq.
     -   intro eq.
         rewrite eq.

@@ -192,13 +192,19 @@ Theorem neg_neg : ∀ a, --a = a.
     reflexivity.
 Qed.
 
-Theorem neg_eq : ∀ a b, a = b → -a = -b.
-    intros a b eq.
-    apply lplus with (-a) in eq.
-    rewrite plus_linv in eq.
-    apply rplus with (-b) in eq.
-    rewrite <- plus_assoc, plus_rinv, plus_rid, plus_lid in eq.
-    symmetry; exact eq.
+Theorem neg_eq : ∀ a b, a = b ↔ -a = -b.
+    intros a b.
+    split; intros eq.
+    -   apply lplus with (-a) in eq.
+        rewrite plus_linv in eq.
+        apply rplus with (-b) in eq.
+        rewrite <- plus_assoc, plus_rinv, plus_rid, plus_lid in eq.
+        symmetry; exact eq.
+    -   apply lplus with a in eq.
+        rewrite plus_rinv in eq.
+        apply rplus with b in eq.
+        rewrite <- plus_assoc, plus_linv, plus_rid, plus_lid in eq.
+        symmetry; exact eq.
 Qed.
 
 Theorem neg_plus : ∀ a b, -(a + b) = -a + -b.
@@ -239,118 +245,130 @@ Theorem plus_llinv : ∀ a b, -b + (b + a) = a.
     apply plus_lid.
 Qed.
 
-Theorem plus_llmove : ∀ a b c, a + b = c → b = -a + c.
-    intros a b c eq.
-    apply lplus with (-a) in eq.
-    rewrite plus_llinv in eq.
-    exact eq.
+Theorem plus_llmove : ∀ a b c, a + b = c ↔ b = -a + c.
+    intros a b c.
+    split; intros eq.
+    -   apply lplus with (-a) in eq.
+        rewrite plus_llinv in eq.
+        exact eq.
+    -   apply lplus with a in eq.
+        rewrite plus_lrinv in eq.
+        exact eq.
 Qed.
-Theorem plus_lrmove : ∀ a b c, a + b = c → a = c - b.
-    intros a b c eq.
-    apply rplus with (-b) in eq.
-    rewrite plus_rrinv in eq.
-    exact eq.
+Theorem plus_lrmove : ∀ a b c, a + b = c ↔ a = c - b.
+    intros a b c.
+    split; intros eq.
+    -   apply rplus with (-b) in eq.
+        rewrite plus_rrinv in eq.
+        exact eq.
+    -   apply rplus with b in eq.
+        rewrite plus_rlinv in eq.
+        exact eq.
 Qed.
-Theorem plus_rlmove : ∀ a b c, a = b + c → -b + a = c.
-    intros a b c eq.
-    apply lplus with (-b) in eq.
-    rewrite plus_llinv in eq.
-    exact eq.
+Theorem plus_rlmove : ∀ a b c, a = b + c ↔ -b + a = c.
+    intros a b c.
+    split; intros eq.
+    -   apply lplus with (-b) in eq.
+        rewrite plus_llinv in eq.
+        exact eq.
+    -   apply lplus with b in eq.
+        rewrite plus_lrinv in eq.
+        exact eq.
 Qed.
-Theorem plus_rrmove : ∀ a b c, a = b + c → a - c = b.
-    intros a b c eq.
-    apply rplus with (-c) in eq.
-    rewrite plus_rrinv in eq.
-    exact eq.
-Qed.
-
-Theorem plus_llneg : ∀ a b, a + b = 0 → b = -a.
-    intros a b eq.
-    apply plus_llmove in eq.
-    rewrite plus_rid in eq.
-    exact eq.
-Qed.
-Theorem plus_lrneg : ∀ a b, a + b = 0 → a = -b.
-    intros a b eq.
-    apply plus_lrmove in eq.
-    rewrite plus_lid in eq.
-    exact eq.
-Qed.
-Theorem plus_rlneg : ∀ a b, 0 = a + b → -a = b.
-    intros a b eq.
-    apply plus_rlmove in eq.
-    rewrite plus_rid in eq.
-    exact eq.
-Qed.
-Theorem plus_rrneg : ∀ a b, 0 = a + b → -b = a.
-    intros a b eq.
-    apply plus_rrmove in eq.
-    rewrite plus_lid in eq.
-    exact eq.
+Theorem plus_rrmove : ∀ a b c, a = b + c ↔ a - c = b.
+    intros a b c.
+    split; intros eq.
+    -   apply rplus with (-c) in eq.
+        rewrite plus_rrinv in eq.
+        exact eq.
+    -   apply rplus with c in eq.
+        rewrite plus_rlinv in eq.
+        exact eq.
 Qed.
 
-Theorem plus_ll0 : ∀ a b, a + b = b → a = 0.
-    intros a b eq.
-    apply plus_lrmove in eq.
-    rewrite plus_rinv in eq.
-    exact eq.
+Theorem plus_0_ab_na_b : ∀ a b, 0 = a + b ↔ -a = b.
+    intros a b.
+    rewrite plus_rlmove.
+    rewrite plus_rid.
+    reflexivity.
 Qed.
-Theorem plus_lr0 : ∀ a b, a + b = a → b = 0.
-    intros a b eq.
-    apply plus_llmove in eq.
-    rewrite plus_linv in eq.
-    exact eq.
+Theorem plus_0_ab_nb_a : ∀ a b, 0 = a + b ↔ -b = a.
+    intros a b.
+    rewrite plus_rrmove.
+    rewrite plus_lid.
+    reflexivity.
 Qed.
-Theorem plus_rl0 : ∀ a b, b = a + b → 0 = a.
-    intros a b eq.
-    apply plus_rrmove in eq.
-    rewrite plus_rinv in eq.
-    exact eq.
+Theorem plus_0_ab_a_nb : ∀ a b, 0 = a + b ↔ a = -b.
+    intros a b.
+    rewrite plus_rlmove.
+    rewrite plus_rid.
+    rewrite neg_eq.
+    rewrite neg_neg.
+    reflexivity.
 Qed.
-Theorem plus_rr0 : ∀ a b, a = a + b → 0 = b.
-    intros a b eq.
-    apply plus_rlmove in eq.
-    rewrite plus_linv in eq.
-    exact eq.
-Qed.
-
-Theorem plus_eq_lneg : ∀ a b, a = b → 0 = -a + b.
-    intros a b eq.
-    rewrite <- (plus_rid a) in eq.
-    apply plus_llmove in eq.
-    exact eq.
-Qed.
-Theorem plus_eq_rneg : ∀ a b, a = b → 0 = a - b.
-    intros a b eq.
-    rewrite <- (plus_lid b) in eq.
-    symmetry in eq.
-    apply plus_lrmove in eq.
-    exact eq.
+Theorem plus_0_ab_b_na : ∀ a b, 0 = a + b ↔ b = -a.
+    intros a b.
+    rewrite plus_rrmove.
+    rewrite plus_lid.
+    rewrite neg_eq.
+    rewrite neg_neg.
+    reflexivity.
 Qed.
 
-Theorem plus_llneg_eq : ∀ a b, -a + b = 0 → b = a.
-    intros a b eq.
-    apply plus_llneg in eq.
-    rewrite neg_neg in eq.
-    exact eq.
+Theorem plus_0_a_ab_b : ∀ a b, 0 = a ↔ a + b = b.
+    intros a b.
+    rewrite plus_llmove.
+    rewrite plus_rrmove.
+    rewrite plus_rinv.
+    rewrite neg_eq.
+    rewrite neg_zero.
+    reflexivity.
 Qed.
-Theorem plus_lrneg_eq : ∀ a b, a - b = 0 → a = b.
-    intros a b eq.
-    apply plus_lrneg in eq.
-    rewrite neg_neg in eq.
-    exact eq.
+Theorem plus_0_a_ba_b : ∀ a b, 0 = a ↔ b + a = b.
+    intros a b.
+    rewrite plus_lrmove.
+    rewrite plus_rlmove.
+    rewrite plus_linv.
+    rewrite neg_eq.
+    rewrite neg_zero.
+    reflexivity.
 Qed.
-Theorem plus_rlneg_eq : ∀ a b, 0 = -a + b → a = b.
-    intros a b eq.
-    apply plus_rlneg in eq.
-    rewrite neg_neg in eq.
-    exact eq.
+Theorem plus_0_a_b_ab : ∀ a b, 0 = a ↔ b = a + b.
+    intros a b.
+    rewrite plus_rrmove.
+    rewrite plus_rinv.
+    reflexivity.
 Qed.
-Theorem plus_rrneg_eq : ∀ a b, 0 = a - b → b = a.
-    intros a b eq.
-    apply plus_rrneg in eq.
-    rewrite neg_neg in eq.
-    exact eq.
+Theorem plus_0_a_b_ba : ∀ a b, 0 = a ↔ b = b + a.
+    intros a b.
+    rewrite plus_rlmove.
+    rewrite plus_linv.
+    reflexivity.
+Qed.
+
+Theorem plus_0_nab_a_b : ∀ a b, 0 = -a + b ↔ a = b.
+    intros a b.
+    rewrite plus_0_ab_na_b.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
+Theorem plus_0_anb_a_b : ∀ a b, 0 = a - b ↔ a = b.
+    intros a b.
+    rewrite plus_0_ab_a_nb.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
+Theorem plus_0_nab_b_a : ∀ a b, 0 = -a + b ↔ b = a.
+    intros a b.
+    rewrite plus_0_ab_b_na.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
+Theorem plus_0_anb_b_a : ∀ a b, 0 = a - b ↔ b = a.
+    intros a b.
+    rewrite plus_0_ab_nb_a.
+    rewrite neg_neg.
+    reflexivity.
 Qed.
 
 (* begin hide *)
