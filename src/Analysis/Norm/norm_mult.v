@@ -85,7 +85,7 @@ Qed.
 Theorem seq_lim_constant : ∀ a x xf, seq_lim xf x →
         seq_lim (λ n, a * xf n) (a * x).
     intros a x xf xf_x.
-    pose (af (n : nat0) := a).
+    pose (af (n : nat) := a).
     assert ((λ n, a * xf n) = (λ n, af n * xf n)) as f_eq by reflexivity.
     rewrite f_eq.
     apply seq_lim_mult.

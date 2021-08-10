@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import nat0.
+Require Import nat.
 Require Export mult.
 Require Import set.
 
@@ -65,12 +65,12 @@ Lemma int_mult_assoc : ∀ a b c, a * (b * c) = (a * b) * c.
     destruct a as [a1 a2], b as [b1 b2], c as [c1 c2]; simpl.
     repeat rewrite ldist, rdist.
     repeat rewrite mult_assoc.
-    plus_cancel_left (a1 * b1 * c1)%nat0.
-    plus_cancel_left (a1 * b1 * c2)%nat0.
-    plus_cancel_left (a1 * b2 * c1)%nat0.
-    plus_cancel_left (a1 * b2 * c2)%nat0.
-    plus_cancel_left (a2 * b1 * c1)%nat0.
-    plus_cancel_left (a2 * b1 * c2)%nat0.
+    plus_cancel_left (a1 * b1 * c1)%nat.
+    plus_cancel_left (a1 * b1 * c2)%nat.
+    plus_cancel_left (a1 * b2 * c1)%nat.
+    plus_cancel_left (a1 * b2 * c2)%nat.
+    plus_cancel_left (a2 * b1 * c1)%nat.
+    plus_cancel_left (a2 * b1 * c2)%nat.
     reflexivity.
 Qed.
 
@@ -84,12 +84,12 @@ Lemma int_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
     unfold plus, mult; simpl; equiv_simpl.
     destruct a as [a1 a2], b as [b1 b2], c as [c1 c2]; simpl.
     do 4 rewrite ldist.
-    plus_cancel_left (a1 * b1)%nat0.
-    plus_cancel_left (a1 * c1)%nat0.
-    plus_cancel_left (a2 * b2)%nat0.
-    plus_cancel_left (a2 * c2)%nat0.
-    plus_cancel_left (a2 * b1)%nat0.
-    plus_cancel_left (a1 * c2)%nat0.
+    plus_cancel_left (a1 * b1)%nat.
+    plus_cancel_left (a1 * c1)%nat.
+    plus_cancel_left (a2 * b2)%nat.
+    plus_cancel_left (a2 * c2)%nat.
+    plus_cancel_left (a2 * b1)%nat.
+    plus_cancel_left (a1 * c2)%nat.
     reflexivity.
 Qed.
 
@@ -129,7 +129,7 @@ Theorem int_mult_0 : ∀ {a b}, 0 = a * b → 0 = a ∨ 0 = b.
     destruct comps as [comps|comp].
     destruct comps as [comp|comp].
     { (* a1 < a2 *)
-        apply nat0_lt_ex in comp as [c [c_neq_0 c_eq]].
+        apply nat_lt_ex in comp as [c [c_neq_0 c_eq]].
         rewrite <- c_eq in eq.
         do 2 rewrite rdist in eq.
         plus_cancel_left (a1 * b1) in eq.
@@ -142,11 +142,11 @@ Theorem int_mult_0 : ∀ {a b}, 0 = a * b → 0 = a ∨ 0 = b.
         left; symmetry; exact comp.
     }
     { (* a1 > a2 *)
-        apply nat0_lt_ex in comp as [c [c_neq_0 c_eq]].
+        apply nat_lt_ex in comp as [c [c_neq_0 c_eq]].
         rewrite <- c_eq in eq.
         do 2 rewrite rdist in eq.
-        plus_cancel_left (a2 * b1)%nat0 in eq.
-        plus_cancel_left (a2 * b2)%nat0 in eq.
+        plus_cancel_left (a2 * b1)%nat in eq.
+        plus_cancel_left (a2 * b2)%nat in eq.
         apply mult_lcancel in eq.
         right; exact eq.
         exact c_neq_0.
@@ -181,10 +181,10 @@ Instance int_not_trivial_class : NotTrivial int := {
 
 Close Scope int_scope.
 (* end hide *)
-Theorem nat0_to_int_mult : ∀ a b,
-        nat0_to_int a * nat0_to_int b = nat0_to_int (a * b).
+Theorem nat_to_int_mult : ∀ a b,
+        nat_to_int a * nat_to_int b = nat_to_int (a * b).
     intros a b.
-    unfold mult at 1, nat0_to_int; simpl; equiv_simpl; simpl.
+    unfold mult at 1, nat_to_int; simpl; equiv_simpl; simpl.
     do 2 rewrite mult_lanni.
     rewrite mult_ranni.
     do 4 rewrite plus_rid.

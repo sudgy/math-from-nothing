@@ -7,22 +7,22 @@ Require Import real_mult1.
 Require Import real_mult2.
 Require Import real_mult3.
 
-Require Export nat0_abstract.
+Require Export nat_abstract.
 
 Require Import set.
-Require Import nat0.
+Require Import nat.
 Require Import int.
 Require Import rat.
 
 Definition real_pos := set_type (λ x, 0 < x).
 
-Theorem nat0_to_abstract_real : ∀ n, nat0_to_abstract n = nat0_to_real n.
-    nat0_induction n.
+Theorem nat_to_abstract_real : ∀ n, nat_to_abstract n = nat_to_real n.
+    nat_induction n.
     -   reflexivity.
     -   cbn.
         rewrite IHn.
-        change (nat0_suc n) with (1 + n).
-        rewrite <- nat0_to_real_plus.
+        change (nat_suc n) with (1 + n).
+        rewrite <- nat_to_real_plus.
         reflexivity.
 Qed.
 
@@ -64,16 +64,16 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
         destruct Aa as [n eq]; subst a.
         apply lt_plus_lrmove in nup.
         rewrite neg_neg in nup.
-        rewrite <- nat0_to_abstract_mult in nup.
-        rewrite nat0_to_abstract_real in nup.
+        rewrite <- nat_to_abstract_mult in nup.
+        rewrite nat_to_abstract_real in nup.
         rewrite <- (mult_lid y) in nup at 2.
         rewrite <- rdist in nup.
-        assert (A ((nat0_to_real n + 1) * y)) as n_in.
+        assert (A ((nat_to_real n + 1) * y)) as n_in.
         {
             exists (n + 1).
-            rewrite <- nat0_to_abstract_mult.
-            rewrite nat0_to_abstract_real.
-            rewrite <- nat0_to_real_plus.
+            rewrite <- nat_to_abstract_mult.
+            rewrite nat_to_abstract_real.
+            rewrite <- nat_to_real_plus.
             reflexivity.
         }
         specialize (α_upper _ n_in).
@@ -84,19 +84,19 @@ Instance real_archimedean : Archimedean real := {
     archimedean := real_archimedean_base
 }.
 
-Lemma real_n_pos : ∀ n, 0 < nat0_to_real (nat0_suc n).
+Lemma real_n_pos : ∀ n, 0 < nat_to_real (nat_suc n).
     intros n.
-    change 0 with (nat0_to_real 0).
-    rewrite nat0_to_real_lt.
-    apply nat0_zero_lt_suc.
+    change 0 with (nat_to_real 0).
+    rewrite nat_to_real_lt.
+    apply nat_zero_lt_suc.
 Qed.
-Lemma real_n_div_pos : ∀ n, 0 < / nat0_to_real (nat0_suc n).
+Lemma real_n_div_pos : ∀ n, 0 < / nat_to_real (nat_suc n).
     intros n.
     apply div_pos.
     apply real_n_pos.
 Qed.
 
-Theorem real_nested_interval : ∀ I : nat0 → real → Prop,
+Theorem real_nested_interval : ∀ I : nat → real → Prop,
         (∀ n, ∃ a b, a <= b ∧ I n = closed_interval a b) →
         (∀ n, I (1 + n) ⊆ I n) →
         ∃ x, ∀ n, I n x.
@@ -106,12 +106,12 @@ Theorem real_nested_interval : ∀ I : nat0 → real → Prop,
     assert (∀ m n, m <= n → I n ⊆ I m) as I_sub2.
     {
         intros m n leq.
-        apply nat0_le_ex in leq as [c c_eq].
+        apply nat_le_ex in leq as [c c_eq].
         subst n.
         rewrite plus_comm.
-        nat0_induction c.
+        nat_induction c.
         -   apply refl.
-        -   rewrite nat0_plus_lsuc.
+        -   rewrite nat_plus_lsuc.
             exact (trans (I_sub _) IHc).
     }
     assert (∀ m n, an m <= bn n) as abn_leq.
@@ -185,34 +185,34 @@ Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
     intros a b a_pos ab.
     apply lt_plus_0_anb_b_a in ab.
     pose proof (archimedean2 _ ab) as [n ltq].
-    rewrite nat0_to_abstract_real in ltq.
-    apply lt_rmult_pos with (nat0_to_real (nat0_suc n)) in ltq.
+    rewrite nat_to_abstract_real in ltq.
+    apply lt_rmult_pos with (nat_to_real (nat_suc n)) in ltq.
     2: apply real_n_pos.
     rewrite mult_linv in ltq by apply real_n_pos.
-    remember (nat0_to_real (nat0_suc n)) as n'.
+    remember (nat_to_real (nat_suc n)) as n'.
     rewrite rdist in ltq.
     apply lt_plus_rrmove in ltq.
     rewrite mult_lneg in ltq.
     rewrite neg_neg in ltq.
     pose proof (archimedean1 (a * n')) as [m' m'_ltq].
-    rewrite nat0_to_abstract_real in m'_ltq.
-    assert (∃ m, a * n' < nat0_to_real m) as S_ex
+    rewrite nat_to_abstract_real in m'_ltq.
+    assert (∃ m, a * n' < nat_to_real m) as S_ex
         by (exists m'; exact m'_ltq).
     pose proof (well_ordered _ S_ex) as [m [m_ltq m_least]].
     clear m' m'_ltq S_ex.
-    remember (nat0_to_real m) as m'.
-    exists (nat0_to_rat m / nat0_to_rat (nat0_suc n)).
+    remember (nat_to_real m) as m'.
+    exists (nat_to_rat m / nat_to_rat (nat_suc n)).
     rewrite <- rat_to_real_mult.
     rewrite <- rat_to_real_div.
     2: {
-        change 0 with (nat0_to_rat 0).
+        change 0 with (nat_to_rat 0).
         intros contr.
-        apply nat0_to_rat_eq in contr.
+        apply nat_to_rat_eq in contr.
         inversion contr.
     }
-    change (rat_to_real (nat0_to_rat m)) with (nat0_to_real m).
-    change (rat_to_real (nat0_to_rat (nat0_suc n)))
-        with (nat0_to_real (nat0_suc n)).
+    change (rat_to_real (nat_to_rat m)) with (nat_to_real m).
+    change (rat_to_real (nat_to_rat (nat_suc n)))
+        with (nat_to_real (nat_suc n)).
     rewrite <- Heqn', <- Heqm'.
     split.
     -   apply lt_mult_lrmove_pos.
@@ -220,28 +220,28 @@ Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
         exact m_ltq.
     -   apply lt_mult_rrmove_pos.
         1: rewrite Heqn'; apply real_n_pos.
-        nat0_destruct m.
+        nat_destruct m.
         {
             rewrite lt_plus_0_anb_b_a in ab.
             rewrite Heqm'.
-            change (nat0_to_real 0) with 0.
+            change (nat_to_real 0) with 0.
             apply lt_mult.
             -   exact (le_lt_trans a_pos ab).
             -   rewrite Heqn'.
                 apply real_n_pos.
         }
-        assert (nat0_to_real m <= a * n') as m_ltq2.
+        assert (nat_to_real m <= a * n') as m_ltq2.
         {
             classic_contradiction contr.
             rewrite nle_lt in contr.
             specialize (m_least _ contr).
             rewrite <- nlt_le in m_least.
-            contradiction (m_least (nat0_lt_suc m)).
+            contradiction (m_least (nat_lt_suc m)).
         }
         apply (le_lt_trans2 ltq).
         rewrite Heqm'.
-        change (nat0_suc m) with (1 + m).
-        rewrite <- nat0_to_real_plus.
+        change (nat_suc m) with (1 + m).
+        rewrite <- nat_to_real_plus.
         apply le_lplus.
         exact m_ltq2.
 Qed.

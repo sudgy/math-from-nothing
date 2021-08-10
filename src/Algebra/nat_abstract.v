@@ -4,20 +4,20 @@ Require Export plus.
 Require Export mult.
 Require Export relation.
 Require Import order_mult.
-Require Export nat0.
+Require Export nat.
 
-Fixpoint abstract_mult {U} `{Plus U, Zero U} (a : nat0) (b : U) :=
+Fixpoint abstract_mult {U} `{Plus U, Zero U} (a : nat) (b : U) :=
     match a with
-    | nat0_zero => 0
-    | nat0_suc a' => b + abstract_mult a' b
+    | nat_zero => 0
+    | nat_suc a' => b + abstract_mult a' b
     end.
 
 Infix "×" := abstract_mult (at level 40, left associativity).
 
-Fixpoint nat0_to_abstract {U} `{Plus U, Zero U, One U} a :=
+Fixpoint nat_to_abstract {U} `{Plus U, Zero U, One U} a :=
     match a with
-    | nat0_zero => 0
-    | nat0_suc a' => 1 + nat0_to_abstract a'
+    | nat_zero => 0
+    | nat_suc a' => 1 + nat_to_abstract a'
     end.
 
 Class Archimedean U `{Plus U, Zero U, Order U} := {
@@ -64,26 +64,26 @@ Context {U} `{
     @MultRinv U z m1 e d
 }.
 (* end hide *)
-Theorem nat0_to_abstract_eq : ∀ a, nat0_to_abstract a = a.
-    nat0_induction a.
+Theorem nat_to_abstract_eq : ∀ a, nat_to_abstract a = a.
+    nat_induction a.
     -   reflexivity.
     -   cbn.
         rewrite IHa.
         reflexivity.
 Qed.
 
-Theorem nat0_to_abstract_zero : nat0_to_abstract 0 = (zero (U := U)).
+Theorem nat_to_abstract_zero : nat_to_abstract 0 = (zero (U := U)).
     reflexivity.
 Qed.
 
-Theorem nat0_to_abstract_one : nat0_to_abstract 1 = (one (U := U)).
+Theorem nat_to_abstract_one : nat_to_abstract 1 = (one (U := U)).
     unfold one at 1; cbn.
     apply plus_rid.
 Qed.
 
-Theorem nat0_to_abstract_mult : ∀ a b, nat0_to_abstract a * b = a × b.
+Theorem nat_to_abstract_mult : ∀ a b, nat_to_abstract a * b = a × b.
     intros a b.
-    nat0_induction a.
+    nat_induction a.
     -   unfold zero; cbn.
         apply mult_lanni.
     -   cbn.
@@ -92,8 +92,8 @@ Theorem nat0_to_abstract_mult : ∀ a b, nat0_to_abstract a * b = a × b.
         reflexivity.
 Qed.
 
-Theorem nat0_to_abstract_mult_one: ∀ a, a × (one (U := U)) = nat0_to_abstract a.
-    nat0_induction a.
+Theorem nat_to_abstract_mult_one: ∀ a, a × (one (U := U)) = nat_to_abstract a.
+    nat_induction a.
     -   unfold zero, one; cbn.
         reflexivity.
     -   cbn.
@@ -101,8 +101,8 @@ Theorem nat0_to_abstract_mult_one: ∀ a, a × (one (U := U)) = nat0_to_abstract
         reflexivity.
 Qed.
 
-Theorem nat0_to_abstract_pos : ∀ a, 0 < nat0_to_abstract (nat0_suc a).
-    nat0_induction a.
+Theorem nat_to_abstract_pos : ∀ a, 0 < nat_to_abstract (nat_suc a).
+    nat_induction a.
     -   unfold one; cbn.
         rewrite plus_rid.
         exact one_pos.
@@ -114,7 +114,7 @@ Qed.
 
 Theorem abstract_mult_rneg : ∀ a b, -(a × b) = a × (-b).
     intros a b.
-    nat0_induction a.
+    nat_induction a.
     -   unfold zero; cbn.
         apply neg_zero.
     -   cbn.
@@ -123,8 +123,8 @@ Theorem abstract_mult_rneg : ∀ a b, -(a × b) = a × (-b).
         reflexivity.
 Qed.
 
-Let a1 := ∀ x : U, ∃ n, x < nat0_to_abstract n.
-Let a2 := ∀ ε, 0 < ε → ∃ n, div (nat0_to_abstract (nat0_suc n)) < ε.
+Let a1 := ∀ x : U, ∃ n, x < nat_to_abstract n.
+Let a2 := ∀ ε, 0 < ε → ∃ n, div (nat_to_abstract (nat_suc n)) < ε.
 
 Theorem field_impl_arch1 : a1 → Archimedean U.
     intros arch.
@@ -136,7 +136,7 @@ Theorem field_impl_arch1 : a1 → Archimedean U.
     rewrite <- mult_assoc in n_lt.
     rewrite mult_linv in n_lt by apply y_pos.
     rewrite mult_rid in n_lt.
-    rewrite nat0_to_abstract_mult in n_lt.
+    rewrite nat_to_abstract_mult in n_lt.
     exists n.
     exact n_lt.
 Qed.
@@ -149,7 +149,7 @@ Theorem field_impl_arch2 : a2 → Archimedean U.
     assert (0 < div x) as x'_pos by (apply div_pos; exact x_pos).
     assert (0 < div x * y) as ε_pos by (apply lt_mult; assumption).
     specialize (arch _ ε_pos) as [n eq].
-    pose proof (nat0_to_abstract_pos n) as n_pos.
+    pose proof (nat_to_abstract_pos n) as n_pos.
     pose proof (div_pos _ n_pos) as n'_pos.
     apply lt_div_pos in eq; try assumption.
     rewrite div_div in eq by apply n_pos.
@@ -159,8 +159,8 @@ Theorem field_impl_arch2 : a2 → Archimedean U.
     rewrite div_div in eq by apply x_pos.
     apply lt_rmult_pos with y in eq; try exact y_pos.
     rewrite <- mult_assoc, mult_linv, mult_rid in eq by apply y_pos.
-    rewrite nat0_to_abstract_mult in eq.
-    exists (nat0_suc n).
+    rewrite nat_to_abstract_mult in eq.
+    exists (nat_suc n).
     exact eq.
 Qed.
 
@@ -172,12 +172,12 @@ Theorem archimedean1 : a1.
     classic_case (0 < x) as [x_pos|x_neg].
     -   pose proof (archimedean x 1 x_pos one_pos) as [n eq].
         exists n.
-        rewrite nat0_to_abstract_mult_one in eq.
+        rewrite nat_to_abstract_mult_one in eq.
         exact eq.
     -   rewrite nlt_le in x_neg.
         exists 1.
         apply (le_lt_trans x_neg).
-        rewrite nat0_to_abstract_one.
+        rewrite nat_to_abstract_one.
         exact one_pos.
 Qed.
 
@@ -186,12 +186,12 @@ Theorem archimedean2 : a2.
     unfold a1, a2 in *; clear a1 a2.
     intros ε ε_pos.
     specialize (arch (div ε)) as [n eq].
-    nat0_destruct n.
-    -   rewrite nat0_to_abstract_zero in eq.
+    nat_destruct n.
+    -   rewrite nat_to_abstract_zero in eq.
         apply div_pos in ε_pos.
         pose proof (trans ε_pos eq) as [C0 C1]; contradiction.
     -   pose proof (div_pos _ ε_pos) as ε'_pos.
-        pose proof (nat0_to_abstract_pos n) as n_pos.
+        pose proof (nat_to_abstract_pos n) as n_pos.
         apply lt_div_pos in eq; try assumption.
         rewrite div_div in eq by apply ε_pos.
         exists n.

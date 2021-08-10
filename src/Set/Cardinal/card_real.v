@@ -19,21 +19,21 @@ Existing Instance abs_metric.
 
 Open Scope card_scope.
 
-Lemma real_size_leq1 : |real| <= 2 ^ |nat0|.
+Lemma real_size_leq1 : |real| <= 2 ^ |nat|.
     rewrite <- rat_size.
     rewrite <- power_set_size.
     apply card_sub_le.
 Qed.
 
-Lemma real_size_leq2 : 2 ^ |nat0| <= |real|.
+Lemma real_size_leq2 : 2 ^ |nat| <= |real|.
     rewrite <- power_set_size.
-Open Scope nat0_scope.
+Open Scope nat_scope.
 Close Scope card_scope.
     unfold le; equiv_simpl.
     pose (F f := λ n, If f n then (/3)^n else 0).
     assert (∀ n, 0 < (/3)^n) as n3_pos.
     {
-        nat0_induction n.
+        nat_induction n.
         -   unfold zero at 2; cbn.
             exact one_pos.
         -   cbn.
@@ -94,16 +94,16 @@ Close Scope card_scope.
         clear - ab_eq.
         assert (∀ m, m <= n → sum (F a) 0 m = sum (F b) 0 m) as eq.
         {
-            nat0_induction m.
+            nat_induction m.
             -   intros C0; clear C0.
                 unfold zero; cbn.
                 reflexivity.
             -   intros leq.
                 cbn.
-                rewrite IHm by exact (trans (nat0_le_suc m) leq).
+                rewrite IHm by exact (trans (nat_le_suc m) leq).
                 apply lplus.
                 rewrite plus_lid.
-                specialize (ab_eq m (lt_le_trans (nat0_lt_suc m) leq)).
+                specialize (ab_eq m (lt_le_trans (nat_lt_suc m) leq)).
                 unfold F; do 2 case_if.
                 +   reflexivity.
                 +   rewrite ab_eq in a0.
@@ -115,23 +115,23 @@ Close Scope card_scope.
         apply eq.
         apply refl.
     }
-    pose (f' (f : nat0 → Prop) := λ n', F f (n + n')).
+    pose (f' (f : nat → Prop) := λ n', F f (n + n')).
     assert (seq_lim (λ m, A + series (f' a) m) x) as a'_lim.
     {
         apply (subsequence_lim_eq _ _ _ a_lim).
         exists (λ m, n + m).
         split.
         -   intros n'.
-            rewrite nat0_plus_rsuc.
-            apply nat0_lt_suc.
+            rewrite nat_plus_rsuc.
+            apply nat_lt_suc.
         -   intros m.
             unfold f'.
             unfold series, A.
-            nat0_induction m.
+            nat_induction m.
             +   unfold zero at 5; cbn.
                 do 2 rewrite plus_rid.
                 reflexivity.
-            +   rewrite nat0_plus_rsuc.
+            +   rewrite nat_plus_rsuc.
                 cbn.
                 rewrite IHm.
                 do 2 rewrite plus_lid.
@@ -144,17 +144,17 @@ Close Scope card_scope.
         exists (λ m, n + m).
         split.
         -   intros n'.
-            rewrite nat0_plus_rsuc.
-            apply nat0_lt_suc.
+            rewrite nat_plus_rsuc.
+            apply nat_lt_suc.
         -   intros m.
             unfold f'.
             unfold series.
             rewrite A_eq.
-            nat0_induction m.
+            nat_induction m.
             +   unfold zero at 5; cbn.
                 do 2 rewrite plus_rid.
                 reflexivity.
-            +   rewrite nat0_plus_rsuc.
+            +   rewrite nat_plus_rsuc.
                 cbn.
                 rewrite IHm.
                 do 2 rewrite plus_lid.
@@ -173,7 +173,7 @@ Close Scope card_scope.
                 unfold f', F.
                 case_if.
                 -   unfold scalar_mult; cbn.
-                    rewrite pow_mult_nat0.
+                    rewrite pow_mult_nat.
                     reflexivity.
                 -   exfalso; apply n0; exact true.
             }
@@ -219,11 +219,11 @@ Close Scope card_scope.
     {
         clear - n3_pos.
         intros a x x_lim an.
-        apply (seq_lim_ge_constant (λ n, sum (f' a) 0 (nat0_suc n))).
+        apply (seq_lim_ge_constant (λ n, sum (f' a) 0 (nat_suc n))).
         -   intros m.
-            nat0_induction m.
+            nat_induction m.
             +   unfold one at 4; cbn.
-                change nat0_zero with (zero (U := nat0)).
+                change nat_zero with (zero (U := nat)).
                 do 2 rewrite plus_lid.
                 unfold f', F.
                 rewrite plus_rid.
@@ -241,10 +241,10 @@ Close Scope card_scope.
                 *   apply n3_pos.
                 *   apply refl.
         -   apply (subsequence_lim_eq _ _ _ x_lim).
-            exists (λ m, nat0_suc m).
+            exists (λ m, nat_suc m).
             split.
             +   intros m.
-                apply nat0_lt_suc.
+                apply nat_lt_suc.
             +   intros m.
                 reflexivity.
     }
@@ -255,7 +255,7 @@ Close Scope card_scope.
         intros a x x_lim an.
         apply (seq_lim_le (series (f' a)) (series (f' (λ m, n < m)))).
         -   intros m.
-            nat0_induction m.
+            nat_induction m.
             +   unfold zero; cbn.
                 apply refl.
             +   cbn.
@@ -268,7 +268,7 @@ Close Scope card_scope.
                 do 2 case_if.
                 *   apply refl.
                 *   rewrite nlt_le in n0.
-                    pose proof (nat0_le_self_rplus n m) as n_leq.
+                    pose proof (nat_le_self_rplus n m) as n_leq.
                     pose proof (antisym n0 n_leq) as eq.
                     rewrite <- (plus_rid n) in eq at 2.
                     apply plus_lcancel in eq.
@@ -285,16 +285,16 @@ Close Scope card_scope.
                 apply functional_ext.
                 intros m.
                 unfold scalar_mult; cbn.
-                nat0_induction m.
+                nat_induction m.
                 -   rewrite plus_lid.
                     unfold one at 1, zero; cbn.
                     do 2 rewrite plus_lid.
-                    change nat0_zero with (zero (U := nat0)).
+                    change nat_zero with (zero (U := nat)).
                     unfold f', F; case_if.
                     +   rewrite plus_rid in l.
                         destruct l; contradiction.
                     +   reflexivity.
-                -   rewrite nat0_plus_lsuc.
+                -   rewrite nat_plus_lsuc.
                     cbn.
                     unfold series in IHm.
                     rewrite IHm.
@@ -302,13 +302,13 @@ Close Scope card_scope.
                     do 2 rewrite plus_lid.
                     unfold f', F; case_if.
                     +   rewrite (plus_comm m 1), (plus_assoc n 1 m).
-                        rewrite pow_mult_nat0.
+                        rewrite pow_mult_nat.
                         reflexivity.
                     +   exfalso; apply n0.
                         rewrite <- (plus_rid n) at 1.
                         apply lt_lplus.
                         rewrite plus_comm.
-                        apply nat0_zero_lt_suc.
+                        apply nat_zero_lt_suc.
             }
             rewrite f_eq.
             apply geometric_series_sum_constant.
@@ -351,7 +351,7 @@ Close Scope card_scope.
     }
     unfold scalar_mult in leq; cbn in leq.
     rewrite (plus_comm n 1) in leq.
-    change (1 + n) with (nat0_suc n) in leq; cbn in leq.
+    change (1 + n) with (nat_suc n) in leq; cbn in leq.
     rewrite <- (mult_rid ((/3)^n)) in leq at 1.
     rewrite <- mult_assoc in leq.
     apply le_mult_lcancel_pos in leq.
@@ -384,10 +384,10 @@ Close Scope card_scope.
     exact one_pos.
 Qed.
 
-Close Scope nat0_scope.
+Close Scope nat_scope.
 Open Scope card_scope.
 (* end hide *)
-Theorem real_size : |real| = 2 ^ |nat0|.
+Theorem real_size : |real| = 2 ^ |nat|.
     apply antisym.
     -   exact real_size_leq1.
     -   exact real_size_leq2.

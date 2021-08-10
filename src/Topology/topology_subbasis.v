@@ -50,11 +50,11 @@ Next Obligation.
                 exact SS2_S.
         +   unfold SS.
             apply (le_lt_trans (card_plus_union _ _)).
-            apply fin_nat0_ex in SS1_fin as [m m_eq].
-            apply fin_nat0_ex in SS2_fin as [n n_eq].
+            apply fin_nat_ex in SS1_fin as [m m_eq].
+            apply fin_nat_ex in SS2_fin as [n n_eq].
             rewrite <- m_eq, <- n_eq.
-            rewrite nat0_to_card_plus.
-            apply nat0_is_finite.
+            rewrite nat_to_card_plus.
+            apply nat_is_finite.
         +   reflexivity.
     -   intros S [SS1_S|SS2_S].
         +   apply SS1_x.

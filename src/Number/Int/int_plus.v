@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import nat0.
+Require Import nat.
 Require Import set.
 Require Export plus_group.
 
@@ -104,16 +104,16 @@ Instance int_plus_linv_class : PlusLinv int := {
     plus_linv := int_plus_linv;
 }.
 (* end hide *)
-Theorem nat0_to_int_plus : ∀ a b,
-        nat0_to_int a + nat0_to_int b = nat0_to_int (a + b).
+Theorem nat_to_int_plus : ∀ a b,
+        nat_to_int a + nat_to_int b = nat_to_int (a + b).
     intros a b.
-    unfold plus at 1, nat0_to_int; equiv_simpl.
+    unfold plus at 1, nat_to_int; equiv_simpl.
     do 3 rewrite plus_rid.
     reflexivity.
 Qed.
 
-Theorem nat0_nz_int : ∀ n, 0 ≠ nat0_to_int (nat0_suc n).
+Theorem nat_nz_int : ∀ n, 0 ≠ nat_to_int (nat_suc n).
     intros n n_eq.
-    apply nat0_to_int_eq in n_eq.
+    apply nat_to_int_eq in n_eq.
     inversion n_eq.
 Qed.

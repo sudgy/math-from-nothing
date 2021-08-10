@@ -120,11 +120,11 @@ Theorem int_to_real_le : ∀ a b, int_to_real a <= int_to_real b ↔ a <= b.
     rewrite rat_to_real_le.
     apply int_to_rat_le.
 Qed.
-Theorem nat0_to_real_le : ∀ a b, nat0_to_real a <= nat0_to_real b ↔ a <= b.
+Theorem nat_to_real_le : ∀ a b, nat_to_real a <= nat_to_real b ↔ a <= b.
     intros a b.
-    unfold nat0_to_real.
+    unfold nat_to_real.
     rewrite rat_to_real_le.
-    apply nat0_to_rat_le.
+    apply nat_to_rat_le.
 Qed.
 
 Theorem rat_to_real_lt : ∀ a b, rat_to_real a < rat_to_real b ↔ a < b.
@@ -144,11 +144,11 @@ Theorem int_to_real_lt : ∀ a b, int_to_real a < int_to_real b ↔ a < b.
     rewrite rat_to_real_lt.
     apply int_to_rat_lt.
 Qed.
-Theorem nat0_to_real_lt : ∀ a b, nat0_to_real a < nat0_to_real b ↔ a < b.
+Theorem nat_to_real_lt : ∀ a b, nat_to_real a < nat_to_real b ↔ a < b.
     intros a b.
-    unfold nat0_to_real.
+    unfold nat_to_real.
     rewrite rat_to_real_lt.
-    apply nat0_to_rat_lt.
+    apply nat_to_rat_lt.
 Qed.
 
 Theorem gt_rat_to_real_in : ∀ a b, rat_to_real a < b → [b|] a.

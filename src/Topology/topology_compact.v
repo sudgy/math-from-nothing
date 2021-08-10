@@ -301,7 +301,7 @@ Theorem sequentially_limit_point_compact :
     specialize (g_lim A A_open Ax) as [N all_gt].
     apply ex_not_empty.
     classic_case (g N = x) as [x_eq|x_neq].
-    -   exists (g (nat0_suc N)).
+    -   exists (g (nat_suc N)).
         repeat split.
         +   rewrite <- fg_eq.
             apply f_in.
@@ -311,7 +311,7 @@ Theorem sequentially_limit_point_compact :
             destruct (ns_lt N) as [C0 neq]; clear C0.
             exact (f_inj _ _ neq contr).
         +   apply all_gt.
-            apply nat0_le_suc.
+            apply nat_le_suc.
     -   exists (g N).
         repeat split.
         +   rewrite <- fg_eq.

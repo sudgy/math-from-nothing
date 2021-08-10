@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import nat0.
+Require Import nat.
 Require Import set.
 
 Declare Scope int_scope.
@@ -9,7 +9,7 @@ Delimit Scope int_scope with int.
 (* begin hide *)
 Section IntEquiv.
 (* end hide *)
-Let int_eq (a b : nat0 * nat0) := fst a + snd b = fst b + snd a.
+Let int_eq (a b : nat * nat) := fst a + snd b = fst b + snd a.
 (* begin hide *)
 Local Infix "~" := int_eq.
 
@@ -54,11 +54,11 @@ Notation "a ~ b" := (eq_equal int_equiv a b) : int_scope.
 
 Notation "'int'" := (equiv_type int_equiv).
 
-Definition nat0_to_int a := to_equiv_type int_equiv (a, zero).
+Definition nat_to_int a := to_equiv_type int_equiv (a, zero).
 
-Theorem nat0_to_int_eq : ∀ a b, nat0_to_int a = nat0_to_int b → a = b.
+Theorem nat_to_int_eq : ∀ a b, nat_to_int a = nat_to_int b → a = b.
     intros a b eq.
-    unfold nat0_to_int in eq.
+    unfold nat_to_int in eq.
     rewrite equiv_eq in eq; cbn in eq.
     do 2 rewrite plus_rid in eq.
     exact eq.

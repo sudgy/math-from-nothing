@@ -253,9 +253,9 @@ Qed.
 
 Theorem finite_point_closed : ∀ A, finite (|set_type A|) → closed A.
     intros A A_fin.
-    apply fin_nat0_ex in A_fin as [n A_fin].
+    apply fin_nat_ex in A_fin as [n A_fin].
     revert A A_fin.
-    nat0_induction n.
+    nat_induction n.
     -   intros.
         apply zero_is_empty in A_fin.
         rewrite A_fin.
@@ -267,11 +267,11 @@ Theorem finite_point_closed : ∀ A, finite (|set_type A|) → closed A.
             classic_contradiction contr.
             rewrite <- card_0_false in contr.
             rewrite contr in A_fin.
-            apply nat0_to_card_eq in A_fin.
+            apply nat_to_card_eq in A_fin.
             inversion A_fin.
         }
         symmetry in A_fin.
-        pose proof (card_plus_one_nat0 A n [x|Ax] A_fin) as A'_fin; cbn in *.
+        pose proof (card_plus_one_nat A n [x|Ax] A_fin) as A'_fin; cbn in *.
         remember (A - singleton x) as A'.
         assert (A = A' ∪ singleton x) as eq.
         {

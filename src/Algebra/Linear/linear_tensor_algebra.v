@@ -108,11 +108,11 @@ Theorem tensor_sum : ∀ a, ∃ (l : list (set_type simple_tensor_scale)),
     intros a.
     equiv_get_value a.
     destruct a as [af af_fin].
-    pose proof (fin_nat0_ex _ af_fin) as [n n_eq].
-    unfold nat0_to_card in n_eq; equiv_simpl in n_eq.
+    pose proof (fin_nat_ex _ af_fin) as [n n_eq].
+    unfold nat_to_card in n_eq; equiv_simpl in n_eq.
     destruct n_eq as [nf nf_bij].
     revert af af_fin nf nf_bij.
-    nat0_induction n.
+    nat_induction n.
     -   intros.
         exists list_end.
         cbn.
@@ -123,9 +123,9 @@ Theorem tensor_sum : ∀ a, ∃ (l : list (set_type simple_tensor_scale)),
         unfold zero; cbn.
         classic_contradiction contr.
         pose proof (rand nf_bij [x|contr]) as [m m_eq].
-        contradiction (nat0_lt_0_false m).
+        contradiction (nat_lt_0_false m).
     -   intros.
-        pose (af' x := If x = [nf [n|nat0_lt_suc n]|] then 0 else af x).
+        pose (af' x := If x = [nf [n|nat_lt_suc n]|] then 0 else af x).
         assert (∀ x, af' x ≠ 0 → af x ≠ 0) as af'_neq.
         {
             intros x.
@@ -144,7 +144,7 @@ Theorem tensor_sum : ∀ a, ∃ (l : list (set_type simple_tensor_scale)),
             apply set_type_eq; exact eq2.
         }
         assert (∀ m : (set_type (λ x, x < n)),
-            let res := nf [[m|]|trans [|m] (nat0_lt_suc n)] in
+            let res := nf [[m|]|trans [|m] (nat_lt_suc n)] in
             af [res|] ≠ 0 → af' [res|] ≠ 0) as af'_neq2.
         {
             intros [m m_ltq]; cbn.
@@ -158,7 +158,7 @@ Theorem tensor_sum : ∀ a, ∃ (l : list (set_type simple_tensor_scale)),
             -   exact eq.
         }
         pose (nf' (x : set_type (λ x, x < n))
-            := let res := nf [[x|]|trans [|x] (nat0_lt_suc n)] in
+            := let res := nf [[x|]|trans [|x] (nat_lt_suc n)] in
                 [[res|] | af'_neq2 _ [|res]] : set_type (λ x, af' x ≠ 0)).
         assert (bijective nf') as nf'_bij.
         {
@@ -174,7 +174,7 @@ Theorem tensor_sum : ∀ a, ∃ (l : list (set_type simple_tensor_scale)),
                 specialize (af'_neq y y_neq).
                 pose proof (rand nf_bij [y|af'_neq]) as [[x x_ltq] eq].
                 pose proof x_ltq as x_ltq2.
-                rewrite nat0_lt_suc_le in x_ltq2.
+                rewrite nat_lt_suc_le in x_ltq2.
                 classic_case (x = n) as [x_eq|x_neq].
                 +   exfalso.
                     subst.
@@ -191,11 +191,11 @@ Theorem tensor_sum : ∀ a, ∃ (l : list (set_type simple_tensor_scale)),
                     reflexivity.
         }
         specialize (IHn af' af'_fin nf' nf'_bij) as [l l_eq].
-        pose (fn := af [nf [n|nat0_lt_suc n]|] ·
-            to_tensor_algebra [nf [n|nat0_lt_suc n]|]).
+        pose (fn := af [nf [n|nat_lt_suc n]|] ·
+            to_tensor_algebra [nf [n|nat_lt_suc n]|]).
         assert (simple_tensor_scale fn) as fn_in.
         {
-            exists (af [nf [n|nat0_lt_suc n]|]), ([nf [n | nat0_lt_suc n]|]).
+            exists (af [nf [n|nat_lt_suc n]|]), ([nf [n | nat_lt_suc n]|]).
             reflexivity.
         }
         exists (l ++ [fn|fn_in] :: list_end).

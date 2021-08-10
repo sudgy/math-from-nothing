@@ -4,11 +4,11 @@ Require Export card_base.
 Require Import card_order.
 Require Import card_plus.
 Require Import card_mult.
-Require Import card_nat0.
+Require Import card_nat.
 Require Import set.
 Require Import zorn.
 Require Import function.
-Require Import nat0.
+Require Import nat.
 Require Import order_minmax.
 Require Import card_infinite1.
 
@@ -19,7 +19,7 @@ Module CardMultIdemp.
 Section CardMultIdemp.
 
 Variable A : Type.
-Hypothesis A_inf : |nat0| <= |A|.
+Hypothesis A_inf : |nat| <= |A|.
 
 Record fs := make_fs {
     fs_f : bin_set_function_type A A;
@@ -244,7 +244,7 @@ Qed.
 Lemma X_not_0 : |set_type X| ≠ 0.
     intro contr.
     pose proof (card_le_sub _ _ A_inf) as [A' A'_eq].
-    pose proof nat0_mult_nat0 as eq.
+    pose proof nat_mult_nat as eq.
     rewrite <- A'_eq in eq.
     unfold mult in eq; equiv_simpl in eq.
     destruct eq as [g g_bij].
@@ -283,9 +283,9 @@ Lemma X_not_0 : |set_type X| ≠ 0.
             apply not_ex_empty.
             intros x Xx.
             unfold zero in contr; cbn in contr.
-            unfold nat0_to_card in contr; equiv_simpl in contr.
+            unfold nat_to_card in contr; equiv_simpl in contr.
             destruct contr as [f f_bij].
-            contradiction (nat0_lt_0_false (f [x|Xx])).
+            contradiction (nat_lt_0_false (f [x|Xx])).
         }
         assert (X ⊆ A')%set as sub.
         {
@@ -309,7 +309,7 @@ Lemma X_not_0 : |set_type X| ≠ 0.
         rewrite X_eq in contr.
         rewrite contr in A'_eq.
         clear - A'_eq.
-        pose proof (nat0_is_finite 0) as [leq neq].
+        pose proof (nat_is_finite 0) as [leq neq].
         contradiction.
 Qed.
 
@@ -325,11 +325,11 @@ Lemma X_not_1 : |set_type X| ≠ 1.
             +   apply refl.
             +   rewrite A'_eq.
                 apply refl.
-            +   apply nat0_is_finite.
+            +   apply nat_is_finite.
         -   apply card_union_left.
     }
     rewrite <- A'X_eq in A'_eq.
-    pose proof nat0_mult_nat0 as eq.
+    pose proof nat_mult_nat as eq.
     rewrite <- A'_eq in eq.
     unfold mult, plus in eq; equiv_simpl in eq.
     destruct eq as [g g_bij].
@@ -337,9 +337,9 @@ Lemma X_not_1 : |set_type X| ≠ 1.
     {
         symmetry in contr.
         unfold one in contr; cbn in contr.
-        unfold nat0_to_card in contr; equiv_simpl in contr.
+        unfold nat_to_card in contr; equiv_simpl in contr.
         destruct contr as [f f_bij].
-        pose proof (nat0_lt_suc 0) as one_pos.
+        pose proof (nat_lt_suc 0) as one_pos.
         exists [f [0|one_pos]|].
         apply [|f [0|one_pos]].
     }
@@ -348,14 +348,14 @@ Lemma X_not_1 : |set_type X| ≠ 1.
         intros y Xy.
         symmetry in contr.
         unfold one in contr; cbn in contr.
-        unfold nat0_to_card in contr; equiv_simpl in contr.
+        unfold nat_to_card in contr; equiv_simpl in contr.
         destruct contr as [f f_bij].
         pose proof (rand f_bij [x|Xx]) as [[m m_lt] m_eq].
         pose proof (rand f_bij [y|Xy]) as [[n n_lt] n_eq].
         pose proof m_lt as m_lt2.
         pose proof n_lt as n_lt2.
-        apply nat0_lt_1 in m_lt2.
-        apply nat0_lt_1 in n_lt2.
+        apply nat_lt_1 in m_lt2.
+        apply nat_lt_1 in n_lt2.
         subst.
         rewrite (proof_irrelevance m_lt n_lt) in m_eq.
         rewrite m_eq in n_eq.
@@ -556,7 +556,7 @@ Section XInf.
 Hypothesis contr : finite (|set_type X|).
 
 Lemma X_fin_false : False.
-    apply fin_nat0_ex in contr as [n eq1].
+    apply fin_nat_ex in contr as [n eq1].
     assert (0 ≠ n) as n_neq_0.
     {
         intro contr; subst.
@@ -571,16 +571,16 @@ Lemma X_fin_false : False.
     }
     pose proof X_mult_idemp as eq2.
     rewrite <- eq1 in eq2; clear eq1.
-    rewrite nat0_to_card_mult in eq2.
-    apply nat0_to_card_eq in eq2.
-    nat0_destruct n; try contradiction.
-    nat0_destruct n; try contradiction.
+    rewrite nat_to_card_mult in eq2.
+    apply nat_to_card_eq in eq2.
+    nat_destruct n; try contradiction.
+    nat_destruct n; try contradiction.
     clear n_neq_0 n_neq_1.
-    rewrite nat0_mult_lsuc in eq2.
-    rewrite <- (plus_rid (nat0_suc (nat0_suc n))) in eq2 at 3.
+    rewrite nat_mult_lsuc in eq2.
+    rewrite <- (plus_rid (nat_suc (nat_suc n))) in eq2 at 3.
     apply plus_lcancel in eq2.
-    rewrite nat0_mult_rsuc in eq2.
-    rewrite nat0_plus_lsuc in eq2.
+    rewrite nat_mult_rsuc in eq2.
+    rewrite nat_plus_lsuc in eq2.
     inversion eq2.
 Qed.
 
@@ -647,8 +647,8 @@ Lemma X'_ge : |set_type X| <= |set_type X'|.
     rewrite <- X_mult_idemp at 2.
     apply card_le_rmult.
     unfold one; cbn.
-    rewrite nat0_to_card_plus.
-    apply (trans (land (nat0_is_finite 2)) X_inf).
+    rewrite nat_to_card_plus.
+    apply (trans (land (nat_is_finite 2)) X_inf).
 Qed.
 Lemma f0_ex : ∃ f : set_type X → set_type X', injective f.
     pose proof X'_ge.
@@ -683,24 +683,24 @@ Lemma Y_eq2 :
     rewrite X_mult_idemp.
     rewrite <- (mult_lid (|set_type X|)) at 1 2 3.
     do 2 rewrite <- rdist.
-    assert (nat0_to_card 3 = 2 + 1) as eq.
+    assert (nat_to_card 3 = 2 + 1) as eq.
     {
         unfold one at 4 5 6; cbn.
-        do 2 rewrite nat0_to_card_plus.
+        do 2 rewrite nat_to_card_plus.
         reflexivity.
     }
     rewrite <- eq; clear eq.
     apply antisym.
     -   rewrite <- X_mult_idemp at 2.
         apply card_le_rmult.
-        pose proof (nat0_is_finite 3) as three_fin.
+        pose proof (nat_is_finite 3) as three_fin.
         exact (trans (land three_fin) X_inf).
     -   rewrite <- (mult_lid (|set_type X|)) at 1.
         apply card_le_rmult.
         unfold one at 1; cbn.
-        unfold nat0_to_card, le; equiv_simpl.
+        unfold nat_to_card, le; equiv_simpl.
         exists (λ (x : set_type (λ x, x < 1)),
-            [[x|]|trans (trans [|x] (nat0_lt_suc _)) (nat0_lt_suc _)]).
+            [[x|]|trans (trans [|x] (nat_lt_suc _)) (nat_lt_suc _)]).
         intros a b eq.
         apply set_type_eq.
         inversion eq.
@@ -976,9 +976,9 @@ Theorem card_plus_lmax : ∀ κ μ, infinite κ → μ <= κ → κ + μ = κ.
         rewrite <- (mult_lid κ) at 1 2.
         rewrite <- rdist.
         unfold one; cbn.
-        rewrite nat0_to_card_plus.
+        rewrite nat_to_card_plus.
         apply card_le_rmult.
-        exact (trans (land (nat0_is_finite _)) κ_inf).
+        exact (trans (land (nat_is_finite _)) κ_inf).
     -   pose proof (refl (op := le) κ) as leq2.
         pose proof (card_le_zero μ) as leq3.
         pose proof (le_lrplus leq2 leq3) as leq4.
@@ -1006,21 +1006,21 @@ Theorem card_mult_lmax : ∀ κ μ, infinite κ → 0 ≠ μ → μ <= κ → κ
         {
             classic_contradiction contr.
             apply μ_nz; clear μ_nz.
-            unfold zero; cbn; unfold nat0_to_card; equiv_simpl.
-            exists (λ x, (False_rect _ (nat0_lt_0_false x))).
+            unfold zero; cbn; unfold nat_to_card; equiv_simpl.
+            exists (λ x, (False_rect _ (nat_lt_0_false x))).
             split.
             -   intros a b eq.
-                contradiction (nat0_lt_0_false a).
+                contradiction (nat_lt_0_false a).
             -   intros b.
                 contradiction (contr b).
         }
         unfold one; cbn.
-        unfold le, nat0_to_card; equiv_simpl.
+        unfold le, nat_to_card; equiv_simpl.
         exists (λ a, x).
         intros [a a_lt] [b b_lt] eq.
         apply set_type_eq; cbn.
-        apply nat0_lt_1 in a_lt.
-        apply nat0_lt_1 in b_lt.
+        apply nat_lt_1 in a_lt.
+        apply nat_lt_1 in b_lt.
         subst.
         reflexivity.
 Qed.
@@ -1042,14 +1042,14 @@ Theorem card_mult_max : ∀ κ μ, infinite κ → infinite μ → κ * μ = max
         apply card_mult_lmax; try assumption.
         intro contr; subst.
         unfold infinite in κ_inf.
-        pose proof (le_lt_trans κ_inf (nat0_is_finite _)) as [C0 C1].
+        pose proof (le_lt_trans κ_inf (nat_is_finite _)) as [C0 C1].
         contradiction.
     -   rewrite nle_lt in n.
         destruct n as [leq neq].
         apply card_mult_lmax; try assumption.
         intro contr; subst.
         unfold infinite in μ_inf.
-        pose proof (le_lt_trans μ_inf (nat0_is_finite _)) as [C0 C1].
+        pose proof (le_lt_trans μ_inf (nat_is_finite _)) as [C0 C1].
         contradiction.
 Qed.
 

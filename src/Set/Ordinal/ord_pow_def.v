@@ -6,7 +6,7 @@ Require Import ord_plus.
 Require Import ord_mult.
 Require Import set.
 Require Import function.
-Require Import nat0.
+Require Import nat.
 Require Import card.
 Require Import ord_induction.
 
@@ -115,11 +115,11 @@ Theorem ord_pow_max_dif_ex : ∀ {A B : ord_type} {C D : ord_pow_type A B},
             all: exact eq2.
         }
         apply (le_lt_trans leq).
-        pose proof (fin_nat0_ex _ (ord_pow_fin C)) as [m m_eq].
-        pose proof (fin_nat0_ex _ (ord_pow_fin D)) as [n n_eq].
+        pose proof (fin_nat_ex _ (ord_pow_fin C)) as [m m_eq].
+        pose proof (fin_nat_ex _ (ord_pow_fin D)) as [n n_eq].
         unfold N; rewrite <- m_eq, <- n_eq.
-        rewrite nat0_to_card_plus.
-        apply nat0_is_finite.
+        rewrite nat_to_card_plus.
+        apply nat_is_finite.
     }
     pose proof (finite_well_ordered_set_max _ S_fin S_ex) as [x [Sx x_max]].
     exists x.

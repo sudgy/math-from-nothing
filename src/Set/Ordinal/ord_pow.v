@@ -2,7 +2,7 @@ Require Import init.
 
 Require Import set.
 Require Import function.
-Require Import nat0.
+Require Import nat.
 Require Export ord_base.
 Require Import ord_order.
 Require Import ord_plus.
@@ -19,18 +19,18 @@ Theorem ord_pow_0 : ∀ α, α ^ 0 = 1.
     intros A.
     equiv_get_value A.
     unfold zero, one; cbn.
-    unfold nat0_to_ord, ord_pow; equiv_simpl.
-    pose proof (nat0_lt_suc 0) as z_gt.
+    unfold nat_to_ord, ord_pow; equiv_simpl.
+    pose proof (nat_lt_suc 0) as z_gt.
     exists (λ _, [0|z_gt]).
     split.
     1: split.
     -   intros a b eq.
         apply ord_pow_eq.
         intros x.
-        contradiction (nat0_lt_0_false x).
+        contradiction (nat_lt_0_false x).
     -   intros z.
-        pose (f (x : ord_U (nat0_to_ord_type 0))
-            := False_rect (ord_U A) (nat0_lt_0_false x)).
+        pose (f (x : ord_U (nat_to_ord_type 0))
+            := False_rect (ord_U A) (nat_lt_0_false x)).
         assert (ord_fin_support f) as f_fin.
         {
             unfold ord_fin_support.
@@ -38,27 +38,27 @@ Theorem ord_pow_0 : ∀ α, α ^ 0 = 1.
             {
                 apply card_false_0.
                 intros [x C0]; clear C0.
-                contradiction (nat0_lt_0_false x).
+                contradiction (nat_lt_0_false x).
             }
             rewrite eq; clear eq.
-            apply nat0_is_finite.
+            apply nat_is_finite.
         }
         exists (make_ord_pow f f_fin).
         destruct z as [z z_lt].
         apply set_type_eq; cbn.
-        apply nat0_lt_1 in z_lt.
+        apply nat_lt_1 in z_lt.
         exact z_lt.
     -   intros F G.
         assert (F = G) as eq.
         {
             apply ord_pow_eq.
             intros x.
-            contradiction (nat0_lt_0_false x).
+            contradiction (nat_lt_0_false x).
         }
         subst.
         split; intro.
         +   apply refl.
-        +   pose proof (ord_pow_wo A (nat0_to_ord_type 0)) as [[C]].
+        +   pose proof (ord_pow_wo A (nat_to_ord_type 0)) as [[C]].
             destruct (connex G G); assumption.
 Qed.
 
@@ -66,11 +66,11 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
     intros A B.
     equiv_get_value A B.
     unfold one; cbn.
-    unfold nat0_to_ord, plus, mult, ord_pow; equiv_simpl.
+    unfold nat_to_ord, plus, mult, ord_pow; equiv_simpl.
     pose (AB := {|
-        ord_U := ord_U B + set_type (λ m : nat0, m < 1);
-        ord_le := ord_plus_le B (nat0_to_ord_type 1);
-        ord_wo := ord_plus_wo B (nat0_to_ord_type 1)
+        ord_U := ord_U B + set_type (λ m : nat, m < 1);
+        ord_le := ord_plus_le B (nat_to_ord_type 1);
+        ord_wo := ord_plus_wo B (nat_to_ord_type 1)
     |}).
     fold AB.
     pose (F (f : ord_pow_type A AB) (b : ord_U B) := ord_pow_f f (inl b)).
@@ -93,7 +93,7 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
         inversion eq as [eq2].
         apply set_type_eq; exact eq2.
     }
-    pose proof (nat0_lt_suc 0) as z_gt.
+    pose proof (nat_lt_suc 0) as z_gt.
     exists (λ f, (make_ord_pow (F f) (F_fin f), ord_pow_f f (inr [0|z_gt]))).
     split.
     1: split.
@@ -105,12 +105,12 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
         intros [x|x].
         +   exact (eq1' x).
         +   destruct x as [x x_gt].
-            pose proof (nat0_lt_1 x x_gt) as x0.
+            pose proof (nat_lt_1 x x_gt) as x0.
             subst x.
             rewrite (proof_irrelevance x_gt z_gt).
             exact eq2.
     -   intros [y1 y2].
-        pose (f (x : ord_U (B ⊕ nat0_to_ord_type 1)) :=
+        pose (f (x : ord_U (B ⊕ nat_to_ord_type 1)) :=
             match x with
             | inl b => ord_pow_f y1 b
             | inr _ => y2
@@ -119,31 +119,31 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
         {
             unfold ord_fin_support; cbn.
             pose proof (ord_pow_fin y1) as y1_fin.
-            pose proof (fin_nat0_ex _ y1_fin) as [n n_eq].
-            apply (le_lt_trans2 (nat0_is_finite (nat0_suc n))).
+            pose proof (fin_nat_ex _ y1_fin) as [n n_eq].
+            apply (le_lt_trans2 (nat_is_finite (nat_suc n))).
             symmetry in n_eq.
-            unfold nat0_to_card in n_eq; equiv_simpl in n_eq.
+            unfold nat_to_card in n_eq; equiv_simpl in n_eq.
             destruct n_eq as [g g_inj].
-            unfold nat0_to_card, le; equiv_simpl.
+            unfold nat_to_card, le; equiv_simpl.
             assert (∀ x, f (inl x) ≠ ord_zero (f (inl x)) →
                 ord_pow_f y1 x ≠ ord_zero (ord_pow_f y1 x)) as in_g.
             {
                 intros x x_eq.
                 exact x_eq.
             }
-            assert (∀ x : set_type (λ x, x < n), [x|] < nat0_suc n) as g_in.
+            assert (∀ x : set_type (λ x, x < n), [x|] < nat_suc n) as g_in.
             {
                 intros [x x_lt].
-                exact (trans x_lt (nat0_lt_suc n)).
+                exact (trans x_lt (nat_lt_suc n)).
             }
-            pose proof (nat0_lt_suc n) as n_lt.
-            exists (λ (x : set_type (λ y : ord_U B + set_type (λ m : nat0, m<1),
+            pose proof (nat_lt_suc n) as n_lt.
+            exists (λ (x : set_type (λ y : ord_U B + set_type (λ m : nat, m<1),
                     f y ≠ ord_zero (f y))),
                 match x with
                 | make_set_type_val (inl b) H =>
                     let res := g [b | in_g b H] in [[res|] | g_in res]
                 | make_set_type_val (inr _) _ =>
-                    make_set_type_val (S := (λ x, x < nat0_suc n)) n n_lt
+                    make_set_type_val (S := (λ x, x < nat_suc n)) n n_lt
                 end).
             intros [[a|a] a_eq] [[b|b] b_eq] eq; cbn in *.
             all: apply set_type_eq; cbn.
@@ -161,8 +161,8 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
                 destruct ltq; contradiction.
             -   destruct a as [a a_lt], b as [b b_lt].
                 apply set_type_eq; cbn.
-                apply nat0_lt_1 in a_lt.
-                apply nat0_lt_1 in b_lt.
+                apply nat_lt_1 in a_lt.
+                apply nat_lt_1 in b_lt.
                 subst.
                 reflexivity.
         }
@@ -206,7 +206,7 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
                 --  left.
                     destruct x as [x x_lt2]; cbn in *.
                     pose proof x_lt2 as x_eq.
-                    apply nat0_lt_1 in x_eq.
+                    apply nat_lt_1 in x_eq.
                     subst x.
                     rewrite (proof_irrelevance _ x_lt2).
                     exact x_lt.
@@ -224,7 +224,7 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
                         destruct y as [y y_lt].
                         apply set_type_eq; cbn.
                         clear leq2 neq2.
-                        apply nat0_lt_1 in y_lt.
+                        apply nat_lt_1 in y_lt.
                         exact y_lt.
             *   destruct leq as [eq2|leq].
                 --  left.
@@ -232,7 +232,7 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
                     ++  cbn in eq2.
                         apply eq2.
                     ++  destruct x as [x x_lt].
-                        pose proof (nat0_lt_1 _ x_lt); subst x.
+                        pose proof (nat_lt_1 _ x_lt); subst x.
                         rewrite (proof_irrelevance _ z_gt).
                         exact eq.
                 --  right.
@@ -244,7 +244,7 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
                         split; try apply ltq.
                         intro contr; subst.
                         destruct ltq; contradiction.
-                    ++  pose proof (nat0_lt_1 _ y_lt); subst y.
+                    ++  pose proof (nat_lt_1 _ y_lt); subst y.
                         rewrite (proof_irrelevance _ z_gt).
                         exact eq.
 Qed.
@@ -259,16 +259,16 @@ Theorem ord_pow_from_0 : ∀ α, 0 < α → 0 ^ α = 0.
         rewrite <- contr in A_nz.
         destruct A_nz; contradiction.
     }
-    unfold ord_pow, zero; cbn; unfold nat0_to_ord; equiv_simpl.
-    assert (ord_pow_type (nat0_to_ord_type 0) A → False) as no_pow.
+    unfold ord_pow, zero; cbn; unfold nat_to_ord; equiv_simpl.
+    assert (ord_pow_type (nat_to_ord_type 0) A → False) as no_pow.
     {
         intros [f f_fin].
-        contradiction (nat0_lt_0_false (f a)).
+        contradiction (nat_lt_0_false (f a)).
     }
     exists (empty_function _ _ no_pow).
     split.
     -   apply empty_bij.
-        apply nat0_lt_0_false.
+        apply nat_lt_0_false.
     -   intros x y.
         contradiction (no_pow x).
 Qed.
@@ -276,8 +276,8 @@ Qed.
 Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
     intros A.
     equiv_get_value A.
-    unfold ord_pow, one; cbn; unfold nat0_to_ord; equiv_simpl.
-    assert ((zero (U := nat0)) < 1) as one_pos by apply nat0_zero_lt_suc.
+    unfold ord_pow, one; cbn; unfold nat_to_ord; equiv_simpl.
+    assert ((zero (U := nat)) < 1) as one_pos by apply nat_zero_lt_suc.
     exists (λ f, [0|one_pos]).
     split.
     split.
@@ -288,9 +288,9 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
             intros x.
             apply set_type_eq.
             pose proof [|f x] as fz; cbn in fz.
-            apply nat0_lt_1 in fz.
+            apply nat_lt_1 in fz.
             pose proof [|g x] as gz; cbn in gz.
-            apply nat0_lt_1 in gz.
+            apply nat_lt_1 in gz.
             rewrite <- fz, <- gz.
             reflexivity.
         }
@@ -304,12 +304,12 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
             -   apply ord_le_zero.
             -   apply ord_not_trivial.
         }
-        pose (f (x : ord_U A) := [0|one_pos] : ord_U (nat0_to_ord_type 1)).
+        pose (f (x : ord_U A) := [0|one_pos] : ord_U (nat_to_ord_type 1)).
         assert (finite (|set_type (λ x, f x ≠ ord_zero (f x))|)) as fin.
         {
             assert (|set_type (λ x, f x ≠ ord_zero (f x))| = 0) as eq.
             {
-                unfold zero; cbn; unfold nat0_to_card; equiv_simpl.
+                unfold zero; cbn; unfold nat_to_card; equiv_simpl.
                 assert (∀ x, f x = ord_zero (f x)) as eq.
                 {
                     unfold f.
@@ -322,7 +322,7 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
                     cbn in z_eq.
                     apply set_type_eq; cbn.
                     unfold le in z_eq; cbn in z_eq.
-                    apply nat0_le_zero_eq in z_eq.
+                    apply nat_le_zero_eq in z_eq.
                     exact z_eq.
                 }
                 assert (set_type (λ x, f x ≠ ord_zero (f x)) → False) as fa.
@@ -333,15 +333,15 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
                 }
                 exists (empty_function _ _ fa).
                 apply empty_bij.
-                apply nat0_lt_0_false.
+                apply nat_lt_0_false.
             }
             rewrite eq.
-            apply nat0_is_finite.
+            apply nat_is_finite.
         }
         exists (make_ord_pow f fin).
         destruct x as [x x_lt].
         apply set_type_eq; cbn.
-        apply nat0_lt_1 in x_lt.
+        apply nat_lt_1 in x_lt.
         exact x_lt.
     -   intros f g.
         split.
@@ -353,10 +353,10 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
             apply set_type_eq.
             pose proof [|ord_pow_f f x] as fz.
             cbn in fz.
-            apply nat0_lt_1 in fz.
+            apply nat_lt_1 in fz.
             pose proof [|ord_pow_f g x] as gz.
             cbn in gz.
-            apply nat0_lt_1 in gz.
+            apply nat_lt_1 in gz.
             rewrite <- fz, <- gz.
             reflexivity.
 Qed.
@@ -405,17 +405,17 @@ Lemma ord_pow_lim_upper : is_upper_bound le S (α ^ β).
         rewrite not_ex in contr.
         setoid_rewrite not_not in contr.
         apply α_no.
-        unfold one; cbn; unfold nat0_to_ord; equiv_simpl.
+        unfold one; cbn; unfold nat_to_ord; equiv_simpl.
         exists (λ _, ord_zero make_zero).
         split.
         split.
         -   intros [a a_lt] [b b_lt] eq.
             apply set_type_eq; cbn.
-            apply nat0_lt_1 in a_lt.
-            apply nat0_lt_1 in b_lt.
+            apply nat_lt_1 in a_lt.
+            apply nat_lt_1 in b_lt.
             subst; reflexivity.
         -   intros b.
-            pose proof (nat0_lt_suc 0) as z_lt.
+            pose proof (nat_lt_suc 0) as z_lt.
             exists [0|z_lt].
             symmetry.
             apply contr.
@@ -423,8 +423,8 @@ Lemma ord_pow_lim_upper : is_upper_bound le S (α ^ β).
             split; intro leq.
             +   apply refl.
             +   unfold le; cbn.
-                apply nat0_lt_1 in a_lt.
-                apply nat0_lt_1 in b_lt.
+                apply nat_lt_1 in a_lt.
+                apply nat_lt_1 in b_lt.
                 subst; apply refl.
     }
     pose proof (well_ordered _ one_ex) as [a [a_neq a_least]].

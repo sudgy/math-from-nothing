@@ -125,14 +125,14 @@ Definition simple_tensor T := ∃ a b, T = a ⊗ b.
 
 Local Open Scope card_scope.
 
-Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
+Theorem tensor_sum : ∀ T, ∃ (f : nat → tensor_space) n,
         (∀ m, m < n → simple_tensor (f m)) ∧
         T = sum f 0 n.
     intros T.
     equiv_get_value T.
     destruct T as [Tf Tf_fin].
-    pose proof (fin_nat0_ex _ Tf_fin) as [n n_eq].
-    unfold nat0_to_card in n_eq; equiv_simpl in n_eq.
+    pose proof (fin_nat_ex _ Tf_fin) as [n n_eq].
+    unfold nat_to_card in n_eq; equiv_simpl in n_eq.
     destruct n_eq as [nf nf_bij].
     pose (f m := match (strong_excluded_middle (m < n)) with
         | strong_or_left ltq =>
@@ -150,7 +150,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
         +   contradiction.
     -   revert nf nf_bij f.
         revert Tf Tf_fin.
-        nat0_induction n.
+        nat_induction n.
         +   intros.
             unfold zero at 2; cbn.
             unfold zero; equiv_simpl.
@@ -160,10 +160,10 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
             unfold zero; cbn.
             classic_contradiction contr.
             pose proof (rand nf_bij [(u, v)|contr]) as [x x_eq].
-            contradiction (nat0_lt_0_false x).
+            contradiction (nat_lt_0_false x).
         +   intros.
             cbn.
-            pose (Tf' x := If x = [nf [n|nat0_lt_suc n]|] then 0 else Tf x).
+            pose (Tf' x := If x = [nf [n|nat_lt_suc n]|] then 0 else Tf x).
             assert (∀ x, Tf' x ≠ 0 → Tf x ≠ 0) as Tf'_neq.
             {
                 intros x.
@@ -182,7 +182,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
                 apply set_type_eq; exact eq2.
             }
             assert (∀ m : (set_type (λ x, x < n)),
-                let res := nf [[m|]|trans [|m] (nat0_lt_suc n)] in
+                let res := nf [[m|]|trans [|m] (nat_lt_suc n)] in
                 Tf [res|] ≠ 0 → Tf' [res|] ≠ 0) as Tf'_neq2.
             {
                 intros [m m_ltq]; cbn.
@@ -196,7 +196,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
                 -   exact eq.
             }
             pose (nf' (x : set_type (λ x, x < n))
-                := let res := nf [[x|]|trans [|x] (nat0_lt_suc n)] in
+                := let res := nf [[x|]|trans [|x] (nat_lt_suc n)] in
                     [[res|] | Tf'_neq2 _ [|res]] : set_type (λ x, Tf' x ≠ 0)).
             assert (bijective nf') as nf'_bij.
             {
@@ -212,7 +212,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
                     specialize (Tf'_neq y y_neq).
                     pose proof (rand nf_bij [y|Tf'_neq]) as [[x x_ltq] eq].
                     pose proof x_ltq as x_ltq2.
-                    rewrite nat0_lt_suc_le in x_ltq2.
+                    rewrite nat_lt_suc_le in x_ltq2.
                     classic_case (x = n) as [x_eq|x_neq].
                     +   exfalso.
                         subst.
@@ -250,7 +250,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
                 2: {
                     rewrite nlt_le in ltq2.
                     pose proof (le_lt_trans ltq2 m_ltq) as eq.
-                    pose proof (nat0_le_suc n).
+                    pose proof (nat_le_suc n).
                     rewrite <- nle_lt in eq.
                     contradiction.
                 }
@@ -275,7 +275,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
             unfold f.
             destruct (strong_excluded_middle _) as [ltq|contr].
             2: {
-                contradiction (contr (nat0_lt_suc n)).
+                contradiction (contr (nat_lt_suc n)).
             }
             unfold tensor_mult, to_quotient, scalar_mult; cbn.
             unfold plus; equiv_simpl.
@@ -284,7 +284,7 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat0 → tensor_space) n,
             apply free_eq; cbn.
             intros [u v].
             unfold Tf'.
-            rewrite (proof_irrelevance (nat0_lt_suc n) ltq).
+            rewrite (proof_irrelevance (nat_lt_suc n) ltq).
             assert ((fst [nf [n|ltq]|], snd [nf [n|ltq]|]) = [nf [n|ltq]|])
                 as eq.
             {

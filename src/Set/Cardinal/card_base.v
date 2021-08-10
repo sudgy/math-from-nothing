@@ -3,7 +3,7 @@ Require Import init.
 Require Import set.
 Require Import function.
 Require Import well_order.
-Require Import nat0.
+Require Import nat.
 Require Import ord_basic.
 
 Declare Scope card_scope.
@@ -75,7 +75,7 @@ Lemma ord_to_card_wd : ∀ A B : ord_type,
     exact f_bij.
 Qed.
 (* end hide *)
-Definition nat0_to_card (n : nat0) := |set_type (λ x, x < n)|.
+Definition nat_to_card (n : nat) := |set_type (λ x, x < n)|.
 Definition ord_to_card := unary_op ord_to_card_wd.
 
 (* begin hide *)

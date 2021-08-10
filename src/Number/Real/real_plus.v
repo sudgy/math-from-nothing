@@ -278,16 +278,16 @@ Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
             contradiction.
         }
         pose proof (well_ordered S S_ex) as [n [Sn n_least]].
-        nat0_destruct n.
+        nat_destruct n.
         +   unfold zero, S in Sn; cbn in Sn.
             specialize (a_pos 0 (refl _)).
             contradiction.
-        +   classic_case (∃ u, u < nat0_suc n × -x ∧ ¬a u) as [not_cusp|cusp].
-            *   exists (nat0_suc n × x), (n × -x).
+        +   classic_case (∃ u, u < nat_suc n × -x ∧ ¬a u) as [not_cusp|cusp].
+            *   exists (nat_suc n × x), (n × -x).
                 repeat split.
                 --  destruct not_cusp as [u' [u'_lt nau']].
                     apply lt_plus_0_anb_b_a in u'_lt.
-                    exists (nat0_suc n × -x + -u').
+                    exists (nat_suc n × -x + -u').
                     split; try exact u'_lt.
                     rewrite abstract_mult_rneg.
                     rewrite neg_plus.
@@ -296,13 +296,13 @@ Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
                     exact nau'.
                 --  classic_contradiction contr.
                     specialize (n_least _ contr).
-                    pose proof (le_lt_trans n_least (nat0_lt_suc _)) as [C0 C1].
+                    pose proof (le_lt_trans n_least (nat_lt_suc _)) as [C0 C1].
                     contradiction.
                 --  cbn.
                     rewrite <- abstract_mult_rneg.
                     rewrite plus_rrinv.
                     reflexivity.
-            *   exists (nat0_suc n × x + x * div 2), (n × -x + -x * div 2).
+            *   exists (nat_suc n × x + x * div 2), (n × -x + -x * div 2).
                 repeat split.
                 --  apply lt_rmult_pos with (div 2) in x_neg.
                     2: apply div_pos; exact two_pos.
@@ -538,12 +538,12 @@ Theorem int_to_real_plus : ∀ a b,
     reflexivity.
 Qed.
 
-Theorem nat0_to_real_plus : ∀ a b,
-        nat0_to_real a + nat0_to_real b = nat0_to_real (a + b).
+Theorem nat_to_real_plus : ∀ a b,
+        nat_to_real a + nat_to_real b = nat_to_real (a + b).
     intros a b.
-    unfold nat0_to_real.
+    unfold nat_to_real.
     rewrite rat_to_real_plus.
-    rewrite nat0_to_rat_plus.
+    rewrite nat_to_rat_plus.
     reflexivity.
 Qed.
 

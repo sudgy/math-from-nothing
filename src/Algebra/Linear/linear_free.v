@@ -73,11 +73,11 @@ Let free_plus (A B : free_linear U V) := λ x, free_f A x + free_f B x.
 Lemma free_plus_fin : ∀ A B, finite (|set_type (λ x, free_plus A B x ≠ 0)|).
     intros [f f_fin] [g g_fin].
     unfold free_plus; cbn.
-    apply fin_nat0_ex in f_fin as [m f_fin].
-    apply fin_nat0_ex in g_fin as [n g_fin].
-    pose proof (nat0_is_finite (m + n)) as mn_fin.
+    apply fin_nat_ex in f_fin as [m f_fin].
+    apply fin_nat_ex in g_fin as [n g_fin].
+    pose proof (nat_is_finite (m + n)) as mn_fin.
     apply (le_lt_trans2 mn_fin).
-    rewrite <- nat0_to_card_plus.
+    rewrite <- nat_to_card_plus.
     rewrite f_fin, g_fin.
     clear m f_fin n g_fin mn_fin.
     unfold plus at 2, le; equiv_simpl.
@@ -140,7 +140,7 @@ Lemma free_zero_fin : finite (|set_type (λ x : V, (zero (U := U)) ≠ 0)|).
     replace (λ x, (zero (U := U)) ≠ 0) with (empty (U := V)).
     {
         rewrite <- empty_set_size.
-        apply nat0_is_finite.
+        apply nat_is_finite.
     }
     symmetry; apply not_ex_empty.
     intros x.

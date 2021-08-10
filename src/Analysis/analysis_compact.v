@@ -83,25 +83,25 @@ Lemma x_ex : ∃ x, infinite (|set_type (λ n, a n = x)|).
         unfold infinite in contr.
         rewrite nle_lt in contr.
         pose proof (finite_well_ordered_set_max _ contr Ax) as [n n_max].
-        pose (y := a (nat0_suc n)).
-        assert (A y) as Ay by (exists (nat0_suc n); reflexivity).
+        pose (y := a (nat_suc n)).
+        assert (A y) as Ay by (exists (nat_suc n); reflexivity).
         exists [y|Ay].
         cbn.
         destruct n_max as [n_eq n_max].
         split.
         -   right.
-            exists (nat0_suc n).
+            exists (nat_suc n).
             split.
             +   intros n' n'_eq.
                 apply (trans (n_max n' n'_eq)).
-                apply nat0_le_suc.
+                apply nat_le_suc.
             +   reflexivity.
         -   intro eq.
             rewrite eq in *; clear eq.
-            assert (a (nat0_suc n) = y) as y_eq by reflexivity.
+            assert (a (nat_suc n) = y) as y_eq by reflexivity.
             specialize (n_max _ y_eq).
             clear - n_max.
-            rewrite <- nat0_lt_suc_le in n_max.
+            rewrite <- nat_lt_suc_le in n_max.
             destruct n_max; contradiction.
     }
     destruct (lt_le_trans A_fin A_inf); contradiction.
@@ -127,14 +127,14 @@ Lemma n_gt : ∀ n : set_type X, ∃ n', n < n'.
     classic_contradiction contr.
     rewrite not_ex in contr.
     setoid_rewrite nlt_le in contr.
-    assert (|set_type X| <= nat0_to_card (nat0_suc n)) as leq.
+    assert (|set_type X| <= nat_to_card (nat_suc n)) as leq.
     {
-        unfold nat0_to_card, le; equiv_simpl.
-        assert (∀ x : set_type X, (λ x, x < nat0_suc n) [x|]) as x_in.
+        unfold nat_to_card, le; equiv_simpl.
+        assert (∀ x : set_type X, (λ x, x < nat_suc n) [x|]) as x_in.
         {
             intros x.
             specialize (contr x).
-            rewrite nat0_lt_suc_le.
+            rewrite nat_lt_suc_le.
             apply contr.
         }
         exists (λ x, [_|x_in x]).
@@ -143,14 +143,14 @@ Lemma n_gt : ∀ n : set_type X, ∃ n', n < n'.
         apply set_type_eq in eq2.
         exact eq2.
     }
-    pose proof (nat0_is_finite (nat0_suc n)) as ltq.
+    pose proof (nat_is_finite (nat_suc n)) as ltq.
     pose proof (le_lt_trans leq ltq) as ltq2.
     destruct (le_lt_trans x_inf ltq2); contradiction.
 Qed.
 
 Fixpoint Xf n := match n with
-    | nat0_zero => x_0
-    | nat0_suc n' => ex_val (n_gt (Xf n'))
+    | nat_zero => x_0
+    | nat_suc n' => ex_val (n_gt (Xf n'))
     end.
 Definition f n := [Xf n|].
 
@@ -196,15 +196,15 @@ Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
     unfold infinite in ε_inf.
     rewrite <- nlt_le in ε_inf.
     apply ε_inf.
-    apply (le_lt_trans2 (nat0_is_finite (nat0_suc n))).
-    unfold le, nat0_to_card; equiv_simpl.
+    apply (le_lt_trans2 (nat_is_finite (nat_suc n))).
+    unfold le, nat_to_card; equiv_simpl.
     assert (∀ x : set_type (A ∩ open_ball y ε),
-        ∃ n : nat0_to_set_type (nat0_suc n), [x|] = a [n|]) as f_ex.
+        ∃ n : nat_to_set_type (nat_suc n), [x|] = a [n|]) as f_ex.
     {
         intros [x [Ax x_lt]]; cbn.
         destruct Ax as [n' x_eq].
         specialize (contr n') as [contr|contr].
-        -   rewrite <- nat0_lt_suc_le in contr.
+        -   rewrite <- nat_lt_suc_le in contr.
             exists [n'|contr].
             symmetry; exact x_eq.
         -   rewrite <- x_eq in x_lt.
@@ -220,17 +220,17 @@ Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
     exact x_eq.
 Qed.
 
-Lemma n_pos : ∀ n, 0 < / nat0_to_real (nat0_suc n).
+Lemma n_pos : ∀ n, 0 < / nat_to_real (nat_suc n).
     intros n.
     apply div_pos.
-    change 0 with (nat0_to_real 0).
-    rewrite nat0_to_real_lt.
-    apply nat0_zero_lt_suc.
+    change 0 with (nat_to_real 0).
+    rewrite nat_to_real_lt.
+    apply nat_zero_lt_suc.
 Qed.
 
 Fixpoint g n := match n with
-    | nat0_zero => ex_val (b_ex 0 [_|n_pos 0])
-    | nat0_suc n' => ex_val (b_ex (g n') [_|n_pos n'])
+    | nat_zero => ex_val (b_ex 0 [_|n_pos 0])
+    | nat_suc n' => ex_val (b_ex (g n') [_|n_pos n'])
     end.
 Definition b n := a (g n).
 
@@ -251,11 +251,11 @@ Lemma b_converges : seq_converges b.
     rewrite open_all_balls in S_open.
     specialize (S_open y Sy) as [[ε ε_pos] ε_sub].
     pose proof (archimedean2 ε ε_pos) as [N ltq].
-    exists (nat0_suc N).
+    exists (nat_suc N).
     intros n n_geq.
     apply ε_sub.
 
-    rewrite nat0_to_abstract_real in ltq.
+    rewrite nat_to_abstract_real in ltq.
     pose proof (n_pos N) as N_pos.
     assert ([_|N_pos] <= [_|ε_pos]) as leq.
     {
@@ -263,10 +263,10 @@ Lemma b_converges : seq_converges b.
         exact (land ltq).
     }
     apply (open_ball_le_sub _ _ _ leq _).
-    apply nat0_le_ex in n_geq.
+    apply nat_le_ex in n_geq.
     destruct n_geq as [c n_eq].
     subst n.
-    rewrite nat0_plus_lsuc.
+    rewrite nat_plus_lsuc.
     unfold b.
     cbn.
     rewrite_ex_val n n_H.
@@ -275,14 +275,14 @@ Lemma b_converges : seq_converges b.
     Unshelve.
     unfold le; cbn.
     apply le_div_pos.
-    -   change 0 with (nat0_to_real 0).
-        rewrite nat0_to_real_lt.
-        apply nat0_zero_lt_suc.
-    -   rewrite nat0_to_real_le.
-        rewrite nat0_sucs_le.
+    -   change 0 with (nat_to_real 0).
+        rewrite nat_to_real_lt.
+        apply nat_zero_lt_suc.
+    -   rewrite nat_to_real_le.
+        rewrite nat_sucs_le.
         rewrite <- (plus_rid N) at 1.
         apply le_lplus.
-        apply nat0_le_zero.
+        apply nat_le_zero.
 Qed.
 
 End Infinite.
@@ -347,7 +347,7 @@ Lemma lebesgue_number_lemma : ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ 
     pose proof (archimedean2 (ε / 2) ε2_pos) as [N1 ltq].
     rewrite metric_seq_lim in x'_lim.
     specialize (x'_lim (ε / 2) ε2_pos) as [N2 x'_lim].
-    rewrite nat0_to_abstract_real in ltq.
+    rewrite nat_to_abstract_real in ltq.
     pose (N := max N1 N2).
     destruct x'_sub as [f [f_eq x'_eq]].
     specialize (x'_lim N (rmax _ _)).
@@ -358,13 +358,13 @@ Lemma lebesgue_number_lemma : ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ 
     apply (trans2 ε_sub).
     intros z z_lt.
     unfold open_ball in *; cbn in *.
-    assert (/nat0_to_real (nat0_suc (f N)) <= /nat0_to_real (nat0_suc N1))
+    assert (/nat_to_real (nat_suc (f N)) <= /nat_to_real (nat_suc N1))
         as N_ltq.
     {
         apply le_div_pos.
         1:  apply real_n_pos.
-        rewrite nat0_to_real_le.
-        rewrite nat0_sucs_le.
+        rewrite nat_to_real_le.
+        rewrite nat_sucs_le.
         apply (trans (lmax N1 N2)).
         apply subsequence_seq_leq.
         exact f_eq.
@@ -414,15 +414,15 @@ Lemma compact_totally_bounded : totally_bounded all.
             split.
             exact x.
     }
-    assert (∀ e : nat0_strong_recursion_domain U,
-        ∃ x, ¬((⋃ to_balls (image (nat0_sr_f U e)) ε) x)) as x_ex2.
+    assert (∀ e : nat_strong_recursion_domain U,
+        ∃ x, ¬((⋃ to_balls (image (nat_sr_f U e)) ε) x)) as x_ex2.
     {
         intros [n nf].
         pose (A := image nf).
         assert (finite (|set_type A|)) as A_fin.
         {
-            apply (le_lt_trans2 (nat0_is_finite (nat0_suc n))).
-            unfold le, nat0_to_card; equiv_simpl.
+            apply (le_lt_trans2 (nat_is_finite (nat_suc n))).
+            unfold le, nat_to_card; equiv_simpl.
             exists (λ x : set_type A, ex_val [|x]).
             intros a b eq.
             revert eq.
@@ -441,9 +441,9 @@ Lemma compact_totally_bounded : totally_bounded all.
     assert (∀ m n, m < n → [ε|] <= d (f m) (f n)) as ε_le_wlog.
     {
         intros m n mn.
-        nat0_destruct n.
+        nat_destruct n.
         {
-            contradiction (nat0_lt_zero m mn).
+            contradiction (nat_lt_zero m mn).
         }
         rewrite f_gt.
         unfold h.
@@ -478,13 +478,13 @@ Lemma compact_totally_bounded : totally_bounded all.
     pose proof (half_pos ε ε_pos) as ε2_pos.
     specialize (x_lim (ε / 2) ε2_pos) as [N x_lim].
     pose proof (x_lim N (refl N)) as ltq1.
-    pose proof (x_lim (nat0_suc N) (nat0_le_suc N)) as ltq2.
+    pose proof (x_lim (nat_suc N) (nat_le_suc N)) as ltq2.
     rewrite d_sym in ltq1.
     pose proof (lt_lrplus ltq1 ltq2) as ltq.
     rewrite plus_half in ltq.
     apply (le_lt_trans (d_tri _ _ _)) in ltq.
     do 2 rewrite <- fg_eq in ltq.
-    assert (h N ≠ h (nat0_suc N)) as neq by apply h_sub.
+    assert (h N ≠ h (nat_suc N)) as neq by apply h_sub.
     specialize (ε_le _ _ neq).
     destruct (le_lt_trans ε_le ltq); contradiction.
 Qed.
@@ -784,8 +784,8 @@ Let infs (S : set_type X → Prop) := infinite (|set_type S|).
 Fixpoint S n : set_type infs :=
     let Sn :=
         match n with
-        | nat0_zero => [XS|XS_inf]
-        | nat0_suc n' => S n'
+        | nat_zero => [XS|XS_inf]
+        | nat_suc n' => S n'
         end
     in
     let ε := [_|real_n_div_pos n] in
@@ -793,7 +793,7 @@ Fixpoint S n : set_type infs :=
     [open_ball (ex_val bex) ε ∩ [Sn|] | ex_proof bex].
 
 Lemma S_sub : ∀ n, [S n|] ⊆ XS.
-    nat0_induction n.
+    nat_induction n.
     -   apply inter_rsub.
     -   apply (trans2 IHn).
         apply inter_rsub.
@@ -801,35 +801,35 @@ Qed.
 
 Lemma S_sub2 : ∀ m n, m <= n → [S n|] ⊆ [S m|].
     intros m n leq.
-    apply nat0_le_ex in leq.
+    apply nat_le_ex in leq.
     destruct leq as [c n_eq]; subst n.
-    nat0_induction c.
+    nat_induction c.
     -   rewrite plus_rid.
         apply refl.
     -   apply (trans2 IHc).
-        rewrite nat0_plus_rsuc.
+        rewrite nat_plus_rsuc.
         apply inter_rsub.
 Qed.
 
 Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
-        d x y <= 2 / nat0_to_real (nat0_suc n).
+        d x y <= 2 / nat_to_real (nat_suc n).
     intros n x y Snx Sny.
     pose (ε := [_|real_n_div_pos n]).
     pose (Sn :=
         match n with
-        | nat0_zero => [XS|XS_inf]
-        | nat0_suc n' => S n'
+        | nat_zero => [XS|XS_inf]
+        | nat_suc n' => S n'
         end
     ).
     pose (bex := ball_ex [Sn|] [|Sn] ε).
-    nat0_destruct n.
+    nat_destruct n.
     -   assert (open_ball (ex_val bex) ε x) as x_in by apply Snx.
         assert (open_ball (ex_val bex) ε y) as y_in by apply Sny.
         unfold open_ball, ε in x_in, y_in; cbn in x_in, y_in.
         rewrite d_sym in x_in.
         pose proof (lt_lrplus x_in y_in) as ltq.
         apply (le_lt_trans (d_tri _ _ _)) in ltq.
-        rewrite <- (mult_lid (/nat0_to_real 1)) in ltq.
+        rewrite <- (mult_lid (/nat_to_real 1)) in ltq.
         rewrite <- rdist in ltq.
         apply ltq.
     -   assert (open_ball (ex_val bex) ε x) as x_in by apply Snx.
@@ -838,7 +838,7 @@ Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
         rewrite d_sym in x_in.
         pose proof (lt_lrplus x_in y_in) as ltq.
         apply (le_lt_trans (d_tri _ _ _)) in ltq.
-        rewrite <- (mult_lid (/nat0_to_real _)) in ltq.
+        rewrite <- (mult_lid (/nat_to_real _)) in ltq.
         rewrite <- rdist in ltq.
         apply ltq.
 Qed.
@@ -872,7 +872,7 @@ Lemma xn_cauchy : cauchy_seq xn.
         2: exact two_pos.
         rewrite mult_rlinv in N_lt by apply two_pos.
         rewrite mult_comm.
-        rewrite nat0_to_abstract_real in N_lt.
+        rewrite nat_to_abstract_real in N_lt.
         exact N_lt.
     }
     intros i j i_ge j_ge.
@@ -911,7 +911,7 @@ Lemma x2_ex : ∀ n, ∃ x2, [S n|] x2 ∧ x2 ≠ x.
         +   intro contr.
             rewrite <- contr in x_eq.
             apply set_type_eq in x_eq.
-            assert ((zero (U := nat0)) ≠ 1) as neq by (intro C; inversion C).
+            assert ((zero (U := nat)) ≠ 1) as neq by (intro C; inversion C).
             exact (f_neq 0 1 neq x_eq).
     -   exists [f 0|].
         split.
@@ -932,7 +932,7 @@ Lemma x2_lim : seq_lim xn2 x.
     specialize (x_lim (ε / 2) ε2_pos) as [N1 x_lim].
     pose proof (half_pos (ε / 2) ε2_pos) as ε4_pos.
     pose proof (archimedean2 _ ε4_pos) as [N2 N2_eq].
-    rewrite nat0_to_abstract_real in N2_eq.
+    rewrite nat_to_abstract_real in N2_eq.
     exists (max N1 N2).
     intros n n_ge.
     specialize (x_lim n (trans (lmax N1 N2) n_ge)).
@@ -949,8 +949,8 @@ Lemma x2_lim : seq_lim xn2 x.
     rewrite (mult_comm 2 (ε / 2 / 2)) in N2_eq.
     rewrite mult_rlinv in N2_eq by apply two_pos.
     pose proof (trans (rmax N1 N2) n_ge) as n_ge2.
-    rewrite <- nat0_sucs_le in n_ge2.
-    rewrite <- nat0_to_real_le in n_ge2.
+    rewrite <- nat_sucs_le in n_ge2.
+    rewrite <- nat_to_real_le in n_ge2.
     apply le_div_pos in n_ge2.
     2: apply real_n_pos.
     apply le_lmult_pos with 2 in n_ge2.

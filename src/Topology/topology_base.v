@@ -146,8 +146,8 @@ Theorem inter_open2 : ∀ A B, open A → open B → open (A ∩ B).
         apply (le_lt_trans (card_plus_union _ _)).
         do 2 rewrite singleton_size.
         unfold one; cbn.
-        rewrite nat0_to_card_plus.
-        apply nat0_is_finite.
+        rewrite nat_to_card_plus.
+        apply nat_is_finite.
 Qed.
 
 Theorem union_open2 : ∀ A B, open A → open B → open (A ∪ B).

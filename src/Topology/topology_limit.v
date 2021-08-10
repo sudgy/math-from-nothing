@@ -172,15 +172,15 @@ Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
         intros m m_ge.
         apply x_lim.
         apply (trans m_ge).
-        apply nat0_le_self_rplus.
+        apply nat_le_self_rplus.
     -   intros x_lim S S_open Sx.
         specialize (x_lim S S_open Sx) as [N x_lim].
         exists (N + n).
         intros m m_ge.
-        apply nat0_le_ex in m_ge as [c m_eq]; subst m.
+        apply nat_le_ex in m_ge as [c m_eq]; subst m.
         rewrite <- plus_assoc, (plus_comm n c), plus_assoc.
         apply x_lim.
-        apply nat0_le_self_rplus.
+        apply nat_le_self_rplus.
 Qed.
 
 (* begin hide *)
@@ -245,17 +245,17 @@ Theorem limit_point_inf : ∀ A x,
         apply ex_not_empty.
         specialize (all_S S S_open Sx).
         unfold infinite in all_S.
-        apply (lt_le_trans (nat0_is_finite 2)) in all_S as [all_S C0]; clear C0.
-        unfold nat0_to_card, le in all_S; equiv_simpl in all_S.
+        apply (lt_le_trans (nat_is_finite 2)) in all_S as [all_S C0]; clear C0.
+        unfold nat_to_card, le in all_S; equiv_simpl in all_S.
         destruct all_S as [f f_inj].
-        assert ((zero (U := nat0)) < 2) as z_lt.
+        assert ((zero (U := nat)) < 2) as z_lt.
         {
             rewrite <- (plus_rid 0).
-            apply lt_lrplus; apply nat0_lt_suc.
+            apply lt_lrplus; apply nat_lt_suc.
         }
-        pose (n2_type := nat0_to_set_type 2).
+        pose (n2_type := nat_to_set_type 2).
         pose (n0 := [0|z_lt] : n2_type).
-        pose proof (nat0_lt_suc 0) as o_lt.
+        pose proof (nat_lt_suc 0) as o_lt.
         apply lt_rplus with one in o_lt.
         rewrite plus_lid in o_lt.
         pose (n1 := [1|o_lt] : n2_type).

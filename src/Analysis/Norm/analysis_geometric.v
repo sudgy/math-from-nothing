@@ -54,7 +54,7 @@ Context {U} `{
     @AbsScalar U UA SM
 }.
 
-Local Open Scope nat0_scope.
+Local Open Scope nat_scope.
 
 Existing Instance abs_metric.
 (* end hide *)
@@ -63,7 +63,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
     apply seq_lim_zero.
     assert (∀ n, |r^n| <= 1) as r_bound.
     {
-        nat0_induction n.
+        nat_induction n.
         -   unfold zero; cbn.
             rewrite abs_one.
             apply refl.
@@ -95,9 +95,9 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
         exists (λ n, n + n).
         split.
         -   intros n.
-            rewrite nat0_plus_lsuc, nat0_plus_rsuc.
-            apply (trans (nat0_lt_suc _)).
-            apply nat0_lt_suc.
+            rewrite nat_plus_lsuc, nat_plus_rsuc.
+            apply (trans (nat_lt_suc _)).
+            apply nat_lt_suc.
         -   reflexivity.
     }
     pose proof (subsequence_lim_eq _ _ _ L_lim f_sub) as L_lim2.
@@ -111,7 +111,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
     {
         intros n.
         unfold f, g.
-        rewrite <- pow_mult_nat0.
+        rewrite <- pow_mult_nat.
         apply abs_cs.
     }
     pose proof (seq_lim_le _ _ _ _ fg_leq L_lim2 L2_lim) as leq.
@@ -151,11 +151,11 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
             rewrite plus_rinv in r1_pos.
             rewrite metric_seq_lim in L_lim.
             specialize (L_lim _ r1_pos) as [N L_lim].
-            specialize (L_lim (nat0_suc N) (nat0_le_suc N)).
+            specialize (L_lim (nat_suc N) (nat_le_suc N)).
             cbn in L_lim.
             rewrite <- nle_lt in L_lim.
             apply L_lim; clear L_lim.
-            nat0_induction N.
+            nat_induction N.
             +   unfold zero; cbn.
                 rewrite mult_lid.
                 apply abs_le_pos.
@@ -173,7 +173,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
                     exact r_small.
                 *   rewrite nle_lt in n.
                     rewrite lt_plus_anb_0_a_b in n.
-                    specialize (r_bound (nat0_suc N)); cbn in r_bound.
+                    specialize (r_bound (nat_suc N)); cbn in r_bound.
                     clear - n r_bound.
                     destruct (lt_le_trans n r_bound); contradiction.
     }
@@ -192,7 +192,7 @@ Qed.
 Theorem geometric_series_partial : ∀ r n, r ≠ 1 →
         series (λ n', r ^ n') n = (1 - r^n) / (1 - r).
     intros r n r_neq.
-    nat0_induction n.
+    nat_induction n.
     -   unfold zero; cbn.
         rewrite plus_rinv.
         rewrite mult_lanni.

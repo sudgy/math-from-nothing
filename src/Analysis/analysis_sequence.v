@@ -9,7 +9,7 @@ Definition cauchy_seq {U} `{Metric U} (f : sequence U) :=
 
 Definition complete U `{Metric U} := ∀ f, cauchy_seq f → seq_converges f.
 
-Definition seq_bounded {U} `{Metric U} (f : nat0 → U)
+Definition seq_bounded {U} `{Metric U} (f : nat → U)
     := ∃ M, ∀ m n, d (f m) (f n) <= M.
 (* begin hide *)
 
@@ -45,13 +45,13 @@ Theorem metric_seq_closure : ∀ (A : U → Prop) x,
     -   intros [f [Af lim]].
         exact (seq_closure A x f Af lim).
     -   intros Ax.
-        assert (∀ n, 0 < / nat0_to_real (nat0_suc n)) as n_pos.
+        assert (∀ n, 0 < / nat_to_real (nat_suc n)) as n_pos.
         {
             intros n.
             apply div_pos.
-            change 0 with (nat0_to_real 0).
-            rewrite nat0_to_real_lt.
-            apply nat0_zero_lt_suc.
+            change 0 with (nat_to_real 0).
+            rewrite nat_to_real_lt.
+            apply nat_zero_lt_suc.
         }
         pose (B n := open_ball x [_|n_pos n]).
         assert (∀ n, ∃ a, B n a ∧ A a) as f_ex.
@@ -78,20 +78,20 @@ Theorem metric_seq_closure : ∀ (A : U → Prop) x,
         +   rewrite metric_seq_lim.
             intros ε ε_pos.
             pose proof (archimedean2 _ ε_pos) as [N N_lt].
-            rewrite nat0_to_abstract_real in N_lt.
+            rewrite nat_to_abstract_real in N_lt.
             exists N.
             intros n n_gt.
             rewrite_ex_val a a_in.
             destruct a_in as [Bna Aa].
             unfold B in Bna.
             apply (trans2 N_lt).
-            rewrite <- nat0_sucs_le in n_gt.
-            rewrite <- nat0_to_real_le in n_gt.
-            assert (0 < nat0_to_real (nat0_suc N)) as N_pos.
+            rewrite <- nat_sucs_le in n_gt.
+            rewrite <- nat_to_real_le in n_gt.
+            assert (0 < nat_to_real (nat_suc N)) as N_pos.
             {
-                change 0 with (nat0_to_real 0).
-                rewrite nat0_to_real_lt.
-                apply nat0_zero_lt_suc.
+                change 0 with (nat_to_real 0).
+                rewrite nat_to_real_lt.
+                apply nat_zero_lt_suc.
             }
             apply le_div_pos in n_gt.
             2: exact N_pos.
@@ -152,7 +152,7 @@ Theorem limit_point_seq_ex :
     -   rewrite metric_seq_lim.
         intros ε ε_pos.
         pose proof (archimedean2 ε ε_pos) as [N N_lt].
-        rewrite nat0_to_abstract_real in N_lt.
+        rewrite nat_to_abstract_real in N_lt.
         exists N.
         intros m m_geq.
         rewrite_ex_val b b_H.
@@ -162,8 +162,8 @@ Theorem limit_point_seq_ex :
         apply (le_lt_trans2 N_lt).
         apply le_div_pos.
         1: apply real_n_pos.
-        rewrite nat0_to_real_le.
-        rewrite nat0_sucs_le.
+        rewrite nat_to_real_le.
+        rewrite nat_sucs_le.
         exact m_geq.
 Qed.
 
@@ -200,15 +200,15 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
         exists 1.
         intros i j.
         subst N.
-        apply a_cauchy; apply nat0_le_zero.
+        apply a_cauchy; apply nat_le_zero.
     }
     pose (S m := ∃ i j, i < 1 + N ∧ j < 1 + N ∧ m = d (a i) (a j)).
     assert (finite (|set_type S|)) as S_fin.
     {
         unfold finite.
-        apply (le_lt_trans2 (nat0_is_finite ((1 + N)*(1 + N)))).
-        rewrite <- nat0_to_card_mult.
-        unfold mult, le, nat0_to_card; equiv_simpl.
+        apply (le_lt_trans2 (nat_is_finite ((1 + N)*(1 + N)))).
+        rewrite <- nat_to_card_mult.
+        unfold mult, le, nat_to_card; equiv_simpl.
         pose (to_i (x : set_type S) := ex_val [|x]).
         pose (to_j (x : set_type S) := ex_val (ex_proof [|x])).
         pose (to_i_lt (x : set_type S)
@@ -237,7 +237,7 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
         exists 0, 0.
         split.
         2: split.
-        1, 2: split; try apply nat0_le_zero.
+        1, 2: split; try apply nat_le_zero.
         1, 2: intros contr; inversion contr.
         reflexivity.
     }
@@ -260,7 +260,7 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
     assert (∀ i j, 1 + N <= i → j < 1 + N → d (a i) (a j) < M + 1) as lem2.
     {
         intros i j i_ge j_lt.
-        pose proof (trans (nat0_le_suc N) i_ge) as i_ge2.
+        pose proof (trans (nat_le_suc N) i_ge) as i_ge2.
         specialize (a_cauchy _ _ i_ge2 (refl N)).
         assert (d (a N) (a j) <= M) as leq.
         {
@@ -268,7 +268,7 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
             exists N, j.
             split.
             2: split.
-            -   apply nat0_lt_suc.
+            -   apply nat_lt_suc.
             -   exact j_lt.
             -   reflexivity.
         }
@@ -284,12 +284,12 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
         assert (N <= i) as i_ge2.
         {
             apply (trans2 i_ge).
-            apply nat0_le_suc.
+            apply nat_le_suc.
         }
         assert (N <= j) as j_ge2.
         {
             apply (trans2 j_ge).
-            apply nat0_le_suc.
+            apply nat_le_suc.
         }
         specialize (a_cauchy i j i_ge2 j_ge2).
         apply (lt_le_trans a_cauchy).
@@ -299,7 +299,7 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
         exists 0, 0.
         split.
         2: split.
-        1, 2: apply nat0_zero_lt_suc.
+        1, 2: apply nat_zero_lt_suc.
         rewrite d_zero.
         reflexivity.
     }

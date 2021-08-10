@@ -45,10 +45,10 @@ Next Obligation.
     rename H into sub.
     rename H0 into S_fin.
     rename H1 into x_in_int.
-    apply fin_nat0_ex in S_fin.
+    apply fin_nat_ex in S_fin.
     destruct S_fin as [n S_fin].
     revert S sub S_fin x x_in_int.
-    nat0_induction n.
+    nat_induction n.
     -   intros.
         destruct (top_basis_in x) as [B [B_basis Bx]].
         exists B.
@@ -67,11 +67,11 @@ Next Obligation.
             classic_contradiction contr.
             rewrite <- card_0_false in contr.
             rewrite contr in S_fin.
-            apply nat0_to_card_eq in S_fin.
+            apply nat_to_card_eq in S_fin.
             inversion S_fin.
         }
         symmetry in S_fin.
-        pose proof (card_plus_one_nat0 S n T S_fin) as S'_fin.
+        pose proof (card_plus_one_nat S n T S_fin) as S'_fin.
         remember (S - singleton [T|]) as S'.
         symmetry in S'_fin.
         assert (S' ⊆ (λ S0, ∀ x, S0 x → ∃ B, top_basis B ∧ B x ∧ B ⊆ S0))

@@ -76,14 +76,14 @@ Theorem metric_continuous_seq : ∀ (f : U → V) x, continuous_at f x ↔
             exists a.
             exact contr.
         }
-        assert (∀ n, 0 < nat0_to_real (nat0_suc n)) as n_pos.
+        assert (∀ n, 0 < nat_to_real (nat_suc n)) as n_pos.
         {
             intros n.
-            change 0 with (nat0_to_real 0).
-            rewrite nat0_to_real_lt.
-            apply nat0_zero_lt_suc.
+            change 0 with (nat_to_real 0).
+            rewrite nat_to_real_lt.
+            apply nat_zero_lt_suc.
         }
-        assert (∀ n, 0 < /(nat0_to_real (nat0_suc n))) as n_pos'.
+        assert (∀ n, 0 < /(nat_to_real (nat_suc n))) as n_pos'.
         {
             intros n.
             apply div_pos.
@@ -101,12 +101,12 @@ Theorem metric_continuous_seq : ∀ (f : U → V) x, continuous_at f x ↔
             rewrite_ex_val b b_eq.
             destruct b_eq as [b_lt b_nlt].
             apply (trans b_lt).
-            rewrite <- nat0_sucs_le in n_gt.
-            rewrite <- nat0_to_real_le in n_gt.
+            rewrite <- nat_sucs_le in n_gt.
+            rewrite <- nat_to_real_le in n_gt.
             apply le_div_pos in n_gt.
             2: apply n_pos.
             apply (le_lt_trans n_gt).
-            rewrite nat0_to_abstract_real in N_ltq.
+            rewrite nat_to_abstract_real in N_ltq.
             exact N_ltq.
         }
         specialize (seqs _ lim).

@@ -6,9 +6,9 @@ Require Import analysis_topology.
 
 Require Import plus_sum.
 
-Definition series {V} `{Plus V, Zero V} (a : nat0 → V) (n : nat0) := sum a 0 n.
+Definition series {V} `{Plus V, Zero V} (a : nat → V) (n : nat) := sum a 0 n.
 
-Definition cauchy_series {V} `{Plus V, Zero V, AbsoluteValue V} (a : nat0 → V)
+Definition cauchy_series {V} `{Plus V, Zero V, AbsoluteValue V} (a : nat → V)
     := ∀ ε, 0 < ε → ∃ N, ∀ i j, N <= i → |sum a i j| < ε.
 (* begin hide *)
 
@@ -46,7 +46,7 @@ Theorem series_scalar : ∀ af a c, seq_lim (series af) a →
     {
         apply functional_ext.
         intros n.
-        nat0_induction n.
+        nat_induction n.
         -   unfold series.
             unfold zero; cbn.
             rewrite scalar_ranni.
@@ -70,7 +70,7 @@ Theorem series_sum : ∀ af bf a b, seq_lim (series af) a → seq_lim (series bf
     {
         apply functional_ext.
         intros n.
-        nat0_induction n.
+        nat_induction n.
         -   unfold zero; cbn.
             rewrite plus_rid.
             reflexivity.
@@ -100,7 +100,7 @@ Theorem series_converges_cauchy :
         apply (trans i_ge).
         rewrite <- (plus_rid i) at 1.
         apply le_lplus.
-        apply nat0_le_zero.
+        apply nat_le_zero.
     }
     specialize (af_conv (i + j) i j_ge i_ge).
     unfold series in af_conv; cbn in af_conv.
@@ -119,13 +119,13 @@ Theorem cauchy_series_converges : complete V →
     intros i j i_ge j_ge.
     unfold series; cbn.
     destruct (connex i j) as [leq|leq].
-    -   apply nat0_le_ex in leq as [c eq]; subst.
+    -   apply nat_le_ex in leq as [c eq]; subst.
         rewrite abs_minus.
         rewrite sum_minus.
         rewrite plus_lid.
         apply af_conv.
         exact i_ge.
-    -   apply nat0_le_ex in leq as [c eq]; subst.
+    -   apply nat_le_ex in leq as [c eq]; subst.
         rewrite sum_minus.
         rewrite plus_lid.
         apply af_conv.

@@ -4,7 +4,7 @@ Require Export ord_order.
 Require Import set.
 Require Import function.
 Require Export plus_group.
-Require Import nat0.
+Require Import nat.
 
 Definition ord_plus_le (A B : ord_type) (a b : ord_U A + ord_U B) :=
     match a, b with
@@ -140,7 +140,7 @@ Instance ord_plus_assoc_class : PlusAssoc ord := {
 }.
 
 Instance ord_zero : Zero ord := {
-    zero := nat0_to_ord 0
+    zero := nat_to_ord 0
 }.
 
 Lemma ord_plus_lid : ∀ α, 0 + α = α.
@@ -148,7 +148,7 @@ Lemma ord_plus_lid : ∀ α, 0 + α = α.
     symmetry.
     equiv_get_value A.
     unfold plus, zero; cbn.
-    unfold nat0_to_ord; equiv_simpl.
+    unfold nat_to_ord; equiv_simpl.
     exists (λ x, inr x).
     split.
     1: split.
@@ -159,7 +159,7 @@ Lemma ord_plus_lid : ∀ α, 0 + α = α.
         +   exfalso.
             rewrite <- nle_lt in x_lt.
             apply x_lt.
-            apply nat0_le_zero.
+            apply nat_le_zero.
         +   exists x; reflexivity.
     -   intros a b.
         reflexivity.
@@ -173,7 +173,7 @@ Lemma ord_plus_rid : ∀ α, α + 0 = α.
     symmetry.
     equiv_get_value A.
     unfold plus, zero; cbn.
-    unfold nat0_to_ord; equiv_simpl.
+    unfold nat_to_ord; equiv_simpl.
     exists (λ x, inl x).
     split.
     1: split.
@@ -185,7 +185,7 @@ Lemma ord_plus_rid : ∀ α, α + 0 = α.
         +   exfalso.
             rewrite <- nle_lt in x_lt.
             apply x_lt.
-            apply nat0_le_zero.
+            apply nat_le_zero.
     -   intros a b.
         reflexivity.
 Qed.
@@ -308,7 +308,7 @@ Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
     exists (to_equiv_type ord_equiv C).
     split.
     -   intro contr.
-        unfold zero in contr; cbn in contr; unfold nat0_to_ord in contr.
+        unfold zero in contr; cbn in contr; unfold nat_to_ord in contr.
         equiv_simpl in contr.
         destruct contr as [f [[C0 f_sur] C1]]; clear C0 C1.
         assert (C_set x) as Cx.
@@ -317,7 +317,7 @@ Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
         }
         unfold surjective in f_sur.
         specialize (f_sur [_|Cx]) as [[y y_lt] C0]; clear C0.
-        apply nat0_lt_zero in y_lt.
+        apply nat_lt_zero in y_lt.
         exact y_lt.
     -   unfold plus; equiv_simpl.
         destruct ABx as [f [f_bij f_iso]].
@@ -393,14 +393,14 @@ Theorem ord_lt_zero : ∀ α, 0 ≠ α → 0 < α.
     intros A A_nz.
     equiv_get_value A.
     unfold zero; cbn.
-    unfold nat0_to_ord.
+    unfold nat_to_ord.
     rewrite ord_lt_initial.
-    assert (∀ m : nat0, m < 0 → False) as no_m.
+    assert (∀ m : nat, m < 0 → False) as no_m.
     {
         intros m mlt.
         rewrite <- nle_lt in mlt.
         apply mlt.
-        apply nat0_le_zero.
+        apply nat_le_zero.
     }
     assert (∃ x, @all (ord_U A) x) as ex.
     {
@@ -409,7 +409,7 @@ Theorem ord_lt_zero : ∀ α, 0 ≠ α → 0 < α.
         unfold all in contr.
         apply A_nz; clear A_nz.
         unfold zero; cbn.
-        unfold nat0_to_ord.
+        unfold nat_to_ord.
         equiv_simpl.
         exists (λ x, False_rect _ (no_m [x|] [|x])).
         split.
@@ -563,10 +563,10 @@ Instance ord_le_rplus_class : OrderRplus ord := {
 }.
 (* end hide *)
 
-Theorem nat0_to_ord_plus : ∀ a b,
-        nat0_to_ord a + nat0_to_ord b = nat0_to_ord (a + b).
+Theorem nat_to_ord_plus : ∀ a b,
+        nat_to_ord a + nat_to_ord b = nat_to_ord (a + b).
     intros a b.
-    unfold nat0_to_ord, plus at 1; equiv_simpl.
+    unfold nat_to_ord, plus at 1; equiv_simpl.
     pose (dom := sum (set_type (λ m, m < a)) (set_type (λ m, m < b))).
     fold dom.
     pose (f (x : dom) := match x with
@@ -576,7 +576,7 @@ Theorem nat0_to_ord_plus : ∀ a b,
     assert (∀ x, f x < a + b) as f_in.
     {
         intros [[x x_lt]|[x x_lt]]; unfold f; cbn.
-        -   pose proof (nat0_le_zero b) as eq.
+        -   pose proof (nat_le_zero b) as eq.
             apply le_lplus with a in eq.
             rewrite plus_rid in eq.
             exact (lt_le_trans x_lt eq).
@@ -596,14 +596,14 @@ Theorem nat0_to_ord_plus : ∀ a b,
             rewrite eq2 in m_eq.
             rewrite <- (plus_rid a) in m_eq at 2.
             apply lt_plus_lcancel in m_eq.
-            exact (nat0_lt_zero _ m_eq).
+            exact (nat_lt_zero _ m_eq).
         +   exfalso.
             destruct n as [n n_eq].
             cbn in eq2.
             rewrite <- eq2 in n_eq.
             rewrite <- (plus_rid a) in n_eq at 2.
             apply lt_plus_lcancel in n_eq.
-            exact (nat0_lt_zero _ n_eq).
+            exact (nat_lt_zero _ n_eq).
         +   apply plus_lcancel in eq2.
             apply set_type_eq in eq2.
             rewrite eq2; reflexivity.
@@ -613,7 +613,7 @@ Theorem nat0_to_ord_plus : ∀ a b,
             apply set_type_eq; cbn.
             reflexivity.
         +   rewrite nlt_le in n_nlt.
-            apply nat0_le_ex in n_nlt as [c c_eq].
+            apply nat_le_ex in n_nlt as [c c_eq].
             pose proof n_eq as c_lt.
             rewrite <- c_eq in c_lt.
             apply lt_plus_lcancel in c_lt.
@@ -626,7 +626,7 @@ Theorem nat0_to_ord_plus : ∀ a b,
         +   reflexivity.
         +   split; try trivial.
             intros C0; clear C0.
-            pose proof (nat0_le_zero y) as eq.
+            pose proof (nat_le_zero y) as eq.
             apply le_lplus with a in eq.
             rewrite plus_rid in eq.
             apply (lt_le_trans x_lt eq).
@@ -635,7 +635,7 @@ Theorem nat0_to_ord_plus : ∀ a b,
             pose proof (le_lt_trans eq y_lt) as contr.
             rewrite <- (plus_rid a) in contr at 2.
             apply lt_plus_lcancel in contr.
-            exact (nat0_lt_zero _ contr).
+            exact (nat_lt_zero _ contr).
         +   split.
             *   apply le_lplus.
             *   apply le_plus_lcancel.
@@ -650,14 +650,14 @@ Theorem ord_lt_self_rplus : ∀ α β, 0 ≠ β → α < α + β.
         apply B_nz.
         symmetry.
         unfold zero; cbn.
-        unfold nat0_to_ord; equiv_simpl.
+        unfold nat_to_ord; equiv_simpl.
         exists (λ x, False_rect _ (contr x)).
         split.
         split.
         -   intros a; contradiction (contr a).
         -   intros [a a_lt].
             exfalso.
-            apply nat0_lt_zero in a_lt.
+            apply nat_lt_zero in a_lt.
             exact a_lt.
         -   intros a; contradiction (contr a).
     }
@@ -698,14 +698,14 @@ Theorem ord_false_0 : ∀ A, (ord_U A → False) → 0 = to_equiv_type ord_equiv
     intros A A_false.
     symmetry.
     unfold zero; cbn.
-    unfold nat0_to_ord; equiv_simpl.
+    unfold nat_to_ord; equiv_simpl.
     exists (λ x, False_rect _ (A_false x)).
     split.
     1: split.
     -   intros a.
         contradiction (A_false a).
     -   intros x.
-        contradiction (nat0_lt_0_false x).
+        contradiction (nat_lt_0_false x).
     -   intros a.
         contradiction (A_false a).
 Qed.

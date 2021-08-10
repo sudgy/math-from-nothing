@@ -4,7 +4,7 @@ Require Export ord_order.
 Require Import ord_plus.
 Require Import ord_mult.
 Require Import set.
-Require Import nat0.
+Require Import nat.
 
 Theorem transfinite_induction :
         ∀ S : ord → Prop, (∀ α, (∀ β, β < α → S β) → S α) → ∀ α, S α.

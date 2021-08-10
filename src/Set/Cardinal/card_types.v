@@ -122,30 +122,30 @@ Qed.
 (* begin hide *)
 End DenseInfinite.
 (* end hide *)
-Theorem int_size : |int| = |nat0|.
+Theorem int_size : |int| = |nat|.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
-        rewrite nat0_mult_nat0.
+        rewrite nat_mult_nat.
         apply refl.
     -   unfold le; equiv_simpl.
-        exists nat0_to_int.
+        exists nat_to_int.
         intros a b eq.
-        apply nat0_to_int_eq.
+        apply nat_to_int_eq.
         exact eq.
 Qed.
 
-Theorem rat_size : |rat| = |nat0|.
+Theorem rat_size : |rat| = |nat|.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
         rewrite int_size.
-        rewrite nat0_mult_nat0.
+        rewrite nat_mult_nat.
         apply refl.
     -   unfold le; equiv_simpl.
-        exists nat0_to_rat.
+        exists nat_to_rat.
         intros a b eq.
-        apply nat0_to_rat_eq.
+        apply nat_to_rat_eq.
         exact eq.
 Qed.
 
@@ -595,8 +595,8 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
     {
         symmetry.
         unfold one; cbn.
-        rewrite nat0_to_card_plus.
-        unfold nat0_to_card, plus; equiv_simpl.
+        rewrite nat_to_card_plus.
+        unfold nat_to_card, plus; equiv_simpl.
         assert (∀ x : set_type (open_interval a b), closed_interval a b [x|])
             as x_in.
         {
@@ -620,7 +620,7 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
         exists (λ x, match x with
         | inl x' => [[x'|]|x_in x']
         | inr n => match [n|] with
-            | nat0_zero => [a|a_in]
+            | nat_zero => [a|a_in]
             | _ => [b|b_in]
             end
         end).
@@ -630,7 +630,7 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
                 apply set_type_eq in eq.
                 rewrite eq.
                 reflexivity.
-            +   nat0_destruct [y|].
+            +   nat_destruct [y|].
                 *   apply eq_set_type in eq; cbn in eq.
                     destruct x as [x [x_gt x_lt]]; cbn in *.
                     exfalso; rewrite <- eq in x_gt.
@@ -639,7 +639,7 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
                     destruct x as [x [x_gt x_lt]]; cbn in *.
                     exfalso; rewrite <- eq in x_lt.
                     destruct x_lt; contradiction.
-            +   nat0_destruct [x|].
+            +   nat_destruct [x|].
                 *   apply eq_set_type in eq; cbn in eq.
                     destruct y as [y [y_gt y_lt]]; cbn in *.
                     exfalso; rewrite <- eq in y_gt.
@@ -651,7 +651,7 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
             +   destruct x as [x x_lt], y as [y y_lt]; cbn in *.
                 apply f_equal.
                 apply set_type_eq; cbn.
-                nat0_destruct x; nat0_destruct y.
+                nat_destruct x; nat_destruct y.
                 all: apply eq_set_type in eq; cbn in eq.
                 *   reflexivity.
                 *   subst.
@@ -659,14 +659,14 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
                 *   subst.
                     destruct ab; contradiction.
                 *   apply f_equal.
-                    rewrite nat0_sucs_lt in x_lt, y_lt.
-                    apply nat0_lt_1 in x_lt, y_lt.
+                    rewrite nat_sucs_lt in x_lt, y_lt.
+                    apply nat_lt_1 in x_lt, y_lt.
                     subst.
                     reflexivity.
         -   intros [y [y_gt y_lt]].
             classic_case (a = y) as [ay|ay].
             2: classic_case (y = b) as [yb|yb].
-            +   assert (0 < nat0_suc 1) as zero_two.
+            +   assert (0 < nat_suc 1) as zero_two.
                 {
                     split.
                     -   exact true.
@@ -676,7 +676,7 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
                 unfold zero; cbn.
                 apply set_type_eq; cbn.
                 exact ay.
-            +   assert (1 < nat0_suc 1) as one_two.
+            +   assert (1 < nat_suc 1) as one_two.
                 {
                     split.
                     -   exact true.
@@ -695,8 +695,8 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
     -   reflexivity.
     -   apply (dense_open_infinite _ _ ab).
     -   unfold one; cbn.
-        rewrite nat0_to_card_plus.
-        apply nat0_is_finite.
+        rewrite nat_to_card_plus.
+        apply nat_is_finite.
 Qed.
 (* begin hide *)
 Close Scope card_scope.

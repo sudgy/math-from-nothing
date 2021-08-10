@@ -38,15 +38,15 @@
 ./src/Algebra/Relation/order_abs.v
 ./src/Algebra/Relation/order_dict.v
 
-./src/Number/Nat/nat0_base.v
-./src/Number/Nat/nat0_plus.v
-./src/Number/Nat/nat0_mult.v
-./src/Number/Nat/nat0_order.v
-./src/Number/Nat/nat0.v
+./src/Number/Nat/nat_base.v
+./src/Number/Nat/nat_plus.v
+./src/Number/Nat/nat_mult.v
+./src/Number/Nat/nat_order.v
+./src/Number/Nat/nat.v
 
 ./src/Algebra/Mult/mult_div.v
 ./src/Algebra/Mult/mult_pow.v
-./src/Algebra/nat0_abstract.v
+./src/Algebra/nat_abstract.v
 ./src/Algebra/Plus/plus_sum.v
 
 ./src/Set/set_base.v
@@ -57,7 +57,7 @@
 ./src/Set/zorn.v
 ./src/Set/well_order.v
 ./src/Set/set.v
-./src/Set/nat0_set.v
+./src/Set/nat_set.v
 
 ./src/Set/Ordinal/ord_base.v
 ./src/Set/Ordinal/ord_order.v
@@ -73,7 +73,7 @@
 ./src/Set/Cardinal/card_plus.v
 ./src/Set/Cardinal/card_mult.v
 ./src/Set/Cardinal/card_pow.v
-./src/Set/Cardinal/card_nat0.v
+./src/Set/Cardinal/card_nat.v
 ./src/Set/Cardinal/card_infinite1.v
 ./src/Set/Cardinal/card_infinite2.v
 ./src/Set/Cardinal/card_infinite3.v

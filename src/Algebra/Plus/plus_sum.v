@@ -1,15 +1,15 @@
 Require Import init.
 
 Require Export plus_group.
-Require Import nat0.
+Require Import nat.
 Require Import list.
 Require Import set.
 
 (* This will sum all of the terms in the range [m, m + n) *)
-Fixpoint sum {U} `{Plus U, Zero U} (a : nat0 → U) (m n : nat0) :=
+Fixpoint sum {U} `{Plus U, Zero U} (a : nat → U) (m n : nat) :=
     match n with
-    |   nat0_zero => zero
-    |   nat0_suc n' => sum a m n' + a (m + n')
+    |   nat_zero => zero
+    |   nat_suc n' => sum a m n' + a (m + n')
     end.
 
 Fixpoint list_sum {U} `{Plus U, Zero U} (l : list U) :=
@@ -35,7 +35,7 @@ Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
         sum f m n = sum g m n.
     intros f g m n all_eq.
     revert all_eq.
-    nat0_induction n.
+    nat_induction n.
     -   intros all_eq.
         unfold zero; cbn.
         reflexivity.
@@ -44,21 +44,21 @@ Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
         rewrite IHn.
         rewrite all_eq.
         +   reflexivity.
-        +   apply nat0_lt_suc.
+        +   apply nat_lt_suc.
         +   intros a a_ltq.
             rewrite all_eq.
             *   reflexivity.
-            *   exact (trans a_ltq (nat0_lt_suc _)).
+            *   exact (trans a_ltq (nat_lt_suc _)).
 Qed.
 
 Theorem sum_minus : ∀ f a b c, sum f a (b + c) - sum f a b = sum f (a + b) c.
     intros f a b c.
-    nat0_induction c.
+    nat_induction c.
     -   rewrite plus_rid.
         rewrite plus_rinv.
         unfold zero at 2; cbn.
         reflexivity.
-    -   rewrite nat0_plus_rsuc.
+    -   rewrite nat_plus_rsuc.
         cbn.
         rewrite <- plus_assoc.
         rewrite (plus_comm (f (a + (b + c)))).

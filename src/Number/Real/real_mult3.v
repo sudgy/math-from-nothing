@@ -243,7 +243,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 -   rewrite mult_ranni.
                     reflexivity.
             }
-            assert (∃ n, 0 ≠ n ∧ x < nat0_to_rat n * div (nat0_to_rat n + 1)) as
+            assert (∃ n, 0 ≠ n ∧ x < nat_to_rat n * div (nat_to_rat n + 1)) as
                 [n [n_nz n_eq]].
             {
                 unfold one in x_lt; cbn in x_lt.
@@ -251,14 +251,14 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 pose proof x_lt as ε_pos.
                 apply lt_plus_0_anb_b_a in ε_pos.
                 pose proof (archimedean2 _ ε_pos) as [m eq].
-                rewrite nat0_to_abstract_rat in eq.
-                assert (0 < nat0_to_rat (nat0_suc m)) as n_pos.
+                rewrite nat_to_abstract_rat in eq.
+                assert (0 < nat_to_rat (nat_suc m)) as n_pos.
                 {
-                    change 0 with (nat0_to_rat 0).
-                    rewrite nat0_to_rat_lt.
-                    apply nat0_zero_lt_suc.
+                    change 0 with (nat_to_rat 0).
+                    rewrite nat_to_rat_lt.
+                    apply nat_zero_lt_suc.
                 }
-                remember (nat0_to_rat (nat0_suc m)) as n.
+                remember (nat_to_rat (nat_suc m)) as n.
                 apply lt_lmult_pos with n in eq.
                 2: exact n_pos.
                 rewrite mult_rinv in eq by apply n_pos.
@@ -285,13 +285,13 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 rewrite <- rdist in eq.
                 rewrite (plus_comm n 1) in eq at 1.
                 rewrite plus_llinv in eq.
-                exists (nat0_suc m).
+                exists (nat_suc m).
                 rewrite <- Heqn.
                 split.
                 -   intros contr; inversion contr.
                 -   exact eq.
             }
-            rename n into n'; remember (nat0_to_rat n') as n.
+            rename n into n'; remember (nat_to_rat n') as n.
             pose proof (gt_rat_to_real_in _ _ a_pos) as a0; cbn in a0.
             apply (rand (rand (rand a_cut))) in a0 as [u [au u_pos]].
             assert (∃ q, 0 < q ∧ q < u / n) as [q [q_pos q_lt]].
@@ -300,10 +300,10 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 apply lt_mult; try assumption.
                 apply div_pos.
                 rewrite Heqn.
-                change 0 with (nat0_to_rat 0).
-                rewrite nat0_to_rat_lt.
+                change 0 with (nat_to_rat 0).
+                rewrite nat_to_rat_lt.
                 split.
-                -   apply nat0_le_zero.
+                -   apply nat_le_zero.
                 -   exact n_nz.
             }
             pose (S m := ¬a (m × q)).
@@ -323,7 +323,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
             }
             pose proof (well_ordered S S_ex) as [m [nam m_least]].
             unfold S in *; clear S S_ex.
-            nat0_destruct m.
+            nat_destruct m.
             {
                 unfold zero in nam; cbn in nam.
                 pose proof (gt_rat_to_real_in _ _ a_pos) as a0; cbn in a0.
@@ -333,31 +333,31 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
             {
                 classic_contradiction contr.
                 specialize (m_least _ contr).
-                destruct (le_lt_trans m_least (nat0_lt_suc m)); contradiction.
+                destruct (le_lt_trans m_least (nat_lt_suc m)); contradiction.
             }
             clear m_least.
-            rewrite <- nat0_to_abstract_mult in am.
-            rewrite nat0_to_abstract_rat in am.
-            rename m into m'; remember (nat0_to_rat m') as m.
+            rewrite <- nat_to_abstract_mult in am.
+            rewrite nat_to_abstract_rat in am.
+            rename m into m'; remember (nat_to_rat m') as m.
             assert (x < m / (m + 1)) as m_eq.
             {
                 assert (0 < m + 1) as m1_pos.
                 {
                     rewrite Heqm.
-                    change 0 with (nat0_to_rat 0).
-                    change 1 with (nat0_to_rat 1).
-                    rewrite nat0_to_rat_plus.
+                    change 0 with (nat_to_rat 0).
+                    change 1 with (nat_to_rat 1).
+                    rewrite nat_to_rat_plus.
                     rewrite plus_comm.
-                    rewrite nat0_to_rat_lt.
-                    apply nat0_zero_lt_suc.
+                    rewrite nat_to_rat_lt.
+                    apply nat_zero_lt_suc.
                 }
                 assert (0 < n) as n_pos.
                 {
                     rewrite Heqn.
-                    change 0 with (nat0_to_rat 0).
-                    rewrite nat0_to_rat_lt.
+                    change 0 with (nat_to_rat 0).
+                    rewrite nat_to_rat_lt.
                     split; try exact n_nz.
-                    apply nat0_le_zero.
+                    apply nat_le_zero.
                 }
                 assert (0 < n + 1) as n1_pos.
                 {
@@ -372,14 +372,14 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     apply lt_rmult_pos with (m + 1) in q_lt.
                     2: exact m1_pos.
                     rewrite Heqm, Heqn in contr.
-                    rewrite nat0_to_rat_lt in contr.
-                    rewrite <- nat0_sucs_lt in contr.
-                    rewrite nat0_lt_suc_le in contr.
-                    rewrite <- nat0_to_rat_le in contr.
-                    change (nat0_suc m') with (1 + m') in contr.
+                    rewrite nat_to_rat_lt in contr.
+                    rewrite <- nat_sucs_lt in contr.
+                    rewrite nat_lt_suc_le in contr.
+                    rewrite <- nat_to_rat_le in contr.
+                    change (nat_suc m') with (1 + m') in contr.
                     rewrite plus_comm in contr.
-                    rewrite <- nat0_to_rat_plus in contr.
-                    change (nat0_to_rat 1) with (one (U := rat)) in contr.
+                    rewrite <- nat_to_rat_plus in contr.
+                    change (nat_to_rat 1) with (one (U := rat)) in contr.
                     rewrite <- Heqm, <- Heqn in contr.
                     apply le_mult_adb_1_a_b_pos in contr.
                     2: exact n_pos.
@@ -389,13 +389,13 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     rewrite mult_assoc, mult_rid in contr.
                     pose proof (lt_le_trans q_lt contr) as ltq.
                     pose proof (land (rand (rand a_cut)) _ _ au ltq).
-                    rewrite <- nat0_to_abstract_mult in nam.
-                    rewrite nat0_to_abstract_rat in nam.
-                    change (nat0_suc m') with (1 + m') in nam.
+                    rewrite <- nat_to_abstract_mult in nam.
+                    rewrite nat_to_abstract_rat in nam.
+                    change (nat_suc m') with (1 + m') in nam.
                     rewrite plus_comm in nam.
-                    rewrite <- nat0_to_rat_plus in nam.
+                    rewrite <- nat_to_rat_plus in nam.
                     rewrite <- Heqm in nam.
-                    change (nat0_to_rat 1) with (one (U := rat)) in nam.
+                    change (nat_to_rat 1) with (one (U := rat)) in nam.
                     rewrite mult_comm in nam.
                     contradiction.
                 }
@@ -409,7 +409,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 apply le_lplus.
                 exact mn.
             }
-            nat0_destruct m'.
+            nat_destruct m'.
             {
                 unfold one in nam; cbn in nam.
                 rewrite plus_rid in nam.
@@ -433,24 +433,24 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 rewrite div_div in ltq.
                 2: {
                     intro contr.
-                    change 0 with (nat0_to_rat 0) in contr.
-                    apply nat0_to_rat_eq in contr.
+                    change 0 with (nat_to_rat 0) in contr.
+                    apply nat_to_rat_eq in contr.
                     contradiction.
                 }
-                change 1 with (nat0_to_rat 1) in ltq.
-                rewrite nat0_to_rat_lt in ltq.
+                change 1 with (nat_to_rat 1) in ltq.
+                rewrite nat_to_rat_lt in ltq.
                 apply n_nz.
                 apply antisym.
-                -   apply nat0_le_zero.
-                -   rewrite <- nat0_lt_suc_le.
+                -   apply nat_le_zero.
+                -   rewrite <- nat_lt_suc_le.
                     exact ltq.
             }
             assert (0 < m) as m_pos.
             {
                 rewrite Heqm.
-                change 0 with (nat0_to_rat 0).
-                rewrite nat0_to_rat_lt.
-                apply nat0_zero_lt_suc.
+                change 0 with (nat_to_rat 0).
+                rewrite nat_to_rat_lt.
+                apply nat_zero_lt_suc.
             }
             pose proof (lt_lrplus m_pos one_pos) as m1_pos.
             rewrite plus_lid in m1_pos.
@@ -459,12 +459,12 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
             exists (x / (m * q)), (m * q).
             repeat split.
             *   right.
-                rewrite <- nat0_to_abstract_mult in nam.
-                rewrite nat0_to_abstract_rat in nam.
-                change (nat0_suc (nat0_suc m')) with (1 + nat0_suc m') in nam.
-                rewrite <- nat0_to_rat_plus in nam.
+                rewrite <- nat_to_abstract_mult in nam.
+                rewrite nat_to_abstract_rat in nam.
+                change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
+                rewrite <- nat_to_rat_plus in nam.
                 rewrite <- Heqm in nam.
-                change (nat0_to_rat 1) with (one (U := rat)) in nam.
+                change (nat_to_rat 1) with (one (U := rat)) in nam.
                 rewrite plus_comm in nam.
                 apply lt_rmult_pos with (m + 1) in m_eq.
                 2: exact m1_pos.
@@ -669,12 +669,12 @@ Theorem int_to_real_mult : ∀ a b,
     reflexivity.
 Qed.
 
-Theorem nat0_to_real_mult : ∀ a b,
-        nat0_to_real a * nat0_to_real b = nat0_to_real (a * b).
+Theorem nat_to_real_mult : ∀ a b,
+        nat_to_real a * nat_to_real b = nat_to_real (a * b).
     intros a b.
-    unfold nat0_to_real.
+    unfold nat_to_real.
     rewrite rat_to_real_mult.
-    rewrite nat0_to_rat_mult.
+    rewrite nat_to_rat_mult.
     reflexivity.
 Qed.
 

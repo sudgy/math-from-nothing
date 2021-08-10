@@ -5,7 +5,7 @@ Require Import ord_plus.
 Require Import set.
 Require Import function.
 Require Export mult_ring.
-Require Import nat0.
+Require Import nat.
 
 Definition ord_mult_le (A B : ord_type) (a b : ord_U A * ord_U B) :=
     match a, b with
@@ -238,11 +238,11 @@ Lemma ord_mult_lanni : ∀ α, 0 * α = 0.
     intros A.
     symmetry.
     equiv_get_value A.
-    unfold zero; cbn; unfold nat0_to_ord, mult; equiv_simpl.
-    assert (∀ m : set_type (λ m : nat0, m < 0), False) as none.
+    unfold zero; cbn; unfold nat_to_ord, mult; equiv_simpl.
+    assert (∀ m : set_type (λ m : nat, m < 0), False) as none.
     {
         intros [m m_lt].
-        exact (nat0_lt_zero _ m_lt).
+        exact (nat_lt_zero _ m_lt).
     }
     exists (λ x, False_rect _ (none x)).
     split.
@@ -268,11 +268,11 @@ Lemma ord_mult_ranni : ∀ α, α * 0 = 0.
     intros A.
     symmetry.
     equiv_get_value A.
-    unfold zero; cbn; unfold nat0_to_ord, mult; equiv_simpl.
-    assert (∀ m : set_type (λ m : nat0, m < 0), False) as none.
+    unfold zero; cbn; unfold nat_to_ord, mult; equiv_simpl.
+    assert (∀ m : set_type (λ m : nat, m < 0), False) as none.
     {
         intros [m m_lt].
-        exact (nat0_lt_zero _ m_lt).
+        exact (nat_lt_zero _ m_lt).
     }
     exists (λ x, False_rect _ (none x)).
     split.
@@ -295,17 +295,17 @@ Instance ord_mult_ranni_class : MultRanni ord := {
 }.
 
 Instance ord_one : One ord := {
-    one := nat0_to_ord 1
+    one := nat_to_ord 1
 }.
 
 Lemma ord_mult_lid : ∀ α, 1 * α = α.
     intros A.
     symmetry.
     equiv_get_value A.
-    unfold one; cbn; unfold nat0_to_ord, mult; equiv_simpl.
-    assert (zero (U := nat0)  < 1) as z_lt.
+    unfold one; cbn; unfold nat_to_ord, mult; equiv_simpl.
+    assert (zero (U := nat)  < 1) as z_lt.
     {
-        split; try apply nat0_le_zero.
+        split; try apply nat_le_zero.
         intro contr; inversion contr.
     }
     exists (λ x, ([0|z_lt], x)).
@@ -320,8 +320,8 @@ Lemma ord_mult_lid : ∀ α, 1 * α = α.
         destruct a as [a a_lt].
         apply set_type_eq; cbn.
         unfold one in a_lt; cbn in a_lt.
-        rewrite nat0_lt_suc_le in a_lt.
-        apply nat0_le_zero_eq.
+        rewrite nat_lt_suc_le in a_lt.
+        apply nat_le_zero_eq.
         exact a_lt.
     -   intros a b.
         cbn.
@@ -347,10 +347,10 @@ Lemma ord_mult_rid : ∀ α, α * 1 = α.
     intros A.
     symmetry.
     equiv_get_value A.
-    unfold one; cbn; unfold nat0_to_ord, mult; equiv_simpl.
-    assert (zero (U := nat0)  < 1) as z_lt.
+    unfold one; cbn; unfold nat_to_ord, mult; equiv_simpl.
+    assert (zero (U := nat)  < 1) as z_lt.
     {
-        split; try apply nat0_le_zero.
+        split; try apply nat_le_zero.
         intro contr; inversion contr.
     }
     exists (λ x, (x, [0|z_lt])).
@@ -365,8 +365,8 @@ Lemma ord_mult_rid : ∀ α, α * 1 = α.
         destruct b as [b b_lt].
         apply set_type_eq; cbn.
         unfold one in b_lt; cbn in b_lt.
-        rewrite nat0_lt_suc_le in b_lt.
-        apply nat0_le_zero_eq.
+        rewrite nat_lt_suc_le in b_lt.
+        apply nat_le_zero_eq.
         exact b_lt.
     -   intros a b.
         cbn.
@@ -410,14 +410,14 @@ Theorem ord_lt_lmult : ∀ {α β} γ, zero ≠ γ → α < β → γ * α < γ 
         rewrite not_ex in contr.
         rewrite not_true in contr.
         unfold zero; cbn.
-        unfold nat0_to_ord; equiv_simpl.
+        unfold nat_to_ord; equiv_simpl.
         exists (λ x, False_rect _ (contr x)).
         split.
         split.
         -   intros a.
             contradiction (contr a).
         -   intros [b b_eq].
-            contradiction (nat0_lt_zero _ b_eq).
+            contradiction (nat_lt_zero _ b_eq).
         -   intros a.
             contradiction (contr a).
     }
@@ -668,14 +668,14 @@ Theorem ord_mult_zero_is_zero : ∀ α β, 0 = α * β → {0 = α} + {0 = β}.
         rename α_nz into A_nz.
         equiv_get_value A B.
         unfold zero in *; cbn in *.
-        unfold nat0_to_ord, mult in *; equiv_simpl.
+        unfold nat_to_ord, mult in *; equiv_simpl.
         equiv_simpl in eq.
         equiv_simpl in A_nz.
         destruct eq as [f [f_bij f_iso]].
-        assert (∀ m : set_type (λ n : nat0, n < 0), False) as m_empty.
+        assert (∀ m : set_type (λ n : nat, n < 0), False) as m_empty.
         {
             intros [m m_lt].
-            apply nat0_lt_zero in m_lt.
+            apply nat_lt_zero in m_lt.
             contradiction.
         }
         assert (ord_U A) as a.
@@ -720,7 +720,7 @@ Theorem ord_le_one : ∀ α, α < 1 → 0 = α.
     intros A eq.
     equiv_get_value A.
     unfold zero, one in *; cbn in *.
-    unfold nat0_to_ord in *.
+    unfold nat_to_ord in *.
     equiv_simpl.
     rewrite ord_lt_initial in eq.
     destruct eq as [[x x_lt] [f [f_bij f_iso]]].
@@ -733,19 +733,19 @@ Theorem ord_le_one : ∀ α, α < 1 → 0 = α.
         cbn in b_leq.
         unfold one in x_lt; cbn in x_lt.
         pose proof x_lt as x_lt2.
-        rewrite nat0_lt_suc_le in x_lt2.
-        apply nat0_le_zero_eq in x_lt2.
+        rewrite nat_lt_suc_le in x_lt2.
+        apply nat_le_zero_eq in x_lt2.
         subst x.
         unfold le in b_leq; cbn in b_leq.
-        apply nat0_le_zero_eq in b_leq.
+        apply nat_le_zero_eq in b_leq.
         subst.
         contradiction b_neq.
         apply set_type_eq; reflexivity.
     }
-    assert (∀ m : set_type (λ n : nat0, n < 0), False) as m_empty.
+    assert (∀ m : set_type (λ n : nat, n < 0), False) as m_empty.
     {
         intros [m m_lt].
-        apply nat0_lt_zero in m_lt.
+        apply nat_lt_zero in m_lt.
         contradiction.
     }
     exists (λ m, False_rect _ (m_empty m)).
@@ -781,10 +781,10 @@ Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α <= α * β.
     contradiction.
 Qed.
 
-Theorem nat0_to_ord_mult : ∀ a b,
-        nat0_to_ord a * nat0_to_ord b = nat0_to_ord (a * b).
+Theorem nat_to_ord_mult : ∀ a b,
+        nat_to_ord a * nat_to_ord b = nat_to_ord (a * b).
     intros a b.
-    unfold nat0_to_ord, mult at 1; equiv_simpl.
+    unfold nat_to_ord, mult at 1; equiv_simpl.
     pose (dom := prod (set_type (λ m, m < a)) (set_type (λ m, m < b))).
     pose (f (n : dom) := [fst n|] * b + [snd n|]).
     assert (∀ n : dom, f n < a * b) as f_in.
@@ -793,11 +793,11 @@ Theorem nat0_to_ord_mult : ∀ a b,
         unfold f; cbn.
         clear dom f.
         destruct a.
-        -   apply nat0_lt_zero in m_lt.
+        -   apply nat_lt_zero in m_lt.
             contradiction.
-        -   rewrite nat0_mult_lsuc.
-            rewrite nat0_lt_suc_le in m_lt.
-            apply nat0_le_rmult with b in m_lt.
+        -   rewrite nat_mult_lsuc.
+            rewrite nat_lt_suc_le in m_lt.
+            apply nat_le_rmult with b in m_lt.
             apply le_rplus with n in m_lt.
             apply lt_lplus with (a * b) in n_lt.
             rewrite (plus_comm b).
@@ -811,15 +811,15 @@ Theorem nat0_to_ord_mult : ∀ a b,
         unfold f in eq2; cbn in eq2.
         destruct (trichotomy m1 m2) as [[leq|eq]|leq].
         +   exfalso.
-            (* TOTO: Make nat0_lt_ex symmetrize c_nz *)
-            apply nat0_lt_ex in leq as [c [c_nz c_eq]].
+            (* TOTO: Make nat_lt_ex symmetrize c_nz *)
+            apply nat_lt_ex in leq as [c [c_nz c_eq]].
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- assoc in eq2.
             apply plus_lcancel in eq2.
             rewrite eq2 in n1_lt.
-            pose proof (nat0_le_self_rplus (c * b) n2) as eq3.
-            pose proof (nat0_le_self_lmult b c c_nz) as eq4.
+            pose proof (nat_le_self_rplus (c * b) n2) as eq3.
+            pose proof (nat_le_self_lmult b c c_nz) as eq4.
             pose proof (trans eq4 eq3) as eq5.
             pose proof (le_lt_trans eq5 n1_lt) as eq6.
             destruct eq6; contradiction.
@@ -828,14 +828,14 @@ Theorem nat0_to_ord_mult : ∀ a b,
             subst.
             apply f_equal2; apply set_type_eq; reflexivity.
         +   exfalso.
-            apply nat0_lt_ex in leq as [c [c_nz c_eq]].
+            apply nat_lt_ex in leq as [c [c_nz c_eq]].
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- assoc in eq2.
             apply plus_lcancel in eq2.
             rewrite <- eq2 in n2_lt.
-            pose proof (nat0_le_self_rplus (c * b) n1) as eq3.
-            pose proof (nat0_le_self_lmult b c c_nz) as eq4.
+            pose proof (nat_le_self_rplus (c * b) n1) as eq3.
+            pose proof (nat_le_self_lmult b c c_nz) as eq4.
             pose proof (trans eq4 eq3) as eq5.
             pose proof (le_lt_trans eq5 n2_lt) as eq6.
             destruct eq6; contradiction.
@@ -847,26 +847,26 @@ Theorem ord_not_trivial : 0 ≠ 1.
     intros contr.
     symmetry in contr.
     unfold one, zero in contr; cbn in contr.
-    unfold nat0_to_ord in contr; equiv_simpl in contr.
+    unfold nat_to_ord in contr; equiv_simpl in contr.
     destruct contr as [f].
-    pose proof (nat0_lt_suc 0) as z_lt.
-    contradiction (nat0_lt_0_false (f [0|z_lt])).
+    pose proof (nat_lt_suc 0) as z_lt.
+    contradiction (nat_lt_0_false (f [0|z_lt])).
 Qed.
 
 Theorem ord_lt_1 : ∀ α, α < 1 → 0 = α.
     intros A A_lt.
     equiv_get_value A.
     unfold one, zero in *; cbn in *.
-    unfold nat0_to_ord in *.
+    unfold nat_to_ord in *.
     equiv_simpl.
     rewrite ord_lt_initial in A_lt.
     destruct A_lt as [[z z_lt] [f [f_bij f_iso]]].
-    pose proof (nat0_lt_1 z z_lt); subst z.
-    exists (λ x, False_rect _ (nat0_lt_0_false x)).
+    pose proof (nat_lt_1 z z_lt); subst z.
+    exists (λ x, False_rect _ (nat_lt_0_false x)).
     split.
     1: split.
     -   intros a.
-        contradiction (nat0_lt_0_false a).
+        contradiction (nat_lt_0_false a).
     -   intros a.
         exfalso.
         destruct (f a) as [[x x_lt'] x_lt]; cbn in *.
@@ -875,9 +875,9 @@ Theorem ord_lt_1 : ∀ α, α < 1 → 0 = α.
         apply neq.
         apply antisym; try exact leq.
         unfold le; cbn.
-        apply nat0_le_zero.
+        apply nat_le_zero.
     -   intros a.
-        contradiction (nat0_lt_0_false a).
+        contradiction (nat_lt_0_false a).
 Qed.
 (* begin hide *)
 Close Scope ord_scope.

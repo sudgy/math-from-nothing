@@ -3,7 +3,7 @@ Require Import init.
 Require Import set_base.
 Require Import relation.
 Require Import order_def.
-Require Import nat0.
+Require Import nat.
 
 #[universes(template)]
 Record set_type {U} (S : U → Prop) := make_set_type_val {

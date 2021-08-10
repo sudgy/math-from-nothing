@@ -4,7 +4,7 @@ Require Export int_base.
 Require Import int_plus.
 Require Import int_mult.
 
-Require Import nat0.
+Require Import nat.
 Require Import set.
 Require Export order_mult.
 
@@ -108,14 +108,14 @@ Instance int_le_lplus_class : OrderLplus int := {
     le_lplus := int_le_lplus;
 }.
 (* end hide *)
-Theorem int_pos_nat0_ex : ∀ a, 0 <= a → ∃ n, a = nat0_to_int n.
+Theorem int_pos_nat_ex : ∀ a, 0 <= a → ∃ n, a = nat_to_int n.
     intros a.
     equiv_get_value a.
-    unfold le, zero, nat0_to_int; simpl. equiv_simpl; simpl.
+    unfold le, zero, nat_to_int; simpl. equiv_simpl; simpl.
     destruct a as [a1 a2]; simpl.
     intro eq.
     do 2 rewrite plus_lid in eq.
-    pose proof (nat0_le_ex a2 a1 eq) as [c c_eq].
+    pose proof (nat_le_ex a2 a1 eq) as [c c_eq].
     exists c.
     equiv_simpl; simpl.
     rewrite plus_rid.
@@ -123,9 +123,9 @@ Theorem int_pos_nat0_ex : ∀ a, 0 <= a → ∃ n, a = nat0_to_int n.
     symmetry; exact c_eq.
 Qed.
 
-Theorem int_neg_nat0_ex : ∀ a, a <= 0 → ∃ n, -a = nat0_to_int n.
+Theorem int_neg_nat_ex : ∀ a, a <= 0 → ∃ n, -a = nat_to_int n.
     intros a a_neg.
-    apply int_pos_nat0_ex.
+    apply int_pos_nat_ex.
     apply neg_pos.
     exact a_neg.
 Qed.
@@ -133,13 +133,13 @@ Qed.
 (* begin hide *)
 Lemma int_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     intros a b a_pos b_pos.
-    pose proof (int_pos_nat0_ex a a_pos) as [m m_eq].
-    pose proof (int_pos_nat0_ex b b_pos) as [n n_eq].
+    pose proof (int_pos_nat_ex a a_pos) as [m m_eq].
+    pose proof (int_pos_nat_ex b b_pos) as [n n_eq].
     rewrite m_eq, n_eq.
-    unfold zero at 1, nat0_to_int, mult, le; simpl; equiv_simpl; simpl.
+    unfold zero at 1, nat_to_int, mult, le; simpl; equiv_simpl; simpl.
     rewrite mult_lanni, mult_ranni.
     do 2 rewrite plus_lid.
-    apply nat0_le_zero.
+    apply nat_le_zero.
 Qed.
 
 Instance int_le_mult_class : OrderMult int := {
@@ -190,9 +190,9 @@ Theorem int_lt_suc_le : ∀ a b, a < int_suc b → a <= b.
     destruct eq as [leq neq].
     rewrite (plus_comm _ a2) in neq.
     assert (a1 + b2 < a2 + (b1 + 1)) as eq by (split; auto).
-    change 1 with (nat0_suc 0) in eq.
-    do 2 rewrite nat0_plus_rsuc in eq.
-    rewrite nat0_lt_suc_le in eq.
+    change 1 with (nat_suc 0) in eq.
+    do 2 rewrite nat_plus_rsuc in eq.
+    rewrite nat_lt_suc_le in eq.
     rewrite plus_rid in eq.
     exact eq.
 Qed.
@@ -202,10 +202,10 @@ Theorem int_le_lt_suc : ∀ a b, a <= b → a < int_suc b.
     destruct a as [a1 a2], b as [b1 b2].
     unfold lt, strict, le, int_suc, plus, one; equiv_simpl.
     intros eq.
-    rewrite <- nat0_lt_suc_le in eq.
-    change 1 with (nat0_suc 0).
-    repeat rewrite nat0_plus_rsuc.
-    rewrite nat0_plus_lsuc.
+    rewrite <- nat_lt_suc_le in eq.
+    change 1 with (nat_suc 0).
+    repeat rewrite nat_plus_rsuc.
+    rewrite nat_plus_lsuc.
     do 2 rewrite plus_rid.
     rewrite (plus_comm b1).
     apply eq.
@@ -229,95 +229,95 @@ Qed.
 (* begin hide *)
 Close Scope int_scope.
 (* end hide *)
-Theorem nat0_to_int_pos : ∀ a, 0 <= nat0_to_int a.
+Theorem nat_to_int_pos : ∀ a, 0 <= nat_to_int a.
     intros a.
-    unfold zero, nat0_to_int, le; simpl; equiv_simpl; simpl.
+    unfold zero, nat_to_int, le; simpl; equiv_simpl; simpl.
     do 2 rewrite plus_lid.
-    apply nat0_le_zero.
+    apply nat_le_zero.
 Qed.
 
-Theorem nat0_to_int_ex : ∀ a, 0 <= a → ∃ n, nat0_to_int n = a.
+Theorem nat_to_int_ex : ∀ a, 0 <= a → ∃ n, nat_to_int n = a.
     intros a a_pos.
     equiv_get_value a.
     unfold zero, le in a_pos; simpl in a_pos; equiv_simpl in a_pos.
     destruct a as [a1 a2]; simpl in a_pos.
     do 2 rewrite plus_lid in a_pos.
-    pose proof (nat0_le_ex _ _ a_pos) as [c c_eq].
+    pose proof (nat_le_ex _ _ a_pos) as [c c_eq].
     exists c.
-    unfold nat0_to_int; equiv_simpl; simpl.
+    unfold nat_to_int; equiv_simpl; simpl.
     rewrite plus_comm, plus_rid.
     exact c_eq.
 Qed.
 
-Theorem nat0_to_int_le : ∀ a b, nat0_to_int a <= nat0_to_int b ↔ a <= b.
+Theorem nat_to_int_le : ∀ a b, nat_to_int a <= nat_to_int b ↔ a <= b.
     intros a b.
     split.
     -   revert b.
         induction a.
         +   intros b eq.
-            apply nat0_le_zero.
+            apply nat_le_zero.
         +   intros b eq.
             destruct b.
-            *   change (nat0_suc a) with (1 + a) in eq.
-                change (nat0_to_int 0) with 0 in eq.
-                rewrite <- nat0_to_int_plus in eq.
-                change (nat0_to_int 1) with 1 in eq.
+            *   change (nat_suc a) with (1 + a) in eq.
+                change (nat_to_int 0) with 0 in eq.
+                rewrite <- nat_to_int_plus in eq.
+                change (nat_to_int 1) with 1 in eq.
                 pose proof one_pos as pos1.
-                pose proof (nat0_to_int_pos a) as pos2.
-                apply lt_rplus with (nat0_to_int a) in pos1.
+                pose proof (nat_to_int_pos a) as pos2.
+                apply lt_rplus with (nat_to_int a) in pos1.
                 rewrite plus_lid in pos1.
                 pose proof (le_lt_trans pos2 pos1) as contr.
                 rewrite <- nle_lt in contr.
                 contradiction.
             *   apply IHa.
-                change (nat0_suc a) with (1 + a) in eq.
-                change (nat0_suc b) with (1 + b) in eq.
-                do 2 rewrite <- nat0_to_int_plus in eq.
+                change (nat_suc a) with (1 + a) in eq.
+                change (nat_suc b) with (1 + b) in eq.
+                do 2 rewrite <- nat_to_int_plus in eq.
                 apply le_plus_lcancel in eq.
                 exact eq.
     -   revert b.
         induction a.
         +   intros.
-            apply nat0_to_int_pos.
+            apply nat_to_int_pos.
         +   intros b eq.
             destruct b.
             *   inversion eq.
-            *   change (nat0_suc a) with (1 + a).
-                change (nat0_suc b) with (1 + b).
-                do 2 rewrite <- nat0_to_int_plus.
+            *   change (nat_suc a) with (1 + a).
+                change (nat_suc b) with (1 + b).
+                do 2 rewrite <- nat_to_int_plus.
                 apply le_lplus.
                 apply IHa.
                 exact eq.
 Qed.
-Theorem nat0_to_int_lt : ∀ a b, nat0_to_int a < nat0_to_int b ↔ a < b.
+Theorem nat_to_int_lt : ∀ a b, nat_to_int a < nat_to_int b ↔ a < b.
     intros a b.
     split.
     -   intros [leq neq].
         split.
-        +   apply nat0_to_int_le; auto.
+        +   apply nat_to_int_le; auto.
         +   intro contr; rewrite contr in neq; contradiction.
     -   intros [leq neq].
         split.
-        +   apply nat0_to_int_le; auto.
+        +   apply nat_to_int_le; auto.
         +   intros eq.
-            apply nat0_to_int_eq in eq.
+            apply nat_to_int_eq in eq.
             contradiction.
 Qed.
 
-Theorem int_pos_nat1_ex : ∀ n, 0 < n → ∃ n', n = nat0_to_int (nat0_suc n').
+Theorem int_pos_nat1_ex : ∀ n, 0 < n → ∃ n', n = nat_to_int (nat_suc n').
     intros n' n_pos.
-    pose proof (int_pos_nat0_ex _ (land n_pos)) as [n n_eq].
+    pose proof (int_pos_nat_ex _ (land n_pos)) as [n n_eq].
     subst n'.
-    change 0 with (nat0_to_int 0) in n_pos.
-    apply nat0_to_int_lt in n_pos.
+    change 0 with (nat_to_int 0) in n_pos.
+    apply nat_to_int_lt in n_pos.
     destruct n_pos as [C0 n_nz]; clear C0.
-    nat0_destruct n; try contradiction.
+    nat_destruct n; try contradiction.
     clear n_nz.
     exists n.
     reflexivity.
 Qed.
 
-Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -nat0_to_int (nat0_suc n').
+Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -nat_to_int (nat_suc n').
     intros n n_lt.
     apply lt_neg in n_lt.
     rewrite neg_zero in n_lt.
@@ -328,18 +328,18 @@ Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -nat0_to_int (nat0_suc n'
     exact n_eq.
 Qed.
 
-Theorem nat1_to_int_pos : ∀ n, 0 < nat0_to_int (nat0_suc n).
+Theorem nat1_to_int_pos : ∀ n, 0 < nat_to_int (nat_suc n).
     intros n.
     split.
-    -   apply nat0_to_int_pos.
-    -   apply nat0_nz_int.
+    -   apply nat_to_int_pos.
+    -   apply nat_nz_int.
 Qed.
 
-Theorem nat1_to_int_pos1 : ∀ n, 1 <= nat0_to_int (nat0_suc n).
+Theorem nat1_to_int_pos1 : ∀ n, 1 <= nat_to_int (nat_suc n).
     intros n.
-    change 1 with (nat0_to_int 1).
-    apply nat0_to_int_le.
+    change 1 with (nat_to_int 1).
+    apply nat_to_int_le.
     unfold one; cbn.
-    rewrite nat0_sucs_le.
-    apply nat0_le_zero.
+    rewrite nat_sucs_le.
+    apply nat_le_zero.
 Qed.

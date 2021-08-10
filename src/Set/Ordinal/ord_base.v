@@ -3,7 +3,7 @@ Require Import init.
 Require Export order_def.
 Require Import function.
 Require Import set.
-Require Import nat0.
+Require Import nat.
 
 Declare Scope ord_scope.
 Delimit Scope ord_scope with ord.
@@ -394,7 +394,7 @@ Qed.
 (* begin hide *)
 Close Scope ord_scope.
 (* end hide *)
-Definition nat0_to_ord_type (n : nat0) :=
+Definition nat_to_ord_type (n : nat) :=
     make_ord_type (set_type (λ m, m < n)) le wo_wo.
-Definition nat0_to_ord (n : nat0) :=
-    to_equiv_type ord_equiv (nat0_to_ord_type n).
+Definition nat_to_ord (n : nat) :=
+    to_equiv_type ord_equiv (nat_to_ord_type n).

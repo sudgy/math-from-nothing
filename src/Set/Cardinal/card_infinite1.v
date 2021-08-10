@@ -4,21 +4,21 @@ Require Export card_base.
 Require Import card_order.
 Require Import card_plus.
 Require Import card_mult.
-Require Import card_nat0.
+Require Import card_nat.
 Require Import set.
 Require Import function.
-Require Import nat0.
+Require Import nat.
 Require Import mult_div.
 Require Import mult_pow.
 
 (* begin hide *)
 Open Scope card_scope.
 (* end end hide *)
-Definition finite κ := κ < |nat0|.
-Definition countable κ := κ <= |nat0|.
-Definition denumerable κ := κ = |nat0|.
-Definition infinite κ := |nat0| <= κ.
-Definition uncountable κ := |nat0| < κ.
+Definition finite κ := κ < |nat|.
+Definition countable κ := κ <= |nat|.
+Definition denumerable κ := κ = |nat|.
+Definition infinite κ := |nat| <= κ.
+Definition uncountable κ := |nat| < κ.
 
 Theorem finite_is_countable : ∀ κ, finite κ → countable κ.
     intros κ H.
@@ -41,11 +41,11 @@ Theorem uncountable_is_infinite : ∀ κ, uncountable κ → infinite κ.
     apply H.
 Qed.
 
-Theorem nat0_is_finite : ∀ n, finite (nat0_to_card n).
-    assert (∀ n, nat0_to_card n <= |nat0|) as n_countable.
+Theorem nat_is_finite : ∀ n, finite (nat_to_card n).
+    assert (∀ n, nat_to_card n <= |nat|) as n_countable.
     {
         intros n.
-        unfold nat0_to_card, le; equiv_simpl.
+        unfold nat_to_card, le; equiv_simpl.
         exists (λ x, [x|]).
         intros a b eq.
         apply set_type_eq.
@@ -53,22 +53,22 @@ Theorem nat0_is_finite : ∀ n, finite (nat0_to_card n).
     }
     intros n.
     split; try apply n_countable.
-    nat0_induction n.
+    nat_induction n.
     -   intro contr.
-        unfold nat0_to_card in contr; equiv_simpl in contr.
+        unfold nat_to_card in contr; equiv_simpl in contr.
         destruct contr as [f f_bij].
         pose proof (rand f_bij 0) as [x x_eq].
-        exact (nat0_lt_0_false x).
+        exact (nat_lt_0_false x).
     -   intro eq.
         apply IHn; clear IHn.
         apply antisym.
         1: apply n_countable.
         symmetry in eq.
-        unfold nat0_to_card in eq; unfold nat0_to_card, le.
+        unfold nat_to_card in eq; unfold nat_to_card, le.
         equiv_simpl; equiv_simpl in eq.
         destruct eq as [f f_bij].
-        pose proof (rand f_bij [n|nat0_lt_suc n]) as [m m_eq].
-        pose (g x := If x < m then f x else f (nat0_suc x)).
+        pose proof (rand f_bij [n|nat_lt_suc n]) as [m m_eq].
+        pose (g x := If x < m then f x else f (nat_suc x)).
         assert (∀ x, [g x|] < n) as g_lt.
         {
             intros x.
@@ -76,26 +76,26 @@ Theorem nat0_is_finite : ∀ n, finite (nat0_to_card n).
             case_if.
             -   pose proof [|f x] as fx_lt.
                 cbn in fx_lt.
-                rewrite nat0_lt_suc_le in fx_lt.
+                rewrite nat_lt_suc_le in fx_lt.
                 split; try exact fx_lt.
                 intro contr.
-                assert (f x = [n|nat0_lt_suc n]) as eq
+                assert (f x = [n|nat_lt_suc n]) as eq
                     by (apply set_type_eq; exact contr).
                 rewrite <- eq in m_eq.
                 apply f_bij in m_eq.
                 symmetry in m_eq.
                 destruct l; contradiction.
-            -   pose proof [|f (nat0_suc x)] as fx_lt.
+            -   pose proof [|f (nat_suc x)] as fx_lt.
                 cbn in fx_lt.
-                rewrite nat0_lt_suc_le in fx_lt.
+                rewrite nat_lt_suc_le in fx_lt.
                 split; try exact fx_lt.
                 intro contr.
-                assert (f (nat0_suc x) = [n|nat0_lt_suc n]) as eq
+                assert (f (nat_suc x) = [n|nat_lt_suc n]) as eq
                     by (apply set_type_eq; exact contr).
                 rewrite <- eq in m_eq.
                 apply f_bij in m_eq.
                 rewrite m_eq in n0.
-                pose proof (nat0_lt_suc x).
+                pose proof (nat_lt_suc x).
                 contradiction.
         }
         exists (λ x, [[g x|] | g_lt x]).
@@ -109,24 +109,24 @@ Theorem nat0_is_finite : ∀ n, finite (nat0_to_card n).
         +   exact eq2.
         +   rewrite eq2 in l.
             rewrite nlt_le in n0.
-            pose proof (trans (le_lt_trans n0 (nat0_lt_suc b)) l) as [eq neq].
+            pose proof (trans (le_lt_trans n0 (nat_lt_suc b)) l) as [eq neq].
             contradiction.
         +   rewrite <- eq2 in l.
             rewrite nlt_le in n0.
-            pose proof (trans (le_lt_trans n0 (nat0_lt_suc a)) l) as [eq neq].
+            pose proof (trans (le_lt_trans n0 (nat_lt_suc a)) l) as [eq neq].
             contradiction.
         +   inversion eq2.
             reflexivity.
 Qed.
 
-Theorem greater_all_nat0_inf : ∀ κ, (∀ a, nat0_to_card a < κ) → infinite κ.
+Theorem greater_all_nat_inf : ∀ κ, (∀ a, nat_to_card a < κ) → infinite κ.
     intros A A_gt.
     equiv_get_value A.
     assert A as c.
     {
         classic_contradiction contr.
         specialize (A_gt 0) as [A_ge A_neq].
-        unfold le, nat0_to_card in *; equiv_simpl in A_ge; equiv_simpl in A_neq.
+        unfold le, nat_to_card in *; equiv_simpl in A_ge; equiv_simpl in A_neq.
         destruct A_ge as [f f_inj].
         rewrite not_ex in A_neq.
         specialize (A_neq f).
@@ -138,19 +138,19 @@ Theorem greater_all_nat0_inf : ∀ κ, (∀ a, nat0_to_card a < κ) → infinite
         destruct f_sur as [a f_sur].
         contradiction.
     }
-    assert (∀ f : nat0_strong_recursion_domain A,
-        ∃ a, ∀ n, nat0_sr_f A f n ≠ a) as h_ex.
+    assert (∀ f : nat_strong_recursion_domain A,
+        ∃ a, ∀ n, nat_sr_f A f n ≠ a) as h_ex.
     {
         intros [fp ff]; cbn.
         classic_case (surjective ff).
-        -   assert (|A| <= nat0_to_card (nat0_suc fp)) as leq.
+        -   assert (|A| <= nat_to_card (nat_suc fp)) as leq.
             {
-                unfold nat0_to_card, le; equiv_simpl.
+                unfold nat_to_card, le; equiv_simpl.
                 apply partition_principle.
                 exists ff.
                 exact s.
             }
-            pose proof (lt_le_trans (A_gt (nat0_suc fp)) leq) as [C0 C1].
+            pose proof (lt_le_trans (A_gt (nat_suc fp)) leq) as [C0 C1].
             contradiction.
         -   unfold surjective in n.
             rewrite not_all in n.
@@ -168,8 +168,8 @@ Theorem greater_all_nat0_inf : ∀ κ, (∀ a, nat0_to_card a < κ) → infinite
     assert (∀ m n, m < n → f m ≠ f n) as wlog.
     {
         intros m n ltq.
-        nat0_destruct n.
-        -   apply nat0_lt_zero in ltq.
+        nat_destruct n.
+        -   apply nat_lt_zero in ltq.
             contradiction.
         -   specialize (f_rec n).
             rewrite_ex_val a a_eq; cbn in *.
@@ -188,9 +188,9 @@ Theorem greater_all_nat0_inf : ∀ κ, (∀ a, nat0_to_card a < κ) → infinite
         contradiction.
 Qed.
 
-Theorem fin_nat0_ex : ∀ κ, finite κ → ∃ n, nat0_to_card n = κ.
+Theorem fin_nat_ex : ∀ κ, finite κ → ∃ n, nat_to_card n = κ.
     intros κ κ_fin.
-    assert (∃ n, κ <= nat0_to_card n) as κ_le.
+    assert (∃ n, κ <= nat_to_card n) as κ_le.
     {
         classic_contradiction contr.
         rewrite not_ex in contr.
@@ -198,24 +198,24 @@ Theorem fin_nat0_ex : ∀ κ, finite κ → ∃ n, nat0_to_card n = κ.
         unfold finite in κ_fin.
         rewrite <- nle_lt in κ_fin.
         apply κ_fin; clear κ_fin.
-        apply greater_all_nat0_inf.
+        apply greater_all_nat_inf.
         exact contr.
     }
-    pose proof (nat0_wo _ κ_le) as [m [κ_le_m m_min]]; clear κ_le.
+    pose proof (nat_wo _ κ_le) as [m [κ_le_m m_min]]; clear κ_le.
     exists m.
     classic_contradiction contr.
     rewrite neq_sym in contr.
-    nat0_destruct m.
+    nat_destruct m.
     -   pose proof (antisym κ_le_m (card_le_zero κ)).
         contradiction.
-    -   assert (κ <= nat0_to_card m) as κ_le_m2.
+    -   assert (κ <= nat_to_card m) as κ_le_m2.
         {
             equiv_get_value κ.
             rename κ into A.
-            unfold le, nat0_to_card; equiv_simpl.
-            unfold le, nat0_to_card in κ_le_m; equiv_simpl in κ_le_m.
+            unfold le, nat_to_card; equiv_simpl.
+            unfold le, nat_to_card in κ_le_m; equiv_simpl in κ_le_m.
             destruct κ_le_m as [f f_inj].
-            unfold nat0_to_card in contr; equiv_simpl in contr.
+            unfold nat_to_card in contr; equiv_simpl in contr.
             rewrite not_ex in contr.
             specialize (contr f).
             unfold bijective in contr.
@@ -230,7 +230,7 @@ Theorem fin_nat0_ex : ∀ κ, finite κ → ∃ n, nat0_to_card n = κ.
                 {
                     intros x.
                     pose proof [|f x] as fx_lt; cbn in fx_lt.
-                    rewrite nat0_lt_suc_le in fx_lt.
+                    rewrite nat_lt_suc_le in fx_lt.
                     split; try exact fx_lt.
                     intro contr.
                     rewrite <- eq in contr.
@@ -250,11 +250,11 @@ Theorem fin_nat0_ex : ∀ κ, finite κ → ∃ n, nat0_to_card n = κ.
                     case_if.
                     -   destruct y as [y y_lt]; cbn in *.
                         pose proof y_lt as y_lt2.
-                        rewrite nat0_lt_suc_le in y_lt2.
+                        rewrite nat_lt_suc_le in y_lt2.
                         split; assumption.
                     -   split; try exact n.
                         pose proof [|f x] as fx_lt; cbn in fx_lt.
-                        rewrite nat0_lt_suc_le in fx_lt.
+                        rewrite nat_lt_suc_le in fx_lt.
                         exact fx_lt.
                 }
                 exists (λ x, [g x|g_lt x]).
@@ -276,23 +276,23 @@ Theorem fin_nat0_ex : ∀ κ, finite κ → ∃ n, nat0_to_card n = κ.
         specialize (m_min _ κ_le_m2).
         rewrite <- nlt_le in m_min.
         apply m_min.
-        apply nat0_lt_suc.
+        apply nat_lt_suc.
 Qed.
 
-Theorem inf_not_nat0 : ∀ κ, infinite κ → ∀ n, nat0_to_card n ≠ κ.
+Theorem inf_not_nat : ∀ κ, infinite κ → ∀ n, nat_to_card n ≠ κ.
     intros κ κ_inf n eq.
     subst.
-    pose proof (nat0_is_finite n) as fin.
+    pose proof (nat_is_finite n) as fin.
     unfold infinite, finite in *.
     pose proof (lt_le_trans fin κ_inf) as [C0 C1]; contradiction.
 Qed.
 
 Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
     intros A B A_inf B_fin.
-    pose proof (fin_nat0_ex B B_fin) as [n n_eq].
+    pose proof (fin_nat_ex B B_fin) as [n n_eq].
     subst; clear B_fin.
     equiv_get_value A.
-    unfold nat0_to_card, plus; equiv_simpl.
+    unfold nat_to_card, plus; equiv_simpl.
     unfold infinite, le in A_inf; equiv_simpl in A_inf.
     destruct A_inf as [f f_inj].
     exists (λ x, match x with
@@ -331,7 +331,7 @@ Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
                 rewrite <- eq in b_lt.
                 rewrite <- (plus_lid n) in b_lt at 2.
                 apply lt_plus_rcancel in b_lt.
-                contradiction (nat0_lt_zero _ b_lt).
+                contradiction (nat_lt_zero _ b_lt).
             *   cbn in eq.
                 rewrite not_ex in n0.
                 specialize (n0 b).
@@ -343,7 +343,7 @@ Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
                 rewrite eq in a_lt.
                 rewrite <- (plus_lid n) in a_lt at 2.
                 apply lt_plus_rcancel in a_lt.
-                contradiction (nat0_lt_zero _ a_lt).
+                contradiction (nat_lt_zero _ a_lt).
             *   rewrite not_ex in n0.
                 specialize (n0 a).
                 contradiction.
@@ -359,7 +359,7 @@ Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
             *   exists (inr [m|ltq]).
                 exact m_eq.
             *   rewrite nlt_le in nltq.
-                apply nat0_le_ex in nltq as [c c_eq].
+                apply nat_le_ex in nltq as [c c_eq].
                 exists (inl (f c)).
                 destruct (strong_excluded_middle _) as [ex|nex].
                 --  rewrite_ex_val x xH.
@@ -376,66 +376,66 @@ Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
             reflexivity.
 Qed.
 
-Theorem nat0_mult_nat0 : |nat0| * |nat0| = |nat0|.
-    assert (|nat0| = |set_type (λ n, 0 ≠ n)|) as eq.
+Theorem nat_mult_nat : |nat| * |nat| = |nat|.
+    assert (|nat| = |set_type (λ n, 0 ≠ n)|) as eq.
     {
-        assert (∀ n, 0 ≠ nat0_suc n) as suc_neq by (intros n c; inversion c).
+        assert (∀ n, 0 ≠ nat_suc n) as suc_neq by (intros n c; inversion c).
         equiv_simpl.
-        exists (λ n, [nat0_suc n | suc_neq n]).
+        exists (λ n, [nat_suc n | suc_neq n]).
         split.
         -   intros a b eq.
             inversion eq.
             reflexivity.
         -   intros [y y_neq].
-            nat0_destruct y; try contradiction.
+            nat_destruct y; try contradiction.
             exists y.
             apply set_type_eq; reflexivity.
     }
     rewrite eq at 3; clear eq.
     unfold mult; equiv_simpl.
-    pose (f (x : nat0 * nat0) := (2 ^ (fst x) * (2 * snd x + 1))%nat0).
+    pose (f (x : nat * nat) := (2 ^ (fst x) * (2 * snd x + 1))%nat).
     assert (∀ x, 0 ≠ f x) as f_in.
     {
         intros [x1 x2] eq.
         unfold f in eq; cbn in eq.
-        apply nat0_mult_zero in eq.
+        apply nat_mult_zero in eq.
         destruct eq as [eq|eq].
-        -   apply pow_not_zero_nat0 in eq; try contradiction.
+        -   apply pow_not_zero_nat in eq; try contradiction.
             intro contr; inversion contr.
-        -   apply nat0_plus_zero in eq.
+        -   apply nat_plus_zero in eq.
             destruct eq as [C0 C1]; inversion C1.
     }
     exists (λ x, [f x|f_in x]).
-    assert ((zero (U := nat0)) ≠ 2) as two_nz by (intro C; inversion C).
+    assert ((zero (U := nat)) ≠ 2) as two_nz by (intro C; inversion C).
     split.
     -   intros [a1 a2] [b1 b2] eq.
         unfold f in eq; cbn in eq.
         inversion eq as [eq2].
         clear eq.
         revert b1 eq2.
-        nat0_induction a1.
+        nat_induction a1.
         +   intros b1 eq.
-            rewrite pow_0_nat0, mult_lid in eq.
-            nat0_destruct b1.
-            *   rewrite pow_0_nat0, mult_lid in eq.
+            rewrite pow_0_nat, mult_lid in eq.
+            nat_destruct b1.
+            *   rewrite pow_0_nat, mult_lid in eq.
                 apply plus_rcancel in eq.
-                apply nat0_mult_lcancel in eq; try exact two_nz.
+                apply nat_mult_lcancel in eq; try exact two_nz.
                 rewrite eq; reflexivity.
             *   cbn in eq.
                 rewrite (mult_comm _ 2) in eq.
                 rewrite <- mult_assoc in eq.
                 do 2 rewrite (mult_comm 2) in eq.
                 symmetry in eq.
-                apply nat0_even_neq_odd in eq.
+                apply nat_even_neq_odd in eq.
                 contradiction.
         +   intros b1 eq.
-            nat0_destruct b1.
-            *   rewrite pow_0_nat0, mult_lid in eq.
+            nat_destruct b1.
+            *   rewrite pow_0_nat, mult_lid in eq.
                 cbn in eq.
                 rewrite (mult_comm _ 2) in eq.
                 rewrite <- mult_assoc in eq.
                 do 3 rewrite (mult_comm 2) in eq.
-                apply nat0_even_neq_odd in eq.
+                apply nat_even_neq_odd in eq.
                 contradiction.
             *   cbn in eq.
                 do 2 rewrite (mult_comm _ 2) in eq.
@@ -445,70 +445,70 @@ Theorem nat0_mult_nat0 : |nat0| * |nat0| = |nat0|.
                 inversion IHa1.
                 reflexivity.
     -   intros [y y_nz].
-        pose (S n := ¬((2 ^ n)%nat0 ∣ y)).
+        pose (S n := ¬((2 ^ n)%nat ∣ y)).
         assert (∃ n, S n) as S_ex.
         {
             exists y.
             unfold S.
             intros div.
-            apply nat0_div_le in div; try exact y_nz.
-            assert (∀ n, nat0_suc n < (2^(nat0_suc n))%nat0) as ltq.
+            apply nat_div_le in div; try exact y_nz.
+            assert (∀ n, nat_suc n < (2^(nat_suc n))%nat) as ltq.
             {
                 clear.
-                nat0_induction n.
-                -   rewrite pow_1_nat0.
+                nat_induction n.
+                -   rewrite pow_1_nat.
                     split.
                     +   unfold le, one, plus; cbn.
                         exact true.
                     +   intro contr; inversion contr.
                 -   rewrite pow_simpl.
                     apply lt_lplus with 1 in IHn.
-                    change (1 + nat0_suc n) with (nat0_suc (nat0_suc n)) in IHn.
+                    change (1 + nat_suc n) with (nat_suc (nat_suc n)) in IHn.
                     apply (trans IHn).
                     rewrite ldist.
                     rewrite mult_rid.
                     apply lt_rplus.
                     clear IHn.
-                    nat0_induction n.
-                    +   rewrite pow_1_nat0.
+                    nat_induction n.
+                    +   rewrite pow_1_nat.
                         split.
                         *   unfold one, plus, le; cbn.
                             exact true.
                         *   intro contr; inversion contr.
                     +   apply (trans IHn).
-                        rewrite (pow_simpl _ (nat0_suc n)).
+                        rewrite (pow_simpl _ (nat_suc n)).
                         rewrite ldist.
                         rewrite mult_rid.
                         rewrite <- plus_lid at 1.
                         apply lt_rplus.
-                        split; try apply nat0_le_zero.
+                        split; try apply nat_le_zero.
                         intro contr.
                         rewrite <- contr in IHn.
-                        pose proof (lt_le_trans IHn (nat0_le_zero 1))
+                        pose proof (lt_le_trans IHn (nat_le_zero 1))
                             as [C0 C1]; contradiction.
             }
-            nat0_destruct y.
-            -   rewrite pow_0_nat0 in div.
-                pose proof (le_lt_trans div (make_and (nat0_le_zero 1) not_trivial))
+            nat_destruct y.
+            -   rewrite pow_0_nat in div.
+                pose proof (le_lt_trans div (make_and (nat_le_zero 1) not_trivial))
                     as [C0 C1]; contradiction.
             -   specialize (ltq y).
                 pose proof (lt_le_trans ltq div) as [C0 C1]; contradiction.
         }
-        pose proof (nat0_wo S S_ex) as [x1 [Sx1 x1_min]].
-        nat0_destruct x1.
+        pose proof (nat_wo S S_ex) as [x1 [Sx1 x1_min]].
+        nat_destruct x1.
         {
             unfold S in Sx1.
-            rewrite pow_0_nat0 in Sx1.
+            rewrite pow_0_nat in Sx1.
             pose proof (one_divides y).
             contradiction.
         }
         unfold S in Sx1.
-        assert ((2^x1)%nat0 ∣ y) as x1_div.
+        assert ((2^x1)%nat ∣ y) as x1_div.
         {
             classic_contradiction contr.
             specialize (x1_min _ contr).
             rewrite <- nlt_le in x1_min.
-            pose proof (nat0_lt_suc x1).
+            pose proof (nat_lt_suc x1).
             contradiction.
         }
         destruct x1_div as [c c_eq].
@@ -516,16 +516,16 @@ Theorem nat0_mult_nat0 : |nat0| * |nat0| = |nat0|.
         {
             intros [d d_eq].
             subst c.
-            rewrite <- (pow_1_nat0 2) in c_eq at 1.
+            rewrite <- (pow_1_nat 2) in c_eq at 1.
             rewrite <- mult_assoc in c_eq.
-            rewrite pow_mult_nat0 in c_eq.
-            change (1 + x1) with (nat0_suc x1) in c_eq.
+            rewrite pow_mult_nat in c_eq.
+            change (1 + x1) with (nat_suc x1) in c_eq.
             unfold divides in Sx1.
             rewrite not_ex in Sx1.
             specialize (Sx1 d).
             contradiction.
         }
-        apply nat0_odd_plus_one in c_odd as [x2 x2_eq].
+        apply nat_odd_plus_one in c_odd as [x2 x2_eq].
         exists (x1, x2).
         apply set_type_eq; cbn.
         unfold f; cbn.

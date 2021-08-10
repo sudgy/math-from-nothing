@@ -220,7 +220,7 @@ Instance metric_hausdorff : HausdorffSpace U := {
 Theorem totally_bounded_bounded : ∀ X, totally_bounded X → bounded X.
     intros X X_bounded.
     specialize (X_bounded [1|one_pos]) as [A [A_fin sub_A]].
-    apply fin_nat0_ex in A_fin as [n n_eq].
+    apply fin_nat_ex in A_fin as [n n_eq].
     classic_case (0 = n) as [n0|n0].
     {
         subst.
@@ -235,13 +235,13 @@ Theorem totally_bounded_bounded : ∀ X, totally_bounded X → bounded X.
     pose (Ms x := ∃ a b : set_type A, x = d [a|] [b|]).
     assert (finite (|set_type Ms|)) as Ms_fin.
     {
-        assert (|set_type (A * A)%set| <= nat0_to_card (n * n)) as A2_size.
+        assert (|set_type (A * A)%set| <= nat_to_card (n * n)) as A2_size.
         {
-            rewrite <- nat0_to_card_mult.
+            rewrite <- nat_to_card_mult.
             symmetry in n_eq.
-            unfold nat0_to_card in n_eq; equiv_simpl in n_eq.
+            unfold nat_to_card in n_eq; equiv_simpl in n_eq.
             destruct n_eq as [f f_bij].
-            unfold le, nat0_to_card, mult; equiv_simpl.
+            unfold le, nat_to_card, mult; equiv_simpl.
             exists (λ aa,
                 (f [fst [aa|] | land [|aa]], f [snd [aa|] | rand [|aa]])).
             intros [[a1 a2] [Aa1 Aa2]] [[a3 a4] [Aa3 Aa4]] eq; cbn in *.
@@ -255,7 +255,7 @@ Theorem totally_bounded_bounded : ∀ X, totally_bounded X → bounded X.
         assert (finite (|set_type (A * A)%set|)) as A2_fin.
         {
             apply (le_lt_trans A2_size).
-            apply nat0_is_finite.
+            apply nat_is_finite.
         }
         apply (le_lt_trans2 A2_fin).
         unfold le; equiv_simpl.
@@ -286,8 +286,8 @@ Theorem totally_bounded_bounded : ∀ X, totally_bounded X → bounded X.
             classic_contradiction contr.
             apply card_false_0 in contr.
             rewrite contr in n_eq.
-            change 0 with (nat0_to_card 0) in n_eq.
-            apply nat0_to_card_eq in n_eq.
+            change 0 with (nat_to_card 0) in n_eq.
+            apply nat_to_card_eq in n_eq.
             symmetry in n_eq; contradiction.
         }
         exists a, a.

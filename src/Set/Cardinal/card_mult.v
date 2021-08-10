@@ -6,7 +6,7 @@ Require Import card_plus.
 Require Import set.
 Require Import function.
 Require Export mult_ring.
-Require Import nat0.
+Require Import nat.
 
 (* begin hide *)
 Open Scope card_scope.
@@ -83,11 +83,11 @@ Lemma card_mult_lanni : ∀ κ, 0 * κ = 0.
     intros A.
     equiv_get_value A.
     unfold zero; cbn.
-    unfold nat0_to_card, mult; equiv_simpl.
-    assert (set_type (λ x : nat0, x < 0) → False) as xf.
+    unfold nat_to_card, mult; equiv_simpl.
+    assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat0_lt_zero _ x_lt).
+        exact (nat_lt_zero _ x_lt).
     }
     exists (λ x, False_rect _ (xf (fst x))).
     split.
@@ -101,14 +101,14 @@ Instance card_mult_lanni_class : MultLanni card := {
 }.
 
 Instance card_one : One card := {
-    one := nat0_to_card 1
+    one := nat_to_card 1
 }.
 
 Lemma card_mult_lid : ∀ κ, 1 * κ = κ.
     intros A.
     equiv_get_value A.
     unfold one; cbn.
-    unfold nat0_to_card, mult; equiv_simpl.
+    unfold nat_to_card, mult; equiv_simpl.
     exists (λ x, snd x).
     split.
     -   intros [[x x_lt] a] [[y y_lt] b] eq.
@@ -117,17 +117,17 @@ Lemma card_mult_lid : ∀ κ, 1 * κ = κ.
         apply f_equal2; try reflexivity.
         apply set_type_eq; cbn.
         unfold one in x_lt, y_lt; cbn in x_lt, y_lt.
-        rewrite nat0_lt_suc_le in x_lt.
-        rewrite nat0_lt_suc_le in y_lt.
-        apply nat0_le_zero_eq in x_lt.
-        apply nat0_le_zero_eq in y_lt.
+        rewrite nat_lt_suc_le in x_lt.
+        rewrite nat_lt_suc_le in y_lt.
+        apply nat_le_zero_eq in x_lt.
+        apply nat_le_zero_eq in y_lt.
         subst.
         reflexivity.
     -   intros a.
-        assert (zero (U := nat0) < 1) as z_lt.
+        assert (zero (U := nat) < 1) as z_lt.
         {
             split.
-            -   apply nat0_le_zero.
+            -   apply nat_le_zero.
             -   intro contr; inversion contr.
         }
         exists ([0|z_lt], a).
@@ -164,16 +164,16 @@ Instance card_ldist_class : Ldist card := {
 Theorem card_0_false : ∀ A, (|A| = 0) = (A → False).
     intros A.
     unfold zero; cbn.
-    unfold nat0_to_card; equiv_simpl.
+    unfold nat_to_card; equiv_simpl.
     apply propositional_ext; split.
     -   intros [f f_bij] a.
         destruct (f a) as [x x_lt].
-        exact (nat0_lt_zero _ x_lt).
+        exact (nat_lt_zero _ x_lt).
     -   intros af.
         exists (empty_function _ _ af).
         apply empty_bij.
         intros [x x_lt].
-        exact (nat0_lt_zero _ x_lt).
+        exact (nat_lt_zero _ x_lt).
 Qed.
 
 Theorem card_mult_zero : ∀ κ μ, κ * μ = 0 → {κ = 0} + {μ = 0}.
@@ -221,8 +221,8 @@ Qed.
 Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
     intros a.
     unfold one; cbn.
-    unfold nat0_to_card; equiv_simpl.
-    pose proof (nat0_lt_suc 0) as one_pos.
+    unfold nat_to_card; equiv_simpl.
+    pose proof (nat_lt_suc 0) as one_pos.
     exists (λ x, [0|one_pos]).
     split.
     -   intros [x x_eq] [y y_eq] eq; clear eq.
@@ -232,7 +232,7 @@ Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
     -   intros [y y_lt].
         exists [a|refl a].
         apply set_type_eq; cbn.
-        apply nat0_lt_1.
+        apply nat_lt_1.
         exact y_lt.
 Qed.
 (* begin hide *)

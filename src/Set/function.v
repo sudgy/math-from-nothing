@@ -3,7 +3,7 @@ Require Import init.
 Require Import set_base.
 Require Import set_type.
 Require Export relation.
-Require Import nat0.
+Require Import nat.
 
 Theorem func_eq {A B} : ∀ f1 f2 : A → B, f1 = f2 → ∀ x, f1 x = f2 x.
     intros f1 f2 eq x.
@@ -45,8 +45,8 @@ Definition bijective {U V} (f : U → V) := injective f ∧ surjective f.
 Definition identity {U} (x : U) := x.
 Fixpoint iterate_func {U} (f : U → U) n :=
     match n with
-    | nat0_zero => identity
-    | nat0_suc n' => λ x, f (iterate_func f n' x)
+    | nat_zero => identity
+    | nat_suc n' => λ x, f (iterate_func f n' x)
     end.
 
 Theorem identity_injective {U} : injective (@identity U).

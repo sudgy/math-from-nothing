@@ -5,8 +5,8 @@ Require Import card_order.
 Require Import card_plus.
 Require Import card_mult.
 Require Import card_infinite1.
-Require Import card_nat0.
-Require Import nat0.
+Require Import card_nat.
+Require Import nat.
 Require Import set.
 Require Import well_order.
 
@@ -25,26 +25,26 @@ Hypothesis all_greater : ∀ a, ∃ b, strict op a b.
 
 Fixpoint create_greater n :=
     match n with
-    | nat0_zero => x
-    | nat0_suc n' => ex_val (all_greater (create_greater n'))
+    | nat_zero => x
+    | nat_suc n' => ex_val (all_greater (create_greater n'))
     end.
 
 Lemma create_greater_suc :
-        ∀ n, strict op (create_greater n) (create_greater (nat0_suc n)).
+        ∀ n, strict op (create_greater n) (create_greater (nat_suc n)).
     intros n; cbn.
     rewrite_ex_val n' n'_eq.
     exact n'_eq.
 Qed.
 
 Lemma create_greater_zero : ∀ n, op x (create_greater n).
-    nat0_induction n.
+    nat_induction n.
     -   apply refl.
     -   apply (trans IHn).
         apply create_greater_suc.
 Qed.
 Lemma create_greater_zero_suc :
-        ∀ n, strict op x (create_greater (nat0_suc n)).
-    nat0_induction n.
+        ∀ n, strict op x (create_greater (nat_suc n)).
+    nat_induction n.
     -   unfold one; cbn.
         rewrite_ex_val x' x'_eq.
         exact x'_eq.
@@ -56,16 +56,16 @@ Qed.
 Lemma create_greater_lt :
         ∀ a b, a < b → strict op (create_greater a) (create_greater b).
     intros a b ltq.
-    apply nat0_lt_ex in ltq as [c [c_nz c_eq]].
+    apply nat_lt_ex in ltq as [c [c_nz c_eq]].
     subst b.
-    nat0_destruct c; try contradiction.
+    nat_destruct c; try contradiction.
     clear c_nz.
-    nat0_induction c.
+    nat_induction c.
     -   rewrite plus_comm.
         unfold one, plus; cbn.
         apply create_greater_suc.
     -   apply (trans IHc).
-        rewrite (nat0_plus_rsuc a (nat0_suc c)).
+        rewrite (nat_plus_rsuc a (nat_suc c)).
         apply create_greater_suc.
 Qed.
 
@@ -73,23 +73,23 @@ Theorem all_greater_inf_base : infinite (|U|).
     unfold infinite, le; equiv_simpl.
     exists create_greater.
     intros a.
-    nat0_induction a; intros b eq.
-    -   nat0_destruct b; try reflexivity.
+    nat_induction a; intros b eq.
+    -   nat_destruct b; try reflexivity.
         pose proof (create_greater_zero_suc b) as [leq neq].
         contradiction.
-    -   nat0_destruct b.
+    -   nat_destruct b.
         +   symmetry in eq.
             pose proof (create_greater_zero_suc a) as [leq neq].
             contradiction.
         +   apply f_equal.
             apply IHa.
             destruct (trichotomy a b) as [[leq|eq']|leq].
-            *   rewrite <- nat0_sucs_lt in leq.
+            *   rewrite <- nat_sucs_lt in leq.
                 apply create_greater_lt in leq.
                 destruct leq; contradiction.
             *   rewrite eq'; reflexivity.
             *   symmetry in eq.
-                rewrite <- nat0_sucs_lt in leq.
+                rewrite <- nat_sucs_lt in leq.
                 apply create_greater_lt in leq.
                 destruct leq; contradiction.
 Qed.
@@ -308,13 +308,13 @@ End InfiniteOrder4.
 Theorem empty_finite {U} : finite (|set_type (@empty U)|).
     rewrite <- empty_set_size.
     unfold zero; cbn.
-    apply nat0_is_finite.
+    apply nat_is_finite.
 Qed.
 
 Theorem singleton_finite {U} : ∀ a : U, finite (|set_type (singleton a)|).
     intros a.
     rewrite singleton_size.
-    apply nat0_is_finite.
+    apply nat_is_finite.
 Qed.
 
 Theorem card_pos_ex {U} : 0 ≠ |U| → U.
@@ -330,7 +330,7 @@ Theorem infinite_ex {U} : infinite (|U|) → U.
     apply card_pos_ex.
     intros contr.
     rewrite <- contr in U_inf.
-    apply (lt_le_trans (nat0_is_finite 0)) in U_inf.
+    apply (lt_le_trans (nat_is_finite 0)) in U_inf.
     destruct U_inf; contradiction.
 Qed.
 
@@ -360,11 +360,11 @@ Theorem finite_union_finite {U} : ∀ SS : (U → Prop) → Prop,
         }
         rewrite eq.
         rewrite <- empty_set_size.
-        apply nat0_is_finite.
+        apply nat_is_finite.
     }
-    apply fin_nat0_ex in SS_fin as [n n_eq].
+    apply fin_nat_ex in SS_fin as [n n_eq].
     revert SS n_eq S_fin.
-    nat0_induction n.
+    nat_induction n.
     -   intros SS SS_empty S_fin.
         assert (⋃ SS = ∅) as eq.
         {
@@ -376,7 +376,7 @@ Theorem finite_union_finite {U} : ∀ SS : (U → Prop) → Prop,
         }
         rewrite eq.
         rewrite <- empty_set_size.
-        apply nat0_is_finite.
+        apply nat_is_finite.
     -   intros SS SS_size S_fin.
         assert U as x.
         {
@@ -388,12 +388,12 @@ Theorem finite_union_finite {U} : ∀ SS : (U → Prop) → Prop,
             classic_contradiction contr.
             apply card_false_0 in contr.
             rewrite contr in SS_size.
-            change 0 with (nat0_to_card 0) in SS_size.
-            apply nat0_to_card_eq in SS_size.
+            change 0 with (nat_to_card 0) in SS_size.
+            apply nat_to_card_eq in SS_size.
             inversion SS_size.
         }
         symmetry in SS_size.
-        pose proof (card_plus_one_nat0 _ _ S SS_size) as SS_size2.
+        pose proof (card_plus_one_nat _ _ S SS_size) as SS_size2.
         destruct S as [S SS_S]; cbn in *.
         symmetry in SS_size2.
         assert (∀ T, (SS - singleton S)%set T → finite (|set_type T|))as S_fin2.
@@ -404,13 +404,13 @@ Theorem finite_union_finite {U} : ∀ SS : (U → Prop) → Prop,
         }
         specialize (IHn _ SS_size2 S_fin2).
         apply S_fin in SS_S.
-        apply fin_nat0_ex in IHn as [m1 m1_eq].
-        apply fin_nat0_ex in SS_S as [m2 m2_eq].
+        apply fin_nat_ex in IHn as [m1 m1_eq].
+        apply fin_nat_ex in SS_S as [m2 m2_eq].
         pose proof (lrplus m1_eq m2_eq) as eq.
-        rewrite nat0_to_card_plus in eq.
+        rewrite nat_to_card_plus in eq.
         unfold plus in eq at 2; equiv_simpl in eq.
-        assert (finite (nat0_to_card (m1 + m2))) as SS_fin
-            by apply nat0_is_finite.
+        assert (finite (nat_to_card (m1 + m2))) as SS_fin
+            by apply nat_is_finite.
         rewrite eq in SS_fin.
         apply (le_lt_trans2 SS_fin).
         unfold le; equiv_simpl.
@@ -544,7 +544,7 @@ Theorem countable_union_countable {U} : ∀ (SS : (U → Prop) → Prop),
         countable (|set_type (⋃ SS)|).
     intros SS SS_count S_count.
     pose proof (union_size_mult SS _ _ SS_count S_count) as leq.
-    rewrite nat0_mult_nat0 in leq.
+    rewrite nat_mult_nat in leq.
     exact leq.
 Qed.
 (* begin hide *)

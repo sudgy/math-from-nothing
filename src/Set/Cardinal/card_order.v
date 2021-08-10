@@ -5,7 +5,7 @@ Require Import card_base.
 Require Import set.
 Require Import function.
 Require Export ord_basic.
-Require Import nat0.
+Require Import nat.
 
 (* begin hide *)
 Open Scope card_scope.
@@ -196,7 +196,7 @@ Lemma card_le_antisymmetric : ∀ κ μ, κ <= μ → μ <= κ → κ = μ.
                 unfold descendent_of in b_eq.
                 rewrite bl_descendent in b_eq.
                 rewrite not_ex in b_eq.
-                specialize (b_eq (nat0_suc n)).
+                specialize (b_eq (nat_suc n)).
                 simpl in b_eq.
                 contradiction.
         +   pose proof b_eq as b_eq2.

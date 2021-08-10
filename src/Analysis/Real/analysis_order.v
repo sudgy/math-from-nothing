@@ -64,20 +64,20 @@ Theorem seq_lim_ge_constant : ∀ yf x y,
     -   exact y_lim.
 Qed.
 
-Theorem increasing_seq_converges : ∀ f : nat0 → real,
-        (∃ M, ∀ n, |f n| <= M) → (∀ n, f n <= f (nat0_suc n)) →
+Theorem increasing_seq_converges : ∀ f : nat → real,
+        (∃ M, ∀ n, |f n| <= M) → (∀ n, f n <= f (nat_suc n)) →
         seq_converges f.
     intros f [M M_bound] f_inc.
     assert (∀ m n, m <= n → f m <= f n) as f_inc2.
     {
         intros m n leq.
-        apply nat0_le_ex in leq as [c eq].
+        apply nat_le_ex in leq as [c eq].
         subst n.
-        nat0_induction c.
+        nat_induction c.
         -   rewrite plus_rid.
             apply refl.
         -   apply (trans IHc).
-            rewrite nat0_plus_rsuc.
+            rewrite nat_plus_rsuc.
             apply f_inc.
     }
     pose (S x := ∃ n, f n = x).
@@ -127,8 +127,8 @@ Theorem increasing_seq_converges : ∀ f : nat0 → real,
     exact n_geq.
 Qed.
 
-Theorem decreasing_seq_converges : ∀ f : nat0 → real,
-        (∃ M, ∀ n, |f n| <= M) → (∀ n, f (nat0_suc n) <= f n) →
+Theorem decreasing_seq_converges : ∀ f : nat → real,
+        (∃ M, ∀ n, |f n| <= M) → (∀ n, f (nat_suc n) <= f n) →
         seq_converges f.
     intros f [M M_bound] f_dec.
     pose (g n := -f n).
@@ -171,7 +171,7 @@ Theorem real_complete : complete real.
         apply f_cauchy.
         all: rewrite <- (plus_lid N).
         all: apply le_lrplus.
-        1, 3: apply nat0_le_zero.
+        1, 3: apply nat_le_zero.
         1, 2: assumption.
     }
     assert (∀ m, seq_norm_bounded (fn m)) as fn_bounded.
@@ -231,8 +231,8 @@ Theorem real_complete : complete real.
             intros y [n y_eq]; subst y.
             apply B_upper.
             unfold S, fn.
-            exists (nat0_suc n).
-            rewrite nat0_plus_lrsuc.
+            exists (nat_suc n).
+            rewrite nat_plus_lrsuc.
             reflexivity.
     }
     exists x.
@@ -279,7 +279,7 @@ Theorem real_complete : complete real.
             specialize (contr (N + m)) as [contr|contr].
             -   rewrite <- (plus_rid N) in contr at 2.
                 apply lt_plus_lcancel in contr.
-                contradiction (nat0_lt_zero _ contr).
+                contradiction (nat_lt_zero _ contr).
             -   specialize (A_upper m).
                 unfold fn in A_upper.
                 apply le_plus_0_anb_b_a in A_upper.
@@ -330,7 +330,7 @@ Theorem series_le_converge : ∀ a b,
     assert (0 <= sum a i j) as sum_a_pos.
     {
         clear - a_pos.
-        nat0_induction j.
+        nat_induction j.
         -   apply refl.
         -   cbn.
             specialize (a_pos (i + j)).
@@ -341,7 +341,7 @@ Theorem series_le_converge : ∀ a b,
     assert (0 <= sum b i j) as sum_b_pos.
     {
         clear - a_pos ab.
-        nat0_induction j.
+        nat_induction j.
         -   apply refl.
         -   cbn.
             specialize (a_pos (i + j)).
@@ -353,7 +353,7 @@ Theorem series_le_converge : ∀ a b,
     unfold abs; cbn.
     case_if; case_if; try contradiction.
     clear l l0 sum_a_pos sum_b_pos.
-    nat0_induction j.
+    nat_induction j.
     -   unfold zero; cbn.
         apply refl.
     -   cbn.

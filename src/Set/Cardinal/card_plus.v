@@ -5,7 +5,7 @@ Require Import card_order.
 Require Import set.
 Require Import function.
 Require Export plus_group.
-Require Import nat0.
+Require Import nat.
 
 (* begin hide *)
 Open Scope card_scope.
@@ -91,18 +91,18 @@ Instance card_plus_comm_class : PlusComm card := {
 }.
 
 Instance card_zero : Zero card := {
-    zero := nat0_to_card 0
+    zero := nat_to_card 0
 }.
 
 Lemma card_plus_lid : ∀ κ, 0 + κ = κ.
     intros A.
     equiv_get_value A.
     unfold zero; cbn.
-    unfold nat0_to_card, plus; equiv_simpl.
-    assert (set_type (λ x : nat0, x < 0) → False) as xf.
+    unfold nat_to_card, plus; equiv_simpl.
+    assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat0_lt_zero _ x_lt).
+        exact (nat_lt_zero _ x_lt).
     }
     exists (λ x, match x with
                  | inl y => False_rect _ (xf y)
@@ -144,11 +144,11 @@ Theorem card_le_zero : ∀ κ, 0 <= κ.
     intros A.
     equiv_get_value A.
     unfold zero; cbn.
-    unfold nat0_to_card, le; equiv_simpl.
-    assert (set_type (λ x : nat0, x < 0) → False) as xf.
+    unfold nat_to_card, le; equiv_simpl.
+    assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat0_lt_zero _ x_lt).
+        exact (nat_lt_zero _ x_lt).
     }
     exists (empty_function _ _ xf).
     apply empty_inj.
@@ -192,21 +192,21 @@ Qed.
 Theorem card_false_0 : ∀ A, (A → False) → |A| = 0.
     intros A A_false.
     unfold zero; cbn.
-    unfold nat0_to_card; equiv_simpl.
+    unfold nat_to_card; equiv_simpl.
     exists (λ x, False_rect _ (A_false x)).
     split.
     -   intros a b eq.
         contradiction (A_false a).
     -   intros a.
-        contradiction (nat0_lt_0_false a).
+        contradiction (nat_lt_0_false a).
 Qed.
 
-Theorem card_plus_one_nat0 {U} : ∀ (S : U → Prop) n (a : set_type S),
-        |set_type S| = nat0_to_card (nat0_suc n) →
-        |set_type (S - singleton [a|])%set| = nat0_to_card n.
+Theorem card_plus_one_nat {U} : ∀ (S : U → Prop) n (a : set_type S),
+        |set_type S| = nat_to_card (nat_suc n) →
+        |set_type (S - singleton [a|])%set| = nat_to_card n.
     intros S n a S_eq.
-    unfold nat0_to_card; equiv_simpl.
-    unfold nat0_to_card in S_eq; equiv_simpl in S_eq.
+    unfold nat_to_card; equiv_simpl.
+    unfold nat_to_card in S_eq; equiv_simpl in S_eq.
     destruct S_eq as [f [f_inj f_sur]].
     classic_case ([f a|] = n) as [fa_eq|fa_neq].
     -   pose (f' (x : set_type (S - singleton [a|])%set)
@@ -215,7 +215,7 @@ Theorem card_plus_one_nat0 {U} : ∀ (S : U → Prop) n (a : set_type S),
         {
             intros x.
             split.
-            -   rewrite <- nat0_lt_suc_le.
+            -   rewrite <- nat_lt_suc_le.
                 exact [|f' x].
             -   intro contr.
                 rewrite <- fa_eq in contr.
@@ -242,10 +242,10 @@ Theorem card_plus_one_nat0 {U} : ∀ (S : U → Prop) n (a : set_type S),
             apply set_type_eq in eq3.
             exact eq3.
         +   intros [y y_lt].
-            assert (y < nat0_suc n) as y_lt2.
+            assert (y < nat_suc n) as y_lt2.
             {
                 apply (trans y_lt).
-                apply nat0_lt_suc.
+                apply nat_lt_suc.
             }
             pose proof (f_sur [y|y_lt2]) as [x x_eq].
             assert ([a|] ≠ [x|]) as x_neq.
@@ -276,10 +276,10 @@ Theorem card_plus_one_nat0 {U} : ∀ (S : U → Prop) n (a : set_type S),
             unfold f'.
             case_if.
             -   split; try exact fa_neq.
-                rewrite <- nat0_lt_suc_le.
+                rewrite <- nat_lt_suc_le.
                 exact [|f a].
             -   split; try exact n0.
-                rewrite <- nat0_lt_suc_le.
+                rewrite <- nat_lt_suc_le.
                 exact [|f [[x|] | land [|x]]].
         }
         exists (λ x, [f' x|f'_lt x]).
@@ -316,7 +316,7 @@ Theorem card_plus_one_nat0 {U} : ∀ (S : U → Prop) n (a : set_type S),
                 exact eq3.
         +   intros [y y_lt].
             classic_case ([f a|] = y) as [fay|fay].
-            *   pose proof (f_sur [n|nat0_lt_suc n]) as [x x_eq].
+            *   pose proof (f_sur [n|nat_lt_suc n]) as [x x_eq].
                 assert ([a|] ≠ [x|]) as neq.
                 {
                     intros contr.
@@ -334,7 +334,7 @@ Theorem card_plus_one_nat0 {U} : ∀ (S : U → Prop) n (a : set_type S),
                     rewrite (proof_irrelevance _ Sx) in n0.
                     rewrite x_eq in n0.
                     contradiction.
-            *   pose proof (f_sur [y|trans y_lt (nat0_lt_suc n)]) as [x x_eq].
+            *   pose proof (f_sur [y|trans y_lt (nat_lt_suc n)]) as [x x_eq].
                 assert ([a|] ≠ [x|]) as neq.
                 {
                     intros contr.
@@ -364,9 +364,9 @@ Theorem zero_is_empty {U} : ∀ S : U → Prop, 0 = |set_type S| → S = empty.
     apply not_ex_empty.
     intros x Sx.
     unfold zero in S_0; cbn in S_0.
-    unfold nat0_to_card in S_0; equiv_simpl in S_0.
+    unfold nat_to_card in S_0; equiv_simpl in S_0.
     destruct S_0 as [f f_bij].
-    contradiction (nat0_lt_0_false (f [x|Sx])).
+    contradiction (nat_lt_0_false (f [x|Sx])).
 Qed.
 
 Theorem empty_set_size {U} : 0 = |set_type (U := U) ∅|.

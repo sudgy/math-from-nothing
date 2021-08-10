@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import nat0.
+Require Import nat.
 
 Set Implicit Arguments.
 
@@ -155,7 +155,7 @@ Fixpoint list_zip {A B : Type} (l1 : list A) (l2 : list B) :=
 
 Fixpoint list_size {A : Type} (l : list A) :=
     match l with
-    | a :: l' => nat0_suc (list_size l')
+    | a :: l' => nat_suc (list_size l')
     | list_end => 0
     end.
 

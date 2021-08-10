@@ -4,7 +4,7 @@ Require Export ord_base.
 Require Import function.
 Require Import equivalence.
 Require Import zorn.
-Require Import nat0.
+Require Import nat.
 
 (* begin hide *)
 Section OrdOrder.
@@ -1219,13 +1219,13 @@ Instance ord_le_wf_class : WellFounded le := {
     well_founded := ord_le_wf
 }.
 
-Lemma nat0_to_ord_lt1 : ∀ a b, a < b → nat0_to_ord a < nat0_to_ord b.
+Lemma nat_to_ord_lt1 : ∀ a b, a < b → nat_to_ord a < nat_to_ord b.
     intros a b leq.
-    unfold nat0_to_ord.
+    unfold nat_to_ord.
     rewrite ord_lt_initial.
     exists [a|leq].
-    assert (∀ n : ord_U (nat0_to_ord_type a), initial_segment_set
-        (nat0_to_ord_type b) [a | leq] [[n|]|trans [|n] leq]) as n_in.
+    assert (∀ n : ord_U (nat_to_ord_type a), initial_segment_set
+        (nat_to_ord_type b) [a | leq] [[n|]|trans [|n] leq]) as n_in.
     {
         intros [n n_lt].
         split; cbn.
@@ -1261,36 +1261,36 @@ Lemma nat0_to_ord_lt1 : ∀ a b, a < b → nat0_to_ord a < nat0_to_ord b.
         reflexivity.
 Qed.
 (* end hide *)
-Theorem nat0_to_ord_lt : ∀ a b, (nat0_to_ord a < nat0_to_ord b) = (a < b).
+Theorem nat_to_ord_lt : ∀ a b, (nat_to_ord a < nat_to_ord b) = (a < b).
     intros a b.
-    apply propositional_ext; split; try apply nat0_to_ord_lt1.
+    apply propositional_ext; split; try apply nat_to_ord_lt1.
     intros eq.
     classic_contradiction contr.
     rewrite nlt_le in contr.
     classic_case (b = a).
     -   subst.
         destruct eq; contradiction.
-    -   pose proof (nat0_to_ord_lt1 _ _ (make_and contr n)) as eq2.
+    -   pose proof (nat_to_ord_lt1 _ _ (make_and contr n)) as eq2.
         pose proof (trans eq eq2) as [c d].
         contradiction.
 Qed.
 
-Theorem nat0_to_ord_eq : ∀ a b, nat0_to_ord a = nat0_to_ord b → a = b.
+Theorem nat_to_ord_eq : ∀ a b, nat_to_ord a = nat_to_ord b → a = b.
     intros a b eq.
     destruct (trichotomy a b) as [[leq|req]|leq]; try exact req; exfalso.
-    -   rewrite <- nat0_to_ord_lt in leq.
+    -   rewrite <- nat_to_ord_lt in leq.
         destruct leq; contradiction.
     -   symmetry in eq.
-        rewrite <- nat0_to_ord_lt in leq.
+        rewrite <- nat_to_ord_lt in leq.
         destruct leq; contradiction.
 Qed.
-Theorem nat0_to_ord_neq : ∀ a b, a ≠ b → nat0_to_ord a ≠ nat0_to_ord b.
+Theorem nat_to_ord_neq : ∀ a b, a ≠ b → nat_to_ord a ≠ nat_to_ord b.
     intros a b neq eq.
-    apply nat0_to_ord_eq in eq.
+    apply nat_to_ord_eq in eq.
     contradiction.
 Qed.
 
-Theorem nat0_to_ord_le : ∀ a b, (nat0_to_ord a <= nat0_to_ord b) = (a <= b).
+Theorem nat_to_ord_le : ∀ a b, (nat_to_ord a <= nat_to_ord b) = (a <= b).
     intros a b.
     classic_case (a = b) as [eq|neq].
     {
@@ -1299,12 +1299,12 @@ Theorem nat0_to_ord_le : ∀ a b, (nat0_to_ord a <= nat0_to_ord b) = (a <= b).
         split; intro; apply refl.
     }
     apply propositional_ext; split; intro leq.
-    -   apply nat0_to_ord_neq in neq.
-        assert (nat0_to_ord a < nat0_to_ord b) as eq by (split; assumption).
-        rewrite nat0_to_ord_lt in eq.
+    -   apply nat_to_ord_neq in neq.
+        assert (nat_to_ord a < nat_to_ord b) as eq by (split; assumption).
+        rewrite nat_to_ord_lt in eq.
         apply eq.
     -   assert (a < b) as eq by (split; assumption).
-        rewrite <- nat0_to_ord_lt in eq.
+        rewrite <- nat_to_ord_lt in eq.
         apply eq.
 Qed.
 (* begin hide *)
