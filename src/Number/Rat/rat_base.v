@@ -41,15 +41,14 @@ Lemma rat_eq_transitive : ∀ a b c, a ~ b → b ~ c → a ~ c.
     -   subst.
         rewrite mult_lanni in bc.
         rewrite mult_lanni in ab.
+        symmetry in ab.
         apply int_mult_0 in ab as [ab|ab].
-        +   symmetry in bc; apply int_mult_0 in bc as [bc|bc].
+        +   apply int_mult_0 in bc as [bc|bc].
             *   subst.
                 do 2 rewrite mult_lanni.
                 reflexivity.
-            *   symmetry in bc.
-                contradiction (nat1_nz_int _ bc).
-        +   symmetry in ab.
-            contradiction (nat1_nz_int _ ab).
+            *   contradiction (nat1_nz_int _ bc).
+        +   contradiction (nat1_nz_int _ ab).
     -   pose proof (lrmult ab bc) as eq; clear ab bc.
         pose proof (nat1_nz_int b2) as nz.
         mult_cancel_left (nat1_to_int b2) in eq; try exact nz.

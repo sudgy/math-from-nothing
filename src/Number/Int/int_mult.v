@@ -117,7 +117,7 @@ Instance int_mult_lid_class : MultLid int := {
     mult_lid := int_mult_lid;
 }.
 (* end hide *)
-Theorem int_mult_0 : ∀ {a b}, a * b = 0 → a = 0 ∨ b = 0.
+Theorem int_mult_0 : ∀ {a b}, 0 = a * b → 0 = a ∨ 0 = b.
     intros a b eq.
     equiv_get_value a b.
     unfold mult, zero in *; simpl in *.
@@ -137,10 +137,10 @@ Theorem int_mult_0 : ∀ {a b}, a * b = 0 → a = 0 ∨ b = 0.
         plus_cancel_left (a1 * b2) in eq.
         apply mult_lcancel in eq.
         right; symmetry; exact eq.
-        rewrite neq_sym; exact c_neq_0.
+        exact c_neq_0.
     }
     { (* a1 = a2 *)
-        left; exact comp.
+        left; symmetry; exact comp.
     }
     { (* a1 > a2 *)
         apply nat0_lt_ex in comp as [c [c_neq_0 c_eq]].
@@ -150,21 +150,17 @@ Theorem int_mult_0 : ∀ {a b}, a * b = 0 → a = 0 ∨ b = 0.
         plus_cancel_left (a2 * b2)%nat0 in eq.
         apply mult_lcancel in eq.
         right; exact eq.
-        rewrite neq_sym; exact c_neq_0.
+        exact c_neq_0.
     }
 Qed.
 
 (* begin hide *)
 Lemma int_mult_lcancel : ∀ a b c, 0 ≠ c → c * a = c * b → a = b.
     intros a b c c_neq_0 eq.
-    rewrite neq_sym in c_neq_0.
     apply plus_0_anb_a_b in eq.
     rewrite <- mult_rneg in eq.
     rewrite <- ldist in eq.
-    symmetry in eq.
-    (* TODO: symmetrize this *)
     destruct (int_mult_0 eq) as [eq2|eq2]; try contradiction.
-    symmetry in eq2.
     rewrite plus_0_anb_a_b in eq2.
     exact eq2.
 Qed.

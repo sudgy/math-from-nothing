@@ -129,8 +129,7 @@ Theorem nat0_neq_suc_mult : ∀ a b, zero ≠ nat0_suc a * nat0_suc b.
     inversion contr.
 Qed.
 
-(* TODO: symmetrize this *)
-Theorem nat0_mult_zero : ∀ a b, a * b = zero → a = zero ∨ b = zero.
+Theorem nat0_mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b.
     intros a b eq.
     nat0_destruct a.
     -   left; reflexivity.
@@ -138,7 +137,6 @@ Theorem nat0_mult_zero : ∀ a b, a * b = zero → a = zero ∨ b = zero.
         +   right; reflexivity.
         +   exfalso.
             apply (nat0_neq_suc_mult a b).
-            symmetry.
             exact eq.
 Qed.
 

@@ -119,11 +119,11 @@ Lemma rat_inv_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
         exact eq.
     -   subst b1.
         rewrite mult_lanni in eq.
+        symmetry in eq.
         apply int_mult_0 in eq as [contr|contr].
         +   subst.
             destruct a1_pos; contradiction.
-        +   symmetry in contr.
-            contradiction (nat1_nz_int _ contr).
+        +   contradiction (nat1_nz_int _ contr).
     -   exfalso.
         apply lt_rmult_pos with (nat1_to_int b2) in a1_pos;
             try apply nat1_to_int_pos.
@@ -136,19 +136,17 @@ Lemma rat_inv_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
         destruct ltq; contradiction.
     -   subst a1.
         rewrite mult_lanni in eq.
-        symmetry in eq; apply int_mult_0 in eq as [contr|contr].
+        apply int_mult_0 in eq as [contr|contr].
         +   subst.
             destruct b1_pos; contradiction.
-        +   symmetry in contr.
-            contradiction (nat1_nz_int _ contr).
+        +   contradiction (nat1_nz_int _ contr).
     -   reflexivity.
     -   subst a1.
         rewrite mult_lanni in eq.
-        symmetry in eq; apply int_mult_0 in eq as [contr|contr].
+        apply int_mult_0 in eq as [contr|contr].
         +   subst.
             destruct b1_neg; contradiction.
-        +   symmetry in contr.
-            contradiction (nat1_nz_int _ contr).
+        +   contradiction (nat1_nz_int _ contr).
     -   exfalso.
         apply lt_rmult_pos with (nat1_to_int b2) in a1_neg;
             try apply nat1_to_int_pos.
@@ -161,11 +159,11 @@ Lemma rat_inv_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
         destruct ltq; contradiction.
     -   subst b1.
         rewrite mult_lanni in eq.
+        symmetry in eq.
         apply int_mult_0 in eq as [contr|contr].
         +   subst.
             destruct a1_neg; contradiction.
-        +   symmetry in contr.
-            contradiction (nat1_nz_int _ contr).
+        +   contradiction (nat1_nz_int _ contr).
     -   rewrite_ex_val b1' b1_eq.
         rewrite_ex_val a1' a1_eq.
         do 2 rewrite mult_lrneg.

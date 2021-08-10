@@ -323,7 +323,7 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
                     apply set_type_eq; cbn.
                     unfold le in z_eq; cbn in z_eq.
                     apply nat0_le_zero_eq in z_eq.
-                    symmetry; exact z_eq.
+                    exact z_eq.
                 }
                 assert (set_type (λ x, f x ≠ ord_zero (f x)) → False) as fa.
                 {

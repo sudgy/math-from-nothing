@@ -200,7 +200,7 @@ Theorem nat0_plus_changes_divides : ∀ p a b,
         rewrite rdist, <- plus_assoc in d_eq.
         rewrite <- (plus_rid (d * p)) in d_eq at 1.
         apply plus_lcancel in d_eq.
-        symmetry in d_eq; apply nat0_plus_zero in d_eq as [eq1 eq2].
+        apply nat0_plus_zero in d_eq as [eq1 eq2].
         apply nat0_mult_zero in eq1 as [x_z|p_z]; try contradiction.
         subst.
         apply not.
@@ -280,7 +280,7 @@ Theorem nat0_odd_plus_one : ∀ a, odd a → ∃ b, a = 2 * b + 1.
         unfold one in contr; cbn in contr.
         rewrite nat0_lt_suc_le in contr.
         apply nat0_le_zero_eq in contr.
-        symmetry in contr; contradiction.
+        contradiction.
 Qed.
 
 Theorem nat0_div_le : ∀ a b, 0 ≠ b → a ∣ b → a <= b.

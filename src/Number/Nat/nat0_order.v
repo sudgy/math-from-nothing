@@ -23,7 +23,7 @@ Instance nat0_order : Order nat0 := {
     le := nat0_le;
 }.
 (* end hide *)
-Theorem nat0_le_zero_eq : ∀ a, a <= zero → a = zero.
+Theorem nat0_le_zero_eq : ∀ a, a <= 0 → 0 = a.
     intros a eq.
     nat0_destruct a; try reflexivity.
     contradiction eq.
@@ -35,7 +35,7 @@ Qed.
 Lemma nat0_lt_zero : ∀ a, ¬(a < zero).
     intros a [leq neq].
     apply nat0_le_zero_eq in leq.
-    contradiction.
+    symmetry in leq; contradiction.
 Qed.
 
 Theorem nat0_zero_lt_suc : ∀ n, 0 < nat0_suc n.
@@ -99,7 +99,7 @@ Lemma nat0_le_antisymmetric_ : ∀ a b, a <= b → b <= a → a = b.
     nat0_induction a.
     -   intros b eq1 eq2.
         apply nat0_le_zero_eq in eq2.
-        symmetry; exact eq2.
+        exact eq2.
     -   intros b eq1 eq2.
         nat0_destruct b.
         +   contradiction eq1.
@@ -116,11 +116,11 @@ Lemma nat0_le_transitive_ : ∀ a b c, a <= b → b <= c → a <= c.
     intros a b c; revert a b.
     nat0_induction c; intros a b eq1 eq2.
     -   apply nat0_le_zero_eq in eq2.
-        rewrite eq2 in eq1.
+        rewrite <- eq2 in eq1.
         exact eq1.
     -   nat0_destruct b.
         +   apply nat0_le_zero_eq in eq1.
-            rewrite eq1.
+            rewrite <- eq1.
             apply nat0_le_zero.
         +   nat0_destruct a.
             *   apply nat0_le_zero.
@@ -163,7 +163,7 @@ Theorem nat0_le_ex : ∀ a b, a <= b → ∃ c, a + c = b.
             exact IHa.
 Qed.
 
-Theorem nat0_lt_ex : ∀ a b, a < b → ∃ c, c ≠ zero ∧ a + c = b.
+Theorem nat0_lt_ex : ∀ a b, a < b → ∃ c, 0 ≠ c ∧ a + c = b.
     intros a b [ab ab_neq].
     pose proof (nat0_le_ex a b ab) as [c eq].
     exists c; split.
@@ -249,7 +249,7 @@ Theorem nat0_le_mult_lcancel : ∀ {a b} c, zero ≠ c → c * a <= c * b → a 
             apply nat0_neq_suc_mult with c a.
             rewrite mult_ranni in eq.
             apply nat0_le_zero_eq in eq.
-            symmetry; exact eq.
+            exact eq.
         +   rewrite nat0_sucs_le.
             apply IHa; clear IHa.
             do 2 rewrite nat0_mult_rsuc in eq.
@@ -328,8 +328,7 @@ Theorem nat0_le_self_lmult : ∀ a b, 0 ≠ b → a <= b * a.
             unfold one in eq; cbn in eq.
             rewrite nat0_lt_suc_le in eq.
             apply nat0_le_zero_eq in eq.
-            (* TODO: Make nat0_le_zero_eq symmetrized *)
-            symmetry in eq; contradiction.
+            contradiction.
         }
         pose proof (le_lrplus b_gt IHa) as eq.
         exact eq.
@@ -345,7 +344,7 @@ Theorem nat0_lt_1 : ∀ n, n < 1 → 0 = n.
     unfold one in n_lt; cbn in n_lt.
     rewrite nat0_lt_suc_le in n_lt.
     apply nat0_le_zero_eq in n_lt.
-    symmetry; exact n_lt.
+    exact n_lt.
 Qed.
 
 Theorem strong_induction : ∀ S : nat0 → Prop,

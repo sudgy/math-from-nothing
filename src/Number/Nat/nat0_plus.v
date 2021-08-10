@@ -101,8 +101,7 @@ Instance nat0_plus_lcancel : PlusLcancel nat0 := {
     plus_lcancel := nat0_plus_lcancel_;
 }.
 (* end hide *)
-(* TODO: Symmetrize this *)
-Theorem nat0_plus_zero : ∀ a b, a + b = zero → a = zero ∧ b = zero.
+Theorem nat0_plus_zero : ∀ a b, 0 = a + b → 0 = a ∧ 0 = b.
     intros a b eq.
     nat0_destruct a.
     -   nat0_destruct b.

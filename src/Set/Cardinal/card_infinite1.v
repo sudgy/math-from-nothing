@@ -398,11 +398,9 @@ Theorem nat0_mult_nat0 : |nat0| * |nat0| = |nat0|.
     {
         intros [x1 x2] eq.
         unfold f in eq; cbn in eq.
-        symmetry in eq.
         apply nat0_mult_zero in eq.
         destruct eq as [eq|eq].
-        -   symmetry in eq.
-            apply pow_not_zero_nat0 in eq; try contradiction.
+        -   apply pow_not_zero_nat0 in eq; try contradiction.
             intro contr; inversion contr.
         -   apply nat0_plus_zero in eq.
             destruct eq as [C0 C1]; inversion C1.

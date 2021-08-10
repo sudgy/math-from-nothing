@@ -321,7 +321,7 @@ Lemma ord_mult_lid : ∀ α, 1 * α = α.
         apply set_type_eq; cbn.
         unfold one in a_lt; cbn in a_lt.
         rewrite nat0_lt_suc_le in a_lt.
-        symmetry; apply nat0_le_zero_eq.
+        apply nat0_le_zero_eq.
         exact a_lt.
     -   intros a b.
         cbn.
@@ -366,7 +366,7 @@ Lemma ord_mult_rid : ∀ α, α * 1 = α.
         apply set_type_eq; cbn.
         unfold one in b_lt; cbn in b_lt.
         rewrite nat0_lt_suc_le in b_lt.
-        symmetry; apply nat0_le_zero_eq.
+        apply nat0_le_zero_eq.
         exact b_lt.
     -   intros a b.
         cbn.
@@ -813,7 +813,6 @@ Theorem nat0_to_ord_mult : ∀ a b,
         +   exfalso.
             (* TOTO: Make nat0_lt_ex symmetrize c_nz *)
             apply nat0_lt_ex in leq as [c [c_nz c_eq]].
-            rewrite neq_sym in c_nz.
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- assoc in eq2.
@@ -830,7 +829,6 @@ Theorem nat0_to_ord_mult : ∀ a b,
             apply f_equal2; apply set_type_eq; reflexivity.
         +   exfalso.
             apply nat0_lt_ex in leq as [c [c_nz c_eq]].
-            rewrite neq_sym in c_nz.
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- assoc in eq2.

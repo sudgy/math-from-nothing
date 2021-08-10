@@ -299,9 +299,7 @@ Theorem nat0_to_card_mult :
         unfold f in eq2; cbn in eq2.
         destruct (trichotomy m1 m2) as [[leq|eq]|leq].
         +   exfalso.
-            (* TOTO: Make nat0_lt_ex symmetrize c_nz *)
             apply nat0_lt_ex in leq as [c [c_nz c_eq]].
-            rewrite neq_sym in c_nz.
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- assoc in eq2.
@@ -318,7 +316,6 @@ Theorem nat0_to_card_mult :
             apply f_equal2; apply set_type_eq; reflexivity.
         +   exfalso.
             apply nat0_lt_ex in leq as [c [c_nz c_eq]].
-            rewrite neq_sym in c_nz.
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- assoc in eq2.
