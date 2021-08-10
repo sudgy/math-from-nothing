@@ -14,15 +14,6 @@ Fixpoint abstract_mult {U} `{Plus U, Zero U} (a : nat0) (b : U) :=
 
 Infix "×" := abstract_mult (at level 40, left associativity).
 
-(* TODO: Get rid of this, it's just pow_nat0 *)
-Fixpoint abstract_pow {U} `{Mult U, One U} (a : U) (b : nat0) :=
-    match b with
-    | nat0_zero => 1
-    | nat0_suc b' => b * abstract_pow a b'
-    end.
-
-Infix "^" := abstract_pow.
-
 Fixpoint nat0_to_abstract {U} `{Plus U, Zero U, One U} a :=
     match a with
     | nat0_zero => 0

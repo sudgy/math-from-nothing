@@ -348,14 +348,11 @@ Lemma g_in : ∀ X, X < g2 X.
         apply X_sub_Y.
         exact Xx.
     -   intros contr.
-        (* TODO: BETTER UNPACK_EX_VAL *)
         destruct X as [X X_chain].
         inversion contr as [eq]; clear contr.
-        pose proof (ex_proof (not_hausdorff X X_chain)) as contr.
-        change (ex_type_val (ex_to_type (not_hausdorff X X_chain)))
-            with (ex_val (not_hausdorff X X_chain)) in contr.
-        rewrite <- eq in contr.
-        apply contr.
+        rewrite_ex_val X' X_eq.
+        subst X'.
+        apply X_eq.
         reflexivity.
 Qed.
 
