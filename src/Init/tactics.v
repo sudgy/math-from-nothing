@@ -17,7 +17,6 @@ Ltac not_simpl :=
         try rewrite not_ex;
         try rewrite not_all
     ).
-(* end show *)
 
 Tactic Notation "not_simpl" "in" ident(H) :=
     repeat (
@@ -29,9 +28,7 @@ Tactic Notation "not_simpl" "in" ident(H) :=
         try rewrite not_all in H
     ).
 
-(* begin show *)
 Ltac exfalso := elimtype False.
-(* end show *)
 
 Tactic Notation "bring_left" constr(x) constr(comm) constr(assoc) :=
     repeat rewrite assoc;
