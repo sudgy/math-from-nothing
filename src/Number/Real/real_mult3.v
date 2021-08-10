@@ -381,7 +381,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     rewrite <- nat0_to_rat_plus in contr.
                     change (nat0_to_rat 1) with (one (U := rat)) in contr.
                     rewrite <- Heqm, <- Heqn in contr.
-                    apply le_mult_leq_small_pos in contr.
+                    apply le_mult_adb_1_a_b_pos in contr.
                     2: exact n_pos.
                     rewrite mult_comm in contr.
                     apply le_lmult_pos with u in contr.
@@ -400,8 +400,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     contradiction.
                 }
                 apply (lt_le_trans n_eq).
-                apply le_mult_rrmove_pos.
-                1: exact n1_pos.
+                rewrite <- le_mult_rrmove_pos by exact n1_pos.
                 rewrite mult_comm, mult_assoc.
                 apply le_mult_lrmove_pos.
                 1: exact m1_pos.
