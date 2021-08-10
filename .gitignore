@@ -1,0 +1,10 @@
+*.glob
+*.vo
+*.vok
+*.vos
+*.aux
+*.v#
+/Makefile
+/Makefile.conf
+/.Makefile.d
+/html/
