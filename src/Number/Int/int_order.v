@@ -151,14 +151,8 @@ Lemma int_le_mult_lcancel_pos : ∀ a b c, 0 < c → c * a <= c * b → a <= b.
     intros a b c c_pos eq.
     classic_case (a <= b) as [C|contr]; auto.
     rewrite nle_lt in contr.
-    apply lt_plus_ltq_neg in contr.
     apply lt_lmult_pos with c in contr; auto.
-    rewrite mult_ranni in contr.
-    apply le_plus_leq_pos in eq.
-    rewrite <- mult_rneg in eq.
-    rewrite <- ldist in eq.
-    rewrite <- nle_lt in contr.
-    contradiction.
+    destruct (le_lt_trans eq contr); contradiction.
 Qed.
 
 Instance int_le_mult_lcancel : OrderMultLcancel int := {

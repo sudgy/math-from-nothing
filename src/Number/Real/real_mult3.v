@@ -35,7 +35,7 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
         +   destruct u_in as [r [r_pos na]].
             rewrite div_div in na by apply u_pos.
             pose proof (dedekind_lt a a_cut _ _ au na) as ltq.
-            apply lt_plus_rr0 in ltq.
+            apply lt_plus_0_a_b_ba in ltq.
             apply pos_neg2 in r_pos.
             destruct (trans r_pos ltq); contradiction.
     -   apply ex_not_empty.
@@ -95,7 +95,7 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
                 2: exact two_pos.
                 rewrite mult_rlinv in ltq by apply two_pos.
                 rewrite ldist, mult_rid in ltq.
-                apply lt_plus_ll0 in ltq.
+                apply lt_plus_a_0_ba_b in ltq.
                 pose proof (trans ltq r_pos) as [C0 C1]; contradiction.
             }
             exists (/ (/ l + - (r / 2))).
@@ -218,7 +218,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 -   destruct nas as [ε [ε_pos nas]].
                     rewrite div_div in nas by exact s_nz.
                     pose proof (dedekind_lt _ a_cut _ _ as_ nas) as ltq.
-                    apply lt_plus_rr0 in ltq.
+                    apply lt_plus_0_a_b_ba in ltq.
                     apply pos_neg2 in ε_pos.
                     destruct (trans ltq ε_pos); contradiction.
             }
@@ -249,7 +249,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 unfold one in x_lt; cbn in x_lt.
                 unfold rat_to_real_base in x_lt.
                 pose proof x_lt as ε_pos.
-                apply lt_plus_ltq_pos in ε_pos.
+                apply lt_plus_0_anb_b_a in ε_pos.
                 pose proof (archimedean2 _ ε_pos) as [m eq].
                 rewrite nat0_to_abstract_rat in eq.
                 assert (0 < nat0_to_rat (nat0_suc m)) as n_pos.
@@ -418,7 +418,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 pose proof (trans ltq1 q_lt) as ltq.
                 exfalso.
                 clear - u_pos ltq Heqn n_nz.
-                apply lt_plus_ltq_pos in ltq.
+                apply lt_plus_0_anb_b_a in ltq.
                 rewrite <- (mult_rid u) in ltq at 2.
                 rewrite <- mult_rneg in ltq.
                 rewrite <- ldist in ltq.
@@ -475,7 +475,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 apply lt_rmult_pos with q in m_eq.
                 2: exact q_pos.
                 rewrite <- mult_assoc in m_eq.
-                apply lt_plus_ltq_pos in m_eq.
+                apply lt_plus_0_anb_b_a in m_eq.
                 exists (/ x * (m * q) - (m + 1) * q).
                 split.
                 1: exact m_eq.

@@ -535,7 +535,7 @@ Theorem real_open_interval_size : ∀ a b, a < b →
     rewrite <- real_interval_size_base.
     equiv_simpl.
     pose (f (x : set_type (open_interval a b)) := 2 * ([x|] - a) / (b - a) - 1).
-    apply lt_plus_ltq_pos in ab.
+    apply lt_plus_0_anb_b_a in ab.
     assert (∀ x, open_interval (-(1)) 1 (f x)) as f_in.
     {
         intros [x [x_gt x_lt]].
@@ -551,7 +551,7 @@ Theorem real_open_interval_size : ∀ a b, a < b →
             1: apply div_pos; exact two_pos.
             rewrite mult_ranni.
             rewrite mult_llinv by apply two_pos.
-            apply lt_plus_ltq_pos.
+            apply lt_plus_0_anb_b_a.
             exact x_gt.
         -   apply lt_plus_rrmove.
             apply lt_mult_rrmove_pos.
@@ -591,8 +591,7 @@ Theorem real_open_interval_size : ∀ a b, a < b →
                 1: apply div_pos; exact ab.
                 rewrite mult_lanni.
                 rewrite mult_rrinv by apply ab.
-                apply lt_plus_ltq_pos in y_gt.
-                rewrite neg_neg in y_gt.
+                apply lt_plus_0_ab_nb_a in y_gt.
                 exact y_gt.
             -   apply lt_plus_rcancel with (-a).
                 rewrite plus_rrinv.

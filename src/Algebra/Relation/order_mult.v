@@ -1091,7 +1091,7 @@ Theorem le_square : ∀ a b, 0 <= a → 0 <= b → a <= b ↔ a*a <= b*b.
             subst a.
             exact b_pos.
         }
-        apply le_plus_leq_pos in ab.
+        rewrite <- le_plus_0_anb_b_a in ab.
         rewrite dif_squares in ab.
         assert (0 < a) as a_pos2 by (split; assumption).
         apply lt_lplus with b in a_pos2.
@@ -1100,7 +1100,7 @@ Theorem le_square : ∀ a b, 0 <= a → 0 <= b → a <= b ↔ a*a <= b*b.
         rewrite <- (mult_ranni (b + a)) in ab.
         apply le_mult_lcancel_pos in ab.
         2: exact ba_pos.
-        apply le_plus_rrneg_leq in ab.
+        rewrite le_plus_0_anb_b_a in ab.
         exact ab.
 Qed.
 

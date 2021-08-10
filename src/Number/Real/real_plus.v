@@ -144,7 +144,7 @@ Lemma real_plus_lid : ∀ a, 0 + a = a.
         pose proof (rand (rand (rand a_cut)) x ax) as [y [ay ltq]].
         exists (x + -y), y.
         split.
-        +   apply lt_plus_ltq_neg.
+        +   apply lt_plus_anb_0_a_b.
             exact ltq.
         +   split; try exact ay.
             rewrite plus_rlinv.
@@ -187,7 +187,7 @@ Lemma real_neg_dedekind : ∀ a : real, dedekind_cut (⊖ [a|]).
     -   intros l u [r [r_pos na]] ltq.
         exists (u + r + -l).
         split.
-        +   apply lt_plus_ltq_pos in ltq.
+        +   apply lt_plus_0_anb_b_a in ltq.
             pose proof (lt_lrplus r_pos ltq) as ltq2.
             rewrite plus_lid, plus_assoc in ltq2.
             rewrite (plus_comm r) in ltq2.
@@ -286,7 +286,7 @@ Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
             *   exists (nat0_suc n × x), (n × -x).
                 repeat split.
                 --  destruct not_cusp as [u' [u'_lt nau']].
-                    apply lt_plus_ltq_pos in u'_lt.
+                    apply lt_plus_0_anb_b_a in u'_lt.
                     exists (nat0_suc n × -x + -u').
                     split; try exact u'_lt.
                     rewrite abstract_mult_rneg.
@@ -359,7 +359,7 @@ Lemma real_plus_linv : ∀ a, -a + a = 0.
         apply predicate_ext; intros x; split.
         +   intros [r [r_pos eq]].
             rewrite nlt_le in eq.
-            apply le_plus_rrneg_leq in eq.
+            rewrite le_plus_0_anb_b_a in eq.
             pose proof (lt_le_trans r_pos eq) as ltq.
             apply pos_neg2 in ltq.
             rewrite neg_neg in ltq.
@@ -425,7 +425,7 @@ Lemma real_plus_linv : ∀ a, -a + a = 0.
                 pose proof (rand (rand (rand a_cut)) _ ax) as [x' [ax' lt]].
                 exists (x' + -x).
                 split.
-                +   apply lt_plus_ltq_pos.
+                +   apply lt_plus_0_anb_b_a.
                     exact lt.
                 +   intros [r [r_pos eq]].
                     apply eq.
@@ -484,7 +484,7 @@ Theorem rat_to_real_plus : ∀ a b,
         {
             exists (a + b + -x).
             split.
-            -   apply lt_plus_ltq_pos.
+            -   apply lt_plus_0_anb_b_a.
                 exact eq.
             -   rewrite plus_comm.
                 rewrite plus_rlinv.

@@ -347,7 +347,7 @@ Theorem real_metric_topology_eq :
         assert (0 < (b - a)/2) as ε_pos.
         {
             apply half_pos.
-            apply lt_plus_ltq_pos.
+            apply lt_plus_0_anb_b_a.
             destruct B2x as [ltq1 ltq2].
             exact (trans ltq1 ltq2).
         }

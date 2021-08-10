@@ -132,7 +132,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
             exfalso; apply L_lim.
             apply abs_pos.
         -   rewrite nle_lt in n.
-            apply lt_plus_lrneg_ltq in n.
+            rewrite lt_plus_anb_0_a_b in n.
             apply pos_neg2 in contr.
             rewrite neg_neg in contr.
             pose proof (trans n contr) as ltq.
@@ -172,7 +172,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
                     rewrite mult_rid in r_small.
                     exact r_small.
                 *   rewrite nle_lt in n.
-                    apply lt_plus_lrneg_ltq in n.
+                    rewrite lt_plus_anb_0_a_b in n.
                     specialize (r_bound (nat0_suc N)); cbn in r_bound.
                     clear - n r_bound.
                     destruct (lt_le_trans n r_bound); contradiction.

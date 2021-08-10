@@ -183,7 +183,7 @@ Qed.
 Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
         ∃ r : rat, a < rat_to_real r ∧ rat_to_real r < b.
     intros a b a_pos ab.
-    apply lt_plus_ltq_pos in ab.
+    apply lt_plus_0_anb_b_a in ab.
     pose proof (archimedean2 _ ab) as [n ltq].
     rewrite nat0_to_abstract_real in ltq.
     apply lt_rmult_pos with (nat0_to_real (nat0_suc n)) in ltq.
@@ -222,7 +222,7 @@ Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
         1: rewrite Heqn'; apply real_n_pos.
         nat0_destruct m.
         {
-            apply lt_plus_rrneg_ltq in ab.
+            rewrite lt_plus_0_anb_b_a in ab.
             rewrite Heqm'.
             change (nat0_to_real 0) with 0.
             apply lt_mult.

@@ -35,10 +35,10 @@ Theorem seq_lim_le : ∀ xf yf x y,
         (∀ n, xf n <= yf n) → seq_lim xf x → seq_lim yf y → x <= y.
     intros xf yf x y f_leq x_lim y_lim.
     pose (xyf n := yf n - xf n).
-    apply le_plus_rrneg_leq.
+    apply le_plus_0_anb_b_a.
     apply (seq_lim_pos xyf).
     -   intros n; unfold xyf.
-        apply le_plus_leq_pos.
+        apply le_plus_0_anb_b_a.
         apply f_leq.
     -   apply seq_lim_plus.
         +   exact y_lim.
@@ -113,7 +113,7 @@ Theorem increasing_seq_converges : ∀ f : nat0 → real,
     cbn.
     rewrite abs_pos_eq.
     2: {
-        apply le_plus_leq_pos.
+        apply le_plus_0_anb_b_a.
         apply x_bound.
         exists n.
         reflexivity.
@@ -282,7 +282,7 @@ Theorem real_complete : complete real.
                 contradiction (nat0_lt_zero _ contr).
             -   specialize (A_upper m).
                 unfold fn in A_upper.
-                apply le_plus_leq_pos in A_upper.
+                apply le_plus_0_anb_b_a in A_upper.
                 unfold abs in contr; cbn in contr; case_if; try contradiction.
                 apply le_plus_lrmove.
                 apply le_plus_rrmove in contr.

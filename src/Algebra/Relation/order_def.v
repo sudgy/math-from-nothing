@@ -130,9 +130,8 @@ Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
         exists (-x).
         intros y S'y.
         specialize (x_lower (-y) S'y).
-        apply le_plus_leq_neg in x_lower.
-        apply le_plus_llmove in x_lower.
-        rewrite neg_neg, plus_rid in x_lower.
+        apply le_neg in x_lower.
+        rewrite neg_neg in x_lower.
         exact x_lower.
     }
     pose proof (sup_complete S' S'_ex S'_upper) as [α [α_ub α_lub]].
@@ -141,24 +140,21 @@ Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
     -   intros x Sx.
         assert (S' (-x)) as S'x by (unfold S'; rewrite neg_neg; exact Sx).
         specialize (α_ub (-x) S'x).
-        apply le_plus_leq_neg in α_ub.
-        apply le_plus_llmove in α_ub.
-        rewrite neg_neg, plus_rid in α_ub.
+        apply le_neg in α_ub.
+        rewrite neg_neg in α_ub.
         exact α_ub.
     -   intros y y_lower.
         assert (is_upper_bound le S' (-y)) as y_upper.
         {
             intros x S'x.
             specialize (y_lower (-x) S'x).
-            apply le_plus_leq_neg in y_lower.
-            apply le_plus_llmove in y_lower.
-            rewrite neg_neg, plus_rid in y_lower.
+            apply le_neg in y_lower.
+            rewrite neg_neg in y_lower.
             exact y_lower.
         }
         specialize (α_lub (-y) y_upper).
-        apply le_plus_leq_neg in α_lub.
-        apply le_plus_llmove in α_lub.
-        rewrite neg_neg, plus_rid in α_lub.
+        rewrite le_neg in α_lub.
+        rewrite neg_neg in α_lub.
         exact α_lub.
 Qed.
 (* begin hide *)
