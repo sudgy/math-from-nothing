@@ -144,6 +144,20 @@ Theorem lt_lrplus : ∀ {a b c d}, a < b → c < d → a + c < b + d.
     exact (trans ab cd).
 Qed.
 
+Theorem le_lt_lrplus : ∀ {a b c d}, a <= b → c < d → a + c < b + d.
+    intros a b c d ab cd.
+    apply le_rplus with c in ab.
+    apply lt_lplus with b in cd.
+    exact (le_lt_trans ab cd).
+Qed.
+
+Theorem lt_le_lrplus : ∀ {a b c d}, a < b → c <= d → a + c < b + d.
+    intros a b c d ab cd.
+    apply lt_rplus with c in ab.
+    apply le_lplus with b in cd.
+    exact (lt_le_trans ab cd).
+Qed.
+
 Theorem lt_plus_lcancel : ∀ {a b} c, c + a < c + b → a < b.
     intros a b c [leq neq].
     split.

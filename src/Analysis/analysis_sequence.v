@@ -272,10 +272,7 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
             -   exact j_lt.
             -   reflexivity.
         }
-        (* TODO: Make a le_lt_lrplus *)
-        apply le_rplus with 1 in leq.
-        apply lt_lplus with (d (a N) (a j)) in a_cauchy.
-        pose proof (lt_le_trans a_cauchy leq) as ltq.
+        pose proof (le_lt_lrplus leq a_cauchy) as ltq.
         clear - ltq.
         apply (le_lt_trans2 ltq).
         rewrite plus_comm.
