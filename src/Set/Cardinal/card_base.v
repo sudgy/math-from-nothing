@@ -55,19 +55,18 @@ Instance card_eq_transitive_class : Transitive _ := {
 
 End CardEquiv.
 (* end hide *)
-
 Definition card_equiv := make_equiv _
     card_eq_reflexive_class card_eq_symmetric_class card_eq_transitive_class.
+
 Notation "a ~ b" := (eq_equal card_equiv a b) : card_scope.
 
 Notation "'card'" := (equiv_type card_equiv).
 
-
 Notation "| A |" := (to_equiv_type card_equiv A) (at level 30) : card_scope.
 
+(* begin hide *)
 Open Scope card_scope.
 
-(* begin hide *)
 Lemma ord_to_card_wd : ∀ A B : ord_type,
         (eq_equal ord_equiv A B) → |ord_U A| = |ord_U B|.
     intros A B [f [f_bij f_iso]].
@@ -76,7 +75,6 @@ Lemma ord_to_card_wd : ∀ A B : ord_type,
     exact f_bij.
 Qed.
 (* end hide *)
-
 Definition nat0_to_card (n : nat0) := |set_type (λ x, x < n)|.
 Definition ord_to_card := unary_op ord_to_card_wd.
 
@@ -103,7 +101,6 @@ Lemma card_to_initial_ord_ex :
     apply (α_min _ eq); assumption.
 Qed.
 (* end hide *)
-
 Definition card_to_initial_ord κ := ex_val (card_to_initial_ord_ex κ).
 
 Theorem card_to_initial_ord_to_card_eq :
@@ -113,6 +110,7 @@ Theorem card_to_initial_ord_to_card_eq :
     rewrite_ex_val α α_eq.
     apply α_eq.
 Qed.
+
 Theorem card_to_initial_ord_le :
         ∀ κ α, ord_to_card α = κ → card_to_initial_ord κ <= α.
     intros κ α eq.
@@ -164,5 +162,6 @@ Theorem card_from_set_type_eq {U} : ∀ (X : U → Prop) (B : set_type X → Pro
         apply set_type_eq in eq.
         symmetry; exact eq.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

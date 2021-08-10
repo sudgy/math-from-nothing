@@ -10,7 +10,6 @@ Record set_type {U} (S : U → Prop) := make_set_type_val {
     set_value : U;
     set_proof : S set_value;
 }.
-
 Arguments make_set_type_val {U} {S}.
 Arguments set_value {U} {S}.
 Arguments set_proof {U} {S}.
@@ -140,7 +139,6 @@ Theorem from_set_type_union {U} : ∀ (X : U → Prop) (A B : set_type X → Pro
             exists [x|Bx].
             split; trivial.
 Qed.
-
 (* begin hide *)
 Section SetTypeOrder.
 

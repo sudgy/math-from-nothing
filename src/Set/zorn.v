@@ -294,7 +294,6 @@ Context `{
     Transitive U op
 }.
 (* end hide *)
-
 Theorem bourbaki : U → (∀ S, is_chain op S → has_supremum op S) →
         ∀ f, (∀ x, op x (f x)) → ∃ x, f x = x.
     apply BourbakiModule.bourbaki; assumption.
@@ -415,7 +414,6 @@ Context `{
 
 Local Open Scope set_scope.
 (* end hide *)
-
 Theorem hausdorff : ∃ M : U → Prop,
         is_chain op M ∧ (∀ F : U → Prop, is_chain op F → ¬(M ⊂ F)).
     classic_contradiction contr.
@@ -510,7 +508,6 @@ Context `{
 
 Local Instance zorn_order : Order U := {le := op}.
 (* end hide *)
-
 Theorem zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
         ∃ a : U, ∀ x : U, ¬ a < x.
     apply ZornModule.zorn; assumption.

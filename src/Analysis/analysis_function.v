@@ -17,10 +17,9 @@ Definition f_seq_uniformly_converges {U V} `{Metric U, Metric V}
 Section AnalysisFunction.
 
 Context {U V} `{Metric U, Metric V}.
-(* end hide *)
 
 Existing Instance real_metric.
-
+(* end hide *)
 Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
     f_seq_lim_uniform fn f ↔
     (seq_lim
@@ -118,7 +117,7 @@ Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
             rewrite plus_lid, abs_neg, abs_one in f_conv.
             destruct f_conv; contradiction.
 Qed.
-
 (* begin hide *)
+
 End AnalysisFunction.
 (* end hide *)

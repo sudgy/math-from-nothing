@@ -65,7 +65,6 @@ Notation "7" := (one + 6) : algebra_scope.
 Notation "8" := (one + 7) : algebra_scope.
 Notation "9" := (one + 8) : algebra_scope.
 
-
 (* begin hide *)
 Section MultRingImply.
 
@@ -162,7 +161,6 @@ Global Instance mult_op_anni : Anni mult := {anni := zero}.
 Global Instance mult_op_lanni : Lanni mult := {lanni := mult_lanni}.
 Global Instance mult_op_ranni : Ranni mult := {ranni := mult_ranni}.
 (* end hide *)
-
 Theorem lmult : ∀ {a b} c, a = b → c * a = c * b.
     apply lop.
 Qed.
@@ -200,7 +198,6 @@ Global Instance rint_mult_ranni_class : MultRanni U := {
     mult_ranni := ring_mult_ranni;
 }.
 (* end hide *)
-
 Theorem mult_lneg : ∀ a b, -a * b = -(a * b).
     intros a b.
     apply plus_lcancel with (a * b).

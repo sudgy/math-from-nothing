@@ -6,6 +6,7 @@ Require Import analysis_sequence.
 Require Import analysis_continuous.
 Require Export analysis_norm.
 
+(* begin hide *)
 Section NormMetric.
 
 Context {U V} `{
@@ -31,7 +32,7 @@ Context {U V} `{
 }.
 
 Existing Instance abs_metric.
-
+(* end hide *)
 Theorem continuous_plus : ∀ (f g : U → V) x,
         continuous_at f x → continuous_at g x →
         continuous_at (λ a, f a + g a) x.
@@ -56,5 +57,6 @@ Theorem continuous_bilinear : ∀ m x (f g : U → V),
     specialize (g_cont a ax).
     apply seq_lim_bilinear; assumption.
 Qed.
-
+(* begin hide *)
 End NormMetric.
+(* end hide *)

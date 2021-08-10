@@ -7,8 +7,9 @@ Require Import function.
 Require Export plus_group.
 Require Import nat0.
 
+(* begin hide *)
 Open Scope card_scope.
-
+(* end hide *)
 Lemma card_plus_wd : ∀ A B C D, A ~ B → C ~ D → sum A C ~ sum B D.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, match x with
@@ -139,7 +140,6 @@ Instance card_le_lplus_class : OrderLplus card := {
     le_lplus := card_le_lplus
 }.
 (* end hide *)
-
 Theorem card_le_zero : ∀ κ, 0 <= κ.
     intros A.
     equiv_get_value A.
@@ -374,5 +374,6 @@ Theorem empty_set_size {U} : 0 = |set_type (U := U) ∅|.
     intros [x C].
     exact C.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

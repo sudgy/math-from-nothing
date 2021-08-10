@@ -3,6 +3,24 @@ Require Import init.
 Require Export set_base.
 Require Export set_type.
 
+(** Most of this file is hidden from the docs because you really don't need to
+know all the random theorems that go into making this work.  What you need to
+know is this:
+- To define an equivalence class, make a value of type [equivalence U] (which
+  we'll call [E]).  Then the new type is [equiv_type E].
+- To define an operation on an equivalence class, you need to prove it's well
+  defined and then use one of the definitions below (like [binary_self_op])
+  with your proof.
+- To pick a value from the equivalence class, use the tactic
+  [equiv_get_value] on each equivalence class.
+- If you have operations you defined on equivalence classes and you need to
+  prove something about them, use [equiv_get_value] to pick values from all
+  relevant equivalence classes then use the [equiv_simpl] tactic.  It will
+  use all of your proofs that things are well-defined automatically to
+  simplify down to proving things just for the particular values from your
+  equivalence classes.
+*)
+
 #[universes(template)]
 Record equivalence U := make_equiv {
     eq_equal : U → U → Prop;
@@ -16,8 +34,11 @@ Arguments eq_reflexive {U}.
 Arguments eq_symmetric {U}.
 Arguments eq_transitive {U}.
 
+(* begin hide *)
 Definition equiv_class {U} (E : equivalence U) (a : U) := λ x, eq_equal E a x.
 Definition equiv_set {U} (E : equivalence U) := λ S, ∃ x, S = equiv_class E x.
+(* end hide *)
+(* begin show *)
 Notation "'equiv_type' E" := (set_type (equiv_set E)) (at level 10).
 Definition to_equiv_type {U} (E : equivalence U) (x : U) : equiv_type E.
     remember (equiv_class E x) as X.
@@ -28,7 +49,9 @@ Definition to_equiv_type {U} (E : equivalence U) (x : U) : equiv_type E.
     }
     exact (make_set_type_val X X_in).
 Defined.
+(* end show *)
 
+(* begin hide *)
 Definition unary_self_op_base {U : Type}
     (E : equivalence U) (f : U → U)
     (a : equiv_type E) :=
@@ -149,7 +172,7 @@ Theorem binary_rself_op_wd : ∀ (f : U2 → U → U),
 Qed.
 
 End Equivalence.
-
+(* end hide *)
 Definition unary_op {U U2 : Type}
     {E : equivalence U} {f : U → U2}
     (wd : ∀ a b : U, eq_equal E a b → f a = f b)
@@ -177,6 +200,7 @@ Definition binary_rself_op {U U2 : Type}
     (a : U2)  (b : equiv_type E) :=
     [binary_rself_op_base E f a b | binary_rself_op_wd f wd a b].
 
+(* begin hide *)
 Section Equivalence.
 
 Context {U V : Type} {E : equivalence U}.
@@ -286,7 +310,7 @@ Theorem equiv_binary_rself_op : ∀ (a : V) (b : U),
 Qed.
 
 End Equivalence.
-
+(* end hide *)
 Ltac equiv_get_value_single a := let a' := fresh in let a'_eq := fresh in
     destruct (ex_to_type [|a]) as [a' a'_eq];
     apply equiv_type_eq in a'_eq;

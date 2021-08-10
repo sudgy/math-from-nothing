@@ -21,7 +21,6 @@ Context {U} `{
     Transitive U le
 }.
 (* end hide *)
-
 Hypothesis distinct : ∃ a b : U, a ≠ b.
 
 (* begin hide *)
@@ -37,7 +36,6 @@ Lemma distinct2 : ∀ a : U, ∃ b, a ≠ b.
         exact n.
 Qed.
 (* end hide *)
-
 Program Instance order_topology : TopologyBasis U := {
     top_basis S :=
         (∃ a b, S = open_interval a b) ∨
@@ -608,7 +606,6 @@ Lemma order_hausdorff_wlog : ∀ a b, a < b →
             *   pose proof (lt_le_trans bx xb) as [C0 C1]; contradiction.
 Qed.
 (* end hide *)
-
 Program Instance order_hausdorff : HausdorffSpace U.
 Next Obligation.
     rename H4 into neq.
@@ -621,7 +618,6 @@ Next Obligation.
         rewrite inter_comm.
         repeat split; apply HH.
 Qed.
-
 (* begin hide *)
 End OrderTopology.
 (* end hide *)

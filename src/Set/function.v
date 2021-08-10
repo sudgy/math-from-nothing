@@ -240,10 +240,11 @@ Arguments bin_set_function {U} {V}.
 Notation "f ⟨ x ⟩" := (set_function f x) (at level 69).
 Notation "f ⟨ x , y ⟩" := (bin_set_function f x y) (at level 69).
 
+(* begin hide *)
 Section FunctionOrder.
 
 Open Scope set_scope.
-
+(* end hide *)
 Context {U V : Type}.
 Definition func_le (f g : set_function_type U V) :=
     ∃ sub : (domain f ⊆ domain g),
@@ -345,5 +346,6 @@ Qed.
 Global Instance bin_func_le_trans_class : Transitive bin_func_le := {
     trans := bin_func_le_trans
 }.
-
+(* begin hide *)
 End FunctionOrder.
+(* end hide *)

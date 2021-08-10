@@ -14,12 +14,12 @@ Instance nat0_plus : Plus nat0 := {
     plus := nat0_plus_;
 }.
 (* end hide *)
-
 Theorem nat0_plus_lrsuc : ∀ a b, nat0_suc a + b = a + nat0_suc b.
     intros a b.
     unfold plus; cbn.
     reflexivity.
 Qed.
+
 Theorem nat0_plus_lsuc : ∀ a b, nat0_suc a + b = nat0_suc (a + b).
     induction a.
     -   intros b.
@@ -31,6 +31,7 @@ Theorem nat0_plus_lsuc : ∀ a b, nat0_suc a + b = nat0_suc (a + b).
         rewrite nat0_plus_lrsuc.
         reflexivity.
 Qed.
+
 Theorem nat0_plus_rsuc : ∀ a b, a + nat0_suc b = nat0_suc (a + b).
     intros a b.
     rewrite <- nat0_plus_lrsuc, nat0_plus_lsuc.
@@ -100,7 +101,7 @@ Instance nat0_plus_lcancel : PlusLcancel nat0 := {
     plus_lcancel := nat0_plus_lcancel_;
 }.
 (* end hide *)
-
+(* TODO: Symmetrize this *)
 Theorem nat0_plus_zero : ∀ a b, a + b = zero → a = zero ∧ b = zero.
     intros a b eq.
     nat0_destruct a.

@@ -9,6 +9,7 @@ Fixpoint pow_nat0 {U} `{Mult U} `{One U} a b :=
     end.
 Infix "^" := pow_nat0 : nat0_scope.
 
+(* begin hide *)
 Section Pow.
 
 Context {U} `{Up : Plus U,
@@ -38,7 +39,7 @@ Context {U} `{Up : Plus U,
               }.
 
 Local Open Scope nat0_scope.
-
+(* end hide *)
 Theorem pow_simpl : ∀ a n, a ^ (nat0_suc n) = a^n * a.
     intros; reflexivity.
 Qed.
@@ -101,5 +102,6 @@ Theorem pow_not_zero_nat0 : ∀ a n, 0 ≠ a → 0 ≠ a ^ n.
         rewrite <- (mult_lanni a) in eq.
         apply mult_rcancel in eq; auto.
 Qed.
-
+(* begin hide *)
 End Pow.
+(* end hide *)

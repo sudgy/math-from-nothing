@@ -11,8 +11,8 @@ Definition complete U `{Metric U} := ∀ f, cauchy_seq f → seq_converges f.
 
 Definition seq_bounded {U} `{Metric U} (f : nat0 → U)
     := ∃ M, ∀ m n, d (f m) (f n) <= M.
-
 (* begin hide *)
+
 Section AnalysisSequence.
 
 Context {U} `{Metric U}.
@@ -189,8 +189,9 @@ Theorem cauchy_subseq_converge :
     apply d_tri.
 Qed.
 
+(* begin hide *)
 Open Scope card_scope.
-
+(* end hide *)
 Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
     intros a a_cauchy.
     specialize (a_cauchy 1 one_pos) as [N a_cauchy].
@@ -318,9 +319,9 @@ Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
     -   rewrite nlt_le in i_ge, j_ge.
         apply lem3; assumption.
 Qed.
+(* begin hide *)
 
 Close Scope card_scope.
 
-(* begin hide *)
 End AnalysisSequence.
 (* end hide *)

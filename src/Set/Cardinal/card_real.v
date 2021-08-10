@@ -12,6 +12,7 @@ Require Import analysis_series.
 Require Import order_minmax.
 Require Import plus_sum.
 
+(* begin hide *)
 Section CardReal.
 
 Existing Instance abs_metric.
@@ -385,13 +386,14 @@ Qed.
 
 Close Scope nat0_scope.
 Open Scope card_scope.
-
+(* end hide *)
 Theorem real_size : |real| = 2 ^ |nat0|.
     apply antisym.
     -   exact real_size_leq1.
     -   exact real_size_leq2.
 Qed.
-
+(* begin hide *)
 End CardReal.
 
 Close Scope card_scope.
+(* end hide *)

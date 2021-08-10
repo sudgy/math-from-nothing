@@ -18,6 +18,7 @@ Fixpoint list_sum {U} `{Plus U, Zero U} (l : list U) :=
     | a :: l' => a + list_sum l'
     end.
 
+(* begin hide *)
 Section Sum.
 
 Context {U} `{
@@ -29,7 +30,7 @@ Context {U} `{
     @PlusLid U UP UZ,
     @PlusLinv U UP UZ UN
 }.
-
+(* end hide *)
 Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
         sum f m n = sum g m n.
     intros f g m n all_eq.
@@ -79,6 +80,7 @@ Theorem list_sum_plus :
         apply plus_assoc.
 Qed.
 
+(* begin hide *)
 End Sum.
 
 Section Sum2.
@@ -97,7 +99,7 @@ Context {V} `{
     @PlusComm V VP,
     @PlusLid V VP VZ
 }.
-
+(* end hide *)
 Theorem list_prod2_lconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
         list_sum (list_prod2 op (a :: l1) l2) =
         list_sum (list_prod2 op l1 l2) + list_sum (list_image l2 (λ x, op a x)).
@@ -128,26 +130,6 @@ Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
         rewrite IHl1.
         reflexivity.
 Qed.
-
-(*
-Theorem list_prod2_leq (S : U → Prop) (op : set_type S → set_type S → U) :
-        ∀ l1 l2 l3 : list (set_type S),
-        list_sum (list_image l1 (λ x, [x|]))
-            = list_sum (list_image l2 (λ x, [x|])) →
-        list_sum (list_prod2 op l1 l3) = list_sum (list_prod2 op l2 l3).
-    intros l1 l2 l3 eq.
-    induction l3.
-    -   cbn.
-        reflexivity.
-    -   cbn.
-        do 2 rewrite list_sum_plus.
-        rewrite IHl3; clear IHl3.
-        apply rplus.
-        clear l3.
-        revert l2 eq.
-        induction l1.
-        +   intros.
-            cbn in *.
-            *)
-
+(* begin hide *)
 End Sum2.
+(* end hide *)

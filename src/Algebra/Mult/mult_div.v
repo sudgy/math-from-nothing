@@ -10,10 +10,10 @@ Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
 }.
 
 Definition divides {U} `{Mult U} a b := ∃ c, c * a = b.
-(* Note that this is the unicode symbol '∣', not '|'!  It is the LaTeX \mid.
- * The reason for this is that using the normal '|' causes issues with things
- * like pattern matching.
- *)
+(** Note that this is the unicode symbol '∣', not '|'!  It is the LaTeX \mid.
+The reason for this is that using the normal '|' causes issues with things like
+pattern matching.
+*)
 Infix "∣" := divides (at level 50).
 
 Definition even {U} `{Plus U, Mult U, One U} a := 2 ∣ a.
@@ -70,7 +70,6 @@ Lemma nat0_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ r < b.
         exact Sq.
 Qed.
 (* end hide *)
-
 Instance nat0_euclidean_class : EuclideanDomain nat0 := {
     euclidean_f := λ x, x;
     euclidean_division := nat0_euclidean
@@ -103,9 +102,7 @@ Context {U} `{Up : Plus U,
                   @Antisymmetric U le,
                   @Transitive U le
               }.
-(* end hide *)
 
-(* begin hide *)
 Lemma divides_refl : ∀ a, a ∣ a.
     intros a.
     exists 1.
@@ -192,7 +189,6 @@ Qed.
 (* begin hide *)
 End Div.
 (* end hide *)
-
 Theorem nat0_plus_changes_divides : ∀ p a b,
                                     p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
     intros p a b [c c_eq] not [d d_eq].

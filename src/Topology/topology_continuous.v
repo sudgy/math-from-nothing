@@ -8,9 +8,10 @@ Require Import topology_connected.
 Require Import topology_compact.
 Require Import topology_order.
 
+(* begin hide *)
 Open Scope card_scope.
 Open Scope set_scope.
-
+(* end hide *)
 Definition continuous_at {U V} `{Topology U, Topology V} (f : U → V) x
     := ∀ T, neighborhood (f x) T →
        ∃ S, neighborhood x S ∧ image_under f S ⊆ T.
@@ -167,7 +168,6 @@ Section Continuous.
 
 Context {U V} `{Topology U, Topology V}.
 (* end hide *)
-
 Theorem continuous_open : ∀ f : U → V,
         continuous f ↔ (∀ A, open A → open (inverse_image f A)).
     exact ContinuousImpl.continuous_open.
@@ -265,7 +265,6 @@ Qed.
 (* begin hide *)
 Context {W} `{Topology W}.
 (* end hide *)
-
 Theorem comp_continuous_at : ∀ (f : U → V) (g : V → W) a,
         continuous_at f a → continuous_at g (f a) →
         continuous_at (λ x, g (f x)) a.
@@ -300,7 +299,6 @@ Context {U V} `{Topology U, Topology V}.
 
 Existing Instance subspace_topology.
 (* end hide *)
-
 Theorem continuous_connected_image : ∀ (f : U → V), continuous f →
         connected U → connected (set_type (image f)).
     intros f f_cont U_con.
@@ -397,7 +395,6 @@ Section ContinuousBasis.
 
 Context {U V} `{Topology U, TopologyBasis V}.
 (* end hide *)
-
 Theorem basis_continuous_at : ∀ (f : U → V) x,
         continuous_at f x ↔
         (∀ T, top_basis T → T (f x) →
@@ -442,7 +439,6 @@ Qed.
 (* begin hide *)
 End ContinuousBasis.
 (* end hide *)
-
 Section IVT.
 
 (* begin hide *)
@@ -455,7 +451,6 @@ Context {U V} `{
     Transitive V le
 }.
 (* end hide *)
-
 Hypothesis con : connected U.
 Hypothesis distinct : ∃ a b : V, a ≠ b.
 
@@ -463,7 +458,6 @@ Hypothesis distinct : ∃ a b : V, a ≠ b.
 Let ot := order_topology distinct.
 Existing Instance ot.
 (* end hide *)
-
 Theorem ivt : ∀ f : U → V, continuous f →
         ∀ a b r, f a < r → r < f b → ∃ c, f c = r.
     intros f f_cont a b r r_gt r_lt.
@@ -528,7 +522,6 @@ Context {U V} `{
     Transitive V le
 }.
 (* end hide *)
-
 Hypothesis com : compact U.
 Hypothesis distinct : ∃ a b : V, a ≠ b.
 Hypothesis U_inhab : U.
@@ -537,7 +530,6 @@ Hypothesis U_inhab : U.
 Let ot := order_topology distinct.
 Existing Instance ot.
 (* end hide *)
-
 Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f x <= f d.
     intros f f_cont.
     pose (A := image f).
@@ -699,6 +691,7 @@ Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f
 Qed.
 
 End EVT.
-
+(* begin hide *)
 Close Scope card_scope.
 Close Scope set_scope.
+(* end hide *)

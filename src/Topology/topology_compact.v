@@ -5,9 +5,10 @@ Require Export topology_axioms.
 Require Export topology_subspace.
 Require Export topology_limit.
 
+(* begin hide *)
 Open Scope card_scope.
 Open Scope set_scope.
-
+(* end hide *)
 Definition open_covering_of {U} `{Topology U} SS X :=
     X ⊆ ⋃ SS ∧ ∀ S, SS S → open S.
 Definition open_covering {U} `{Topology U} SS := open_covering_of SS all.
@@ -26,7 +27,6 @@ Section Compact.
 Context {U} `{Topology U}.
 Existing Instance subspace_topology.
 (* end hide *)
-
 Theorem compact_subspace : ∀ X, compact (set_type X) ↔
     ∀ SS, open_covering_of SS X →
         ∃ SS', SS' ⊆ SS ∧ finite (|set_type SS'|) ∧ X ⊆ ⋃ SS'.
@@ -326,7 +326,6 @@ Qed.
 (* begin hide *)
 End Compact.
 (* end hide *)
-
 Section CompactHausdorff.
 
 Context {U} `{HausdorffSpace U}.
@@ -457,6 +456,7 @@ Theorem hausdorff_compact_closed : ∀ X, compact (set_type X) → closed X.
 Qed.
 
 End CompactHausdorff.
-
+(* begin hide *)
 Close Scope set_scope.
 Close Scope card_scope.
+(* end hide *)

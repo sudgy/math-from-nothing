@@ -65,7 +65,6 @@ Context {U V} `{
     @ScalarRdist U V UP VP SM
 }.
 (* end hide *)
-
 Theorem lscalar : ∀ {u v} a, u = v → a · u = a · v.
     intros u v a eq.
     rewrite eq.

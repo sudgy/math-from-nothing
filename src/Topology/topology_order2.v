@@ -25,7 +25,6 @@ Let order_top := order_topology distinct.
 Existing Instance order_top.
 Existing Instance subspace_topology.
 (* end hide *)
-
 Theorem complete_connected : connected U.
     pose (f (x : set_type (@all U)) := [x|]).
     apply (continuous_connected f).

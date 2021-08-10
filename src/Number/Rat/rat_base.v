@@ -10,7 +10,6 @@ Delimit Scope rat_scope with rat.
 (* begin hide *)
 Section RatEquiv.
 (* end hide *)
-
 Let rat_eq (a b : int * nat1) :=
     fst a * nat1_to_int (snd b) = fst b * nat1_to_int (snd a).
 Local Infix "~" := rat_eq.
@@ -64,7 +63,6 @@ Instance rat_eq_transitive_class : Transitive _ := {
 
 End RatEquiv.
 (* end hide *)
-
 Definition rat_equiv := make_equiv _
     rat_eq_reflexive_class rat_eq_symmetric_class rat_eq_transitive_class.
 Notation "a ~ b" := (eq_equal rat_equiv a b) : rat_scope.

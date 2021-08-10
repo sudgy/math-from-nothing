@@ -17,7 +17,6 @@ Context {U} `{
     Transitive U le
 }.
 (* end hide *)
-
 Definition top_convex (S : U → Prop) :=
     ∀ a b, S a → S b → closed_interval a b ⊆ S.
 
@@ -61,36 +60,12 @@ Theorem inf_closed_interval_convex : ∀ a, top_convex (inf_closed_interval a).
     intros a b c ab ac x [bx xc].
     exact (trans xc ac).
 Qed.
-(*
-Variable X : U → Prop.
-Hypothesis subspace_distinct : ∃ a b : set_type X, a ≠ b.
-Theorem subspace_distinct_U : ∃ a b : U, a ≠ b.
-    destruct subspace_distinct as [a [b neq]].
-    exists [a|], [b|].
-    intros contr.
-    apply set_type_eq in contr.
-    contradiction.
-Qed.
-Let order_top := order_topology subspace_distinct.
-Let order_top_U := order_topology subspace_distinct_U.
-Existing Instance subspace_topology.
-Existing Instance order_top.
-Existing Instance order_top_U.
-*)
-(*
-Theorem convex_eq : top_convex X → subspace_topology X = basis_topology.
-    intros X_convex.
-    apply topology_equal.
-    intros S.
-    unfold open at 1; cbn.
-    split.
-    -
-*)
+
 (* begin hide *)
 Context `{SupremumComplete U le, Dense U lt}.
 (* end hide *)
-
 Hypothesis distinct : ∃ a b : U, a ≠ b.
+
 (* begin hide *)
 Let order_top := order_topology distinct.
 Existing Instance order_top.
@@ -422,7 +397,6 @@ Lemma convex_connected_wlog : ∀ S, top_convex S →
     exact AB.
 Qed.
 (* end hide *)
-
 Theorem convex_connected : ∀ S, top_convex S → connected (set_type S).
     intros S S_convex A B AB_sep.
     pose proof (land AB_sep) as A_ex.
@@ -488,7 +462,6 @@ Theorem inf_closed_interval_connected :
     apply convex_connected.
     apply inf_closed_interval_convex.
 Qed.
-
 (* begin hide *)
 End OrderTopology.
 (* end hide *)

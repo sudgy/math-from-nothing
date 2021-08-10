@@ -29,7 +29,6 @@ Class Connex {U} (op : U → U → Prop) := {
 Class Trichotomy {U} (op : U → U → Prop) := {
     trichotomy : ∀ x y, {op x y} + {x = y} + {op y x};
 }.
-
 Arguments refl: simpl never.
 Arguments irrefl: simpl never.
 Arguments sym: simpl never.
@@ -67,7 +66,6 @@ Class Order U := {
 Infix "<=" := le.
 Definition lt {U} `{Order U} := strict le.
 Infix "<" := lt.
-
 Arguments le: simpl never.
 
 (* begin hide *)
@@ -146,7 +144,6 @@ Global Instance op_lt_trichotomy : Trichotomy (strict op) := {
     trichotomy := op_lt_trichotomy_
 }.
 (* end hide *)
-
 Theorem op_nle_lt : ∀ a b, (¬op a b) = (strict op b a).
     intros a b.
     apply propositional_ext.
@@ -244,7 +241,6 @@ Qed.
 
 End TotalOrder.
 (* end hide *)
-
 (* begin show *)
 Ltac make_dual_op op' :=
     try pose proof (ge_refl (op := op'));
@@ -292,7 +288,6 @@ Global Instance lt_trichotomy : Trichotomy lt := {
     trichotomy := lt_trichotomy_
 }.
 (* end hide *)
-
 Theorem nle_lt : ∀ a b, (¬a <= b) = (b < a).
     apply op_nle_lt.
 Qed.
@@ -309,7 +304,6 @@ Theorem lt_le_trans : ∀ {a b c}, a < b → b <= c → a < c.
     intros a b c ab bc.
     apply (op_lt_le_trans ab bc).
 Qed.
-
 (* begin hide *)
 End TotalOrder2.
 (* end hide *)

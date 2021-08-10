@@ -91,7 +91,6 @@ Instance rat_mult_lid_class : MultLid rat := {
     mult_lid := rat_mult_lid;
 }.
 (* end hide *)
-
 Notation "⊘ a" := (
     match (trichotomy 0 (fst a)) with
     | semi_or_left comps =>
@@ -228,7 +227,6 @@ Instance rat_not_trivial_class : NotTrivial rat := {
 
 Close Scope rat_scope.
 (* end hide *)
-
 Theorem int_to_rat_mult : ∀ a b,
         int_to_rat a * int_to_rat b = int_to_rat (a * b).
     intros a b.

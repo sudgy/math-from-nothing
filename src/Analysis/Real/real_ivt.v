@@ -9,7 +9,6 @@ Section IVT.
 Existing Instance real_order_topology.
 Existing Instance subspace_topology.
 (* end hide *)
-
 (* TODO: Make the domain of this better *)
 Theorem real_ivt : ∀ f : real → real, continuous f →
         ∀ a b r, a < b → f a < r → r < f b → ∃ c, f c = r ∧ a <= c ∧ c <= b.
@@ -60,7 +59,6 @@ Theorem real_ivt : ∀ f : real → real, continuous f →
     exists c.
     repeat split; assumption.
 Qed.
-
 (* begin hide *)
 End IVT.
 (* end hide *)

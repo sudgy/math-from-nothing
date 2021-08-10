@@ -5,7 +5,6 @@ Require Import function.
 Require Import set.
 Require Import nat0.
 
-
 Declare Scope ord_scope.
 Delimit Scope ord_scope with ord.
 
@@ -136,7 +135,6 @@ Theorem ord_iso_le : ∀ (A : ord_type) f, injective f →
         contradiction.
 Qed.
 
-
 (* begin hide *)
 Section OrdEquiv.
 
@@ -194,16 +192,15 @@ Instance ord_eq_transitive_class : Transitive _ := {
 
 End OrdEquiv.
 (* end hide *)
-
 Definition ord_equiv := make_equiv _
     ord_eq_reflexive_class ord_eq_symmetric_class ord_eq_transitive_class.
 Notation "a ~ b" := (eq_equal ord_equiv a b) : ord_scope.
 
 Notation "'ord'" := (equiv_type ord_equiv).
 
-
+(* begin hide *)
 Open Scope ord_scope.
-
+(* end hide *)
 Theorem ord_niso_init : ∀ A x, ¬(A ~ initial_segment A x).
     intros A x [f [f_bij f_iso]].
     pose (f' a := [f a|]).
@@ -394,8 +391,9 @@ Theorem ord_iso_strict :
             destruct ab; contradiction.
 Qed.
 
+(* begin hide *)
 Close Scope ord_scope.
-
+(* end hide *)
 Definition nat0_to_ord_type (n : nat0) :=
     make_ord_type (set_type (λ m, m < n)) le wo_wo.
 Definition nat0_to_ord (n : nat0) :=

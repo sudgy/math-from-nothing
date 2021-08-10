@@ -93,7 +93,6 @@ Global Instance ord_order : Order ord := {
 
 Open Scope ord_scope.
 (* end hide *)
-
 Theorem ord_le_lt : ∀ α β, (α <= β) = (α = β ∨ α < β).
     intros α β.
     classic_case (α = β) as [eq|neq].
@@ -938,7 +937,6 @@ Instance ord_le_trans_class : Transitive le := {
     trans := ord_le_transitive
 }.
 (* end hide *)
-
 Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
 Theorem ord_lt_init : ∀ A x, to_ord (initial_segment A x) < to_ord A.
     intros A x.
@@ -1263,7 +1261,6 @@ Lemma nat0_to_ord_lt1 : ∀ a b, a < b → nat0_to_ord a < nat0_to_ord b.
         reflexivity.
 Qed.
 (* end hide *)
-
 Theorem nat0_to_ord_lt : ∀ a b, (nat0_to_ord a < nat0_to_ord b) = (a < b).
     intros a b.
     apply propositional_ext; split; try apply nat0_to_ord_lt1.
@@ -1310,6 +1307,7 @@ Theorem nat0_to_ord_le : ∀ a b, (nat0_to_ord a <= nat0_to_ord b) = (a <= b).
         rewrite <- nat0_to_ord_lt in eq.
         apply eq.
 Qed.
-
+(* begin hide *)
 Close Scope ord_scope.
 Close Scope set_scope.
+(* end hide *)

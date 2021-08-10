@@ -7,8 +7,9 @@ Require Import order_minmax.
 Require Export real_base.
 Require Import real_order.
 
+(* begin hide *)
 Open Scope real_scope.
-
+(* end hide *)
 Definition real_plus a b := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
 Infix "⊕" := real_plus : real_scope.
 
@@ -570,5 +571,6 @@ Theorem int_to_real_neg : ∀ a, -int_to_real a = int_to_real (-a).
     rewrite int_to_rat_neg.
     reflexivity.
 Qed.
-
+(* begin hide *)
 Close Scope real_scope.
+(* end hide *)

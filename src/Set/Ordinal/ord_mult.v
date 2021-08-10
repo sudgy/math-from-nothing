@@ -881,5 +881,6 @@ Theorem ord_lt_1 : ∀ α, α < 1 → 0 = α.
     -   intros a.
         contradiction (nat0_lt_0_false a).
 Qed.
-
+(* begin hide *)
 Close Scope ord_scope.
+(* end hide *)

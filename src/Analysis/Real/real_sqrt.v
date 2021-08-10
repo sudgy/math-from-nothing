@@ -10,7 +10,6 @@ Section Sqrt.
 
 Existing Instance real_order_topology.
 (* end hide *)
-
 Theorem sqrt_ex : ∀ a, 0 <= a → ∃ b, b * b = a ∧ 0 <= b.
     intros a a_pos.
     classic_case (0 = a) as [a_z|a_nz].
@@ -83,7 +82,6 @@ Theorem sqrt_pos : ∀ x, 0 <= sqrt(x).
     rewrite_ex_val a a_eq.
     apply a_eq.
 Qed.
-
 (* begin hide *)
 End Sqrt.
 (* end hide *)

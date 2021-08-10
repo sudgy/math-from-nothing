@@ -8,12 +8,12 @@ Require Import real_order.
 Require Import real_plus.
 Require Import real_mult1.
 
-(* This file contains the proofs up to showing that the real numbers form a
- * ring.
- *)
-
+(** This file contains the proofs up to showing that the real numbers form a
+ring.
+*)
+(* begin hide *)
 Open Scope real_scope.
-
+(* end hide *)
 Lemma real_mult_assoc0 : ∀ a b c, 0 <= a → 0 <= b → 0 <= c →
         ([a|] ⊗ ([b|] ⊗ [c|]) ⊆ ([a|] ⊗ [b|]) ⊗ [c|])%set.
     intros [a a_cut] [b b_cut] [c c_cut] a_pos b_pos c_pos; cbn.
@@ -506,5 +506,6 @@ Qed.
 Instance real_mult_lid_class : MultLid real := {
     mult_lid := real_mult_lid;
 }.
-
+(* begin hide *)
 Close Scope real_scope.
+(* end hide *)

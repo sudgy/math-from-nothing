@@ -10,8 +10,8 @@ Class Metric U := {
     d_sym : ∀ x y, d x y = d y x;
     d_tri : ∀ x y z, d x z <= d x y + d y z;
 }.
-
 (* begin hide *)
+
 Section MetricBase.
 
 Context {U} `{Metric U}.
@@ -62,10 +62,9 @@ Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| <= d y z.
         rewrite (d_sym y z).
         apply d_tri.
 Qed.
-
 (* begin hide *)
+
 End MetricBase.
-(* end hide *)
 
 Section AbsMetric.
 
@@ -89,6 +88,7 @@ Context {U} `{
     @AbsNeg U UA UN,
     @AbsTriangle U UA UP
 }.
+(* end hide *)
 
 Program Instance abs_metric : Metric U := {
     d a b := |a - b|
@@ -114,8 +114,9 @@ Next Obligation.
     apply abs_tri.
 Qed.
 
+(* begin hide *)
 End AbsMetric.
-
+(* end hide *)
 Definition real_metric := (abs_metric (U := real)).
 
 Theorem metric_eq {U} : ∀ M1 M2 : Metric U,

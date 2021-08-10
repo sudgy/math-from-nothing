@@ -8,8 +8,9 @@ Require Import function.
 Require Export mult_ring.
 Require Import nat0.
 
+(* begin hide *)
 Open Scope card_scope.
-
+(* end hide *)
 Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → prod A C ~ prod B D.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, (f (fst x), g (snd x))).
@@ -160,7 +161,6 @@ Instance card_ldist_class : Ldist card := {
     ldist := card_ldist
 }.
 (* end hide *)
-
 Theorem card_0_false : ∀ A, (|A| = 0) = (A → False).
     intros A.
     unfold zero; cbn.
@@ -203,11 +203,11 @@ Theorem card_le_lmult : ∀ {κ μ} ν, κ <= μ → ν * κ <= ν * μ.
     rewrite eq2.
     reflexivity.
 Qed.
+(* begin hide *)
 Lemma card_le_lmult_pos : ∀ κ μ ν, zero <= ν → κ <= μ → ν * κ <= ν * μ.
     intros κ μ ν ν_pos.
     apply card_le_lmult.
 Qed.
-(* begin hide *)
 Instance card_le_lmult_pos_class : OrderLmult card := {
     le_lmult_pos := card_le_lmult_pos
 }.
@@ -235,5 +235,6 @@ Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
         apply nat0_lt_1.
         exact y_lt.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

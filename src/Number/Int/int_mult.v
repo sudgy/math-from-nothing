@@ -11,9 +11,9 @@ Notation "a ⊗ b" :=
     (fst a * fst b + snd a * snd b, fst a * snd b + snd a * fst b)
     (at level 40, left associativity) : int_scope.
 
+(* begin hide *)
 Open Scope int_scope.
 
-(* begin hide *)
 Lemma int_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd.
     simpl in *.
@@ -117,7 +117,6 @@ Instance int_mult_lid_class : MultLid int := {
     mult_lid := int_mult_lid;
 }.
 (* end hide *)
-
 Theorem int_mult_0 : ∀ {a b}, a * b = 0 → a = 0 ∨ b = 0.
     intros a b eq.
     equiv_get_value a b.
@@ -182,10 +181,9 @@ Qed.
 Instance int_not_trivial_class : NotTrivial int := {
     not_trivial := int_not_trivial;
 }.
-(* end hide *)
 
 Close Scope int_scope.
-
+(* end hide *)
 Theorem nat0_to_int_mult : ∀ a b,
         nat0_to_int a * nat0_to_int b = nat0_to_int (a * b).
     intros a b.

@@ -88,7 +88,6 @@ Instance rat_plus_lid_class : PlusLid rat := {
     plus_lid := rat_plus_lid;
 }.
 (* end hide *)
-
 Notation "⊖ a" := (-fst a, snd a) (at level 35, right associativity): rat_scope.
 
 (* begin hide *)
@@ -126,7 +125,6 @@ Instance rat_plus_linv_class : PlusLinv rat := {
     plus_linv := rat_plus_linv;
 }.
 (* end hide *)
-
 Theorem int_to_rat_plus : ∀ a b,
         int_to_rat a + int_to_rat b = int_to_rat (a + b).
     intros a b.

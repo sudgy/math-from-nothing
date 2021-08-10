@@ -190,7 +190,6 @@ End StrongRecursion.
 
 Import StrongRecursion.
 (* end hide *)
-
 Theorem strong_recursion : ∀ B c (h : nat0_strong_recursion_domain B → B),
         ∃ k : nat0 → B,
         k 0 = c ∧

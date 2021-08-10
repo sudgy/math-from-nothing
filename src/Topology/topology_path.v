@@ -8,11 +8,10 @@ Require Export topology_real.
 
 (* begin hide *)
 Section Path.
-(* end hide *)
 
 Existing Instance real_order_topology.
 Existing Instance subspace_topology.
-
+(* end hide *)
 Definition p0 : set_type (closed_interval 0 1)
     := [0 | make_and (refl _) (land one_pos)].
 Definition p1 : set_type (closed_interval 0 1)
@@ -26,7 +25,6 @@ Definition path_connected U `{Topology U} := ∀ x y, ∃ f, path x y f.
 (* begin hide *)
 Context {U} `{Topology U}.
 (* end hide *)
-
 Theorem path_connected_connected : path_connected U → connected U.
     intros U_path A B AB_sep.
     pose proof (land AB_sep) as A_empty.

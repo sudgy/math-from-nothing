@@ -43,7 +43,6 @@ Context {U} `{P : Plus U,
                  @OrderMultRcancel U Z M R
              }.
 (* end hide *)
-
 Theorem min_comm : ∀ a b, min a b = min b a.
     intros a b.
     unfold min; do 2 case_if; try reflexivity.
@@ -89,5 +88,6 @@ Theorem rmax : ∀ a b, b <= max a b.
     rewrite max_comm.
     apply lmax.
 Qed.
-
+(* begin hide *)
 End MinMax.
+(* end hide *)

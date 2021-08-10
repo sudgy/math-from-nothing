@@ -13,7 +13,6 @@ Lemma real_distinct : ∃ a b : real, a ≠ b.
     exact not_trivial.
 Qed.
 (* end hide *)
-
 Definition real_order_topology := order_topology real_distinct.
 
 (* begin hide *)
@@ -21,7 +20,6 @@ Section RealOrderTopology.
 
 Existing Instance real_order_topology.
 (* end hide *)
-
 Theorem real_open_interval : ∀ B, top_basis B → ∃ a b, B = open_interval a b.
     intros B B_basis.
     destruct B_basis as [B_basis|[B_basis|B_basis]].
@@ -58,7 +56,6 @@ End RealOrderTopology.
 
 Section LowerLimit.
 (* end hide *)
-
 Program Instance real_lower_limit_topology : TopologyBasis real := {
     top_basis S := ∃ a b, S = closed_open_interval a b
 }.
@@ -99,7 +96,6 @@ End LowerLimit.
 
 Section KTop.
 (* end hide *)
-
 Definition real_K x := ∃ n, x = /(nat0_to_real (nat0_suc n)).
 
 Program Instance real_k_topology : TopologyBasis real := {
@@ -198,7 +194,6 @@ Qed.
 (* begin hide *)
 End KTop.
 (* end hide *)
-
 Theorem real_lower_limit_finer : topology_strictly_finer
         (@basis_topology _ real_lower_limit_topology)
         (@basis_topology _ real_order_topology).

@@ -11,8 +11,9 @@ Require Import nat0.
 Require Import mult_div.
 Require Import mult_pow.
 
+(* begin hide *)
 Open Scope card_scope.
-
+(* end end hide *)
 Definition finite κ := κ < |nat0|.
 Definition countable κ := κ <= |nat0|.
 Definition denumerable κ := κ = |nat0|.
@@ -534,5 +535,6 @@ Theorem nat0_mult_nat0 : |nat0| * |nat0| = |nat0|.
         rewrite x2_eq.
         apply mult_comm.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

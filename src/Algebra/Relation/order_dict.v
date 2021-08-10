@@ -4,7 +4,6 @@ Require Export relation.
 
 (* begin hide *)
 Section OrderDictionary.
-(* end hide *)
 
 Variables U V : Type.
 
@@ -20,13 +19,13 @@ Context `{
     Transitive V le,
     Reflexive V le
 }.
-
+(* end hide *)
 Instance dictionary_order : Order (U * V) := {
     le a b := match a, b with
         | (a1, b1), (a2, b2) => (b1 < b2) ∨ (a1 <= a2 ∧ b1 = b2)
         end
 }.
-
+(* begin hide *)
 Global Program Instance dict_order_connex : @Connex (U * V) le.
 Next Obligation.
     destruct x as [a1 b1], y as [a2 b2].
@@ -92,6 +91,5 @@ Next Obligation.
     -   reflexivity.
 Qed.
 
-(* begin hide *)
 End OrderDictionary.
 (* end hide *)

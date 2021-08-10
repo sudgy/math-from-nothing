@@ -8,6 +8,7 @@ Require Import order_minmax.
 Require Export order_abs.
 Require Export linear_base.
 
+(* begin hide *)
 Section NormMetric.
 
 Context {V} `{
@@ -33,7 +34,7 @@ Context {V} `{
 }.
 
 Existing Instance abs_metric.
-
+(* end hide *)
 Definition seq_norm_bounded (f : nat0 → V) := ∃ M, ∀ n, |f n| <= M.
 
 Theorem abs_reverse_tri : ∀ u v, | |u| - |v| | <= |u - v|.
@@ -192,7 +193,6 @@ Theorem seq_lim_neg : ∀ xf x, seq_lim xf x → seq_lim (λ n, -xf n) (-x).
     exact x_lim.
 Qed.
 
-(* TODO: Maybe generalize this to more general bilinear functions? *)
 (* TODO: Figure out if the cauchy_schwarz inequality is really needed, or if
  * some weaker condition will suffice *)
 Theorem seq_lim_bilinear : ∀ f xf yf (x y : V),
@@ -279,8 +279,9 @@ Theorem seq_lim_bilinear : ∀ f xf yf (x y : V),
     exact eq.
 Qed.
 
+(* begin hide *)
 End NormMetric.
-
+(* end hide *)
 Instance real_scalar_mult : ScalarMult real real := {
     scalar_mult a b := a * b
 }.

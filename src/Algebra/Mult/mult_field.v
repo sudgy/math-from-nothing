@@ -17,9 +17,9 @@ Class MultRinv U `{Zero U, Mult U, One U, Div U} := {
     mult_rinv : ∀ a, 0 ≠ a → a / a = 1
 }.
 
+(* begin hide *)
 Arguments div : simpl never.
 
-(* begin hide *)
 Section FieldImply1.
 
 Context {U} `{
@@ -110,7 +110,6 @@ Context {U} `{
     @NotTrivial U z o
 }.
 (* end hide *)
-
 Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
     intros a a_nz eq.
     apply rmult with a in eq.

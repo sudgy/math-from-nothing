@@ -23,7 +23,6 @@ Instance nat0_order : Order nat0 := {
     le := nat0_le;
 }.
 (* end hide *)
-
 Theorem nat0_le_zero_eq : ∀ a, a <= zero → a = zero.
     intros a eq.
     nat0_destruct a; try reflexivity.
@@ -133,7 +132,6 @@ Instance nat0_le_transitive : @Transitive nat0 le := {
     trans := nat0_le_transitive_
 }.
 (* end hide *)
-
 Theorem nat0_le_suc : ∀ a, a <= nat0_suc a.
     nat0_induction a.
     -   apply nat0_le_zero.
@@ -215,7 +213,6 @@ Instance nat0_le_mult : OrderMult nat0 := {
     le_mult := nat0_le_mult_;
 }.
 (* end hide *)
-
 Theorem nat0_le_lmult : ∀ {a b} c, a <= b → c * a <= c * b.
     intros a b c ab.
     nat0_induction c.
@@ -224,6 +221,7 @@ Theorem nat0_le_lmult : ∀ {a b} c, a <= b → c * a <= c * b.
     -   do 2 rewrite nat0_mult_lsuc.
         exact (le_lrplus ab IHc).
 Qed.
+
 (* begin hide *)
 Lemma nat0_le_lmult_ : ∀ a b c, zero <= c → a <= b → c * a <= c * b.
     intros a b c c_pos.
@@ -234,7 +232,6 @@ Instance nat0_le_lmult_class : OrderLmult nat0 := {
     le_lmult_pos := nat0_le_lmult_;
 }.
 (* end hide *)
-
 Theorem nat0_le_rmult : ∀ {a b} c, a <= b → a * c <= b * c.
     intros a b c.
     apply le_rmult_pos.
@@ -259,6 +256,7 @@ Theorem nat0_le_mult_lcancel : ∀ {a b} c, zero ≠ c → c * a <= c * b → a 
             apply le_plus_lcancel in eq.
             exact eq.
 Qed.
+
 (* begin hide *)
 Lemma nat0_le_mult_lcancel_ : ∀ a b c, zero < c → c * a <= c * b → a <= b.
     intros a b c [C c_pos].
@@ -270,7 +268,6 @@ Instance nat0_le_mult_lcancel_class : OrderMultLcancel nat0 := {
     le_mult_lcancel_pos := nat0_le_mult_lcancel_;
 }.
 (* end hide *)
-
 Theorem nat0_le_mult_rcancel : ∀ {a b} c, zero ≠ c → a * c <= b * c → a <= b.
     intros a b c c_pos.
     apply le_mult_rcancel_pos.

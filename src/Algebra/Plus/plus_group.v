@@ -45,7 +45,6 @@ Class PlusLinv U `{Plus U} `{Zero U} `{Neg U} := {
 Class PlusRinv U `{Plus U} `{Zero U} `{Neg U} := {
     plus_rinv : ∀ a, a + -a = zero;
 }.
-
 Arguments plus : simpl never.
 Arguments zero : simpl never.
 Arguments neg : simpl never.
@@ -129,7 +128,6 @@ Global Instance plus_op_inv : Inv plus := {inv := neg}.
 Global Instance plus_op_linv : Linv plus := {linv := plus_linv}.
 Global Instance plus_op_rinv : Rinv plus := {rinv := plus_rinv}.
 (* end hide *)
-
 Theorem lplus : ∀ {a b} c, a = b → c + a = c + b.
     apply lop.
 Qed.
@@ -180,7 +178,6 @@ Global Instance plus_rinv_rcancel_class : PlusRcancel U := {
     plus_rcancel := plus_rinv_rcancel
 }.
 (* end hide *)
-
 Theorem neg_zero : -0 = 0.
     apply plus_rcancel with 0.
     rewrite plus_linv.
@@ -359,8 +356,6 @@ Qed.
 (* begin hide *)
 End PlusGroup2.
 (* end hide *)
-
-
 Tactic Notation "plus_bring_left" constr(x) :=
     repeat rewrite plus_assoc;
     repeat rewrite (plus_comm _ x);

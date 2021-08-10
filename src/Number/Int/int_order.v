@@ -15,9 +15,9 @@ Definition int_pre a := a + -(1).
 Notation "a ≦ b" := (fst a + snd b <= snd a + fst b)
     (at level 70, no associativity) : int_scope.
 
+(* begin hide *)
 Open Scope int_scope.
 
-(* begin hide *)
 Lemma int_le_wd_1 : ∀ a b c d, a ~ b → c ~ d → a ≦ c → b ≦ d.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd le.
     simpl in *.
@@ -109,7 +109,6 @@ Instance int_le_lplus_class : OrderLplus int := {
     le_lplus := int_le_lplus;
 }.
 (* end hide *)
-
 Theorem int_pos_nat0_ex : ∀ a, 0 <= a → ∃ n, a = nat0_to_int n.
     intros a.
     equiv_get_value a.
@@ -166,7 +165,6 @@ Instance int_le_mult_lcancel : OrderMultLcancel int := {
     le_mult_lcancel_pos := int_le_mult_lcancel_pos;
 }.
 (* end hide *)
-
 Theorem int_lt_suc : ∀ a, a < int_suc a.
     intros a.
     unfold int_suc.
@@ -235,8 +233,9 @@ Theorem int_le_pre_lt : ∀ a b, a <= b → int_pre a < b.
     exact eq.
 Qed.
 
+(* begin hide *)
 Close Scope int_scope.
-
+(* end hide *)
 Theorem nat0_to_int_pos : ∀ a, 0 <= nat0_to_int a.
     intros a.
     unfold zero, nat0_to_int, le; simpl; equiv_simpl; simpl.

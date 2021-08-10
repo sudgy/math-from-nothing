@@ -12,9 +12,9 @@ Require Import nat0.
 Require Import order_minmax.
 Require Import card_infinite1.
 
+(* begin hide *)
 Open Scope card_scope.
 
-(* begin hide *)
 Module CardMultIdemp.
 Section CardMultIdemp.
 
@@ -960,7 +960,6 @@ Qed.
 End CardMultIdemp.
 End CardMultIdemp.
 (* end hide *)
-
 Theorem card_mult_idemp : ∀ κ, infinite κ → κ * κ = κ.
     intros A A_inf.
     equiv_get_value A.
@@ -1060,5 +1059,6 @@ Theorem card_inf_plus_mult : ∀ κ μ, infinite κ → infinite μ → κ + μ 
     rewrite card_mult_max by assumption.
     reflexivity.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

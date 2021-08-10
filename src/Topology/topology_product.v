@@ -10,7 +10,6 @@ Local Open Scope set_scope.
 
 Context {U V} `{Topology U, Topology V}.
 (* end hide *)
-
 Program Instance product_topology : TopologyBasis (U * V) := {
     top_basis S := ∃ A B, open A ∧ open B ∧ S = (A * B)
 }.
@@ -56,12 +55,12 @@ Qed.
 (* begin hide *)
 End ProductTopology.
 (* end hide *)
-
 Section ProductHausdorff.
 
+(* begin hide *)
 Local Open Scope set_scope.
+(* end hide *)
 Context {U V} `{HausdorffSpace U, HausdorffSpace V}.
-
 Existing Instance product_topology.
 
 Program Instance product_hausdorff : HausdorffSpace (U * V).

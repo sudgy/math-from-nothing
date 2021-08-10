@@ -44,7 +44,6 @@ Instance nat0_mult_lid : MultLid nat0 := {
     mult_lid := nat0_mult_lid_;
 }.
 (* end hide *)
-
 Theorem nat0_mult_lsuc : ∀ a b, nat0_suc a * b = b + a * b.
     intros a b.
     unfold mult; cbn.
@@ -123,7 +122,6 @@ Instance nat0_mult_assoc : MultAssoc nat0 := {
     mult_assoc := nat0_mult_assoc_;
 }.
 (* end hide *)
-
 Theorem nat0_neq_suc_mult : ∀ a b, zero ≠ nat0_suc a * nat0_suc b.
     intros a b contr.
     rewrite nat0_mult_lsuc in contr.
@@ -131,6 +129,7 @@ Theorem nat0_neq_suc_mult : ∀ a b, zero ≠ nat0_suc a * nat0_suc b.
     inversion contr.
 Qed.
 
+(* TODO: symmetrize this *)
 Theorem nat0_mult_zero : ∀ a b, a * b = zero → a = zero ∨ b = zero.
     intros a b eq.
     nat0_destruct a.

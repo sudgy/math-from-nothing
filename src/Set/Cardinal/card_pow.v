@@ -8,8 +8,9 @@ Require Import set.
 Require Import function.
 Require Import nat0.
 
+(* begin hide *)
 Open Scope card_scope.
-
+(* end hide *)
 Lemma card_pow_wd : ∀ A B C D, A ~ B → C ~ D → (C → A) ~ (D → B).
     intros A B C D [f f_bij] [g g_bij].
     pose (g' := bij_inv g g_bij).
@@ -291,14 +292,15 @@ Lemma card_suc_ex : ∀ κ, ∃ μ, κ < μ ∧ ∀ ν, κ < ν → μ <= ν.
     exact (μ_min _ Sν (rand leq) (land leq)).
 Qed.
 (* end hide *)
-
 Definition card_suc κ := ex_val (card_suc_ex κ).
+
 Theorem card_suc_lt : ∀ κ, κ < card_suc κ.
     intros κ.
     unfold card_suc.
     rewrite_ex_val μ μ_eq.
     apply μ_eq.
 Qed.
+
 Theorem card_suc_le : ∀ κ μ, κ < μ → card_suc κ <= μ.
     intros κ μ lt.
     unfold card_suc.
@@ -306,5 +308,6 @@ Theorem card_suc_le : ∀ κ μ, κ < μ → card_suc κ <= μ.
     apply ν_eq.
     exact lt.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

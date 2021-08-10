@@ -11,7 +11,6 @@ Local Open Scope set_scope.
 
 Context {U} `{Topology U}.
 (* end hide *)
-
 Variable X : U → Prop.
 
 Program Instance subspace_topology : Topology (set_type X) := {
@@ -250,7 +249,6 @@ Context {U} `{TopologyBasis U}.
 Existing Instance subspace_topology.
 Variable X : U → Prop.
 (* end hide *)
-
 Let C S := ∃ B, top_basis B ∧ S = to_set_type X B.
 
 Lemma subspace_basis_open : C ⊆ open.
@@ -277,7 +275,6 @@ Qed.
 
 Definition subspace_basis_topology :=
     (make_basis_topology C subspace_basis_open subspace_basis_contains).
-
 Existing Instance subspace_basis_topology.
 
 Theorem subspace_basis_eq : basis_topology = (subspace_topology X).
@@ -287,13 +284,13 @@ Qed.
 (* begin hide *)
 End SubspaceBasis.
 (* end hide *)
-
 Section SubspaceHausdorff.
 
+(* begin hide *)
 Local Open Scope set_scope.
+(* end hide *)
 Context {U} `{HausdorffSpace U}.
 Variable X : U → Prop.
-
 Existing Instance subspace_topology.
 
 Program Instance subspace_hausdorff : HausdorffSpace (set_type X).

@@ -13,9 +13,9 @@ Require Export nat0_abstract.
 Notation "a ≦ b" :=
     (fst a * nat1_to_int (snd b) <= fst b * nat1_to_int (snd a)) : rat_scope.
 
+(* begin hide *)
 Open Scope rat_scope.
 
-(* begin hide *)
 Lemma rat_le_wd_1 : ∀ a b c d, a ~ b → c ~ d → a ≦ c → b ≦ d.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd ac.
     cbn in *.
@@ -139,7 +139,6 @@ Instance rat_le_mult_class : OrderMult rat := {
 
 Close Scope rat_scope.
 (* end hide *)
-
 Theorem int_to_rat_le : ∀ a b, int_to_rat a <= int_to_rat b ↔ a <= b.
     intros a b.
     unfold int_to_rat, le at 1; equiv_simpl.
@@ -236,9 +235,9 @@ Qed.
 
 Definition rat_arch := field_impl_arch1 rat_archimedean.
 (* end hide *)
-
 (* begin show *)
 Existing Instance rat_arch.
 (* end show *)
-
+(* begin hide *)
 Close Scope rat_scope.
+(* end hide *)

@@ -10,9 +10,9 @@ Require Import nat0.
 Require Import set.
 Require Import well_order.
 
+(* begin hide *)
 Open Scope card_scope.
 
-(* begin hide *)
 Section InfiniteOrder.
 
 Context {U : Type} {op : U → U → Prop}.
@@ -96,7 +96,6 @@ Qed.
 
 End Proof.
 (* end hide *)
-
 Theorem all_greater_inf : U → (∀ a, ∃ b, strict op a b) → infinite (|U|).
     apply all_greater_inf_base.
 Qed.
@@ -114,7 +113,6 @@ Context `{
     Connex U op
 }.
 (* end hide *)
-
 Theorem all_greater_inf_set : ∀ S : U → Prop,
         (∃ x, S x) → (∀ a : set_type S, ∃ b : set_type S, strict op [a|] [b|]) →
         infinite (|set_type S|).
@@ -197,7 +195,6 @@ Context `{
     Transitive U op
 }.
 (* end hide *)
-
 Theorem finite_well_founded :
         finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x.
     make_dual_op op.
@@ -209,7 +206,6 @@ Qed.
 (* begin hide *)
 Context `{Connex U op}.
 (* end hide *)
-
 Theorem finite_well_ordered :
         finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x.
     make_dual_op op.
@@ -235,7 +231,6 @@ Local Instance op_le : Order U := {
     le := op
 }.
 (* end hide *)
-
 Theorem finite_well_founded_set : ∀ S : U → Prop,
         finite (|set_type S|) → (∃ x, S x) → ∃ x, is_minimal op S x.
     intros S S_fin S_ex.
@@ -310,7 +305,6 @@ Qed.
 (* begin hide *)
 End InfiniteOrder4.
 (* end hide *)
-
 Theorem empty_finite {U} : finite (|set_type (@empty U)|).
     rewrite <- empty_set_size.
     unfold zero; cbn.
@@ -553,5 +547,6 @@ Theorem countable_union_countable {U} : ∀ (SS : (U → Prop) → Prop),
     rewrite nat0_mult_nat0 in leq.
     exact leq.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

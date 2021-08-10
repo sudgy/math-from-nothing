@@ -11,9 +11,10 @@ Require Import ord_induction.
 Require Import ord_pow_def.
 Require Import card.
 
+(* begin hide *)
 Open Scope card_scope.
 Open Scope ord_scope.
-
+(* end hide *)
 Theorem ord_pow_0 : ∀ α, α ^ 0 = 1.
     intros A.
     equiv_get_value A.
@@ -587,4 +588,6 @@ Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
 Qed.
 *)
 *)
+(* begin hide *)
 Close Scope ord_scope.
+(* end hide *)

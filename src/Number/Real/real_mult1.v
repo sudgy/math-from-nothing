@@ -7,12 +7,12 @@ Require Export real_base.
 Require Import real_order.
 Require Import real_plus.
 
-(* This file contains the definition of multiplication and several theorems used
- * to make the ridiculous number of cases involved more manageable
- *)
-
+(** This file contains the definition of multiplication and several theorems
+used to make the ridiculous number of cases involved more manageable
+*)
+(* begin hide *)
 Open Scope real_scope.
-
+(* end hide *)
 Definition real_mult a b :=
     λ x, x < 0 ∨ ∃ r s, a r ∧ b s ∧ 0 <= r ∧ 0 <= s ∧ x = r * s.
 Infix "⊗":= real_mult : real_scope.
@@ -415,5 +415,6 @@ Qed.
 Instance real_le_mult_class : OrderMult real := {
     le_mult := real_le_mult;
 }.
-
+(* begin hide *)
 Close Scope real_scope.
+(* end hide *)

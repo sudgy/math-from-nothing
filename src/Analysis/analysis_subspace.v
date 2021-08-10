@@ -9,7 +9,6 @@ Section SubspaceMetric.
 
 Context {U} `{Metric U}.
 (* end hide *)
-
 Variable X : U → Prop.
 
 Program Instance subspace_metric : Metric (set_type X) := {
@@ -75,10 +74,9 @@ Qed.
 End SubspaceMetric.
 
 Section SubspaceMetricEquiv.
-(* end hide *)
 
 Existing Instance subspace_metric.
-
+(* end hide *)
 Theorem metric_subspace_topology {U} `{Metric U} : ∀ X,
         subspace_topology X = (basis_topology (b := metric_topology)).
     intros X.
@@ -113,7 +111,7 @@ Theorem metric_subspace_topology {U} `{Metric U} : ∀ X,
         +   exact Bx.
         +   exact B_sub.
 Qed.
-
 (* begin hide *)
+
 End SubspaceMetricEquiv.
 (* end hide *)

@@ -33,7 +33,6 @@ Section BasicTopology.
 
 Context {U : Type}.
 (* end hide *)
-
 Program Instance discrete_topology : Topology U := {
     open := @all (U → Prop)
 }.
@@ -49,7 +48,6 @@ Qed.
 Next Obligation.
     exact true.
 Qed.
-
 Remove Hints discrete_topology : typeclass_instances.
 
 Program Instance trivial_topology : Topology U := {
@@ -100,7 +98,6 @@ Next Obligation.
             *   contradiction.
             *   exact true.
 Qed.
-
 Remove Hints trivial_topology : typeclass_instances.
 
 (* begin hide *)
@@ -110,7 +107,6 @@ Section Topology.
 
 Context {U} `{Top : Topology U}.
 (* end hide *)
-
 Theorem discrete_finer : topology_finer discrete_topology Top.
     intros S S_open.
     exact true.
@@ -330,7 +326,6 @@ Qed.
 (* begin hide *)
 End Topology.
 (* end hide *)
-
 Theorem topology_equal : ∀ U (T1 : Topology U) (T2 : Topology U),
         (∀ S, @open U T1 S ↔ @open U T2 S) → T1 = T2.
     intros U [open1 empty1 all1 union1 inter1]
@@ -379,7 +374,6 @@ Section SingleOpenDiscrete.
 
 Context {U} `{T : Topology U}.
 (* end hide *)
-
 Theorem single_open_discrete :
         (∀ x, open (singleton x)) → T = discrete_topology.
     intros single_open.
@@ -412,8 +406,9 @@ Theorem single_open_discrete :
         subst A.
         apply single_open.
 Qed.
-
+(* begin hide *)
 End SingleOpenDiscrete.
 
 Close Scope set_scope.
 Close Scope card_scope.
+(* end hide *)

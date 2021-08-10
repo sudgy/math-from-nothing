@@ -110,7 +110,6 @@ Context {U} `{
     @OrderPlusRcancel U p o
 }.
 (* end hide *)
-
 Theorem le_lrplus : ∀ {a b c d}, a <= b → c <= d → a + c <= b + d.
     intros a b c d ab cd.
     apply le_rplus with c in ab.
@@ -416,7 +415,6 @@ Theorem lt_plus_rrneg_ltq : ∀ a b, 0 < a - b → b < a.
     rewrite neg_neg in eq.
     exact eq.
 Qed.
-
 (* begin hide *)
 End OrderPlus.
 (* end hide *)

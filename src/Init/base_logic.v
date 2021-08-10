@@ -81,7 +81,6 @@ Module ProofIrrelevance.
     Qed.
 End ProofIrrelevance.
 (* end hide *)
-
 Theorem proof_irrelevance : ∀ {P : Prop} (a b : P), a = b.
     intros P.
     apply ProofIrrelevance.proof_irrelevance.
@@ -181,7 +180,6 @@ Module ExcludedMiddle.
     Qed.
 End ExcludedMiddle.
 (* end hide *)
-
 Theorem excluded_middle : ∀ (P : Prop), P ∨ ¬P.
     apply ExcludedMiddle.excluded_middle.
 Qed.

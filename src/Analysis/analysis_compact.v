@@ -5,8 +5,8 @@ Require Import analysis_topology.
 Require Import analysis_sequence.
 Require Import analysis_subspace.
 Require Import order_minmax.
-
 (* begin hide *)
+
 Module AnalysisCompact1.
 Section AnalysisCompact1.
 
@@ -680,8 +680,8 @@ Theorem compact_complete : compact U → complete U.
     exists x.
     exact (cauchy_subseq_converge a b x a_cauchy ab_sub b_lim).
 Qed.
-
 (* begin hide *)
+
 End AnalysisCompact.
 
 Module AnalysisCompact3.

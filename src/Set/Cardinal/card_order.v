@@ -7,9 +7,9 @@ Require Import function.
 Require Export ord_basic.
 Require Import nat0.
 
+(* begin hide *)
 Open Scope card_scope.
 
-(* begin hide *)
 Section CardOrder.
 
 Local Open Scope card_scope.
@@ -43,7 +43,6 @@ Global Instance card_order : Order card := {
     le := binary_op card_le_wd;
 }.
 (* end hide *)
-
 Theorem card_to_initial_ord_lte :
         ∀ κ μ, card_to_initial_ord κ < card_to_initial_ord μ → κ <= μ.
     intros κ μ lt.
@@ -67,6 +66,7 @@ Theorem card_to_initial_ord_lte :
     apply set_type_eq.
     exact eq.
 Qed.
+
 (* begin hide *)
 Lemma card_le_connex : ∀ κ μ, {κ <= μ} + {μ <= κ}.
     intros A B.
@@ -280,7 +280,6 @@ Instance card_le_wf_class : WellFounded le := {
     well_founded := card_le_wf
 }.
 (* end hide *)
-
 Theorem card_le_sub : ∀ κ A, κ <= |A| → ∃ S : A → Prop, |set_type S| = κ.
     intros B A leq.
     equiv_get_value B.
@@ -315,8 +314,9 @@ Theorem card_sub_le : ∀ (A : Type) (S : A → Prop), |set_type S| <= |A|.
     exact eq.
 Qed.
 
+(* begin hide *)
 Open Scope set_scope.
-
+(* end hide *)
 Theorem card_minus_le {U} : ∀ (A B : U → Prop),
         |set_type (A - B)| <= |set_type A|.
     intros A B.
@@ -343,6 +343,7 @@ Theorem image_under_le {U V} : ∀ (A : U → Prop) (f : U → V),
     rewrite a_eq, b_eq.
     reflexivity.
 Qed.
-
+(* begin hide *)
 Close Scope set_scope.
 Close Scope card_scope.
+(* end hide *)

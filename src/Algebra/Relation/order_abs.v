@@ -9,7 +9,6 @@ Class AbsoluteValue U := {
     abs : U → real;
 }.
 Notation "| a |" := (abs a) (at level 30).
-
 Arguments abs : simpl never.
 
 Instance real_abs : AbsoluteValue real := {
@@ -83,7 +82,6 @@ Context {U : Type} `{
     @AbsNeg U UA UN
 }.
 (* end hide *)
-
 Theorem abs_zero : 0 = |0|.
     apply abs_def.
     reflexivity.
@@ -151,20 +149,16 @@ Next Obligation.
     rewrite abs_one.
     apply abs_minus_one.
 Qed.
-
 Global Program Instance abs_mult_cs : AbsCauchySchwarz U.
 Next Obligation.
     rewrite abs_mult.
     apply refl.
 Qed.
-
 (* begin hide *)
 End Abs.
-(* end hide *)
 
 Section RealAbs.
 
-(* begin hide *)
 Global Program Instance real_abs_pos : AbsPositive real.
 Next Obligation.
     unfold abs; cbn.
@@ -280,7 +274,6 @@ Next Obligation.
         apply refl.
 Qed.
 (* end hide *)
-
 Theorem abs_le_pos : ∀ a, a <= |a|.
     intros a.
     unfold abs; cbn.
@@ -365,6 +358,7 @@ Theorem abs_pos_eq : ∀ a, 0 <= a → |a| = a.
     -   contradiction.
 Qed.
 
+(* begin hide *)
 End RealAbs.
 
 Section LinearAbs.
@@ -389,6 +383,7 @@ Context {U : Type} `{
     @AbsScalar U UA SM,
     @AbsPositive U UA
 }.
+(* end hide *)
 
 Theorem abs_abs : ∀ x, | |x| | = |x|.
     intros x.
@@ -398,7 +393,7 @@ Theorem abs_abs : ∀ x, | |x| | = |x|.
     -   exfalso; apply n.
         apply abs_pos.
 Qed.
-
+(* begin hide *)
 Global Program Instance abs_scalar_neg : AbsNeg U.
 Next Obligation.
     rewrite <- scalar_neg_one.
@@ -422,3 +417,4 @@ Next Obligation.
 Qed.
 
 End LinearAbs.
+(* end hide *)

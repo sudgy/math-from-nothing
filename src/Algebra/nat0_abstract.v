@@ -14,6 +14,7 @@ Fixpoint abstract_mult {U} `{Plus U, Zero U} (a : nat0) (b : U) :=
 
 Infix "×" := abstract_mult (at level 40, left associativity).
 
+(* TODO: Get rid of this, it's just pow_nat0 *)
 Fixpoint abstract_pow {U} `{Mult U, One U} (a : U) (b : nat0) :=
     match b with
     | nat0_zero => 1
@@ -72,7 +73,6 @@ Context {U} `{
     @MultRinv U z m1 e d
 }.
 (* end hide *)
-
 Theorem nat0_to_abstract_eq : ∀ a, nat0_to_abstract a = a.
     nat0_induction a.
     -   reflexivity.

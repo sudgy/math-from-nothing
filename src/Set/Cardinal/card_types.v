@@ -8,12 +8,13 @@ Require Import rat.
 Require Import real.
 Require Import real_sqrt.
 
+(* begin hide *)
 Open Scope card_scope.
 
 Section EquivCard.
 
 Context {U : Type}.
-
+(* end hide *)
 Theorem equiv_card_le : ∀ E : equivalence U, |equiv_type E| <= |U|.
     intros E.
     unfold le; equiv_simpl.
@@ -29,6 +30,7 @@ Theorem equiv_card_le : ∀ E : equivalence U, |equiv_type E| <= |U|.
     reflexivity.
 Qed.
 
+(* begin hide *)
 End EquivCard.
 
 Section DenseInfinite.
@@ -40,7 +42,7 @@ Context {U} `{
     @Transitive U le,
     @Dense U lt
 }.
-
+(* end hide *)
 Hypothesis distinct : ∃ a b : U, a ≠ b.
 
 Theorem dense_open_infinite :
@@ -118,6 +120,7 @@ Theorem dense_closed_infinite :
     exact eq.
 Qed.
 
+(* begin hide *)
 End DenseInfinite.
 
 Fixpoint nat1_to_nat0_minus n :=
@@ -125,6 +128,7 @@ Fixpoint nat1_to_nat0_minus n :=
     | nat1_one => nat0_zero
     | nat1_suc m => nat0_suc (nat1_to_nat0_minus m)
     end.
+(* end hide *)
 
 Theorem nat1_size : |nat1| = |nat0|.
     equiv_simpl.
@@ -733,5 +737,6 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
         rewrite nat0_to_card_plus.
         apply nat0_is_finite.
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

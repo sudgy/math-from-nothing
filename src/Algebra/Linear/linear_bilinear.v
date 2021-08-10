@@ -14,6 +14,7 @@ Definition bilinear {U V1 V2 V3} `{
     (∀ v1 v2 v3, f (v1 + v2) v3 = f v1 v3 + f v2 v3) ∧
     (∀ v1 v2 v3, f v1 (v2 + v3) = f v1 v2 + f v1 v3).
 
+(* begin hide *)
 Section Bilinear.
 
 Context {U V1 V2 V3} `{
@@ -58,18 +59,21 @@ Context {U V1 V2 V3} `{
     @ScalarId U V3 UO UV3,
     @ScalarRdist U V3 UP V3P UV3
 }.
-
+(* end hide *)
 Variables (f : V1 → V2 → V3) (f_bil : bilinear f).
 
 Theorem bilinear_lscalar : ∀ a v1 v2, f (a · v1) v2 = a · (f v1 v2).
     apply f_bil.
 Qed.
+
 Theorem bilinear_rscalar : ∀ a v1 v2, f v1 (a · v2) = a · (f v1 v2).
     apply f_bil.
 Qed.
+
 Theorem bilinear_rdist : ∀ v1 v2 v3, f (v1 + v2) v3 = f v1 v3 + f v2 v3.
     apply f_bil.
 Qed.
+
 Theorem bilinear_ldist : ∀ v1 v2 v3, f v1 (v2 + v3) = f v1 v2 + f v1 v3.
     apply f_bil.
 Qed.
@@ -103,5 +107,6 @@ Theorem bilinear_rneg : ∀ u v, f u (-v) = -(f u v).
     rewrite scalar_neg_one.
     reflexivity.
 Qed.
-
+(* begin hide *)
 End Bilinear.
+(* end hide *)

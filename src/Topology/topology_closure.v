@@ -7,17 +7,15 @@ Require Import topology_subspace.
 
 (* begin hide *)
 Section ClosureInterior.
-(* end hide *)
 
 Local Open Scope set_scope.
-
+(* end hide *)
 Definition closure {U} `{Topology U} A := ⋂ (λ S, closed S ∧ A ⊆ S).
 Definition interior {U} `{Topology U} A := ⋃ (λ S, open S ∧ S ⊆ A).
 
 (* begin hide *)
 Context {U} `{Topology U}.
 (* end hide *)
-
 Theorem closure_closed : ∀ A, closed (closure A).
     intros A.
     apply inter_closed.
@@ -128,10 +126,9 @@ End ClosureInterior.
 Section SubspaceClosure.
 
 Context {U} `{Topology U}.
-(* end hide *)
 
 Existing Instance subspace_topology.
-
+(* end hide *)
 Theorem subspace_closure : ∀ X A, A ⊆ X →
         closure (to_set_type X A) = to_set_type X (closure A).
     intros X A sub.
@@ -193,7 +190,6 @@ Section ClosureBasis.
 
 Context {U} `{TopologyBasis U}.
 (* end hide *)
-
 Theorem basis_in_closure : ∀ x A,
         (closure A) x ↔ ∀ B, top_basis B → B x → intersects A B.
     intros x A.
@@ -224,9 +220,10 @@ End ClosureBasis.
 
 Section ClosureHausdorff.
 
+(* begin hide *)
 Local Open Scope card_scope.
 Local Open Scope set_scope.
-
+(* end hide *)
 Context {U} `{HausdorffSpace U}.
 
 Theorem point_closed : ∀ x, closed (singleton x).

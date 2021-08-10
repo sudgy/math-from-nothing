@@ -79,7 +79,6 @@ Lemma le_mult_lmult : ∀ a b c, 0 <= c → a <= b → c * a <= c * b.
     exact eq.
 Qed.
 (* end hide *)
-
 Theorem div_pos : ∀ a, 0 < a → 0 < div a.
     intros a a_pos.
     classic_contradiction contr.
@@ -162,7 +161,6 @@ Context {U} `{
     @MultLinv U z m e d
 }.
 (* end hide *)
-
 Theorem lt_lmult_pos : ∀ {a b} c, zero < c → a < b → c * a < c * b.
     intros a b c c_gt ab.
     split.
@@ -545,7 +543,6 @@ Global Instance ordered_field_dense_class : Dense lt := {
     dense := ordered_field_dense
 }.
 (* end hide *)
-
 Theorem le_mult_llmove_pos : ∀ a b c, 0 < a → a * b <= c → b <= /a * c.
     intros a b c a_pos eq.
     apply le_lmult_pos with (/a) in eq.
@@ -1137,7 +1134,6 @@ Theorem lt_square : ∀ a b, 0 <= a → 0 <= b → a < b ↔ a*a < b*b.
             subst.
             destruct ab; contradiction.
 Qed.
-
 (* begin hide *)
 End OrderMult.
 (* end hide *)

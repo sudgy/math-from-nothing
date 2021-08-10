@@ -12,7 +12,6 @@ Section Homeomorphism.
 Context {U V} `{Topology U, Topology V}.
 Variable f : U → V.
 (* end hide *)
-
 Theorem homeomorphism_open :
        homeomorphism f ↔ (bijective f ∧ (∀ A, open A ↔ open (image_under f A))).
     split.
@@ -48,7 +47,6 @@ Theorem homeomorphism_open :
             apply opens.
             exact A_open.
 Qed.
-
 (* begin hide *)
 End Homeomorphism.
 (* end hide *)

@@ -709,5 +709,6 @@ Theorem ord_false_0 : ∀ A, (ord_U A → False) → 0 = to_equiv_type ord_equiv
     -   intros a.
         contradiction (A_false a).
 Qed.
-
+(* begin hide *)
 Close Scope ord_scope.
+(* end hide *)

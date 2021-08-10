@@ -10,11 +10,11 @@ Require Import plus_sum.
 (* If I ever want to do analysis on an ordered field that's not the real
  * numbers, I'll figure it out then.
  *)
-
+(* begin hide *)
 Section AnalysisOrder.
 
 Existing Instance abs_metric.
-
+(* end hide *)
 Theorem seq_lim_pos : ∀ xf x, (∀ n, 0 <= xf n) → seq_lim xf x → 0 <= x.
     intros xf x xf_pos x_lim.
     rewrite metric_seq_lim in x_lim.
@@ -361,5 +361,6 @@ Theorem series_le_converge : ∀ a b,
         +   exact IHj.
         +   apply ab.
 Qed.
-
+(* begin hide *)
 End AnalysisOrder.
+(* end hide *)

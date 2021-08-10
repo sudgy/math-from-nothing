@@ -2,9 +2,10 @@ Require Import init.
 
 Require Export topology_base.
 
+(* begin hide *)
 Open Scope card_scope.
 Open Scope set_scope.
-
+(* end hide *)
 #[universes(template)]
 Class TopologyBasis U := {
     top_basis : (U → Prop) → Prop;
@@ -124,7 +125,6 @@ Section Basis.
 
 Context {U} `{TopologyBasis U}.
 (* end hide *)
-
 Theorem basis_open : ∀ B, top_basis B → open B.
     intros B B_basis x Bx.
     exists B.
@@ -251,7 +251,6 @@ Qed.
 (* begin hide *)
 End MakeBasis.
 (* end hide *)
-
 Theorem topology_basis_equal : ∀U (T1 : TopologyBasis U) (T2 : TopologyBasis U),
         (∀ S, @top_basis U T1 S ↔ @top_basis U T2 S) → T1 = T2.
     intros U [T1 T1_in T1_int] [T2 T2_in T2_int] S.
@@ -288,6 +287,7 @@ Theorem topology_basis_finer {U} : ∀ (T1 T2 : TopologyBasis U),
         +   exact B1x.
         +   exact (trans B1_sub B2'_sub).
 Qed.
-
+(* begin hide *)
 Close Scope set_scope.
 Close Scope card_scope.
+(* end hide *)

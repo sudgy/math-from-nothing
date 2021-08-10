@@ -18,7 +18,6 @@ Section Connected.
 
 Context {U} `{Topology U}.
 (* end hide *)
-
 Theorem separation_comm : ∀ A B, separation A B ↔ separation B A.
     intros A B.
     split.
@@ -97,7 +96,6 @@ Theorem connected_clopen : connected U ↔ (∀ S, clopen S → S = all ∨ S = 
         +   contradiction.
         +   contradiction.
 Qed.
-
 Existing Instance subspace_topology.
 
 Theorem sub_connected1 : ∀ (X : U → Prop) (A B : U → Prop),
@@ -495,7 +493,6 @@ Section Connected.
 Context {U} `{Topology U}.
 Existing Instance subspace_topology.
 (* end hide *)
-
 Theorem empty_connected : connected (set_type ∅).
     intros A B [A_empty AB].
     apply not_empty_ex in A_empty.
@@ -635,7 +632,6 @@ Theorem connected_in_closure : ∀ A B, connected (set_type A) →
     -   apply separation_comm in CD_sep.
         exact (wlog _ _ sub CD_sep).
 Qed.
-
 (* begin hide *)
 End Connected.
 (* end hide *)

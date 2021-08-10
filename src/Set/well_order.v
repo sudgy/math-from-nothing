@@ -608,7 +608,6 @@ Section WellOrder.
 
 Context {U : Type}.
 (* end hide *)
-
 Definition wo_le := @WellOrderModule.wo_le U.
 
 Instance wo_connex_class : Connex wo_le := {

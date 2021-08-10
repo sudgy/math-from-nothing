@@ -66,7 +66,6 @@ Definition well_orders {U} (op : U → U → Prop) :=
 (* begin hide *)
 Section WellOrders.
 (* end hide *)
-
 Context {U : Type} {op : U → U → Prop} `{
     Connex U op,
     Antisymmetric U op,
@@ -113,7 +112,6 @@ Context {U} `{
     @OrderRplus U PLUS ORD
 }.
 (* end hide *)
-
 Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
         has_lower_bound le S → has_infimum le S.
     intros S S_ex S_lower.
@@ -163,7 +161,6 @@ Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
         rewrite neg_neg, plus_rid in α_lub.
         exact α_lub.
 Qed.
-
 (* begin hide *)
 End SupremumComplete.
 (* end hide *)

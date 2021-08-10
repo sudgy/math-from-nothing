@@ -5,12 +5,14 @@ Require Import set.
 
 Require Export real_base.
 
+(* begin hide *)
 Open Scope set_scope.
-
+(* end hide *)
 Instance real_order : Order real := {
     le a b := [a|] ⊆ [b|]
 }.
 
+(* begin hide *)
 Lemma real_le_connex : ∀ a b, {a <= b} + {b <= a}.
     intros [a a_cut] [b b_cut].
     unfold le; cbn.
@@ -99,7 +101,7 @@ Qed.
 Instance real_sup_complete_class : SupremumComplete le := {
     sup_complete := real_sup_complete
 }.
-
+(* end hide *)
 Theorem rat_to_real_le : ∀ a b, rat_to_real a <= rat_to_real b ↔ a <= b.
     intros a b; split; intro leq.
     -   unfold le in leq; cbn in leq.
@@ -172,5 +174,6 @@ Theorem real_lt_ex_between : ∀ a b, a < b → ∃ x, ¬[a|] x ∧ [b|] x.
     -   exact ax.
     -   contradiction.
 Qed.
-
+(* begin hide *)
 Close Scope set_scope.
+(* end hide *)

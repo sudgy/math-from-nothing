@@ -72,7 +72,6 @@ Instance int_plus_lid_class : PlusLid int := {
     plus_lid := int_plus_lid;
 }.
 (* end hide *)
-
 Notation "⊖ a" := (snd a, fst a) (at level 35, right associativity) : int_scope.
 
 (* begin hide *)
@@ -106,7 +105,6 @@ Instance int_plus_linv_class : PlusLinv int := {
     plus_linv := int_plus_linv;
 }.
 (* end hide *)
-
 Theorem nat0_to_int_plus : ∀ a b,
         nat0_to_int a + nat0_to_int b = nat0_to_int (a + b).
     intros a b.

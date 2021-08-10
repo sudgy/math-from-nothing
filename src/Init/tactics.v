@@ -1,26 +1,5 @@
 Require Export logic.
-(* TODO: Figure this out *)
-(*
-Ltac unpack_ex_val a b :=
-    match goal with
-    | |- context [@ex_val ?A ?B ?P] =>
-        pose (a := @ex_val A B P);
-        assert (P a) as b by admit
-    | K: context [@ex_val ?A ?B ?P] |- _ =>
-        pose (a := @ex_val A B P);
-        assert (P a) as b by admit
-    end;
-    fold a in *.
-*)
-(* begin show *)
-(*
-Ltac old_unpack_ex_val a b :=
-    unfold ex_val, ex_type_val;
-    match goal with
-    | |- context [@ex_to_type ?A ?B ?P] => destruct (@ex_to_type A B P) as [a b]
-    | K: context [@ex_to_type ?A ?B ?P] |- _ => destruct (ex_to_type A B P) as [a b]
-    end.
-*)
+
 Ltac case_if :=
     let go P := destruct P; try solve [elimtype False] in
     match goal with

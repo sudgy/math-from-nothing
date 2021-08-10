@@ -6,7 +6,9 @@ Require Export op.
 Declare Scope set_scope.
 Delimit Scope set_scope with set.
 
+(* begin hide *)
 Open Scope set_scope.
+(* end hide *)
 
 Definition subset {U : Type} (S T : U → Prop) := ∀ x, S x → T x.
 Infix "⊆" := subset.
@@ -71,7 +73,6 @@ Global Instance subset_antisym : Antisymmetric subset := {
     antisym := subset_antisym_
 }.
 (* end hide *)
-
 Theorem empty_sub : ∀ S : U → Prop, ∅ ⊆ S.
     intros S x contr.
     contradiction contr.
@@ -161,12 +162,12 @@ Lemma union_comm : ∀ S T : U → Prop, S ∪ T = T ∪ S.
     -   right; exact Sx.
     -   left; exact Tx.
 Qed.
+
 (* begin hide *)
 Global Instance union_comm_class : Comm union := {
     comm := union_comm
 }.
 (* end hide *)
-
 Lemma union_assoc : ∀ R S T : U → Prop, R ∪ (S ∪ T) = (R ∪ S) ∪ T.
     apply set_assoc_base; try exact union_comm_class.
     intros R S T x [Rx|[Sx|Tx]].
@@ -174,6 +175,7 @@ Lemma union_assoc : ∀ R S T : U → Prop, R ∪ (S ∪ T) = (R ∪ S) ∪ T.
     -   left; right; exact Sx.
     -   right; exact Tx.
 Qed.
+
 (* begin hide *)
 Global Instance union_assoc_class : Assoc union := {
     assoc := union_assoc
@@ -192,6 +194,7 @@ Lemma union_lid : ∀ S : U → Prop, ∅ ∪ S = S.
     -   intros x x_in.
         right; exact x_in.
 Qed.
+
 (* begin hide *)
 Global Instance union_lid_class : Lid union := {
     lid := union_lid
@@ -211,12 +214,12 @@ Lemma union_lanni : ∀ S : U → Prop, all ∪ S = all.
         left.
         exact x_in.
 Qed.
+
 (* begin hide *)
 Global Instance union_lanni_class : Lanni union := {
     lanni := union_lanni
 }.
 (* end hide *)
-
 Theorem union_lsub : ∀ S T : U → Prop, S ⊆ S ∪ T.
     intros S T x Sx.
     left; exact Sx.
@@ -243,29 +246,30 @@ Lemma union_idemp : ∀ S : U → Prop, S ∪ S = S.
     -   intros x [Sx|Sx]; exact Sx.
     -   intros x Sx; left; exact Sx.
 Qed.
+
 (* begin hide *)
 Global Instance union_idemp_class : Idempotent union := {
     idemp := union_idemp
 }.
 (* end hide *)
-
 Lemma inter_comm : ∀ S T : U → Prop, S ∩ T = T ∩ S.
     apply set_comm_base.
     intros S T x [Sx Tx].
     split; assumption.
 Qed.
+
 (* begin hide *)
 Global Instance inter_comm_class : Comm intersection := {
     comm := inter_comm
 }.
 (* end hide *)
-
 Lemma inter_assoc : ∀ R S T : U → Prop, R ∩ (S ∩ T) = (R ∩ S) ∩ T.
     apply set_assoc_base; try exact inter_comm_class.
     intros R S T.
     intros x [Rx [Sx Tx]].
     repeat split; assumption.
 Qed.
+
 (* begin hide *)
 Global Instance inter_assoc_class : Assoc intersection := {
     assoc := inter_assoc
@@ -285,6 +289,7 @@ Lemma inter_lid : ∀ S : U → Prop, all ∩ S = S.
         +   unfold all; trivial.
         +   exact Sx.
 Qed.
+
 (* begin hide *)
 Global Instance inter_lid_class : Lid intersection := {
     lid := inter_lid
@@ -300,12 +305,12 @@ Lemma inter_lanni : ∀ S : U → Prop, ∅ ∩ S = ∅.
     intros x [contr Sx].
     contradiction contr.
 Qed.
+
 (* begin hide *)
 Global Instance inter_lanni_class : Lanni intersection := {
     lanni := inter_lanni
 }.
 (* end hide *)
-
 Theorem inter_lsub : ∀ S T : U → Prop, S ∩ T ⊆ S.
     intros S T x [Sx Tx].
     exact Sx.
@@ -347,13 +352,12 @@ Lemma inter_idemp : ∀ S : U → Prop, S ∩ S = S.
     -   intros x [Sx Sx']; exact Sx.
     -   intros x Sx; split; exact Sx.
 Qed.
+
 (* begin hide *)
 Global Instance inter_idemp_class : Idempotent intersection := {
     idemp := inter_idemp
 }.
 (* end hide *)
-
-
 Theorem union_ldist : ∀ R S T : U → Prop, R ∪ (S ∩ T) = (R ∪ S) ∩ (R ∪ T).
     intros R S T.
     apply antisym.
@@ -487,6 +491,7 @@ Lemma set_minus_rid : ∀ S : U → Prop, S - ∅ = S.
         +   exact Sx.
         +   apply not_in_empty.
 Qed.
+
 (* begin hide *)
 Global Instance set_minus_rid_class : Rid set_minus := {
     rid := set_minus_rid
@@ -498,6 +503,7 @@ Theorem set_minus_lid : ∀ S : U → Prop, ∅ - S = ∅.
     intros x [contr Sx].
     contradiction contr.
 Qed.
+
 (* begin hide *)
 Global Instance set_minus_inv_class : Inv set_minus := {
     inv (S : U → Prop) := S
@@ -509,6 +515,7 @@ Lemma set_minus_inv : ∀ S : U → Prop, S - S = ∅.
     intros x [Sx nSx].
     contradiction.
 Qed.
+
 (* begin hide *)
 Global Instance set_minus_linv : Linv set_minus := {
     linv := set_minus_inv
@@ -517,7 +524,6 @@ Global Instance set_minus_rinv : Rinv set_minus := {
     rinv := set_minus_inv
 }.
 (* end hide *)
-
 Theorem symdif_formula : ∀ S T : U → Prop, S + T = (S ∪ T) - (S ∩ T).
     intros S T.
     unfold symmetric_difference.
@@ -545,6 +551,7 @@ Lemma symdif_comm : ∀ S T : U → Prop, S + T = T + S.
     -   right; split; assumption.
     -   left; split; assumption.
 Qed.
+
 (* begin hide *)
 Global Instance symdif_comm_class : Comm symmetric_difference := {
     comm := symdif_comm
@@ -578,6 +585,7 @@ Lemma symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
             not_simpl.
             split; left; assumption.
 Qed.
+
 (* begin hide *)
 Global Instance symdif_assoc_class : Assoc symmetric_difference := {
     assoc := symdif_assoc
@@ -598,6 +606,7 @@ Lemma symdif_lid : ∀ S : U → Prop, ∅ + S = S.
         +   exact x_in.
         +   apply not_in_empty.
 Qed.
+
 (* begin hide *)
 Global Instance symdif_lid_class : Lid symmetric_difference := {
     lid := symdif_lid
@@ -619,6 +628,6 @@ Global Instance symdif_linv_class : Linv symmetric_difference := {
 }.
 
 End SetBase.
-(* end hide *)
 
 Close Scope set_scope.
+(* end hide *)

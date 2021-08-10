@@ -3,16 +3,14 @@ Require Import init.
 Require Export analysis_base.
 Require Import analysis_topology.
 Require Import analysis_sequence.
-(*Require Import analysis_continuous.*)
 Require Export analysis_norm.
-(*Require Import norm_continuous.*)
 Require Import analysis_series.
-(*Require Import order_minmax.*)
 Require Import mult_pow.
 Require Import analysis_order.
 Require Import norm_mult.
 Require Import plus_sum.
 
+(* begin hide *)
 Section GeometricSeries.
 
 Context {U} `{
@@ -59,7 +57,7 @@ Context {U} `{
 Local Open Scope nat0_scope.
 
 Existing Instance abs_metric.
-
+(* end hide *)
 Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
     intros r r_small.
     apply seq_lim_zero.
@@ -257,5 +255,6 @@ Theorem geometric_series_sum_constant : ∀ a r, |r| < 1 →
     apply geometric_series_sum.
     exact r_small.
 Qed.
-
+(* begin hide *)
 End GeometricSeries.
+(* end hide *)

@@ -11,12 +11,13 @@ Section MetricTopology.
 
 Context {U} `{Metric U}.
 (* end hide *)
-
 Definition open_ball x (ε : real_pos) := λ y, d x y < [ε|].
 Definition closed_ball x (ε : real_pos) := λ y, d x y <= [ε|].
 
 Definition bounded X := ∃ M, ∀ a b, X a → X b → d a b <= M.
+(* begin hide *)
 Local Open Scope card_scope.
+(* end hide *)
 Definition totally_bounded X := ∀ ε,
     ∃ A, finite (|set_type A|) ∧ X ⊆ ⋃ (image_under (λ a, open_ball a ε) A).
 
@@ -212,7 +213,6 @@ Lemma metric_hausdorff_base : ∀ x1 x2, x1 ≠ x2 →
         destruct ltq; contradiction.
 Qed.
 (* end hide *)
-
 Instance metric_hausdorff : HausdorffSpace U := {
     hausdorff_space := metric_hausdorff_base
 }.
@@ -322,12 +322,13 @@ Theorem totally_bounded_bounded : ∀ X, totally_bounded X → bounded X.
     exact M_max.
 Qed.
 
+(* begin hide *)
 End MetricTopology.
 
 Section RealMetricTopologyEq.
 
 Existing Instance abs_metric.
-
+(* end hide *)
 Theorem real_metric_topology_eq :
         @basis_topology _ (@metric_topology _ real_metric) =
         @basis_topology _ real_order_topology.
@@ -423,8 +424,8 @@ Theorem real_metric_topology_eq :
             rewrite plus_comm in eq2.
             split; assumption.
 Qed.
-
+(* begin hide *)
 End RealMetricTopologyEq.
-
+(* end hide *)
 Existing Instance metric_topology.
 Existing Instance metric_hausdorff.

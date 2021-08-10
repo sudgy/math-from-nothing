@@ -9,6 +9,7 @@ Require Import norm_continuous.
 Require Import analysis_series.
 Require Import order_minmax.
 
+(* begin hide *)
 Section NormMult.
 
 Context {U} `{
@@ -52,6 +53,8 @@ Context {U} `{
     @AbsScalar U UA SM
 }.
 
+Existing Instance abs_metric.
+(* end hide *)
 Theorem mult_bilinear : bilinear mult.
     repeat split.
     -   apply scalar_lmult.
@@ -59,8 +62,6 @@ Theorem mult_bilinear : bilinear mult.
     -   apply rdist.
     -   apply ldist.
 Qed.
-
-Existing Instance abs_metric.
 
 Theorem seq_lim_mult : ∀ xf yf (x y : U), seq_lim xf x → seq_lim yf y →
         seq_lim (λ n, xf n * yf n) (x * y).
@@ -166,5 +167,6 @@ Theorem seq_lim_div : ∀ a af, seq_lim af a →
     rewrite mult_rrinv in eq by exact a_neq.
     exact eq.
 Qed.
-
+(* begin hide *)
 End NormMult.
+(* end hide *)

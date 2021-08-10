@@ -10,9 +10,10 @@ Require Import nat0.
 Require Import card.
 Require Import ord_induction.
 
+(* begin hide *)
 Open Scope card_scope.
 Open Scope ord_scope.
-
+(* end hide *)
 Definition ord_fin_support {A B} (f : ord_U B → ord_U A) :=
     finite (|set_type (λ x, f x ≠ ord_zero (f x))|).
 
@@ -385,7 +386,6 @@ Lemma ord_pow_wo_antisym : ∀ A B, Antisymmetric (ord_pow_le A B).
             destruct a_lt; contradiction.
 Qed.
 (* end hide *)
-
 Lemma ord_pow_wo : ∀ A B, well_orders (ord_pow_le A B).
     intros A B.
     get_ord_wo A.
@@ -611,9 +611,9 @@ Lemma ord_pow_wd : ∀ A B C D, A ~ B → C ~ D → A ⊙ C ~ B ⊙ D.
                     exact x_gt.
 Qed.
 (* end hide *)
-
 Definition ord_pow := binary_self_op ord_pow_wd.
 Infix "^" := ord_pow : ord_scope.
-
+(* begin hide *)
 Close Scope ord_scope.
 Close Scope card_scope.
+(* end hide *)

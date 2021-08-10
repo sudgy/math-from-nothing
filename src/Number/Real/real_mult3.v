@@ -9,9 +9,9 @@ Require Import real_plus.
 Require Import real_mult1.
 Require Import real_mult2.
 
-(* This file contains the definition of division, and the compatability theorems
- * for multiplication between the reals and other number systems.
- *)
+(** This file contains the definition of division, and the compatability
+theorems for multiplication between the reals and other number systems.
+*)
 
 Open Scope real_scope.
 
@@ -527,8 +527,9 @@ Instance real_not_trivial_class : NotTrivial real := {
     not_trivial := real_not_trivial;
 }.
 
+(* begin hide *)
 Close Scope real_scope.
-
+(* end hide *)
 Lemma rat_to_real_mult1 : ∀ a b, 0 <= a → 0 <= b →
         rat_to_real a * rat_to_real b = rat_to_real (a * b).
     intros a b a_pos b_pos.

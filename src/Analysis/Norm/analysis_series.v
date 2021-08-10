@@ -10,6 +10,7 @@ Definition series {V} `{Plus V, Zero V} (a : nat0 → V) (n : nat0) := sum a 0 n
 
 Definition cauchy_series {V} `{Plus V, Zero V, AbsoluteValue V} (a : nat0 → V)
     := ∀ ε, 0 < ε → ∃ N, ∀ i j, N <= i → |sum a i j| < ε.
+(* begin hide *)
 
 Section AnalysisSeries.
 
@@ -36,6 +37,7 @@ Context {V} `{
 }.
 
 Existing Instance abs_metric.
+(* end hide *)
 
 Theorem series_scalar : ∀ af a c, seq_lim (series af) a →
         seq_lim (series (λ n, c · af n)) (c · a).
@@ -129,5 +131,6 @@ Theorem cauchy_series_converges : complete V →
         apply af_conv.
         exact j_ge.
 Qed.
-
+(* begin hide *)
 End AnalysisSeries.
+(* end hide *)

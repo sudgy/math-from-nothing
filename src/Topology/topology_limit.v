@@ -26,7 +26,6 @@ Section LimitPoint.
 
 Context {U} `{Topology U}.
 (* end hide *)
-
 Theorem closure_limit_points : ∀ A, closure A = A ∪ limit_point A.
     intros A.
     apply predicate_ext; intros x; split.
@@ -161,8 +160,9 @@ Theorem subsequence_lim_eq :
     exact (a_lim (f n) (trans n_ge f_leq)).
 Qed.
 
+(* begin hide *)
 Close Scope set_scope.
-
+(* end hide *)
 Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
     intros a n x.
     split.
@@ -183,18 +183,18 @@ Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
         apply nat0_le_self_rplus.
 Qed.
 
+(* begin hide *)
 Open Scope set_scope.
 
-(* begin hide *)
 End LimitPoint.
 (* end hide *)
-
 Section HausdorffLimit.
 
 Context {U} `{HausdorffSpace U}.
 
+(* begin hide *)
 Local Open Scope card_scope.
-
+(* end hide *)
 Theorem limit_point_inf : ∀ A x,
         limit_point A x ↔ ∀ S, open S → S x → infinite (|set_type (A ∩ S)|).
     intros A x.
@@ -290,10 +290,11 @@ Qed.
 
 End HausdorffLimit.
 
+(* begin hide *)
 Section BasisLimit.
 
 Context {U} `{TopologyBasis U}.
-
+(* end hide *)
 Theorem basis_seq_lim : ∀ f x, seq_lim f x ↔
         ∀ S, top_basis S → S x → ∃ N, ∀ n, N <= n → S (f n).
     intros f x.
@@ -310,7 +311,8 @@ Theorem basis_seq_lim : ∀ f x, seq_lim f x ↔
         apply lim.
         exact n_gt.
 Qed.
-
+(* begin hide *)
 End BasisLimit.
 
 Close Scope set_scope.
+(* end hide *)

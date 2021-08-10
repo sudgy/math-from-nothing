@@ -9,8 +9,9 @@ Class TopologySubbasis U := {
     top_subbasis_union : ⋃ top_subbasis = all
 }.
 
+(* begin hide *)
 Open Scope card_scope.
-
+(* end hide *)
 Program Instance subbasis_topology {U} `{TopologySubbasis U}
     : TopologyBasis U :=
 {
@@ -68,5 +69,6 @@ Next Obligation.
         +   intros A SS2_A.
             exact (S_in A (make_ror SS2_A)).
 Qed.
-
+(* begin hide *)
 Close Scope card_scope.
+(* end hide *)

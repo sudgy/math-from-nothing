@@ -10,7 +10,6 @@ Delimit Scope int_scope with int.
 (* begin hide *)
 Section IntEquiv.
 (* end hide *)
-
 Let int_eq (a b : nat0 * nat0) := fst a + snd b = fst b + snd a.
 (* begin hide *)
 Local Infix "~" := int_eq.
