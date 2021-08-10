@@ -678,15 +678,6 @@ Theorem nat0_to_real_mult : ∀ a b,
     reflexivity.
 Qed.
 
-Theorem nat1_to_real_mult : ∀ a b,
-        nat1_to_real a * nat1_to_real b = nat1_to_real (a * b).
-    intros a b.
-    unfold nat1_to_real.
-    rewrite rat_to_real_mult.
-    rewrite nat1_to_rat_mult.
-    reflexivity.
-Qed.
-
 Theorem rat_to_real_div : ∀ a, 0 ≠ a →
         div (rat_to_real a) = rat_to_real (div a).
     intros a a_nz.

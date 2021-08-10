@@ -2,7 +2,6 @@ Require Import init.
 
 Require Import set.
 Require Import card.
-Require Import nat1.
 Require Import int.
 Require Import rat.
 Require Import real.
@@ -122,42 +121,7 @@ Qed.
 
 (* begin hide *)
 End DenseInfinite.
-
-Fixpoint nat1_to_nat0_minus n :=
-    match n with
-    | nat1_one => nat0_zero
-    | nat1_suc m => nat0_suc (nat1_to_nat0_minus m)
-    end.
 (* end hide *)
-
-Theorem nat1_size : |nat1| = |nat0|.
-    equiv_simpl.
-    exists nat1_to_nat0_minus.
-    split.
-    -   intros a.
-        nat1_induction a.
-        +   intros b b_eq.
-            nat1_destruct b.
-            *   reflexivity.
-            *   inversion b_eq.
-        +   intros b b_eq.
-            nat1_destruct b.
-            *   inversion b_eq.
-            *   apply f_equal.
-                apply IHa.
-                inversion b_eq as [b_eq2].
-                reflexivity.
-    -   intros b.
-        nat0_induction b.
-        +   exists 1.
-            reflexivity.
-        +   destruct IHb as [a a_eq].
-            exists (nat1_suc a).
-            cbn.
-            rewrite a_eq.
-            reflexivity.
-Qed.
-
 Theorem int_size : |int| = |nat0|.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
@@ -175,7 +139,7 @@ Theorem rat_size : |rat| = |nat0|.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
-        rewrite nat1_size, int_size.
+        rewrite int_size.
         rewrite nat0_mult_nat0.
         apply refl.
     -   unfold le; equiv_simpl.

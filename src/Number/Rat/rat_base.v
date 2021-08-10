@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import nat1.
+Require Import nat0.
 Require Import int.
 Require Import set.
 
@@ -10,8 +10,9 @@ Delimit Scope rat_scope with rat.
 (* begin hide *)
 Section RatEquiv.
 (* end hide *)
-Let rat_eq (a b : int * nat1) :=
-    fst a * nat1_to_int (snd b) = fst b * nat1_to_int (snd a).
+Let rat_eq (a b : int * nat0) :=
+    fst a * nat0_to_int (nat0_suc (snd b)) =
+    fst b * nat0_to_int (nat0_suc (snd a)).
 Local Infix "~" := rat_eq.
 
 (* begin hide *)
@@ -47,11 +48,11 @@ Lemma rat_eq_transitive : ∀ a b c, a ~ b → b ~ c → a ~ c.
             *   subst.
                 do 2 rewrite mult_lanni.
                 reflexivity.
-            *   contradiction (nat1_nz_int _ bc).
-        +   contradiction (nat1_nz_int _ ab).
+            *   contradiction (nat0_nz_int _ bc).
+        +   contradiction (nat0_nz_int _ ab).
     -   pose proof (lrmult ab bc) as eq; clear ab bc.
-        pose proof (nat1_nz_int b2) as nz.
-        mult_cancel_left (nat1_to_int b2) in eq; try exact nz.
+        pose proof (nat0_nz_int b2) as nz.
+        mult_cancel_left (nat0_to_int (nat0_suc b2)) in eq; try exact nz.
         mult_cancel_left b1 in eq; try exact bnz.
         rewrite (mult_comm c1).
         exact eq.
@@ -68,15 +69,14 @@ Notation "a ~ b" := (eq_equal rat_equiv a b) : rat_scope.
 
 Notation "'rat'" := (equiv_type rat_equiv).
 
-Definition int_to_rat a := to_equiv_type rat_equiv (a, 1).
+Definition int_to_rat a := to_equiv_type rat_equiv (a, 0).
 Definition nat0_to_rat a := int_to_rat (nat0_to_int a).
-Definition nat1_to_rat a := int_to_rat (nat1_to_int a).
 
 Theorem int_to_rat_eq : ∀ a b, int_to_rat a = int_to_rat b → a = b.
     intros a b eq.
     unfold int_to_rat in eq.
     equiv_simpl in eq.
-    rewrite nat1_to_int_one in eq.
+    change (nat0_to_int (nat0_suc 0)) with 1 in eq.
     do 2 rewrite mult_rid in eq.
     exact eq.
 Qed.
@@ -84,13 +84,6 @@ Qed.
 Theorem nat0_to_rat_eq : ∀ a b, nat0_to_rat a = nat0_to_rat b → a = b.
     intros a b eq.
     apply nat0_to_int_eq.
-    apply int_to_rat_eq.
-    exact eq.
-Qed.
-
-Theorem nat1_to_rat_eq : ∀ a b, nat1_to_rat a = nat1_to_rat b → a = b.
-    intros a b eq.
-    apply nat1_to_int_eq.
     apply int_to_rat_eq.
     exact eq.
 Qed.

@@ -1,6 +1,5 @@
 Require Import init.
 
-Require Import nat1.
 Require Import nat0.
 Require Import set.
 
@@ -56,19 +55,11 @@ Notation "a ~ b" := (eq_equal int_equiv a b) : int_scope.
 Notation "'int'" := (equiv_type int_equiv).
 
 Definition nat0_to_int a := to_equiv_type int_equiv (a, zero).
-Definition nat1_to_int a := nat0_to_int (nat1_to_nat0 a).
 
 Theorem nat0_to_int_eq : ∀ a b, nat0_to_int a = nat0_to_int b → a = b.
     intros a b eq.
     unfold nat0_to_int in eq.
     rewrite equiv_eq in eq; cbn in eq.
     do 2 rewrite plus_rid in eq.
-    exact eq.
-Qed.
-
-Theorem nat1_to_int_eq : ∀ a b, nat1_to_int a = nat1_to_int b → a = b.
-    intros a b eq.
-    apply nat1_to_nat0_eq.
-    apply nat0_to_int_eq.
     exact eq.
 Qed.

@@ -547,15 +547,6 @@ Theorem nat0_to_real_plus : ∀ a b,
     reflexivity.
 Qed.
 
-Theorem nat1_to_real_plus : ∀ a b,
-        nat1_to_real a + nat1_to_real b = nat1_to_real (a + b).
-    intros a b.
-    unfold nat1_to_real.
-    rewrite rat_to_real_plus.
-    rewrite nat1_to_rat_plus.
-    reflexivity.
-Qed.
-
 Theorem rat_to_real_neg : ∀ a, -rat_to_real a = rat_to_real (-a).
     intros a.
     apply plus_lcancel with (rat_to_real a).

@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import nat0.
-Require Import nat1.
 Require Export mult.
 Require Import set.
 
@@ -189,18 +188,5 @@ Theorem nat0_to_int_mult : ∀ a b,
     do 2 rewrite mult_lanni.
     rewrite mult_ranni.
     do 4 rewrite plus_rid.
-    reflexivity.
-Qed.
-
-Theorem nat1_to_int_mult : ∀ a b,
-        nat1_to_int a * nat1_to_int b = nat1_to_int (a * b).
-    intros a b.
-    unfold nat1_to_int.
-    rewrite nat0_to_int_mult.
-    rewrite nat1_to_nat0_mult.
-    reflexivity.
-Qed.
-
-Theorem nat1_to_int_one : nat1_to_int 1 = 1.
     reflexivity.
 Qed.

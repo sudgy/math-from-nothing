@@ -10,7 +10,7 @@ Require Import real_mult3.
 Require Export nat0_abstract.
 
 Require Import set.
-Require Import nat1.
+Require Import nat0.
 Require Import int.
 Require Import rat.
 

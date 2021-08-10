@@ -5,7 +5,6 @@ Require Import int_plus.
 Require Import int_mult.
 
 Require Import nat0.
-Require Import nat1.
 Require Import set.
 Require Export order_mult.
 
@@ -305,7 +304,7 @@ Theorem nat0_to_int_lt : ∀ a b, nat0_to_int a < nat0_to_int b ↔ a < b.
             contradiction.
 Qed.
 
-Theorem int_pos_nat1_ex : ∀ n, 0 < n → ∃ n', n = nat1_to_int n'.
+Theorem int_pos_nat1_ex : ∀ n, 0 < n → ∃ n', n = nat0_to_int (nat0_suc n').
     intros n' n_pos.
     pose proof (int_pos_nat0_ex _ (land n_pos)) as [n n_eq].
     subst n'.
@@ -314,21 +313,11 @@ Theorem int_pos_nat1_ex : ∀ n, 0 < n → ∃ n', n = nat1_to_int n'.
     destruct n_pos as [C0 n_nz]; clear C0.
     nat0_destruct n; try contradiction.
     clear n_nz.
-    nat0_induction n.
-    -   exists 1.
-        reflexivity.
-    -   destruct IHn as [n' eq].
-        exists (nat1_suc n').
-        change (nat0_suc (nat0_suc n)) with (1 + nat0_suc n).
-        change (nat1_suc n') with (1 + n').
-        rewrite <- nat0_to_int_plus.
-        rewrite <- nat1_to_int_plus.
-        rewrite eq.
-        apply rplus.
-        reflexivity.
+    exists n.
+    reflexivity.
 Qed.
 
-Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -nat1_to_int n'.
+Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -nat0_to_int (nat0_suc n').
     intros n n_lt.
     apply lt_neg in n_lt.
     rewrite neg_zero in n_lt.
@@ -339,25 +328,18 @@ Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -nat1_to_int n'.
     exact n_eq.
 Qed.
 
-Theorem nat1_to_int_pos : ∀ n, 0 < nat1_to_int n.
+Theorem nat1_to_int_pos : ∀ n, 0 < nat0_to_int (nat0_suc n).
     intros n.
-    unfold nat1_to_int.
-    change 0 with (nat0_to_int 0).
-    apply nat0_to_int_lt.
     split.
-    -   apply nat0_le_zero.
-    -   apply nat1_nz.
+    -   apply nat0_to_int_pos.
+    -   apply nat0_nz_int.
 Qed.
 
-Theorem nat1_to_int_pos1 : ∀ n, 1 <= nat1_to_int n.
+Theorem nat1_to_int_pos1 : ∀ n, 1 <= nat0_to_int (nat0_suc n).
     intros n.
-    unfold nat1_to_int.
     change 1 with (nat0_to_int 1).
     apply nat0_to_int_le.
-    rewrite <- nat0_lt_suc_le.
     unfold one; cbn.
-    rewrite nat0_sucs_lt.
-    split.
-    -   apply nat0_le_zero.
-    -   apply nat1_nz.
+    rewrite nat0_sucs_le.
+    apply nat0_le_zero.
 Qed.

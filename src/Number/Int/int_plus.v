@@ -1,6 +1,5 @@
 Require Import init.
 
-Require Import nat1.
 Require Import nat0.
 Require Import set.
 Require Export plus_group.
@@ -113,17 +112,8 @@ Theorem nat0_to_int_plus : ∀ a b,
     reflexivity.
 Qed.
 
-Theorem nat1_to_int_plus : ∀ a b,
-        nat1_to_int a + nat1_to_int b = nat1_to_int (a + b).
-    intros a b.
-    unfold nat1_to_int.
-    rewrite nat0_to_int_plus.
-    rewrite nat1_to_nat0_plus.
-    reflexivity.
-Qed.
-
-Theorem nat1_nz_int : ∀ n, 0 ≠ nat1_to_int n.
+Theorem nat0_nz_int : ∀ n, 0 ≠ nat0_to_int (nat0_suc n).
     intros n n_eq.
     apply nat0_to_int_eq in n_eq.
-    exact (nat1_nz _ n_eq).
+    inversion n_eq.
 Qed.

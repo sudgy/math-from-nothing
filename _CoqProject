@@ -43,10 +43,6 @@
 ./src/Number/Nat/nat0_mult.v
 ./src/Number/Nat/nat0_order.v
 ./src/Number/Nat/nat0.v
-./src/Number/Nat/nat1_base.v
-./src/Number/Nat/nat1_plus.v
-./src/Number/Nat/nat1_mult.v
-./src/Number/Nat/nat1.v
 
 ./src/Algebra/Mult/mult_div.v
 ./src/Algebra/Mult/mult_pow.v

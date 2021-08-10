@@ -5,13 +5,14 @@ Require Import rat_plus.
 Require Import rat_mult.
 
 Require Import int.
-Require Import nat1.
+Require Import nat0.
 Require Import set.
 Require Export order_mult.
 Require Export nat0_abstract.
 
 Notation "a ≦ b" :=
-    (fst a * nat1_to_int (snd b) <= fst b * nat1_to_int (snd a)) : rat_scope.
+    (fst a * nat0_to_int (nat0_suc (snd b)) <=
+     fst b * nat0_to_int (nat0_suc (snd a))) : rat_scope.
 
 (* begin hide *)
 Open Scope rat_scope.
@@ -19,19 +20,19 @@ Open Scope rat_scope.
 Lemma rat_le_wd_1 : ∀ a b c d, a ~ b → c ~ d → a ≦ c → b ≦ d.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd ac.
     cbn in *.
-    apply le_rmult_pos with (nat1_to_int b2) in ac.
+    apply le_rmult_pos with (nat0_to_int (nat0_suc b2)) in ac.
     2: apply nat1_to_int_pos.
-    mult_bring_left (nat1_to_int b2) in ac.
+    mult_bring_left (nat0_to_int (nat0_suc b2)) in ac.
     mult_bring_left a1 in ac.
     rewrite mult_assoc in ac.
     rewrite ab in ac.
-    apply le_rmult_pos with (nat1_to_int d2) in ac.
+    apply le_rmult_pos with (nat0_to_int (nat0_suc d2)) in ac.
     2: apply nat1_to_int_pos.
-    mult_bring_left (nat1_to_int d2) in ac.
+    mult_bring_left (nat0_to_int (nat0_suc d2)) in ac.
     mult_bring_left c1 in ac.
     rewrite (mult_assoc c1) in ac.
     rewrite cd in ac.
-    mult_bring_right (nat1_to_int c2) in ac.
+    mult_bring_right (nat0_to_int (nat0_suc c2)) in ac.
     apply le_mult_rcancel_pos in ac.
     2: apply nat1_to_int_pos.
     apply le_mult_rcancel_pos in ac.
@@ -77,15 +78,15 @@ Lemma rat_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
     destruct a as [a1 a2], b as [b1 b2], c as [c1 c2].
     unfold le; equiv_simpl.
     intros ab bc.
-    apply le_rmult_pos with (nat1_to_int c2) in ab.
+    apply le_rmult_pos with (nat0_to_int (nat0_suc c2)) in ab.
     2: apply nat1_to_int_pos.
-    apply le_rmult_pos with (nat1_to_int a2) in bc.
+    apply le_rmult_pos with (nat0_to_int (nat0_suc a2)) in bc.
     2: apply nat1_to_int_pos.
     rewrite <- (mult_assoc b1) in ab.
-    rewrite (mult_comm (nat1_to_int a2)) in ab.
+    rewrite (mult_comm (nat0_to_int (nat0_suc a2))) in ab.
     rewrite mult_assoc in ab.
     pose proof (trans ab bc) as eq.
-    mult_bring_right (nat1_to_int b2) in eq.
+    mult_bring_right (nat0_to_int (nat0_suc b2)) in eq.
     apply le_mult_rcancel_pos in eq.
     2: apply nat1_to_int_pos.
     exact eq.
@@ -103,17 +104,18 @@ Lemma rat_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
     intros ab.
     do 2 rewrite rdist.
     do 4 rewrite <- mult_assoc.
-    do 4 rewrite nat1_to_int_mult.
-    rewrite (mult_comm a2).
-    rewrite (mult_comm c2).
-    rewrite <- (mult_assoc b2).
+    do 2 rewrite nat01_mult_eq.
+    do 4 rewrite nat0_to_int_mult.
+    rewrite (mult_comm (nat0_suc a2)).
+    rewrite (mult_comm (nat0_suc c2)).
+    rewrite <- (mult_assoc (nat0_suc b2)).
     apply le_lplus.
-    mult_bring_right c2.
-    do 2 rewrite <- (mult_assoc _ c2).
-    do 2 rewrite <- (nat1_to_int_mult _ (c2 * c2)).
+    mult_bring_right (nat0_suc c2).
+    do 2 rewrite <- (mult_assoc _ (nat0_suc c2)).
+    do 2 rewrite <- (nat0_to_int_mult _ (nat0_suc c2 * nat0_suc c2)).
     do 2 rewrite mult_assoc.
     apply le_rmult_pos.
-    apply nat1_to_int_pos.
+    apply nat0_to_int_pos.
     exact ab.
 Qed.
 
@@ -127,8 +129,9 @@ Lemma rat_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     destruct a as [a1 a2], b as [b1 b2].
     unfold zero; cbn.
     unfold le, mult, int_to_rat; equiv_simpl.
+    rewrite nat01_mult_eq.
     do 3 rewrite mult_lanni.
-    rewrite nat1_to_int_one.
+    change (nat0_to_int (nat0_suc 0)) with (one (U := int)).
     do 3 rewrite mult_rid.
     apply le_mult.
 Qed.
@@ -142,7 +145,7 @@ Close Scope rat_scope.
 Theorem int_to_rat_le : ∀ a b, int_to_rat a <= int_to_rat b ↔ a <= b.
     intros a b.
     unfold int_to_rat, le at 1; equiv_simpl.
-    rewrite nat1_to_int_one.
+    change (nat0_to_int (nat0_suc 0)) with (one (U := int)).
     do 2 rewrite mult_rid.
     reflexivity.
 Qed.
@@ -194,18 +197,19 @@ Theorem rat_archimedean : ∀ x : rat, ∃ n, x < nat0_to_abstract n.
         destruct x_pos as [x_pos x_neq].
         unfold zero in x_pos; cbn in x_pos.
         unfold int_to_rat, le in x_pos; equiv_simpl in x_pos.
-        rewrite nat1_to_int_one in x_pos.
+        change (nat0_to_int (nat0_suc 0)) with (one (U := int)) in x_pos.
         rewrite mult_lanni, mult_rid in x_pos.
         unfold zero in x_neq; cbn in x_neq.
         unfold int_to_rat in x_neq; equiv_simpl in x_neq.
-        rewrite nat1_to_int_one in x_neq.
+        change (nat0_to_int (nat0_suc 0)) with (one (U := int)) in x_neq.
         rewrite mult_lanni, mult_rid in x_neq.
         pose proof (nat0_to_int_ex _ x_pos) as [n n_eq].
         exists (n + 1).
         rewrite nat0_to_abstract_rat.
-        assert (a < a * nat1_to_int b + nat1_to_int b) as ltq.
+        assert (a < a * nat0_to_int (nat0_suc b) + nat0_to_int (nat0_suc b))
+            as ltq.
         {
-            assert (a <= a * nat1_to_int b) as leq.
+            assert (a <= a * nat0_to_int (nat0_suc b)) as leq.
             {
                 rewrite <- (mult_rid a) at 1.
                 apply le_lmult_pos; try exact x_pos.
@@ -217,7 +221,7 @@ Theorem rat_archimedean : ∀ x : rat, ∃ n, x < nat0_to_abstract n.
             apply nat1_to_int_pos.
         }
         split; unfold nat0_to_rat, int_to_rat, le; equiv_simpl.
-        all: rewrite nat1_to_int_one.
+        all: change (nat0_to_int (nat0_suc 0)) with (one (U := int)).
         all: rewrite mult_rid.
         all: rewrite <- nat0_to_int_plus.
         all: rewrite rdist.
