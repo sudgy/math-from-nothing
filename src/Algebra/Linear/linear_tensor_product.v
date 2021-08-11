@@ -1,4 +1,3 @@
-(*
 Require Import init.
 
 Require Export linear_base.
@@ -46,9 +45,11 @@ Let FR_plus_assoc := free_plus_assoc_class U (V1 * V2).
 Let FR_plus_lid := free_plus_lid_class U (V1 * V2).
 Let FR_plus_linv := free_plus_linv_class U (V1 * V2).
 Let FR_scalar := free_scalar U (V1 * V2).
+Let FR_scalar_id := free_scalar_id_class U (V1 * V2).
 Let FR_scalar_ldist := free_scalar_ldist_class U (V1 * V2).
+Let FR_scalar_rdist := free_scalar_rdist_class U (V1 * V2).
 Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
-    FR_plus_linv FR_scalar FR_scalar_ldist.
+    FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist.
 
 Let sub1 v := ∃ a b c, v = to_FR (a + b) c - to_FR a c - to_FR b c.
 Let sub2 v := ∃ a b c, v = to_FR a (b + c) - to_FR a b - to_FR a c.
@@ -303,4 +304,3 @@ Theorem tensor_sum : ∀ T, ∃ (f : nat → tensor_space) n,
 Qed.
 
 End TensorProduct.
-*)
