@@ -44,15 +44,18 @@ Context {U V} `{
     @ScalarRdist U V UP VP SM
 }.
 
+Section KLinear.
+
 Variable k : nat.
 
-Let F := set_type (k_linear (k := k)).
-Let F_plus_base (A B : F) := λ f, [A|] f + [B|] f.
+Definition multilinear_type := set_type (k_linear (k := k)).
+Let F := multilinear_type.
+Let multilinear_plus_base (A B : F) := λ f, [A|] f + [B|] f.
 
-Lemma k_linear_plus_linear : ∀ A B, k_linear (F_plus_base A B).
+Lemma k_linear_plus_linear : ∀ A B, k_linear (multilinear_plus_base A B).
     intros [A A_linear] [B B_linear].
     intros vs i i_lt.
-    unfold F_plus_base; cbn.
+    unfold multilinear_plus_base; cbn.
     specialize (A_linear vs i i_lt) as [A_scalar A_dist].
     specialize (B_linear vs i i_lt) as [B_scalar B_dist].
     split.
@@ -75,24 +78,24 @@ Lemma k_linear_plus_linear : ∀ A B, k_linear (F_plus_base A B).
         apply plus_comm.
 Qed.
 
-Instance F_plus : Plus F := {
-    plus A B := [F_plus_base A B | k_linear_plus_linear A B]
+Instance multilinear_plus : Plus F := {
+    plus A B := [multilinear_plus_base A B | k_linear_plus_linear A B]
 }.
 
-Program Instance F_plus_comm : PlusComm F.
+Program Instance multilinear_plus_comm : PlusComm F.
 Next Obligation.
     unfold plus; cbn.
-    unfold F_plus_base.
+    unfold multilinear_plus_base.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply plus_comm.
 Qed.
 
-Program Instance F_plus_assoc : PlusAssoc F.
+Program Instance multilinear_plus_assoc : PlusAssoc F.
 Next Obligation.
     unfold plus; cbn.
-    unfold F_plus_base.
+    unfold multilinear_plus_base.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
@@ -109,26 +112,26 @@ Lemma zero_k_linear : k_linear (k := k) (λ f, 0).
         reflexivity.
 Qed.
 
-Instance F_zero : Zero F := {
+Instance multilinear_zero : Zero F := {
     zero := [λ f, 0 | zero_k_linear]
 }.
 
-Program Instance F_plus_lid : PlusLid F.
+Program Instance multilinear_plus_lid : PlusLid F.
 Next Obligation.
     unfold zero, plus; cbn.
-    unfold F_plus_base; cbn.
+    unfold multilinear_plus_base; cbn.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply plus_lid.
 Qed.
 
-Let F_neg_base (A : F) := λ f, -[A|] f.
+Let multilinear_neg_base (A : F) := λ f, -[A|] f.
 
-Lemma neg_k_linear : ∀ A, k_linear (F_neg_base A).
+Lemma neg_k_linear : ∀ A, k_linear (multilinear_neg_base A).
     intros [A A_linear].
     intros vs i i_lt.
-    unfold F_neg_base; cbn.
+    unfold multilinear_neg_base; cbn.
     specialize (A_linear vs i i_lt) as [A_scalar A_dist].
     split.
     -   clear A_dist.
@@ -144,26 +147,26 @@ Lemma neg_k_linear : ∀ A, k_linear (F_neg_base A).
         apply neg_plus.
 Qed.
 
-Instance F_neg : Neg F := {
-    neg A := [F_neg_base A | neg_k_linear A]
+Instance multilinear_neg : Neg F := {
+    neg A := [multilinear_neg_base A | neg_k_linear A]
 }.
 
-Program Instance F_plus_linv : PlusLinv F.
+Program Instance multilinear_plus_linv : PlusLinv F.
 Next Obligation.
     unfold plus, neg, zero; cbn.
-    unfold F_plus_base, F_neg_base; cbn.
+    unfold multilinear_plus_base, multilinear_neg_base; cbn.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply plus_linv.
 Qed.
 
-Let F_scalar_base α (A : F) := λ f, α * [A|] f.
+Let multilinear_scalar_base α (A : F) := λ f, α * [A|] f.
 
-Lemma scalar_k_linear : ∀ α A, k_linear (F_scalar_base α A).
+Lemma scalar_k_linear : ∀ α A, k_linear (multilinear_scalar_base α A).
     intros α [A A_linear].
     intros vs i i_lt.
-    unfold F_scalar_base; cbn.
+    unfold multilinear_scalar_base; cbn.
     specialize (A_linear vs i i_lt) as [A_scalar A_dist].
     split.
     -   clear A_dist.
@@ -181,48 +184,254 @@ Lemma scalar_k_linear : ∀ α A, k_linear (F_scalar_base α A).
         apply ldist.
 Qed.
 
-Instance F_scalar_mult : ScalarMult U F := {
-    scalar_mult α A := [F_scalar_base α A | scalar_k_linear α A]
+Instance multilinear_scalar_mult : ScalarMult U F := {
+    scalar_mult α A := [multilinear_scalar_base α A | scalar_k_linear α A]
 }.
 
-Program Instance F_scalar_comp : ScalarComp U F.
+Program Instance multilinear_scalar_comp : ScalarComp U F.
 Next Obligation.
     unfold scalar_mult; cbn.
-    unfold F_scalar_base; cbn.
+    unfold multilinear_scalar_base; cbn.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply mult_assoc.
 Qed.
 
-Program Instance F_scalar_id : ScalarId U F.
+Program Instance multilinear_scalar_id : ScalarId U F.
 Next Obligation.
     unfold scalar_mult; cbn.
-    unfold F_scalar_base; cbn.
+    unfold multilinear_scalar_base; cbn.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply mult_lid.
 Qed.
 
-Program Instance F_scalar_ldist : ScalarLdist U F.
+Program Instance multilinear_scalar_ldist : ScalarLdist U F.
 Next Obligation.
     unfold plus, scalar_mult; cbn.
-    unfold F_scalar_base, F_plus_base; cbn.
+    unfold multilinear_scalar_base, multilinear_plus_base; cbn.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply ldist.
 Qed.
 
-Program Instance F_scalar_rdist : ScalarRdist U F.
+Program Instance multilinear_scalar_rdist : ScalarRdist U F.
 Next Obligation.
     unfold plus at 2, scalar_mult; cbn.
-    unfold F_scalar_base, F_plus_base; cbn.
+    unfold multilinear_scalar_base, multilinear_plus_base; cbn.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros n.
     apply rdist.
 Qed.
+
+End KLinear.
+
+Existing Instance multilinear_plus.
+
+Definition multilinear_mult_base {k1 k2}
+    (A : multilinear_type k1) (B : multilinear_type k2)
+    : k_function U V (k1 + k2)
+    := λ f, [A|] (λ n, f [[n|] | lt_le_trans [|n] (nat_le_self_rplus k1 k2)])
+          * [B|] (λ n, f [k1 + [n|] | lt_lplus k1 [|n]]).
+
+Section MultilinearMultMultilinear.
+
+Context {k1 k2 : nat}.
+Variables (A : multilinear_type k1) (B : multilinear_type k2).
+
+Lemma multilinear_mult_multilinear : k_linear (multilinear_mult_base A B).
+    rename A into A', B into B'.
+    destruct A' as [A A_linear].
+    destruct B' as [B B_linear].
+    intros vs i i_gt.
+    unfold multilinear_mult_base; cbn.
+    classic_case (i < k1) as [i_lt|i_ge].
+    -   specialize (A_linear
+           (λ n : nat_to_set_type k1, vs [[n | ] |
+               lt_le_trans [ | n] (nat_le_self_rplus k1 k2)]) i i_lt)
+            as [A_scalar A_dist].
+        split.
+        +   clear A_dist.
+            intros α.
+            specialize (A_scalar α); cbn in A_scalar.
+            rewrite mult_assoc.
+            rewrite A_scalar.
+            apply lmult.
+            apply f_equal.
+            apply functional_ext.
+            intros [n n_lt]; cbn.
+            case_if.
+            *   exfalso; clear - i_lt e.
+                subst i.
+                rewrite <- nle_lt in i_lt.
+                apply i_lt.
+                apply nat_le_self_rplus.
+            *   reflexivity.
+        +   clear A_scalar.
+            intros a b.
+            specialize (A_dist a b); cbn in A_dist.
+            rewrite A_dist.
+            rewrite rdist.
+            apply f_equal2.
+            all: apply f_equal2; try reflexivity.
+            *   apply f_equal.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                case_if.
+                2: reflexivity.
+                exfalso; clear - i_lt e.
+                subst i.
+                rewrite <- nle_lt in i_lt.
+                apply i_lt.
+                apply nat_le_self_rplus.
+            *   apply f_equal.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                case_if.
+                2: reflexivity.
+                exfalso; clear - i_lt e.
+                subst i.
+                rewrite <- nle_lt in i_lt.
+                apply i_lt.
+                apply nat_le_self_rplus.
+    -   rewrite nlt_le in i_ge.
+        apply nat_le_ex in i_ge as [c i_eq]; subst i.
+        apply lt_plus_lcancel in i_gt.
+        specialize (B_linear (λ n : nat_to_set_type k2, vs [k1 + [n | ] |
+            lt_lplus k1 [ | n]]) c i_gt) as [B_scalar B_dist].
+        split.
+        +   clear B_dist.
+            intros α.
+            specialize (B_scalar α).
+            rewrite mult_assoc.
+            rewrite (mult_comm α).
+            rewrite <- mult_assoc.
+            rewrite B_scalar.
+            apply f_equal2.
+            *   apply f_equal.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                case_if.
+                2: reflexivity.
+                exfalso; clear - n_lt e.
+                unfold nat_to_set in n_lt.
+                subst n.
+                rewrite <- nle_lt in n_lt.
+                apply n_lt.
+                apply nat_le_self_rplus.
+            *   apply f_equal.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                assert ((n = c) = (k1 + n = k1 + c)) as eq.
+                {
+                    apply propositional_ext.
+                    split.
+                    -   apply lplus.
+                    -   apply plus_lcancel.
+                }
+                rewrite eq.
+                reflexivity.
+        +   clear B_scalar.
+            intros a b.
+            specialize (B_dist a b).
+            assert (∀ n, (n = c) = (k1 + n = k1 + c)) as n_eq.
+            {
+                intros n.
+                apply propositional_ext.
+                split.
+                -   apply lplus.
+                -   apply plus_lcancel.
+            }
+            assert (
+  (λ n : nat_to_set_type k2,
+     If k1 + [n | ] = k1 + c then a + b
+     else vs [k1 + [n | ] | lt_lplus k1 [ | n]]) =
+           (λ n : nat_to_set_type k2,
+              If [n | ] = c then a + b
+              else vs [k1 + [n | ] | lt_lplus k1 [ | n]])) as eq.
+            {
+                clear - n_eq.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                rewrite n_eq.
+                reflexivity.
+            }
+            rewrite eq; clear eq.
+            rewrite B_dist; clear B_dist.
+            rewrite ldist.
+            apply f_equal2.
+            all: apply f_equal2.
+            *   apply f_equal.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                case_if.
+                2: reflexivity.
+                exfalso; clear - n_lt e.
+                unfold nat_to_set in n_lt.
+                subst n.
+                rewrite <- nle_lt in n_lt.
+                apply n_lt.
+                apply nat_le_self_rplus.
+            *   apply f_equal.
+                apply functional_ext.
+                intros n.
+                rewrite n_eq.
+                reflexivity.
+            *   apply f_equal.
+                apply functional_ext.
+                intros [n n_lt]; cbn.
+                case_if.
+                2: reflexivity.
+                exfalso; clear - n_lt e.
+                unfold nat_to_set in n_lt.
+                subst n.
+                rewrite <- nle_lt in n_lt.
+                apply n_lt.
+                apply nat_le_self_rplus.
+            *   apply f_equal.
+                apply functional_ext.
+                intros n.
+                rewrite n_eq.
+                reflexivity.
+Qed.
+
+Definition multilinear_mult :=
+    [multilinear_mult_base A B | multilinear_mult_multilinear].
+
+End MultilinearMultMultilinear.
+
+Context {k1 k2 k3 : nat}.
+Variables (A : multilinear_type k1)
+          (B : multilinear_type k2)
+          (C : multilinear_type k2)
+          (D : multilinear_type k3).
+
+Theorem multilinear_mult_ldist :
+        multilinear_mult A (B + C) =
+        multilinear_mult A B + multilinear_mult A C.
+    unfold multilinear_mult, plus; cbn.
+    unfold multilinear_mult_base; cbn.
+    apply set_type_eq; cbn.
+    apply functional_ext.
+    intros f.
+    apply ldist.
+Qed.
+
+Theorem multilinear_mult_rdist :
+        multilinear_mult (B + C) A =
+        multilinear_mult B A + multilinear_mult C A.
+    unfold multilinear_mult, plus; cbn.
+    unfold multilinear_mult_base; cbn.
+    apply set_type_eq; cbn.
+    apply functional_ext.
+    intros f.
+    apply rdist.
+Qed.
+
+(** I can't do associativity as easily becaues the types are incompatible *)
 
 End KLinearSpace.
