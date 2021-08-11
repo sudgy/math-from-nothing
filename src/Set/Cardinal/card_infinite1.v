@@ -13,7 +13,7 @@ Require Import mult_pow.
 
 (* begin hide *)
 Open Scope card_scope.
-(* end end hide *)
+(* end hide *)
 Definition finite κ := κ < |nat|.
 Definition countable κ := κ <= |nat|.
 Definition denumerable κ := κ = |nat|.
