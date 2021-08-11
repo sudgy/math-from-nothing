@@ -164,3 +164,33 @@ Fixpoint list_unique {A : Type} (l : list A) :=
     | a :: l' => ¬in_list l' a ∧ list_unique l'
     | _ => True
     end.
+
+Fixpoint func_to_list {A : Type} (f : nat → A) n :=
+    match n with
+    | nat_zero => list_end
+    | nat_suc n' => f n' :: func_to_list f n'
+    end.
+
+Theorem func_to_list_eq {A : Type} (f g : nat → A) n :
+        (∀ m, m < n → f m = g m) → func_to_list f n = func_to_list g n.
+    intros all_eq.
+    revert f g all_eq.
+    nat_induction n.
+    -   intros.
+        unfold zero; cbn.
+        reflexivity.
+    -   intros.
+        assert (∀ m, m < n → f m = g m) as all_eq2.
+        {
+            intros m m_lt.
+            apply all_eq.
+            exact (trans m_lt (nat_lt_suc n)).
+        }
+        specialize (IHn f g all_eq2).
+        cbn.
+        rewrite IHn.
+        apply f_equal2.
+        2: reflexivity.
+        apply all_eq.
+        apply nat_lt_suc.
+Qed.
