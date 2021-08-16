@@ -231,6 +231,12 @@ Qed.
 End KLinear.
 
 Existing Instance multilinear_plus.
+Existing Instance multilinear_plus_comm.
+Existing Instance multilinear_plus_assoc.
+Existing Instance multilinear_zero.
+Existing Instance multilinear_plus_lid.
+Existing Instance multilinear_neg.
+Existing Instance multilinear_plus_linv.
 
 Definition multilinear_mult_base {k1 k2}
     (A : multilinear_type k1) (B : multilinear_type k2)
@@ -404,6 +410,8 @@ Definition multilinear_mult :=
 
 End MultilinearMultMultilinear.
 
+Section MultilinearMultDist.
+
 Context {k1 k2 k3 : nat}.
 Variables (A : multilinear_type k1)
           (B : multilinear_type k2)
@@ -430,6 +438,30 @@ Theorem multilinear_mult_rdist :
     apply functional_ext.
     intros f.
     apply rdist.
+Qed.
+
+End MultilinearMultDist.
+
+Theorem multilinear_mult_lanni : ∀ k1 k2 (A : multilinear_type k2),
+        multilinear_mult (zero (U := multilinear_type k1)) A = 0.
+    intros k1 k2 A.
+    assert (multilinear_mult (zero (U := multilinear_type k1)) A
+        = multilinear_mult 0 A) as eq by reflexivity.
+    rewrite <- (plus_rid 0) in eq at 1.
+    rewrite multilinear_mult_rdist in eq.
+    apply plus_0_a_ba_b in eq.
+    symmetry; exact eq.
+Qed.
+
+Theorem multilinear_mult_ranni : ∀ k1 k2 (A : multilinear_type k2),
+        multilinear_mult A (zero (U := multilinear_type k1)) = 0.
+    intros k1 k2 A.
+    assert (multilinear_mult A (zero (U := multilinear_type k1))
+        = multilinear_mult A 0) as eq by reflexivity.
+    rewrite <- (plus_rid 0) in eq at 1.
+    rewrite multilinear_mult_ldist in eq.
+    apply plus_0_a_ba_b in eq.
+    symmetry; exact eq.
 Qed.
 
 (** I can't do associativity as easily becaues the types are incompatible *)
