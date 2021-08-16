@@ -62,26 +62,28 @@ Existing Instance multilinear_scalar_rdist.
 
 Local Open Scope card_scope.
 
+Let multi_type k := multilinear_type (V := multilinear_type 1) k.
+
 (* TODO: Generalize this inifinite direct product to more general situations *)
-Definition tensor_algebra_base := (∀ k, multilinear_type k).
+Definition tensor_algebra_base := (∀ k, multi_type k).
 Definition tensor_finite (A : tensor_algebra_base) :=
     finite (|set_type (λ k, 0 ≠ A k)|).
 Definition tensor_algebra := set_type tensor_finite.
 
-Definition multilinear_type_k_eq k n (A : multilinear_type k) (eq : n = k) :
-        (multilinear_type n).
+Definition multi_type_k_eq k n (A : multi_type k) (eq : n = k) :
+        (multi_type n).
     rewrite eq.
     exact A.
 Defined.
 
-Definition multilinear_to_tensor_base {k} (A : multilinear_type k) :
+Definition multilinear_to_tensor_base {k} (A : multi_type k) :
     tensor_algebra_base := λ n, match (strong_excluded_middle (n = k)) with
-    | strong_or_left H => multilinear_type_k_eq k n A H
+    | strong_or_left H => multi_type_k_eq k n A H
     | _ => 0
     end.
 
 Lemma multilinear_to_tensor_finite {k} :
-        ∀ A : multilinear_type k, tensor_finite (multilinear_to_tensor_base A).
+        ∀ A : multi_type k, tensor_finite (multilinear_to_tensor_base A).
     intros A.
     apply (le_lt_trans2 (nat_is_finite 1)).
     unfold nat_to_card, le; equiv_simpl.
@@ -95,19 +97,19 @@ Lemma multilinear_to_tensor_finite {k} :
     all: contradiction.
 Qed.
 
-Definition multilinear_to_tensor {k} (A : multilinear_type k) :=
+Definition multilinear_to_tensor {k} (A : multi_type k) :=
     [_|multilinear_to_tensor_finite A].
 
-Theorem multilinear_to_tensor_k_eq : ∀ k n (eq : n = k) (A : multilinear_type k),
+Theorem multilinear_to_tensor_k_eq : ∀ k n (eq : n = k) (A : multi_type k),
         multilinear_to_tensor A =
-        multilinear_to_tensor (multilinear_type_k_eq k n A eq).
+        multilinear_to_tensor (multi_type_k_eq k n A eq).
     intros k n eq A.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
+    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
     destruct (Logic.eq_sym eq).
     reflexivity.
 Qed.
 
-Theorem multilinear_to_tensor_eq : ∀ k, ∀ (A B : multilinear_type k),
+Theorem multilinear_to_tensor_eq : ∀ k, ∀ (A B : multi_type k),
         multilinear_to_tensor A = multilinear_to_tensor B → A = B.
     intros k A B eq.
     apply eq_set_type in eq.
@@ -122,7 +124,7 @@ Theorem multilinear_to_tensor_eq : ∀ k, ∀ (A B : multilinear_type k),
     cbn in eq2.
     specialize (eq2 k).
     destruct (strong_excluded_middle (k = k)) as [eq|neq]; try contradiction.
-    unfold multilinear_type_k_eq in eq2.
+    unfold multi_type_k_eq in eq2.
     (* I don't know what I'm doing, but it works *)
     unfold Logic.eq_rect_r in eq2.
     unfold Logic.eq_rect in eq2.
@@ -189,7 +191,7 @@ Qed.
 
 Lemma tensor_zero_finite : tensor_finite (λ k, 0).
     unfold tensor_finite.
-    assert (|set_type (λ k : nat, (zero (U := multilinear_type k)) ≠ 0)| = 0)
+    assert (|set_type (λ k : nat, (zero (U := multi_type k)) ≠ 0)| = 0)
         as eq.
     {
         apply card_false_0.
@@ -269,7 +271,7 @@ Lemma tensor_scalar_finite : ∀ α (A : tensor_algebra),
     exact eq.
 Qed.
 
-Theorem multilinear_to_tensor_plus : ∀ k (A B : multilinear_type k),
+Theorem multilinear_to_tensor_plus : ∀ k (A B : multi_type k),
         multilinear_to_tensor A + multilinear_to_tensor B =
         multilinear_to_tensor (A + B).
     intros k A B.
@@ -279,7 +281,7 @@ Theorem multilinear_to_tensor_plus : ∀ k (A B : multilinear_type k),
     unfold multilinear_to_tensor_base.
     destruct (strong_excluded_middle (x = k)) as [eq|neq].
     2: apply plus_rid.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
+    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
     destruct (Logic.eq_sym _).
     reflexivity.
 Qed.
@@ -346,9 +348,9 @@ Definition tensor_grade_project (A : tensor_algebra) k :=
 Theorem tensor_grade_project_eq : ∀ A k,
     [tensor_grade_project A k|] = [A|] k.
 *)
-Definition homogeneous_tensor A := ∃ k (M : multilinear_type k),
+Definition homogeneous_tensor A := ∃ k (M : multi_type k),
     A = multilinear_to_tensor M.
-Definition tensor_grade (A : tensor_algebra) k := ∃ (M : multilinear_type k),
+Definition tensor_grade (A : tensor_algebra) k := ∃ (M : multi_type k),
     A = multilinear_to_tensor M.
 
 Theorem tensor_zero_homogeneous : homogeneous_tensor 0.
@@ -373,7 +375,7 @@ Theorem tensor_project_homogeneous :
     apply functional_ext.
     intros x.
     classic_case (x = k) as [eq|neq].
-    -   unfold multilinear_type_k_eq; cbn.
+    -   unfold multi_type_k_eq; cbn.
         subst; cbn.
         reflexivity.
     -   reflexivity.
@@ -636,7 +638,7 @@ Theorem tensor_decompose_zero : tensor_decompose_grade 0 = list_end.
 Qed.
 
 Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
-        (A : multilinear_type k1) (B : multilinear_type k2),
+        (A : multi_type k1) (B : multi_type k2),
         0 ≠ A → multilinear_to_tensor A = multilinear_to_tensor B → k1 = k2.
     intros k1 k2 A B A_nz eq.
     apply eq_set_type in eq; cbn in eq.
@@ -652,7 +654,7 @@ Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
     2: contradiction.
     destruct (strong_excluded_middle (k1 = k2)) as [k_eq|k_neq].
     1: exact k_eq.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in eq.
+    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in eq.
     destruct (Logic.eq_sym _).
     symmetry in eq; contradiction.
 Qed.
@@ -664,7 +666,7 @@ Lemma multilinear_to_tensor_zero : ∀ k, (multilinear_to_tensor (k := k) 0) = 0
     apply functional_ext.
     intros x.
     destruct (strong_excluded_middle (x = k)) as [eq|neq].
-    -   unfold multilinear_type_k_eq.
+    -   unfold multi_type_k_eq.
         unfold Logic.eq_rect_r, Logic.eq_rect.
         destruct (Logic.eq_sym _).
         reflexivity.
@@ -688,7 +690,7 @@ Lemma tensor_grade_unique : ∀ A k1 k2,
     reflexivity.
 Qed.
 
-Lemma multilinear_to_tensor_grade : ∀ k (A : multilinear_type k),
+Lemma multilinear_to_tensor_grade : ∀ k (A : multi_type k),
         tensor_grade (multilinear_to_tensor A) k.
     intros k A.
     exists A.
@@ -736,6 +738,7 @@ Lemma tensor_mult_tm_grade : ∀ A B k1 k2,
     1: {
         subst.
         exists 0.
+        unfold multi_type in *.
         rewrite multilinear_mult_lanni.
         do 2 rewrite multilinear_to_tensor_zero.
         reflexivity.
@@ -744,6 +747,7 @@ Lemma tensor_mult_tm_grade : ∀ A B k1 k2,
     1: {
         subst.
         exists 0.
+        unfold multi_type in *.
         rewrite multilinear_mult_ranni.
         do 2 rewrite multilinear_to_tensor_zero.
         reflexivity.
@@ -820,6 +824,7 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
         rewrite <- (multilinear_to_tensor_zero zk) in Z_eq.
         apply multilinear_to_tensor_eq in Z_eq.
         subst Z.
+        unfold multi_type in *.
         rewrite multilinear_mult_lanni.
         apply multilinear_to_tensor_zero.
     }
@@ -839,6 +844,7 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
             rewrite <- (multilinear_to_tensor_zero ak') in A'_eq.
             apply multilinear_to_tensor_eq in A'_eq.
             subst A'.
+            unfold multi_type in *.
             rewrite multilinear_mult_lanni.
             apply multilinear_to_tensor_zero.
         }
@@ -866,7 +872,7 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
     unfold multilinear_to_tensor_base in contr.
     destruct (strong_excluded_middle (ak = ak)) as [eq|neq].
     2: contradiction.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
+    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
     destruct (Logic.eq_sym _).
     contradiction.
 Qed.
@@ -940,6 +946,7 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
         rewrite <- (multilinear_to_tensor_zero zk) in Z_eq.
         apply multilinear_to_tensor_eq in Z_eq.
         subst Z.
+        unfold multi_type in *.
         rewrite multilinear_mult_ranni.
         apply multilinear_to_tensor_zero.
     }
@@ -959,6 +966,7 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
             rewrite <- (multilinear_to_tensor_zero bk') in B'_eq.
             apply multilinear_to_tensor_eq in B'_eq.
             subst B'.
+            unfold multi_type in *.
             rewrite multilinear_mult_ranni.
             apply multilinear_to_tensor_zero.
         }
@@ -986,7 +994,7 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
     unfold multilinear_to_tensor_base in contr.
     destruct (strong_excluded_middle (bk = bk)) as [eq|neq].
     2: contradiction.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
+    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
     destruct (Logic.eq_sym _).
     contradiction.
 Qed.
@@ -1066,22 +1074,26 @@ Lemma tensor_sum_decompose_lmult : ∀ a B ak k, tensor_grade [a|] ak →
             classic_case (0 = A') as [A_z|A_nz].
             {
                 subst.
+                unfold multi_type in *.
                 rewrite multilinear_mult_lanni.
                 pose proof (multilinear_to_tensor_zero (ak' + x')) as eq.
                 unfold multilinear_to_tensor in eq.
                 apply eq_set_type in eq; cbn in eq.
-                unfold multilinear_type in eq.
+                unfold multi_type in eq.
+                unfold multilinear_type in *.
                 rewrite eq.
                 reflexivity.
             }
             classic_case (0 = B') as [B_z|B_nz].
             {
                 subst.
+                unfold multi_type in *.
                 rewrite multilinear_mult_ranni.
                 pose proof (multilinear_to_tensor_zero (ak' + x')) as eq.
                 unfold multilinear_to_tensor in eq.
                 apply eq_set_type in eq; cbn in eq.
-                unfold multilinear_type in eq.
+                unfold multi_type in eq.
+                unfold multilinear_type in *.
                 rewrite eq.
                 reflexivity.
             }
@@ -1144,10 +1156,12 @@ Lemma tensor_sum_decompose_lmult : ∀ a B ak k, tensor_grade [a|] ak →
             rewrite <- (multilinear_to_tensor_zero zk) in Z_eq.
             apply multilinear_to_tensor_eq in Z_eq.
             subst Z.
+            unfold multi_type in *.
             rewrite multilinear_mult_ranni.
             pose proof (multilinear_to_tensor_zero (ak' + zk)) as eq.
             apply eq_set_type in eq; cbn in eq.
-            unfold multilinear_type in eq.
+            unfold multi_type in eq.
+            unfold multilinear_type in *.
             rewrite eq.
             reflexivity.
         }
@@ -1228,22 +1242,26 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade [a|] ak →
             classic_case (0 = A') as [A_z|A_nz].
             {
                 subst.
+                unfold multi_type in *.
                 rewrite multilinear_mult_ranni.
                 pose proof (multilinear_to_tensor_zero (x' + ak')) as eq.
                 unfold multilinear_to_tensor in eq.
                 apply eq_set_type in eq; cbn in eq.
-                unfold multilinear_type in eq.
+                unfold multi_type in eq.
+                unfold multilinear_type in *.
                 rewrite eq.
                 reflexivity.
             }
             classic_case (0 = B') as [B_z|B_nz].
             {
                 subst.
+                unfold multi_type in *.
                 rewrite multilinear_mult_lanni.
                 pose proof (multilinear_to_tensor_zero (x' + ak')) as eq.
                 unfold multilinear_to_tensor in eq.
                 apply eq_set_type in eq; cbn in eq.
-                unfold multilinear_type in eq.
+                unfold multi_type in eq.
+                unfold multilinear_type in *.
                 rewrite eq.
                 reflexivity.
             }
@@ -1306,10 +1324,12 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade [a|] ak →
             rewrite <- (multilinear_to_tensor_zero zk) in Z_eq.
             apply multilinear_to_tensor_eq in Z_eq.
             subst Z.
+            unfold multi_type in *.
             rewrite multilinear_mult_lanni.
             pose proof (multilinear_to_tensor_zero (zk + ak')) as eq.
             apply eq_set_type in eq; cbn in eq.
-            unfold multilinear_type in eq.
+            unfold multi_type in eq.
+            unfold multilinear_type in *.
             rewrite eq.
             reflexivity.
         }
@@ -1399,7 +1419,7 @@ Next Obligation.
         }
         change (set_type tensor_finite) with tensor_algebra in *.
         rewrite eq; clear eq.
-        pose (z := (@zero _ (multilinear_zero (V := V) k))).
+        pose (z := 0 : multi_type k).
         assert (∀ (l : list (set_type homogeneous_tensor)),
             list_sum (list_image l (λ x, z)) = z) as eq.
         {
@@ -1458,6 +1478,7 @@ Next Obligation.
                     rewrite <- (multilinear_to_tensor_zero bck) in bc_eq.
                     apply multilinear_to_tensor_eq in bc_eq.
                     subst BC.
+                    unfold multi_type in *.
                     do 3 rewrite multilinear_mult_ranni.
                     do 3 rewrite multilinear_to_tensor_zero.
                     rewrite plus_rid.
@@ -1467,6 +1488,7 @@ Next Obligation.
                     subst.
                     apply multilinear_to_tensor_eq in bc_eq.
                     subst.
+                    unfold multi_type in *.
                     rewrite multilinear_mult_ranni.
                     rewrite multilinear_to_tensor_zero.
                     rewrite plus_lid.
@@ -1484,6 +1506,7 @@ Next Obligation.
                 subst.
                 apply multilinear_to_tensor_eq in bc_eq.
                 subst.
+                unfold multi_type in *.
                 rewrite multilinear_mult_ranni.
                 rewrite multilinear_to_tensor_zero.
                 rewrite plus_rid.
@@ -1527,13 +1550,18 @@ Next Obligation.
                 rewrite multilinear_to_tensor_zero in bc_eq.
                 rewrite <- (multilinear_to_tensor_zero k) in bc_eq.
                 apply multilinear_to_tensor_eq in bc_eq.
-                unfold multilinear_type.
+                unfold multi_type in *.
+                unfold multilinear_type in *.
                 rewrite <- multilinear_mult_ldist.
+                unfold multi_type in *.
+                unfold multilinear_type in *.
                 rewrite bc_eq.
-                rewrite multilinear_mult_ranni.
                 pose proof (multilinear_mult_ranni bck _ A) as stupid.
-                unfold multilinear_type in stupid.
-                rewrite stupid.
+                unfold multi_type, multilinear_type in stupid.
+                rewrite stupid; clear stupid.
+                pose proof (multilinear_mult_ranni k _ A) as stupid.
+                unfold multi_type, multilinear_type in stupid.
+                rewrite stupid; clear stupid.
                 do 2 rewrite multilinear_to_tensor_zero.
                 reflexivity.
             }
@@ -1619,7 +1647,7 @@ Next Obligation.
         }
         change (set_type tensor_finite) with tensor_algebra in *.
         rewrite eq; clear eq.
-        pose (z := (@zero _ (multilinear_zero (V := V) k))).
+        pose (z := 0 : multi_type k).
         assert (∀ (l : list (set_type homogeneous_tensor)),
             list_sum (list_image l (λ x, z)) = z) as eq.
         {
@@ -1679,6 +1707,7 @@ Next Obligation.
                     rewrite <- (multilinear_to_tensor_zero bck) in bc_eq.
                     apply multilinear_to_tensor_eq in bc_eq.
                     subst BC.
+                    unfold multi_type in *.
                     do 3 rewrite multilinear_mult_lanni.
                     do 3 rewrite multilinear_to_tensor_zero.
                     rewrite plus_rid.
@@ -1688,6 +1717,7 @@ Next Obligation.
                     subst.
                     apply multilinear_to_tensor_eq in bc_eq.
                     subst.
+                    unfold multi_type in *.
                     rewrite multilinear_mult_lanni.
                     rewrite multilinear_to_tensor_zero.
                     rewrite plus_lid.
@@ -1705,6 +1735,7 @@ Next Obligation.
                 subst.
                 apply multilinear_to_tensor_eq in bc_eq.
                 subst.
+                unfold multi_type in *.
                 rewrite multilinear_mult_lanni.
                 rewrite multilinear_to_tensor_zero.
                 rewrite plus_rid.
@@ -1748,13 +1779,18 @@ Next Obligation.
                 rewrite multilinear_to_tensor_zero in bc_eq.
                 rewrite <- (multilinear_to_tensor_zero k) in bc_eq.
                 apply multilinear_to_tensor_eq in bc_eq.
-                unfold multilinear_type.
+                unfold multi_type in *.
+                unfold multilinear_type in *.
                 rewrite <- multilinear_mult_rdist.
+                unfold multi_type in *.
+                unfold multilinear_type in *.
                 rewrite bc_eq.
-                rewrite multilinear_mult_lanni.
                 pose proof (multilinear_mult_lanni bck _ A) as stupid.
-                unfold multilinear_type in stupid.
-                rewrite stupid.
+                unfold multi_type, multilinear_type in stupid.
+                rewrite stupid; clear stupid.
+                pose proof (multilinear_mult_lanni k _ A) as stupid.
+                unfold multi_type, multilinear_type in stupid.
+                rewrite stupid; clear stupid.
                 do 2 rewrite multilinear_to_tensor_zero.
                 reflexivity.
             }
@@ -1799,7 +1835,7 @@ Lemma tensor_mult_homogeneous : ∀ a b, homogeneous_tensor (tm a b).
 Qed.
 
 Lemma multilinear_to_tensor_tm :
-        ∀ k1 k2 (A : multilinear_type k1) (B : multilinear_type k2) AH BH,
+        ∀ k1 k2 (A : multi_type k1) (B : multi_type k2) AH BH,
         tm [multilinear_to_tensor A|AH] [multilinear_to_tensor B|BH] =
         multilinear_to_tensor (multilinear_mult A B).
     intros k1 k2 A B AH BH.
@@ -1816,6 +1852,7 @@ Lemma multilinear_to_tensor_tm :
         rewrite <- (multilinear_to_tensor_zero ak) in A'_eq.
         apply multilinear_to_tensor_eq in A'_eq.
         subst A'.
+        unfold multi_type in *.
         do 2 rewrite multilinear_mult_lanni.
         do 2 rewrite multilinear_to_tensor_zero.
         reflexivity.
@@ -1827,6 +1864,7 @@ Lemma multilinear_to_tensor_tm :
         rewrite <- (multilinear_to_tensor_zero bk) in B'_eq.
         apply multilinear_to_tensor_eq in B'_eq.
         subst B'.
+        unfold multi_type in *.
         do 2 rewrite multilinear_mult_ranni.
         do 2 rewrite multilinear_to_tensor_zero.
         reflexivity.
@@ -1839,16 +1877,18 @@ Lemma multilinear_to_tensor_tm :
     reflexivity.
 Qed.
 
-Definition f_k_eq k n (f : nat_to_set_type k → V) (eq : n = k) :
-        nat_to_set_type n → V.
+Definition f_k_eq k n (f : nat_to_set_type k → multilinear_type (V := V) 1)
+        (eq : n = k) :
+        nat_to_set_type n → multilinear_type (V := V) 1.
     rewrite eq.
     exact f.
 Defined.
 
 Theorem multilinear_f_kn_eq : ∀ k n (eq : n = k)
-        (A : multilinear_type n) (B : multilinear_type k),
-        (∀ f : nat_to_set_type k → V, [A|] (f_k_eq k n f eq) = [B|] f) →
-        A = multilinear_type_k_eq k n B eq.
+        (A : multi_type n) (B : multi_type k),
+        (∀ f : nat_to_set_type k → (multilinear_type 1),
+            [A|] (f_k_eq k n f eq) = [B|] f) →
+        A = multi_type_k_eq k n B eq.
     intros k n eq A B f_eq.
     subst n.
     cbn in *.
@@ -1857,7 +1897,8 @@ Theorem multilinear_f_kn_eq : ∀ k n (eq : n = k)
     exact f_eq.
 Qed.
 
-Lemma m_f_kn_eq : ∀ k n (eq : n = k) (f : nat_to_set_type k → V),
+Lemma m_f_kn_eq : ∀ k n (eq : n = k)
+        (f : nat_to_set_type k → multilinear_type 1),
         ∀ m (H1 : m < k) (H2 : m < n),
         f [m|H1] = f_k_eq k n f eq [m|H2].
     intros k n eq f m lt1 lt2.
@@ -1986,7 +2027,7 @@ Local Arguments list_prod2: simpl nomatch.
     rewrite eq2.
     rewrite multilinear_to_tensor_tm.
     clear eq eq2 ab_homo ab_homo2 a_homo b_homo c_homo.
-    pose (ABC' := multilinear_type_k_eq _ _
+    pose (ABC' := multi_type_k_eq _ _
         (multilinear_mult (multilinear_mult A B) C) (plus_assoc ak bk ck)).
     assert (multilinear_mult A (multilinear_mult B C) = ABC') as eq.
     {
