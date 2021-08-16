@@ -78,6 +78,42 @@ Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
         reflexivity.
 Qed.
 
+Theorem list_reverse_end {U : Type} : ∀ l : list U,
+        list_end = list_reverse l → list_end = l.
+    intros l eq.
+    destruct l.
+    1: reflexivity.
+    cbn in eq.
+    destruct (list_reverse l).
+    -   inversion eq.
+    -   inversion eq.
+Qed.
+
+Theorem list_reverse_reverse {U : Type} : ∀ l : list U,
+        list_reverse (list_reverse l) = l.
+    intros l.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        rewrite list_reverse_conc.
+        rewrite IHl.
+        cbn.
+        reflexivity.
+Qed.
+
+Theorem list_reverse_eq {U : Type} : ∀ l1 l2 : list U,
+        l1 = l2 ↔ list_reverse l1 = list_reverse l2.
+    intros l1 l2.
+    split.
+    1: intros; subst; reflexivity.
+    intros l_eq.
+    rewrite <- (list_reverse_reverse l1).
+    rewrite <- (list_reverse_reverse l2).
+    rewrite l_eq.
+    reflexivity.
+Qed.
+
 Fixpoint list_image (A B : Type) (l : list A) (f : A → B) :=
     match l with
     | list_end => list_end
@@ -92,6 +128,17 @@ Theorem list_image_conc {A B : Type} : ∀ (l1 l2 : list A) (f : A → B),
         reflexivity.
     -   cbn.
         rewrite IHl1.
+        reflexivity.
+Qed.
+
+Theorem list_image_comp {A B C : Type} : ∀ (l : list A) (f : A → B) (g : B → C),
+        list_image (list_image l f) g = list_image l (λ x, g (f x)).
+    intros l f g.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        rewrite IHl.
         reflexivity.
 Qed.
 
@@ -147,6 +194,17 @@ Theorem list_prod2_rend {A B : Type} (op : A → A → B) (l : list A) :
     reflexivity.
 Qed.
 
+Theorem list_prod2_base_image {A B} (op : A → A → B) : ∀ l b,
+        list_prod2_base op l b = list_image l (λ x, op x b).
+    intros l b.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        rewrite IHl.
+        reflexivity.
+Qed.
+
 Fixpoint list_zip {A B : Type} (l1 : list A) (l2 : list B) :=
     match l1, l2 with
     | a :: l1', b :: l2' => (a, b) :: list_zip l1' l2'
@@ -165,15 +223,20 @@ Fixpoint list_unique {A : Type} (l : list A) :=
     | _ => True
     end.
 
-Fixpoint func_to_list {A : Type} (f : nat → A) n :=
+Fixpoint func_to_list_base {A : Type} (f : nat → A) n :=
     match n with
     | nat_zero => list_end
-    | nat_suc n' => f n' :: func_to_list f n'
+    | nat_suc n' => f n' :: func_to_list_base f n'
     end.
+
+Definition func_to_list {A : Type} (f : nat → A) n :=
+    list_reverse (func_to_list_base f n).
 
 Theorem func_to_list_eq {A : Type} (f g : nat → A) n :
         (∀ m, m < n → f m = g m) → func_to_list f n = func_to_list g n.
     intros all_eq.
+    unfold func_to_list.
+    rewrite <- list_reverse_eq.
     revert f g all_eq.
     nat_induction n.
     -   intros.
@@ -193,4 +256,142 @@ Theorem func_to_list_eq {A : Type} (f g : nat → A) n :
         2: reflexivity.
         apply all_eq.
         apply nat_lt_suc.
+Qed.
+
+Fixpoint func_to_list2_base {A : Type} (f : nat → A) m n :=
+    match n with
+    | nat_zero => list_end
+    | nat_suc n' => f m :: func_to_list2_base f (nat_suc m) n'
+    end.
+
+Definition func_to_list2 {A : Type} (f : nat → A) n := func_to_list2_base f 0 n.
+
+Lemma func_to_list2_base_eq {A} : ∀ (f : nat → A) m n,
+        func_to_list2_base f (nat_suc m) n =
+        func_to_list2_base (λ x, f (nat_suc x)) m n.
+    intros f m n.
+    revert m.
+    nat_induction n.
+    +   unfold zero; cbn.
+        reflexivity.
+    +   cbn.
+        intros.
+        rewrite IHn.
+        reflexivity.
+Qed.
+
+Theorem func_to_list2_eq {A : Type} : ∀ (f : nat → A) n,
+        func_to_list f n = func_to_list2 f n.
+    intros f n.
+    unfold func_to_list, func_to_list2.
+    nat_induction n.
+    -   unfold zero; cbn.
+        reflexivity.
+    -   cbn.
+        unfold func_to_list, func_to_list2 in IHn.
+        rewrite IHn.
+        clear IHn.
+        revert f.
+        nat_induction n.
+        +   unfold zero, one; cbn.
+            reflexivity.
+        +   intros.
+            cbn.
+            specialize (IHn (λ x, f (nat_suc x))).
+            cbn in IHn.
+            apply f_equal.
+            rewrite <- func_to_list2_base_eq in IHn.
+            rewrite <- func_to_list2_base_eq in IHn.
+            exact IHn.
+Qed.
+
+Fixpoint list_nth {A} (l : list A) (n : nat) (default : A) :=
+    match n, l with
+    | nat_zero, x :: _ => x
+    | nat_suc n', x :: l' => list_nth l' n' default
+    | _, _ => default
+    end.
+
+Theorem func_to_list_nth_lt {A} : ∀ f m n (a : A), m < n →
+        list_nth (func_to_list f n) m a = f m.
+    intros f m n a ltq.
+    rewrite func_to_list2_eq.
+    apply nat_lt_ex in ltq as [c [c_nz c_eq]].
+    subst n.
+    nat_destruct c.
+    1: contradiction.
+    clear c_nz.
+    rewrite nat_plus_rsuc.
+    cbn.
+    revert f c a.
+    nat_induction m.
+    -   reflexivity.
+    -   intros.
+        rewrite nat_plus_lsuc.
+        cbn.
+        specialize (IHm (λ x, f (nat_suc x)) c a).
+        cbn in IHm.
+        rewrite <- IHm.
+        nat_destruct m.
+        1: reflexivity.
+        apply f_equal3; try reflexivity.
+        apply func_to_list2_base_eq.
+Qed.
+
+Theorem func_to_list_nth_ge {A} : ∀ f m n (a : A), n <= m →
+        list_nth (func_to_list f n) m a = a.
+    intros f m n a leq.
+    rewrite func_to_list2_eq.
+    apply nat_le_ex in leq as [c c_eq].
+    subst m.
+    revert f c.
+    nat_induction n.
+    -   intros.
+        rewrite plus_lid.
+        unfold zero; cbn.
+        destruct c; reflexivity.
+    -   intros.
+        rewrite nat_plus_lsuc.
+        cbn.
+        specialize (IHn (λ x, f (nat_suc x)) c).
+        unfold func_to_list2 in IHn.
+        rewrite <- func_to_list2_base_eq in IHn.
+        exact IHn.
+Qed.
+
+Theorem func_to_list_image {A B} : ∀ (f : nat → A) (g : A → B) n,
+        list_image (func_to_list f n) g = func_to_list (λ m, g (f m)) n.
+    intros f g n.
+    do 2 rewrite func_to_list2_eq.
+    revert f.
+    nat_induction n.
+    -   unfold zero; cbn.
+        reflexivity.
+    -   cbn.
+        intros f.
+        specialize (IHn (λ m, f (nat_suc m))).
+        unfold func_to_list2 in IHn.
+        rewrite <- func_to_list2_base_eq in IHn.
+        rewrite IHn.
+        rewrite func_to_list2_base_eq.
+        reflexivity.
+Qed.
+
+Theorem func_to_list2_base_conc {A} : ∀ (f : nat → A) a b c,
+        func_to_list2_base f a (b + c) =
+        func_to_list2_base f a c ++ func_to_list2_base f (a + c) b.
+    intros f a b c.
+    revert a b f.
+    nat_induction c.
+    -   intros.
+        do 2 rewrite plus_rid.
+        unfold zero; cbn.
+        reflexivity.
+    -   intros.
+        rewrite nat_plus_rsuc.
+        cbn.
+        specialize (IHc (nat_suc a) b f).
+        rewrite IHc.
+        rewrite nat_plus_lrsuc.
+        reflexivity.
 Qed.

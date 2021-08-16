@@ -88,16 +88,21 @@ Section Sum2.
 Context {U} `{
     UP : Plus U,
     UZ : Zero U,
+    UN : Neg U,
+    @PlusComm U UP,
     @PlusAssoc U UP,
     @PlusComm U UP,
-    @PlusLid U UP UZ
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN
 }.
 Context {V} `{
     VP : Plus V,
     VZ : Zero V,
+    VN : Neg V,
     @PlusAssoc V VP,
     @PlusComm V VP,
-    @PlusLid V VP VZ
+    @PlusLid V VP VZ,
+    @PlusLinv V VP VZ VN
 }.
 (* end hide *)
 Theorem list_prod2_lconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
@@ -115,6 +120,19 @@ Theorem list_prod2_lconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
         reflexivity.
 Qed.
 
+Theorem list_prod2_lconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
+        list_sum (list_prod2 op (a :: l1) l2) =
+        list_sum (list_prod2 op l1 l2) +
+        list_sum (list_prod2 op (a :: list_end) l2).
+    intros l1 l2 a.
+    rewrite list_prod2_lconc.
+    rewrite list_prod2_lconc.
+    rewrite list_prod2_lend.
+    cbn.
+    rewrite plus_lid.
+    reflexivity.
+Qed.
+
 Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
         list_sum (list_prod2 op l1 (a :: l2)) =
         list_sum (list_prod2 op l1 l2) + list_sum (list_image l1 (λ x, op x a)).
@@ -129,6 +147,94 @@ Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
     -   cbn.
         rewrite IHl1.
         reflexivity.
+Qed.
+
+Theorem list_prod2_rconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
+        list_sum (list_prod2 op l1 (a :: l2)) =
+        list_sum (list_prod2 op l1 l2) +
+        list_sum (list_prod2 op l1 (a :: list_end)).
+    intros l1 l2 a.
+    rewrite list_prod2_rconc.
+    rewrite list_prod2_rconc.
+    rewrite list_prod2_rend.
+    cbn.
+    rewrite plus_lid.
+    reflexivity.
+Qed.
+
+Lemma list_sum_func_single_zero : ∀ a n,
+        list_sum (func_to_list (λ x, If x = n then a else 0) n) = 0.
+    intros a n.
+    remember n as m.
+    rewrite Heqm at 1.
+    assert (m <= m) as leq by apply refl.
+    rewrite Heqm in leq at 1.
+    clear Heqm.
+    nat_induction n.
+    -   unfold zero; cbn.
+        reflexivity.
+    -   cbn.
+        rewrite list_sum_plus.
+        unfold func_to_list in IHn.
+        rewrite IHn.
+        +   cbn.
+            rewrite plus_lid.
+            rewrite plus_rid.
+            case_if.
+            2: reflexivity.
+            subst.
+            rewrite <- nlt_le in leq.
+            exfalso; apply leq.
+            apply nat_lt_suc.
+        +   apply (trans (nat_le_suc n)).
+            exact leq.
+Qed.
+
+Theorem list_sum_func_single : ∀ a m n, m < n →
+        list_sum (func_to_list (λ x, If x = m then a else 0) n) = a.
+    intros a m n ltq.
+    rewrite func_to_list2_eq.
+    apply nat_lt_ex in ltq as [c [c_nz n_eq]].
+    subst n.
+    nat_destruct c.
+    1: contradiction.
+    clear c_nz.
+    unfold func_to_list2.
+    rewrite plus_comm.
+    rewrite func_to_list2_base_conc.
+    rewrite plus_lid.
+    rewrite list_sum_plus.
+    pose proof (list_sum_func_single_zero a m) as eq.
+    rewrite func_to_list2_eq in eq.
+    unfold func_to_list2 in eq.
+    rewrite eq; clear eq.
+    rewrite plus_lid.
+    cbn.
+    case_if.
+    2: contradiction.
+    apply plus_0_a_ba_b.
+    clear e.
+    remember (nat_suc m) as m'.
+    assert (m < m') as ltq.
+    {
+        rewrite Heqm'.
+        apply nat_lt_suc.
+    }
+    clear Heqm'.
+    revert m' ltq.
+    nat_induction c.
+    -   unfold zero; cbn.
+        reflexivity.
+    -   intros.
+        cbn.
+        rewrite <- (IHc (nat_suc m')).
+        +   rewrite plus_rid.
+            case_if.
+            *   subst.
+                destruct ltq; contradiction.
+            *   reflexivity.
+        +   apply (trans ltq).
+            apply nat_lt_suc.
 Qed.
 (* begin hide *)
 End Sum2.
