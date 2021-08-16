@@ -148,8 +148,3 @@
 ./src/Analysis/Real/analysis_order.v
 ./src/Analysis/Real/real_ivt.v
 ./src/Analysis/Real/real_sqrt.v
-
-./src/Algebra/Geometric/geometric_construction1.v
-./src/Algebra/Geometric/geometric_construction2.v
-./src/Algebra/Geometric/geometric_construction3.v
-./src/Algebra/Geometric/geometric_construction4.v

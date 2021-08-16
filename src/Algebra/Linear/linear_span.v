@@ -57,51 +57,6 @@ Lemma linear_span_scalar : ∀ a v, S v → S (a · v).
     exact Sv.
 Qed.
 
-Theorem linear_span_combination_ex : ∀ v, S v → ∃ l1 l2 eq,
-        (∀ b, in_list l2 b → S b) ∧
-        list_unique l2 ∧
-        v = linear_combination l1 l2 eq.
-    intros v Sv.
-    unfold S in Sv.
-    unfold linear_span in Sv.
-    pose (T (u : V) := ∃ l1 l2 eq,
-        (∀ b, in_list l2 b → S b) ∧
-        list_unique l2 ∧
-        u = linear_combination l1 l2 eq
-    ).
-    assert (T 0) as T_zero.
-    {
-        assert (list_size (@list_end U) = list_size (@list_end V)) as eq
-            by reflexivity.
-        exists list_end, list_end, eq.
-        split.
-        2: split.
-        -   intros b b_in.
-            contradiction b_in.
-        -   exact true.
-        -   reflexivity.
-    }
-    assert (∀ a b, T a → T b → T (a + b)) as T_plus.
-    {
-        intros a b.
-        intros [a_l1 [a_l2 [a_ls_eq [Sa_l2 [a_l2_uni a_eq]]]]].
-        intros [b_l1 [b_l2 [b_ls_eq [Sb_l2 [b_l2_uni b_eq]]]]].
-        admit.
-    }
-    assert (∀ a v, T v → T (a · v)) as T_scalar.
-    {
-        admit.
-    }
-    pose (T_sub := make_subspace T T_zero T_plus T_scalar).
-    assert (A ⊆ subspace_set T_sub) as A_sub.
-    {
-        admit.
-    }
-    specialize (Sv T_sub A_sub).
-    cbn in Sv.
-    exact Sv.
-Abort.
-
 Definition linear_span_subspace := make_subspace S
     linear_span_zero linear_span_plus linear_span_scalar.
 
