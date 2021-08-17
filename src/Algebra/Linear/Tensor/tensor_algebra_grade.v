@@ -41,30 +41,45 @@ Context `{
     @ScalarRdist U V UP VP SM
 }.
 
-Existing Instance multilinear_plus.
-Existing Instance multilinear_plus_comm.
-Existing Instance multilinear_plus_assoc.
-Existing Instance multilinear_zero.
-Existing Instance multilinear_plus_lid.
-Existing Instance multilinear_neg.
-Existing Instance multilinear_plus_linv.
-Existing Instance multilinear_scalar_mult.
-Existing Instance multilinear_scalar_comp.
-Existing Instance multilinear_scalar_id.
-Existing Instance multilinear_scalar_ldist.
-Existing Instance multilinear_scalar_rdist.
-Existing Instance tensor_plus.
-Existing Instance tensor_plus_comm.
-Existing Instance tensor_plus_assoc.
-Existing Instance tensor_zero.
-Existing Instance tensor_plus_lid.
-Existing Instance tensor_neg.
-Existing Instance tensor_plus_linv.
-Existing Instance tensor_scalar_mult.
-Existing Instance tensor_scalar_comp.
-Existing Instance tensor_scalar_id.
-Existing Instance tensor_scalar_ldist.
-Existing Instance tensor_scalar_rdist.
+Let T1 := multilinear_plus U V 1.
+Let T2 := multilinear_plus_comm U V 1.
+Let T3 := multilinear_plus_assoc U V 1.
+Let T4 := multilinear_zero U V 1.
+Let T5 := multilinear_plus_lid U V 1.
+Let T6 := multilinear_neg U V 1.
+Let T7 := multilinear_plus_linv U V 1.
+Let T8 := multilinear_scalar_mult U V 1.
+Let T9 := multilinear_scalar_comp U V 1.
+Let T10 := multilinear_scalar_id U V 1.
+Let T11 := multilinear_scalar_ldist U V 1.
+Let T12 := multilinear_scalar_rdist U V 1.
+Existing Instances T1 T2 T3 T4 T5 T6 T7 T8 T9 T10 T11 T12.
+Let T13 := multilinear_plus U (multilinear_type U V 1).
+Let T14 := multilinear_plus_comm U (multilinear_type U V 1).
+Let T15 := multilinear_plus_assoc U (multilinear_type U V 1).
+Let T16 := multilinear_zero U (multilinear_type U V 1).
+Let T17 := multilinear_plus_lid U (multilinear_type U V 1).
+Let T18 := multilinear_neg U (multilinear_type U V 1).
+Let T19 := multilinear_plus_linv U (multilinear_type U V 1).
+Let T20 := multilinear_scalar_mult U (multilinear_type U V 1).
+Let T21 := multilinear_scalar_comp U (multilinear_type U V 1).
+Let T22 := multilinear_scalar_id U (multilinear_type U V 1).
+Let T23 := multilinear_scalar_ldist U (multilinear_type U V 1).
+Let T24 := multilinear_scalar_rdist U (multilinear_type U V 1).
+Existing Instances T13 T14 T15 T16 T17 T18 T19 T20 T21 T22 T23 T24.
+Let T25 := tensor_plus U V.
+Let T26 := tensor_plus_comm U V.
+Let T27 := tensor_plus_assoc U V.
+Let T28 := tensor_zero U V.
+Let T29 := tensor_plus_lid U V.
+Let T30 := tensor_neg U V.
+Let T31 := tensor_plus_linv U V.
+Let T32 := tensor_scalar_mult U V.
+Let T33 := tensor_scalar_comp U V.
+Let T34 := tensor_scalar_id U V.
+Let T35 := tensor_scalar_ldist U V.
+Let T36 := tensor_scalar_rdist U V.
+Existing Instances T25 T26 T27 T28 T29 T30 T31 T32 T33 T34 T35 T36.
 
 Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
