@@ -132,7 +132,8 @@
 ./src/Algebra/Linear/linear_multilinear.v
 ./src/Algebra/Linear/Tensor/tensor_product.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_base.v
-./src/Algebra/Linear/Tensor/tensor_algebra.v
+./src/Algebra/Linear/Tensor/tensor_algebra_grade.v
+./src/Algebra/Linear/Tensor/tensor_algebra_mult.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
