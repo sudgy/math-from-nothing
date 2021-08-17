@@ -238,6 +238,43 @@ Existing Instance multilinear_plus_lid.
 Existing Instance multilinear_neg.
 Existing Instance multilinear_plus_linv.
 
+Definition multilinear_type_k_eq k n (A : multilinear_type k) (eq : n = k) :
+        (multilinear_type n).
+    rewrite eq.
+    exact A.
+Defined.
+
+Definition f_k_eq k n (f : nat_to_set_type k → V)
+        (eq : n = k) :
+        nat_to_set_type n → V.
+    rewrite eq.
+    exact f.
+Defined.
+
+Theorem multilinear_f_kn_eq : ∀ k n (eq : n = k)
+        (A : multilinear_type n) (B : multilinear_type k),
+        (∀ f : nat_to_set_type k → V,
+            [A|] (f_k_eq k n f eq) = [B|] f) →
+        A = multilinear_type_k_eq k n B eq.
+    intros k n eq A B f_eq.
+    subst n.
+    cbn in *.
+    apply set_type_eq.
+    apply functional_ext.
+    exact f_eq.
+Qed.
+
+Lemma m_f_kn_eq : ∀ k n (eq : n = k)
+        (f : nat_to_set_type k → V),
+        ∀ m (H1 : m < k) (H2 : m < n),
+        f [m|H1] = f_k_eq k n f eq [m|H2].
+    intros k n eq f m lt1 lt2.
+    unfold f_k_eq, Logic.eq_rect_r, Logic.eq_rect.
+    destruct (Logic.eq_sym _).
+    rewrite (proof_irrelevance lt1 lt2).
+    reflexivity.
+Qed.
+
 Definition multilinear_mult_base {k1 k2}
     (A : multilinear_type k1) (B : multilinear_type k2)
     : k_function U V (k1 + k2)
@@ -464,6 +501,50 @@ Theorem multilinear_mult_ranni : ∀ k1 k2 (A : multilinear_type k2),
     symmetry; exact eq.
 Qed.
 
-(** I can't do associativity as easily becaues the types are incompatible *)
+Theorem multilinear_mult_assoc : ∀ {k1 k2 k3}
+        (A : multilinear_type k1)
+        (B : multilinear_type k2)
+        (C : multilinear_type k3),
+        multilinear_mult A (multilinear_mult B C) =
+        multilinear_type_k_eq _ _
+            (multilinear_mult (multilinear_mult A B) C)
+        (plus_assoc k1 k2 k3).
+    intros k1 k2 k3 A B C.
+    apply multilinear_f_kn_eq.
+    intros f.
+    unfold multilinear_mult, multilinear_mult_base; cbn.
+    rewrite mult_assoc.
+    apply f_equal2.
+    1: apply f_equal2.
+    -   apply f_equal.
+        apply functional_ext.
+        intros n.
+        symmetry.
+        apply m_f_kn_eq.
+    -   apply f_equal.
+        apply functional_ext.
+        intros n.
+        symmetry.
+        apply m_f_kn_eq.
+    -   apply f_equal.
+        apply functional_ext.
+        intros n.
+        symmetry.
+        assert (nat_to_set (k1 + (k2 + k3)) (k1 + k2 + [n|])) as ltq.
+        {
+            unfold nat_to_set.
+            rewrite plus_assoc.
+            apply lt_lplus.
+            exact [|n].
+        }
+        assert ([k1 + (k2 + [n|]) | lt_lplus k1 (lt_lplus k2 [|n])] =
+            [k1 + k2 + [n|]|ltq]) as eq.
+        {
+            apply set_type_eq; cbn.
+            apply plus_assoc.
+        }
+        rewrite eq.
+        apply m_f_kn_eq.
+Qed.
 
 End KLinearSpace.

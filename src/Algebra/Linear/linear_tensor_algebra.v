@@ -8,7 +8,7 @@ Require Import set.
 Require Import list.
 Require Import plus_sum.
 
-(** This is a very diffenent definition of a tensor algebra than usual.  Really,
+(** This is a very different definition of a tensor algebra than usual.  Really,
 I'm trying to beeline to constructing geometric algebra, so I'm only doing what
 is absolutely necessary to reach that goal.  This construction is much easier to
 deal with than the traditional constructions.
@@ -70,15 +70,9 @@ Definition tensor_finite (A : tensor_algebra_base) :=
     finite (|set_type (λ k, 0 ≠ A k)|).
 Definition tensor_algebra := set_type tensor_finite.
 
-Definition multi_type_k_eq k n (A : multi_type k) (eq : n = k) :
-        (multi_type n).
-    rewrite eq.
-    exact A.
-Defined.
-
 Definition multilinear_to_tensor_base {k} (A : multi_type k) :
     tensor_algebra_base := λ n, match (strong_excluded_middle (n = k)) with
-    | strong_or_left H => multi_type_k_eq k n A H
+    | strong_or_left H => multilinear_type_k_eq k n A H
     | _ => 0
     end.
 
@@ -102,9 +96,9 @@ Definition multilinear_to_tensor {k} (A : multi_type k) :=
 
 Theorem multilinear_to_tensor_k_eq : ∀ k n (eq : n = k) (A : multi_type k),
         multilinear_to_tensor A =
-        multilinear_to_tensor (multi_type_k_eq k n A eq).
+        multilinear_to_tensor (multilinear_type_k_eq k n A eq).
     intros k n eq A.
-    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
+    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
     destruct (Logic.eq_sym eq).
     reflexivity.
 Qed.
@@ -124,7 +118,7 @@ Theorem multilinear_to_tensor_eq : ∀ k, ∀ (A B : multi_type k),
     cbn in eq2.
     specialize (eq2 k).
     destruct (strong_excluded_middle (k = k)) as [eq|neq]; try contradiction.
-    unfold multi_type_k_eq in eq2.
+    unfold multilinear_type_k_eq in eq2.
     (* I don't know what I'm doing, but it works *)
     unfold Logic.eq_rect_r in eq2.
     unfold Logic.eq_rect in eq2.
@@ -281,7 +275,7 @@ Theorem multilinear_to_tensor_plus : ∀ k (A B : multi_type k),
     unfold multilinear_to_tensor_base.
     destruct (strong_excluded_middle (x = k)) as [eq|neq].
     2: apply plus_rid.
-    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
+    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
     destruct (Logic.eq_sym _).
     reflexivity.
 Qed.
@@ -375,7 +369,7 @@ Theorem tensor_project_homogeneous :
     apply functional_ext.
     intros x.
     classic_case (x = k) as [eq|neq].
-    -   unfold multi_type_k_eq; cbn.
+    -   unfold multilinear_type_k_eq; cbn.
         subst; cbn.
         reflexivity.
     -   reflexivity.
@@ -654,7 +648,7 @@ Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
     2: contradiction.
     destruct (strong_excluded_middle (k1 = k2)) as [k_eq|k_neq].
     1: exact k_eq.
-    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in eq.
+    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in eq.
     destruct (Logic.eq_sym _).
     symmetry in eq; contradiction.
 Qed.
@@ -666,7 +660,7 @@ Lemma multilinear_to_tensor_zero : ∀ k, (multilinear_to_tensor (k := k) 0) = 0
     apply functional_ext.
     intros x.
     destruct (strong_excluded_middle (x = k)) as [eq|neq].
-    -   unfold multi_type_k_eq.
+    -   unfold multilinear_type_k_eq.
         unfold Logic.eq_rect_r, Logic.eq_rect.
         destruct (Logic.eq_sym _).
         reflexivity.
@@ -872,7 +866,7 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
     unfold multilinear_to_tensor_base in contr.
     destruct (strong_excluded_middle (ak = ak)) as [eq|neq].
     2: contradiction.
-    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
+    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
     destruct (Logic.eq_sym _).
     contradiction.
 Qed.
@@ -994,7 +988,7 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
     unfold multilinear_to_tensor_base in contr.
     destruct (strong_excluded_middle (bk = bk)) as [eq|neq].
     2: contradiction.
-    unfold multi_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
+    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in contr.
     destruct (Logic.eq_sym _).
     contradiction.
 Qed.
@@ -1877,37 +1871,6 @@ Lemma multilinear_to_tensor_tm :
     reflexivity.
 Qed.
 
-Definition f_k_eq k n (f : nat_to_set_type k → multilinear_type (V := V) 1)
-        (eq : n = k) :
-        nat_to_set_type n → multilinear_type (V := V) 1.
-    rewrite eq.
-    exact f.
-Defined.
-
-Theorem multilinear_f_kn_eq : ∀ k n (eq : n = k)
-        (A : multi_type n) (B : multi_type k),
-        (∀ f : nat_to_set_type k → (multilinear_type 1),
-            [A|] (f_k_eq k n f eq) = [B|] f) →
-        A = multi_type_k_eq k n B eq.
-    intros k n eq A B f_eq.
-    subst n.
-    cbn in *.
-    apply set_type_eq.
-    apply functional_ext.
-    exact f_eq.
-Qed.
-
-Lemma m_f_kn_eq : ∀ k n (eq : n = k)
-        (f : nat_to_set_type k → multilinear_type 1),
-        ∀ m (H1 : m < k) (H2 : m < n),
-        f [m|H1] = f_k_eq k n f eq [m|H2].
-    intros k n eq f m lt1 lt2.
-    unfold f_k_eq, Logic.eq_rect_r, Logic.eq_rect.
-    destruct (Logic.eq_sym _).
-    rewrite (proof_irrelevance lt1 lt2).
-    reflexivity.
-Qed.
-
 Program Instance tensor_mult_assoc : MultAssoc tensor_algebra.
 Next Obligation.
     rewrite (tensor_decompose_grade_eq a).
@@ -2027,49 +1990,7 @@ Local Arguments list_prod2: simpl nomatch.
     rewrite eq2.
     rewrite multilinear_to_tensor_tm.
     clear eq eq2 ab_homo ab_homo2 a_homo b_homo c_homo.
-    pose (ABC' := multi_type_k_eq _ _
-        (multilinear_mult (multilinear_mult A B) C) (plus_assoc ak bk ck)).
-    assert (multilinear_mult A (multilinear_mult B C) = ABC') as eq.
-    {
-        unfold ABC'; clear ABC'.
-        apply multilinear_f_kn_eq.
-        intros f.
-        unfold multilinear_mult, multilinear_mult_base; cbn.
-        rewrite mult_assoc.
-        apply f_equal2.
-        1: apply f_equal2.
-        -   apply f_equal.
-            apply functional_ext.
-            intros n.
-            symmetry.
-            apply m_f_kn_eq.
-        -   apply f_equal.
-            apply functional_ext.
-            intros n.
-            symmetry.
-            apply m_f_kn_eq.
-        -   apply f_equal.
-            apply functional_ext.
-            intros n.
-            symmetry.
-            assert (nat_to_set (ak + (bk + ck)) (ak + bk + [n|])) as ltq.
-            {
-                unfold nat_to_set.
-                rewrite plus_assoc.
-                apply lt_lplus.
-                exact [|n].
-            }
-            assert ([ak + (bk + [n|]) | lt_lplus ak (lt_lplus bk [|n])] =
-                [ak + bk + [n|]|ltq]) as eq.
-            {
-                apply set_type_eq; cbn.
-                apply plus_assoc.
-            }
-            rewrite eq.
-            apply m_f_kn_eq.
-    }
-    rewrite eq; clear eq.
-    unfold ABC'; clear ABC'.
+    rewrite multilinear_mult_assoc.
     symmetry.
     apply multilinear_to_tensor_k_eq.
 Qed.
