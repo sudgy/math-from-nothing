@@ -1,18 +1,12 @@
 Require Import init.
 
-Require Export linear_base.
+Require Export tensor_algebra_base.
 Require Import linear_multilinear.
 Require Import nat.
 Require Import card.
 Require Import set.
 Require Import list.
 Require Import plus_sum.
-
-(** This is a very different definition of a tensor algebra than usual.  Really,
-I'm trying to beeline to constructing geometric algebra, so I'm only doing what
-is absolutely necessary to reach that goal.  This construction is much easier to
-deal with than the traditional constructions.
-*)
 
 Section TensorAlgebra.
 
@@ -59,269 +53,25 @@ Existing Instance multilinear_scalar_comp.
 Existing Instance multilinear_scalar_id.
 Existing Instance multilinear_scalar_ldist.
 Existing Instance multilinear_scalar_rdist.
+Existing Instance tensor_plus.
+Existing Instance tensor_plus_comm.
+Existing Instance tensor_plus_assoc.
+Existing Instance tensor_zero.
+Existing Instance tensor_plus_lid.
+Existing Instance tensor_neg.
+Existing Instance tensor_plus_linv.
+Existing Instance tensor_scalar_mult.
+Existing Instance tensor_scalar_comp.
+Existing Instance tensor_scalar_id.
+Existing Instance tensor_scalar_ldist.
+Existing Instance tensor_scalar_rdist.
+
+Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
 Local Open Scope card_scope.
 
-Let multi_type k := multilinear_type (V := multilinear_type 1) k.
-
-(* TODO: Generalize this inifinite direct product to more general situations *)
-Definition tensor_algebra_base := (∀ k, multi_type k).
-Definition tensor_finite (A : tensor_algebra_base) :=
-    finite (|set_type (λ k, 0 ≠ A k)|).
-Definition tensor_algebra := set_type tensor_finite.
-
-Definition multilinear_to_tensor_base {k} (A : multi_type k) :
-    tensor_algebra_base := λ n, match (strong_excluded_middle (n = k)) with
-    | strong_or_left H => multilinear_type_k_eq k n A H
-    | _ => 0
-    end.
-
-Lemma multilinear_to_tensor_finite {k} :
-        ∀ A : multi_type k, tensor_finite (multilinear_to_tensor_base A).
-    intros A.
-    apply (le_lt_trans2 (nat_is_finite 1)).
-    unfold nat_to_card, le; equiv_simpl.
-    exists (λ _, [0|nat_0_lt_1]).
-    intros [a a_neq] [b b_neq] eq; clear eq.
-    unfold multilinear_to_tensor_base in *.
-    apply set_type_eq; cbn.
-    classic_case (a = k) as [ak|ak];
-    classic_case (b = k) as [bk|bk].
-    1: subst; reflexivity.
-    all: contradiction.
-Qed.
-
-Definition multilinear_to_tensor {k} (A : multi_type k) :=
-    [_|multilinear_to_tensor_finite A].
-
-Theorem multilinear_to_tensor_k_eq : ∀ k n (eq : n = k) (A : multi_type k),
-        multilinear_to_tensor A =
-        multilinear_to_tensor (multilinear_type_k_eq k n A eq).
-    intros k n eq A.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
-    destruct (Logic.eq_sym eq).
-    reflexivity.
-Qed.
-
-Theorem multilinear_to_tensor_eq : ∀ k, ∀ (A B : multi_type k),
-        multilinear_to_tensor A = multilinear_to_tensor B → A = B.
-    intros k A B eq.
-    apply eq_set_type in eq.
-    assert (∀ x, [multilinear_to_tensor A|] x = [multilinear_to_tensor B|] x)
-        as eq2.
-    {
-        rewrite eq.
-        reflexivity.
-    }
-    clear eq.
-    unfold multilinear_to_tensor, multilinear_to_tensor_base in eq2.
-    cbn in eq2.
-    specialize (eq2 k).
-    destruct (strong_excluded_middle (k = k)) as [eq|neq]; try contradiction.
-    unfold multilinear_type_k_eq in eq2.
-    (* I don't know what I'm doing, but it works *)
-    unfold Logic.eq_rect_r in eq2.
-    unfold Logic.eq_rect in eq2.
-    destruct (Logic.eq_sym eq).
-    exact eq2.
-Qed.
-
-Lemma tensor_plus_finite : ∀ A B : tensor_algebra,
-        tensor_finite (λ k, [A|] k + [B|] k).
-    intros [A A_fin] [B B_fin]; cbn.
-    apply fin_nat_ex in A_fin as [m m_eq].
-    apply fin_nat_ex in B_fin as [n n_eq].
-    assert (finite (nat_to_card m + nat_to_card n)) as mn_fin.
-    {
-        rewrite nat_to_card_plus.
-        apply nat_is_finite.
-    }
-    apply (le_lt_trans2 mn_fin).
-    rewrite m_eq, n_eq.
-    clear m m_eq n n_eq mn_fin.
-    unfold plus at 2, le; equiv_simpl.
-    assert (∀ (n : set_type (λ k, 0 ≠ A k + B k)), {0 ≠ A [n|]} + {0 ≠ B [n|]})
-        as n_in.
-    {
-        intros [n n_neq]; cbn.
-        classic_case (0 = A n) as [Anz|Anz].
-        -   right.
-            rewrite <- Anz in n_neq.
-            rewrite plus_lid in n_neq.
-            exact n_neq.
-        -   left; exact Anz.
-    }
-    exists (λ n, match (n_in n) with
-        | strong_or_left  H => inl [[n|]|H]
-        | strong_or_right H => inr [[n|]|H]
-    end).
-    intros a b eq.
-    destruct (n_in a) as [neq1|neq1]; destruct (n_in b) as [neq2|neq2].
-    all: inversion eq as [eq2].
-    all: apply set_type_eq; exact eq2.
-Qed.
-
-Instance tensor_plus : Plus tensor_algebra := {
-    plus A B := [_|tensor_plus_finite A B]
-}.
-
-Program Instance tensor_plus_comm : PlusComm tensor_algebra.
-Next Obligation.
-    unfold plus; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply plus_comm.
-Qed.
-
-Program Instance tensor_plus_assoc : PlusAssoc tensor_algebra.
-Next Obligation.
-    unfold plus; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply plus_assoc.
-Qed.
-
-Lemma tensor_zero_finite : tensor_finite (λ k, 0).
-    unfold tensor_finite.
-    assert (|set_type (λ k : nat, (zero (U := multi_type k)) ≠ 0)| = 0)
-        as eq.
-    {
-        apply card_false_0.
-        intros [a neq].
-        contradiction.
-    }
-    rewrite eq.
-    apply nat_is_finite.
-Qed.
-
-Instance tensor_zero : Zero tensor_algebra := {
-    zero := [_|tensor_zero_finite]
-}.
-
-Program Instance tensor_plus_lid : PlusLid tensor_algebra.
-Next Obligation.
-    unfold plus, zero; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply plus_lid.
-Qed.
-
-Lemma tensor_neg_finite : ∀ A : tensor_algebra, tensor_finite (λ k, -[A|] k).
-    intros [A A_fin]; cbn.
-    apply fin_nat_ex in A_fin as [n n_eq].
-    apply (le_lt_trans2 (nat_is_finite n)).
-    rewrite n_eq; clear n n_eq.
-    unfold le; equiv_simpl.
-    assert (∀ (n : set_type (λ k, 0 ≠ - A k)), 0 ≠ A [n|]) as n_in.
-    {
-        intros [n n_neq]; cbn.
-        intros eq.
-        rewrite <- eq in n_neq.
-        rewrite neg_zero in n_neq.
-        contradiction.
-    }
-    exists (λ n, [[n|]|n_in n]).
-    intros a b eq.
-    apply eq_set_type in eq; cbn in eq.
-    apply set_type_eq in eq; cbn in eq.
-    exact eq.
-Qed.
-
-Instance tensor_neg : Neg tensor_algebra := {
-    neg A := [_|tensor_neg_finite A]
-}.
-
-Program Instance tensor_plus_linv : PlusLinv tensor_algebra.
-Next Obligation.
-    unfold plus, neg, zero; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply plus_linv.
-Qed.
-
-Lemma tensor_scalar_finite : ∀ α (A : tensor_algebra),
-        tensor_finite (λ k, α · [A|] k).
-    intros α [A A_fin]; cbn.
-    apply fin_nat_ex in A_fin as [n n_eq].
-    apply (le_lt_trans2 (nat_is_finite n)).
-    rewrite n_eq; clear n n_eq.
-    unfold le; equiv_simpl.
-    assert (∀ (n : set_type (λ k, 0 ≠ α · A k)), 0 ≠ A [n|]) as n_in.
-    {
-        intros [n n_neq]; cbn.
-        intros eq.
-        rewrite <- eq in n_neq.
-        rewrite scalar_ranni in n_neq.
-        contradiction.
-    }
-    exists (λ n, [[n|]|n_in n]).
-    intros a b eq.
-    apply eq_set_type in eq; cbn in eq.
-    apply set_type_eq in eq; cbn in eq.
-    exact eq.
-Qed.
-
-Theorem multilinear_to_tensor_plus : ∀ k (A B : multi_type k),
-        multilinear_to_tensor A + multilinear_to_tensor B =
-        multilinear_to_tensor (A + B).
-    intros k A B.
-    apply set_type_eq; cbn.
-    apply functional_ext; intros x.
-    unfold plus at 1; cbn.
-    unfold multilinear_to_tensor_base.
-    destruct (strong_excluded_middle (x = k)) as [eq|neq].
-    2: apply plus_rid.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect.
-    destruct (Logic.eq_sym _).
-    reflexivity.
-Qed.
-
-Instance tensor_scalar : ScalarMult U tensor_algebra := {
-    scalar_mult α A := [_|tensor_scalar_finite α A]
-}.
-
-Program Instance tensor_scalar_comp : ScalarComp U tensor_algebra.
-Next Obligation.
-    unfold scalar_mult; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply scalar_comp.
-Qed.
-
-Program Instance tensor_scalar_id : ScalarId U tensor_algebra.
-Next Obligation.
-    unfold scalar_mult; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply scalar_id.
-Qed.
-
-Program Instance tensor_scalar_ldist : ScalarLdist U tensor_algebra.
-Next Obligation.
-    unfold plus, scalar_mult; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply scalar_ldist.
-Qed.
-
-Program Instance tensor_scalar_rdist : ScalarRdist U tensor_algebra.
-Next Obligation.
-    unfold plus at 2, scalar_mult; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    apply scalar_rdist.
-Qed.
-
-Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra) k,
-        tensor_finite (λ n, If n = k then [A|] n else 0).
+Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra U V) k,
+        tensor_finite U V (λ n, If n = k then [A|] n else 0).
     intros [A A_fin] k; cbn.
     apply (le_lt_trans2 (nat_is_finite 1)).
     unfold nat_to_card, le; equiv_simpl.
@@ -336,16 +86,13 @@ Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra) k,
     -   contradiction.
 Qed.
 
-Definition tensor_grade_project (A : tensor_algebra) k :=
+Definition tensor_grade_project (A : tensor_algebra U V ) k :=
     [_|tensor_grade_project_finite A k].
-(*
-Theorem tensor_grade_project_eq : ∀ A k,
-    [tensor_grade_project A k|] = [A|] k.
-*)
+
 Definition homogeneous_tensor A := ∃ k (M : multi_type k),
-    A = multilinear_to_tensor M.
-Definition tensor_grade (A : tensor_algebra) k := ∃ (M : multi_type k),
-    A = multilinear_to_tensor M.
+    A = multilinear_to_tensor U V M.
+Definition tensor_grade (A : tensor_algebra U V ) k := ∃ (M : multi_type k),
+    A = multilinear_to_tensor U V M.
 
 Theorem tensor_zero_homogeneous : homogeneous_tensor 0.
     exists 0, 0.
@@ -390,7 +137,7 @@ Theorem tensor_project_grade : ∀ A k, tensor_grade (tensor_grade_project A k) 
     -   reflexivity.
 Qed.
 
-Lemma tensor_max_nz_ex : ∀ A : tensor_algebra,
+Lemma tensor_max_nz_ex : ∀ A : tensor_algebra U V,
         ∃ n, (∀ m, 0 ≠ [A|] m → m < n) ∧ (∀ m, n <= m → 0 = [A|] m) ∧
         (∀ m, nat_suc m = n → 0 ≠ [A|] m).
     intros A.
@@ -493,7 +240,7 @@ Theorem tensor_decompose_grade_eq : ∀ A,
             unfold plus at 1; cbn.
             reflexivity.
     }
-    change (set_type tensor_finite) with tensor_algebra in *.
+    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
     rewrite eq; clear eq.
     cbn.
     revert af af_fin n_greatest.
@@ -580,7 +327,7 @@ Qed.
 
 Lemma tensor_decompose_nth : ∀ A k,
         [list_nth (tensor_decompose_grade A) k [_|tensor_zero_homogeneous]|]
-        = multilinear_to_tensor ([A|] k).
+        = multilinear_to_tensor U V ([A|] k).
     intros A k.
     unfold tensor_decompose_grade.
     classic_case (k < tensor_max_nz A) as [k_lt|k_ge].
@@ -633,10 +380,10 @@ Qed.
 
 Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
         (A : multi_type k1) (B : multi_type k2),
-        0 ≠ A → multilinear_to_tensor A = multilinear_to_tensor B → k1 = k2.
+        0 ≠ A → multilinear_to_tensor U V A = multilinear_to_tensor U V B → k1 = k2.
     intros k1 k2 A B A_nz eq.
     apply eq_set_type in eq; cbn in eq.
-    assert (multilinear_to_tensor_base A k1 = multilinear_to_tensor_base B k1)
+    assert (multilinear_to_tensor_base U V A k1 = multilinear_to_tensor_base U V B k1)
         as eq2.
     {
         rewrite eq.
@@ -653,7 +400,7 @@ Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
     symmetry in eq; contradiction.
 Qed.
 
-Lemma multilinear_to_tensor_zero : ∀ k, (multilinear_to_tensor (k := k) 0) = 0.
+Lemma multilinear_to_tensor_zero : ∀ k, (multilinear_to_tensor U V (k := k) 0) = 0.
     intros k.
     apply set_type_eq; cbn.
     unfold multilinear_to_tensor_base.
@@ -685,7 +432,7 @@ Lemma tensor_grade_unique : ∀ A k1 k2,
 Qed.
 
 Lemma multilinear_to_tensor_grade : ∀ k (A : multi_type k),
-        tensor_grade (multilinear_to_tensor A) k.
+        tensor_grade (multilinear_to_tensor U V A) k.
     intros k A.
     exists A.
     reflexivity.
@@ -702,11 +449,11 @@ Lemma tensor_grade_zero_eq : ∀ A k, tensor_grade A k → ∀ n, n ≠ k → 0 
 Qed.
 
 Let tm (A' B' : set_type homogeneous_tensor)
-    := multilinear_to_tensor (multilinear_mult
+    := multilinear_to_tensor U V (multilinear_mult _ _
         (ex_val (ex_proof [|A']))
         (ex_val (ex_proof [|B']))).
 
-Instance tensor_mult : Mult tensor_algebra := {
+Instance tensor_mult : Mult (tensor_algebra U V) := {
     mult A B := list_sum (list_prod2 tm
         (tensor_decompose_grade A) (tensor_decompose_grade B))
 }.
@@ -749,11 +496,11 @@ Lemma tensor_mult_tm_grade : ∀ A B k1 k2,
     apply multilinear_to_tensor_eq_grade in A_eq; try assumption.
     apply multilinear_to_tensor_eq_grade in B_eq; try assumption.
     subst.
-    exists (multilinear_mult A B).
+    exists (multilinear_mult _ _ A B).
     reflexivity.
 Qed.
 
-Lemma tensor_list_sum_k : ∀ (al : list tensor_algebra) k,
+Lemma tensor_list_sum_k : ∀ (al : list (tensor_algebra U V)) k,
         [list_sum al|] k = list_sum (list_image al (λ a, [a|] k)).
     intros al k.
     induction al.
@@ -775,10 +522,10 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
     pose proof a_homo as [ak [A A_eq]].
     pose proof b_homo as [bk [B B_eq]].
     subst a b.
-    assert (list_image (tensor_decompose_grade (multilinear_to_tensor A))
+    assert (list_image (tensor_decompose_grade (multilinear_to_tensor U V A))
         (λ x, tm x [_|b_homo]) = func_to_list (λ n, If n = ak
             then tm [_|a_homo] [_|b_homo] else 0)
-            (tensor_max_nz (multilinear_to_tensor A))) as eq.
+            (tensor_max_nz (multilinear_to_tensor U V A))) as eq.
     {
         unfold tensor_decompose_grade.
         rewrite func_to_list_image.
@@ -786,7 +533,7 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
         2: reflexivity.
         apply functional_ext.
         intros x.
-        assert ([_|tensor_project_homogeneous (multilinear_to_tensor A) x] =
+        assert ([_|tensor_project_homogeneous (multilinear_to_tensor U V A) x] =
             If x = ak then [_|a_homo] else [_|tensor_zero_homogeneous]) as eq.
         {
             case_if.
@@ -842,10 +589,10 @@ Lemma tensor_lmult_homogeneous : ∀ a b,
             rewrite multilinear_mult_lanni.
             apply multilinear_to_tensor_zero.
         }
-        change (set_type tensor_finite) with tensor_algebra in *.
+        change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
         rewrite eq.
         rewrite multilinear_to_tensor_zero.
-        change (set_type tensor_finite) with tensor_algebra.
+        change (set_type (tensor_finite U V)) with (tensor_algebra U V).
         remember (tensor_max_nz 0) as n.
         clear Heqn.
         nat_induction n.
@@ -897,10 +644,10 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
     pose proof a_homo as [ak [A A_eq]].
     pose proof b_homo as [bk [B B_eq]].
     subst a b.
-    assert (list_image (tensor_decompose_grade (multilinear_to_tensor B))
+    assert (list_image (tensor_decompose_grade (multilinear_to_tensor U V B))
         (λ x, tm [_|a_homo] x) = func_to_list (λ n, If n = bk
             then tm [_|a_homo] [_|b_homo] else 0)
-            (tensor_max_nz (multilinear_to_tensor B))) as eq.
+            (tensor_max_nz (multilinear_to_tensor U V B))) as eq.
     {
         unfold tensor_decompose_grade.
         rewrite func_to_list_image.
@@ -908,7 +655,7 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
         2: reflexivity.
         apply functional_ext.
         intros x.
-        assert ([_|tensor_project_homogeneous (multilinear_to_tensor B) x] =
+        assert ([_|tensor_project_homogeneous (multilinear_to_tensor U V B) x] =
             If x = bk then [_|b_homo] else [_|tensor_zero_homogeneous]) as eq.
         {
             case_if.
@@ -964,10 +711,10 @@ Lemma tensor_rmult_homogeneous : ∀ a b,
             rewrite multilinear_mult_ranni.
             apply multilinear_to_tensor_zero.
         }
-        change (set_type tensor_finite) with tensor_algebra in *.
+        change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
         rewrite eq.
         rewrite multilinear_to_tensor_zero.
-        change (set_type tensor_finite) with tensor_algebra.
+        change (set_type (tensor_finite U V)) with (tensor_algebra U V).
         remember (tensor_max_nz 0) as n.
         clear Heqn.
         nat_induction n.
@@ -1018,7 +765,7 @@ Lemma tensor_sum_decompose_lmult : ∀ a B ak k, tensor_grade [a|] ak →
             [_|tensor_zero_homogeneous])|] (ak + k).
     intros a B ak k ak_grade.
     pose proof (tensor_decompose_nth B k) as eq.
-    assert (homogeneous_tensor (multilinear_to_tensor ([B|] k))) as B_homo.
+    assert (homogeneous_tensor (multilinear_to_tensor U V ([B|] k))) as B_homo.
     {
         exists k, ([B|] k).
         reflexivity.
@@ -1093,10 +840,10 @@ Lemma tensor_sum_decompose_lmult : ∀ a B ak k, tensor_grade [a|] ak →
             }
             assert (ak = ak') as eq.
             {
-                apply (tensor_grade_unique (multilinear_to_tensor A')).
+                apply (tensor_grade_unique (multilinear_to_tensor U V A')).
                 -   intros contr.
                     pose proof (multilinear_to_tensor_zero ak') as eq.
-                    change (set_type tensor_finite) with tensor_algebra in eq.
+                    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in eq.
                     rewrite <- eq in contr.
                     apply multilinear_to_tensor_eq in contr.
                     contradiction.
@@ -1107,10 +854,10 @@ Lemma tensor_sum_decompose_lmult : ∀ a B ak k, tensor_grade [a|] ak →
             }
             assert (x = x') as eq2.
             {
-                apply (tensor_grade_unique (multilinear_to_tensor B')).
+                apply (tensor_grade_unique (multilinear_to_tensor U V B')).
                 -   intros contr.
                     pose proof (multilinear_to_tensor_zero x') as eq2.
-                    change (set_type tensor_finite) with tensor_algebra in eq2.
+                    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in eq2.
                     rewrite <- eq2 in contr.
                     apply multilinear_to_tensor_eq in contr.
                     contradiction.
@@ -1130,7 +877,7 @@ Lemma tensor_sum_decompose_lmult : ∀ a B ak k, tensor_grade [a|] ak →
     rewrite eq; clear eq.
     classic_case (0 = [B|] k) as [B_z|B_nz].
     {
-        assert ([multilinear_to_tensor ([B|] k) | B_homo]
+        assert ([multilinear_to_tensor U V ([B|] k) | B_homo]
             = [_|tensor_zero_homogeneous]) as eq.
         {
             apply set_type_eq; cbn.
@@ -1186,7 +933,7 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade [a|] ak →
             [_|tensor_zero_homogeneous]) a|] (k + ak).
     intros a B ak k ak_grade.
     pose proof (tensor_decompose_nth B k) as eq.
-    assert (homogeneous_tensor (multilinear_to_tensor ([B|] k))) as B_homo.
+    assert (homogeneous_tensor (multilinear_to_tensor U V ([B|] k))) as B_homo.
     {
         exists k, ([B|] k).
         reflexivity.
@@ -1261,10 +1008,10 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade [a|] ak →
             }
             assert (ak = ak') as eq.
             {
-                apply (tensor_grade_unique (multilinear_to_tensor A')).
+                apply (tensor_grade_unique (multilinear_to_tensor U V A')).
                 -   intros contr.
                     pose proof (multilinear_to_tensor_zero ak') as eq.
-                    change (set_type tensor_finite) with tensor_algebra in eq.
+                    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in eq.
                     rewrite <- eq in contr.
                     apply multilinear_to_tensor_eq in contr.
                     contradiction.
@@ -1275,10 +1022,10 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade [a|] ak →
             }
             assert (x = x') as eq2.
             {
-                apply (tensor_grade_unique (multilinear_to_tensor B')).
+                apply (tensor_grade_unique (multilinear_to_tensor U V B')).
                 -   intros contr.
                     pose proof (multilinear_to_tensor_zero x') as eq2.
-                    change (set_type tensor_finite) with tensor_algebra in eq2.
+                    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in eq2.
                     rewrite <- eq2 in contr.
                     apply multilinear_to_tensor_eq in contr.
                     contradiction.
@@ -1298,7 +1045,7 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade [a|] ak →
     rewrite eq; clear eq.
     classic_case (0 = [B|] k) as [B_z|B_nz].
     {
-        assert ([multilinear_to_tensor ([B|] k) | B_homo]
+        assert ([multilinear_to_tensor U V ([B|] k) | B_homo]
             = [_|tensor_zero_homogeneous]) as eq.
         {
             apply set_type_eq; cbn.
@@ -1355,11 +1102,12 @@ Lemma tensor_decompose_plus_nth : ∀ a b n, let z := [_|tensor_zero_homogeneous
     intros a b n z.
     unfold z.
     do 3 rewrite tensor_decompose_nth.
-    rewrite multilinear_to_tensor_plus.
+    pose proof (multilinear_to_tensor_plus U V) as stupid.
+    rewrite stupid.
     reflexivity.
 Qed.
 
-Program Instance tensor_mult_ldist : Ldist tensor_algebra.
+Program Instance tensor_mult_ldist : Ldist (tensor_algebra U V).
 Next Obligation.
     unfold mult; cbn.
     remember (tensor_decompose_grade a) as al.
@@ -1411,7 +1159,7 @@ Next Obligation.
                 apply k_lt.
                 apply nat_le_self_rplus.
         }
-        change (set_type tensor_finite) with tensor_algebra in *.
+        change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
         rewrite eq; clear eq.
         pose (z := 0 : multi_type k).
         assert (∀ (l : list (set_type homogeneous_tensor)),
@@ -1458,7 +1206,7 @@ Next Obligation.
             clear C0 C1 C2 C3.
             subst.
             rewrite tensor_decompose_plus_nth in bc_eq.
-            change (set_type tensor_finite) with tensor_algebra in *.
+            change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
             classic_case (0 = B) as [B_z|B_nz].
             1: {
                 subst.
@@ -1509,38 +1257,39 @@ Next Obligation.
             assert (bk = k) as bk_eq.
             {
                 pose proof (tensor_decompose_nth_grade b k) as eq.
-                change (set_type tensor_finite) with tensor_algebra in *.
+                change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
                 rewrite b_eq in eq.
                 pose proof (multilinear_to_tensor_grade _ B) as B_grade.
-                apply (tensor_grade_unique (multilinear_to_tensor B));
+                apply (tensor_grade_unique (multilinear_to_tensor U V B));
                     try assumption.
                 intros contr.
                 apply B_nz.
-                apply multilinear_to_tensor_eq.
+                apply (multilinear_to_tensor_eq U V).
                 rewrite multilinear_to_tensor_zero.
                 exact contr.
             }
             assert (ck = k) as ck_eq.
             {
                 pose proof (tensor_decompose_nth_grade c k) as eq.
-                change (set_type tensor_finite) with tensor_algebra in *.
+                change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
                 rewrite c_eq in eq.
                 pose proof (multilinear_to_tensor_grade _ C) as C_grade.
-                apply (tensor_grade_unique (multilinear_to_tensor C));
+                apply (tensor_grade_unique (multilinear_to_tensor U V C));
                     try assumption.
                 intros contr.
                 apply C_nz.
-                apply multilinear_to_tensor_eq.
+                apply (multilinear_to_tensor_eq U V).
                 rewrite multilinear_to_tensor_zero.
                 exact contr.
             }
             subst bk ck.
-            rewrite multilinear_to_tensor_plus.
+            pose proof (multilinear_to_tensor_plus U V) as stupid.
+            rewrite stupid.
             classic_case (0 = BC) as [BC_z|BC_nz].
             1: {
                 subst.
                 rewrite b_eq, c_eq in bc_eq.
-                rewrite multilinear_to_tensor_plus in bc_eq.
+                rewrite stupid in bc_eq; clear stupid.
                 rewrite multilinear_to_tensor_zero in bc_eq.
                 rewrite <- (multilinear_to_tensor_zero k) in bc_eq.
                 apply multilinear_to_tensor_eq in bc_eq.
@@ -1550,10 +1299,10 @@ Next Obligation.
                 unfold multi_type in *.
                 unfold multilinear_type in *.
                 rewrite bc_eq.
-                pose proof (multilinear_mult_ranni bck _ A) as stupid.
+                pose proof (multilinear_mult_ranni _ _ bck _ A) as stupid.
                 unfold multi_type, multilinear_type in stupid.
                 rewrite stupid; clear stupid.
-                pose proof (multilinear_mult_ranni k _ A) as stupid.
+                pose proof (multilinear_mult_ranni _ _ k _ A) as stupid.
                 unfold multi_type, multilinear_type in stupid.
                 rewrite stupid; clear stupid.
                 do 2 rewrite multilinear_to_tensor_zero.
@@ -1563,21 +1312,21 @@ Next Obligation.
             {
                 pose proof (tensor_decompose_nth_grade (b + c) k) as eq.
                 rewrite tensor_decompose_plus_nth in eq.
-                change (set_type tensor_finite) with tensor_algebra in *.
+                change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
                 rewrite bc_eq in eq.
                 pose proof (multilinear_to_tensor_grade _ BC) as BC_grade.
-                apply (tensor_grade_unique (multilinear_to_tensor BC));
+                apply (tensor_grade_unique (multilinear_to_tensor U V BC));
                     try assumption.
                 intros contr.
                 apply BC_nz.
-                apply multilinear_to_tensor_eq.
+                apply (multilinear_to_tensor_eq U V).
                 rewrite multilinear_to_tensor_zero.
                 exact contr.
             }
             subst bck.
             apply f_equal.
             rewrite b_eq, c_eq in bc_eq.
-            rewrite multilinear_to_tensor_plus in bc_eq.
+            rewrite stupid in bc_eq.
             apply multilinear_to_tensor_eq in bc_eq.
             rewrite <- bc_eq.
             apply multilinear_mult_ldist.
@@ -1586,7 +1335,7 @@ Next Obligation.
         reflexivity.
 Qed.
 
-Program Instance tensor_mult_rdist : Rdist tensor_algebra.
+Program Instance tensor_mult_rdist : Rdist (tensor_algebra U V).
 Next Obligation.
     rename a into b, b into c, c into a.
     unfold mult; cbn.
@@ -1639,7 +1388,7 @@ Next Obligation.
                 apply k_lt.
                 apply nat_le_self_lplus.
         }
-        change (set_type tensor_finite) with tensor_algebra in *.
+        change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
         rewrite eq; clear eq.
         pose (z := 0 : multi_type k).
         assert (∀ (l : list (set_type homogeneous_tensor)),
@@ -1687,7 +1436,7 @@ Next Obligation.
             clear C0 C1 C2 C3.
             subst.
             rewrite tensor_decompose_plus_nth in bc_eq.
-            change (set_type tensor_finite) with tensor_algebra in *.
+            change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
             classic_case (0 = B) as [B_z|B_nz].
             1: {
                 subst.
@@ -1738,32 +1487,34 @@ Next Obligation.
             assert (bk = k) as bk_eq.
             {
                 pose proof (tensor_decompose_nth_grade b k) as eq.
-                change (set_type tensor_finite) with tensor_algebra in *.
+                change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
                 rewrite b_eq in eq.
                 pose proof (multilinear_to_tensor_grade _ B) as B_grade.
-                apply (tensor_grade_unique (multilinear_to_tensor B));
+                apply (tensor_grade_unique (multilinear_to_tensor U V B));
                     try assumption.
                 intros contr.
                 apply B_nz.
-                apply multilinear_to_tensor_eq.
+                apply (multilinear_to_tensor_eq U V).
                 rewrite multilinear_to_tensor_zero.
                 exact contr.
             }
             assert (ck = k) as ck_eq.
             {
                 pose proof (tensor_decompose_nth_grade c k) as eq.
-                change (set_type tensor_finite) with tensor_algebra in *.
+                change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
                 rewrite c_eq in eq.
                 pose proof (multilinear_to_tensor_grade _ C) as C_grade.
-                apply (tensor_grade_unique (multilinear_to_tensor C));
+                apply (tensor_grade_unique (multilinear_to_tensor U V C));
                     try assumption.
                 intros contr.
                 apply C_nz.
-                apply multilinear_to_tensor_eq.
+                apply (multilinear_to_tensor_eq U V).
                 rewrite multilinear_to_tensor_zero.
                 exact contr.
             }
             subst bk ck.
+            pose proof (multilinear_to_tensor_plus U V)
+                as multilinear_to_tensor_plus.
             rewrite multilinear_to_tensor_plus.
             classic_case (0 = BC) as [BC_z|BC_nz].
             1: {
@@ -1779,10 +1530,10 @@ Next Obligation.
                 unfold multi_type in *.
                 unfold multilinear_type in *.
                 rewrite bc_eq.
-                pose proof (multilinear_mult_lanni bck _ A) as stupid.
+                pose proof (multilinear_mult_lanni _ _ bck _ A) as stupid.
                 unfold multi_type, multilinear_type in stupid.
                 rewrite stupid; clear stupid.
-                pose proof (multilinear_mult_lanni k _ A) as stupid.
+                pose proof (multilinear_mult_lanni _ _ k _ A) as stupid.
                 unfold multi_type, multilinear_type in stupid.
                 rewrite stupid; clear stupid.
                 do 2 rewrite multilinear_to_tensor_zero.
@@ -1792,14 +1543,14 @@ Next Obligation.
             {
                 pose proof (tensor_decompose_nth_grade (b + c) k) as eq.
                 rewrite tensor_decompose_plus_nth in eq.
-                change (set_type tensor_finite) with tensor_algebra in *.
+                change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
                 rewrite bc_eq in eq.
                 pose proof (multilinear_to_tensor_grade _ BC) as BC_grade.
-                apply (tensor_grade_unique (multilinear_to_tensor BC));
+                apply (tensor_grade_unique (multilinear_to_tensor U V BC));
                     try assumption.
                 intros contr.
                 apply BC_nz.
-                apply multilinear_to_tensor_eq.
+                apply (multilinear_to_tensor_eq U V).
                 rewrite multilinear_to_tensor_zero.
                 exact contr.
             }
@@ -1824,14 +1575,14 @@ Lemma tensor_mult_homogeneous : ∀ a b, homogeneous_tensor (tm a b).
     rewrite_ex_val A A_eq.
     rewrite_ex_val B B_eq.
     clear C0 C1.
-    exists (ak + bk), (multilinear_mult A B).
+    exists (ak + bk), (multilinear_mult _ _ A B).
     reflexivity.
 Qed.
 
 Lemma multilinear_to_tensor_tm :
         ∀ k1 k2 (A : multi_type k1) (B : multi_type k2) AH BH,
-        tm [multilinear_to_tensor A|AH] [multilinear_to_tensor B|BH] =
-        multilinear_to_tensor (multilinear_mult A B).
+        tm [multilinear_to_tensor U V A|AH] [multilinear_to_tensor U V B|BH] =
+        multilinear_to_tensor U V (multilinear_mult _ _ A B).
     intros k1 k2 A B AH BH.
     unfold tm; cbn.
     unfold ex_proof.
@@ -1871,7 +1622,7 @@ Lemma multilinear_to_tensor_tm :
     reflexivity.
 Qed.
 
-Program Instance tensor_mult_assoc : MultAssoc tensor_algebra.
+Program Instance tensor_mult_assoc : MultAssoc (tensor_algebra U V).
 Next Obligation.
     rewrite (tensor_decompose_grade_eq a).
     rewrite (tensor_decompose_grade_eq b).
@@ -1937,17 +1688,17 @@ Local Arguments list_prod2: simpl never.
         cbn; rewrite plus_lid.
         reflexivity.
     }
-    change (set_type tensor_finite) with tensor_algebra in *.
+    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
     rewrite eq; clear eq.
     pose proof (tensor_mult_homogeneous a b) as ab_homo.
     pose proof (tensor_lmult_homogeneous2 [_|ab_homo] (c :: list_end)) as eq.
     cbn in eq.
-    change (set_type tensor_finite) with tensor_algebra in *.
+    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
     rewrite eq; clear eq.
     pose proof (tensor_mult_homogeneous b c) as bc_homo.
     pose proof (tensor_rmult_homogeneous2 (a :: list_end) [_|bc_homo]) as eq.
     cbn in eq.
-    change (set_type tensor_finite) with tensor_algebra in *.
+    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
     rewrite eq; clear eq.
 Local Arguments list_prod2: simpl nomatch.
     cbn.
@@ -1961,32 +1712,32 @@ Local Arguments list_prod2: simpl nomatch.
     pose proof c_homo as [ck [C C_eq]].
     subst a b c.
     pose proof (multilinear_to_tensor_tm _ _ B C b_homo c_homo) as eq.
-    assert (homogeneous_tensor (multilinear_to_tensor (multilinear_mult B C)))
+    assert (homogeneous_tensor (multilinear_to_tensor U V (multilinear_mult _ _ B C)))
         as bc_homo2.
     {
-        exists (bk + ck), (multilinear_mult B C).
+        exists (bk + ck), (multilinear_mult _ _ B C).
         reflexivity.
     }
     assert ([tm [_|b_homo] [_|c_homo] | bc_homo] = [_|bc_homo2]) as eq2.
     {
         apply set_type_eq; exact eq.
     }
-    change (set_type tensor_finite) with tensor_algebra in *.
+    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
     rewrite eq2.
     rewrite multilinear_to_tensor_tm.
     clear eq eq2 bc_homo bc_homo2.
     pose proof (multilinear_to_tensor_tm _ _ A B a_homo b_homo) as eq.
-    assert (homogeneous_tensor (multilinear_to_tensor (multilinear_mult A B)))
+    assert (homogeneous_tensor (multilinear_to_tensor U V (multilinear_mult _ _ A B)))
         as ab_homo2.
     {
-        exists (ak + bk), (multilinear_mult A B).
+        exists (ak + bk), (multilinear_mult _ _ A B).
         reflexivity.
     }
     assert ([tm [_|a_homo] [_|b_homo] | ab_homo] = [_|ab_homo2]) as eq2.
     {
         apply set_type_eq; exact eq.
     }
-    change (set_type tensor_finite) with tensor_algebra in *.
+    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
     rewrite eq2.
     rewrite multilinear_to_tensor_tm.
     clear eq eq2 ab_homo ab_homo2 a_homo b_homo c_homo.

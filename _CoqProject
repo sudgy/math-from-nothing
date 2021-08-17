@@ -81,16 +81,6 @@
 ./src/Set/Cardinal/card_real.v
 ./src/Set/Cardinal/card.v
 
-./src/Algebra/Linear/linear_base.v
-./src/Algebra/Linear/linear_bilinear.v
-./src/Algebra/Linear/linear_free.v
-./src/Algebra/Linear/linear_subspace.v
-./src/Algebra/Linear/linear_span.v
-./src/Algebra/Linear/linear_basis.v
-./src/Algebra/Linear/linear_multilinear.v
-./src/Algebra/Linear/Tensor/tensor_product.v
-./src/Algebra/Linear/Tensor/tensor_algebra.v
-
 ./src/Number/Int/int_base.v
 ./src/Number/Int/int_plus.v
 ./src/Number/Int/int_mult.v
@@ -132,6 +122,17 @@
 ./src/Topology/topology_path.v
 ./src/Topology/topology_compact.v
 ./src/Topology/topology.v
+
+./src/Algebra/Linear/linear_base.v
+./src/Algebra/Linear/linear_bilinear.v
+./src/Algebra/Linear/linear_free.v
+./src/Algebra/Linear/linear_subspace.v
+./src/Algebra/Linear/linear_span.v
+./src/Algebra/Linear/linear_basis.v
+./src/Algebra/Linear/linear_multilinear.v
+./src/Algebra/Linear/Tensor/tensor_product.v
+./src/Algebra/Linear/Tensor/tensor_algebra_base.v
+./src/Algebra/Linear/Tensor/tensor_algebra.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v

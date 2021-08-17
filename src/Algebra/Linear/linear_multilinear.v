@@ -15,7 +15,9 @@ Definition k_linear {U V k} `{Mult U, Plus U, Plus V, ScalarMult U V}
 
 Section KLinearSpace.
 
-Context {U V} `{
+Variables U V : Type.
+
+Context `{
     UP : Plus U,
     UZ : Zero U,
     UN : Neg U,
