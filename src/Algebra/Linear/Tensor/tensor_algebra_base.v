@@ -5,13 +5,22 @@ Require Import linear_multilinear.
 Require Import nat.
 Require Import card.
 Require Import set.
+Require Import list.
+Require Import plus_sum.
 
-(** This is a very different definition of a tensor algebra than usual.  Really,
-I'm trying to beeline to constructing geometric algebra, so I'm only doing what
-is absolutely necessary to reach that goal.  This construction is much easier to
-deal with than the traditional constructions.
+(** I have a confession: this is not actually the tensor algebra.  The algebra
+described here is actually bigger than the traditional definition of the tensor
+algebra, due to the fact that there is not a one to one correspondence between
+a vector space and its dual space.  Really, I'm defining this just to construct
+geometric algebra, and I'll deal with the extra elements then.  I'm using this
+construction because it is much easier to deal with than the traditional
+construction.
+
+This file contains the definition of the algebra and the proofs that it forms a
+vector space over the original field.
 *)
 
+(* begin hide *)
 Section TensorAlgebra.
 
 Variables U V : Type.
@@ -73,7 +82,7 @@ Let T24 := multilinear_scalar_rdist U (multilinear_type U V 1).
 Existing Instances T13 T14 T15 T16 T17 T18 T19 T20 T21 T22 T23 T24.
 
 Local Open Scope card_scope.
-
+(* end hide *)
 Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
 (* TODO: Generalize this inifinite direct product to more general situations *)
@@ -332,4 +341,31 @@ Next Obligation.
     apply scalar_rdist.
 Qed.
 
+Lemma multilinear_to_tensor_zero : ∀ k, (multilinear_to_tensor (k := k) 0) = 0.
+    intros k.
+    apply set_type_eq; cbn.
+    unfold multilinear_to_tensor_base.
+    apply functional_ext.
+    intros x.
+    destruct (strong_excluded_middle (x = k)) as [eq|neq].
+    -   unfold multilinear_type_k_eq.
+        unfold Logic.eq_rect_r, Logic.eq_rect.
+        destruct (Logic.eq_sym _).
+        reflexivity.
+    -   reflexivity.
+Qed.
+
+Lemma tensor_list_sum_k : ∀ (al : list (tensor_algebra)) k,
+        [list_sum al|] k = list_sum (list_image al (λ a, [a|] k)).
+    intros al k.
+    induction al.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        unfold plus at 1; cbn.
+        rewrite IHal.
+        reflexivity.
+Qed.
+(* begin hide *)
 End TensorAlgebra.
+(* end hide *)

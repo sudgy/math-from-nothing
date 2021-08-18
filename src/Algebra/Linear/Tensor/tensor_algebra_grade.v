@@ -8,6 +8,11 @@ Require Import set.
 Require Import list.
 Require Import plus_sum.
 
+(** This file contains various definitions and theorems about the graded
+structure of the tensor algebra.
+*)
+
+(* begin hide *)
 Section TensorAlgebra.
 
 Variables U V : Type.
@@ -81,9 +86,9 @@ Let T35 := tensor_scalar_ldist U V.
 Let T36 := tensor_scalar_rdist U V.
 Existing Instances T25 T26 T27 T28 T29 T30 T31 T32 T33 T34 T35 T36.
 
-Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
-
 Local Open Scope card_scope.
+(* end hide *)
+Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
 Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra U V) k,
         tensor_finite U V (λ n, If n = k then [A|] n else 0).
@@ -415,20 +420,6 @@ Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
     symmetry in eq; contradiction.
 Qed.
 
-Lemma multilinear_to_tensor_zero : ∀ k, (multilinear_to_tensor U V (k := k) 0) = 0.
-    intros k.
-    apply set_type_eq; cbn.
-    unfold multilinear_to_tensor_base.
-    apply functional_ext.
-    intros x.
-    destruct (strong_excluded_middle (x = k)) as [eq|neq].
-    -   unfold multilinear_type_k_eq.
-        unfold Logic.eq_rect_r, Logic.eq_rect.
-        destruct (Logic.eq_sym _).
-        reflexivity.
-    -   reflexivity.
-Qed.
-
 Lemma tensor_grade_unique : ∀ A k1 k2,
         0 ≠ A → tensor_grade A k1 → tensor_grade A k2 → k1 = k2.
     intros A k1 k2 A_nz k1_grade k2_grade.
@@ -463,4 +454,17 @@ Lemma tensor_grade_zero_eq : ∀ A k, tensor_grade A k → ∀ n, n ≠ k → 0 
     -   reflexivity.
 Qed.
 
+Lemma tensor_decompose_plus_nth : ∀ a b n, let z := [_|tensor_zero_homogeneous]
+        in [list_nth (tensor_decompose_grade (a + b)) n z|] =
+        [list_nth (tensor_decompose_grade a) n z|] +
+        [list_nth (tensor_decompose_grade b) n z|].
+    intros a b n z.
+    unfold z.
+    do 3 rewrite tensor_decompose_nth.
+    pose proof (multilinear_to_tensor_plus U V) as stupid.
+    rewrite stupid.
+    reflexivity.
+Qed.
+(* begin hide *)
 End TensorAlgebra.
+(* end hide *)

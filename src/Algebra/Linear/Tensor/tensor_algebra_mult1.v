@@ -9,6 +9,11 @@ Require Import set.
 Require Import list.
 Require Import plus_sum.
 
+(** This file contains the base definition of tensor multiplication and theorems
+about it.  For the actual instance of Mult, see tensor_algebra_mult2.
+*)
+
+(* begin hide *)
 Section TensorAlgebra.
 
 Variables U V : Type.
@@ -82,9 +87,9 @@ Let T35 := tensor_scalar_ldist U V.
 Let T36 := tensor_scalar_rdist U V.
 Existing Instances T25 T26 T27 T28 T29 T30 T31 T32 T33 T34 T35 T36.
 
-Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
-
 Local Open Scope card_scope.
+(* end hide *)
+Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
 Definition tensor_mult_base (A' B' : set_type (homogeneous_tensor U V))
     := multilinear_to_tensor U V (multilinear_mult _ _
@@ -135,18 +140,6 @@ Lemma tensor_mult_tm_grade : ∀ A B k1 k2,
     subst.
     exists (multilinear_mult _ _ A B).
     reflexivity.
-Qed.
-
-Lemma tensor_list_sum_k : ∀ (al : list (tensor_algebra U V)) k,
-        [list_sum al|] k = list_sum (list_image al (λ a, [a|] k)).
-    intros al k.
-    induction al.
-    -   cbn.
-        reflexivity.
-    -   cbn.
-        unfold plus at 1; cbn.
-        rewrite IHal.
-        reflexivity.
 Qed.
 
 Lemma tensor_lmult_homogeneous : ∀ a b,
@@ -747,18 +740,6 @@ Lemma tensor_sum_decompose_rmult : ∀ a B ak k, tensor_grade U V [a|] ak →
     apply (tensor_max_nz_leq U V _ _ B_nz).
 Qed.
 
-Lemma tensor_decompose_plus_nth : ∀ a b n, let z := [_|tensor_zero_homogeneous U V]
-        in [list_nth (tensor_decompose_grade U V (a + b)) n z|] =
-        [list_nth (tensor_decompose_grade U V a) n z|] +
-        [list_nth (tensor_decompose_grade U V b) n z|].
-    intros a b n z.
-    unfold z.
-    do 3 rewrite tensor_decompose_nth.
-    pose proof (multilinear_to_tensor_plus U V) as stupid.
-    rewrite stupid.
-    reflexivity.
-Qed.
-
 Lemma tensor_mult_homogeneous : ∀ a b, homogeneous_tensor U V (tensor_mult_base a b).
     intros a b.
     unfold tensor_mult_base.
@@ -818,5 +799,6 @@ Lemma multilinear_to_tensor_tm :
     subst A' B'.
     reflexivity.
 Qed.
-
+(* begin hide *)
 End TensorAlgebra.
+(* end hide *)

@@ -10,6 +10,11 @@ Require Import set.
 Require Import list.
 Require Import plus_sum.
 
+(** This file contains the true definition of multiplication on the tensor
+algebra, and the proofs that it forms a rng.
+*)
+
+(* begin hide *)
 Section TensorAlgebra.
 
 Variables U V : Type.
@@ -82,7 +87,7 @@ Let T35 := tensor_scalar_ldist U V.
 Let T36 := tensor_scalar_rdist U V.
 Existing Instances T13 T14 T15 T16 T17 T18 T19 T20 T21 T22 T23 T24 T25 T26 T27
     T28 T29 T30 T31 T32 T33 T34 T35 T36.
-
+(* end hide *)
 Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
 Instance tensor_mult : Mult (tensor_algebra U V) := {
@@ -690,5 +695,6 @@ Local Arguments list_prod2: simpl nomatch.
     symmetry.
     apply multilinear_to_tensor_k_eq.
 Qed.
-
+(* begin hide *)
 End TensorAlgebra.
+(* end hide *)
