@@ -239,6 +239,7 @@ Existing Instance multilinear_zero.
 Existing Instance multilinear_plus_lid.
 Existing Instance multilinear_neg.
 Existing Instance multilinear_plus_linv.
+Existing Instance multilinear_scalar_mult.
 
 Definition multilinear_type_k_eq k n (A : multilinear_type k) (eq : n = k) :
         (multilinear_type n).
@@ -547,6 +548,79 @@ Theorem multilinear_mult_assoc : ∀ {k1 k2 k3}
         }
         rewrite eq.
         apply m_f_kn_eq.
+Qed.
+
+Definition scalar_to_multilinear_base (α : U) : k_function U V 0 := λ _, α.
+
+Lemma scalar_to_multilinear_linear :
+        ∀ α, k_linear (scalar_to_multilinear_base α).
+    intros α f i i_lt.
+    contradiction (nat_lt_zero i i_lt).
+Qed.
+
+Definition scalar_to_multilinear α := [_|scalar_to_multilinear_linear α].
+
+Theorem scalar_to_multilinear_plus : ∀ α β,
+        scalar_to_multilinear α + scalar_to_multilinear β =
+        scalar_to_multilinear (α + β).
+    intros α β.
+    unfold plus at 1; cbn.
+    apply set_type_eq; cbn.
+    apply functional_ext.
+    intros f.
+    unfold scalar_to_multilinear_base; cbn.
+    reflexivity.
+Qed.
+
+Theorem scalar_to_multilinear_mult : ∀ α β,
+        multilinear_mult (scalar_to_multilinear α) (scalar_to_multilinear β) =
+        scalar_to_multilinear (α * β).
+    intros α β.
+    apply set_type_eq; cbn.
+    apply functional_ext.
+    intros f.
+    unfold multilinear_mult_base; cbn.
+    unfold scalar_to_multilinear_base; cbn.
+    reflexivity.
+Qed.
+
+Theorem scalar_to_multilinear_scalar {k} : ∀ α (A : multilinear_type k),
+        multilinear_mult (scalar_to_multilinear α) A =
+        α · A.
+    intros α A.
+    unfold scalar_mult; cbn.
+    apply set_type_eq; cbn.
+    apply functional_ext.
+    intros f.
+    unfold multilinear_mult_base; cbn.
+    unfold scalar_to_multilinear_base; cbn.
+    apply f_equal.
+    apply f_equal.
+    apply functional_ext.
+    intros x.
+    apply f_equal.
+    apply set_type_eq; cbn.
+    apply plus_lid.
+Qed.
+
+Theorem scalar_to_multilinear_comm {k} : ∀ α (A : multilinear_type k),
+        multilinear_mult (scalar_to_multilinear α) A =
+        multilinear_type_k_eq _ _
+            (multilinear_mult A (scalar_to_multilinear α))
+        (plus_comm _ _).
+    intros α A.
+    apply multilinear_f_kn_eq.
+    intros f.
+    unfold multilinear_mult, multilinear_mult_base; cbn.
+    unfold scalar_to_multilinear_base; cbn.
+    rewrite mult_comm.
+    apply f_equal2.
+    2: reflexivity.
+    apply f_equal.
+    apply functional_ext.
+    intros n.
+    symmetry.
+    apply m_f_kn_eq.
 Qed.
 
 End KLinearSpace.
