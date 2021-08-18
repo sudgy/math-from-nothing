@@ -97,6 +97,15 @@ Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 Definition scalar_to_tensor α :=
     multilinear_to_tensor U V (scalar_to_multilinear _ _ α).
 
+Theorem scalar_to_tensor_eq : ∀ α β,
+        scalar_to_tensor α = scalar_to_tensor β → α = β.
+    intros α β eq.
+    unfold scalar_to_tensor in eq.
+    apply multilinear_to_tensor_eq in eq.
+    apply scalar_to_multilinear_eq in eq.
+    exact eq.
+Qed.
+
 Theorem scalar_to_tensor_plus : ∀ α β,
         scalar_to_tensor α + scalar_to_tensor β =
         scalar_to_tensor (α + β).

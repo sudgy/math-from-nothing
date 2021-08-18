@@ -560,6 +560,18 @@ Qed.
 
 Definition scalar_to_multilinear α := [_|scalar_to_multilinear_linear α].
 
+Theorem scalar_to_multilinear_eq : ∀ α β,
+        scalar_to_multilinear α = scalar_to_multilinear β → α = β.
+    intros α β eq.
+    apply eq_set_type in eq; cbn in eq.
+    unfold scalar_to_multilinear_base in eq.
+    pose proof (func_eq _ _ eq) as eq2.
+    cbn in eq2.
+    apply eq2.
+    intros [a a_lt].
+    contradiction (nat_lt_zero a a_lt).
+Qed.
+
 Theorem scalar_to_multilinear_plus : ∀ α β,
         scalar_to_multilinear α + scalar_to_multilinear β =
         scalar_to_multilinear (α + β).
