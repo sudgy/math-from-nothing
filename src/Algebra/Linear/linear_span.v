@@ -101,4 +101,110 @@ Definition linear_span_quotient_scalar_ldist
 Definition linear_span_quotient_scalar_rdist
     := quotient_space_scalar_rdist linear_span_subspace.
 
+Theorem span_linear_combination :
+        S = (λ v, ∃ l,
+            (∀ v, (∃ α, in_list l (α, v)) → S v) ∧ v = linear_combination l
+        ).
+    pose (L u := ∃ l,
+        (∀ v, (∃ α, in_list l (α, v)) → S v) ∧ u = linear_combination l).
+    assert (L 0) as L_zero.
+    {
+        exists list_end.
+        split.
+        -   intros v [α v_in].
+            cbn in v_in.
+            contradiction v_in.
+        -   cbn.
+            reflexivity.
+    }
+    assert (∀ u v, L u → L v → L (u + v)) as L_plus.
+    {
+        intros u v Lu Lv.
+        destruct Lu as [ul [Sul u_eq]].
+        destruct Lv as [vl [Svl v_eq]].
+        subst u v.
+        exists (ul ++ vl).
+        split.
+        -   intros v [α v_in].
+            apply in_list_conc in v_in as [v_in|v_in].
+            +   apply Sul.
+                exists α.
+                exact v_in.
+            +   apply Svl.
+                exists α.
+                exact v_in.
+        -   unfold linear_combination.
+            rewrite list_image_conc.
+            rewrite list_sum_plus.
+            reflexivity.
+    }
+    assert (∀ a v, L v → L (a · v)) as L_scalar.
+    {
+        intros α v [l [Sl v_eq]].
+        subst v.
+        classic_case (0 = α) as [α_z|α_nz].
+        {
+            subst α.
+            rewrite scalar_lanni.
+            exact L_zero.
+        }
+        exists (list_image l (λ a, (α * fst a, snd a))).
+        split.
+        -   intros v [β v_in].
+            apply Sl.
+            exists (/α * β).
+            clear Sl.
+            induction l.
+            +   cbn in v_in.
+                contradiction v_in.
+            +   cbn.
+                destruct a as [γ u]; cbn in *.
+                destruct v_in as [eq|v_in].
+                *   left.
+                    inversion eq.
+                    apply f_equal2; try reflexivity.
+                    rewrite mult_llinv by exact α_nz.
+                    reflexivity.
+                *   right.
+                    exact (IHl v_in).
+        -   clear Sl.
+            induction l.
+            +   cbn.
+                apply scalar_ranni.
+            +   cbn.
+                unfold linear_combination in IHl.
+                rewrite scalar_ldist.
+                rewrite IHl.
+                rewrite scalar_comp.
+                reflexivity.
+    }
+    pose (L_sub := make_subspace L L_zero L_plus L_scalar).
+    apply antisym.
+    -   intros v Sv.
+        unfold S, linear_span in Sv.
+        apply (Sv L_sub).
+        cbn.
+        clear v Sv.
+        intros v Av.
+        exists ((1, v) :: list_end).
+        split.
+        +   intros u [α u_in].
+            cbn in u_in.
+            destruct u_in as [u_in|u_in].
+            2: contradiction u_in.
+            inversion u_in.
+            subst.
+            apply linear_span_sub.
+            exact Av.
+        +   cbn.
+            rewrite scalar_id.
+            rewrite plus_rid.
+            reflexivity.
+    -   intros v [l [Sv v_eq]].
+        rewrite v_eq; clear v_eq.
+        apply (subspace_linear_combination linear_span_subspace).
+        cbn.
+        exact Sv.
+Qed.
+
 End Span.
