@@ -4,6 +4,7 @@ Require Export linear_base.
 Require Import linear_subspace.
 Require Import set.
 Require Import list.
+Require Import plus_sum.
 
 Definition linear_span U {V} `{Plus V, Zero V, Neg V, ScalarMult U V}
     (S : V → Prop) :=
@@ -17,9 +18,13 @@ Context U {V} `{
     UN : Neg U,
     UM : Mult U,
     UO : One U,
+    UD : Div U,
     @PlusComm U UP,
     @PlusLid U UP UZ,
     @PlusLinv U UP UZ UN,
+    @MultAssoc U UM,
+    @MultLid U UM UO,
+    @MultLinv U UZ UM UO UD,
 
     VP : Plus V,
     VZ : Zero V,
@@ -59,6 +64,14 @@ Qed.
 
 Definition linear_span_subspace := make_subspace S
     linear_span_zero linear_span_plus linear_span_scalar.
+
+Theorem linear_span_sub : A ⊆ S.
+    intros v Av.
+    unfold S, linear_span.
+    intros sub A_sub.
+    apply A_sub.
+    exact Av.
+Qed.
 
 Definition linear_span_quotient := quotient_space linear_span_subspace.
 Definition to_quotient v :=

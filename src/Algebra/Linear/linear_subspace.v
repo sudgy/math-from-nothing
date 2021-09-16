@@ -2,6 +2,7 @@ Require Import init.
 
 Require Export linear_base.
 Require Import set.
+Require Import list.
 
 #[universes(template)]
 Record Subspace U V `{Plus V, Zero V, Neg V, ScalarMult U V} := make_subspace {
@@ -45,6 +46,29 @@ Context {U V} `{
     @ScalarRdist U V UP VP SM
 }.
 Variable S : Subspace U V.
+
+Theorem subspace_linear_combination :
+        ∀ l, (∀ v, (∃ α, in_list l (α, v)) → subspace_set S v) →
+        subspace_set S (linear_combination l).
+    intros l Sl.
+    induction l.
+    -   cbn.
+        apply subspace_zero.
+    -   cbn.
+        apply subspace_plus.
+        +   apply subspace_scalar.
+            apply Sl.
+            exists (fst a).
+            cbn.
+            left.
+            destruct a; reflexivity.
+        +   apply IHl.
+            intros v [α v_in].
+            apply Sl.
+            exists α.
+            right.
+            exact v_in.
+Qed.
 
 Let subspace_eq a b := subspace_set S (a - b).
 (* Declaring this in algebra_scope is a bit of a hack to allow us to redefine it

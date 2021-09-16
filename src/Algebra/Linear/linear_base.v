@@ -35,8 +35,8 @@ Class ScalarRMult U V `{Mult V, ScalarMult U V} := {
 }.
 
 Definition linear_combination {U V} `{Zero V, Plus V, ScalarMult U V}
-    (l1 : list U) (l2 : list V) (H : list_size l1 = list_size l2)
-    := list_sum (list_image (list_zip l1 l2) (λ x, fst x · snd x)).
+    (l : list (U * V))
+    := list_sum (list_image l (λ x, fst x · snd x)).
 
 (* begin hide *)
 Section LinearBase.
