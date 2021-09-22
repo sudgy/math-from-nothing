@@ -167,6 +167,46 @@ Theorem in_list_conc (A : Type) : ∀ (l1 l2 : list A) (x : A),
                 exact in2.
 Qed.
 
+Theorem in_list_rconc {U : Type} : ∀ (l1 l2 : list U) (x : U),
+        in_list l2 x → in_list (l1 ++ l2) x.
+    intros l1 l2 x x_in.
+    induction l1.
+    -   cbn.
+        exact x_in.
+    -   right.
+        exact IHl1.
+Qed.
+
+Theorem in_list_lconc {U : Type} : ∀ (l1 l2 : list U) (x : U),
+        in_list l1 x → in_list (l1 ++ l2) x.
+    intros l1 l2 x x_in.
+    induction l1.
+    -   contradiction x_in.
+    -   destruct x_in as [x_eq|x_in].
+        +   left.
+            exact x_eq.
+        +   right.
+            exact (IHl1 x_in).
+Qed.
+
+Theorem in_list_split {U : Type} :
+        ∀ l (x : U), in_list l x → ∃ l1 l2, l = l1 ++ x :: l2.
+    intros l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   destruct x_in as [x_eq|x_in].
+        +   subst a.
+            exists list_end, l.
+            cbn.
+            reflexivity.
+        +   specialize (IHl x_in).
+            destruct IHl as [l1 [l2 l_eq]].
+            rewrite l_eq; clear l_eq.
+            exists (a :: l1), l2.
+            cbn.
+            reflexivity.
+Qed.
+
 Fixpoint list_prod2_base {A B : Type} (op : A → A → B) (l : list A) (b : A) :=
     match l with
     | list_end => list_end
