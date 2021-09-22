@@ -8,8 +8,8 @@ Require Import set.
 
 Definition linearly_independent {U V} `{Zero U, Zero V, Plus V, ScalarMult U V}
     (S : V → Prop) :=
-    ∀ l, (∀ v, (∃ α, in_list l (α, v)) → S v) → list_unique (list_image l snd) →
-    0 = linear_combination l → (∀ α, (∃ v, in_list l (α, v)) → 0 = α).
+    ∀ l, (∀ v, (∃ α, in_list [l|] (α, v)) → S v) →
+    0 = linear_combination l → (∀ α, (∃ v, in_list [l|] (α, v)) → 0 = α).
 Definition linearly_dependent {U V} `{Zero U, Zero V, Plus V, ScalarMult U V}
     (S : V → Prop) := ¬linearly_independent S.
 
@@ -43,16 +43,19 @@ Context {U V} `{
 Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_dependent S.
     intros S S0 ind.
     pose (l := (1, 0) :: list_end).
+    assert (linear_combination_set l) as l_comb.
+    {
+        cbn.
+        rewrite not_false.
+        split; exact true.
+    }
     apply not_trivial.
-    apply (ind l).
+    apply (ind [l|l_comb]).
     -   intros v [α v_in].
         cbn in v_in.
         destruct v_in as [v_in|v_in]; try contradiction.
         inversion v_in.
         exact S0.
-    -   cbn.
-        rewrite not_false.
-        split; exact true.
     -   cbn.
         rewrite plus_rid.
         rewrite scalar_ranni.
@@ -65,7 +68,7 @@ Qed.
 
 Theorem singleton_linearly_independent :
         ∀ v, 0 ≠ v → linearly_independent (singleton v).
-    intros v v_neq l in_l uni eq α α_in.
+    intros v v_neq [l uni] in_l eq α α_in.
     classic_contradiction α_nz.
     assert (l = (1, v) :: list_end) as l_eq.
     {

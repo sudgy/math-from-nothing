@@ -48,9 +48,11 @@ Context {U V} `{
 Variable S : Subspace U V.
 
 Theorem subspace_linear_combination :
-        ∀ l, (∀ v, (∃ α, in_list l (α, v)) → subspace_set S v) →
+        ∀ l, (∀ v, (∃ α, in_list [l|] (α, v)) → subspace_set S v) →
         subspace_set S (linear_combination l).
-    intros l Sl.
+    intros [l l_unique] Sl.
+    unfold linear_combination; cbn in *.
+    clear l_unique.
     induction l.
     -   cbn.
         apply subspace_zero.
