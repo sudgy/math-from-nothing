@@ -395,3 +395,43 @@ Theorem func_to_list2_base_conc {A} : ∀ (f : nat → A) a b c,
         rewrite nat_plus_lrsuc.
         reflexivity.
 Qed.
+
+Inductive list_permutation {U} : list U → list U → Prop :=
+| list_perm_nil: list_permutation list_end list_end
+| list_perm_skip x l l' : list_permutation l l' → list_permutation (x::l) (x::l')
+| list_perm_swap x y l : list_permutation (y::x::l) (x::y::l)
+| list_perm_trans l l' l'' :
+    list_permutation l l' → list_permutation l' l'' → list_permutation l l''.
+
+Theorem list_perm_refl {U} : ∀ l : list U, list_permutation l l.
+    intros l.
+    induction l.
+    -   exact list_perm_nil.
+    -   apply list_perm_skip.
+        exact IHl.
+Qed.
+
+Theorem list_perm_sym {U} : ∀ al bl : list U,
+        list_permutation al bl → list_permutation bl al.
+    intros al bl perm.
+    induction perm.
+    -   exact list_perm_nil.
+    -   apply list_perm_skip.
+        exact IHperm.
+    -   apply list_perm_swap.
+    -   exact (list_perm_trans IHperm2 IHperm1).
+Qed.
+
+Theorem list_perm_nil_eq {U} : ∀ l : list U,
+        list_permutation list_end l → list_end = l.
+    intros l l_end.
+    remember (list_end) as m in l_end.
+    induction l_end.
+    -   reflexivity.
+    -   inversion Heqm.
+    -   inversion Heqm.
+    -   apply IHl_end1 in Heqm.
+        symmetry in Heqm.
+        apply IHl_end2 in Heqm.
+        exact Heqm.
+Qed.

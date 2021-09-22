@@ -80,6 +80,22 @@ Theorem list_sum_plus :
         apply plus_assoc.
 Qed.
 
+Theorem list_sum_perm : ∀ l1 l2, list_permutation l1 l2 →
+        list_sum l1 = list_sum l2.
+    intros l1 l2 perm.
+    induction perm.
+    -   reflexivity.
+    -   cbn.
+        rewrite IHperm.
+        reflexivity.
+    -   cbn.
+        do 2 rewrite plus_assoc.
+        rewrite (plus_comm y x).
+        reflexivity.
+    -   rewrite IHperm1, IHperm2.
+        reflexivity.
+Qed.
+
 (* begin hide *)
 End Sum.
 
