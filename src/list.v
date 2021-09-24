@@ -475,3 +475,102 @@ Theorem list_perm_nil_eq {U} : ∀ l : list U,
         apply IHl_end2 in Heqm.
         exact Heqm.
 Qed.
+
+Fixpoint list_filter {U} (S : U → Prop) (l : list U) :=
+    match l with
+    | list_end => list_end
+    | x :: l' => If S x then x :: list_filter S l' else list_filter S l'
+    end.
+
+Theorem list_filter_in {U} : ∀ S (l : list U) x,
+        in_list (list_filter S l) x → in_list l x.
+    intros S l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   cbn in x_in.
+        case_if.
+        +   cbn in x_in.
+            destruct x_in as [x_eq|x_in].
+            *   subst a.
+                left.
+                reflexivity.
+            *   right.
+                exact (IHl x_in).
+        +   right.
+            exact (IHl x_in).
+Qed.
+
+Theorem list_filter_unique {U} : ∀ S (l : list U),
+        list_unique l → list_unique (list_filter S l).
+    intros S l l_uni.
+    induction l.
+    -   cbn.
+        exact true.
+    -   cbn in *.
+        case_if.
+        +   cbn.
+            split.
+            *   intros contr.
+                apply l_uni.
+                apply list_filter_in with S.
+                exact contr.
+            *   apply IHl.
+                apply l_uni.
+        +   apply IHl.
+            apply l_uni.
+Qed.
+
+Theorem list_filter_image_in {U V} : ∀ S (f : U → V) (l : list U) x,
+        in_list (list_image (list_filter S l) f) x → in_list (list_image l f) x.
+    intros S f l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   cbn in x_in.
+        case_if.
+        +   cbn in x_in.
+            destruct x_in as [x_eq|x_in].
+            *   subst x.
+                left.
+                reflexivity.
+            *   right.
+                exact (IHl x_in).
+        +   right.
+            exact (IHl x_in).
+Qed.
+
+Theorem list_filter_image_unique {U V} : ∀ S (f : U → V) (l : list U),
+        list_unique (list_image l f) →
+        list_unique (list_image (list_filter S l) f).
+    intros S f l l_uni.
+    induction l.
+    -   cbn.
+        exact true.
+    -   cbn in *.
+        case_if.
+        +   cbn.
+            split.
+            *   intros contr.
+                apply l_uni.
+                apply list_filter_image_in with S.
+                exact contr.
+            *   apply IHl.
+                apply l_uni.
+        +   apply IHl.
+            apply l_uni.
+Qed.
+
+Theorem list_filter_filter {U} : ∀ S (l : list U),
+        list_filter S l = list_filter S (list_filter S l).
+    intros S l.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        case_if.
+        +   cbn.
+            case_if.
+            *   rewrite IHl at 1.
+                reflexivity.
+            *   contradiction.
+        +   exact IHl.
+Qed.
