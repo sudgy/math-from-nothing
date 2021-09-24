@@ -156,13 +156,14 @@ Theorem basis_linear_combination : ∀ S, basis S →
 Qed.
 
 Definition basis_coefficients (S : V → Prop) (S_basis : basis S) (v : V)
-    := ex_val (basis_linear_combination S S_basis v).
+    := linear_remove_zeros (ex_val (basis_linear_combination S S_basis v)).
 
 Theorem basis_coefficients_combination : ∀ S S_basis v,
         v = linear_combination (basis_coefficients S S_basis v).
     intros S S_basis v.
     unfold basis_coefficients.
     rewrite_ex_val l [v_eq Sl].
+    rewrite <- linear_combination_remove_zeros.
     exact v_eq.
 Qed.
 

@@ -381,6 +381,39 @@ Theorem linear_combination_of_plus : ∀ S u v,
     -   exact v_comb.
 Qed.
 
+Definition linear_remove_zeros_base (l : set_type (@linear_combination_set U V))
+    := list_filter (λ x, 0 ≠ fst x) [l|].
+
+Lemma linear_remove_zeros_comb :
+        ∀ l, linear_combination_set (linear_remove_zeros_base l).
+    intros l.
+    apply list_filter_image_unique.
+    exact [|l].
+Qed.
+
+Definition linear_remove_zeros l :=
+    [linear_remove_zeros_base l|linear_remove_zeros_comb l].
+
+Theorem linear_combination_remove_zeros : ∀ l,
+        linear_combination l = linear_combination (linear_remove_zeros l).
+    intros [l l_uni].
+    cbn.
+    clear l_uni.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        rewrite IHl; clear IHl.
+        case_if.
+        +   cbn.
+            reflexivity.
+        +   rewrite not_not in n.
+            rewrite <- n.
+            rewrite scalar_lanni.
+            rewrite plus_lid.
+            reflexivity.
+Qed.
+
 (* begin hide *)
 End LinearBase.
 (* end hide *)
