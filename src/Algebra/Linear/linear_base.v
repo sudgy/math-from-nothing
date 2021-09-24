@@ -40,9 +40,12 @@ Definition linear_combination_set {U V : Type} (l : list (U * V))
 Definition linear_combination {U V} `{Zero V, Plus V, ScalarMult U V}
     (l : set_type (@linear_combination_set U V))
     := list_sum (list_image [l|] (λ x, fst x · snd x)).
+Definition linear_list_in {U V}
+    (S : V → Prop) (l : set_type (@linear_combination_set U V))
+    := ∀ v, (∃ α, in_list [l|] (α, v)) → S v.
 Definition linear_combination_of {U V} `{Zero V, Plus V, ScalarMult U V}
     (S : V → Prop) (v : V) :=
-    ∃ l, v = linear_combination l ∧ (∀ v, (∃ α, in_list [l|] (α, v)) → S v).
+    ∃ l, v = linear_combination l ∧ linear_list_in S l.
 
 (* begin hide *)
 Section LinearBase.

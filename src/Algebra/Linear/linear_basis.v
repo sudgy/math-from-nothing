@@ -19,10 +19,17 @@ Definition basis {U V} `{Zero U, Zero V, Plus V, Neg V, ScalarMult U V}
 Section Basis.
 
 Context {U V} `{
+    UP : Plus U,
     UZ : Zero U,
-    UO : One U,
+    UN : Neg U,
     UM : Mult U,
+    UO : One U,
     UD : Div U,
+    @PlusComm U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+    @MultAssoc U UM,
+    @MultLid U UM UO,
     @MultLinv U UZ UM UO UD,
     @NotTrivial U UZ UO,
 
@@ -36,8 +43,9 @@ Context {U V} `{
 
     SM : ScalarMult U V,
     @ScalarComp U V UM SM,
+    @ScalarId U V UO SM,
     @ScalarLdist U V VP SM,
-    @ScalarId U V UO SM
+    @ScalarRdist U V UP VP SM
 }.
 
 Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_dependent S.
@@ -137,30 +145,25 @@ Theorem singleton_linearly_independent :
     rewrite scalar_id in eq.
     contradiction.
 Qed.
-(*
-Lemma basis_unique : ∀ S v, basis S →
-        ∃ l1 l2 eq,
-        (∀ b, in_list l2 b → S b) ∧
-        list_unique l2 ∧
-        v = linear_combination l1 l2 eq ∧
-        (∀ l1' l2' eq',
-            (∀ b, in_list l2' b → S b) →
-            list_unique l2' →
-            v = linear_combination l1' l2' eq' →
-            l1 = l1' ∧ l2 = l2').
-    intros S v [S_ind S_span].
-    assert (all v) as v_in by exact true.
-    rewrite <- S_span in v_in.
-    unfold linear_span in v_in.
-    specialize (v_in (linear_span_subspace U S)).
-    cbn in v_in.
-    assert (S ⊆ linear_span U S) as S_sub.
-    {
-        rewrite S_span.
-        apply sub_all.
-    }
-    specialize (v_in S_sub); clear S_sub.
-    unfold linear_span in v_in.
-Abort.
-*)
+
+Theorem basis_linear_combination : ∀ S, basis S →
+        ∀ v, linear_combination_of S v.
+    intros S S_basis v.
+    rewrite <- (span_linear_combination U).
+    destruct S_basis as [S_ind S_eq].
+    rewrite S_eq.
+    exact true.
+Qed.
+
+Definition basis_coefficients (S : V → Prop) (S_basis : basis S) (v : V)
+    := ex_val (basis_linear_combination S S_basis v).
+
+Theorem basis_coefficients_combination : ∀ S S_basis v,
+        v = linear_combination (basis_coefficients S S_basis v).
+    intros S S_basis v.
+    unfold basis_coefficients.
+    rewrite_ex_val l [v_eq Sl].
+    exact v_eq.
+Qed.
+
 End Basis.
