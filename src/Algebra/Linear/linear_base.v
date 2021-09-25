@@ -138,6 +138,14 @@ Theorem scalar_neg_one : ∀ a, (-(1)) · a = -a.
     reflexivity.
 Qed.
 
+Theorem linear_combination_add : ∀ x l H1 H2,
+        linear_combination [x :: l | H1] =
+        fst x · snd x + linear_combination [l | H2].
+    intros x l HH1 HH2.
+    cbn.
+    reflexivity.
+Qed.
+
 Theorem linear_combination_of_zero : ∀ S, linear_combination_of S 0.
     intros S.
     assert (@linear_combination_set U V list_end) as end_in by exact true.
@@ -412,6 +420,15 @@ Theorem linear_combination_remove_zeros : ∀ l,
             rewrite scalar_lanni.
             rewrite plus_lid.
             reflexivity.
+Qed.
+
+Theorem linear_list_in_remove_zeros : ∀ l S,
+        linear_list_in S l → linear_list_in S (linear_remove_zeros l).
+    intros l S Sl v [a v_in].
+    apply Sl.
+    exists a.
+    apply list_filter_in in v_in.
+    exact v_in.
 Qed.
 
 (* begin hide *)
