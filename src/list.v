@@ -382,6 +382,47 @@ Fixpoint list_nth {A} (l : list A) (n : nat) (default : A) :=
     | _, _ => default
     end.
 
+Theorem list_nth_eq {U} : ∀ l n (a b : U), n < list_size l →
+        list_nth l n a = list_nth l n b.
+    intros l n a b n_lt.
+    revert n n_lt.
+    induction l.
+    -   intros n n_lt.
+        cbn in n_lt.
+        apply nat_lt_zero in n_lt.
+        contradiction.
+    -   intros n n_lt.
+        cbn in *.
+        nat_destruct n.
+        +   reflexivity.
+        +   rewrite nat_sucs_lt in n_lt.
+            apply IHl.
+            exact n_lt.
+Qed.
+
+Theorem in_list_nth {U} : ∀ l (x : U), in_list l x →
+        ∃ n, n < list_size l ∧ x = list_nth l n x.
+    intros l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   destruct x_in as [x_eq|x_in].
+        +   subst a.
+            exists 0.
+            split.
+            *   cbn.
+                apply nat_zero_lt_suc.
+            *   unfold zero; cbn.
+                reflexivity.
+        +   specialize (IHl x_in) as [n [n_lt x_eq]].
+            exists (nat_suc n).
+            split.
+            *   cbn.
+                rewrite nat_sucs_lt.
+                exact n_lt.
+            *   cbn.
+                exact x_eq.
+Qed.
+
 Theorem func_to_list_nth_lt {A} : ∀ f m n (a : A), m < n →
         list_nth (func_to_list f n) m a = f m.
     intros f m n a ltq.
@@ -809,6 +850,17 @@ Theorem list_image_perm {U V} : ∀ al bl (f : U → V),
     -   cbn.
         apply list_perm_swap.
     -   apply (list_perm_trans IHalbl1 IHalbl2).
+Qed.
+
+Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
+        list_permutation (l1 ++ x :: l2) (x :: l1 ++ l2).
+    intros l1 l2 x.
+    rewrite (list_add_conc).
+    rewrite list_conc_assoc.
+    change (x :: l1 ++ l2) with ((x :: l1) ++ l2).
+    apply list_perm_lpart.
+    apply list_perm_sym.
+    apply list_perm_add.
 Qed.
 
 Fixpoint list_filter {U} (S : U → Prop) (l : list U) :=
