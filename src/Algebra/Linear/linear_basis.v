@@ -5,6 +5,8 @@ Require Import linear_span.
 Require Import linear_subspace.
 Require Import list.
 Require Import set.
+Require Import zorn.
+Require Import card.
 Require Import plus_sum.
 
 Definition linearly_independent {U V} `{Zero U, Zero V, Plus V, ScalarMult U V}
@@ -49,6 +51,15 @@ Context {U V} `{
     @ScalarLdist U V VP SM,
     @ScalarRdist U V UP VP SM
 }.
+
+Theorem empty_linearly_independent : linearly_independent ∅.
+    intros l l_in eq a [v v_in].
+    exfalso.
+    unfold linear_list_in in l_in.
+    apply (l_in v).
+    exists a.
+    exact v_in.
+Qed.
 
 Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_dependent S.
     intros S S0 ind.
@@ -544,6 +555,302 @@ Theorem basis_unique : ∀ S S_basis v,
     cbn in *.
     rewrite <- list_filter_filter in eq.
     exact eq.
+Qed.
+
+Local Instance subset_order : Order (V → Prop) := {
+    le A B := A ⊆ B
+}.
+Local Open Scope card_scope.
+
+Theorem basis_extend_ex : ∀ S, linearly_independent S → ∃ B, S ⊆ B ∧ basis B.
+    intros S S_ind.
+    pose (SS T := S ⊆ T ∧ linearly_independent T).
+    assert (SS S) as SS_S.
+    {
+        split.
+        -   apply refl.
+        -   exact S_ind.
+    }
+    assert (∀ F : (set_type SS) → Prop, is_chain le F → has_upper_bound le F)
+        as zorn_piece.
+    {
+        intros F F_chain.
+        classic_case (F = ∅) as [F_empty|F_nempty].
+        {
+            subst F.
+            exists [S|SS_S].
+            intros T T_empty.
+            contradiction T_empty.
+        }
+        apply not_empty_ex in F_nempty as [A F_A].
+        pose (M x := ∃ T, F T ∧ [T|] x).
+        assert (SS M) as SS_M.
+        {
+            split.
+            -   intros x Sx.
+                exists A.
+                split.
+                +   exact F_A.
+                +   apply [|A].
+                    exact Sx.
+            -   intros l Ml l_eq a [v v_in].
+                unfold linear_list_in in Ml.
+                pose (TT T := ∃ u u_in, T = [ex_val (Ml u u_in)|]).
+                assert (finite (|set_type TT|)) as TT_fin.
+                {
+                    clear.
+                    remember (list_size [l|]) as n.
+                    apply (le_lt_trans2 (nat_is_finite n)).
+                    unfold nat_to_card, le; equiv_simpl.
+                    subst n.
+                    pose (f (T : set_type TT) :=
+                        in_list_nth _ _ (ex_proof (ex_val (ex_proof [|T])))).
+                    exists (λ T, [ex_val (f T)|land (ex_proof (f T))]).
+                    intros [A TT_A] [B TT_B] eq.
+                    unfold f in eq; clear f.
+                    cbn in *.
+                    unfold ex_proof in eq.
+                    destruct (ex_to_type TT_A) as [av A_eq]; cbn in *.
+                    destruct (ex_to_type TT_B) as [bv B_eq]; cbn in *.
+                    unfold ex_val in eq.
+                    destruct (ex_to_type _) as [Aα av_in]; cbn in *.
+                    destruct (ex_to_type _) as [a [a_lt av_eq]]; cbn in *.
+                    destruct (ex_to_type _) as [Bα bv_in]; cbn in *.
+                    destruct (ex_to_type _) as [b [b_lt bv_eq]]; cbn in *.
+                    apply set_type_eq; cbn.
+                    apply eq_set_type in eq; cbn in eq.
+                    subst b.
+                    destruct A_eq as [v_in1 A_eq].
+                    destruct B_eq as [v_in2 B_eq].
+                    pose proof (list_nth_eq [l|] (Aα, av) (Bα, bv) a_lt) as eq.
+                    rewrite <- av_eq, <- bv_eq in eq.
+                    inversion eq; subst Bα bv.
+                    rewrite (proof_irrelevance v_in1 v_in2) in A_eq.
+                    rewrite A_eq, B_eq.
+                    reflexivity.
+                }
+                assert (∃ T, TT T) as TT_ex.
+                {
+                    assert (∃ α, in_list [l|] (α, v)) as v_in'.
+                    {
+                        exists a.
+                        exact v_in.
+                    }
+                    exists [ex_val (Ml v v_in')|].
+                    exists v, v_in'.
+                    reflexivity.
+                }
+                pose proof (finite_well_founded_set_max TT TT_fin TT_ex)
+                    as [T [TT_T T_max]].
+                destruct TT_T as [u [[b u_in] T_eq]].
+                subst T.
+                rewrite_ex_val T [F_T Tu].
+                destruct T as [T SS_T].
+                cbn in T_max.
+                assert (linearly_independent T) as T_ind by apply SS_T.
+                assert (linear_list_in T l) as Tl.
+                {
+                    intros w [c w_in].
+                    assert (∃ α, in_list [l|] (α, w)) as w_in'.
+                    {
+                        exists c.
+                        exact w_in.
+                    }
+                    remember (ex_val (Ml w w_in')) as wT_base.
+                    unpack_ex_val wT HH [F_wT wTx]; clear HeqwT_base wT_base.
+                    classic_case ([wT|] = T) as [T_eq|T_neq].
+                    {
+                        rewrite <- T_eq.
+                        exact wTx.
+                    }
+                    specialize (F_chain [T|SS_T] wT F_T F_wT) as [leq1|leq2].
+                    -   unfold le in leq1; cbn in leq1.
+                        unfold le in leq1; cbn in leq1.
+                        exfalso; apply (T_max [wT|]); try assumption.
+                        exists w, w_in'.
+                        apply eq_set_type; cbn.
+                        symmetry; exact HH.
+                    -   apply leq2.
+                        exact wTx.
+                }
+                apply (T_ind l Tl l_eq).
+                exists v.
+                exact v_in.
+        }
+        exists [M|SS_M].
+        intros [T SS_T] F_T.
+        unfold le; cbn.
+        intros x Tx.
+        exists [T|SS_T].
+        split; assumption.
+    }
+    pose proof (zorn le zorn_piece) as [[B [B_sub B_ind]] B_max].
+    clear zorn_piece.
+    exists B.
+    repeat split; try assumption.
+    apply antisym.
+    1: intros x x_in; exact true.
+    intros v v_in; clear v_in.
+    rewrite (span_linear_combination U B).
+    classic_case (0 = v) as [v_z|v_nz].
+    {
+        subst v.
+        apply linear_combination_of_zero.
+    }
+    classic_contradiction contr.
+    pose (B' := B ∪ singleton v).
+    assert (SS B') as SS_B'.
+    {
+        split.
+        -   apply (trans B_sub).
+            intros x Bx.
+            left.
+            exact Bx.
+        -   intros [l l_comb] B'l l_eq b [u u_in].
+            classic_case (∃ a, in_list l (a, v)) as [v_in|v_nin].
+            +   destruct v_in as [a v_in].
+                pose proof (in_list_split l (a, v) v_in) as [l1 [l2 l_eq']].
+                change [[l | l_comb]|] with l in *.
+                pose (l' := (a, v) :: l1 ++ l2).
+                assert (list_permutation l l') as l_perm.
+                {
+                    rewrite l_eq'; unfold l'.
+                    clear.
+                    apply list_perm_split.
+                }
+                assert (linear_combination_set l') as l'_comb.
+                {
+                    unfold linear_combination_set in *.
+                    apply (list_image_perm snd) in l_perm.
+                    apply (list_perm_unique l_perm l_comb).
+                }
+                assert (0 = linear_combination [l'|l'_comb]) as l'_eq.
+                {
+                    rewrite l_eq.
+                    apply list_sum_perm.
+                    apply list_image_perm.
+                    exact l_perm.
+                }
+                assert (linear_list_in B' [l'|l'_comb]) as B'l'.
+                {
+                    intros w [c w_in].
+                    apply B'l.
+                    exists c.
+                    apply (list_perm_in l_perm) in w_in.
+                    exact w_in.
+                }
+                assert (linear_combination_set (l1 ++ l2)) as l_comb'
+                    by apply l'_comb.
+                assert (linear_list_in B [l1 ++ l2 | l_comb']) as Bl'.
+                {
+                    intros w [c w_in].
+                    assert (B' w) as B'w.
+                    {
+                        apply B'l'.
+                        exists c.
+                        right.
+                        exact w_in.
+                    }
+                    destruct B'w as [Bw|w_eq].
+                    -   exact Bw.
+                    -   unfold singleton in w_eq.
+                        subst w.
+                        cbn in l'_comb.
+                        exfalso; apply l'_comb.
+                        exact (in_list_image _ _ snd w_in).
+                }
+                classic_case (0 = a) as [a_z|a_nz].
+                *   subst a.
+                    unfold l' in l'_eq.
+                    rewrite (linear_combination_add _ _ _ l_comb') in l'_eq.
+                    change (fst (0, v) · snd (0, v)) with (0 · v) in l'_eq.
+                    rewrite scalar_lanni, plus_lid in l'_eq.
+                    assert (in_list l' (b, u)) as u_in'.
+                    {
+                        apply (list_perm_in l_perm).
+                        exact u_in.
+                    }
+                    destruct u_in' as [u_eq|u_in'].
+                    1: {
+                        inversion u_eq.
+                        reflexivity.
+                    }
+                    apply (B_ind [l1 ++ l2|l_comb'] Bl' l'_eq).
+                    exists u.
+                    exact u_in'.
+                *   exfalso; apply contr.
+                    clear S S_ind SS SS_S B_sub B_ind B_max v_nz contr B' l
+                          l_comb B'l l_eq b u u_in v_in l_eq' l_perm B'l'.
+                    unfold l' in l'_eq.
+                    rewrite (linear_combination_add _ _ _ l_comb') in l'_eq.
+                    change (fst (a, v) · snd (a, v)) with (a · v) in l'_eq.
+                    rewrite <- scalar_id.
+                    rewrite <- (mult_linv a a_nz).
+                    rewrite <- scalar_comp.
+                    apply linear_combination_of_scalar.
+                    rewrite <- neg_neg.
+                    rewrite <- scalar_neg_one.
+                    apply linear_combination_of_scalar.
+                    exists [l1 ++ l2 | l_comb'].
+                    split.
+                    2: exact Bl'.
+                    rewrite <- plus_0_ab_na_b.
+                    exact l'_eq.
+            +   assert (linear_list_in B [l | l_comb]) as Bl.
+                {
+                    intros w [c w_in].
+                    assert (B' w) as B'w.
+                    {
+                        apply B'l.
+                        exists c.
+                        exact w_in.
+                    }
+                    destruct B'w as [Bw|w_eq].
+                    -   exact Bw.
+                    -   unfold singleton in w_eq; subst w.
+                        exfalso; apply v_nin.
+                        exists c.
+                        exact w_in.
+                }
+                apply (B_ind [l|l_comb] Bl l_eq).
+                exists u.
+                exact u_in.
+    }
+    apply (B_max [B'|SS_B']).
+    split.
+    -   unfold le; cbn.
+        unfold le; cbn.
+        apply union_lsub.
+    -   intros contr2.
+        apply eq_set_type in contr2; cbn in contr2.
+        subst B'.
+        apply contr.
+        pose (l := (1, v) :: list_end).
+        assert (linear_combination_set l) as l_comb.
+        {
+            cbn.
+            rewrite not_false.
+            split; exact true.
+        }
+        exists [l|l_comb].
+        split.
+        +   cbn.
+            rewrite scalar_id, plus_rid.
+            reflexivity.
+        +   unfold linear_list_in; cbn.
+            intros u [a [eq|contr3]].
+            2: contradiction contr3.
+            inversion eq; subst a u.
+            rewrite contr2.
+            right.
+            reflexivity.
+Qed.
+
+Theorem basis_ex : ∃ B, basis B.
+    pose proof (basis_extend_ex ∅ empty_linearly_independent)
+        as [B [B_sub B_basis]].
+    exists B.
+    exact B_basis.
 Qed.
 
 End Basis.
