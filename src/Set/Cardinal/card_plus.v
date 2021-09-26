@@ -374,6 +374,34 @@ Theorem empty_set_size {U} : 0 = |set_type (U := U) ∅|.
     intros [x C].
     exact C.
 Qed.
+
+Theorem disjoint_union_plus {U} : ∀ (A B : U → Prop), A ∩ B = ∅ →
+        |set_type A| + |set_type B| = |set_type (A ∪ B)|.
+    intros A B dis.
+    unfold plus; equiv_simpl.
+    exists (λ x, match x with
+        | inl a => [[a|]|make_lor [|a]]
+        | inr b => [[b|]|make_ror [|b]]
+        end).
+    split.
+    -   intros [[a1 Aa1]|[b1 Bb1]] [[a2 Aa2]|[b2 Bb2]] eq.
+        all: apply eq_set_type in eq; cbn in eq; subst.
+        +   apply f_equal.
+            apply set_type_eq; reflexivity.
+        +   assert ((A ∩ B) b2) as b2_in by (split; assumption).
+            rewrite dis in b2_in.
+            contradiction b2_in.
+        +   assert ((A ∩ B) a2) as a2_in by (split; assumption).
+            rewrite dis in a2_in.
+            contradiction a2_in.
+        +   apply f_equal.
+            apply set_type_eq; reflexivity.
+    -   intros [y [Ay|By]].
+        +   exists (inl [y|Ay]).
+            reflexivity.
+        +   exists (inr [y|By]).
+            reflexivity.
+Qed.
 (* begin hide *)
 Close Scope card_scope.
 (* end hide *)
