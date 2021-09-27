@@ -1,7 +1,9 @@
 Require Import init.
 
 Require Export linear_base.
+Require Import linear_basis.
 Require Import set.
+Require Import list.
 
 (* This is a function from V^k to U *)
 Definition k_function U V k := (nat_to_set_type k → V) → U.
@@ -636,3 +638,294 @@ Theorem scalar_to_multilinear_comm {k} : ∀ α (A : multilinear_type k),
 Qed.
 
 End KLinearSpace.
+
+Section VectorToMultilinear.
+
+Variables U V : Type.
+
+Context `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UM : Mult U,
+    UO : One U,
+    UD : Div U,
+    @PlusAssoc U UP,
+    @PlusComm U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+    @Ldist U UP UM,
+    @MultComm U UM,
+    @MultAssoc U UM,
+    @MultLid U UM UO,
+    @MultLinv U UZ UM UO UD,
+    @NotTrivial U UZ UO,
+
+    VP : Plus V,
+    VZ : Zero V,
+    VN : Neg V,
+    @PlusComm V VP,
+    @PlusAssoc V VP,
+    @PlusLid V VP VZ,
+    @PlusLinv V VP VZ VN,
+
+    SM : ScalarMult U V,
+    @ScalarComp U V UM SM,
+    @ScalarId U V UO SM,
+    @ScalarLdist U V VP SM,
+    @ScalarRdist U V UP VP SM
+}.
+Let T1 := multilinear_plus U V 1.
+Let T2 := multilinear_plus_comm U V 1.
+Let T3 := multilinear_plus_assoc U V 1.
+Let T4 := multilinear_zero U V 1.
+Let T5 := multilinear_plus_lid U V 1.
+Let T6 := multilinear_neg U V 1.
+Let T7 := multilinear_plus_linv U V 1.
+Let T8 := multilinear_scalar_mult U V 1.
+Let T9 := multilinear_scalar_comp U V 1.
+Let T10 := multilinear_scalar_id U V 1.
+Let T11 := multilinear_scalar_ldist U V 1.
+Let T12 := multilinear_scalar_rdist U V 1.
+Existing Instances T1 T2 T3 T4 T5 T6 T7 T8 T9 T10 T11 T12.
+Let T13 := multilinear_plus U (multilinear_type U V 1).
+Let T14 := multilinear_plus_comm U (multilinear_type U V 1).
+Let T15 := multilinear_plus_assoc U (multilinear_type U V 1).
+Let T16 := multilinear_zero U (multilinear_type U V 1).
+Let T17 := multilinear_plus_lid U (multilinear_type U V 1).
+Let T18 := multilinear_neg U (multilinear_type U V 1).
+Let T19 := multilinear_plus_linv U (multilinear_type U V 1).
+Let T20 := multilinear_scalar_mult U (multilinear_type U V 1).
+Let T21 := multilinear_scalar_comp U (multilinear_type U V 1).
+Let T22 := multilinear_scalar_id U (multilinear_type U V 1).
+Let T23 := multilinear_scalar_ldist U (multilinear_type U V 1).
+Let T24 := multilinear_scalar_rdist U (multilinear_type U V 1).
+Existing Instances T13 T14 T15 T16 T17 T18 T19 T20 T21 T22 T23 T24.
+
+Definition vector_to_multilinear_base (v : V)
+    : k_function U (multilinear_type U V 1) 1
+    := λ f, [f [0|nat_0_lt_1]|] (λ n, v).
+
+Lemma vector_to_multilinear_linear :
+        ∀ v, k_linear (vector_to_multilinear_base v).
+    intros v f i i_lt.
+    apply nat_lt_1 in i_lt.
+    subst i.
+    unfold vector_to_multilinear_base; cbn.
+    case_if.
+    2: contradiction.
+    split.
+    -   intros α.
+        unfold scalar_mult; cbn.
+        reflexivity.
+    -   intros a b.
+        unfold plus at 1; cbn.
+        reflexivity.
+Qed.
+
+Definition vector_to_multilinear v := [_|vector_to_multilinear_linear v].
+
+Lemma linear_functional_eq : ∀ a b : V,
+        (λ n : nat_to_set_type 1, If [n|] = 0 then a else b) = (λ n, a).
+    intros a b.
+    apply functional_ext.
+    intros [n n_ltq].
+    unfold nat_to_set in n_ltq.
+    cbn.
+    apply nat_lt_1 in n_ltq.
+    subst n.
+    case_if.
+    -   reflexivity.
+    -   contradiction.
+Qed.
+
+Lemma linear_functional_eq2 : ∀ a b : (nat_to_set_type 1 → V),
+        (λ n, If [n|] = 0 then a n else b n) = (λ n, a [0|nat_0_lt_1]).
+    intros a b.
+    apply functional_ext.
+    intros [x x_lt]; cbn.
+    case_if.
+    -   subst.
+        apply f_equal.
+        apply set_type_eq; reflexivity.
+    -   exfalso.
+        apply nat_lt_1 in x_lt.
+        symmetry in x_lt; contradiction.
+Qed.
+(*
+Definition single_v_multilinear_f (v : V) (v_nz : 0 ≠ v) : k_function U V 1 :=
+    let B := basis_extend_ex _ (singleton_linearly_independent v v_nz) in
+    λ f : (nat_to_set_type 1 → V),
+    let l := basis_coefficients (ex_val B) (rand (ex_proof B)) (f [0|nat_0_lt_1]) in
+    match (strong_excluded_middle (∃ a, in_list [l|] (a, v))) with
+    | strong_or_left H => ex_val H
+    | strong_or_right _ => 0
+    end.
+
+Local Arguments basis_coefficients: simpl never.
+
+Lemma single_v_multilinear_H : ∀ v v_nz, k_linear (single_v_multilinear_f v v_nz).
+    intros v v_nz vs i i_lt.
+    apply nat_lt_1 in i_lt.
+    subst i.
+    pose (B_ex := basis_extend_ex _ (singleton_linearly_independent v v_nz)).
+    pose (B := ex_val B_ex).
+    pose (sub_B := land (ex_proof B_ex)).
+    pose (B_basis := rand (ex_proof B_ex)).
+    change (ex_type_val (ex_to_type B_ex)) with B in *.
+    split.
+    -   intros a.
+        rewrite linear_functional_eq2.
+        unfold single_v_multilinear_f.
+        fold B_ex B.
+        change (rand (ex_proof B_ex)) with B_basis.
+        destruct (strong_excluded_middle _) as [v_in_l'|v_nin_l];
+        destruct (strong_excluded_middle _) as [v_in_al'|v_nin_al].
+        +   rewrite_ex_val b v_in_l; clear v_in_l'.
+            rewrite_ex_val c v_in_al; clear v_in_al'.
+        +   rewrite_ex_val b v_in_l; clear v_in_l'.
+        +   
+        +   apply mult_ranni.
+    -   intros u1 u2.
+        do 3 rewrite linear_functional_eq2.
+        unfold single_v_multilinear_f.
+        fold B_ex B.
+        change (rand (ex_proof B_ex)) with B_basis.
+
+Definition single_v_multilinear v v_nz : multilinear_type U V 1
+    := [single_v_multilinear_f v v_nz | single_v_multilinear_H v v_nz].
+
+Theorem vector_to_multilinear_eq :  ∀ u v,
+        vector_to_multilinear u = vector_to_multilinear v → u = v.
+    intros u v eq.
+    apply eq_set_type in eq; cbn in eq.
+    unfold vector_to_multilinear_base in eq.
+    pose proof (func_eq _ _ eq) as eq2; cbn in eq2.
+    clear eq.
+    assert (∀ f : nat_to_set_type 1 → multilinear_type U V 1,
+        0 = [f [0|nat_0_lt_1]|] (λ _, u - v)) as f0.
+    {
+        intros f.
+        specialize (eq2 f).
+        pose proof [|f [0 | nat_0_lt_1]] as f_linear.
+        specialize (f_linear (λ n, v) 0 nat_0_lt_1) as [f_linear1 f_linear2].
+        apply plus_0_anb_a_b in eq2.
+        specialize (f_linear1 (-(1))).
+        rewrite linear_functional_eq in f_linear1.
+        rewrite mult_lneg in f_linear1.
+        rewrite mult_lid in f_linear1.
+        rewrite f_linear1 in eq2.
+        rewrite scalar_neg_one in eq2.
+        specialize (f_linear2 u (-v)).
+        do 3 rewrite linear_functional_eq in f_linear2.
+        rewrite <- f_linear2 in eq2.
+        exact eq2.
+    }
+    clear eq2.
+
+    classic_contradiction neq.
+    assert (0 ≠ u - v) as v_neq.
+    {
+        intros contr.
+        rewrite plus_0_anb_a_b in contr.
+        contradiction.
+    }
+    clear neq.
+    rename v into v'.
+    remember (u - v') as v.
+    clear u v' Heqv.
+    specialize (f0 (λ _, single_v_multilinear _ v_neq)).
+    cbn in f0.
+    unfold single_v_multilinear_f in f0.
+    unfold ex_val, ex_proof in f0.
+    destruct (ex_to_type _) as [B [sub_B B_basis]]; cbn in *.
+    rewrite_ex_val l [l_eq Bl].
+    destruct (strong_excluded_middle _) as [v_in'|v_nin].
+    -   destruct (ex_to_type _) as [a v_in]; cbn in *.
+        clear v_in'.
+        subst a.
+        apply list_filter_in_S in v_in.
+        contradiction.
+    -   clear f0.
+        pose (l' := (-(1), v) :: [linear_remove_zeros l|]).
+        assert (linear_combination_set l') as l'_comb.
+        {
+            split.
+            -   cbn.
+                intros contr.
+                apply v_nin.
+                apply image_in_list in contr as [[a v'] [v'_eq v_in]].
+                cbn in v'_eq.
+                subst v'.
+                exists a.
+                exact v_in.
+            -   exact [|linear_remove_zeros l].
+        }
+        assert (0 = linear_combination [l'|l'_comb]) as l'_eq.
+        {
+            unfold l'.
+            rewrite (linear_combination_add _ _ _ [|linear_remove_zeros l]).
+            change (fst (-(1), v) · snd (-(1), v)) with (-(1) · v).
+            rewrite scalar_neg_one.
+            rewrite plus_0_nab_a_b.
+            rewrite l_eq.
+            change [[linear_remove_zeros l|] | [|linear_remove_zeros l]]
+                with (linear_remove_zeros l).
+            apply linear_combination_remove_zeros.
+        }
+        assert (linear_list_in B [l'|l'_comb]) as Bl'.
+        {
+            intros u [b u_in].
+            destruct u_in as [u_eq|u_in].
+            -   inversion u_eq; subst u b.
+                apply sub_B.
+                reflexivity.
+            -   apply Bl.
+                exists b.
+                apply list_filter_in in u_in.
+                exact u_in.
+        }
+        apply not_trivial.
+        rewrite <- neg_neg.
+        rewrite <- (neg_neg 0).
+        apply f_equal.
+        rewrite neg_zero.
+        apply (land B_basis [l'|l'_comb] Bl' l'_eq).
+        exists v.
+        left.
+        reflexivity.
+Qed.
+*)
+Theorem vector_to_multilinear_plus : ∀ u v,
+        vector_to_multilinear u + vector_to_multilinear v =
+        vector_to_multilinear (u + v).
+    intros u v.
+    apply set_type_eq; cbn.
+    unfold plus at 1; cbn.
+    unfold vector_to_multilinear_base.
+    apply functional_ext.
+    intros f.
+    pose proof [|f [0 | nat_0_lt_1]] as f_linear.
+    specialize (f_linear (λ n, u) 0 nat_0_lt_1) as [f_linear1 f_linear2].
+    specialize (f_linear2 u v).
+    do 3 rewrite linear_functional_eq in f_linear2.
+    symmetry; exact f_linear2.
+Qed.
+
+Theorem vector_to_multilinear_scalar : ∀ α v,
+        α · (vector_to_multilinear v) =
+        vector_to_multilinear (α · v).
+    intros α v.
+    apply set_type_eq; cbn.
+    unfold scalar_mult at 1; cbn.
+    unfold vector_to_multilinear_base.
+    apply functional_ext.
+    intros f.
+    pose proof [|f [0 | nat_0_lt_1]] as f_linear.
+    specialize (f_linear (λ n, v) 0 nat_0_lt_1) as [f_linear1 f_linear2].
+    specialize (f_linear1 α).
+    rewrite linear_functional_eq in f_linear1.
+    exact f_linear1.
+Qed.
+
+End VectorToMultilinear.

@@ -222,6 +222,25 @@ Theorem in_list_image {U V} : ∀ l a (f : U → V),
             exact (IHl a_in).
 Qed.
 
+Theorem image_in_list {U V} : ∀ l y (f : U → V),
+        in_list (list_image l f) y → ∃ x, f x = y ∧ in_list l x.
+    intros l y f y_in.
+    induction l.
+    -   contradiction y_in.
+    -   destruct y_in as [y_eq|y_in].
+        +   exists a.
+            split.
+            *   exact y_eq.
+            *   left.
+                reflexivity.
+        +   specialize (IHl y_in) as [x [x_eq x_in]].
+            exists x.
+            split.
+            *   exact x_eq.
+            *   right.
+                exact x_in.
+Qed.
+
 Fixpoint list_prod2_base {A B : Type} (op : A → A → B) (l : list A) (b : A) :=
     match l with
     | list_end => list_end
