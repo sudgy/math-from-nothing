@@ -1,4 +1,5 @@
 Require Import init.
+Require Import set.
 
 (** Note: I am learning category theory while writing this.  Apologies if
 anything here is incorrect/not specified in the best way.
@@ -70,7 +71,37 @@ Next Obligation.
     destruct f; reflexivity.
 Qed.
 
-Global Remove Hints dual_category product_category : typeclass_instances.
+Class SubCategory `(Category) := {
+    subcat_S : cat_U → Prop;
+    subcat_morphism : ∀ {A B}, cat_morphism A B → Prop;
+    subcat_compose : ∀ {A B C} (f : cat_morphism B C) (g : cat_morphism A B),
+        subcat_morphism f → subcat_morphism g → subcat_morphism (f ∘ g);
+    subcat_id : ∀ A, subcat_morphism (cat_id A);
+}.
+
+Program Instance subcategory `(SubCategory) : Category := {
+    cat_U := set_type subcat_S;
+    cat_morphism A B := set_type (subcat_morphism (A:=[A|]) (B:=[B|]));
+    cat_compose {A B C} f g := [_|subcat_compose [f|] [g|] [|f] [|g]];
+    cat_id A := [_|subcat_id [A|]];
+}.
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply cat_assoc.
+Qed.
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply cat_lid.
+Qed.
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply cat_rid.
+Qed.
+
+Global Remove Hints dual_category product_category subcategory : typeclass_instances.
+
+Definition full_subcategory `(SubCategory) := ∀ A B,
+    subcat_morphism (A:=A) (B:=B) = all.
 
 Section Category.
 

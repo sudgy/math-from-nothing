@@ -35,9 +35,47 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Global Remove Hints id_functor compose_functor : typeclass_instances.
+Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
+    : Functor (subcategory S) C :=
+{
+    functor_f x := [x|];
+    functor_morphism {A B} (f : cat_morphism A B) := [f|];
+}.
+
+Global Remove Hints id_functor compose_functor inclusion_functor : typeclass_instances.
 
 Definition faithful_functor `(F : Functor) := ∀ A B,
     injective (functor_morphism (A:=A) (B:=B)).
 Definition full_functor `(F : Functor) := ∀ A B,
     surjective (functor_morphism (A:=A) (B:=B)).
+
+Theorem id_functor_faithful : ∀ C, faithful_functor (id_functor C).
+    intros C0 A B f g eq.
+    cbn in eq.
+    exact eq.
+Qed.
+Theorem id_functor_full : ∀ C, full_functor (id_functor C).
+    intros C0 A B f.
+    cbn in f.
+    exists f.
+    cbn.
+    reflexivity.
+Qed.
+
+Theorem inclusion_functor_faithful : ∀ `(S : SubCategory),
+        faithful_functor (inclusion_functor S).
+    intros C0 S A B f g eq.
+    cbn in eq.
+    apply set_type_eq in eq.
+    exact eq.
+Qed.
+Theorem inclusion_functor_full : ∀ `(S : SubCategory), full_subcategory S →
+        full_functor (inclusion_functor S).
+    intros H S S_full A B f.
+    cbn in *.
+    unfold full_subcategory in S_full.
+    specialize (S_full [A|] [B|]).
+    rewrite S_full.
+    exists [f|true].
+    reflexivity.
+Qed.
