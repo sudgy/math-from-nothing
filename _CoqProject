@@ -21,6 +21,8 @@
 #-arg -require-import
 #-arg init
 
+./src/Category/category_base.v
+
 ./src/Algebra/Op/op_group.v
 ./src/Algebra/Op/op.v
 ./src/Algebra/Plus/plus_group.v
