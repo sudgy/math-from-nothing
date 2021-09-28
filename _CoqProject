@@ -22,6 +22,7 @@
 #-arg init
 
 ./src/Category/category_base.v
+./src/Category/category_functor.v
 
 ./src/Algebra/Op/op_group.v
 ./src/Algebra/Op/op.v
