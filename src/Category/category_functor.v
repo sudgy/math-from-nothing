@@ -79,3 +79,20 @@ Theorem inclusion_functor_full : ∀ `(S : SubCategory), full_subcategory S →
     exists [f|true].
     reflexivity.
 Qed.
+
+Section Functor.
+
+Context `{C1 : Category, C2 : Category, F : @Functor C1 C2}.
+
+Theorem functor_isomorphism : ∀ A B,
+        isomorphic A B → isomorphic (functor_f A) (functor_f B).
+    intros A B [f [g [fg gf]]].
+    exists (functor_morphism f).
+    exists (functor_morphism g).
+    rewrite <- functor_compose.
+    rewrite <- functor_compose.
+    rewrite fg, gf.
+    split; apply functor_id.
+Qed.
+
+End Functor.
