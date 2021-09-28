@@ -108,3 +108,79 @@ Theorem cat_inverse_unique : ∀ {A B} (f : cat_morphism A B) g1 g2,
 Qed.
 
 End Category.
+
+Definition convert_type {A B : Type} (H : A = B) (x : A) : B.
+    rewrite H in x.
+    exact x.
+Defined.
+
+Theorem cat_eq : ∀ C1 C2,
+        ∀ H : @cat_U C1 = @cat_U C2,
+        ∀ H' : (∀ A B, cat_morphism A B =
+                       cat_morphism (convert_type H A) (convert_type H B)),
+        (∀ A B C (f : cat_morphism B C) (g : cat_morphism A B),
+            convert_type (H' _ _) (cat_compose f g) =
+            cat_compose (convert_type (H' _ _) f) (convert_type (H' _ _) g)) →
+        (∀ A, convert_type (H' A A) (cat_id A) = cat_id (convert_type H A)) →
+        C1 = C2.
+    intros [U1 morphism1 compose1 id1 assoc1 lid1 rid1]
+           [U2 morphism2 compose2 id2 assoc2 lid2 rid2] H H' eq1 eq2.
+    cbn in *.
+    subst U2.
+    assert (morphism1 = morphism2) as eq.
+    {
+        apply functional_ext.
+        intros A.
+        apply functional_ext.
+        apply H'.
+    }
+    subst morphism2; cbn in *.
+    pose (H'2 A B := Logic.eq_refl (morphism1 A B)).
+    rewrite (proof_irrelevance H' H'2) in eq1, eq2.
+    clear H'.
+    cbn in *.
+    assert (compose1 = compose2) as eq.
+    {
+        apply functional_ext; intros A.
+        apply functional_ext; intros B.
+        apply functional_ext; intros C.
+        apply functional_ext; intros f.
+        apply functional_ext; intros g.
+        apply eq1.
+    }
+    subst compose2; clear eq1.
+    assert (id1 = id2) as eq.
+    {
+        apply functional_ext; intros A.
+        apply eq2.
+    }
+    subst id2; clear eq2.
+    rewrite (proof_irrelevance assoc2 assoc1).
+    rewrite (proof_irrelevance lid2 lid1).
+    rewrite (proof_irrelevance rid2 rid1).
+    reflexivity.
+Qed.
+
+Theorem cat_dual_dual : ∀ C, C = dual_category (dual_category C).
+    intros C.
+    assert (@cat_U C = @cat_U (dual_category (dual_category C))) as H
+        by reflexivity.
+    pose (H2 := Logic.eq_refl cat_U).
+    assert (∀ A B, cat_morphism A B =
+                   cat_morphism (convert_type H A) (convert_type H B)) as H'.
+    {
+        intros A B.
+        rewrite (proof_irrelevance H H2).
+        cbn.
+        reflexivity.
+    }
+    apply (cat_eq _ _ H H').
+    all: pose proof (proof_irrelevance H H2) as H_eq.
+    all: subst H.
+    all: unfold H2 in *; cbn in *.
+    all: clear H2.
+    all: pose (H'2 A B := Logic.eq_refl (cat_morphism A B)).
+    all: rewrite (proof_irrelevance H' H'2).
+    all: cbn.
+    all: reflexivity.
+Qed.
