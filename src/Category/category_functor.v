@@ -4,25 +4,30 @@ Require Import set.
 Require Export category_base.
 
 Class Functor `(C1 : Category) `(C2 : Category) := {
-    functor_f : @cat_U C1 → @cat_U C2;
+    functor_f : cat_U C1 → cat_U C2;
     functor_morphism : ∀ {A B},
-        cat_morphism A B → cat_morphism (functor_f A) (functor_f B);
-    functor_compose : ∀ {A B C} (f : cat_morphism B C) (g : cat_morphism A B),
+        cat_morphism C1 A B → cat_morphism C2 (functor_f A) (functor_f B);
+    functor_compose : ∀ {A B C} (f : cat_morphism C1 B C) (g : cat_morphism C1 A B),
         functor_morphism (f ∘ g) = functor_morphism f ∘ functor_morphism g;
-    functor_id : ∀ A, functor_morphism (cat_id A) = cat_id (functor_f A);
+    functor_id : ∀ A, functor_morphism (cat_id _ A) = 𝟙;
 }.
+
+Arguments functor_f {C1 C2} Functor A.
+Arguments functor_morphism {C1 C2} Functor {A B} f.
+
+Notation "F ⌈ A ⌉" := (functor_f F A) (at level 69).
+Notation "F ⋄ f" := (functor_morphism F f) (at level 40, left associativity).
 
 Program Instance id_functor `(C0 : Category) : Functor C0 C0 := {
     functor_f A := A;
-    functor_morphism {A B} (f : cat_morphism A B) := f;
+    functor_morphism {A B} f := f;
 }.
 
 Program Instance compose_functor `{C1 : Category, C2 : Category, C3 : Category}
-    `(@Functor C1 C2) `(@Functor C2 C3) : Functor C1 C3 :=
+    `(F : @Functor C2 C3) `(G : @Functor C1 C2) : Functor C1 C3 :=
 {
-    functor_f a := functor_f (functor_f a);
-    functor_morphism {A B} (f : cat_morphism A B)
-        := functor_morphism (functor_morphism f);
+    functor_f a := functor_f F (functor_f G a);
+    functor_morphism {A B} (f : cat_morphism C1 A B) := F ⋄ (G ⋄ f);
 }.
 Next Obligation.
     rewrite functor_compose.
@@ -39,15 +44,15 @@ Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
     : Functor (subcategory S) C :=
 {
     functor_f x := [x|];
-    functor_morphism {A B} (f : cat_morphism A B) := [f|];
+    functor_morphism {A B} (f : cat_morphism _ A B) := [f|];
 }.
 
 Global Remove Hints id_functor compose_functor inclusion_functor : typeclass_instances.
 
 Definition faithful_functor `(F : Functor) := ∀ A B,
-    injective (functor_morphism (A:=A) (B:=B)).
+    injective (functor_morphism F (A:=A) (B:=B)).
 Definition full_functor `(F : Functor) := ∀ A B,
-    surjective (functor_morphism (A:=A) (B:=B)).
+    surjective (functor_morphism F (A:=A) (B:=B)).
 
 Theorem id_functor_faithful : ∀ C, faithful_functor (id_functor C).
     intros C0 A B f g eq.
@@ -80,15 +85,19 @@ Theorem inclusion_functor_full : ∀ `(S : SubCategory), full_subcategory S →
     reflexivity.
 Qed.
 
+Definition essentially_surjective `{C1 : Category, C2 : Category}
+    `(F : @Functor C1 C2)
+    := ∀ B, ∃ A, isomorphic (F⌈A⌉) B.
+
 Section Functor.
 
 Context `{C1 : Category, C2 : Category, F : @Functor C1 C2}.
 
 Theorem functor_isomorphism : ∀ A B,
-        isomorphic A B → isomorphic (functor_f A) (functor_f B).
+        isomorphic A B → isomorphic (F ⌈A⌉) (F ⌈B⌉).
     intros A B [f [g [fg gf]]].
-    exists (functor_morphism f).
-    exists (functor_morphism g).
+    exists (F ⋄ f).
+    exists (F ⋄ g).
     rewrite <- functor_compose.
     rewrite <- functor_compose.
     rewrite fg, gf.
