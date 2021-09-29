@@ -41,6 +41,38 @@ Definition isomorphic `{C0 : Category} A B
 
 Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
 
+Theorem isomorphic_refl `{C0 : Category} : ∀ A, A ≅ A.
+    intros A.
+    exists 𝟙, 𝟙.
+    rewrite cat_lid.
+    split; reflexivity.
+Qed.
+Theorem isomorphic_sym `{C0 : Category} : ∀ A B, A ≅ B → B ≅ A.
+    intros A B [f [g [eq1 eq2]]].
+    exists g, f.
+    split; assumption.
+Qed.
+Theorem isomorphic_trans `{C0 : Category} : ∀ {A B C}, A ≅ B → B ≅ C → A ≅ C.
+    intros A B C [f1 [g1 [eq11 eq12]]] [f2 [g2 [eq21 eq22]]].
+    exists (f2 ∘ f1).
+    exists (g1 ∘ g2).
+    split.
+    -   rewrite <- cat_assoc.
+        rewrite (cat_assoc f1).
+        rewrite eq11.
+        rewrite cat_lid.
+        exact eq21.
+    -   rewrite <- cat_assoc.
+        rewrite (cat_assoc g2).
+        rewrite eq22.
+        rewrite cat_lid.
+        exact eq12.
+Qed.
+Theorem isomorphic_trans2 `{C0 : Category} : ∀ {A B C}, B ≅ C → A ≅ B → A ≅ C.
+    intros A B C eq1 eq2.
+    exact (isomorphic_trans eq2 eq1).
+Qed.
+
 Program Instance dual_category `(C0 : Category) : Category := {
     cat_U := cat_U C0;
     cat_morphism A B := cat_morphism C0 B A;
