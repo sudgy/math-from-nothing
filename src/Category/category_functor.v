@@ -109,3 +109,78 @@ Theorem functor_isomorphism : ∀ A B,
 Qed.
 
 End Functor.
+
+Definition functor_morphism_convert_type `{C1 : Category, C2 : Category}
+        `{F : @Functor C1 C2, G : @Functor C1 C2} {A B} (H : ∀ A, F ⌈A⌉ = G ⌈A⌉)
+        (f : cat_morphism C2 (F ⌈A⌉) (F ⌈B⌉)) : cat_morphism C2 (G ⌈A⌉) (G ⌈B⌉).
+    rewrite (H A) in f.
+    rewrite (H B) in f.
+    exact f.
+Defined.
+
+Theorem functor_eq `{C1 : Category, C2 : Category} : ∀ {F G : @Functor C1 C2},
+        ∀ (H : ∀ A, F ⌈A⌉ = G ⌈A⌉),
+        (∀ {A B} (f : cat_morphism C1 A B),
+            functor_morphism_convert_type H (F ⋄ f) = G ⋄ f) →
+        F = G.
+    intros [f1 morphism1 compose1 id1] [f2 morphism2 compose2 id2] H eq'.
+    cbn in *.
+    assert (f1 = f2) as eq.
+    {
+        apply functional_ext.
+        exact H.
+    }
+    subst f2.
+    assert (morphism1 = morphism2) as eq.
+    {
+        apply functional_ext; intros A.
+        apply functional_ext; intros B.
+        apply functional_ext; intros f.
+        rewrite <- eq'.
+        unfold functor_morphism_convert_type.
+        pose (HA := Logic.eq_refl (f1 A)).
+        pose (HB := Logic.eq_refl (f1 B)).
+        rewrite (proof_irrelevance (H A) HA).
+        rewrite (proof_irrelevance (H B) HB).
+        cbn.
+        reflexivity.
+    }
+    subst morphism2; clear H eq'.
+    rewrite (proof_irrelevance compose2 compose1).
+    rewrite (proof_irrelevance id2 id1).
+    reflexivity.
+Qed.
+
+Theorem functor_lid `{C1 : Category, C2 : Category} : ∀ (F : @Functor C1 C2),
+        𝟏 ○ F = F.
+    intros F.
+    assert (∀ A, (𝟏 ○ F) ⌈A⌉ = F ⌈A⌉) as H by reflexivity.
+    apply (functor_eq H).
+    intros A B f.
+    cbn.
+    unfold functor_morphism_convert_type.
+    cbn in *.
+    pose (HA := Logic.eq_refl (F ⌈A⌉)).
+    pose (HB := Logic.eq_refl (F ⌈B⌉)).
+    rewrite (proof_irrelevance (H A) HA).
+    rewrite (proof_irrelevance (H B) HB).
+    cbn.
+    reflexivity.
+Qed.
+
+Theorem functor_rid `{C1 : Category, C2 : Category} : ∀ (F : @Functor C1 C2),
+        F ○ 𝟏 = F.
+    intros F.
+    assert (∀ A, (F ○ 𝟏) ⌈A⌉ = F ⌈A⌉) as H by reflexivity.
+    apply (functor_eq H).
+    intros A B f.
+    cbn.
+    unfold functor_morphism_convert_type.
+    cbn in *.
+    pose (HA := Logic.eq_refl (F ⌈A⌉)).
+    pose (HB := Logic.eq_refl (F ⌈B⌉)).
+    rewrite (proof_irrelevance (H A) HA).
+    rewrite (proof_irrelevance (H B) HB).
+    cbn.
+    reflexivity.
+Qed.
