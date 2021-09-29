@@ -6,7 +6,7 @@ Require Import set.
 anything here is incorrect/not specified in the best way.
 *)
 
-Class Category := {
+Polymorphic Class Category := {
     cat_U : Type;
     cat_morphism : cat_U → cat_U → Type;
     cat_compose : ∀ {A B C},

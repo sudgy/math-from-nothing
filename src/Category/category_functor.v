@@ -184,3 +184,37 @@ Theorem functor_rid `{C1 : Category, C2 : Category} : ∀ (F : @Functor C1 C2),
     cbn.
     reflexivity.
 Qed.
+
+Theorem functor_assoc
+        `{C1 : Category, C2 : Category, C3 : Category, C4 : Category} :
+        ∀ (F : @Functor C3 C4) (G : @Functor C2 C3) (H : @Functor C1 C2),
+        F ○ (G ○ H) = (F ○ G) ○ H.
+    intros F G H.
+    assert (∀ A, (F ○ (G ○ H)) ⌈A⌉ = ((F ○ G) ○ H) ⌈A⌉) as H' by reflexivity.
+    apply (functor_eq H').
+    intros A B f.
+    unfold functor_morphism_convert_type.
+    cbn in *.
+    pose (HA := Logic.eq_refl (F ⌈G ⌈H⌈A⌉⌉⌉)).
+    pose (HB := Logic.eq_refl (F ⌈G ⌈H⌈B⌉⌉⌉)).
+    rewrite (proof_irrelevance (H' A) HA).
+    rewrite (proof_irrelevance (H' B) HB).
+    cbn.
+    reflexivity.
+Qed.
+
+Program Instance CATEGORY : Category := {
+    cat_U := Category;
+    cat_morphism A B := Functor A B;
+    cat_compose {A B C} f g := f ○ g;
+    cat_id A := id_functor A;
+}.
+Next Obligation.
+    apply functor_assoc.
+Qed.
+Next Obligation.
+    apply functor_lid.
+Qed.
+Next Obligation.
+    apply functor_rid.
+Qed.
