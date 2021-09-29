@@ -24,6 +24,7 @@
 ./src/Category/category_base.v
 ./src/Category/category_functor.v
 ./src/Category/category_natural_transformation.v
+./src/Category/type_category.v
 
 ./src/Algebra/Op/op_group.v
 ./src/Algebra/Op/op.v
