@@ -39,6 +39,8 @@ Definition cat_inverse `{C0 : Category} {A B}
 Definition isomorphic `{C0 : Category} A B
     := ∃ f : cat_morphism C0 A B, isomorphism f.
 
+Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
+
 Program Instance dual_category `(C0 : Category) : Category := {
     cat_U := cat_U C0;
     cat_morphism A B := cat_morphism C0 B A;

@@ -218,3 +218,5 @@ Qed.
 Next Obligation.
     apply functor_rid.
 Qed.
+
+Global Remove Hints CATEGORY : typeclass_instances.

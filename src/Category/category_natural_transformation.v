@@ -75,9 +75,133 @@ Notation "α ⊡ β" := (hcompose_nat_transformation α β) (at level 20, left a
 
 Global Remove Hints id_nat_transformation vcompose_nat_transformation hcompose_nat_transformation : typeclass_instances.
 
+Theorem nat_trans_compose_eq `{C1 : Category, C2 : Category}
+        `{F : @Functor C1 C2, G : @Functor C1 C2, H : @Functor C1 C2} :
+        ∀ (α : NatTransformation G H) (β : NatTransformation F G),
+        ∀ A, (α □ β) • A = α • A ∘ β • A.
+    intros α β A.
+    cbn.
+    reflexivity.
+Qed.
+
+Theorem nat_trans_eq `{C1 : Category, C2 : Category}
+        `{F : @Functor C1 C2, G : @Functor C1 C2} :
+        ∀ (α β : NatTransformation F G), (∀ A, α • A = β • A) → α = β.
+    intros [f1 commute1] [f2 commute2] H.
+    cbn in *.
+    assert (f1 = f2) as eq.
+    {
+        apply functional_ext.
+        exact H.
+    }
+    subst f2; clear H.
+    rewrite (proof_irrelevance commute2 commute1).
+    reflexivity.
+Qed.
+
+Theorem nat_trans_lid `{C1 : Category, C2 : Category}
+        `{F : @Functor C1 C2, G : @Functor C1 C2} :
+        ∀ (α : NatTransformation F G), 𝕀 □ α = α.
+    intros α.
+    apply nat_trans_eq.
+    intros A.
+    cbn.
+    apply cat_lid.
+Qed.
+Theorem nat_trans_rid `{C1 : Category, C2 : Category}
+        `{F : @Functor C1 C2, G : @Functor C1 C2} :
+        ∀ (α : NatTransformation F G), α □ 𝕀 = α.
+    intros α.
+    apply nat_trans_eq.
+    intros A.
+    cbn.
+    apply cat_rid.
+Qed.
+Theorem nat_trans_assoc `{C1 : Category, C2 : Category}
+        `{F : @Functor C1 C2, G : @Functor C1 C2,
+          H : @Functor C1 C2, I : @Functor C1 C2} :
+        ∀ (α : NatTransformation H I)
+          (β : NatTransformation G H)
+          (γ : NatTransformation F G),
+          α □ (β □ γ) = (α □ β) □ γ.
+    intros α β γ.
+    apply nat_trans_eq.
+    intros A.
+    cbn.
+    apply cat_assoc.
+Qed.
+
+Program Instance FUNCTOR `(C1 : Category, C2 : Category) : Category := {
+    cat_U := Functor C1 C2;
+    cat_morphism F G := NatTransformation F G;
+    cat_compose {A B C} α β := α □ β;
+    cat_id F := id_nat_transformation F;
+}.
+Next Obligation.
+    apply nat_trans_assoc.
+Qed.
+Next Obligation.
+    apply nat_trans_lid.
+Qed.
+Next Obligation.
+    apply nat_trans_rid.
+Qed.
+
+Global Remove Hints FUNCTOR : typeclass_instances.
+
 Definition nat_isomorphism `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2} `(α : @NatTransformation C1 C2 F G)
-    := ∀ A, isomorphism (α • A).
+    := isomorphism (C0 := FUNCTOR C1 C2) α.
+
+Theorem nat_isomorphism_A `{C1 : Category, C2 : Category} 
+        `{F : @Functor C1 C2, G : @Functor C1 C2} : ∀ α : NatTransformation F G,
+        nat_isomorphism α ↔ (∀ A, isomorphism (α • A)).
+    intros α.
+    split.
+    -   intros α_iso A.
+        destruct α_iso as [β [β_eq1 β_eq2]].
+        cbn in *.
+        exists (β • A).
+        do 2 rewrite <- nat_trans_compose_eq.
+        rewrite β_eq1, β_eq2.
+        cbn.
+        split; reflexivity.
+    -   intros all_iso.
+        pose (β_f A := ex_val (all_iso A)).
+        assert (∀ {A B} (f : cat_morphism C1 A B),
+            β_f B ∘ (G ⋄ f) = (F ⋄ f) ∘ β_f A) as β_commute.
+        {
+            intros A B f.
+            unfold β_f.
+            rewrite_ex_val A' [A'_eq1 A'_eq2].
+            rewrite_ex_val B' [B'_eq1 B'_eq2].
+            apply rcompose with (F ⋄ f) in A'_eq2.
+            rewrite cat_lid in A'_eq2.
+            rewrite <- cat_assoc in A'_eq2.
+            rewrite nat_trans_commute in A'_eq2.
+            apply rcompose with B' in A'_eq2.
+            do 2 rewrite <- cat_assoc in A'_eq2.
+            rewrite B'_eq1 in A'_eq2.
+            rewrite cat_rid in A'_eq2.
+            exact A'_eq2.
+        }
+        pose (β := {|nat_trans_commute := β_commute|}).
+        exists β.
+        cbn.
+        split.
+        +   apply nat_trans_eq.
+            intros A.
+            cbn.
+            unfold β_f.
+            rewrite_ex_val B [B_eq1 B_eq2].
+            exact B_eq1.
+        +   apply nat_trans_eq.
+            intros A.
+            cbn.
+            unfold β_f.
+            rewrite_ex_val B [B_eq1 B_eq2].
+            exact B_eq2.
+Qed.
 
 Definition nat_isomorphic `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C1 C2)
@@ -103,10 +227,9 @@ Theorem cat_equiv_refl : ∀ `(C0 : Category), C0 ⋍ C0.
     exists 𝕀, 𝕀.
     assert (nat_isomorphism (F:=𝟏) (G:=𝟏) 𝕀) as H.
     {
-        intros A.
-        exists 𝟙.
+        exists 𝕀.
         cbn.
-        rewrite cat_lid.
+        rewrite nat_trans_lid.
         split; reflexivity.
     }
     split; exact H.
@@ -122,6 +245,8 @@ Hypothesis equiv : cat_equivalence F G η ε.
 
 Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
     destruct equiv as [η_iso ε_iso].
+    rewrite nat_isomorphism_A in η_iso.
+    rewrite nat_isomorphism_A in ε_iso.
     pose (η'_f A := ex_val (ε_iso A)).
     assert (∀ {A B} f, η'_f B ∘ (𝟏 ⋄ f) = (F ○ G ⋄ f) ∘ η'_f A) as η'_commute.
     {
@@ -167,7 +292,7 @@ Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
     pose (ε' := {|nat_trans_f := ε'_f; nat_trans_commute := ε'_commute|}).
     cbn in *.
     exists η', ε'.
-    split.
+    split; rewrite nat_isomorphism_A.
     -   intros A.
         cbn.
         unfold η'_f.
@@ -193,6 +318,8 @@ Theorem functor_equiv_faithful1 : faithful_functor F.
     rewrite eq in eq2; clear eq.
     rewrite <- eq3 in eq2; clear eq3.
     destruct equiv as [η_iso ε_iso].
+    rewrite nat_isomorphism_A in η_iso.
+    rewrite nat_isomorphism_A in ε_iso.
     pose proof (η_iso B) as [h [h_eq1 h_eq2]].
     cbn in *.
     apply lcompose with h in eq2.
@@ -206,7 +333,9 @@ Theorem functor_equiv_sur1 : essentially_surjective F.
     intros B.
     exists (G ⌈B⌉).
     exists (ε • B).
-    apply equiv.
+    destruct equiv as [η_iso ε_iso].
+    rewrite nat_isomorphism_A in ε_iso.
+    apply ε_iso.
 Qed.
 
 End FunctorEquivalence1.
@@ -239,6 +368,8 @@ Qed.
 Theorem functor_equiv_full1 : full_functor F.
     intros A B f.
     destruct equiv as [η_iso ε_iso].
+    rewrite nat_isomorphism_A in η_iso.
+    rewrite nat_isomorphism_A in ε_iso.
     pose proof (η_iso A) as [g' [g_eq1 g_eq2]].
     pose (g := nat_trans_f η A).
     pose proof (η_iso B) as [h [h_eq1 h_eq2]].
@@ -407,7 +538,7 @@ Theorem functor_equivalence `{C1 : Category, C2 : Category} :
     pose (η := {|nat_trans_f := η_f; nat_trans_commute := η_commute|}).
     pose (ε := {|nat_trans_f := ε_f; nat_trans_commute := ε_commute|}).
     exists G, η, ε.
-    split.
+    split; rewrite nat_isomorphism_A.
     -   intros A.
         unfold isomorphism.
         exists (ex_val (F_full _ _ (h (F ⌈A⌉)))).
