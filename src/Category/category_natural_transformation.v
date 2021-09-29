@@ -99,6 +99,35 @@ Theorem nat_trans_eq `{C1 : Category, C2 : Category}
     reflexivity.
 Qed.
 
+Theorem nat_trans_interchange `{C1 : Category, C2 : Category, C3 : Category}
+        `{F  : @Functor C1 C2, G  : @Functor C1 C2, H  : @Functor C1 C2}
+        `{F' : @Functor C2 C3, G' : @Functor C2 C3, H' : @Functor C2 C3} :
+        ∀ (α  : NatTransformation F  G ) (β  : NatTransformation G  H)
+          (α' : NatTransformation F' G') (β' : NatTransformation G' H'),
+        (β' □ α') ⊡ (β □ α) = (β' ⊡ β) □ (α' ⊡ α).
+    intros α β α' β'.
+    apply nat_trans_eq.
+    intros A.
+    cbn.
+    do 2 rewrite <- cat_assoc.
+    apply lcompose.
+    rewrite functor_compose.
+    do 2 rewrite cat_assoc.
+    apply rcompose.
+    apply nat_trans_commute.
+Qed.
+
+Theorem nat_trans_id_interchange `{C1 : Category, C2 : Category, C3 : Category}
+        `{F : @Functor C2 C3, G : @Functor C1 C2} :
+        (id_nat_transformation F) ⊡ (id_nat_transformation G) =
+        id_nat_transformation (F ○ G).
+    apply nat_trans_eq.
+    intros A.
+    cbn.
+    rewrite cat_lid.
+    apply functor_id.
+Qed.
+
 Theorem nat_trans_lid `{C1 : Category, C2 : Category}
         `{F : @Functor C1 C2, G : @Functor C1 C2} :
         ∀ (α : NatTransformation F G), 𝕀 □ α = α.
@@ -153,7 +182,7 @@ Definition nat_isomorphism `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2} `(α : @NatTransformation C1 C2 F G)
     := isomorphism (C0 := FUNCTOR C1 C2) α.
 
-Theorem nat_isomorphism_A `{C1 : Category, C2 : Category} 
+Theorem nat_isomorphism_A `{C1 : Category, C2 : Category}
         `{F : @Functor C1 C2, G : @Functor C1 C2} : ∀ α : NatTransformation F G,
         nat_isomorphism α ↔ (∀ A, isomorphism (α • A)).
     intros α.
