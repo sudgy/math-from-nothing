@@ -23,6 +23,8 @@ Program Instance id_functor `(C0 : Category) : Functor C0 C0 := {
     functor_morphism {A B} f := f;
 }.
 
+Notation "𝟏" := (id_functor _).
+
 Program Instance compose_functor `{C1 : Category, C2 : Category, C3 : Category}
     `(F : @Functor C2 C3) `(G : @Functor C1 C2) : Functor C1 C3 :=
 {
@@ -39,6 +41,8 @@ Next Obligation.
     rewrite functor_id.
     reflexivity.
 Qed.
+
+Notation "F ○ G" := (compose_functor F G) (at level 40, left associativity).
 
 Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
     : Functor (subcategory S) C :=

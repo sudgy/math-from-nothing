@@ -12,7 +12,7 @@ Class Category := {
         cat_morphism B C → cat_morphism A B → cat_morphism A C;
     cat_id : ∀ A, cat_morphism A A;
     cat_assoc : ∀ {A B C D}
-        (f : cat_morphism A B) (g : cat_morphism B C) (h : cat_morphism C D),
+        (h : cat_morphism C D) (g : cat_morphism B C) (f : cat_morphism A B),
         cat_compose h (cat_compose g f) = cat_compose (cat_compose h g) f;
     cat_lid : ∀ {A B} (f : cat_morphism A B), cat_compose (cat_id B) f = f;
     cat_rid : ∀ {A B} (f : cat_morphism A B), cat_compose f (cat_id A) = f;
