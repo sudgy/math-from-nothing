@@ -34,3 +34,16 @@ Theorem set_category_isomorphism : ∀ {A B} (f : cat_morphism TYPE A B),
         exists (g y).
         apply f_eq1.
 Qed.
+
+Program Instance SINGLETON : Category := {
+    cat_U := singleton_type;
+    cat_morphism A B := singleton_type;
+    cat_compose A B C f g := Single;
+    cat_id A := Single;
+}.
+Next Obligation.
+    apply singleton_eq.
+Qed.
+Next Obligation.
+    apply singleton_eq.
+Qed.

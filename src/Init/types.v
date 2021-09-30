@@ -3,6 +3,14 @@ Require Import base_logic.
 Set Implicit Arguments.
 
 #[universes(template)]
+Inductive singleton_type : Type := Single.
+
+Theorem singleton_eq : ∀ a b : singleton_type, a = b.
+    intros [] [].
+    reflexivity.
+Qed.
+
+#[universes(template)]
 Inductive prod (A B:Type) : Type := pair : A → B → A * B
 where "x * y" := (prod x y) : type_scope.
 
