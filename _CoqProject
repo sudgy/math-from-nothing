@@ -26,6 +26,7 @@
 ./src/Category/category_natural_transformation.v
 ./src/Category/category_equivalence.v
 ./src/Category/category_adjoint.v
+./src/Category/category_initterm.v
 ./src/Category/basic_categories.v
 
 ./src/Algebra/Op/op_group.v
