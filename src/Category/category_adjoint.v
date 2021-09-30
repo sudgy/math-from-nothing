@@ -2,6 +2,7 @@ Require Import init.
 Require Import set.
 
 Require Export category_functor.
+Require Import category_natural_transformation.
 
 Class Adjunction `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C2 C1) := {
@@ -90,5 +91,36 @@ Next Obligation.
     }
     subst a b.
     do 2 rewrite adj_nat2.
+    reflexivity.
+Qed.
+
+Program Instance adj_unit `{C1 : Category, C2 : Category}
+    `{F : @Functor C1 C2, G : @Functor C2 C1}
+    `(Ad : @Adjunction C1 C2 F G) : NatTransformation 𝟏 (G ○ F) :=
+{
+    nat_trans_f A := adj_a Ad 𝟙;
+}.
+Next Obligation.
+    rewrite <- adj_nat1.
+    rewrite cat_rid.
+    rewrite <- (adj_ab Ad (adj_a Ad 𝟙 ∘ f)).
+    rewrite adj_nat2.
+    rewrite adj_ba.
+    rewrite cat_lid.
+    reflexivity.
+Qed.
+Program Instance adj_counit `{C1 : Category, C2 : Category}
+    `{F : @Functor C1 C2, G : @Functor C2 C1}
+    `(Ad : @Adjunction C1 C2 F G) : NatTransformation (F ○ G) 𝟏 :=
+{
+    nat_trans_f A := adj_b Ad 𝟙;
+}.
+Next Obligation.
+    rewrite <- adj_nat2.
+    rewrite cat_lid.
+    rewrite <- (adj_ba Ad (f ∘ adj_b Ad 𝟙)).
+    rewrite adj_nat1.
+    rewrite adj_ab.
+    rewrite cat_rid.
     reflexivity.
 Qed.
