@@ -402,6 +402,14 @@ Theorem disjoint_union_plus {U} : ∀ (A B : U → Prop), A ∩ B = ∅ →
         +   exists (inr [y|By]).
             reflexivity.
 Qed.
+
+Theorem card_nz_ex {U} : 0 ≠ |U| → U.
+    intros neq.
+    classic_contradiction contr.
+    apply card_false_0 in contr.
+    symmetry in contr.
+    contradiction.
+Qed.
 (* begin hide *)
 Close Scope card_scope.
 (* end hide *)

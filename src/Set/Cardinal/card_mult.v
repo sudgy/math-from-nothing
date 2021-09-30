@@ -235,6 +235,32 @@ Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
         apply nat_lt_1.
         exact y_lt.
 Qed.
+
+Theorem card_one_eq {U} : |U| = 1 → ∀ a b : U, a = b.
+    intros U_one a b.
+    unfold one in U_one; cbn in U_one.
+    unfold nat_to_card in U_one; equiv_simpl in U_one.
+    destruct U_one as [f [f_inj f_sur]].
+    apply f_inj.
+    destruct (f a) as [m m_lt].
+    destruct (f b) as [n n_lt].
+    apply set_type_eq; cbn.
+    apply nat_lt_1 in m_lt, n_lt.
+    subst.
+    reflexivity.
+Qed.
+Theorem card_one_ex {U} : |U| = 1 → U.
+    intros U_one.
+    apply card_nz_ex.
+    rewrite U_one.
+    clear U U_one.
+    intros contr.
+    symmetry in contr.
+    unfold zero, one in contr; cbn in contr.
+    unfold nat_to_card in contr; equiv_simpl in contr.
+    destruct contr as [f [f_inj f_sur]].
+    contradiction (nat_lt_0_false (f [0|nat_0_lt_1])).
+Qed.
 (* begin hide *)
 Close Scope card_scope.
 (* end hide *)
