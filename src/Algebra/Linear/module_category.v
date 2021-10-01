@@ -10,7 +10,7 @@ Require Export category_base.
 one-sided modules, I'll just make a different category for those.
 *)
 (* Sorry if I forget any conditions, I'll add them if I find them *)
-Record Cring := {
+Class CRing := {
     cring_U : Type;
     cring_plus : Plus cring_U;
     cring_zero : Zero cring_U;
@@ -25,7 +25,7 @@ Record Cring := {
     cring_mult_comm : @MultComm cring_U cring_mult;
     cring_mult_lid : @MultLid cring_U cring_mult cring_one;
 }.
-Record Module {R : Cring} := {
+Class Module `(R : CRing) := {
     module_V : Type;
     module_plus : Plus module_V;
     module_zero : Zero module_V;
@@ -35,15 +35,17 @@ Record Module {R : Cring} := {
     module_plus_lid : @PlusLid module_V module_plus module_zero;
     module_plus_linv : @PlusLinv module_V module_plus module_zero module_neg;
 
-    module_scalar : ScalarMult (cring_U R) module_V;
-    module_scalar_id : @ScalarId (cring_U R) module_V (cring_one R) module_scalar;
-    module_scalar_ldist : @ScalarLdist (cring_U R) module_V module_plus module_scalar;
-    module_scalar_rdist : @ScalarRdist (cring_U R) module_V (cring_plus R) module_plus module_scalar;
-    module_scalar_comp : @ScalarComp (cring_U R) module_V (cring_mult R) module_scalar;
+    module_scalar : ScalarMult cring_U module_V;
+    module_scalar_id : @ScalarId cring_U module_V cring_one module_scalar;
+    module_scalar_ldist : @ScalarLdist cring_U module_V module_plus module_scalar;
+    module_scalar_rdist : @ScalarRdist cring_U module_V cring_plus module_plus module_scalar;
+    module_scalar_comp : @ScalarComp cring_U module_V cring_mult module_scalar;
 }.
-Arguments Module : clear implicits.
+Arguments module_V {R} Module.
+Arguments module_plus {R} Module.
+Arguments module_scalar {R} Module.
 
-Record module_homomorphism {R : Cring} {M N : Module R} := {
+Class ModuleHomomorphism `{R : CRing} `(M : @Module R, N : @Module R) := {
     module_homo_f : module_V M → module_V N;
     module_homo_plus : ∀ u v,
         module_homo_f (plus (Plus:=module_plus M) u v) =
@@ -52,10 +54,10 @@ Record module_homomorphism {R : Cring} {M N : Module R} := {
         module_homo_f (scalar_mult (ScalarMult:=module_scalar M) a v) =
         scalar_mult (ScalarMult:=module_scalar N) a (module_homo_f v);
 }.
-Arguments module_homomorphism {R} M N.
+Arguments module_homo_f {R M N} ModuleHomomorphism.
 
-Theorem module_homomorphism_eq {R : Cring} {M N : Module R} :
-        ∀ f g : module_homomorphism M N,
+Theorem module_homomorphism_eq {R : CRing} {M N : Module R} :
+        ∀ f g : ModuleHomomorphism M N,
         (∀ x, module_homo_f f x = module_homo_f g x) → f = g.
     intros [f1 plus1 scalar1] [f2 plus2 scalar2] f_eq.
     cbn in *.
@@ -70,73 +72,34 @@ Theorem module_homomorphism_eq {R : Cring} {M N : Module R} :
     reflexivity.
 Qed.
 
-Section ModuleCategory.
+Program Instance module_homo_id `{R : CRing} (L : Module R)
+    : ModuleHomomorphism L L :=
+{
+    module_homo_f x := x
+}.
 
-Context `{R : Cring} (L : Module R).
-
-Let module_homo_id_f (x : module_V L) := x.
-
-Lemma module_homo_id_plus : ∀ u v,
-        module_homo_id_f (plus (Plus:=module_plus L) u v) =
-        plus (Plus:=module_plus L)
-            (module_homo_id_f u)
-            (module_homo_id_f v).
-    intros u v.
-    reflexivity.
-Qed.
-
-Lemma module_homo_id_scalar : ∀ a v,
-        module_homo_id_f (scalar_mult (ScalarMult:=module_scalar L) a v) =
-        scalar_mult (ScalarMult:=module_scalar L) a (module_homo_id_f v).
-    intros a v.
-    reflexivity.
-Qed.
-
-Definition module_homo_id := {|
-    module_homo_f := module_homo_id_f;
-    module_homo_plus := module_homo_id_plus;
-    module_homo_scalar := module_homo_id_scalar;
-|}.
-
-Context (M N : Module R).
-Context (f : module_homomorphism M N) (g : module_homomorphism L M).
-
-Let module_homo_compose_f := λ x, module_homo_f f (module_homo_f g x).
-
-Lemma module_homo_compose_plus : ∀ u v,
-        module_homo_compose_f (plus (Plus:=module_plus L) u v) =
-        plus (Plus:=module_plus N)
-            (module_homo_compose_f u)
-            (module_homo_compose_f v).
-    intros u v.
-    unfold module_homo_compose_f.
+Program Instance module_homo_compose `{R : CRing}
+    `{L : @Module R, M : @Module R, N : @Module R}
+    (f : ModuleHomomorphism M N) (g : ModuleHomomorphism L M)
+    : ModuleHomomorphism L N :=
+{
+    module_homo_f x := module_homo_f f (module_homo_f g x)
+}.
+Next Obligation.
     rewrite module_homo_plus.
     rewrite module_homo_plus.
     reflexivity.
 Qed.
-
-Lemma module_homo_compose_scalar : ∀ a v,
-        module_homo_compose_f (scalar_mult (ScalarMult:=module_scalar L) a v) =
-        scalar_mult (ScalarMult:=module_scalar N) a (module_homo_compose_f v).
-    intros a v.
-    unfold module_homo_compose_f.
+Next Obligation.
     rewrite module_homo_scalar.
     rewrite module_homo_scalar.
     reflexivity.
 Qed.
 
-Definition module_homo_compose := {|
-    module_homo_f := module_homo_compose_f;
-    module_homo_plus := module_homo_compose_plus;
-    module_homo_scalar := module_homo_compose_scalar;
-|}.
-
-End ModuleCategory.
-
-Program Instance MODULE (R : Cring) : Category := {
+Program Instance MODULE (R : CRing) : Category := {
     cat_U := Module R;
-    cat_morphism M N := module_homomorphism M N;
-    cat_compose {L M N} f g := module_homo_compose L M N f g;
+    cat_morphism M N := ModuleHomomorphism M N;
+    cat_compose {L M N} f g := module_homo_compose f g;
     cat_id M := module_homo_id M;
 }.
 Next Obligation.
