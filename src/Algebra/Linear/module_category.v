@@ -10,7 +10,7 @@ Require Export category_base.
 one-sided modules, I'll just make a different category for those.
 *)
 (* Sorry if I forget any conditions, I'll add them if I find them *)
-Class CRing := {
+Class CRing := make_cring {
     cring_U : Type;
     cring_plus : Plus cring_U;
     cring_zero : Zero cring_U;
@@ -24,8 +24,9 @@ Class CRing := {
     cring_mult_assoc : @MultAssoc cring_U cring_mult;
     cring_mult_comm : @MultComm cring_U cring_mult;
     cring_mult_lid : @MultLid cring_U cring_mult cring_one;
+    cring_ldist : @Ldist cring_U cring_plus cring_mult;
 }.
-Class Module `(R : CRing) := {
+Class Module `(R : CRing) := make_module {
     module_V : Type;
     module_plus : Plus module_V;
     module_zero : Zero module_V;
@@ -43,9 +44,19 @@ Class Module `(R : CRing) := {
 }.
 Arguments module_V {R} Module.
 Arguments module_plus {R} Module.
+Arguments module_zero {R} Module.
+Arguments module_neg {R} Module.
+Arguments module_plus_assoc {R} Module.
+Arguments module_plus_comm {R} Module.
+Arguments module_plus_lid {R} Module.
+Arguments module_plus_linv {R} Module.
 Arguments module_scalar {R} Module.
+Arguments module_scalar_id {R} Module.
+Arguments module_scalar_ldist {R} Module.
+Arguments module_scalar_rdist {R} Module.
+Arguments module_scalar_comp {R} Module.
 
-Class ModuleHomomorphism `{R : CRing} `(M : @Module R, N : @Module R) := {
+Class ModuleHomomorphism `{R : CRing} `(M : @Module R, N : @Module R) := make_module_homomorphism {
     module_homo_f : module_V M → module_V N;
     module_homo_plus : ∀ u v,
         module_homo_f (plus (Plus:=module_plus M) u v) =
@@ -120,3 +131,65 @@ Next Obligation.
     cbn.
     reflexivity.
 Qed.
+
+Section ModuleCategoryObjects.
+
+Context U `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UPA : @PlusAssoc U UP,
+    UPC : @PlusComm U UP,
+    UPZ : @PlusLid U UP UZ,
+    UPN : @PlusLinv U UP UZ UN,
+    UM : Mult U,
+    UO : One U,
+    UMA : @MultAssoc U UM,
+    UMC : @MultComm U UM,
+    UMO : @MultLid U UM UO,
+    UMD : @Ldist U UP UM
+}.
+
+Definition scalar_cring := make_cring U UP UZ UN UM UO UPA UPC UPZ UPN UMA UMC UMO UMD.
+
+Local Instance USM : ScalarMult U U := {
+    scalar_mult a b := a * b
+}.
+Local Program Instance USMO : ScalarId U U.
+Next Obligation.
+    apply mult_lid.
+Qed.
+Local Program Instance USML : ScalarLdist U U.
+Next Obligation.
+    apply ldist.
+Qed.
+Local Program Instance USMR : ScalarRdist U U.
+Next Obligation.
+    apply rdist.
+Qed.
+Local Program Instance USMC : ScalarComp U U.
+Next Obligation.
+    apply mult_assoc.
+Qed.
+
+Definition scalar_module := make_module scalar_cring U UP UZ UN UPA UPC UPZ UPN USM USMO USML USMR USMC.
+
+Context V `{
+    VP : Plus V,
+    VZ : Zero V,
+    VN : Neg V,
+    VPA : @PlusAssoc V VP,
+    VPC : @PlusComm V VP,
+    VPZ : @PlusLid V VP VZ,
+    VPN : @PlusLinv V VP VZ VN,
+
+    SM : ScalarMult U V,
+    SMO : @ScalarId U V UO SM,
+    SML : @ScalarLdist U V VP SM,
+    SMR : @ScalarRdist U V UP VP SM,
+    SMC : @ScalarComp U V UM SM
+}.
+
+Definition vector_module := make_module scalar_cring V VP VZ VN VPA VPC VPZ VPN SM SMO SML SMR SMC.
+
+End ModuleCategoryObjects.
