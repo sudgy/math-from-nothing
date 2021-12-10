@@ -172,6 +172,7 @@ Qed.
 
 Definition basis_coefficients (S : V → Prop) (S_basis : basis S) (v : V)
     := linear_remove_zeros (ex_val (basis_linear_combination S S_basis v)).
+Arguments basis_coefficients : simpl never.
 
 Theorem basis_coefficients_combination : ∀ S S_basis v,
         v = linear_combination (basis_coefficients S S_basis v).
@@ -555,6 +556,98 @@ Theorem basis_unique : ∀ S S_basis v,
     cbn in *.
     rewrite <- list_filter_filter in eq.
     exact eq.
+Qed.
+
+Theorem basis_single : 0 ≠ 1 → ∀ (S : V → Prop) S_basis v, S v →
+        [basis_coefficients S S_basis v|] = (1, v) :: list_end.
+    intros not_trivial2 S S_basis v Sv.
+    pose (l := (1, v) :: list_end).
+    assert (linear_combination_set l) as l_comb.
+    {
+        cbn.
+        rewrite not_false.
+        split; exact true.
+    }
+    assert (linear_list_in S [l|l_comb]) as l_in.
+    {
+        intros v' [α v_eq].
+        cbn in v_eq.
+        destruct v_eq as [v_eq|contr]; try contradiction.
+        inversion v_eq.
+        subst v'.
+        exact Sv.
+    }
+    assert (v = linear_combination [l|l_comb]) as v_eq.
+    {
+        cbn.
+        rewrite scalar_id.
+        rewrite plus_rid.
+        reflexivity.
+    }
+    pose proof (basis_unique S S_basis v [l|l_comb] l_in v_eq) as v_perm.
+    cbn in v_perm.
+    clear v_eq.
+    case_if; cbn in v_perm.
+    -   apply list_perm_single.
+        exact v_perm.
+    -   contradiction.
+Qed.
+
+Theorem basis_coefficients_S_ex : ∀ S S_basis v, ∃ l : list (U * set_type S),
+        [basis_coefficients S S_basis v|] =
+        list_image l (λ x, (fst x, [snd x|])).
+    intros S S_basis v.
+    remember (basis_coefficients S S_basis v) as l.
+    destruct l as [l l_comb]; cbn.
+    pose proof (basis_coefficients_in S S_basis v) as l_in.
+    rewrite <- Heql in l_in.
+    unfold linear_list_in in l_in; cbn in l_in.
+    clear l_comb Heql.
+    induction l; intros.
+    -   exists list_end.
+        cbn.
+        reflexivity.
+    -   destruct a as [a u]; cbn in *.
+        assert (S u) as Su.
+        {
+            apply l_in.
+            exists a.
+            left.
+            reflexivity.
+        }
+        assert (∀ v, (∃ α, in_list l (α, v)) → S v) as l'_in.
+        {
+            intros w [b w_in].
+            apply l_in.
+            exists b.
+            right.
+            exact w_in.
+        }
+        specialize (IHl l'_in) as [l' l'_eq].
+        exists ((a, [u|Su]) :: l').
+        rewrite l'_eq.
+        cbn.
+        reflexivity.
+Qed.
+
+Theorem basis_coefficients_zero : ∀ S S_basis,
+        [basis_coefficients S S_basis 0|] = list_end.
+    intros S S_basis.
+    assert (linear_list_in (U := U) S [list_end|true]) as l_in.
+    {
+        intros v [a v_in].
+        cbn in v_in.
+        contradiction v_in.
+    }
+    assert (0 = linear_combination [list_end|true]) as v_eq.
+    {
+        cbn.
+        reflexivity.
+    }
+    pose proof (basis_unique S S_basis 0 [list_end|true] l_in v_eq) as v_perm.
+    cbn in v_perm.
+    apply list_perm_nil_eq in v_perm.
+    symmetry; exact v_perm.
 Qed.
 
 Local Instance subset_order : Order (V → Prop) := {
