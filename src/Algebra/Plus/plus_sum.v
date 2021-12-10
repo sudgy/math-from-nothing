@@ -80,6 +80,20 @@ Theorem list_sum_plus :
         apply plus_assoc.
 Qed.
 
+Theorem list_sum_sum_eq : ∀ f n, list_sum (func_to_list f n) = sum f 0 n.
+    intros f n.
+    nat_induction n.
+    -   unfold zero; cbn.
+        reflexivity.
+    -   cbn.
+        rewrite list_sum_plus.
+        unfold func_to_list in IHn.
+        rewrite IHn.
+        cbn.
+        rewrite plus_lid, plus_rid.
+        reflexivity.
+Qed.
+
 Theorem list_sum_perm : ∀ l1 l2, list_permutation l1 l2 →
         list_sum l1 = list_sum l2.
     intros l1 l2 perm.
@@ -94,6 +108,24 @@ Theorem list_sum_perm : ∀ l1 l2, list_permutation l1 l2 →
         reflexivity.
     -   rewrite IHperm1, IHperm2.
         reflexivity.
+Qed.
+
+Theorem list_sum_neg : ∀ l, -list_sum l = list_sum (list_image l neg).
+    induction l.
+    -   cbn.
+        apply neg_zero.
+    -   cbn.
+        rewrite neg_plus.
+        rewrite IHl.
+        reflexivity.
+Qed.
+
+Theorem list_sum_minus : ∀ al bl,
+        list_sum al - list_sum bl = list_sum (al ++ (list_image bl neg)).
+    intros al bl.
+    rewrite list_sum_neg.
+    rewrite list_sum_plus.
+    reflexivity.
 Qed.
 
 (* begin hide *)
