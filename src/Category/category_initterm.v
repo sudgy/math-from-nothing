@@ -5,9 +5,9 @@ Require Export category_base.
 
 Open Scope card_scope.
 
-Definition initial `{C0 : Category} (I : cat_U C0)
+Polymorphic Definition initial `{C0 : Category} (I : cat_U C0)
     := ∀ A, |cat_morphism C0 I A| = 1.
-Definition terminal `{C0 : Category} (T : cat_U C0)
+Polymorphic Definition terminal `{C0 : Category} (T : cat_U C0)
     := ∀ A, |cat_morphism C0 A T| = 1.
 
 Section InitTerm1.
