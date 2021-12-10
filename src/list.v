@@ -882,6 +882,97 @@ Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
     apply list_perm_add.
 Qed.
 
+Theorem list_perm_single {U} : ∀ (x : U) l, list_permutation (x :: list_end) l →
+        l = x :: list_end.
+    intros x l l_perm.
+    remember (x :: list_end) as m in l_perm.
+    induction l_perm.
+    -   inversion Heqm.
+    -   inversion Heqm.
+        subst x0 l.
+        apply list_perm_nil_eq in l_perm.
+        rewrite <- l_perm.
+        reflexivity.
+    -   inversion Heqm.
+    -   subst l.
+        apply IHl_perm2.
+        apply IHl_perm1.
+        reflexivity.
+Qed.
+
+Theorem list_perm_eq {U} : ∀ l1 l2 : list U, l1 = l2 → list_permutation l1 l2.
+    intros l1 l2 eq.
+    rewrite eq.
+    apply list_perm_refl.
+Qed.
+
+Theorem list_unique_conc {U} : ∀ l1 l2 : list U,
+        list_unique (l1 ++ l2) → list_unique (l2 ++ l1).
+    intros l1 l2.
+    apply list_perm_unique.
+    apply list_perm_conc.
+Qed.
+
+Theorem list_size_conc {U} : ∀ l1 l2 : list U,
+        list_size (l1 ++ l2) = list_size (l2 ++ l1).
+    induction l1; intros l2.
+    -   cbn.
+        rewrite list_conc_end.
+        reflexivity.
+    -   cbn.
+        rewrite IHl1; clear IHl1.
+        induction l2.
+        +   cbn.
+            reflexivity.
+        +   cbn.
+            rewrite IHl2.
+            reflexivity.
+Qed.
+
+Theorem func_to_list_size {U} : ∀ (f : nat → U) n,
+        list_size (func_to_list f n) = n.
+    intros f n.
+    nat_induction n.
+    -   unfold zero at 1; cbn.
+        reflexivity.
+    -   cbn.
+        rewrite list_size_conc.
+        cbn.
+        unfold func_to_list in IHn.
+        rewrite IHn.
+        reflexivity.
+Qed.
+
+Theorem func_to_list_unique {U} : ∀ (f : nat → U) n,
+        (∀ m1 m2, m1 < n → m2 < n → f m1 = f m2 → m1 = m2) →
+        list_unique (func_to_list f n).
+    intros f n f_inj.
+    nat_induction n.
+    -   unfold zero; cbn.
+        exact true.
+    -   cbn.
+        apply list_unique_conc.
+        cbn.
+        split.
+        +   clear IHn.
+            change (list_reverse _) with (func_to_list f n).
+            intros contr.
+            apply in_list_nth in contr as [m [m_lt fn_eq]].
+            rewrite func_to_list_size in m_lt.
+            rewrite func_to_list_nth_lt in fn_eq by exact m_lt.
+            apply f_inj in fn_eq.
+            *   subst.
+                destruct m_lt; contradiction.
+            *   apply nat_lt_suc.
+            *   exact (trans m_lt (nat_lt_suc n)).
+        +   apply IHn.
+            intros m1 m2 m1_lt m2_lt eq.
+            apply f_inj.
+            *   exact (trans m1_lt (nat_lt_suc n)).
+            *   exact (trans m2_lt (nat_lt_suc n)).
+            *   exact eq.
+Qed.
+
 Fixpoint list_filter {U} (S : U → Prop) (l : list U) :=
     match l with
     | list_end => list_end
