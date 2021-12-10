@@ -261,6 +261,22 @@ Theorem card_one_ex {U} : |U| = 1 → U.
     destruct contr as [f [f_inj f_sur]].
     contradiction (nat_lt_0_false (f [0|nat_0_lt_1])).
 Qed.
+
+Theorem card_unique_one {U} : U → (∀ a b : U, a = b) → |U| = 1.
+    intros a eq.
+    unfold one; cbn.
+    unfold nat_to_card; equiv_simpl.
+    exists (λ _, [0|nat_0_lt_1]).
+    split.
+    -   intros x y eq'.
+        apply eq.
+    -   intros z.
+        exists a.
+        destruct z as [z z_lt].
+        apply set_type_eq; cbn.
+        apply nat_lt_1 in z_lt.
+        exact z_lt.
+Qed.
 (* begin hide *)
 Close Scope card_scope.
 (* end hide *)
