@@ -40,6 +40,14 @@ Theorem set_type_simpl {U} {S : U → Prop} : ∀ a (P : S a), [[a|P]|] = a.
     reflexivity.
 Qed.
 
+Theorem ex_set_type {U} {S : U → Prop} : (∃ x, S x) → set_type S.
+    intros x_ex.
+    apply indefinite_description.
+    destruct x_ex as [x Sx].
+    split.
+    exact [x|Sx].
+Qed.
+
 Definition to_set_type {U} (X : U → Prop) (S : U → Prop) :=
     λ x : set_type X, S [x|].
 Definition from_set_type {U} {X : U → Prop} (S : set_type X → Prop) :=
