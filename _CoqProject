@@ -140,7 +140,9 @@
 ./src/Algebra/Linear/linear_basis.v
 ./src/Algebra/Linear/module_category.v
 ./src/Algebra/Linear/linear_multilinear.v
-./src/Algebra/Linear/Tensor/tensor_product.v
+./src/Algebra/Linear/Tensor/tensor_product_construction.v
+./src/Algebra/Linear/Tensor/tensor_product_universal.v
+./src/Algebra/Linear/Tensor/tensor_product_isomorphisms.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_base.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_grade.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_mult1.v
