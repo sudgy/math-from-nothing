@@ -89,8 +89,8 @@ Let sub4 v := ∃ a m n, v = a · to_FR m n - to_FR m (a · n).
 Definition tensor_product_ideal := sub1 ∪ sub2 ∪ sub3 ∪ sub4.
 
 Definition tensor_space := linear_span_quotient U tensor_product_ideal.
-Definition tensor_mult a b := to_quotient U tensor_product_ideal (to_free U (V1 * V2) (a, b)).
-Infix "⊗" := tensor_mult : algebra_scope.
+Definition tensor_mult_base a b := to_quotient U tensor_product_ideal (to_free U (V1 * V2) (a, b)).
+Local Infix "⊗" := tensor_mult_base.
 
 Definition tensor_plus := quotient_space_plus (linear_span_subspace U tensor_product_ideal).
 Definition tensor_zero := quotient_space_zero (linear_span_subspace U tensor_product_ideal).
@@ -108,9 +108,9 @@ Existing Instances tensor_plus tensor_zero tensor_neg tensor_plus_assoc
     tensor_plus_comm tensor_plus_lid tensor_plus_linv tensor_scalar_mult
     tensor_scalar_id tensor_scalar_ldist tensor_scalar_rdist tensor_scalar_comp.
 
-Theorem tensor_ldist : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
+Theorem tensor_ldist_base : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
     intros a b c.
-    unfold tensor_mult; cbn.
+    unfold tensor_mult_base; cbn.
     unfold plus at 2; cbn.
     unfold to_quotient; equiv_simpl.
     intros S S_sub.
@@ -123,9 +123,9 @@ Theorem tensor_ldist : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
     reflexivity.
 Qed.
 
-Theorem tensor_rdist : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
+Theorem tensor_rdist_base : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
     intros a b c.
-    unfold tensor_mult, plus at 2; cbn.
+    unfold tensor_mult_base, plus at 2; cbn.
     unfold to_quotient; equiv_simpl.
     intros S S_sub.
     apply S_sub.
@@ -137,10 +137,10 @@ Theorem tensor_rdist : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
     reflexivity.
 Qed.
 
-Theorem tensor_lscalar : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
+Theorem tensor_lscalar_base : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
     intros a u v.
     symmetry.
-    unfold tensor_mult, scalar_mult; cbn.
+    unfold tensor_mult_base, scalar_mult; cbn.
     unfold to_quotient; equiv_simpl.
     intros S S_sub.
     apply S_sub.
@@ -150,10 +150,10 @@ Theorem tensor_lscalar : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
     reflexivity.
 Qed.
 
-Theorem tensor_rscalar : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
+Theorem tensor_rscalar_base : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
     intros a u v.
     symmetry.
-    unfold tensor_mult, scalar_mult; cbn.
+    unfold tensor_mult_base, scalar_mult; cbn.
     unfold to_quotient; equiv_simpl.
     intros S S_sub.
     apply S_sub.
@@ -163,16 +163,16 @@ Theorem tensor_rscalar : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
     reflexivity.
 Qed.
 
-Theorem tensor_mult_lneg : ∀ u v, (-u) ⊗ v = -(u ⊗ v).
+Theorem tensor_mult_lneg_base : ∀ u v, (-u) ⊗ v = -(u ⊗ v).
     intros u v.
     rewrite <- scalar_neg_one.
-    rewrite tensor_lscalar.
+    rewrite tensor_lscalar_base.
     apply scalar_neg_one.
 Qed.
-Theorem tensor_mult_rneg : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
+Theorem tensor_mult_rneg_base : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
     intros u v.
     rewrite <- scalar_neg_one.
-    rewrite tensor_rscalar.
+    rewrite tensor_rscalar_base.
     apply scalar_neg_one.
 Qed.
 
@@ -277,7 +277,7 @@ Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
     {
         exists (free_f T [x|] · fst [x|]), (snd [x|]).
         unfold x'.
-        rewrite tensor_lscalar.
+        rewrite tensor_lscalar_base.
         reflexivity.
     }
     exists ([x'|x'_simple] :: l).
@@ -303,7 +303,7 @@ Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
             rewrite plus_lid.
             reflexivity.
     }
-    unfold scalar_mult, plus, tensor_mult, to_quotient; cbn.
+    unfold scalar_mult, plus, tensor_mult_base, to_quotient; cbn.
     rewrite eq at 1.
     equiv_simpl.
     rewrite neg_plus.
@@ -462,14 +462,14 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
 Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
     pose (V3P := module_plus tensor_product_base).
     pose (SM3 := module_scalar tensor_product_base).
-    pose (f x y := tensor_mult U V1 V2 x y).
+    pose (f x y := tensor_mult_base U V1 V2 x y).
     assert (bilinear f) as f_bil.
     {
         repeat split.
-        -   apply tensor_lscalar.
-        -   apply tensor_rscalar.
-        -   apply tensor_rdist.
-        -   apply tensor_ldist.
+        -   apply tensor_lscalar_base.
+        -   apply tensor_rscalar_base.
+        -   apply tensor_rdist_base.
+        -   apply tensor_ldist_base.
     }
     exists (make_bilinear tensor_product_base f f_bil).
     unfold initial; cbn.
@@ -642,7 +642,7 @@ Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
         unfold bilinear_from_set; cbn.
         intros x y.
         unfold h, f.
-        unfold tensor_mult, to_quotient.
+        unfold tensor_mult_base, to_quotient.
         equiv_simpl.
         unfold h4.
         rewrite h3_free_from.
@@ -675,6 +675,61 @@ Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
             subst a.
             rewrite h1_from, h2_from.
             reflexivity.
+Qed.
+
+Definition tensor_bilinear_from := ex_val tensor_product_ex.
+Definition tensor_product := bilinear_from_module tensor_bilinear_from.
+Definition tensor_mult := bilinear_from_f tensor_bilinear_from.
+Definition tensor_bilinear := bilinear_from_bi tensor_bilinear_from.
+
+Theorem tensor_product_universal : initial tensor_bilinear_from.
+    exact (ex_proof tensor_product_ex).
+Qed.
+
+Infix "⊗" := tensor_mult : algebra_scope.
+
+Let tensor_plus := module_plus tensor_product.
+Let tensor_zero := module_zero tensor_product.
+Let tensor_neg := module_neg tensor_product.
+Let tensor_plus_comm := module_plus_comm tensor_product.
+Let tensor_plus_assoc := module_plus_assoc tensor_product.
+Let tensor_plus_lid := module_plus_lid tensor_product.
+Let tensor_plus_linv := module_plus_linv tensor_product.
+Let tensor_scalar := module_scalar tensor_product.
+Let tensor_scalar_comp := module_scalar_comp tensor_product.
+Let tensor_scalar_id := module_scalar_id tensor_product.
+Let tensor_scalar_rdist := module_scalar_rdist tensor_product.
+Existing Instances tensor_plus tensor_zero tensor_neg tensor_plus_comm
+    tensor_plus_assoc tensor_plus_lid tensor_plus_linv tensor_scalar
+    tensor_scalar_comp tensor_scalar_id tensor_scalar_rdist.
+
+Theorem tensor_ldist : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
+    apply tensor_bilinear.
+Qed.
+
+Theorem tensor_rdist : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
+    apply tensor_bilinear.
+Qed.
+
+Theorem tensor_lscalar : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
+    apply tensor_bilinear.
+Qed.
+
+Theorem tensor_rscalar : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
+    apply tensor_bilinear.
+Qed.
+
+Theorem tensor_mult_lneg : ∀ u v, (-u) ⊗ v = -(u ⊗ v).
+    intros u v.
+    rewrite <- scalar_neg_one.
+    rewrite tensor_lscalar.
+    apply scalar_neg_one.
+Qed.
+Theorem tensor_mult_rneg : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
+    intros u v.
+    rewrite <- scalar_neg_one.
+    rewrite tensor_rscalar.
+    apply scalar_neg_one.
 Qed.
 
 End TensorProductCategory.
