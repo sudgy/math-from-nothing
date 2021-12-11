@@ -218,6 +218,20 @@ Theorem partition_principle {A B} :
     reflexivity.
 Qed.
 
+Theorem inverse_ex_bijective {A B} : ∀ (f : A → B) (g : B → A),
+        (∀ x, f (g x) = x) → (∀ x, g (f x) = x) → bijective f.
+    intros f g fg gf.
+    split.
+    -   intros a b eq.
+        apply (f_equal g) in eq.
+        do 2 rewrite gf in eq.
+        exact eq.
+    -   intros y.
+        exists (g y).
+        rewrite fg.
+        reflexivity.
+Qed.
+
 
 #[universes(template)]
 Record set_function_type (U V : Type) := make_set_function {
