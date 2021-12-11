@@ -176,11 +176,11 @@ Theorem tensor_mult_rneg_base : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
     apply scalar_neg_one.
 Qed.
 
-Definition simple_tensor T := ∃ a b, T = a ⊗ b.
+Definition simple_tensor_base T := ∃ a b, T = a ⊗ b.
 
 Local Open Scope card_scope.
 
-Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
+Theorem tensor_sum_base : ∀ T, ∃ l : list (set_type simple_tensor_base),
         T = list_sum (list_image l (λ x, [x|])).
     intros T.
     equiv_get_value T.
@@ -273,7 +273,7 @@ Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
     }
     specialize (IHn (make_free T' T'_fin) T'n) as [l l_eq].
     pose (x' := free_f T [x|] · (fst [x|] ⊗ snd [x|])).
-    assert (simple_tensor x') as x'_simple.
+    assert (simple_tensor_base x') as x'_simple.
     {
         exists (free_f T [x|] · fst [x|]), (snd [x|]).
         unfold x'.
@@ -315,11 +315,6 @@ Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
     rewrite plus_rinv.
     apply linear_span_zero.
 Qed.
-
-Definition tensor_list_to_free (l : list (set_type simple_tensor))
-    := list_sum (list_image l (λ t, to_FR (ex_val [|t]) (ex_val (ex_proof [|t])))).
-Definition tensor_to_free (T : tensor_space)
-    := tensor_list_to_free (ex_val (tensor_sum T)).
 
 End TensorProduct.
 
@@ -455,24 +450,27 @@ Let FR_scalar_id := free_scalar_id_class U (V1 * V2).
 Let FR_scalar_ldist := free_scalar_ldist_class U (V1 * V2).
 Let FR_scalar_rdist := free_scalar_rdist_class U (V1 * V2).
 Let FR_scalar_comp := free_scalar_comp_class U (V1 * V2).
+Let V3P := module_plus tensor_product_base.
+Let SM3 := module_scalar tensor_product_base.
 Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist
-    FR_scalar_comp.
+    FR_scalar_comp V3P SM3.
 
-Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
-    pose (V3P := module_plus tensor_product_base).
-    pose (SM3 := module_scalar tensor_product_base).
-    pose (f x y := tensor_mult_base U V1 V2 x y).
-    assert (bilinear f) as f_bil.
-    {
-        repeat split.
-        -   apply tensor_lscalar_base.
-        -   apply tensor_rscalar_base.
-        -   apply tensor_rdist_base.
-        -   apply tensor_ldist_base.
-    }
-    exists (make_bilinear tensor_product_base f f_bil).
-    unfold initial; cbn.
+Let f x y := tensor_mult_base U V1 V2 x y.
+
+Lemma tensor_product_bilinear_base : bilinear f.
+    repeat split.
+    -   apply tensor_lscalar_base.
+    -   apply tensor_rscalar_base.
+    -   apply tensor_rdist_base.
+    -   apply tensor_ldist_base.
+Qed.
+
+Let f_bilinear_from :=
+    make_bilinear tensor_product_base f tensor_product_bilinear_base.
+
+Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
+    unfold f_bilinear_from, initial; cbn.
     intros g.
     pose (tp := module_plus (tensor_product_base)).
     pose (tz := module_zero (tensor_product_base)).
@@ -659,7 +657,7 @@ Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
         apply module_homomorphism_eq.
         intros x.
         cbn in x.
-        pose proof (tensor_sum U V1 V2 x) as [l x_eq].
+        pose proof (tensor_sum_base U V1 V2 x) as [l x_eq].
         rewrite x_eq; clear x_eq.
         induction l.
         +   cbn.
@@ -675,6 +673,11 @@ Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
             subst a.
             rewrite h1_from, h2_from.
             reflexivity.
+Qed.
+
+Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
+    exists f_bilinear_from.
+    exact tensor_product_ex_base.
 Qed.
 
 Definition tensor_bilinear_from := ex_val tensor_product_ex.
@@ -730,6 +733,94 @@ Theorem tensor_mult_rneg : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
     rewrite <- scalar_neg_one.
     rewrite tensor_rscalar.
     apply scalar_neg_one.
+Qed.
+
+Definition simple_tensor T := ∃ a b, T = a ⊗ b.
+
+Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
+        T = list_sum (list_image l (λ x, [x|])).
+    pose (tp := module_plus (tensor_product_base)).
+    pose (tz := module_zero (tensor_product_base)).
+    pose (tn := module_neg (tensor_product_base)).
+    pose (tpa := module_plus_assoc (tensor_product_base)).
+    pose (tpc := module_plus_comm (tensor_product_base)).
+    pose (tpz := module_plus_lid (tensor_product_base)).
+    pose (tpn := module_plus_linv (tensor_product_base)).
+    pose (tsm := module_scalar (tensor_product_base)).
+    pose (tsc := module_scalar_comp (tensor_product_base)).
+    pose (tso := module_scalar_id (tensor_product_base)).
+    pose (tsl := module_scalar_ldist (tensor_product_base)).
+    pose (tsr := module_scalar_rdist (tensor_product_base)).
+    intros T.
+    pose proof (initial_unique  _ _
+        tensor_product_universal tensor_product_ex_base) as [g [h [gh hg]]].
+    destruct g as [g g_in], h as [h h_in].
+    cbn in *.
+    apply eq_set_type in gh; cbn in gh.
+    apply eq_set_type in hg; cbn in hg.
+    unfold module_homo_compose, module_homo_id in gh, hg.
+    inversion gh as [gh']; clear gh.
+    inversion hg as [hg']; clear hg.
+    pose proof (func_eq _ _ gh') as gh; cbn in gh.
+    pose proof (func_eq _ _ hg') as hg; cbn in hg.
+    clear gh' hg'.
+    pose proof (tensor_sum_base U V1 V2 (module_homo_f g T)) as [l l_eq].
+    pose (f' (t : set_type (simple_tensor_base U V1 V2))
+        := module_homo_f h [t|]).
+    assert (∀ t, simple_tensor (f' t)) as f'_in.
+    {
+        intros [t [u [v t_eq]]].
+        subst t.
+        unfold f'; cbn.
+        exists u, v.
+        unfold bilinear_from_set in *; cbn in *.
+        unfold f in h_in.
+        rewrite h_in.
+        reflexivity.
+    }
+    exists (list_image l (λ t, [_|f'_in t])).
+    unfold f'; cbn.
+    rewrite list_image_comp; cbn.
+    clear f' f'_in.
+    revert T l_eq.
+    induction l; intros.
+    -   cbn in *.
+        apply (f_equal (module_homo_f h)) in l_eq.
+        rewrite hg in l_eq.
+        rewrite l_eq.
+        rewrite <- (scalar_ranni 0).
+        rewrite (@module_homo_scalar _ _ _ h).
+        apply scalar_lanni.
+    -   cbn in *.
+        apply plus_rlmove in l_eq.
+        rewrite <- (gh (-[a|])) in l_eq.
+        rewrite <- (@module_homo_plus _ _ _ g) in l_eq.
+        specialize (IHl _ l_eq).
+        rewrite <- IHl.
+        clear IHl l_eq.
+        rewrite <- scalar_neg_one.
+        rewrite (@module_homo_scalar _ _ _ h).
+        rewrite scalar_neg_one.
+        rewrite plus_lrinv.
+        reflexivity.
+Qed.
+
+Theorem tensor_product_lanni : ∀ v, 0 ⊗ v = 0.
+    intros v.
+    apply (plus_rcancel (0 ⊗ v)).
+    rewrite <- tensor_rdist.
+    do 2 rewrite plus_lid.
+    reflexivity.
+Qed.
+Theorem tensor_product_ranni : ∀ v, v ⊗ 0 = 0.
+    intros v.
+    apply (plus_rcancel (v ⊗ 0)).
+    rewrite <- tensor_ldist.
+    do 2 rewrite plus_lid.
+    reflexivity.
+Qed.
+Theorem tensor_product_zero : 0 ⊗ 0 = 0.
+    apply tensor_product_lanni.
 Qed.
 
 End TensorProductCategory.
