@@ -12,9 +12,9 @@ Polymorphic Definition terminal `{C0 : Category} (T : cat_U C0)
 
 Section InitTerm1.
 
-Context `{C0 : Category}.
+Polymorphic Context `{C0 : Category}.
 
-Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
+Polymorphic Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
         ∀ f : cat_morphism C0 I1 I2, isomorphism f.
     intros I1 I2 I1_init I2_init f.
     pose proof (I1_init I1) as I1_self.
@@ -27,7 +27,7 @@ Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
     split; reflexivity.
 Qed.
 
-Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
+Polymorphic Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
     intros I1 I2 I1_init I2_init.
     pose proof (I1_init I2) as I1_init'.
     apply card_one_ex in I1_init' as f.
@@ -35,20 +35,20 @@ Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
     apply initial_all_iso; assumption.
 Qed.
 
-Theorem initial_iso_unique : ∀ I1 I2, initial I1 → initial I2 →
+Polymorphic Theorem initial_iso_unique : ∀ I1 I2, initial I1 → initial I2 →
         ∀ f g : cat_morphism C0 I1 I2, f = g.
     intros I1 I2 I1_init I2_init f g.
     apply card_one_eq.
     exact (I1_init I2).
 Qed.
 
-Theorem initial_dual_terminal :
+Polymorphic Theorem initial_dual_terminal :
         ∀ I : cat_U C0, initial I → terminal (C0:=dual_category C0) I.
     intros I I_init.
     exact I_init.
 Qed.
 
-Theorem terminal_dual_initial :
+Polymorphic Theorem terminal_dual_initial :
         ∀ I : cat_U C0, terminal I → initial (C0:=dual_category C0) I.
     intros I I_term.
     exact I_term.

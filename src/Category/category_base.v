@@ -33,10 +33,10 @@ Definition cat_codomain `{C0 : Category} {A B} (f : cat_morphism C0 A B) := B.
 Polymorphic Definition isomorphism `{C0 : Category} {A B} (f : cat_morphism C0 A B)
     := ∃ g, f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
 
-Definition cat_inverse `{C0 : Category} {A B}
+Polymorphic Definition cat_inverse `{C0 : Category} {A B}
     (f : cat_morphism C0 A B) (H : isomorphism f) := ex_val H.
 
-Definition isomorphic `{C0 : Category} A B
+Polymorphic Definition isomorphic `{C0 : Category} A B
     := ∃ f : cat_morphism C0 A B, isomorphism f.
 
 Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
