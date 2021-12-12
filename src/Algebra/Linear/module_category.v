@@ -67,6 +67,71 @@ Class ModuleHomomorphism `{R : CRing} `(M : @Module R, N : @Module R) := make_mo
 }.
 Arguments module_homo_f {R M N} ModuleHomomorphism.
 
+Theorem module_homo_zero {R : CRing} {M N : Module R} :
+        ∀ f : ModuleHomomorphism M N,
+        module_homo_f f (@zero _ (module_zero M)) = (@zero _ (module_zero N)).
+    intros f.
+    pose (UP := cring_plus).
+    pose (UZ := cring_zero).
+    pose (UPZ := cring_plus_lid).
+    pose (MP := module_plus M).
+    pose (MZ := module_zero M).
+    pose (MN := module_neg M).
+    pose (MPC := module_plus_comm M).
+    pose (MPA := module_plus_assoc M).
+    pose (MPZ := module_plus_lid M).
+    pose (MPN := module_plus_linv M).
+    pose (MSM := module_scalar M).
+    pose (MSMR := module_scalar_rdist M).
+    pose (NP := module_plus N).
+    pose (NZ := module_zero N).
+    pose (NN := module_neg N).
+    pose (NPC := module_plus_comm N).
+    pose (NPA := module_plus_assoc N).
+    pose (NPZ := module_plus_lid N).
+    pose (NPN := module_plus_linv N).
+    pose (NSM := module_scalar N).
+    pose (NSMR := module_scalar_rdist N).
+    rewrite <- (scalar_lanni 0).
+    rewrite (@module_homo_scalar _ _ _ f).
+    apply scalar_lanni.
+Qed.
+
+Theorem module_homo_neg {R : CRing} {M N : Module R} :
+        ∀ f : ModuleHomomorphism M N,
+        ∀ v, module_homo_f f (@neg _ (module_neg M) v)
+        = (@neg _ (module_neg N) (module_homo_f f v)).
+    intros f v.
+    pose (UP := cring_plus).
+    pose (UZ := cring_zero).
+    pose (UN := cring_neg).
+    pose (UPC := cring_plus_comm).
+    pose (UPZ := cring_plus_lid).
+    pose (UPN := cring_plus_linv).
+    pose (UO := cring_one).
+    pose (MP := module_plus M).
+    pose (MZ := module_zero M).
+    pose (MPC := module_plus_comm M).
+    pose (MPA := module_plus_assoc M).
+    pose (MPZ := module_plus_lid M).
+    pose (MPN := module_plus_linv M).
+    pose (MSM := module_scalar M).
+    pose (MSMO := module_scalar_id M).
+    pose (MSMR := module_scalar_rdist M).
+    pose (NP := module_plus N).
+    pose (NZ := module_zero N).
+    pose (NPC := module_plus_comm N).
+    pose (NPA := module_plus_assoc N).
+    pose (NPZ := module_plus_lid N).
+    pose (NPN := module_plus_linv N).
+    pose (NSM := module_scalar N).
+    pose (NSMO := module_scalar_id N).
+    pose (NSMR := module_scalar_rdist N).
+    rewrite <- scalar_neg_one.
+    rewrite (@module_homo_scalar _ _ _ f).
+    apply scalar_neg_one.
+Qed.
+
 Theorem module_homomorphism_eq {R : CRing} {M N : Module R} :
         ∀ f g : ModuleHomomorphism M N,
         (∀ x, module_homo_f f x = module_homo_f g x) → f = g.
@@ -152,27 +217,27 @@ Context U `{
 
 Definition scalar_cring := make_cring U UP UZ UN UM UO UPA UPC UPZ UPN UMA UMC UMO UMD.
 
-Local Instance USM : ScalarMult U U := {
+Instance scalar_scalar_mult : ScalarMult U U := {
     scalar_mult a b := a * b
 }.
-Local Program Instance USMO : ScalarId U U.
+Program Instance scalar_scalar_id : ScalarId U U.
 Next Obligation.
     apply mult_lid.
 Qed.
-Local Program Instance USML : ScalarLdist U U.
+Program Instance scalar_scalar_ldist : ScalarLdist U U.
 Next Obligation.
     apply ldist.
 Qed.
-Local Program Instance USMR : ScalarRdist U U.
+Program Instance scalar_scalar_rdist : ScalarRdist U U.
 Next Obligation.
     apply rdist.
 Qed.
-Local Program Instance USMC : ScalarComp U U.
+Program Instance scalar_scalar_comp : ScalarComp U U.
 Next Obligation.
     apply mult_assoc.
 Qed.
 
-Definition scalar_module := make_module scalar_cring U UP UZ UN UPA UPC UPZ UPN USM USMO USML USMR USMC.
+Definition scalar_module := make_module scalar_cring U UP UZ UN UPA UPC UPZ UPN scalar_scalar_mult scalar_scalar_id scalar_scalar_ldist scalar_scalar_rdist scalar_scalar_comp.
 
 Context V `{
     VP : Plus V,
