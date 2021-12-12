@@ -277,3 +277,5 @@ Theorem cat_dual_dual : ∀ C, C = dual_category (dual_category C).
     all: cbn.
     all: reflexivity.
 Qed.
+
+Unset Universe Polymorphism.
