@@ -521,3 +521,32 @@ Theorem tensor_product_zero : 0 ⊗ 0 = 0.
 Qed.
 
 End TensorProductCategory.
+
+(** This is maybe not the best name for this, but I can't think of anything
+better.  [tensor_product] takes in the [Type]s U, V1, and V2 with the axioms
+being implicit arguments, whereas this definition takes in [Module]s (hence the
+name).
+*)
+Definition module_tensor_product {C : CRing} (M N : Module C) :=
+    @tensor_product
+        (@cring_U C)
+        (module_V M)
+        (module_V N)
+        (@cring_plus C)
+        (@cring_zero C)
+        (@cring_neg C)
+        (@cring_plus_assoc C)
+        (@cring_plus_comm C)
+        (@cring_plus_lid C)
+        (@cring_plus_linv C)
+        (@cring_mult C)
+        (@cring_one C)
+        (@cring_mult_assoc C)
+        (@cring_mult_comm C)
+        (@cring_mult_lid C)
+        (@cring_ldist C)
+        (module_plus M)
+        (module_scalar M)
+        (module_plus N)
+        (module_scalar N)
+    .
