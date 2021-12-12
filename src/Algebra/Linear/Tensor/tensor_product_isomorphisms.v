@@ -56,6 +56,110 @@ Context U V1 V2 `{
     SMC2 : @ScalarComp U V2 UM SM2
 }.
 
+Local Infix "⊗" := (tensor_mult U U V1).
+
+Existing Instances scalar_scalar_mult.
+
+Let TU1_plus := module_plus (tensor_product U U V1).
+Let TU1_scalar := module_scalar (tensor_product U U V1).
+
+Existing Instances TU1_plus TU1_scalar.
+
+Theorem tensor_product_lid :
+    ∃ f : ModuleHomomorphism (tensor_product U U V1) (vector_module U V1),
+        isomorphism (C0 := MODULE (scalar_cring U)) f ∧
+        ∀ a v, module_homo_f f (a ⊗ v) = a · v.
+    assert (bilinear (λ (a : U) (v : V1), a · v)) as f_bil.
+    {
+        repeat split; intros.
+        -   rewrite scalar_comp.
+            reflexivity.
+        -   do 2 rewrite scalar_comp.
+            rewrite mult_comm.
+            reflexivity.
+        -   apply scalar_rdist.
+        -   apply scalar_ldist.
+    }
+    pose (f_base := make_bilinear U U V1 (vector_module U V1) (λ a (v : V1), a · v) f_bil).
+    pose proof (tensor_product_universal U U V1 f_base) as f_ex.
+    apply card_one_ex in f_ex as [f f_in].
+    cbn in *.
+    unfold bilinear_from_set in f_in; cbn in f_in.
+    clear f_base.
+    exists f.
+    split.
+    -   pose (g v := 1 ⊗ v).
+        assert (∀ u v, g (u + v) = g u + g v) as g_plus.
+        {
+            intros u v.
+            unfold g.
+            apply tensor_ldist.
+        }
+        assert (∀ a v, g (a · v) = a · g v) as g_scalar.
+        {
+            intros a v.
+            unfold g.
+            apply tensor_rscalar.
+        }
+        exists (make_module_homomorphism _ (vector_module U V1) _ g g_plus g_scalar).
+        cbn.
+        unfold module_homo_compose, module_homo_id; cbn.
+        split; apply module_homomorphism_eq; cbn.
+        +   intros x.
+            unfold g.
+            unfold tensor_mult; rewrite f_in.
+            apply scalar_id.
+        +   intros x.
+            unfold g.
+            pose proof (tensor_sum _ _ _ x) as [l eq]; subst x.
+            induction l.
+            *   cbn.
+                rewrite module_homo_zero.
+                apply tensor_product_ranni.
+                exact VPZ1.
+            *   cbn.
+                rewrite (@module_homo_plus _ _ _ f).
+                rewrite tensor_ldist.
+                rewrite <- IHl at 2; clear IHl.
+                apply rplus.
+                destruct a as [a [u [v eq]]]; subst a; cbn.
+                unfold tensor_mult at 2; rewrite f_in.
+                rewrite tensor_rscalar.
+                rewrite <- tensor_lscalar.
+                unfold scalar_mult; cbn.
+                rewrite mult_rid.
+                reflexivity.
+    -   exact f_in.
+Qed.
+
+Definition tensor_product_lid_f := module_homo_f (ex_val tensor_product_lid).
+Let lf := tensor_product_lid_f.
+
+Theorem tensor_product_lid_eq : ∀ a v, lf (a ⊗ v) = a · v.
+    apply (ex_proof tensor_product_lid).
+Qed.
+
+Theorem tensor_product_lid_plus : ∀ a b, lf (a + b) = lf a + lf b.
+    apply (@module_homo_plus _ _ _ (ex_val tensor_product_lid)).
+Qed.
+Theorem tensor_product_lid_scalar : ∀ a v, lf (a · v) = a · lf v.
+    apply (@module_homo_scalar _ _ _ (ex_val tensor_product_lid)).
+Qed.
+
+Theorem tensor_product_lid_bij : bijective lf.
+    pose proof (land (ex_proof tensor_product_lid))
+        as [[g g_plus g_scalar] [fg gf]].
+    cbn in *.
+    unfold module_homo_compose, module_homo_id in *; cbn in *.
+    inversion fg as [fg']; clear fg.
+    inversion gf as [gf']; clear gf.
+    apply (inverse_ex_bijective lf g).
+    -   apply func_eq.
+        exact fg'.
+    -   apply func_eq.
+        exact gf'.
+Qed.
+
 Local Infix "⊗12" := (tensor_mult U V1 V2) (at level 40, left associativity).
 Local Infix "⊗21" := (tensor_mult U V2 V1) (at level 40, left associativity).
 
@@ -599,3 +703,98 @@ Theorem tensor_product_assoc_bij : bijective af.
 Qed.
 
 End TensorProductIsomorphisms.
+
+Section TensorProductIsomorphism.
+
+Context U V `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UPA : @PlusAssoc U UP,
+    UPC : @PlusComm U UP,
+    UPZ : @PlusLid U UP UZ,
+    UPN : @PlusLinv U UP UZ UN,
+    UM : Mult U,
+    UO : One U,
+    UMA : @MultAssoc U UM,
+    UMC : @MultComm U UM,
+    UMO : @MultLid U UM UO,
+    UMD : @Ldist U UP UM,
+
+    VP : Plus V,
+    VZ : Zero V,
+    VN : Neg V,
+    VPA : @PlusAssoc V VP,
+    VPC : @PlusComm V VP,
+    VPZ : @PlusLid V VP VZ,
+    VPN : @PlusLinv V VP VZ VN,
+
+    SM : ScalarMult U V,
+    SMO : @ScalarId U V UO SM,
+    SML : @ScalarLdist U V VP SM,
+    SMR : @ScalarRdist U V UP VP SM,
+    SMC : @ScalarComp U V UM SM
+}.
+
+Local Infix "⊗" := (tensor_mult U V U).
+
+Existing Instances scalar_scalar_mult.
+
+Let TVU_plus := module_plus (tensor_product U V U).
+Let TVU_scalar := module_scalar (tensor_product U V U).
+
+Existing Instances TVU_plus TVU_scalar.
+
+Definition tensor_product_rid_f :=
+    module_homo_f (module_homo_compose
+        (ex_val (tensor_product_lid U V))
+        (ex_val (tensor_product_comm U V U))).
+Let f := tensor_product_rid_f.
+
+Theorem tensor_product_rid_eq : ∀ a v, f (v ⊗ a) = a · v.
+    intros a v.
+    unfold f, tensor_product_rid_f.
+    cbn.
+    change (module_homo_f (ex_val (tensor_product_lid U V))) with
+        (tensor_product_lid_f U V).
+    change (module_homo_f (ex_val (tensor_product_comm U V U))) with
+        (tensor_product_comm_f U V U).
+    rewrite tensor_product_comm_eq.
+    rewrite tensor_product_lid_eq.
+    reflexivity.
+Qed.
+
+Theorem tensor_product_rid_plus : ∀ a b, f (a + b) = f a + f b.
+    intros a b.
+    unfold f, tensor_product_rid_f.
+    cbn.
+    change (module_homo_f (ex_val (tensor_product_lid U V))) with
+        (tensor_product_lid_f U V).
+    change (module_homo_f (ex_val (tensor_product_comm U V U))) with
+        (tensor_product_comm_f U V U).
+    rewrite tensor_product_comm_plus.
+    rewrite tensor_product_lid_plus.
+    reflexivity.
+Qed.
+Theorem tensor_product_rid_scalar : ∀ a v, f (a · v) = a · f v.
+    intros a v.
+    unfold f, tensor_product_rid_f.
+    cbn.
+    change (module_homo_f (ex_val (tensor_product_lid U V))) with
+        (tensor_product_lid_f U V).
+    change (module_homo_f (ex_val (tensor_product_comm U V U))) with
+        (tensor_product_comm_f U V U).
+    rewrite tensor_product_comm_scalar.
+    rewrite tensor_product_lid_scalar.
+    reflexivity.
+Qed.
+
+Theorem tensor_product_rid_bij : bijective f.
+    unfold f, tensor_product_rid_f.
+    cbn.
+    apply bij_comp.
+    -   apply tensor_product_comm_bij.
+    -   apply tensor_product_lid_bij.
+Qed.
+
+End TensorProductIsomorphism.
