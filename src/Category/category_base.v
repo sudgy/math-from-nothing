@@ -2,6 +2,8 @@ Require Import init.
 
 Require Import set.
 
+Set Universe Polymorphism.
+
 (** Note: I am learning category theory while writing this.  Apologies if
 anything here is incorrect/not specified in the best way.
 *)
@@ -134,6 +136,12 @@ Theorem lrcompose : ∀ {A B C} {f g : cat_morphism B C} {h i : cat_morphism A B
     intros A B C f g h i eq1 eq2.
     rewrite eq1, eq2.
     reflexivity.
+Qed.
+
+Polymorphic Theorem id_isomorphism : ∀ A, isomorphism (cat_id _ A).
+    intros A.
+    exists 𝟙.
+    split; apply cat_lid.
 Qed.
 
 Theorem cat_inverse_unique : ∀ {A B} (f : cat_morphism A B) g1 g2,
