@@ -145,6 +145,7 @@
 ./src/Algebra/Linear/Tensor/tensor_product_isomorphisms.v
 ./src/Algebra/Linear/Tensor/tensor_product_assoc.v
 ./src/Algebra/Linear/Tensor/tensor_power.v
+./src/Algebra/Linear/Tensor/tensor_algebra_base.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
