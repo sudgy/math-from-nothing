@@ -4,6 +4,7 @@ Require Export linear_base.
 Require Import linear_free.
 Require Import linear_subspace.
 Require Import linear_span.
+Require Import module_category.
 
 Require Import set.
 Require Import card.
@@ -13,65 +14,67 @@ Require Import plus_sum.
 
 Section TensorProduct.
 
-Context U V1 V2 `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    @MultAssoc U UM,
-    @MultComm U UM,
-    @MultLid U UM UO,
-    @Ldist U UP UM,
+Context {F : CRing} (M N : Module F).
 
-    VP1 : Plus V1,
-    VZ1 : Zero V1,
-    VN1 : Neg V1,
-    VPA1 : @PlusAssoc V1 VP1,
-    VPC1 : @PlusComm V1 VP1,
-    VPZ1 : @PlusLid V1 VP1 VZ1,
-    VPN1 : @PlusLinv V1 VP1 VZ1 VN1,
-
-    SM1 : ScalarMult U V1,
-    SMO1 : @ScalarId U V1 UO SM1,
-    SML1 : @ScalarLdist U V1 VP1 SM1,
-    SMR1 : @ScalarRdist U V1 UP VP1 SM1,
-    SMC1 : @ScalarComp U V1 UM SM1,
-
-    VP2 : Plus V2,
-    VZ2 : Zero V2,
-    VN2 : Neg V2,
-    VPA2 : @PlusAssoc V2 VP2,
-    VPC2 : @PlusComm V2 VP2,
-    VPZ2 : @PlusLid V2 VP2 VZ2,
-    VPN2 : @PlusLinv V2 VP2 VZ2 VN2,
-
-    SM2 : ScalarMult U V2,
-    SMO2 : @ScalarId U V2 UO SM2,
-    SML2 : @ScalarLdist U V2 VP2 SM2,
-    SMR2 : @ScalarRdist U V2 UP VP2 SM2,
-    SMC2 : @ScalarComp U V2 UM SM2
-}.
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let V1 := module_V M.
+Let VP1 := module_plus M.
+Let VZ1 := module_zero M.
+Let VN1 := module_neg M.
+Let VPA1 := module_plus_assoc M.
+Let VPC1 := module_plus_comm M.
+Let VPZ1 := module_plus_lid M.
+Let VPN1 := module_plus_linv M.
+Let SM1 := module_scalar M.
+Let SMO1 := module_scalar_id M.
+Let SML1 := module_scalar_ldist M.
+Let SMR1 := module_scalar_rdist M.
+Let SMC1 := module_scalar_comp M.
+Let V2 := module_V N.
+Let VP2 := module_plus N.
+Let VZ2 := module_zero N.
+Let VN2 := module_neg N.
+Let VPA2 := module_plus_assoc N.
+Let VPC2 := module_plus_comm N.
+Let VPZ2 := module_plus_lid N.
+Let VPN2 := module_plus_linv N.
+Let SM2 := module_scalar N.
+Let SMO2 := module_scalar_id N.
+Let SML2 := module_scalar_ldist N.
+Let SMR2 := module_scalar_rdist N.
+Let SMC2 := module_scalar_comp N.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
+    VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
+    SM2 SMO2 SML2 SMR2 SMC2.
 
 Let FR := free_linear U (V1 * V2).
-Let to_FR a b := to_free U (V1 * V2) (a, b).
+Let to_FR a b := to_free F (V1 * V2) (a, b).
 
-Let FR_plus := free_plus_class U (V1 * V2).
-Let FR_zero := free_zero U (V1 * V2).
-Let FR_neg := free_neg U (V1 * V2).
-Let FR_plus_comm := free_plus_comm_class U (V1 * V2).
-Let FR_plus_assoc := free_plus_assoc_class U (V1 * V2).
-Let FR_plus_lid := free_plus_lid_class U (V1 * V2).
-Let FR_plus_linv := free_plus_linv_class U (V1 * V2).
-Let FR_scalar := free_scalar U (V1 * V2).
-Let FR_scalar_id := free_scalar_id_class U (V1 * V2).
-Let FR_scalar_ldist := free_scalar_ldist_class U (V1 * V2).
-Let FR_scalar_rdist := free_scalar_rdist_class U (V1 * V2).
-Let FR_scalar_comp := free_scalar_comp_class U (V1 * V2).
+Let FR_plus := free_plus_class F (V1 * V2).
+Let FR_zero := free_zero F (V1 * V2).
+Let FR_neg := free_neg F (V1 * V2).
+Let FR_plus_comm := free_plus_comm_class F (V1 * V2).
+Let FR_plus_assoc := free_plus_assoc_class F (V1 * V2).
+Let FR_plus_lid := free_plus_lid_class F (V1 * V2).
+Let FR_plus_linv := free_plus_linv_class F (V1 * V2).
+Let FR_scalar := free_scalar F (V1 * V2).
+Let FR_scalar_id := free_scalar_id_class F (V1 * V2).
+Let FR_scalar_ldist := free_scalar_ldist_class F (V1 * V2).
+Let FR_scalar_rdist := free_scalar_rdist_class F (V1 * V2).
+Let FR_scalar_comp := free_scalar_comp_class F (V1 * V2).
 Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist
     FR_scalar_comp.
@@ -83,7 +86,7 @@ Let sub4 v := ∃ a m n, v = a · to_FR m n - to_FR m (a · n).
 Definition tensor_product_ideal := sub1 ∪ sub2 ∪ sub3 ∪ sub4.
 
 Definition tensor_space := linear_span_quotient U tensor_product_ideal.
-Definition tensor_mult_base a b := to_quotient U tensor_product_ideal (to_free U (V1 * V2) (a, b)).
+Definition tensor_mult_base a b := to_quotient U tensor_product_ideal (to_free F (V1 * V2) (a, b)).
 Local Infix "⊗" := tensor_mult_base.
 
 Definition tensor_plus := quotient_space_plus (linear_span_subspace U tensor_product_ideal).

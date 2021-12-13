@@ -12,63 +12,49 @@ Require Import module_category.
 
 Section TensorProductIsomorphisms.
 
-Context U V1 V2 `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO,
-    UMD : @Ldist U UP UM,
+Context {F : CRing} (M : Module F).
 
-    VP1 : Plus V1,
-    VZ1 : Zero V1,
-    VN1 : Neg V1,
-    VPA1 : @PlusAssoc V1 VP1,
-    VPC1 : @PlusComm V1 VP1,
-    VPZ1 : @PlusLid V1 VP1 VZ1,
-    VPN1 : @PlusLinv V1 VP1 VZ1 VN1,
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let V1 := module_V M.
+Let VP1 := module_plus M.
+Let VZ1 := module_zero M.
+Let VN1 := module_neg M.
+Let VPA1 := module_plus_assoc M.
+Let VPC1 := module_plus_comm M.
+Let VPZ1 := module_plus_lid M.
+Let VPN1 := module_plus_linv M.
+Let SM1 := module_scalar M.
+Let SMO1 := module_scalar_id M.
+Let SML1 := module_scalar_ldist M.
+Let SMR1 := module_scalar_rdist M.
+Let SMC1 := module_scalar_comp M.
+Let USM := module_scalar (cring_module F).
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
+    VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 USM.
 
-    SM1 : ScalarMult U V1,
-    SMO1 : @ScalarId U V1 UO SM1,
-    SML1 : @ScalarLdist U V1 VP1 SM1,
-    SMR1 : @ScalarRdist U V1 UP VP1 SM1,
-    SMC1 : @ScalarComp U V1 UM SM1,
+Local Infix "⊗" := (tensor_mult (cring_module F) M).
 
-    VP2 : Plus V2,
-    VZ2 : Zero V2,
-    VN2 : Neg V2,
-    VPA2 : @PlusAssoc V2 VP2,
-    VPC2 : @PlusComm V2 VP2,
-    VPZ2 : @PlusLid V2 VP2 VZ2,
-    VPN2 : @PlusLinv V2 VP2 VZ2 VN2,
-
-    SM2 : ScalarMult U V2,
-    SMO2 : @ScalarId U V2 UO SM2,
-    SML2 : @ScalarLdist U V2 VP2 SM2,
-    SMR2 : @ScalarRdist U V2 UP VP2 SM2,
-    SMC2 : @ScalarComp U V2 UM SM2
-}.
-
-Local Infix "⊗" := (tensor_mult U U V1).
-
-Existing Instances scalar_scalar_mult.
-
-Let TU1_plus := module_plus (tensor_product U U V1).
-Let TU1_scalar := module_scalar (tensor_product U U V1).
+Let TU1_plus := module_plus (tensor_product (cring_module F) M).
+Let TU1_scalar := module_scalar (tensor_product (cring_module F) M).
 
 Existing Instances TU1_plus TU1_scalar.
 
 Theorem tensor_product_lid :
-    ∃ f : ModuleHomomorphism (tensor_product U U V1) (vector_module U V1),
-        isomorphism (C0 := MODULE (scalar_cring U)) f ∧
-        ∀ a v, module_homo_f f (a ⊗ v) = a · v.
+    ∃ f : ModuleHomomorphism (tensor_product (cring_module F) M) M,
+        isomorphism f ∧ ∀ a v, module_homo_f f (a ⊗ v) = a · v.
     assert (bilinear (λ (a : U) (v : V1), a · v)) as f_bil.
     {
         repeat split; intros.
@@ -80,8 +66,8 @@ Theorem tensor_product_lid :
         -   apply scalar_rdist.
         -   apply scalar_ldist.
     }
-    pose (f_base := make_bilinear U U V1 (vector_module U V1) (λ a (v : V1), a · v) f_bil).
-    pose proof (tensor_product_universal U U V1 f_base) as f_ex.
+    pose (f_base := make_bilinear (cring_module F) M _ (λ a (v : V1), a · v) f_bil).
+    pose proof (tensor_product_universal _ _ f_base) as f_ex.
     apply card_one_ex in f_ex as [f f_in].
     cbn in *.
     unfold bilinear_from_set in f_in; cbn in f_in.
@@ -101,7 +87,7 @@ Theorem tensor_product_lid :
             unfold g.
             apply tensor_rscalar.
         }
-        exists (make_module_homomorphism _ (vector_module U V1) _ g g_plus g_scalar).
+        exists (make_module_homomorphism _ M _ g g_plus g_scalar).
         cbn.
         unfold module_homo_compose, module_homo_id; cbn.
         split; apply module_homomorphism_eq; cbn.
@@ -111,12 +97,11 @@ Theorem tensor_product_lid :
             apply scalar_id.
         +   intros x.
             unfold g.
-            pose proof (tensor_sum _ _ _ x) as [l eq]; subst x.
+            pose proof (tensor_sum _ _ x) as [l eq]; subst x.
             induction l.
             *   cbn.
                 rewrite module_homo_zero.
                 apply tensor_product_ranni.
-                exact VPZ1.
             *   cbn.
                 rewrite (@module_homo_plus _ _ _ f).
                 rewrite tensor_ldist.
@@ -124,6 +109,7 @@ Theorem tensor_product_lid :
                 apply rplus.
                 destruct a as [a [u [v eq]]]; subst a; cbn.
                 unfold tensor_mult at 2; rewrite f_in.
+                unfold V1, SM1.
                 rewrite tensor_rscalar.
                 rewrite <- tensor_lscalar.
                 unfold scalar_mult; cbn.
@@ -160,23 +146,38 @@ Theorem tensor_product_lid_bij : bijective lf.
         exact gf'.
 Qed.
 
-Local Infix "⊗12" := (tensor_mult U V1 V2) (at level 40, left associativity).
-Local Infix "⊗21" := (tensor_mult U V2 V1) (at level 40, left associativity).
+Context (N : Module F).
+Let V2 := module_V N.
+Let VP2 := module_plus N.
+Let VZ2 := module_zero N.
+Let VN2 := module_neg N.
+Let VPA2 := module_plus_assoc N.
+Let VPC2 := module_plus_comm N.
+Let VPZ2 := module_plus_lid N.
+Let VPN2 := module_plus_linv N.
+Let SM2 := module_scalar N.
+Let SMO2 := module_scalar_id N.
+Let SML2 := module_scalar_ldist N.
+Let SMR2 := module_scalar_rdist N.
+Let SMC2 := module_scalar_comp N.
+Existing Instances VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2 SM2 SMO2 SML2 SMR2 SMC2.
 
-Let T12_plus := module_plus (tensor_product U V1 V2).
-Let T12_scalar := module_scalar (tensor_product U V1 V2).
-Let T21_plus := module_plus (tensor_product U V2 V1).
-Let T21_scalar := module_scalar (tensor_product U V2 V1).
+Local Infix "⊗12" := (tensor_mult M N) (at level 40, left associativity).
+Local Infix "⊗21" := (tensor_mult N M) (at level 40, left associativity).
+
+Let T12_plus := module_plus (tensor_product M N).
+Let T12_scalar := module_scalar (tensor_product M N).
+Let T21_plus := module_plus (tensor_product N M).
+Let T21_scalar := module_scalar (tensor_product N M).
 Existing Instances T12_plus T12_scalar T21_plus T21_scalar.
 
 Theorem tensor_product_comm :
-    ∃ f : ModuleHomomorphism (tensor_product U V1 V2) (tensor_product U V2 V1),
-        isomorphism (C0 := MODULE (scalar_cring U)) f ∧
-        ∀ a b, module_homo_f f (a ⊗12 b) = b ⊗21 a.
+    ∃ f : ModuleHomomorphism (tensor_product M N) (tensor_product N M),
+        isomorphism f ∧ ∀ a b, module_homo_f f (a ⊗12 b) = b ⊗21 a.
     assert (bilinear (λ a b, b ⊗21 a)) as f_bil
         by (repeat split; intros; apply tensor_bilinear).
-    pose (f_base := make_bilinear U V1 V2 _ _ f_bil).
-    pose proof (tensor_product_universal U V1 V2 f_base) as f_ex.
+    pose (f_base := make_bilinear M N _ _ f_bil).
+    pose proof (tensor_product_universal M N f_base) as f_ex.
     apply card_one_ex in f_ex as [f f_in].
     cbn in *.
     unfold bilinear_from_set in f_in; cbn in f_in.
@@ -185,8 +186,8 @@ Theorem tensor_product_comm :
     split.
     -   assert (bilinear (λ b a, a ⊗12 b)) as g_bil
             by (repeat split; intros; apply tensor_bilinear).
-        pose (g_base := make_bilinear U V2 V1 _ _ g_bil).
-        pose proof (tensor_product_universal U V2 V1 g_base) as g_ex.
+        pose (g_base := make_bilinear N M _ _ g_bil).
+        pose proof (tensor_product_universal N M g_base) as g_ex.
         apply card_one_ex in g_ex as [g g_in].
         cbn in *.
         unfold bilinear_from_set in g_in; cbn in g_in.
@@ -194,16 +195,16 @@ Theorem tensor_product_comm :
         exists g.
         cbn.
         unfold module_homo_compose, module_homo_id; cbn.
-        change (bilinear_from_f U V1 V2 (tensor_bilinear_from U V1 V2)) with
-            (tensor_mult U V1 V2) in f_in.
-        change (bilinear_from_f U V2 V1 (tensor_bilinear_from U V2 V1)) with
-            (tensor_mult U V2 V1) in g_in.
+        change (bilinear_from_f M N (tensor_bilinear_from M N)) with
+            (tensor_mult M N) in f_in.
+        change (bilinear_from_f N M (tensor_bilinear_from N M)) with
+            (tensor_mult N M) in g_in.
         split; apply module_homomorphism_eq; cbn.
         +   intros x.
-            pose proof (tensor_sum U V2 V1 x) as [l x_eq]; subst x.
+            pose proof (tensor_sum _ _ x) as [l x_eq]; subst x.
             induction l.
             *   cbn.
-                rewrite <- (tensor_product_zero U V2 V1).
+                rewrite <- (tensor_product_zero N M).
                 rewrite g_in.
                 rewrite f_in.
                 reflexivity.
@@ -218,10 +219,10 @@ Theorem tensor_product_comm :
                 rewrite f_in.
                 reflexivity.
         +   intros x.
-            pose proof (tensor_sum U V1 V2 x) as [l x_eq]; subst x.
+            pose proof (tensor_sum _ _ x) as [l x_eq]; subst x.
             induction l.
             *   cbn.
-                rewrite <- (tensor_product_zero U V1 V2).
+                rewrite <- (tensor_product_zero M N).
                 rewrite f_in.
                 rewrite g_in.
                 reflexivity.
@@ -270,59 +271,62 @@ End TensorProductIsomorphisms.
 
 Section TensorProductIsomorphism.
 
-Context U V `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO,
-    UMD : @Ldist U UP UM,
+Context {F : CRing} (M : Module F).
 
-    VP : Plus V,
-    VZ : Zero V,
-    VN : Neg V,
-    VPA : @PlusAssoc V VP,
-    VPC : @PlusComm V VP,
-    VPZ : @PlusLid V VP VZ,
-    VPN : @PlusLinv V VP VZ VN,
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let V := module_V M.
+Let VP := module_plus M.
+Let VZ := module_zero M.
+Let VN := module_neg M.
+Let VPA := module_plus_assoc M.
+Let VPC := module_plus_comm M.
+Let VPZ := module_plus_lid M.
+Let VPN := module_plus_linv M.
+Let SM := module_scalar M.
+Let SMO := module_scalar_id M.
+Let SML := module_scalar_ldist M.
+Let SMR := module_scalar_rdist M.
+Let SMC := module_scalar_comp M.
+Let USM := module_scalar (cring_module F).
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP VZ VN
+    VPA VPC VPZ VPN SM SMO SML SMR SMC USM.
 
-    SM : ScalarMult U V,
-    SMO : @ScalarId U V UO SM,
-    SML : @ScalarLdist U V VP SM,
-    SMR : @ScalarRdist U V UP VP SM,
-    SMC : @ScalarComp U V UM SM
-}.
-
-Local Infix "⊗" := (tensor_mult U V U).
+Local Infix "⊗" := (tensor_mult M (cring_module F)).
 
 Existing Instances scalar_scalar_mult.
 
-Let TVU_plus := module_plus (tensor_product U V U).
-Let TVU_scalar := module_scalar (tensor_product U V U).
+Let TVU_plus := module_plus (tensor_product M (cring_module F)).
+Let TVU_scalar := module_scalar (tensor_product M (cring_module F)).
 
 Existing Instances TVU_plus TVU_scalar.
 
 Definition tensor_product_rid_f :=
     module_homo_f (module_homo_compose
-        (ex_val (tensor_product_lid U V))
-        (ex_val (tensor_product_comm U V U))).
+        (ex_val (tensor_product_lid M))
+        (ex_val (tensor_product_comm M (cring_module F)))).
 Let f := tensor_product_rid_f.
 
 Theorem tensor_product_rid_eq : ∀ a v, f (v ⊗ a) = a · v.
     intros a v.
     unfold f, tensor_product_rid_f.
     cbn.
-    change (module_homo_f (ex_val (tensor_product_lid U V))) with
-        (tensor_product_lid_f U V).
-    change (module_homo_f (ex_val (tensor_product_comm U V U))) with
-        (tensor_product_comm_f U V U).
+    change (module_homo_f (ex_val (tensor_product_lid M))) with
+        (tensor_product_lid_f M).
+    change (module_homo_f (ex_val (tensor_product_comm M (cring_module F)))) with
+        (tensor_product_comm_f M (cring_module F)).
     rewrite tensor_product_comm_eq.
     rewrite tensor_product_lid_eq.
     reflexivity.
@@ -332,11 +336,11 @@ Theorem tensor_product_rid_plus : ∀ a b, f (a + b) = f a + f b.
     intros a b.
     unfold f, tensor_product_rid_f.
     cbn.
-    change (module_homo_f (ex_val (tensor_product_lid U V))) with
-        (tensor_product_lid_f U V).
-    change (module_homo_f (ex_val (tensor_product_comm U V U))) with
-        (tensor_product_comm_f U V U).
-    rewrite tensor_product_comm_plus.
+    change (module_homo_f (ex_val (tensor_product_lid M))) with
+        (tensor_product_lid_f M).
+    change (module_homo_f (ex_val (tensor_product_comm M (cring_module F)))) with
+        (tensor_product_comm_f M (cring_module F)).
+    rewrite (tensor_product_comm_plus M).
     rewrite tensor_product_lid_plus.
     reflexivity.
 Qed.
@@ -344,11 +348,11 @@ Theorem tensor_product_rid_scalar : ∀ a v, f (a · v) = a · f v.
     intros a v.
     unfold f, tensor_product_rid_f.
     cbn.
-    change (module_homo_f (ex_val (tensor_product_lid U V))) with
-        (tensor_product_lid_f U V).
-    change (module_homo_f (ex_val (tensor_product_comm U V U))) with
-        (tensor_product_comm_f U V U).
-    rewrite tensor_product_comm_scalar.
+    change (module_homo_f (ex_val (tensor_product_lid M))) with
+        (tensor_product_lid_f M).
+    change (module_homo_f (ex_val (tensor_product_comm M (cring_module F)))) with
+        (tensor_product_comm_f M (cring_module F)).
+    rewrite (tensor_product_comm_scalar M).
     rewrite tensor_product_lid_scalar.
     reflexivity.
 Qed.
@@ -365,95 +369,95 @@ End TensorProductIsomorphism.
 
 Section TensorProductIsomorphism.
 
-Context U V11 V12 V21 V22 `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO,
-    UMD : @Ldist U UP UM,
+Context {F : CRing} (M1 M2 N1 N2 : Module F).
 
-    VP11 : Plus V11,
-    VZ11 : Zero V11,
-    VN11 : Neg V11,
-    VPA11 : @PlusAssoc V11 VP11,
-    VPC11 : @PlusComm V11 VP11,
-    VPZ11 : @PlusLid V11 VP11 VZ11,
-    VPN11 : @PlusLinv V11 VP11 VZ11 VN11,
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let V11 := module_V M1.
+Let VP11 := module_plus M1.
+Let VZ11 := module_zero M1.
+Let VN11 := module_neg M1.
+Let VPA11 := module_plus_assoc M1.
+Let VPC11 := module_plus_comm M1.
+Let VPZ11 := module_plus_lid M1.
+Let VPN11 := module_plus_linv M1.
+Let SM11 := module_scalar M1.
+Let SMO11 := module_scalar_id M1.
+Let SML11 := module_scalar_ldist M1.
+Let SMR11 := module_scalar_rdist M1.
+Let SMC11 := module_scalar_comp M1.
+Let V12 := module_V M2.
+Let VP12 := module_plus M2.
+Let VZ12 := module_zero M2.
+Let VN12 := module_neg M2.
+Let VPA12 := module_plus_assoc M2.
+Let VPC12 := module_plus_comm M2.
+Let VPZ12 := module_plus_lid M2.
+Let VPN12 := module_plus_linv M2.
+Let SM12 := module_scalar M2.
+Let SMO12 := module_scalar_id M2.
+Let SML12 := module_scalar_ldist M2.
+Let SMR12 := module_scalar_rdist M2.
+Let SMC12 := module_scalar_comp M2.
+Let V21 := module_V N1.
+Let VP21 := module_plus N1.
+Let VZ21 := module_zero N1.
+Let VN21 := module_neg N1.
+Let VPA21 := module_plus_assoc N1.
+Let VPC21 := module_plus_comm N1.
+Let VPZ21 := module_plus_lid N1.
+Let VPN21 := module_plus_linv N1.
+Let SM21 := module_scalar N1.
+Let SMO21 := module_scalar_id N1.
+Let SML21 := module_scalar_ldist N1.
+Let SMR21 := module_scalar_rdist N1.
+Let SMC21 := module_scalar_comp N1.
+Let V22 := module_V N2.
+Let VP22 := module_plus N2.
+Let VZ22 := module_zero N2.
+Let VN22 := module_neg N2.
+Let VPA22 := module_plus_assoc N2.
+Let VPC22 := module_plus_comm N2.
+Let VPZ22 := module_plus_lid N2.
+Let VPN22 := module_plus_linv N2.
+Let SM22 := module_scalar N2.
+Let SMO22 := module_scalar_id N2.
+Let SML22 := module_scalar_ldist N2.
+Let SMR22 := module_scalar_rdist N2.
+Let SMC22 := module_scalar_comp N2.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP11 VZ11 VN11
+    VPA11 VPC11 VPZ11 VPN11 SM11 SMO11 SML11 SMR11 SMC11 VP12 VZ12 VN12 VPA12
+    VPC12 VPZ12 VPN12 SM12 SMO12 SML12 SMR12 SMC12 VP21 VZ21 VN21 VPA21 VPC21
+    VPZ21 VPN21 SM21 SMO21 SML21 SMR21 SMC21 VP22 VZ22 VN22 VPA22 VPC22 VPZ22
+    VPN22 SM22 SMO22 SML22 SMR22 SMC22.
 
-    SM11 : ScalarMult U V11,
-    SMO11 : @ScalarId U V11 UO SM11,
-    SML11 : @ScalarLdist U V11 VP11 SM11,
-    SMR11 : @ScalarRdist U V11 UP VP11 SM11,
-    SMC11 : @ScalarComp U V11 UM SM11,
+Local Infix "⊗1" := (tensor_mult M1 N1) (at level 40, left associativity).
+Local Infix "⊗2" := (tensor_mult M2 N2) (at level 40, left associativity).
 
-    VP12 : Plus V12,
-    VZ12 : Zero V12,
-    VN12 : Neg V12,
-    VPA12 : @PlusAssoc V12 VP12,
-    VPC12 : @PlusComm V12 VP12,
-    VPZ12 : @PlusLid V12 VP12 VZ12,
-    VPN12 : @PlusLinv V12 VP12 VZ12 VN12,
-
-    SM12 : ScalarMult U V12,
-    SMO12 : @ScalarId U V12 UO SM12,
-    SML12 : @ScalarLdist U V12 VP12 SM12,
-    SMR12 : @ScalarRdist U V12 UP VP12 SM12,
-    SMC12 : @ScalarComp U V12 UM SM12,
-
-    VP21 : Plus V21,
-    VZ21 : Zero V21,
-    VN21 : Neg V21,
-    VPA21 : @PlusAssoc V21 VP21,
-    VPC21 : @PlusComm V21 VP21,
-    VPZ21 : @PlusLid V21 VP21 VZ21,
-    VPN21 : @PlusLinv V21 VP21 VZ21 VN21,
-
-    SM21 : ScalarMult U V21,
-    SMO21 : @ScalarId U V21 UO SM21,
-    SML21 : @ScalarLdist U V21 VP21 SM21,
-    SMR21 : @ScalarRdist U V21 UP VP21 SM21,
-    SMC21 : @ScalarComp U V21 UM SM21,
-
-    VP22 : Plus V22,
-    VZ22 : Zero V22,
-    VN22 : Neg V22,
-    VPA22 : @PlusAssoc V22 VP22,
-    VPC22 : @PlusComm V22 VP22,
-    VPZ22 : @PlusLid V22 VP22 VZ22,
-    VPN22 : @PlusLinv V22 VP22 VZ22 VN22,
-
-    SM22 : ScalarMult U V22,
-    SMO22 : @ScalarId U V22 UO SM22,
-    SML22 : @ScalarLdist U V22 VP22 SM22,
-    SMR22 : @ScalarRdist U V22 UP VP22 SM22,
-    SMC22 : @ScalarComp U V22 UM SM22
-}.
-
-Local Infix "⊗1" := (tensor_mult U V11 V21) (at level 40, left associativity).
-Local Infix "⊗2" := (tensor_mult U V12 V22) (at level 40, left associativity).
-
-Let T1_plus := module_plus (tensor_product U V11 V21).
-Let T1_scalar := module_scalar (tensor_product U V11 V21).
-Let T2_plus := module_plus (tensor_product U V12 V22).
-Let T2_scalar := module_scalar (tensor_product U V12 V22).
+Let T1_plus := module_plus (tensor_product M1 N1).
+Let T1_scalar := module_scalar (tensor_product M1 N1).
+Let T2_plus := module_plus (tensor_product M2 N2).
+Let T2_scalar := module_scalar (tensor_product M2 N2).
 
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_lriso :
-    ∀ (f1 : ModuleHomomorphism (vector_module U V11) (vector_module U V12))
-      (f2 : ModuleHomomorphism (vector_module U V21) (vector_module U V22)),
-    isomorphism (C0 := MODULE (scalar_cring U)) f1 →
-    isomorphism (C0 := MODULE (scalar_cring U)) f2 →
-    ∃ h : ModuleHomomorphism (tensor_product U V11 V21) (tensor_product U V12 V22),
-        isomorphism (C0 := MODULE (scalar_cring U)) h ∧
+    ∀ (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2),
+    isomorphism f1 → isomorphism f2 →
+    ∃ h : ModuleHomomorphism (tensor_product M1 N1) (tensor_product M2 N2),
+        isomorphism h ∧
         ∀ u v, module_homo_f h (u ⊗1 v) = module_homo_f f1 u ⊗2 module_homo_f f2
         v.
     intros f1 f2 [g1 [fg1 gf1]] [g2 [fg2 gf2]].
@@ -480,8 +484,8 @@ Theorem tensor_product_lriso :
         -   rewrite (@module_homo_plus _ _ _ f2).
             apply tensor_ldist.
     }
-    pose (h1_base := make_bilinear _ _ _ _ _ h_bil).
-    pose proof (tensor_product_universal _ _ _ h1_base) as h1_ex.
+    pose (h1_base := make_bilinear _ _ _ _ h_bil).
+    pose proof (tensor_product_universal _ _ h1_base) as h1_ex.
     apply card_one_ex in h1_ex as [h1 h1_in].
     cbn in *.
     unfold bilinear_from_set in h1_in; cbn in h1_in.
@@ -502,8 +506,8 @@ Theorem tensor_product_lriso :
             -   rewrite (@module_homo_plus _ _ _ g2).
                 apply tensor_ldist.
         }
-        pose (h2_base := make_bilinear _ _ _ _ _ h'_bil).
-        pose proof (tensor_product_universal _ _ _ h2_base) as h2_ex.
+        pose (h2_base := make_bilinear _ _ _ _ h'_bil).
+        pose proof (tensor_product_universal _ _ h2_base) as h2_ex.
         apply card_one_ex in h2_ex as [h2 h2_in].
         cbn in *.
         unfold bilinear_from_set in h2_in; cbn in h2_in.
@@ -513,7 +517,7 @@ Theorem tensor_product_lriso :
         unfold module_homo_compose, module_homo_id; cbn.
         split; apply module_homomorphism_eq; cbn.
         +   intros x.
-            pose proof (tensor_sum _ _ _ x) as [l eq]; subst x.
+            pose proof (tensor_sum _ _ x) as [l eq]; subst x.
             induction l.
             *   cbn.
                 do 2 rewrite module_homo_zero.
@@ -531,7 +535,7 @@ Theorem tensor_product_lriso :
                 rewrite fg1, fg2.
                 reflexivity.
         +   intros x.
-            pose proof (tensor_sum _ _ _ x) as [l eq]; subst x.
+            pose proof (tensor_sum _ _ x) as [l eq]; subst x.
             induction l.
             *   cbn.
                 do 2 rewrite module_homo_zero.
@@ -555,10 +559,8 @@ Definition tensor_product_lriso_f f1 f2 f1_iso f2_iso
     := module_homo_f (ex_val (tensor_product_lriso f1 f2 f1_iso f2_iso)).
 
 Variables
-    (f1 : ModuleHomomorphism (vector_module U V11) (vector_module U V12))
-    (f2 : ModuleHomomorphism (vector_module U V21) (vector_module U V22))
-    (f1_iso : isomorphism (C0 := MODULE (scalar_cring U)) f1)
-    (f2_iso : isomorphism (C0 := MODULE (scalar_cring U)) f2).
+    (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2)
+    (f1_iso : isomorphism f1) (f2_iso : isomorphism f2).
 
 Let lrf := tensor_product_lriso_f f1 f2 f1_iso f2_iso.
 
@@ -592,92 +594,89 @@ End TensorProductIsomorphism.
 
 Section TensorProductIsomorphism.
 
-Context U V11 V12 V2 `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO,
-    UMD : @Ldist U UP UM,
+Context {F : CRing} (M1 M2 N : Module F).
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let V11 := module_V M1.
+Let VP11 := module_plus M1.
+Let VZ11 := module_zero M1.
+Let VN11 := module_neg M1.
+Let VPA11 := module_plus_assoc M1.
+Let VPC11 := module_plus_comm M1.
+Let VPZ11 := module_plus_lid M1.
+Let VPN11 := module_plus_linv M1.
+Let SM11 := module_scalar M1.
+Let SMO11 := module_scalar_id M1.
+Let SML11 := module_scalar_ldist M1.
+Let SMR11 := module_scalar_rdist M1.
+Let SMC11 := module_scalar_comp M1.
+Let V12 := module_V M2.
+Let VP12 := module_plus M2.
+Let VZ12 := module_zero M2.
+Let VN12 := module_neg M2.
+Let VPA12 := module_plus_assoc M2.
+Let VPC12 := module_plus_comm M2.
+Let VPZ12 := module_plus_lid M2.
+Let VPN12 := module_plus_linv M2.
+Let SM12 := module_scalar M2.
+Let SMO12 := module_scalar_id M2.
+Let SML12 := module_scalar_ldist M2.
+Let SMR12 := module_scalar_rdist M2.
+Let SMC12 := module_scalar_comp M2.
+Let V2 := module_V N.
+Let VP2 := module_plus N.
+Let VZ2 := module_zero N.
+Let VN2 := module_neg N.
+Let VPA2 := module_plus_assoc N.
+Let VPC2 := module_plus_comm N.
+Let VPZ2 := module_plus_lid N.
+Let VPN2 := module_plus_linv N.
+Let SM2 := module_scalar N.
+Let SMO2 := module_scalar_id N.
+Let SML2 := module_scalar_ldist N.
+Let SMR2 := module_scalar_rdist N.
+Let SMC2 := module_scalar_comp N.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP11 VZ11 VN11
+    VPA11 VPC11 VPZ11 VPN11 SM11 SMO11 SML11 SMR11 SMC11 VP12 VZ12 VN12 VPA12
+    VPC12 VPZ12 VPN12 SM12 SMO12 SML12 SMR12 SMC12 VP2 VZ2 VN2 VPA2 VPC2
+    VPZ2 VPN2 SM2 SMO2 SML2 SMR2 SMC2.
 
-    VP11 : Plus V11,
-    VZ11 : Zero V11,
-    VN11 : Neg V11,
-    VPA11 : @PlusAssoc V11 VP11,
-    VPC11 : @PlusComm V11 VP11,
-    VPZ11 : @PlusLid V11 VP11 VZ11,
-    VPN11 : @PlusLinv V11 VP11 VZ11 VN11,
+Local Infix "⊗1" := (tensor_mult M1 N) (at level 40, left associativity).
+Local Infix "⊗2" := (tensor_mult M2 N) (at level 40, left associativity).
 
-    SM11 : ScalarMult U V11,
-    SMO11 : @ScalarId U V11 UO SM11,
-    SML11 : @ScalarLdist U V11 VP11 SM11,
-    SMR11 : @ScalarRdist U V11 UP VP11 SM11,
-    SMC11 : @ScalarComp U V11 UM SM11,
-
-    VP12 : Plus V12,
-    VZ12 : Zero V12,
-    VN12 : Neg V12,
-    VPA12 : @PlusAssoc V12 VP12,
-    VPC12 : @PlusComm V12 VP12,
-    VPZ12 : @PlusLid V12 VP12 VZ12,
-    VPN12 : @PlusLinv V12 VP12 VZ12 VN12,
-
-    SM12 : ScalarMult U V12,
-    SMO12 : @ScalarId U V12 UO SM12,
-    SML12 : @ScalarLdist U V12 VP12 SM12,
-    SMR12 : @ScalarRdist U V12 UP VP12 SM12,
-    SMC12 : @ScalarComp U V12 UM SM12,
-
-    VP2 : Plus V2,
-    VZ2 : Zero V2,
-    VN2 : Neg V2,
-    VPA2 : @PlusAssoc V2 VP2,
-    VPC2 : @PlusComm V2 VP2,
-    VPZ2 : @PlusLid V2 VP2 VZ2,
-    VPN2 : @PlusLinv V2 VP2 VZ2 VN2,
-
-    SM2 : ScalarMult U V2,
-    SMO2 : @ScalarId U V2 UO SM2,
-    SML2 : @ScalarLdist U V2 VP2 SM2,
-    SMR2 : @ScalarRdist U V2 UP VP2 SM2,
-    SMC2 : @ScalarComp U V2 UM SM2
-}.
-
-Local Infix "⊗1" := (tensor_mult U V11 V2) (at level 40, left associativity).
-Local Infix "⊗2" := (tensor_mult U V12 V2) (at level 40, left associativity).
-
-Let T1_plus := module_plus (tensor_product U V11 V2).
-Let T1_scalar := module_scalar (tensor_product U V11 V2).
-Let T2_plus := module_plus (tensor_product U V12 V2).
-Let T2_scalar := module_scalar (tensor_product U V12 V2).
+Let T1_plus := module_plus (tensor_product M1 N).
+Let T1_scalar := module_scalar (tensor_product M1 N).
+Let T2_plus := module_plus (tensor_product M2 N).
+Let T2_scalar := module_scalar (tensor_product M2 N).
 
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_liso :
-    ∀ (f : ModuleHomomorphism (vector_module U V11) (vector_module U V12)),
-    isomorphism (C0 := MODULE (scalar_cring U)) f →
-    ∃ g : ModuleHomomorphism (tensor_product U V11 V2) (tensor_product U V12 V2),
-        isomorphism (C0 := MODULE (scalar_cring U)) g ∧
+    ∀ (f : ModuleHomomorphism M1 M2), isomorphism f →
+    ∃ g : ModuleHomomorphism (tensor_product M1 N) (tensor_product M2 N),
+        isomorphism g ∧
         ∀ u v, module_homo_f g (u ⊗1 v) = module_homo_f f u ⊗2 v.
     intros f f_iso.
-    exact (tensor_product_lriso U V11 V12 V2 V2 f
-        (cat_id (MODULE (scalar_cring U)) (vector_module U V2)) f_iso
-        (id_isomorphism (C0 := MODULE (scalar_cring U))(vector_module U V2))).
+    exact (tensor_product_lriso
+        M1 M2 N N f (cat_id _ N) f_iso (id_isomorphism N)).
 Qed.
 
 Definition tensor_product_liso_f f f_iso
     := module_homo_f (ex_val (tensor_product_liso f f_iso)).
 
-Variables
-    (f : ModuleHomomorphism (vector_module U V11) (vector_module U V12))
-    (f_iso : isomorphism (C0 := MODULE (scalar_cring U)) f).
+Variables (f : ModuleHomomorphism M1 M2) (f_iso : isomorphism f).
 
 Let lf := tensor_product_liso_f f f_iso.
 
@@ -711,93 +710,92 @@ End TensorProductIsomorphism.
 
 Section TensorProductIsomorphism.
 
-Context U V1 V21 V22 `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO,
-    UMD : @Ldist U UP UM,
+Context {F : CRing} (M N1 N2 : Module F).
 
-    VP1 : Plus V1,
-    VZ1 : Zero V1,
-    VN1 : Neg V1,
-    VPA1 : @PlusAssoc V1 VP1,
-    VPC1 : @PlusComm V1 VP1,
-    VPZ1 : @PlusLid V1 VP1 VZ1,
-    VPN1 : @PlusLinv V1 VP1 VZ1 VN1,
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let V1 := module_V M.
+Let VP1 := module_plus M.
+Let VZ1 := module_zero M.
+Let VN1 := module_neg M.
+Let VPA1 := module_plus_assoc M.
+Let VPC1 := module_plus_comm M.
+Let VPZ1 := module_plus_lid M.
+Let VPN1 := module_plus_linv M.
+Let SM1 := module_scalar M.
+Let SMO1 := module_scalar_id M.
+Let SML1 := module_scalar_ldist M.
+Let SMR1 := module_scalar_rdist M.
+Let SMC1 := module_scalar_comp M.
+Let V21 := module_V N1.
+Let VP21 := module_plus N1.
+Let VZ21 := module_zero N1.
+Let VN21 := module_neg N1.
+Let VPA21 := module_plus_assoc N1.
+Let VPC21 := module_plus_comm N1.
+Let VPZ21 := module_plus_lid N1.
+Let VPN21 := module_plus_linv N1.
+Let SM21 := module_scalar N1.
+Let SMO21 := module_scalar_id N1.
+Let SML21 := module_scalar_ldist N1.
+Let SMR21 := module_scalar_rdist N1.
+Let SMC21 := module_scalar_comp N1.
+Let V22 := module_V N2.
+Let VP22 := module_plus N2.
+Let VZ22 := module_zero N2.
+Let VN22 := module_neg N2.
+Let VPA22 := module_plus_assoc N2.
+Let VPC22 := module_plus_comm N2.
+Let VPZ22 := module_plus_lid N2.
+Let VPN22 := module_plus_linv N2.
+Let SM22 := module_scalar N2.
+Let SMO22 := module_scalar_id N2.
+Let SML22 := module_scalar_ldist N2.
+Let SMR22 := module_scalar_rdist N2.
+Let SMC22 := module_scalar_comp N2.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
+    VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP21 VZ21 VN21 VPA21 VPC21 VPZ21
+    VPN21 SM21 SMO21 SML21 SMR21 SMC21 VP22 VZ22 VN22 VPA22 VPC22 VPZ22 VPN22
+    SM22 SMO22 SML22 SMR22 SMC22.
 
-    SM1 : ScalarMult U V1,
-    SMO1 : @ScalarId U V1 UO SM1,
-    SML1 : @ScalarLdist U V1 VP1 SM1,
-    SMR1 : @ScalarRdist U V1 UP VP1 SM1,
-    SMC1 : @ScalarComp U V1 UM SM1,
+Local Infix "⊗1" := (tensor_mult M N1) (at level 40, left associativity).
+Local Infix "⊗2" := (tensor_mult M N2) (at level 40, left associativity).
 
-    VP21 : Plus V21,
-    VZ21 : Zero V21,
-    VN21 : Neg V21,
-    VPA21 : @PlusAssoc V21 VP21,
-    VPC21 : @PlusComm V21 VP21,
-    VPZ21 : @PlusLid V21 VP21 VZ21,
-    VPN21 : @PlusLinv V21 VP21 VZ21 VN21,
-
-    SM21 : ScalarMult U V21,
-    SMO21 : @ScalarId U V21 UO SM21,
-    SML21 : @ScalarLdist U V21 VP21 SM21,
-    SMR21 : @ScalarRdist U V21 UP VP21 SM21,
-    SMC21 : @ScalarComp U V21 UM SM21,
-
-    VP22 : Plus V22,
-    VZ22 : Zero V22,
-    VN22 : Neg V22,
-    VPA22 : @PlusAssoc V22 VP22,
-    VPC22 : @PlusComm V22 VP22,
-    VPZ22 : @PlusLid V22 VP22 VZ22,
-    VPN22 : @PlusLinv V22 VP22 VZ22 VN22,
-
-    SM22 : ScalarMult U V22,
-    SMO22 : @ScalarId U V22 UO SM22,
-    SML22 : @ScalarLdist U V22 VP22 SM22,
-    SMR22 : @ScalarRdist U V22 UP VP22 SM22,
-    SMC22 : @ScalarComp U V22 UM SM22
-}.
-
-Local Infix "⊗1" := (tensor_mult U V1 V21) (at level 40, left associativity).
-Local Infix "⊗2" := (tensor_mult U V1 V22) (at level 40, left associativity).
-
-Let T1_plus := module_plus (tensor_product U V1 V21).
-Let T1_scalar := module_scalar (tensor_product U V1 V21).
-Let T2_plus := module_plus (tensor_product U V1 V22).
-Let T2_scalar := module_scalar (tensor_product U V1 V22).
+Let T1_plus := module_plus (tensor_product M N1).
+Let T1_scalar := module_scalar (tensor_product M N1).
+Let T2_plus := module_plus (tensor_product M N2).
+Let T2_scalar := module_scalar (tensor_product M N2).
 
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_riso :
-    ∀ (f : ModuleHomomorphism (vector_module U V21) (vector_module U V22)),
-    isomorphism (C0 := MODULE (scalar_cring U)) f →
-    ∃ g : ModuleHomomorphism (tensor_product U V1 V21) (tensor_product U V1 V22),
-        isomorphism (C0 := MODULE (scalar_cring U)) g ∧
+    ∀ (f : ModuleHomomorphism N1 N2), isomorphism f →
+    ∃ g : ModuleHomomorphism (tensor_product M N1) (tensor_product M N2),
+        isomorphism g ∧
         ∀ u v, module_homo_f g (u ⊗1 v) = u ⊗2 module_homo_f f v.
     intros f f_iso.
-    exact (tensor_product_lriso U V1 V1 V21 V22
-        (cat_id (MODULE (scalar_cring U)) (vector_module U V1)) f
-        (id_isomorphism (C0 := MODULE (scalar_cring U)) (vector_module U V1))
-        f_iso).
+    exact (tensor_product_lriso
+        M M N1 N2 (cat_id _ M) f (id_isomorphism M) f_iso).
 Qed.
 
 Definition tensor_product_riso_f f f_iso
     := module_homo_f (ex_val (tensor_product_riso f f_iso)).
 
 Variables
-    (f : ModuleHomomorphism (vector_module U V21) (vector_module U V22))
-    (f_iso : isomorphism (C0 := MODULE (scalar_cring U)) f).
+    (f : ModuleHomomorphism N1 N2)
+    (f_iso : isomorphism f).
 
 Let rf := tensor_product_riso_f f f_iso.
 

@@ -24,21 +24,22 @@ Arguments free_fin {U V H}.
 
 Section LinearFree.
 
-Context (U V : Type) `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UMC : @MultComm U UM,
-    UMA : @MultAssoc U UM,
-    UMO : @MultLid U UM UO,
-    UML : @Ldist U UP UM
-}.
+Context (F : CRing) (V : Type).
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD.
 
 Theorem free_eq :
         ∀ (A B : free_linear U V), (∀ x, free_f A x = free_f B x) → A = B.
@@ -59,6 +60,7 @@ Lemma to_free_fin : ∀ v, finite (|set_type (λ x, to_free_base v x ≠ 0)|).
         2: {
             apply functional_ext; intros x.
             unfold to_free_base.
+            unfold U in *.
             rewrite <- eq.
             case_if; reflexivity.
         }
@@ -586,7 +588,7 @@ Theorem free_basis_basis : basis free_basis.
 Qed.
 
 Definition free_module := make_module
-    (scalar_cring U)
+    F
     (free_linear U V)
     free_plus_class
     free_zero
@@ -603,12 +605,12 @@ Definition free_module := make_module
 .
 
 Record free_from := make_free_from {
-    free_from_module : Module (scalar_cring U);
+    free_from_module : Module F;
     free_from_f : V → module_V free_from_module;
 }.
 
 Definition free_from_set (f g : free_from)
-    (h : cat_morphism (MODULE (scalar_cring U))
+    (h : cat_morphism (MODULE F)
                       (free_from_module f)
                       (free_from_module g))
     := ∀ x, module_homo_f h (free_from_f f x) = free_from_f g x.
@@ -618,8 +620,8 @@ Definition free_from_compose {F G H : free_from}
     := [f|] ∘ [g|].
 
 Lemma free_from_set_compose_in
-        {F G H : free_from} : ∀ (f : set_type (free_from_set G H)) g,
-        free_from_set F H (free_from_compose f g).
+        {F' G H : free_from} : ∀ (f : set_type (free_from_set G H)) g,
+        free_from_set F' H (free_from_compose f g).
     intros [f f_eq] [g g_eq].
     unfold free_from_set in *.
     unfold free_from_compose; cbn.
@@ -644,15 +646,15 @@ Program Instance FREE_FROM : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (MODULE (scalar_cring U))).
+    apply (@cat_assoc (MODULE F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (MODULE (scalar_cring U))).
+    apply (@cat_lid (MODULE F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (MODULE (scalar_cring U))).
+    apply (@cat_rid (MODULE F)).
 Qed.
 
 Definition to_free_from := make_free_from free_module to_free.
@@ -929,7 +931,7 @@ Theorem free_module_universal : initial to_free_from.
             symmetry in lav_eq.
             apply (wlog _ _ lav_eq av_uni).
         }
-        pose (fH := make_module_homomorphism (scalar_cring U) free_module gM f f_plus f_scalar).
+        pose (fH := make_module_homomorphism F free_module gM f f_plus f_scalar).
         exists fH.
         unfold free_from_set; cbn.
         intros v.
