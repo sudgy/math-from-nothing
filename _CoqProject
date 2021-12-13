@@ -147,6 +147,7 @@
 ./src/Algebra/Linear/Tensor/tensor_power.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_base.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_grade.v
+./src/Algebra/Linear/Tensor/tensor_algebra_mult1.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
