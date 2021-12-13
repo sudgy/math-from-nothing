@@ -144,6 +144,24 @@ Polymorphic Theorem id_isomorphism : ∀ A, isomorphism (cat_id _ A).
     split; apply cat_lid.
 Qed.
 
+Theorem compose_isomorphism : ∀ {A B C}
+        (f : cat_morphism B C) (g : cat_morphism A B),
+        isomorphism f → isomorphism g → isomorphism (f ∘ g).
+    intros A B C f g [f' [f1 f2]] [g' [g1 g2]].
+    exists (g' ∘ f').
+    split.
+    -   rewrite <- cat_assoc.
+        rewrite (cat_assoc g).
+        rewrite g1.
+        rewrite cat_lid.
+        exact f1.
+    -   rewrite <- cat_assoc.
+        rewrite (cat_assoc f').
+        rewrite f2.
+        rewrite cat_lid.
+        exact g2.
+Qed.
+
 Theorem cat_inverse_unique : ∀ {A B} (f : cat_morphism A B) g1 g2,
         f ∘ g1 = 𝟙 → g1 ∘ f = 𝟙 → f ∘ g2 = 𝟙 → g2 ∘ f = 𝟙 → g1 = g2.
     intros A B f g1 g2 fg1 g1f fg2 g2f.
