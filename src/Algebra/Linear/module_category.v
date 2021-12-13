@@ -258,3 +258,13 @@ Context V `{
 Definition vector_module := make_module scalar_cring V VP VZ VN VPA VPC VPZ VPN SM SMO SML SMR SMC.
 
 End ModuleCategoryObjects.
+
+Definition cring_module (C : CRing) := make_module C cring_U cring_plus
+    cring_zero cring_neg cring_plus_assoc cring_plus_comm cring_plus_lid
+    cring_plus_linv
+    (@scalar_scalar_mult cring_U cring_mult)
+    (@scalar_scalar_id cring_U cring_mult cring_one cring_mult_lid)
+    (@scalar_scalar_ldist cring_U cring_plus cring_mult cring_ldist)
+    (@scalar_scalar_rdist cring_U cring_plus cring_mult cring_mult_comm cring_ldist)
+    (@scalar_scalar_comp cring_U cring_mult cring_mult_assoc)
+.
