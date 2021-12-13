@@ -118,7 +118,8 @@ Theorem tensor_product_lid :
     -   exact f_in.
 Qed.
 
-Definition tensor_product_lid_f := module_homo_f (ex_val tensor_product_lid).
+Definition tensor_product_lid_homo := ex_val tensor_product_lid.
+Definition tensor_product_lid_f := module_homo_f tensor_product_lid_homo.
 Let lf := tensor_product_lid_f.
 
 Theorem tensor_product_lid_eq : ∀ a v, lf (a ⊗ v) = a · v.
@@ -126,10 +127,10 @@ Theorem tensor_product_lid_eq : ∀ a v, lf (a ⊗ v) = a · v.
 Qed.
 
 Theorem tensor_product_lid_plus : ∀ a b, lf (a + b) = lf a + lf b.
-    apply (@module_homo_plus _ _ _ (ex_val tensor_product_lid)).
+    apply (@module_homo_plus _ _ _ tensor_product_lid_homo).
 Qed.
 Theorem tensor_product_lid_scalar : ∀ a v, lf (a · v) = a · lf v.
-    apply (@module_homo_scalar _ _ _ (ex_val tensor_product_lid)).
+    apply (@module_homo_scalar _ _ _ tensor_product_lid_homo).
 Qed.
 
 Theorem tensor_product_lid_bij : bijective lf.
@@ -239,7 +240,8 @@ Theorem tensor_product_comm :
     -   exact f_in.
 Qed.
 
-Definition tensor_product_comm_f := module_homo_f (ex_val tensor_product_comm).
+Definition tensor_product_comm_homo := ex_val tensor_product_comm.
+Definition tensor_product_comm_f := module_homo_f tensor_product_comm_homo.
 Let cf := tensor_product_comm_f.
 
 Theorem tensor_product_comm_eq : ∀ a b, cf (a ⊗12 b) = b ⊗21 a.
@@ -247,10 +249,10 @@ Theorem tensor_product_comm_eq : ∀ a b, cf (a ⊗12 b) = b ⊗21 a.
 Qed.
 
 Theorem tensor_product_comm_plus : ∀ a b, cf (a + b) = cf a + cf b.
-    apply (@module_homo_plus _ _ _ (ex_val tensor_product_comm)).
+    apply (@module_homo_plus _ _ _ tensor_product_comm_homo).
 Qed.
 Theorem tensor_product_comm_scalar : ∀ a v, cf (a · v) = a · cf v.
-    apply (@module_homo_scalar _ _ _ (ex_val tensor_product_comm)).
+    apply (@module_homo_scalar _ _ _ tensor_product_comm_homo).
 Qed.
 
 Theorem tensor_product_comm_bij : bijective cf.
@@ -313,19 +315,18 @@ Let TVU_scalar := module_scalar (tensor_product M (cring_module F)).
 
 Existing Instances TVU_plus TVU_scalar.
 
-Definition tensor_product_rid_f :=
-    module_homo_f (module_homo_compose
-        (ex_val (tensor_product_lid M))
-        (ex_val (tensor_product_comm M (cring_module F)))).
+Definition tensor_product_rid_homo :=
+    tensor_product_lid_homo M ∘ tensor_product_comm_homo M (cring_module F).
+Definition tensor_product_rid_f := module_homo_f tensor_product_rid_homo.
 Let f := tensor_product_rid_f.
 
 Theorem tensor_product_rid_eq : ∀ a v, f (v ⊗ a) = a · v.
     intros a v.
     unfold f, tensor_product_rid_f.
     cbn.
-    change (module_homo_f (ex_val (tensor_product_lid M))) with
+    change (module_homo_f (tensor_product_lid_homo M)) with
         (tensor_product_lid_f M).
-    change (module_homo_f (ex_val (tensor_product_comm M (cring_module F)))) with
+    change (module_homo_f (tensor_product_comm_homo M (cring_module F))) with
         (tensor_product_comm_f M (cring_module F)).
     rewrite tensor_product_comm_eq.
     rewrite tensor_product_lid_eq.
@@ -336,9 +337,9 @@ Theorem tensor_product_rid_plus : ∀ a b, f (a + b) = f a + f b.
     intros a b.
     unfold f, tensor_product_rid_f.
     cbn.
-    change (module_homo_f (ex_val (tensor_product_lid M))) with
+    change (module_homo_f (tensor_product_lid_homo M)) with
         (tensor_product_lid_f M).
-    change (module_homo_f (ex_val (tensor_product_comm M (cring_module F)))) with
+    change (module_homo_f (tensor_product_comm_homo M (cring_module F))) with
         (tensor_product_comm_f M (cring_module F)).
     rewrite (tensor_product_comm_plus M).
     rewrite tensor_product_lid_plus.
@@ -348,9 +349,9 @@ Theorem tensor_product_rid_scalar : ∀ a v, f (a · v) = a · f v.
     intros a v.
     unfold f, tensor_product_rid_f.
     cbn.
-    change (module_homo_f (ex_val (tensor_product_lid M))) with
+    change (module_homo_f (tensor_product_lid_homo M)) with
         (tensor_product_lid_f M).
-    change (module_homo_f (ex_val (tensor_product_comm M (cring_module F)))) with
+    change (module_homo_f (tensor_product_comm_homo M (cring_module F))) with
         (tensor_product_comm_f M (cring_module F)).
     rewrite (tensor_product_comm_scalar M).
     rewrite tensor_product_lid_scalar.
@@ -455,20 +456,10 @@ Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_lriso :
     ∀ (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2),
-    isomorphism f1 → isomorphism f2 →
     ∃ h : ModuleHomomorphism (tensor_product M1 N1) (tensor_product M2 N2),
-        isomorphism h ∧
         ∀ u v, module_homo_f h (u ⊗1 v) = module_homo_f f1 u ⊗2 module_homo_f f2
         v.
-    intros f1 f2 [g1 [fg1 gf1]] [g2 [fg2 gf2]].
-    inversion fg1 as [fg1']; clear fg1.
-    inversion gf1 as [gf1']; clear gf1.
-    inversion fg2 as [fg2']; clear fg2.
-    inversion gf2 as [gf2']; clear gf2.
-    pose proof (func_eq _ _ fg1') as fg1; clear fg1'.
-    pose proof (func_eq _ _ gf1') as gf1; clear gf1'.
-    pose proof (func_eq _ _ fg2') as fg2; clear fg2'.
-    pose proof (func_eq _ _ gf2') as gf2; clear gf2'.
+    intros f1 f2.
     cbn in *.
     pose (h u v := module_homo_f f1 u ⊗2 module_homo_f f2 v).
     assert (bilinear h) as h_bil.
@@ -491,93 +482,105 @@ Theorem tensor_product_lriso :
     unfold bilinear_from_set in h1_in; cbn in h1_in.
     clear h1_base.
     exists h1.
-    split.
-    -   pose (h' u v := module_homo_f g1 u ⊗1 module_homo_f g2 v).
-        assert (bilinear h') as h'_bil.
-        {
-            unfold h'.
-            repeat split; intros.
-            -   rewrite (@module_homo_scalar _ _ _ g1).
-                apply tensor_lscalar.
-            -   rewrite (@module_homo_scalar _ _ _ g2).
-                apply tensor_rscalar.
-            -   rewrite (@module_homo_plus _ _ _ g1).
-                apply tensor_rdist.
-            -   rewrite (@module_homo_plus _ _ _ g2).
-                apply tensor_ldist.
-        }
-        pose (h2_base := make_bilinear _ _ _ _ h'_bil).
-        pose proof (tensor_product_universal _ _ h2_base) as h2_ex.
-        apply card_one_ex in h2_ex as [h2 h2_in].
-        cbn in *.
-        unfold bilinear_from_set in h2_in; cbn in h2_in.
-        clear h2_base.
-        exists h2.
-        cbn.
-        unfold module_homo_compose, module_homo_id; cbn.
-        split; apply module_homomorphism_eq; cbn.
-        +   intros x.
-            pose proof (tensor_sum _ _ x) as [l eq]; subst x.
-            induction l.
-            *   cbn.
-                do 2 rewrite module_homo_zero.
-                reflexivity.
-            *   cbn.
-                rewrite (@module_homo_plus _ _ _ h2).
-                rewrite (@module_homo_plus _ _ _ h1).
-                rewrite <- IHl at 2; clear IHl.
-                apply rplus.
-                destruct a as [a [u [v eq]]]; subst a; cbn.
-                unfold tensor_mult at 1; rewrite h2_in.
-                unfold h'.
-                unfold tensor_mult at 1; rewrite h1_in.
-                unfold h.
-                rewrite fg1, fg2.
-                reflexivity.
-        +   intros x.
-            pose proof (tensor_sum _ _ x) as [l eq]; subst x.
-            induction l.
-            *   cbn.
-                do 2 rewrite module_homo_zero.
-                reflexivity.
-            *   cbn.
-                rewrite (@module_homo_plus _ _ _ h1).
-                rewrite (@module_homo_plus _ _ _ h2).
-                rewrite <- IHl at 2; clear IHl.
-                apply rplus.
-                destruct a as [a [u [v eq]]]; subst a; cbn.
-                unfold tensor_mult at 1; rewrite h1_in.
-                unfold h.
-                unfold tensor_mult at 1; rewrite h2_in.
-                unfold h'.
-                rewrite gf1, gf2.
-                reflexivity.
-    -   exact h1_in.
+    exact h1_in.
 Qed.
 
-Definition tensor_product_lriso_f f1 f2 f1_iso f2_iso
-    := module_homo_f (ex_val (tensor_product_lriso f1 f2 f1_iso f2_iso)).
+Definition tensor_product_lriso_homo f1 f2
+    := ex_val (tensor_product_lriso f1 f2).
+Definition tensor_product_lriso_f f1 f2
+    := module_homo_f (tensor_product_lriso_homo f1 f2).
 
-Variables
-    (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2)
-    (f1_iso : isomorphism f1) (f2_iso : isomorphism f2).
+Variables (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2).
 
-Let lrf := tensor_product_lriso_f f1 f2 f1_iso f2_iso.
+Let lrf := tensor_product_lriso_f f1 f2.
 
 Theorem tensor_product_lriso_eq : ∀ a b,
         lrf (a ⊗1 b) = module_homo_f f1 a ⊗2 module_homo_f f2 b.
-    apply (ex_proof (tensor_product_lriso f1 f2 f1_iso f2_iso)).
+    apply (ex_proof (tensor_product_lriso f1 f2)).
 Qed.
 
 Theorem tensor_product_lriso_plus : ∀ a b, lrf (a + b) = lrf a + lrf b.
-    apply (@module_homo_plus _ _ _ (ex_val (tensor_product_lriso f1 f2 f1_iso f2_iso))).
+    apply (@module_homo_plus _ _ _ (ex_val (tensor_product_lriso f1 f2))).
 Qed.
 Theorem tensor_product_lriso_scalar : ∀ a v, lrf (a · v) = a · lrf v.
-    apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_lriso f1 f2 f1_iso f2_iso))).
+    apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_lriso f1 f2))).
 Qed.
 
-Theorem tensor_product_lriso_bij : bijective lrf.
-    pose proof (land (ex_proof (tensor_product_lriso f1 f2 f1_iso f2_iso)))
+Theorem tensor_product_lriso_iso : isomorphism f1 → isomorphism f2 →
+        isomorphism (tensor_product_lriso_homo f1 f2).
+    intros [g1 [fg1 gf1]] [g2 [fg2 gf2]].
+    inversion fg1 as [fg1']; clear fg1.
+    inversion gf1 as [gf1']; clear gf1.
+    inversion fg2 as [fg2']; clear fg2.
+    inversion gf2 as [gf2']; clear gf2.
+    pose proof (func_eq _ _ fg1') as fg1; clear fg1'.
+    pose proof (func_eq _ _ gf1') as gf1; clear gf1'.
+    pose proof (func_eq _ _ fg2') as fg2; clear fg2'.
+    pose proof (func_eq _ _ gf2') as gf2; clear gf2'.
+    pose (h' u v := module_homo_f g1 u ⊗1 module_homo_f g2 v).
+    assert (bilinear h') as h'_bil.
+    {
+        unfold h'.
+        repeat split; intros.
+        -   rewrite (@module_homo_scalar _ _ _ g1).
+            apply tensor_lscalar.
+        -   rewrite (@module_homo_scalar _ _ _ g2).
+            apply tensor_rscalar.
+        -   rewrite (@module_homo_plus _ _ _ g1).
+            apply tensor_rdist.
+        -   rewrite (@module_homo_plus _ _ _ g2).
+            apply tensor_ldist.
+    }
+    pose (h2_base := make_bilinear _ _ _ _ h'_bil).
+    pose proof (tensor_product_universal _ _ h2_base) as h2_ex.
+    apply card_one_ex in h2_ex as [h2 h2_in].
+    cbn in *.
+    unfold bilinear_from_set in h2_in; cbn in h2_in.
+    clear h2_base.
+    exists h2.
+    cbn.
+    unfold module_homo_compose, module_homo_id; cbn.
+    split; apply module_homomorphism_eq; cbn.
+    +   intros x.
+        pose proof (tensor_sum _ _ x) as [l eq]; subst x.
+        induction l.
+        *   cbn.
+            do 2 rewrite module_homo_zero.
+            reflexivity.
+        *   cbn.
+            rewrite (@module_homo_plus _ _ _ h2).
+            rewrite tensor_product_lriso_plus.
+            rewrite <- IHl at 2; clear IHl.
+            apply rplus.
+            destruct a as [a [u [v eq]]]; subst a; cbn.
+            unfold tensor_mult at 1; rewrite h2_in.
+            unfold h'.
+            rewrite tensor_product_lriso_eq.
+            rewrite fg1, fg2.
+            reflexivity.
+    +   intros x.
+        pose proof (tensor_sum _ _ x) as [l eq]; subst x.
+        induction l.
+        *   cbn.
+            do 2 rewrite module_homo_zero.
+            reflexivity.
+        *   cbn.
+            rewrite tensor_product_lriso_plus.
+            rewrite (@module_homo_plus _ _ _ h2).
+            rewrite <- IHl at 2; clear IHl.
+            apply rplus.
+            destruct a as [a [u [v eq]]]; subst a; cbn.
+            rewrite tensor_product_lriso_eq.
+            unfold tensor_mult at 1; rewrite h2_in.
+            unfold h'.
+            rewrite gf1, gf2.
+            reflexivity.
+Qed.
+
+Theorem tensor_product_lriso_bij : isomorphism f1 → isomorphism f2 →
+        bijective lrf.
+    intros f1_iso f2_iso.
+    pose proof (tensor_product_lriso_iso f1_iso f2_iso)
         as [[g g_plus g_scalar] [fg gf]].
     cbn in *.
     unfold module_homo_compose, module_homo_id in *; cbn in *.
@@ -664,37 +667,45 @@ Let T2_scalar := module_scalar (tensor_product M2 N).
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_liso :
-    ∀ (f : ModuleHomomorphism M1 M2), isomorphism f →
+    ∀ (f : ModuleHomomorphism M1 M2),
     ∃ g : ModuleHomomorphism (tensor_product M1 N) (tensor_product M2 N),
-        isomorphism g ∧
+        (isomorphism f → isomorphism g) ∧
         ∀ u v, module_homo_f g (u ⊗1 v) = module_homo_f f u ⊗2 v.
-    intros f f_iso.
-    exact (tensor_product_lriso
-        M1 M2 N N f (cat_id _ N) f_iso (id_isomorphism N)).
+    intros f.
+    exists (tensor_product_lriso_homo M1 M2 N N f (cat_id (MODULE F) N)).
+    split.
+    -   intros f_iso.
+        apply (tensor_product_lriso_iso _ _ _ _ _ _ f_iso (id_isomorphism _)).
+    -   apply tensor_product_lriso_eq.
 Qed.
 
-Definition tensor_product_liso_f f f_iso
-    := module_homo_f (ex_val (tensor_product_liso f f_iso)).
+Definition tensor_product_liso_homo f := ex_val (tensor_product_liso f).
+Definition tensor_product_liso_f f := module_homo_f (tensor_product_liso_homo f).
 
-Variables (f : ModuleHomomorphism M1 M2) (f_iso : isomorphism f).
+Variable (f : ModuleHomomorphism M1 M2).
 
-Let lf := tensor_product_liso_f f f_iso.
+Let lf := tensor_product_liso_f f.
 
 Theorem tensor_product_liso_eq : ∀ a b,
         lf (a ⊗1 b) = module_homo_f f a ⊗2 b.
-    apply (ex_proof (tensor_product_liso f f_iso)).
+    apply (ex_proof (tensor_product_liso f)).
 Qed.
 
 Theorem tensor_product_liso_plus : ∀ a b, lf (a + b) = lf a + lf b.
-    apply (@module_homo_plus _ _ _ (ex_val (tensor_product_liso f f_iso))).
+    apply (@module_homo_plus _ _ _ (ex_val (tensor_product_liso f))).
 Qed.
 Theorem tensor_product_liso_scalar : ∀ a v, lf (a · v) = a · lf v.
-    apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_liso f f_iso))).
+    apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_liso f))).
 Qed.
 
-Theorem tensor_product_liso_bij : bijective lf.
-    pose proof (land (ex_proof (tensor_product_liso f f_iso)))
-        as [[g g_plus g_scalar] [fg gf]].
+Theorem tensor_product_liso_iso : isomorphism f →
+        isomorphism (tensor_product_liso_homo f).
+    apply (ex_proof (tensor_product_liso f)).
+Qed.
+
+Theorem tensor_product_liso_bij : isomorphism f → bijective lf.
+    intros f_iso.
+    pose proof (tensor_product_liso_iso f_iso) as [[g g_plus g_scalar] [fg gf]].
     cbn in *.
     unfold module_homo_compose, module_homo_id in *; cbn in *.
     inversion fg as [fg']; clear fg.
@@ -781,39 +792,44 @@ Let T2_scalar := module_scalar (tensor_product M N2).
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_riso :
-    ∀ (f : ModuleHomomorphism N1 N2), isomorphism f →
+    ∀ (f : ModuleHomomorphism N1 N2),
     ∃ g : ModuleHomomorphism (tensor_product M N1) (tensor_product M N2),
-        isomorphism g ∧
+        (isomorphism f → isomorphism g) ∧
         ∀ u v, module_homo_f g (u ⊗1 v) = u ⊗2 module_homo_f f v.
-    intros f f_iso.
-    exact (tensor_product_lriso
-        M M N1 N2 (cat_id _ M) f (id_isomorphism M) f_iso).
+    intros f.
+    exists (tensor_product_lriso_homo M M N1 N2 (cat_id (MODULE F) M) f).
+    split.
+    -   intros f_iso.
+        apply (tensor_product_lriso_iso _ _ _ _ _ _ (id_isomorphism _) f_iso).
+    -   apply tensor_product_lriso_eq.
 Qed.
 
-Definition tensor_product_riso_f f f_iso
-    := module_homo_f (ex_val (tensor_product_riso f f_iso)).
+Definition tensor_product_riso_homo f := ex_val (tensor_product_riso f).
+Definition tensor_product_riso_f f := module_homo_f (tensor_product_riso_homo f).
 
-Variables
-    (f : ModuleHomomorphism N1 N2)
-    (f_iso : isomorphism f).
+Variable (f : ModuleHomomorphism N1 N2).
 
-Let rf := tensor_product_riso_f f f_iso.
+Let rf := tensor_product_riso_f f.
 
-Theorem tensor_product_riso_eq : ∀ a b,
-        rf (a ⊗1 b) = a ⊗2 module_homo_f f b.
-    apply (ex_proof (tensor_product_riso f f_iso)).
+Theorem tensor_product_riso_eq : ∀ a b, rf (a ⊗1 b) = a ⊗2 module_homo_f f b.
+    apply (ex_proof (tensor_product_riso f)).
 Qed.
 
 Theorem tensor_product_riso_plus : ∀ a b, rf (a + b) = rf a + rf b.
-    apply (@module_homo_plus _ _ _ (ex_val (tensor_product_riso f f_iso))).
+    apply (@module_homo_plus _ _ _ (ex_val (tensor_product_riso f))).
 Qed.
 Theorem tensor_product_riso_scalar : ∀ a v, rf (a · v) = a · rf v.
-    apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_riso f f_iso))).
+    apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_riso f))).
 Qed.
 
-Theorem tensor_product_riso_bij : bijective rf.
-    pose proof (land (ex_proof (tensor_product_riso f f_iso)))
-        as [[g g_plus g_scalar] [fg gf]].
+Theorem tensor_product_riso_iso : isomorphism f →
+        isomorphism (tensor_product_riso_homo f).
+    apply (ex_proof (tensor_product_riso f)).
+Qed.
+
+Theorem tensor_product_riso_bij : isomorphism f → bijective rf.
+    intros f_iso.
+    pose proof (tensor_product_riso_iso f_iso) as [[g g_plus g_scalar] [fg gf]].
     cbn in *.
     unfold module_homo_compose, module_homo_id in *; cbn in *.
     inversion fg as [fg']; clear fg.

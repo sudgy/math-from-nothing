@@ -413,7 +413,8 @@ Theorem tensor_product_assoc :
         reflexivity.
 Qed.
 
-Definition tensor_product_assoc_f := module_homo_f (ex_val tensor_product_assoc).
+Definition tensor_product_assoc_homo := ex_val tensor_product_assoc.
+Definition tensor_product_assoc_f := module_homo_f tensor_product_assoc_homo.
 Let af := tensor_product_assoc_f.
 
 Theorem tensor_product_assoc_eq :
