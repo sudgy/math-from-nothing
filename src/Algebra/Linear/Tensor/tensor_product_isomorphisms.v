@@ -133,6 +133,10 @@ Theorem tensor_product_lid_scalar : ∀ a v, lf (a · v) = a · lf v.
     apply (@module_homo_scalar _ _ _ tensor_product_lid_homo).
 Qed.
 
+Theorem tensor_product_lid_iso : isomorphism tensor_product_lid_homo.
+    apply (ex_proof tensor_product_lid).
+Qed.
+
 Theorem tensor_product_lid_bij : bijective lf.
     pose proof (land (ex_proof tensor_product_lid))
         as [[g g_plus g_scalar] [fg gf]].
@@ -255,6 +259,10 @@ Theorem tensor_product_comm_scalar : ∀ a v, cf (a · v) = a · cf v.
     apply (@module_homo_scalar _ _ _ tensor_product_comm_homo).
 Qed.
 
+Theorem tensor_product_comm_iso : isomorphism tensor_product_comm_homo.
+    apply (ex_proof tensor_product_comm).
+Qed.
+
 Theorem tensor_product_comm_bij : bijective cf.
     pose proof (land (ex_proof tensor_product_comm))
         as [[g g_plus g_scalar] [fg gf]].
@@ -356,6 +364,12 @@ Theorem tensor_product_rid_scalar : ∀ a v, f (a · v) = a · f v.
     rewrite (tensor_product_comm_scalar M).
     rewrite tensor_product_lid_scalar.
     reflexivity.
+Qed.
+
+Theorem tensor_product_rid_iso : isomorphism tensor_product_rid_homo.
+    apply compose_isomorphism.
+    -   apply tensor_product_lid_iso.
+    -   apply tensor_product_comm_iso.
 Qed.
 
 Theorem tensor_product_rid_bij : bijective f.
