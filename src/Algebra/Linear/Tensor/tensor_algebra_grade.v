@@ -1,7 +1,9 @@
 Require Import init.
 
 Require Export tensor_algebra_base.
-Require Import linear_multilinear.
+Require Import tensor_power.
+Require Import module_category.
+
 Require Import nat.
 Require Import card.
 Require Import set.
@@ -15,83 +17,57 @@ structure of the tensor algebra.
 (* begin hide *)
 Section TensorAlgebra.
 
-Variables U V : Type.
+Context {F : CRing} (V : Module F).
 
-Context `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusComm U UP,
-    @PlusAssoc U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    @Ldist U UP UM,
-    @MultComm U UM,
-    @MultAssoc U UM,
-    @MultLid U UM UO,
+Let U := cring_U.
+Let UP := cring_plus.
+Let UZ := cring_zero.
+Let UN := cring_neg.
+Let UPA := cring_plus_assoc.
+Let UPC := cring_plus_comm.
+Let UPZ := cring_plus_lid.
+Let UPN := cring_plus_linv.
+Let UM := cring_mult.
+Let UO := cring_one.
+Let UMA := cring_mult_assoc.
+Let UMC := cring_mult_comm.
+Let UMO := cring_mult_lid.
+Let UMD := cring_ldist.
+Let TP k := module_plus (tensor_power V k).
+Let TZ k := module_zero (tensor_power V k).
+Let TN k := module_neg (tensor_power V k).
+Let TPC k := module_plus_comm (tensor_power V k).
+Let TPA k := module_plus_assoc (tensor_power V k).
+Let TPZ k := module_plus_lid (tensor_power V k).
+Let TPN k := module_plus_linv (tensor_power V k).
+Let TSM k := module_scalar (tensor_power V k).
+Let TSMC k := module_scalar_comp (tensor_power V k).
+Let TSMO k := module_scalar_id (tensor_power V k).
+Let TSML k := module_scalar_ldist (tensor_power V k).
+Let TSMR k := module_scalar_rdist (tensor_power V k).
+Let TAP := tensor_algebra_plus V.
+Let TAZ := tensor_algebra_zero V.
+Let TAN := tensor_algebra_neg V.
+Let TAPC := tensor_algebra_plus_comm V.
+Let TAPA := tensor_algebra_plus_assoc V.
+Let TAPZ := tensor_algebra_plus_lid V.
+Let TAPN := tensor_algebra_plus_linv V.
+Let TASM := tensor_algebra_scalar_mult V.
+Let TASMC := tensor_algebra_scalar_comp V.
+Let TASMO := tensor_algebra_scalar_id V.
+Let TASML := tensor_algebra_scalar_ldist V.
+Let TASMR := tensor_algebra_scalar_rdist V.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
+    TPA TPZ TPN TSM TSMC TSMO TSML TSMR TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM
+    TASMC TASMO TASML TASMR.
 
-    VP : Plus V,
-    VZ : Zero V,
-    VN : Neg V,
-    @PlusComm V VP,
-    @PlusAssoc V VP,
-    @PlusLid V VP VZ,
-    @PlusLinv V VP VZ VN,
-
-    SM : ScalarMult U V,
-    @ScalarId U V UO SM,
-    @ScalarLdist U V VP SM,
-    @ScalarRdist U V UP VP SM
-}.
-
-Let T1 := multilinear_plus U V 1.
-Let T2 := multilinear_plus_comm U V 1.
-Let T3 := multilinear_plus_assoc U V 1.
-Let T4 := multilinear_zero U V 1.
-Let T5 := multilinear_plus_lid U V 1.
-Let T6 := multilinear_neg U V 1.
-Let T7 := multilinear_plus_linv U V 1.
-Let T8 := multilinear_scalar_mult U V 1.
-Let T9 := multilinear_scalar_comp U V 1.
-Let T10 := multilinear_scalar_id U V 1.
-Let T11 := multilinear_scalar_ldist U V 1.
-Let T12 := multilinear_scalar_rdist U V 1.
-Existing Instances T1 T2 T3 T4 T5 T6 T7 T8 T9 T10 T11 T12.
-Let T13 := multilinear_plus U (multilinear_type U V 1).
-Let T14 := multilinear_plus_comm U (multilinear_type U V 1).
-Let T15 := multilinear_plus_assoc U (multilinear_type U V 1).
-Let T16 := multilinear_zero U (multilinear_type U V 1).
-Let T17 := multilinear_plus_lid U (multilinear_type U V 1).
-Let T18 := multilinear_neg U (multilinear_type U V 1).
-Let T19 := multilinear_plus_linv U (multilinear_type U V 1).
-Let T20 := multilinear_scalar_mult U (multilinear_type U V 1).
-Let T21 := multilinear_scalar_comp U (multilinear_type U V 1).
-Let T22 := multilinear_scalar_id U (multilinear_type U V 1).
-Let T23 := multilinear_scalar_ldist U (multilinear_type U V 1).
-Let T24 := multilinear_scalar_rdist U (multilinear_type U V 1).
-Existing Instances T13 T14 T15 T16 T17 T18 T19 T20 T21 T22 T23 T24.
-Let T25 := tensor_plus U V.
-Let T26 := tensor_plus_comm U V.
-Let T27 := tensor_plus_assoc U V.
-Let T28 := tensor_zero U V.
-Let T29 := tensor_plus_lid U V.
-Let T30 := tensor_neg U V.
-Let T31 := tensor_plus_linv U V.
-Let T32 := tensor_scalar_mult U V.
-Let T33 := tensor_scalar_comp U V.
-Let T34 := tensor_scalar_id U V.
-Let T35 := tensor_scalar_ldist U V.
-Let T36 := tensor_scalar_rdist U V.
-Existing Instances T25 T26 T27 T28 T29 T30 T31 T32 T33 T34 T35 T36.
+Let k_tensor k := module_V (tensor_power V k).
 
 Local Open Scope card_scope.
 (* end hide *)
-Let multi_type k := multilinear_type U (multilinear_type U V 1) k.
 
-Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra U V) k,
-        tensor_finite U V (λ n, If n = k then [A|] n else 0).
+Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra_base V) k,
+        tensor_finite V (λ n, If k = n then [A|] n else 0).
     intros [A A_fin] k; cbn.
     apply (le_lt_trans2 (nat_is_finite 1)).
     unfold nat_to_card, le; equiv_simpl.
@@ -106,21 +82,21 @@ Lemma tensor_grade_project_finite : ∀ (A : tensor_algebra U V) k,
     -   contradiction.
 Qed.
 
-Definition tensor_grade_project (A : tensor_algebra U V ) k :=
+Definition tensor_grade_project (A : tensor_algebra_base V ) k :=
     [_|tensor_grade_project_finite A k].
 
-Definition homogeneous_tensor A := ∃ k (M : multi_type k),
-    A = multilinear_to_tensor U V M.
-Definition tensor_grade (A : tensor_algebra U V ) k := ∃ (M : multi_type k),
-    A = multilinear_to_tensor U V M.
+Definition homogeneous_tensor A := ∃ k (M : k_tensor k),
+    A = power_to_tensor V M.
+Definition tensor_grade (A : tensor_algebra_base V ) k := ∃ (M : k_tensor k),
+    A = power_to_tensor V M.
 
 Theorem tensor_zero_homogeneous : homogeneous_tensor 0.
     exists 0, 0.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros x.
-    unfold multilinear_to_tensor_base.
-    destruct (strong_excluded_middle (x = 0)) as [x_eq|x_neq].
+    unfold power_to_tensor_base.
+    destruct (strong_excluded_middle (0 = x)) as [x_eq|x_neq].
     -   subst.
         cbn.
         reflexivity.
@@ -132,12 +108,11 @@ Theorem tensor_project_homogeneous :
     intros A k.
     exists k, ([A|] k).
     apply set_type_eq; cbn.
-    unfold multilinear_to_tensor_base; cbn.
+    unfold power_to_tensor_base; cbn.
     apply functional_ext.
     intros x.
-    classic_case (x = k) as [eq|neq].
-    -   unfold multilinear_type_k_eq; cbn.
-        subst; cbn.
+    classic_case (k = x) as [eq|neq].
+    -   destruct eq; cbn.
         reflexivity.
     -   reflexivity.
 Qed.
@@ -149,7 +124,7 @@ Theorem tensor_project_grade : ∀ A k, tensor_grade (tensor_grade_project A k) 
     apply functional_ext.
     intros x.
     cbn.
-    unfold multilinear_to_tensor_base.
+    unfold power_to_tensor_base.
     case_if.
     -   subst.
         cbn.
@@ -157,7 +132,7 @@ Theorem tensor_project_grade : ∀ A k, tensor_grade (tensor_grade_project A k) 
     -   reflexivity.
 Qed.
 
-Lemma tensor_max_nz_ex : ∀ A : tensor_algebra U V,
+Lemma tensor_max_nz_ex : ∀ A : tensor_algebra_base V,
         ∃ n, (∀ m, 0 ≠ [A|] m → m < n) ∧ (∀ m, n <= m → 0 = [A|] m) ∧
         (∀ m, nat_suc m = n → 0 ≠ [A|] m).
     intros A.
@@ -260,7 +235,7 @@ Theorem tensor_decompose_grade_eq : ∀ A,
             unfold plus at 1; cbn.
             reflexivity.
     }
-    change (set_type (tensor_finite U V)) with (tensor_algebra U V) in *.
+    change (set_type (tensor_finite V)) with (tensor_algebra_base V) in *.
     rewrite eq; clear eq.
     cbn.
     revert af af_fin n_greatest.
@@ -290,16 +265,10 @@ Theorem tensor_decompose_grade_eq : ∀ A,
             -   intros contr; subst y.
                 apply neq; clear neq.
                 unfold af'.
-                unfold tensor_grade_project; cbn.
-                unfold zero; cbn.
-                apply set_type_eq; cbn.
-                apply functional_ext.
-                intros y.
-                unfold plus, neg; cbn.
-                case_if.
-                +   rewrite plus_rinv.
-                    reflexivity.
-                +   contradiction.
+                unfold neg, plus; cbn.
+                case_if; try contradiction.
+                rewrite plus_rinv.
+                reflexivity.
         }
         specialize (IHn [af'|] [|af'] af'_n_greatest).
         assert (af x = [af'|] x
@@ -347,7 +316,7 @@ Qed.
 
 Lemma tensor_decompose_nth : ∀ A k,
         [list_nth (tensor_decompose_grade A) k [_|tensor_zero_homogeneous]|]
-        = multilinear_to_tensor U V ([A|] k).
+        = power_to_tensor V ([A|] k).
     intros A k.
     unfold tensor_decompose_grade.
     classic_case (k < tensor_max_nz A) as [k_lt|k_ge].
@@ -355,7 +324,7 @@ Lemma tensor_decompose_nth : ∀ A k,
         unfold tensor_grade_project.
         apply set_type_eq; cbn.
         apply functional_ext.
-        unfold multilinear_to_tensor_base.
+        unfold power_to_tensor_base.
         intros x.
         case_if.
         +   subst.
@@ -368,9 +337,9 @@ Lemma tensor_decompose_nth : ∀ A k,
         apply set_type_eq; cbn.
         apply functional_ext.
         intros x.
-        unfold multilinear_to_tensor_base.
-        destruct (strong_excluded_middle (x = k)) as [eq|neq].
-        +   subst.
+        unfold power_to_tensor_base.
+        destruct (strong_excluded_middle (k = x)) as [eq|neq].
+        +   destruct eq.
             cbn.
             rewrite <- k_ge.
             reflexivity.
@@ -398,25 +367,24 @@ Theorem tensor_decompose_zero : tensor_decompose_grade 0 = list_end.
     contradiction.
 Qed.
 
-Lemma multilinear_to_tensor_eq_grade : ∀ k1 k2
-        (A : multi_type k1) (B : multi_type k2),
-        0 ≠ A → multilinear_to_tensor U V A = multilinear_to_tensor U V B → k1 = k2.
+Lemma power_to_tensor_eq_grade : ∀ k1 k2
+        (A : k_tensor k1) (B : k_tensor k2),
+        0 ≠ A → power_to_tensor V A = power_to_tensor V B → k1 = k2.
     intros k1 k2 A B A_nz eq.
     apply eq_set_type in eq; cbn in eq.
-    assert (multilinear_to_tensor_base U V A k1 = multilinear_to_tensor_base U V B k1)
+    assert (power_to_tensor_base V A k1 = power_to_tensor_base V B k1)
         as eq2.
     {
         rewrite eq.
         reflexivity.
     }
     clear eq; rename eq2 into eq.
-    unfold multilinear_to_tensor_base in eq.
+    unfold power_to_tensor_base in eq.
     destruct (strong_excluded_middle (k1 = k1)) as [k1_eq|k1_neq].
     2: contradiction.
-    destruct (strong_excluded_middle (k1 = k2)) as [k_eq|k_neq].
-    1: exact k_eq.
-    unfold multilinear_type_k_eq, Logic.eq_rect_r, Logic.eq_rect in eq.
-    destruct (Logic.eq_sym _).
+    destruct (strong_excluded_middle (k2 = k1)) as [k_eq|k_neq].
+    1: symmetry; exact k_eq.
+    destruct k1_eq; cbn in eq.
     symmetry in eq; contradiction.
 Qed.
 
@@ -429,16 +397,16 @@ Lemma tensor_grade_unique : ∀ A k1 k2,
     {
         intros contr.
         subst.
-        rewrite multilinear_to_tensor_zero in A_nz.
+        rewrite (power_to_tensor_zero V) in A_nz.
         contradiction.
     }
-    apply (multilinear_to_tensor_eq_grade _ _ A1 A2 A1_neq).
+    apply (power_to_tensor_eq_grade _ _ A1 A2 A1_neq).
     rewrite <- A1_eq, <- A2_eq.
     reflexivity.
 Qed.
 
-Lemma multilinear_to_tensor_grade : ∀ k (A : multi_type k),
-        tensor_grade (multilinear_to_tensor U V A) k.
+Lemma power_to_tensor_grade : ∀ k (A : k_tensor k),
+        tensor_grade (power_to_tensor V A) k.
     intros k A.
     exists A.
     reflexivity.
@@ -448,9 +416,9 @@ Lemma tensor_grade_zero_eq : ∀ A k, tensor_grade A k → ∀ n, n ≠ k → 0 
     intros A k A_grade n n_neq.
     destruct A_grade as [A' A_eq]; subst A.
     cbn.
-    unfold multilinear_to_tensor_base.
-    destruct (strong_excluded_middle (n = k)) as [eq|neq].
-    -   contradiction.
+    unfold power_to_tensor_base.
+    destruct (strong_excluded_middle (k = n)) as [eq|neq].
+    -   exfalso; symmetry in eq; contradiction.
     -   reflexivity.
 Qed.
 
@@ -461,7 +429,7 @@ Lemma tensor_decompose_plus_nth : ∀ a b n, let z := [_|tensor_zero_homogeneous
     intros a b n z.
     unfold z.
     do 3 rewrite tensor_decompose_nth.
-    pose proof (multilinear_to_tensor_plus U V) as stupid.
+    pose proof (power_to_tensor_plus V) as stupid.
     rewrite stupid.
     reflexivity.
 Qed.
