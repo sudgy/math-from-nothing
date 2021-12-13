@@ -443,4 +443,48 @@ Theorem tensor_product_assoc_bij : bijective af.
         exact gf'.
 Qed.
 
+Definition tensor_product_assoc_inv_homo
+    := ex_val (land (ex_proof tensor_product_assoc)).
+Definition tensor_product_assoc_inv_f
+    := module_homo_f tensor_product_assoc_inv_homo.
+
+Let af' := tensor_product_assoc_inv_f.
+
+Theorem tensor_product_assoc_inv_eq :
+        ∀ a b c, af' ((a ⊗12 b) ⊗12_3 c) = a ⊗1_23 (b ⊗23 c).
+    intros a b c.
+    unfold af', tensor_product_assoc_inv_f, tensor_product_assoc_inv_homo.
+    rewrite_ex_val f [fg gf].
+    destruct (ex_to_type _) as [g [g_iso g_eq]]; cbn in *.
+    unfold module_homo_compose, module_homo_id in gf; cbn in gf.
+    inversion gf as [gf']; clear gf.
+    pose proof (func_eq _ _ gf') as gf; clear gf'; cbn in gf.
+    rewrite <- gf.
+    apply f_equal.
+    rewrite g_eq.
+    reflexivity.
+Qed.
+
+Theorem tensor_product_assoc_inv_plus : ∀ a b, af' (a + b) = af' a + af' b.
+    apply (@module_homo_plus _ _ _ tensor_product_assoc_inv_homo).
+Qed.
+Theorem tensor_product_assoc_inv_scalar : ∀ a v, af' (a · v) = a · af' v.
+    apply (@module_homo_scalar _ _ _ tensor_product_assoc_inv_homo).
+Qed.
+
+Theorem tensor_product_assoc_inv_bij : bijective af'.
+    unfold af', tensor_product_assoc_inv_f, tensor_product_assoc_inv_homo.
+    rewrite_ex_val [f f_plus f_scalar] [fg gf].
+    destruct (ex_to_type _) as [[g g_plus g_scalar] [g_iso g_eq]]; cbn in *.
+    cbn in *.
+    unfold module_homo_compose, module_homo_id in *; cbn in *.
+    inversion fg as [fg']; clear fg.
+    inversion gf as [gf']; clear gf.
+    apply (inverse_ex_bijective f g).
+    -   apply func_eq.
+        exact gf'.
+    -   apply func_eq.
+        exact fg'.
+Qed.
+
 End TensorProductIsomorphisms.
