@@ -14,20 +14,20 @@ Section TensorProductIsomorphisms.
 
 Context {F : CRing} (M : Module F).
 
-Let U := cring_U.
-Let UP := cring_plus.
-Let UZ := cring_zero.
-Let UN := cring_neg.
-Let UPA := cring_plus_assoc.
-Let UPC := cring_plus_comm.
-Let UPZ := cring_plus_lid.
-Let UPN := cring_plus_linv.
-Let UM := cring_mult.
-Let UO := cring_one.
-Let UMA := cring_mult_assoc.
-Let UMC := cring_mult_comm.
-Let UMO := cring_mult_lid.
-Let UMD := cring_ldist.
+Let U := cring_U F.
+Let UP := cring_plus F.
+Let UZ := cring_zero F.
+Let UN := cring_neg F.
+Let UPA := cring_plus_assoc F.
+Let UPC := cring_plus_comm F.
+Let UPZ := cring_plus_lid F.
+Let UPN := cring_plus_linv F.
+Let UM := cring_mult F.
+Let UO := cring_one F.
+Let UMA := cring_mult_assoc F.
+Let UMC := cring_mult_comm F.
+Let UMO := cring_mult_lid F.
+Let UMD := cring_ldist F.
 Let V1 := module_V M.
 Let VP1 := module_plus M.
 Let VZ1 := module_zero M.
@@ -53,7 +53,7 @@ Let TU1_scalar := module_scalar (tensor_product (cring_module F) M).
 Existing Instances TU1_plus TU1_scalar.
 
 Theorem tensor_product_lid :
-    ∃ f : ModuleHomomorphism (tensor_product (cring_module F) M) M,
+    ∃ f : cat_morphism (MODULE F) (tensor_product (cring_module F) M) M,
         isomorphism f ∧ ∀ a v, module_homo_f f (a ⊗ v) = a · v.
     assert (bilinear (λ (a : U) (v : V1), a · v)) as f_bil.
     {
@@ -177,7 +177,7 @@ Let T21_scalar := module_scalar (tensor_product N M).
 Existing Instances T12_plus T12_scalar T21_plus T21_scalar.
 
 Theorem tensor_product_comm :
-    ∃ f : ModuleHomomorphism (tensor_product M N) (tensor_product N M),
+    ∃ f : cat_morphism (MODULE F) (tensor_product M N) (tensor_product N M),
         isomorphism f ∧ ∀ a b, module_homo_f f (a ⊗12 b) = b ⊗21 a.
     assert (bilinear (λ a b, b ⊗21 a)) as f_bil
         by (repeat split; intros; apply tensor_bilinear).
@@ -469,8 +469,8 @@ Let T2_scalar := module_scalar (tensor_product M2 N2).
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_lriso :
-    ∀ (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2),
-    ∃ h : ModuleHomomorphism (tensor_product M1 N1) (tensor_product M2 N2),
+    ∀ (f1 : cat_morphism (MODULE F) M1 M2) (f2 : cat_morphism (MODULE F) N1 N2),
+    ∃ h : cat_morphism (MODULE F) (tensor_product M1 N1) (tensor_product M2 N2),
         ∀ u v, module_homo_f h (u ⊗1 v) = module_homo_f f1 u ⊗2 module_homo_f f2
         v.
     intros f1 f2.
@@ -504,7 +504,7 @@ Definition tensor_product_lriso_homo f1 f2
 Definition tensor_product_lriso_f f1 f2
     := module_homo_f (tensor_product_lriso_homo f1 f2).
 
-Variables (f1 : ModuleHomomorphism M1 M2) (f2 : ModuleHomomorphism N1 N2).
+Variables (f1 : cat_morphism (MODULE F) M1 M2) (f2 : cat_morphism (MODULE F) N1 N2).
 
 Let lrf := tensor_product_lriso_f f1 f2.
 
@@ -681,8 +681,8 @@ Let T2_scalar := module_scalar (tensor_product M2 N).
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_liso :
-    ∀ (f : ModuleHomomorphism M1 M2),
-    ∃ g : ModuleHomomorphism (tensor_product M1 N) (tensor_product M2 N),
+    ∀ (f : cat_morphism (MODULE F) M1 M2),
+    ∃ g : cat_morphism (MODULE F) (tensor_product M1 N) (tensor_product M2 N),
         (isomorphism f → isomorphism g) ∧
         ∀ u v, module_homo_f g (u ⊗1 v) = module_homo_f f u ⊗2 v.
     intros f.
@@ -696,7 +696,7 @@ Qed.
 Definition tensor_product_liso_homo f := ex_val (tensor_product_liso f).
 Definition tensor_product_liso_f f := module_homo_f (tensor_product_liso_homo f).
 
-Variable (f : ModuleHomomorphism M1 M2).
+Variable (f : cat_morphism (MODULE F) M1 M2).
 
 Let lf := tensor_product_liso_f f.
 
@@ -806,8 +806,8 @@ Let T2_scalar := module_scalar (tensor_product M N2).
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 Theorem tensor_product_riso :
-    ∀ (f : ModuleHomomorphism N1 N2),
-    ∃ g : ModuleHomomorphism (tensor_product M N1) (tensor_product M N2),
+    ∀ (f : cat_morphism (MODULE F) N1 N2),
+    ∃ g : cat_morphism (MODULE F) (tensor_product M N1) (tensor_product M N2),
         (isomorphism f → isomorphism g) ∧
         ∀ u v, module_homo_f g (u ⊗1 v) = u ⊗2 module_homo_f f v.
     intros f.
@@ -821,7 +821,7 @@ Qed.
 Definition tensor_product_riso_homo f := ex_val (tensor_product_riso f).
 Definition tensor_product_riso_f f := module_homo_f (tensor_product_riso_homo f).
 
-Variable (f : ModuleHomomorphism N1 N2).
+Variable (f : cat_morphism (MODULE F) N1 N2).
 
 Let rf := tensor_product_riso_f f.
 

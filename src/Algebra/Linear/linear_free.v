@@ -25,20 +25,20 @@ Arguments free_fin {U V H}.
 Section LinearFree.
 
 Context (F : CRing) (V : Type).
-Let U := cring_U.
-Let UP := cring_plus.
-Let UZ := cring_zero.
-Let UN := cring_neg.
-Let UPA := cring_plus_assoc.
-Let UPC := cring_plus_comm.
-Let UPZ := cring_plus_lid.
-Let UPN := cring_plus_linv.
-Let UM := cring_mult.
-Let UO := cring_one.
-Let UMA := cring_mult_assoc.
-Let UMC := cring_mult_comm.
-Let UMO := cring_mult_lid.
-Let UMD := cring_ldist.
+Let U := cring_U F.
+Let UP := cring_plus F.
+Let UZ := cring_zero F.
+Let UN := cring_neg F.
+Let UPA := cring_plus_assoc F.
+Let UPC := cring_plus_comm F.
+Let UPZ := cring_plus_lid F.
+Let UPN := cring_plus_linv F.
+Let UM := cring_mult F.
+Let UO := cring_one F.
+Let UMA := cring_mult_assoc F.
+Let UMC := cring_mult_comm F.
+Let UMO := cring_mult_lid F.
+Let UMD := cring_ldist F.
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD.
 
 Theorem free_eq :

@@ -55,7 +55,7 @@ Definition to_generic_tensor {n} (A : module_V (tensor_power n))
     := make_generic_tensor_power n A.
 
 Definition tensor_power_nat_eq {m n : nat} (eq : m = n)
-        : ModuleHomomorphism (tensor_power m) (tensor_power n).
+        : cat_morphism (MODULE F) (tensor_power m) (tensor_power n).
     rewrite eq.
     exact 𝟙.
 Defined.
@@ -116,7 +116,7 @@ Lemma to_generic_tensor_plus : ∀ {m n}
 Qed.
 
 Fixpoint tensor_power_mult1 (n : nat)
-    : ModuleHomomorphism ((tensor_power n) ⊗ V) (tensor_power (nat_suc n))
+    : cat_morphism (MODULE F) ((tensor_power n) ⊗ V) (tensor_power (nat_suc n))
 :=
     match n with
     | nat_zero => tensor_product_comm_homo (cring_module F) V
@@ -129,7 +129,7 @@ Fixpoint tensor_power_mult1 (n : nat)
     end.
 
 Fixpoint tensor_power_mult (m n : nat)
-    : ModuleHomomorphism
+    : cat_morphism (MODULE F)
         (tensor_power m ⊗ tensor_power n)
         (tensor_power (m + n))
 :=
@@ -185,7 +185,7 @@ Qed.
 Fixpoint vectors_to_power (l : list (module_V V))
     : module_V (tensor_power (list_size l))
 :=  match l with
-    | list_end => @one _ cring_one
+    | list_end => @one _ (cring_one F)
     | a :: l' => tensor_mult V (tensor_power (list_size l'))
         a (vectors_to_power l')
     end.
@@ -543,8 +543,8 @@ Lemma tensor_power_lscalar : ∀ n
     2: inversion lA_size.
     cbn.
     cbn in lA_size.
-    assert (module_homo_f (tensor_power_nat_eq lA_size) (@one _ cring_one)
-        = (@one _ cring_one)) as eq.
+    assert (module_homo_f (tensor_power_nat_eq lA_size) (@one _ (cring_one F))
+        = (@one _ (cring_one F))) as eq.
     {
         apply tensor_power_eq_generic.
         reflexivity.
