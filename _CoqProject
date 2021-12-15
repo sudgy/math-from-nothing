@@ -139,6 +139,7 @@
 ./src/Algebra/Linear/linear_span.v
 ./src/Algebra/Linear/linear_basis.v
 ./src/Algebra/Linear/module_category.v
+./src/Algebra/Linear/algebra_category.v
 ./src/Algebra/Linear/Tensor/tensor_product_construction.v
 ./src/Algebra/Linear/Tensor/tensor_product_universal.v
 ./src/Algebra/Linear/Tensor/tensor_product_isomorphisms.v

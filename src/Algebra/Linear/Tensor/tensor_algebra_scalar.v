@@ -7,6 +7,7 @@ Require Import tensor_algebra_mult2.
 Require Import tensor_power.
 Require Import tensor_product_isomorphisms.
 Require Import module_category.
+Require Import algebra_category.
 
 Require Import list.
 Require Import set.
@@ -342,3 +343,30 @@ Qed.
 (* begin hide *)
 End TensorAlgebra.
 (* end hide *)
+
+Definition tensor_algebra_object {F : CRing} (V : Module F) := make_algebra F
+    (make_module F
+        (tensor_algebra_base V)
+        (tensor_algebra_plus V)
+        (tensor_algebra_zero V)
+        (tensor_algebra_neg V)
+        (tensor_algebra_plus_assoc V)
+        (tensor_algebra_plus_comm V)
+        (tensor_algebra_plus_lid V)
+        (tensor_algebra_plus_linv V)
+        (tensor_algebra_scalar_mult V)
+        (tensor_algebra_scalar_id V)
+        (tensor_algebra_scalar_ldist V)
+        (tensor_algebra_scalar_rdist V)
+        (tensor_algebra_scalar_comp V)
+    )
+    (tensor_mult V)
+    (tensor_mult_ldist V)
+    (tensor_mult_rdist V)
+    (tensor_mult_assoc V)
+    (tensor_one V)
+    (tensor_mult_lid V)
+    (tensor_mult_rid V)
+    (tensor_scalar_lmult V)
+    (tensor_scalar_rmult V)
+.
