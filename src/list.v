@@ -929,6 +929,19 @@ Theorem list_size_conc {U} : ∀ l1 l2 : list U,
             reflexivity.
 Qed.
 
+Theorem list_size_plus {U} : ∀ l1 l2 : list U,
+        list_size (l1 ++ l2) = list_size l1 + list_size l2.
+    intros l1 l2.
+    induction l1.
+    -   cbn.
+        rewrite plus_lid.
+        reflexivity.
+    -   cbn.
+        rewrite IHl1.
+        rewrite nat_plus_lsuc.
+        reflexivity.
+Qed.
+
 Theorem func_to_list_size {U} : ∀ (f : nat → U) n,
         list_size (func_to_list f n) = n.
     intros f n.
