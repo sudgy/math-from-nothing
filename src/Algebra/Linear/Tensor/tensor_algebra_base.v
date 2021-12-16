@@ -298,6 +298,20 @@ Next Obligation.
     apply scalar_rdist.
 Qed.
 
+Theorem power_to_tensor_scalar : ∀ k α (A : k_tensor k),
+        power_to_tensor (α · A) = α · power_to_tensor A.
+    intros k A B.
+    apply set_type_eq; cbn.
+    apply functional_ext; intros x.
+    unfold scalar_mult at 2; cbn.
+    unfold power_to_tensor_base.
+    destruct (strong_excluded_middle (k = x)) as [eq|neq].
+    -   destruct eq; cbn.
+        reflexivity.
+    -   rewrite scalar_ranni.
+        reflexivity.
+Qed.
+
 Lemma power_to_tensor_zero : ∀ k, (power_to_tensor (k := k) 0) = 0.
     intros k.
     apply set_type_eq; cbn.
