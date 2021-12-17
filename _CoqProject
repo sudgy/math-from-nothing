@@ -18,6 +18,7 @@
 
 ./src/List/list_base.v
 ./src/List/list_func.v
+./src/List/list_prop.v
 ./src/List/list.v
 
 #-arg -require-import

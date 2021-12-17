@@ -1,0 +1,126 @@
+Require Import init.
+
+Require Export list_base.
+Require Export list_func.
+
+Set Implicit Arguments.
+
+Fixpoint in_list (A : Type) (l : list A) (x : A) :=
+    match l with
+    | list_end => False
+    | a :: l' => a = x ∨ in_list l' x
+    end.
+
+Fixpoint list_unique {A : Type} (l : list A) :=
+    match l with
+    | a :: l' => ¬in_list l' a ∧ list_unique l'
+    | _ => True
+    end.
+
+Theorem in_list_conc (A : Type) : ∀ (l1 l2 : list A) (x : A),
+        in_list (l1 ++ l2) x → in_list l1 x ∨ in_list l2 x.
+    intros l1 l2 x in12.
+    induction l1.
+    -   right.
+        cbn in in12.
+        exact in12.
+    -   cbn in in12.
+        destruct in12 as [ax|in12].
+        +   left.
+            left.
+            exact ax.
+        +   specialize (IHl1 in12) as [in1|in2].
+            *   left; right.
+                exact in1.
+            *   right.
+                exact in2.
+Qed.
+
+Theorem in_list_rconc {U : Type} : ∀ (l1 l2 : list U) (x : U),
+        in_list l2 x → in_list (l1 ++ l2) x.
+    intros l1 l2 x x_in.
+    induction l1.
+    -   cbn.
+        exact x_in.
+    -   right.
+        exact IHl1.
+Qed.
+
+Theorem in_list_lconc {U : Type} : ∀ (l1 l2 : list U) (x : U),
+        in_list l1 x → in_list (l1 ++ l2) x.
+    intros l1 l2 x x_in.
+    induction l1.
+    -   contradiction x_in.
+    -   destruct x_in as [x_eq|x_in].
+        +   left.
+            exact x_eq.
+        +   right.
+            exact (IHl1 x_in).
+Qed.
+
+Theorem in_list_split {U : Type} :
+        ∀ l (x : U), in_list l x → ∃ l1 l2, l = l1 ++ x :: l2.
+    intros l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   destruct x_in as [x_eq|x_in].
+        +   subst a.
+            exists list_end, l.
+            cbn.
+            reflexivity.
+        +   specialize (IHl x_in).
+            destruct IHl as [l1 [l2 l_eq]].
+            rewrite l_eq; clear l_eq.
+            exists (a :: l1), l2.
+            cbn.
+            reflexivity.
+Qed.
+
+Theorem in_list_image {U V} : ∀ l a (f : U → V),
+        in_list l a → in_list (list_image l f) (f a).
+    intros l a f a_in.
+    induction l as [|b l].
+    -   contradiction a_in.
+    -   cbn.
+        cbn in a_in.
+        destruct a_in as [eq|a_in].
+        +   left.
+            rewrite eq.
+            reflexivity.
+        +   right.
+            exact (IHl a_in).
+Qed.
+
+Theorem image_in_list {U V} : ∀ l y (f : U → V),
+        in_list (list_image l f) y → ∃ x, f x = y ∧ in_list l x.
+    intros l y f y_in.
+    induction l.
+    -   contradiction y_in.
+    -   destruct y_in as [y_eq|y_in].
+        +   exists a.
+            split.
+            *   exact y_eq.
+            *   left.
+                reflexivity.
+        +   specialize (IHl y_in) as [x [x_eq x_in]].
+            exists x.
+            split.
+            *   exact x_eq.
+            *   right.
+                exact x_in.
+Qed.
+
+Theorem list_in_not_unique {U} : ∀ l1 l2 (x : U), in_list l1 x → in_list l2 x →
+        ¬list_unique (l1 ++ l2).
+    intros l1 l2 x l1_x l2_x l_uni.
+    induction l1.
+    -   contradiction l1_x.
+    -   destruct l1_x as [ax|l1_x].
+        +   subst x.
+            destruct l_uni.
+            apply (in_list_rconc l1) in l2_x.
+            contradiction.
+        +   apply IHl1.
+            *   exact l1_x.
+            *   apply l_uni.
+Qed.
