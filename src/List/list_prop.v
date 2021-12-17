@@ -3,6 +3,8 @@ Require Import init.
 Require Export list_base.
 Require Export list_func.
 
+Require Import relation.
+
 Set Implicit Arguments.
 
 Fixpoint in_list (A : Type) (l : list A) (x : A) :=
@@ -15,6 +17,18 @@ Fixpoint list_unique {A : Type} (l : list A) :=
     match l with
     | a :: l' => ¬in_list l' a ∧ list_unique l'
     | _ => True
+    end.
+
+Fixpoint list_filter {U} (S : U → Prop) (l : list U) :=
+    match l with
+    | list_end => list_end
+    | x :: l' => If S x then x :: list_filter S l' else list_filter S l'
+    end.
+
+Fixpoint list_prop {U} (S : U → Prop) (l : list U) :=
+    match l with
+    | list_end => True
+    | a :: l' => S a ∧ list_prop S l'
     end.
 
 Theorem in_list_conc (A : Type) : ∀ (l1 l2 : list A) (x : A),
@@ -123,4 +137,162 @@ Theorem list_in_not_unique {U} : ∀ l1 l2 (x : U), in_list l1 x → in_list l2 
         +   apply IHl1.
             *   exact l1_x.
             *   apply l_uni.
+Qed.
+
+Theorem list_unique_add {U} : ∀ (l : list U) a,
+        list_unique (a :: l) → list_unique (l ++ (a :: list_end)).
+    intros l a [a_nin a_uni].
+    induction l.
+    -   cbn.
+        rewrite not_false.
+        split; exact true.
+    -   cbn in a_nin.
+        rewrite not_or in a_nin.
+        destruct a_nin as [neq a_nin].
+        split.
+        +   intros contr.
+            apply in_list_conc in contr as [a0_in|a0_eq].
+            *   destruct a_uni; contradiction.
+            *   cbn in a0_eq.
+                rewrite neq_sym in neq.
+                destruct a0_eq as [eq|contr]; contradiction.
+        +   exact (IHl a_nin (rand a_uni)).
+Qed.
+
+Theorem list_unique_conc {U} : ∀ l1 l2 : list U,
+        list_unique (l1 ++ l2) → list_unique (l2 ++ l1).
+    induction l1; intros l2 uni.
+    -   cbn in uni.
+        rewrite list_conc_end.
+        exact uni.
+    -   change ((a :: l1) ++ l2) with (a :: (l1 ++ l2)) in uni.
+        apply list_unique_add in uni.
+        rewrite <- list_conc_assoc in uni.
+        specialize (IHl1 _ uni).
+        rewrite <- list_conc_assoc in IHl1.
+        cbn in IHl1.
+        exact IHl1.
+Qed.
+
+Theorem list_filter_in_S {U} : ∀ S (l : list U) x,
+        in_list (list_filter S l) x → S x.
+    intros S l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   cbn in x_in.
+        case_if.
+        +   destruct x_in as [eq|x_in].
+            *   subst.
+                exact s.
+            *   exact (IHl x_in).
+        +   exact (IHl x_in).
+Qed.
+
+Theorem list_filter_in {U} : ∀ S (l : list U) x,
+        in_list (list_filter S l) x → in_list l x.
+    intros S l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   cbn in x_in.
+        case_if.
+        +   cbn in x_in.
+            destruct x_in as [x_eq|x_in].
+            *   subst a.
+                left.
+                reflexivity.
+            *   right.
+                exact (IHl x_in).
+        +   right.
+            exact (IHl x_in).
+Qed.
+
+Theorem list_filter_unique {U} : ∀ S (l : list U),
+        list_unique l → list_unique (list_filter S l).
+    intros S l l_uni.
+    induction l.
+    -   cbn.
+        exact true.
+    -   cbn in *.
+        case_if.
+        +   cbn.
+            split.
+            *   intros contr.
+                apply l_uni.
+                apply list_filter_in with S.
+                exact contr.
+            *   apply IHl.
+                apply l_uni.
+        +   apply IHl.
+            apply l_uni.
+Qed.
+
+Theorem list_filter_image_in {U V} : ∀ S (f : U → V) (l : list U) x,
+        in_list (list_image (list_filter S l) f) x → in_list (list_image l f) x.
+    intros S f l x x_in.
+    induction l.
+    -   contradiction x_in.
+    -   cbn in x_in.
+        case_if.
+        +   cbn in x_in.
+            destruct x_in as [x_eq|x_in].
+            *   subst x.
+                left.
+                reflexivity.
+            *   right.
+                exact (IHl x_in).
+        +   right.
+            exact (IHl x_in).
+Qed.
+
+Theorem list_filter_image_unique {U V} : ∀ S (f : U → V) (l : list U),
+        list_unique (list_image l f) →
+        list_unique (list_image (list_filter S l) f).
+    intros S f l l_uni.
+    induction l.
+    -   cbn.
+        exact true.
+    -   cbn in *.
+        case_if.
+        +   cbn.
+            split.
+            *   intros contr.
+                apply l_uni.
+                apply list_filter_image_in with S.
+                exact contr.
+            *   apply IHl.
+                apply l_uni.
+        +   apply IHl.
+            apply l_uni.
+Qed.
+
+Theorem list_filter_filter {U} : ∀ S (l : list U),
+        list_filter S l = list_filter S (list_filter S l).
+    intros S l.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        case_if.
+        +   cbn.
+            case_if.
+            *   rewrite IHl at 1.
+                reflexivity.
+            *   contradiction.
+        +   exact IHl.
+Qed.
+
+Theorem list_image_unique {U V} : ∀ (l : list U) (f : U → V),
+        list_unique (list_image l f) → list_unique l.
+    intros l f l_uni.
+    induction l.
+    -   exact true.
+    -   cbn in *.
+        split.
+        +   intros contr.
+            apply l_uni.
+            clear l_uni IHl.
+            apply in_list_image.
+            exact contr.
+        +   apply IHl.
+            apply l_uni.
 Qed.

@@ -227,3 +227,76 @@ Theorem func_to_list2_base_conc {A} : ∀ (f : nat → A) a b c,
         rewrite nat_plus_lrsuc.
         reflexivity.
 Qed.
+
+Theorem list_size_conc {U} : ∀ l1 l2 : list U,
+        list_size (l1 ++ l2) = list_size (l2 ++ l1).
+    induction l1; intros l2.
+    -   cbn.
+        rewrite list_conc_end.
+        reflexivity.
+    -   cbn.
+        rewrite IHl1; clear IHl1.
+        induction l2.
+        +   cbn.
+            reflexivity.
+        +   cbn.
+            rewrite IHl2.
+            reflexivity.
+Qed.
+
+Theorem list_size_plus {U} : ∀ l1 l2 : list U,
+        list_size (l1 ++ l2) = list_size l1 + list_size l2.
+    intros l1 l2.
+    induction l1.
+    -   cbn.
+        rewrite plus_lid.
+        reflexivity.
+    -   cbn.
+        rewrite IHl1.
+        rewrite nat_plus_lsuc.
+        reflexivity.
+Qed.
+
+Theorem func_to_list_size {U} : ∀ (f : nat → U) n,
+        list_size (func_to_list f n) = n.
+    intros f n.
+    nat_induction n.
+    -   unfold zero at 1; cbn.
+        reflexivity.
+    -   cbn.
+        rewrite list_size_conc.
+        cbn.
+        unfold func_to_list in IHn.
+        rewrite IHn.
+        reflexivity.
+Qed.
+
+Theorem func_to_list_unique {U} : ∀ (f : nat → U) n,
+        (∀ m1 m2, m1 < n → m2 < n → f m1 = f m2 → m1 = m2) →
+        list_unique (func_to_list f n).
+    intros f n f_inj.
+    nat_induction n.
+    -   unfold zero; cbn.
+        exact true.
+    -   cbn.
+        apply list_unique_conc.
+        cbn.
+        split.
+        +   clear IHn.
+            change (list_reverse _) with (func_to_list f n).
+            intros contr.
+            apply in_list_nth in contr as [m [m_lt fn_eq]].
+            rewrite func_to_list_size in m_lt.
+            rewrite func_to_list_nth_lt in fn_eq by exact m_lt.
+            apply f_inj in fn_eq.
+            *   subst.
+                destruct m_lt; contradiction.
+            *   apply nat_lt_suc.
+            *   exact (trans m_lt (nat_lt_suc n)).
+        +   apply IHn.
+            intros m1 m2 m1_lt m2_lt eq.
+            apply f_inj.
+            *   exact (trans m1_lt (nat_lt_suc n)).
+            *   exact (trans m2_lt (nat_lt_suc n)).
+            *   exact eq.
+Qed.

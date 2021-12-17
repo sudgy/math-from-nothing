@@ -395,3 +395,17 @@ Theorem list_perm_eq {U} : ∀ l1 l2 : list U, l1 = l2 → list_permutation l1 l
     rewrite eq.
     apply list_perm_refl.
 Qed.
+
+Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
+        list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
+    intros S l1 l2 eq Sl1.
+    induction eq.
+    -   exact Sl1.
+    -   cbn.
+        split.
+        +   apply Sl1.
+        +   apply IHeq.
+            apply Sl1.
+    -   repeat split; apply Sl1.
+    -   exact (IHeq2 (IHeq1 Sl1)).
+Qed.
