@@ -16,7 +16,7 @@
 ./src/Init/types.v
 ./src/Init/init.v
 
-./src/list.v
+./src/List/list.v
 
 #-arg -require-import
 #-arg init
