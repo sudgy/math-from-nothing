@@ -5,19 +5,108 @@ Require Import set.
 Require Import list.
 
 #[universes(template)]
-Record Subspace U V `{Plus V, Zero V, Neg V, ScalarMult U V} := make_subspace {
+Record Subspace U V `{Plus V, Zero V, ScalarMult U V} := make_subspace {
     subspace_set : V → Prop;
     subspace_zero : subspace_set 0;
     subspace_plus : ∀ a b, subspace_set a → subspace_set b → subspace_set (a+b);
-    (*subspace_neg : ∀ v, subspace_set v → subspace_set (-v);*)
     subspace_scalar : ∀ a v, subspace_set v → subspace_set (a · v);
 }.
-Arguments make_subspace {U V H H0 H1 H2}.
-Arguments subspace_set {U V H H0 H1 H2}.
-Arguments subspace_zero {U V H H0 H1 H2}.
-Arguments subspace_plus {U V H H0 H1 H2}.
-(*Arguments subspace_neg {U V H H0 H1 H2}.*)
-Arguments subspace_scalar {U V H H0 H1 H2}.
+Arguments make_subspace {U V H H0 H1}.
+Arguments subspace_set {U V H H0 H1}.
+Arguments subspace_zero {U V H H0 H1}.
+Arguments subspace_plus {U V H H0 H1}.
+Arguments subspace_scalar {U V H H0 H1}.
+
+Section Subspace.
+
+Context {U V} `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UM : Mult U,
+    UO : One U,
+    @PlusComm U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+
+    VP : Plus V,
+    VZ : Zero V,
+    VN : Neg V,
+    @PlusComm V VP,
+    @PlusAssoc V VP,
+    @PlusLid V VP VZ,
+    @PlusLinv V VP VZ VN,
+
+    SM : ScalarMult U V,
+    @ScalarComp U V UM SM,
+    @ScalarId U V UO SM,
+    @ScalarLdist U V VP SM,
+    @ScalarRdist U V UP VP SM
+}.
+
+Variable S : Subspace U V.
+
+Theorem subspace_neg : ∀ v, subspace_set S v → subspace_set S (-v).
+    intros v v_in.
+    rewrite <- scalar_neg_one.
+    apply subspace_scalar.
+    exact v_in.
+Qed.
+
+Instance subspace_plus_class : Plus (set_type (subspace_set S)) := {
+    plus a b := [[a|] + [b|] | subspace_plus S [a|] [b|] [|a] [|b]]
+}.
+Instance subspace_zero_class : Zero (set_type (subspace_set S)) := {
+    zero := [0|subspace_zero S]
+}.
+Instance subspace_neg_class : Neg (set_type (subspace_set S)) := {
+    neg a := [-[a|] | subspace_neg [a|] [|a]]
+}.
+Program Instance subspace_plus_comm : PlusComm (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply plus_comm.
+Qed.
+Program Instance subspace_plus_assoc : PlusAssoc (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply plus_assoc.
+Qed.
+Program Instance subspace_plus_lid : PlusLid (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply plus_lid.
+Qed.
+Program Instance subspace_plus_linv : PlusLinv (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply plus_linv.
+Qed.
+Instance subspace_scalar_class : ScalarMult U (set_type (subspace_set S)) := {
+    scalar_mult a v := [a · [v|] | subspace_scalar S a [v|] [|v]]
+}.
+Program Instance subspace_scalar_comp : ScalarComp U (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply scalar_comp.
+Qed.
+Program Instance subspace_scalar_id : ScalarId U (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply scalar_id.
+Qed.
+Program Instance subspace_scalar_ldist : ScalarLdist U (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply scalar_ldist.
+Qed.
+Program Instance subspace_scalar_rdist : ScalarRdist U (set_type (subspace_set S)).
+Next Obligation.
+    apply set_type_eq; cbn.
+    apply scalar_rdist.
+Qed.
+
+End Subspace.
 
 Section QuotientSpace.
 
@@ -88,13 +177,6 @@ Qed.
 Instance subspace_eq_reflexive_class : Reflexive _ := {
     refl := subspace_eq_reflexive
 }.
-
-Theorem subspace_neg : ∀ v, subspace_set S v → subspace_set S (-v).
-    intros v v_in.
-    rewrite <- (scalar_neg_one (U := U)).
-    apply subspace_scalar.
-    exact v_in.
-Qed.
 
 Lemma subspace_eq_symmetric : ∀ a b, a ~ b → b ~ a.
     unfold subspace_eq.
