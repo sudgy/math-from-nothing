@@ -882,6 +882,15 @@ Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
     apply list_perm_add.
 Qed.
 
+Theorem list_split_perm {U} : ∀ l (a : U), in_list l a → ∃ l',
+        list_permutation l (a :: l').
+    intros l a a_in.
+    pose proof (in_list_split l a a_in) as [l1 [l2 l_eq]].
+    rewrite l_eq.
+    exists (l1 ++ l2).
+    apply list_perm_split.
+Qed.
+
 Theorem list_perm_single {U} : ∀ (x : U) l, list_permutation (x :: list_end) l →
         l = x :: list_end.
     intros x l l_perm.
@@ -1113,4 +1122,24 @@ Theorem list_image_unique {U V} : ∀ (l : list U) (f : U → V),
             exact contr.
         +   apply IHl.
             apply l_uni.
+Qed.
+
+Fixpoint list_prop {U} (S : U → Prop) (l : list U) :=
+    match l with
+    | list_end => True
+    | a :: l' => S a ∧ list_prop S l'
+    end.
+
+Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
+        list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
+    intros S l1 l2 eq Sl1.
+    induction eq.
+    -   exact Sl1.
+    -   cbn.
+        split.
+        +   apply Sl1.
+        +   apply IHeq.
+            apply Sl1.
+    -   repeat split; apply Sl1.
+    -   exact (IHeq2 (IHeq1 Sl1)).
 Qed.
