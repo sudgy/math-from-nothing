@@ -24,6 +24,7 @@
 ./src/List/list.v
 ./src/List/unordered_list_base.v
 ./src/List/unordered_list_func.v
+./src/List/unordered_list_prop.v
 
 #-arg -require-import
 #-arg init
