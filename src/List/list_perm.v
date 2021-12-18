@@ -409,3 +409,13 @@ Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
     -   repeat split; apply Sl1.
     -   exact (IHeq2 (IHeq1 Sl1)).
 Qed.
+
+Theorem list_perm_swap2 {U} : ∀ (a b : U) l1 l2, list_permutation l1 l2 →
+        list_permutation (a :: b :: l1) (b :: a :: l2).
+    intros a b l1 l2 eq.
+    pose proof (list_perm_swap b a l1) as eq1.
+    apply (list_perm_trans eq1).
+    apply list_perm_skip.
+    apply list_perm_skip.
+    exact eq.
+Qed.

@@ -183,6 +183,11 @@ Definition binary_op {U U2 : Type}
     (wd : ∀ a b c d : U, eq_equal E a b → eq_equal E c d → f a c = f b d)
     (a b : equiv_type E) :=
     f (ex_val [|a]) (ex_val [|b]).
+Definition binary_rop {U U2 U3 : Type}
+    {E : equivalence U} {f : U → U2 → U3}
+    (wd : ∀ a b c, eq_equal E a b → f a c = f b c)
+    (a : equiv_type E) (b : U2) :=
+    f (ex_val [|a]) b.
 Definition unary_self_op {U : Type}
     {E : equivalence U} {f : U → U}
     (wd : ∀ a b : U, eq_equal E a b → eq_equal E (f a) (f b))
@@ -203,11 +208,13 @@ Definition binary_rself_op {U U2 : Type}
 (* begin hide *)
 Section Equivalence.
 
-Context {U V : Type} {E : equivalence U}.
+Context {U V W : Type} {E : equivalence U}.
 Local Notation "a ~ b" := (eq_equal E a b).
 Context {un : U → V} {un_wd : ∀ a b, a ~ b → un a = un b}.
 Context {bin : U → U → V}
         {bin_wd : ∀ a b c d, a ~ b → c ~ d → bin a c = bin b d}.
+Context {rbin : U → V → W}
+        {rbin_wd : ∀ a b c, a ~ b → rbin a c = rbin b c}.
 Context {sun : U → U} {sun_wd : ∀ a b, a ~ b → sun a ~ sun b}.
 Context {sbin : U → U → U}
         {sbin_wd : ∀ a b c d, a ~ b → c ~ d → sbin a c ~ sbin b d}.
@@ -217,6 +224,7 @@ Local Notation "'sBin'" := (binary_self_op sbin_wd).
 Local Notation "'rsBin'" := (binary_rself_op rsbin_wd).
 Local Notation "'Un'" := (unary_op un_wd).
 Local Notation "'Bin'" := (binary_op bin_wd).
+Local Notation "'rBin'" := (binary_rop rbin_wd).
 
 Theorem equiv_unary_op : ∀ a, Un (to_equiv_type E a) = un a.
     pose proof (eq_reflexive E).
@@ -247,6 +255,18 @@ Theorem equiv_binary_op : ∀ a b,
         apply sym.
         apply equiv_eq_class.
         exact c_eq.
+Qed.
+Theorem equiv_binary_rop : ∀ a b, rBin (to_equiv_type E a) b = rbin a b.
+    pose proof (eq_reflexive E).
+    pose proof (eq_symmetric E).
+    pose proof (eq_transitive E).
+    intros a b.
+    unfold binary_rop.
+    apply rbin_wd.
+    rewrite_ex_val c c_eq.
+    apply sym.
+    apply equiv_eq_class.
+    exact c_eq.
 Qed.
 Theorem equiv_unary_self_op : ∀ a,
         sUn (to_equiv_type E a) = to_equiv_type E (sun a).
@@ -337,7 +357,7 @@ Ltac equiv_simpl :=
     simpl;
     repeat (rewrite equiv_binary_self_op + rewrite equiv_unary_self_op +
             rewrite equiv_binary_op + rewrite equiv_unary_op +
-            rewrite equiv_binary_rself_op);
+            rewrite equiv_binary_rself_op + rewrite equiv_binary_rop);
     repeat rewrite equiv_eq;
     simpl.
 Tactic Notation "equiv_simpl" "in" ident(H) :=
@@ -346,6 +366,7 @@ Tactic Notation "equiv_simpl" "in" ident(H) :=
             rewrite equiv_unary_self_op in H +
             rewrite equiv_binary_op in H +
             rewrite equiv_unary_op in H +
-            rewrite equiv_binary_rself_op in H);
+            rewrite equiv_binary_rself_op in H +
+            rewrite equiv_binary_rop in H);
     repeat rewrite equiv_eq in H;
     simpl in H.
