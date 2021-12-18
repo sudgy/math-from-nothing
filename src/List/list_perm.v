@@ -419,3 +419,15 @@ Theorem list_perm_swap2 {U} : ∀ (a b : U) l1 l2, list_permutation l1 l2 →
     apply list_perm_skip.
     exact eq.
 Qed.
+
+Theorem list_perm_reverse {U} : ∀ l : list U,
+        list_permutation l (list_reverse l).
+    intros l.
+    induction l.
+    -   cbn.
+        apply list_perm_refl.
+    -   cbn.
+        apply (list_perm_skip a) in IHl.
+        apply (list_perm_trans IHl).
+        apply list_perm_add.
+Qed.
