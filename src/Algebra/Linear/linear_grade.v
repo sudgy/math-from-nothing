@@ -23,6 +23,9 @@ Arguments sub_vector_in {U V H H0 H1}.
 Class GradedSpace U V `{P : Plus V, @PlusComm V P, @PlusAssoc V P, Zero V, ScalarMult U V} := {
     grade_I : Type;
     grade_subspace : grade_I → Subspace U V;
+    grade_distinct : ∀ i j, i ≠ j → ∀ v,
+        subspace_set (grade_subspace i) v → subspace_set (grade_subspace j) v →
+        0 = v;
     grade_decompose_ex : ∀ v : V, ∃ l : ulist (SubspaceVector U V),
         v = ulist_sum (ulist_image l sub_vector_v) ∧
         ulist_prop (λ S, ∃ i, subspace_set (grade_subspace i) =
@@ -530,20 +533,117 @@ Theorem grade_decomposition_unique : ∀ v l,
                              subspace_set (sub_vector_sub S)) l →
         ulist_unique (ulist_image l (λ S, subspace_set (sub_vector_sub S))) →
         ulist_prop (λ S, 0 ≠ sub_vector_v S) l →
-        l = grade_decomposition v.
+        grade_decomposition v = l.
     intros v l l_eq l_in l_uni l_nz.
     apply ulist_in_unique_eq.
-    -   apply ulist_image_unique in l_uni.
-        exact l_uni.
     -   pose proof (grade_decomposition_uni v) as v_uni.
         apply ulist_image_unique in v_uni.
         exact v_uni.
+    -   apply ulist_image_unique in l_uni.
+        exact l_uni.
     -   intros x.
         pose proof (grade_decomposition_eq v).
         pose proof (grade_decomposition_in v).
         pose proof (grade_decomposition_uni v).
         pose proof (grade_decomposition_nz v).
         split; apply (grade_decomposition_perm_wlog v); try assumption.
+Qed.
+
+Theorem grade_decomposition_zero : grade_decomposition 0 = ulist_end.
+    apply grade_decomposition_unique.
+    -   rewrite ulist_image_end, ulist_sum_end.
+        reflexivity.
+    -   apply ulist_prop_end.
+    -   rewrite ulist_image_end.
+        apply ulist_unique_end.
+    -   apply ulist_prop_end.
+Qed.
+
+Definition of_grade i v := subspace_set (grade_subspace i) v.
+
+Theorem of_grade_zero : ∀ i, of_grade i 0.
+    intros i.
+    apply subspace_zero.
+Qed.
+
+Theorem of_grade_scalar : ∀ a v i, of_grade i v → of_grade i (a · v).
+    intros a v i v_in.
+    apply subspace_scalar.
+    exact v_in.
+Qed.
+
+Theorem of_grade_neg : ∀ v i, of_grade i v → of_grade i (-v).
+    intros v i v_in.
+    apply subspace_neg.
+    exact v_in.
+Qed.
+
+Theorem of_grade_plus : ∀ u v i,
+        of_grade i u → of_grade i v → of_grade i (u + v).
+    intros u v i u_in v_in.
+    apply subspace_plus; assumption.
+Qed.
+
+Theorem grade_decomposition_of_grade : ∀ v i, 0 ≠ v → ∀ H : of_grade i v,
+        grade_decomposition v =
+        make_subspace_vector (grade_subspace i) v H ::: ulist_end.
+    intros v i v_nz v_in.
+    apply grade_decomposition_unique.
+    -   rewrite ulist_image_add, ulist_image_end; cbn.
+        rewrite ulist_sum_add, ulist_sum_end.
+        rewrite plus_rid.
+        reflexivity.
+    -   rewrite ulist_prop_add; cbn.
+        split; [>exists i; reflexivity|apply ulist_prop_end].
+    -   rewrite ulist_image_add, ulist_unique_add; cbn.
+        rewrite ulist_image_end.
+        split; [>apply in_ulist_end|apply ulist_unique_end].
+    -   rewrite ulist_prop_add; cbn.
+        split; [>exact v_nz|apply ulist_prop_end].
+Qed.
+
+Theorem of_grade_unique : ∀ v i j, 0 ≠ v → of_grade i v → of_grade j v → i = j.
+    intros v i j v_nz vi vj.
+    classic_contradiction contr.
+    pose proof (grade_distinct i j contr v vi vj).
+    contradiction.
+Qed.
+
+Definition homogeneous v := ∃ i, of_grade i v.
+
+Theorem grade_decomposition_homo : ∀ v : set_type homogeneous, 0 ≠ [v|] →
+        grade_decomposition [v|] = make_subspace_vector
+            (grade_subspace (ex_val [|v]))
+            [v|]
+            (ex_proof [|v])
+        ::: ulist_end.
+    intros [v v_homo] v_neq; cbn in *.
+    unfold ex_val, ex_proof.
+    destruct (ex_to_type v_homo) as [i v_in]; cbn.
+    apply grade_decomposition_unique.
+    -   rewrite ulist_image_add, ulist_image_end; cbn.
+        rewrite ulist_sum_add, ulist_sum_end.
+        rewrite plus_rid.
+        reflexivity.
+    -   rewrite ulist_prop_add; cbn.
+        split; [>exists i; reflexivity|apply ulist_prop_end].
+    -   rewrite ulist_image_add, ulist_unique_add; cbn.
+        rewrite ulist_image_end.
+        split; [>apply in_ulist_end|apply ulist_unique_end].
+    -   rewrite ulist_prop_add; cbn.
+        split; [>exact v_neq|apply ulist_prop_end].
+Qed.
+
+Theorem homo_scalar : ∀ a v, homogeneous v → homogeneous (a · v).
+    intros a v [i v_in].
+    exists i.
+    exact (of_grade_scalar _ _ _ v_in).
+Qed.
+
+Theorem homo_neg : ∀ v, homogeneous v → homogeneous (-v).
+    intros v [i v_in].
+    exists i.
+    exact (of_grade_neg _ _ v_in).
 Qed.
 
 End LinearGrade.
