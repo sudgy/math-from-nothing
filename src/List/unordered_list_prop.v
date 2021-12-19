@@ -75,6 +75,14 @@ Theorem in_ulist_add {U} : ∀ (a b : U) l,
     reflexivity.
 Qed.
 
+Theorem in_ulist_single {U} : ∀ (a b : U), in_ulist (a ::: ulist_end) b → a = b.
+    intros a b b_in.
+    rewrite in_ulist_add in b_in.
+    destruct b_in as [b_in|b_in].
+    -   exact b_in.
+    -   contradiction (in_ulist_end _ b_in).
+Qed.
+
 Theorem ulist_unique_end {U} : ulist_unique (@ulist_end U).
     unfold ulist_unique, ulist_end; equiv_simpl.
     exact true.

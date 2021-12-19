@@ -646,4 +646,118 @@ Theorem homo_neg : ∀ v, homogeneous v → homogeneous (-v).
     exact (of_grade_neg _ _ v_in).
 Qed.
 
+Definition grade_project v i :=
+    match (strong_excluded_middle (
+        ∃ a, subspace_set (sub_vector_sub a) = subspace_set (grade_subspace i) ∧
+             in_ulist (grade_decomposition v) a
+        )) with
+    | strong_or_left H => sub_vector_v (ex_val H)
+    | strong_or_right H => 0
+    end.
+
+Ltac case_grade_project v i vi vi_eq vi_in v_nin := let X := fresh in
+    change (grade_project v i) with
+        (match (strong_excluded_middle (
+            ∃ a, subspace_set (sub_vector_sub a) = subspace_set (grade_subspace i) ∧
+                 in_ulist (grade_decomposition v) a
+            )) with
+        | strong_or_left H => sub_vector_v (ex_val H)
+        | strong_or_right H => 0
+        end) in *;
+    destruct (strong_excluded_middle (∃ a,
+        subspace_set (sub_vector_sub a) = subspace_set (grade_subspace i) ∧
+        in_ulist (grade_decomposition v) a)) as [X|v_nin];
+    [>
+        change (ex_val X) with (ex_type_val (ex_to_type X)) in *;
+        destruct (ex_to_type X) as [vi [vi_eq vi_in]];
+        clear X;
+        change
+            (ex_type_val
+                (ex_type_constr
+                   (λ a : SubspaceVector U V,
+                      subspace_set (sub_vector_sub a) =
+                      subspace_set (grade_subspace i)
+                      ∧ in_ulist (grade_decomposition v) a) vi
+                   (make_and vi_eq vi_in)))
+            with vi in *
+    |].
+
+Theorem grade_project_in : ∀ v i, 0 ≠ grade_project v i →
+        in_ulist (ulist_image (grade_decomposition v) sub_vector_v)
+            (grade_project v i).
+    intros v i vi_nz.
+    case_grade_project v i vi vi_eq vi_in v_nin.
+    -   apply in_ulist_image.
+        exact vi_in.
+    -   contradiction.
+Qed.
+
+Theorem grade_project_grade : ∀ v i, of_grade i (grade_project v i).
+    intros v i.
+    case_grade_project v i vi vi_eq vi_in v_nin.
+    -   unfold of_grade.
+        rewrite <- vi_eq.
+        apply sub_vector_in.
+    -   apply of_grade_zero.
+Qed.
+
+Theorem grade_project_homo : ∀ v i, homogeneous (grade_project v i).
+    intros v i.
+    exists i.
+    apply grade_project_grade.
+Qed.
+
+Theorem grade_project_zero : ∀ i, grade_project 0 i = 0.
+    intros i.
+    case_grade_project 0 i zi zi_eq zi_in v_nin.
+    -   rewrite grade_decomposition_zero in zi_in.
+        apply in_ulist_end in zi_in.
+        contradiction zi_in.
+    -   reflexivity.
+Qed.
+
+Theorem grade_project_of_grade : ∀ v i, of_grade i v → grade_project v i = v.
+    intros v i v_in.
+    classic_case (0 = v) as [v_z|v_nz].
+    {
+        rewrite <- v_z.
+        apply grade_project_zero.
+    }
+    assert (homogeneous v) as v_homo by (exists i; exact v_in).
+    pose proof (grade_decomposition_homo [v|v_homo] v_nz) as v_eq.
+    cbn in v_eq.
+    case_grade_project v i vi vi_eq vi_in v_nin.
+    -   rewrite v_eq in vi_in.
+        apply in_ulist_single in vi_in.
+        subst vi; cbn.
+        reflexivity.
+    -   rewrite not_ex in v_nin.
+        unfold ex_val, ex_proof in v_eq.
+        destruct (ex_to_type v_homo) as [j v_in']; cbn in *.
+        specialize (v_nin (make_subspace_vector (grade_subspace j) v v_in')).
+        cbn in v_nin.
+        rewrite not_and in v_nin.
+        destruct v_nin as [v_nin|v_nin].
+        +   pose proof (of_grade_unique v i j v_nz v_in v_in').
+            subst.
+            contradiction.
+        +   rewrite v_eq in v_nin.
+            rewrite in_ulist_add in v_nin.
+            rewrite not_or in v_nin.
+            destruct v_nin; contradiction.
+Qed.
+
+Theorem grade_project_project : ∀ v i,
+        grade_project (grade_project v i) i = grade_project v i.
+    intros v i.
+    apply grade_project_of_grade.
+    apply grade_project_grade.
+Qed.
+
+Theorem grade_project_eq_of_grade : ∀ v i, v = grade_project v i → of_grade i v.
+    intros v i v_eq.
+    rewrite v_eq.
+    apply grade_project_grade.
+Qed.
+
 End LinearGrade.
