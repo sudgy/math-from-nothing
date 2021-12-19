@@ -102,3 +102,10 @@ Theorem ulist_conc_assoc {U} : ∀ a b c : ulist U,
     rewrite list_conc_assoc.
     apply list_perm_refl.
 Qed.
+
+Theorem ulist_swap {U} : ∀ (a b : U) l, a ::: b ::: l = b ::: a ::: l.
+    intros a b l.
+    equiv_get_value l.
+    unfold ulist_add; equiv_simpl.
+    apply list_perm_swap.
+Qed.

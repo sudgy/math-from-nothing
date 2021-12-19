@@ -255,3 +255,17 @@ Theorem ulist_image_unique {U V} : ∀ (l : ulist U) (f : U → V),
     unfold ulist_image, ulist_unique; equiv_simpl.
     apply list_image_unique.
 Qed.
+
+Theorem ulist_in_unique_eq {U} : ∀ al bl : ulist U,
+        ulist_unique al → ulist_unique bl →
+        (∀ x, in_ulist al x ↔ in_ulist bl x) → al = bl.
+    intros al bl.
+    equiv_get_value al bl.
+    unfold ulist_unique, in_ulist; equiv_simpl.
+    intros al_uni bl_uni ins.
+    apply (list_in_unique_perm _ _ al_uni bl_uni).
+    intros x.
+    specialize (ins x).
+    equiv_simpl in ins.
+    exact ins.
+Qed.
