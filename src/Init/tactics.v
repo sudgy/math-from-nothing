@@ -65,3 +65,9 @@ Tactic Notation "cancel_right"
 constr(x) constr(comm) constr(assoc) constr(cancel) "in" constr(H) :=
     bring_right x comm assoc in H;
     apply cancel in H.
+
+Ltac prove_parts_base H := let H' := fresh in
+    match type of H with
+    | ?A → ?B => assert A as H'
+    end; [> clear H | specialize (H H'); clear H'].
+Ltac prove_parts H := repeat prove_parts_base H.
