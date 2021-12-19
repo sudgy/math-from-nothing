@@ -44,6 +44,17 @@ Context {U V} `{
     @ScalarRdist U V UP VP SM
 }.
 
+Theorem subspace_eq : ∀ S1 S2 : Subspace U V, subspace_set S1 = subspace_set S2
+        → S1 = S2.
+    intros [S1 S1_zero S1_plus S1_scalar] [S2 S2_zero S2_plus S2_scalar] eq.
+    cbn in eq.
+    subst S2.
+    rewrite (proof_irrelevance S2_zero S1_zero).
+    rewrite (proof_irrelevance S2_plus S1_plus).
+    rewrite (proof_irrelevance S2_scalar S1_scalar).
+    reflexivity.
+Qed.
+
 Variable S : Subspace U V.
 
 Theorem subspace_neg : ∀ v, subspace_set S v → subspace_set S (-v).
