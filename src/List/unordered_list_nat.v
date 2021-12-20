@@ -34,6 +34,12 @@ Theorem func_to_list_ulist {U} : ∀ (f : nat → U) n,
     apply list_perm_reverse.
 Qed.
 
+Theorem func_to_ulist_zero {U} : ∀ (f : nat → U), func_to_ulist f 0 = ulist_end.
+    intros f.
+    unfold func_to_ulist, ulist_end; equiv_simpl.
+    apply list_perm_refl.
+Qed.
+
 Theorem func_to_ulist_in {U} : ∀ (f : nat → U) n m, m < n →
         in_ulist (func_to_ulist f n) (f m).
     intros f n m ltq.
@@ -96,4 +102,16 @@ Theorem func_to_ulist_unique {U} : ∀ (f : nat → U) n,
     rewrite func_to_list_ulist.
     unfold ulist_unique; equiv_simpl.
     apply func_to_list_unique.
+Qed.
+
+Theorem func_to_ulist_suc {U} : ∀ (f : nat → U) n,
+        func_to_ulist f (nat_suc n) = f n ::: func_to_ulist f n.
+    intros f n.
+    rewrite ulist_add_conc.
+    rewrite ulist_conc_comm.
+    do 2 rewrite func_to_list_ulist.
+    unfold ulist_add, ulist_conc, ulist_end; equiv_simpl.
+    cbn.
+    change (list_reverse (func_to_list_base f n)) with (func_to_list f n).
+    apply list_perm_refl.
 Qed.

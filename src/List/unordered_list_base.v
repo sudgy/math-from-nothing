@@ -46,6 +46,14 @@ Theorem ulist_induction {U} : ∀ S : ulist U → Prop,
         exact IHl.
 Qed.
 
+Theorem ulist_destruct {U} : ∀ S : ulist U → Prop,
+        S ulist_end → (∀ a l, S (a ::: l)) → ∀ l, S l.
+    intros S S_end S_ind l.
+    induction l using ulist_induction.
+    -   exact S_end.
+    -   apply S_ind.
+Qed.
+
 Lemma uconc_wd U : ∀ al1 al2 bl1 bl2 : list U,
         list_permutation al1 al2 → list_permutation bl1 bl2 →
         list_permutation (al1 ++ bl1) (al2 ++ bl2).

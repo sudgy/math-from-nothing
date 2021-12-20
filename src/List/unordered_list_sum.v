@@ -4,6 +4,7 @@ Require Export plus_sum.
 Require Export list.
 Require Export unordered_list_base.
 Require Export unordered_list_func.
+Require Export unordered_list_nat.
 
 Require Import equivalence.
 
@@ -68,6 +69,22 @@ Theorem ulist_sum_minus : ∀ a b,
     rewrite ulist_sum_plus.
     rewrite ulist_sum_neg.
     reflexivity.
+Qed.
+
+Theorem ulist_sum_sum_eq : ∀ f n, ulist_sum (func_to_ulist f n) = sum f 0 n.
+    intros f n.
+    rewrite func_to_list_ulist.
+    unfold ulist_sum; equiv_simpl.
+    apply list_sum_sum_eq.
+Qed.
+
+Theorem ulist_sum_func_single : ∀ a m n, m < n →
+        ulist_sum (func_to_ulist (λ x, If x = m then a else 0) n) = a.
+    intros a m n ltq.
+    rewrite func_to_list_ulist.
+    unfold ulist_sum; equiv_simpl.
+    apply list_sum_func_single.
+    exact ltq.
 Qed.
 
 End Sum.
