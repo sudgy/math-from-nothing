@@ -40,7 +40,7 @@ Lemma int_le_wd : ∀ a b c d, a ~ b → c ~ d → (a ≦ c) = (b ≦ d).
     split; apply int_le_wd_1; auto; try apply eq_symmetric; auto.
 Qed.
 
-Instance int_order : Order int := {
+Global Instance int_order : Order int := {
     le := binary_op int_le_wd;
 }.
 
@@ -56,7 +56,7 @@ Lemma int_le_connex : ∀ a b, {a <= b} + {b <= a}.
         right; exact eq.
 Qed.
 
-Instance int_le_connex_class : Connex le := {
+Global Instance int_le_connex_class : Connex le := {
     connex := int_le_connex
 }.
 
@@ -71,7 +71,7 @@ Lemma int_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
     apply antisym; auto.
 Qed.
 
-Instance int_le_antisym_class : Antisymmetric le := {
+Global Instance int_le_antisym_class : Antisymmetric le := {
     antisym := int_le_antisymmetric
 }.
 
@@ -89,7 +89,7 @@ Lemma int_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
     exact eq.
 Qed.
 
-Instance int_le_trans_class : Transitive le := {
+Global Instance int_le_trans_class : Transitive le := {
     trans := int_le_transitive;
 }.
 
@@ -104,7 +104,7 @@ Lemma int_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
     exact eq.
 Qed.
 
-Instance int_le_lplus_class : OrderLplus int := {
+Global Instance int_le_lplus_class : OrderLplus int := {
     le_lplus := int_le_lplus;
 }.
 (* end hide *)
@@ -142,7 +142,7 @@ Lemma int_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     apply nat_le_zero.
 Qed.
 
-Instance int_le_mult_class : OrderMult int := {
+Global Instance int_le_mult_class : OrderMult int := {
     le_mult := int_le_mult;
 }.
 
@@ -154,7 +154,7 @@ Lemma int_le_mult_lcancel_pos : ∀ a b c, 0 < c → c * a <= c * b → a <= b.
     destruct (le_lt_trans eq contr); contradiction.
 Qed.
 
-Instance int_le_mult_lcancel : OrderMultLcancel int := {
+Global Instance int_le_mult_lcancel : OrderMultLcancel int := {
     le_mult_lcancel_pos := int_le_mult_lcancel_pos;
 }.
 (* end hide *)

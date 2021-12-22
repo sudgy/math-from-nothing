@@ -38,7 +38,7 @@ Lemma int_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
     exact eq.
 Qed.
 
-Instance int_mult : Mult int := {
+Global Instance int_mult : Mult int := {
     mult := binary_self_op int_mult_wd;
 }.
 
@@ -112,7 +112,7 @@ Lemma int_mult_lid : ∀ a, 1 * a = a.
     reflexivity.
 Qed.
 
-Instance int_mult_lid_class : MultLid int := {
+Global Instance int_mult_lid_class : MultLid int := {
     mult_lid := int_mult_lid;
 }.
 (* end hide *)
@@ -175,7 +175,7 @@ Lemma int_not_trivial : 0 ≠ 1.
     inversion eq.
 Qed.
 
-Instance int_not_trivial_class : NotTrivial int := {
+Global Instance int_not_trivial_class : NotTrivial int := {
     not_trivial := int_not_trivial;
 }.
 

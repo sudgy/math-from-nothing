@@ -11,7 +11,7 @@ Class AbsoluteValue U := {
 Notation "| a |" := (abs a) (at level 30).
 Arguments abs : simpl never.
 
-Instance real_abs : AbsoluteValue real := {
+Global Instance real_abs : AbsoluteValue real := {
     abs a := If 0 <= a then a else (-a)
 }.
 
@@ -88,7 +88,7 @@ Theorem abs_zero : 0 = |0|.
 Qed.
 
 Theorem abs_one : |1| = 1.
-    pose proof (refl (|1 * 1|)) as eq.
+    pose proof (Logic.eq_refl (|1 * 1|)) as eq.
     rewrite mult_rid in eq at 2.
     rewrite abs_mult in eq.
     rewrite <- (mult_rid (|1|)) in eq at 3.
@@ -101,7 +101,7 @@ Theorem abs_one : |1| = 1.
 Qed.
 
 Theorem abs_minus_one : | -(1)| = 1.
-    pose proof (refl (| -(1) * -(1)|)) as eq.
+    pose proof (Logic.eq_refl (| -(1) * -(1)|)) as eq.
     rewrite abs_mult in eq at 1.
     rewrite mult_lneg, mult_rneg, neg_neg in eq.
     rewrite mult_lid in eq.

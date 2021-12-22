@@ -363,7 +363,7 @@ Theorem tensor_decompose_zero : tensor_decompose_grade 0 = list_end.
     unfold tensor_max_nz.
     rewrite_ex_val n [n_lt [n_ge n_least]].
     nat_destruct n; try reflexivity.
-    specialize (n_least n (refl _)).
+    specialize (n_least n (Logic.eq_refl _)).
     contradiction.
 Qed.
 

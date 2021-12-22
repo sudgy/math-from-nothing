@@ -86,7 +86,7 @@ Lemma real_mult_assoc : ∀ a b c, a * (b * c) = (a * b) * c.
         apply neg_pos in a_neg.
         apply real_mult_assoc3; assumption.
 Qed.
-Instance real_mult_assoc_class : MultAssoc real := {
+Global Instance real_mult_assoc_class : MultAssoc real := {
     mult_assoc := real_mult_assoc;
 }.
 
@@ -433,11 +433,11 @@ Lemma real_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
         apply neg_pos in a_neg.
         apply real_ldist8; exact a_neg.
 Qed.
-Instance real_ldist_class : Ldist real := {
+Global Instance real_ldist_class : Ldist real := {
     ldist := real_ldist;
 }.
 
-Instance real_one : One real := {
+Global Instance real_one : One real := {
     one := rat_to_real 1
 }.
 
@@ -503,7 +503,7 @@ Theorem real_mult_lid : ∀ a, 1 * a = a.
         apply real_mult_lid1.
         exact a_neg.
 Qed.
-Instance real_mult_lid_class : MultLid real := {
+Global Instance real_mult_lid_class : MultLid real := {
     mult_lid := real_mult_lid;
 }.
 (* begin hide *)

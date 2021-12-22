@@ -26,7 +26,7 @@ Qed.
 
 End IntPlus.
 
-Instance int_plus : Plus int := {
+Global Instance int_plus : Plus int := {
     plus := binary_self_op int_plus_wd
 }.
 
@@ -39,7 +39,7 @@ Lemma int_plus_comm : ∀ a b, a + b = b + a.
     rewrite (plus_comm a2).
     reflexivity.
 Qed.
-Instance int_plus_comm_class : PlusComm int := {
+Global Instance int_plus_comm_class : PlusComm int := {
     plus_comm := int_plus_comm
 }.
 
@@ -51,11 +51,11 @@ Lemma int_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
     repeat rewrite assoc.
     reflexivity.
 Qed.
-Instance int_plus_assoc_class : PlusAssoc int := {
+Global Instance int_plus_assoc_class : PlusAssoc int := {
     plus_assoc := int_plus_assoc
 }.
 
-Instance int_zero : Zero int := {
+Global Instance int_zero : Zero int := {
     zero := to_equiv_type int_equiv (zero, zero);
 }.
 
@@ -67,7 +67,7 @@ Lemma int_plus_lid : ∀ a, zero + a = a.
     reflexivity.
 Qed.
 
-Instance int_plus_lid_class : PlusLid int := {
+Global Instance int_plus_lid_class : PlusLid int := {
     plus_lid := int_plus_lid;
 }.
 (* end hide *)
@@ -88,7 +88,7 @@ Qed.
 
 End IntNeg.
 
-Instance int_neg : Neg int := {
+Global Instance int_neg : Neg int := {
     neg := unary_self_op int_neg_wd;
 }.
 
@@ -100,7 +100,7 @@ Lemma int_plus_linv : ∀ a, -a + a = zero.
     apply plus_comm.
 Qed.
 
-Instance int_plus_linv_class : PlusLinv int := {
+Global Instance int_plus_linv_class : PlusLinv int := {
     plus_linv := int_plus_linv;
 }.
 (* end hide *)

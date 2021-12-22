@@ -90,7 +90,7 @@ Lemma card_le_connex : ∀ κ μ, {κ <= μ} + {μ <= κ}.
         apply card_to_initial_ord_lte.
         exact leq.
 Qed.
-Instance card_le_connex_class : Connex le := {
+Global Instance card_le_connex_class : Connex le := {
     connex := card_le_connex
 }.
 
@@ -106,7 +106,7 @@ Lemma card_le_transitive : ∀ κ μ ν, κ <= μ → μ <= ν → κ <= ν.
     exists (λ x, g (f x)).
     apply inj_comp; assumption.
 Qed.
-Instance card_le_trans_class : Transitive le := {
+Global Instance card_le_trans_class : Transitive le := {
     trans := card_le_transitive
 }.
 
@@ -217,7 +217,7 @@ Lemma card_le_antisymmetric : ∀ κ μ, κ <= μ → μ <= κ → κ = μ.
                 specialize (b_eq2 zero).
                 contradiction b_eq2; reflexivity.
 Qed.
-Instance card_le_antisym_class : Antisymmetric le := {
+Global Instance card_le_antisym_class : Antisymmetric le := {
     antisym := card_le_antisymmetric
 }.
 (* end hide *)
@@ -276,7 +276,7 @@ Lemma card_le_wf : ∀ S : card → Prop, (∃ κ, S κ) → ∃ κ, is_minimal 
     assert (S' (card_to_initial_ord μ)) as S'μ by (exists [μ|Sμ]; reflexivity).
     apply (α_min _ S'μ); apply leq.
 Qed.
-Instance card_le_wf_class : WellFounded le := {
+Global Instance card_le_wf_class : WellFounded le := {
     well_founded := card_le_wf
 }.
 (* end hide *)

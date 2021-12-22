@@ -8,7 +8,7 @@ Require Export real_base.
 (* begin hide *)
 Open Scope set_scope.
 (* end hide *)
-Instance real_order : Order real := {
+Global Instance real_order : Order real := {
     le a b := [a|] ⊆ [b|]
 }.
 
@@ -27,7 +27,7 @@ Lemma real_le_connex : ∀ a b, {a <= b} + {b <= a}.
     apply (land (rand (rand a_cut)) l u au).
     apply (dedekind_lt b b_cut l u bl nbu).
 Qed.
-Instance real_le_connex_class : Connex le := {
+Global Instance real_le_connex_class : Connex le := {
     connex := real_le_connex
 }.
 
@@ -38,7 +38,7 @@ Lemma real_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
     apply set_type_eq; cbn.
     exact (antisym ab ba).
 Qed.
-Instance real_le_antisym_class : Antisymmetric le := {
+Global Instance real_le_antisym_class : Antisymmetric le := {
     antisym := real_le_antisymmetric
 }.
 
@@ -47,7 +47,7 @@ Lemma real_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
     unfold le; cbn.
     apply trans.
 Qed.
-Instance real_le_trans_class : Transitive le := {
+Global Instance real_le_trans_class : Transitive le := {
     trans := real_le_transitive;
 }.
 
@@ -98,7 +98,7 @@ Lemma real_sup_complete : ∀ S : real → Prop, (∃ x, S x) →
     -   intros [x x_cut] x_upper a [[y y_cut] [Sy ya]]; cbn in *.
         apply (x_upper [y|y_cut]); assumption.
 Qed.
-Instance real_sup_complete_class : SupremumComplete le := {
+Global Instance real_sup_complete_class : SupremumComplete le := {
     sup_complete := real_sup_complete
 }.
 (* end hide *)

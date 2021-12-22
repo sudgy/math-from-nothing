@@ -68,8 +68,8 @@ Theorem tensor_power_eq_generic : ∀ m n (eq : m = n) A B,
     inversion AB.
     inversion_sigma.
     subst B.
-    rewrite (proof_irrelevance H2 eq).
-    clear H0 H2 AB.
+    rewrite (proof_irrelevance H1_ eq).
+    clear H0 H1_ AB.
     destruct eq; cbn.
     reflexivity.
 Qed.
@@ -109,9 +109,9 @@ Lemma to_generic_tensor_plus : ∀ {m n}
     inversion CD.
     inversion_sigma.
     subst B D.
-    rewrite (proof_irrelevance H4 H3).
-    clear H4 H0 H2 AB CD.
-    destruct H3; cbn.
+    rewrite (proof_irrelevance H3_ H1_).
+    clear H3_ H0 H2 AB CD.
+    destruct H1_; cbn.
     reflexivity.
 Qed.
 

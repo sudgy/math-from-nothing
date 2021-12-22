@@ -4,13 +4,13 @@ Require Import list_perm.
 
 Require Import equivalence.
 
-Instance list_perm_reflexive U : Reflexive _ := {
+Local Instance list_perm_reflexive U : Reflexive _ := {
     refl := @list_perm_refl U
 }.
-Instance list_perm_symmetric U : Symmetric _ := {
+Local Instance list_perm_symmetric U : Symmetric _ := {
     sym := @list_perm_sym U
 }.
-Instance list_perm_transitive U : Transitive _ := {
+Local Instance list_perm_transitive U : Transitive _ := {
     trans := @list_perm_trans U
 }.
 

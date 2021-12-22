@@ -10,7 +10,7 @@ Fixpoint nat_plus_ a b :=
     end.
 
 (* begin hide *)
-Instance nat_plus : Plus nat := {
+Global Instance nat_plus : Plus nat := {
     plus := nat_plus_;
 }.
 (* end hide *)
@@ -39,7 +39,7 @@ Theorem nat_plus_rsuc : ∀ a b, a + nat_suc b = nat_suc (a + b).
 Qed.
 
 (* begin hide *)
-Instance nat_zero_instance : Zero nat := {
+Global Instance nat_zero_instance : Zero nat := {
     zero := nat_zero;
 }.
 Ltac nat_induction n := induction n; change nat_zero with zero in *.
@@ -49,7 +49,7 @@ Lemma nat_plus_lid_ : ∀ a, zero + a = a.
     intros a.
     reflexivity.
 Qed.
-Instance nat_plus_lid : PlusLid nat := {
+Global Instance nat_plus_lid : PlusLid nat := {
     plus_lid := nat_plus_lid_;
 }.
 Lemma nat_plus_rid_ : ∀ a, a + zero = a.
@@ -70,7 +70,7 @@ Lemma nat_plus_comm_ : ∀ a b, a + b = b + a.
         reflexivity.
 Qed.
 
-Instance nat_plus_comm : PlusComm nat := {
+Global Instance nat_plus_comm : PlusComm nat := {
     plus_comm := nat_plus_comm_;
 }.
 
@@ -83,7 +83,7 @@ Lemma nat_plus_assoc_ : ∀ a b c, a + (b + c) = (a + b) + c.
         rewrite IHa.
         reflexivity.
 Qed.
-Instance nat_plus_assoc : PlusAssoc nat := {
+Global Instance nat_plus_assoc : PlusAssoc nat := {
     plus_assoc := nat_plus_assoc_;
 }.
 
@@ -97,7 +97,7 @@ Lemma nat_plus_lcancel_ : ∀ a b c, c + a = c + b → a = b.
         inversion eq.
         reflexivity.
 Qed.
-Instance nat_plus_lcancel : PlusLcancel nat := {
+Global Instance nat_plus_lcancel : PlusLcancel nat := {
     plus_lcancel := nat_plus_lcancel_;
 }.
 (* end hide *)

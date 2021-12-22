@@ -158,7 +158,7 @@ Definition algebra_homo_compose {R : CRing} {L M N : Algebra R}
         algebra_homo_compose_plus algebra_homo_compose_scalar
         algebra_homo_compose_mult algebra_homo_compose_one.
 
-Program Instance ALGEBRA (R : CRing) : Category := {
+Global Program Instance ALGEBRA (R : CRing) : Category := {
     cat_U := Algebra R;
     cat_morphism M N := AlgebraHomomorphism M N;
     cat_compose {L M N} f g := algebra_homo_compose f g;

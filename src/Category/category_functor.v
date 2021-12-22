@@ -18,14 +18,14 @@ Arguments functor_morphism {C1 C2} Functor {A B} f.
 Notation "F ⌈ A ⌉" := (functor_f F A) (at level 69).
 Notation "F ⋄ f" := (functor_morphism F f) (at level 40, left associativity).
 
-Program Instance id_functor `(C0 : Category) : Functor C0 C0 := {
+Local Program Instance id_functor `(C0 : Category) : Functor C0 C0 := {
     functor_f A := A;
     functor_morphism {A B} f := f;
 }.
 
 Notation "𝟏" := (id_functor _).
 
-Program Instance compose_functor `{C1 : Category, C2 : Category, C3 : Category}
+Local Program Instance compose_functor `{C1 : Category, C2 : Category, C3 : Category}
     `(F : @Functor C2 C3) `(G : @Functor C1 C2) : Functor C1 C3 :=
 {
     functor_f a := functor_f F (functor_f G a);
@@ -44,7 +44,7 @@ Qed.
 
 Notation "F ○ G" := (compose_functor F G) (at level 40, left associativity).
 
-Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
+Local Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
     : Functor (subcategory S) C :=
 {
     functor_f x := [x|];
@@ -203,7 +203,7 @@ Theorem functor_assoc
     reflexivity.
 Qed.
 
-Program Instance CATEGORY : Category := {
+Local Program Instance CATEGORY : Category := {
     cat_U := Category;
     cat_morphism A B := Functor A B;
     cat_compose {A B C} f g := f ○ g;

@@ -796,7 +796,7 @@ Lemma ord_le_connex : ∀ α β, {α <= β} + {β <= α}.
     equiv_get_value α β.
     apply OrdConnex.ord_le_connex; assumption.
 Qed.
-Instance ord_le_connex_class : Connex le := {
+Global Instance ord_le_connex_class : Connex le := {
     connex := ord_le_connex
 }.
 
@@ -848,7 +848,7 @@ Lemma ord_le_antisymmetric : ∀ α β, α <= β → β <= α → α = β.
     pose proof (antisym leq2 leq1).
     contradiction.
 Qed.
-Instance ord_le_antisym_class : Antisymmetric le := {
+Global Instance ord_le_antisym_class : Antisymmetric le := {
     antisym := ord_le_antisymmetric
 }.
 
@@ -933,7 +933,7 @@ Lemma ord_le_transitive : ∀ α β γ, α <= β → β <= γ → α <= γ.
             cbn.
             exact (f_iso [g x|] [g y|]).
 Qed.
-Instance ord_le_trans_class : Transitive le := {
+Global Instance ord_le_trans_class : Transitive le := {
     trans := ord_le_transitive
 }.
 (* end hide *)
@@ -1215,7 +1215,7 @@ Lemma ord_le_wf : ∀ S : ord → Prop, (∃ α, S α) → ∃ α, is_minimal le
             contradiction.
         +   exact δ_leq.
 Qed.
-Instance ord_le_wf_class : WellFounded le := {
+Global Instance ord_le_wf_class : WellFounded le := {
     well_founded := ord_le_wf
 }.
 

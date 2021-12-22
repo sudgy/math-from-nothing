@@ -282,40 +282,40 @@ Qed.
 (* begin hide *)
 End NormMetric.
 (* end hide *)
-Instance real_scalar_mult : ScalarMult real real := {
+Global Instance real_scalar_mult : ScalarMult real real := {
     scalar_mult a b := a * b
 }.
 
-Program Instance real_scalar_comp : ScalarComp real real.
+Global Program Instance real_scalar_comp : ScalarComp real real.
 Next Obligation.
     apply mult_assoc.
 Qed.
-Program Instance real_scalar_id : ScalarId real real.
+Global Program Instance real_scalar_id : ScalarId real real.
 Next Obligation.
     apply mult_lid.
 Qed.
-Program Instance real_scalar_ldist : ScalarLdist real real.
+Global Program Instance real_scalar_ldist : ScalarLdist real real.
 Next Obligation.
     apply ldist.
 Qed.
-Program Instance real_scalar_rdist : ScalarRdist real real.
+Global Program Instance real_scalar_rdist : ScalarRdist real real.
 Next Obligation.
     apply rdist.
 Qed.
-Program Instance real_scalar_lmult : ScalarLMult real real.
+Global Program Instance real_scalar_lmult : ScalarLMult real real.
 Next Obligation.
     unfold scalar_mult; cbn.
     rewrite mult_assoc.
     reflexivity.
 Qed.
-Program Instance real_scalar_rmult : ScalarRMult real real.
+Global Program Instance real_scalar_rmult : ScalarRMult real real.
 Next Obligation.
     unfold scalar_mult; cbn.
     do 2 rewrite mult_assoc.
     rewrite (mult_comm u a).
     reflexivity.
 Qed.
-Program Instance real_abs_scalar : AbsScalar real.
+Global Program Instance real_abs_scalar : AbsScalar real.
 Next Obligation.
     unfold scalar_mult; cbn.
     apply abs_mult.

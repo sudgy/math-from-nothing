@@ -46,7 +46,7 @@ Qed.
 
 End Adjunction.
 
-Program Instance compose_adjunction
+Local Program Instance compose_adjunction
     `{C1 : Category, C2 : Category, C3 : Category}
     `{F  : @Functor C1 C2, G  : @Functor C2 C1}
     `{F' : @Functor C2 C3, G' : @Functor C3 C2}
@@ -94,7 +94,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Program Instance adj_unit `{C1 : Category, C2 : Category}
+Local Program Instance adj_unit `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C2 C1}
     `(Ad : @Adjunction C1 C2 F G) : NatTransformation 𝟏 (G ○ F) :=
 {
@@ -109,7 +109,7 @@ Next Obligation.
     rewrite cat_lid.
     reflexivity.
 Qed.
-Program Instance adj_counit `{C1 : Category, C2 : Category}
+Local Program Instance adj_counit `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C2 C1}
     `(Ad : @Adjunction C1 C2 F G) : NatTransformation (F ○ G) 𝟏 :=
 {

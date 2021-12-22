@@ -39,7 +39,7 @@ Lemma slice_set_id_in `{C0 : Category} {X : cat_U C0}
     apply cat_rid.
 Qed.
 
-Program Instance SLICE `(C0 : Category) (X : cat_U C0) : Category := {
+Local Program Instance SLICE `(C0 : Category) (X : cat_U C0) : Category := {
     cat_U := morphism_to X;
     cat_morphism f g := set_type (slice_set f g);
     cat_compose {F G H} f g := [_|slice_set_compose_in f g];
@@ -96,7 +96,7 @@ Lemma coslice_set_id_in `{C0 : Category} {X : cat_U C0}
     apply cat_lid.
 Qed.
 
-Program Instance COSLICE `(C0 : Category) (X : cat_U C0) : Category := {
+Local Program Instance COSLICE `(C0 : Category) (X : cat_U C0) : Category := {
     cat_U := morphism_from X;
     cat_morphism f g := set_type (coslice_set f g);
     cat_compose {F G H} f g := [_|coslice_set_compose_in f g];

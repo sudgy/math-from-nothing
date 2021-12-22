@@ -43,7 +43,7 @@ Polymorphic Definition isomorphic `{C0 : Category} A B
 
 Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
 
-Program Instance dual_category `(C0 : Category) : Category := {
+Local Program Instance dual_category `(C0 : Category) : Category := {
     cat_U := cat_U C0;
     cat_morphism A B := cat_morphism C0 B A;
     cat_compose {A B C} f g := cat_compose C0 g f;
@@ -60,7 +60,7 @@ Next Obligation.
     apply cat_lid.
 Qed.
 
-Program Instance product_category `(C1 : Category) `(C2 : Category) : Category
+Local Program Instance product_category `(C1 : Category) `(C2 : Category) : Category
 := {
     cat_U := prod (cat_U C1) (cat_U C2);
     cat_morphism A B
@@ -89,7 +89,7 @@ Class SubCategory `(C0 : Category) := {
     subcat_id : ∀ A, subcat_morphism (cat_id C0 A);
 }.
 
-Program Instance subcategory `(SubCategory) : Category := {
+Local Program Instance subcategory `(SubCategory) : Category := {
     cat_U := set_type subcat_S;
     cat_morphism A B := set_type (subcat_morphism (A:=[A|]) (B:=[B|]));
     cat_compose {A B C} f g := [_|subcat_compose [f|] [g|] [|f] [|g]];

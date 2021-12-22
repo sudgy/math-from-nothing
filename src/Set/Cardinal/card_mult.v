@@ -29,7 +29,7 @@ Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → prod A C ~ prod B D.
         rewrite a_eq, c_eq.
         reflexivity.
 Qed.
-Instance card_mult_class : Mult card := {
+Global Instance card_mult_class : Mult card := {
     mult := binary_self_op card_mult_wd
 }.
 
@@ -56,7 +56,7 @@ Lemma card_mult_assoc : ∀ κ μ ν, κ * (μ * ν) = (κ * μ) * ν.
         cbn.
         reflexivity.
 Qed.
-Instance card_mult_assoc_class : MultAssoc card := {
+Global Instance card_mult_assoc_class : MultAssoc card := {
     mult_assoc := card_mult_assoc
 }.
 
@@ -75,7 +75,7 @@ Lemma card_mult_comm : ∀ κ μ, κ * μ = μ * κ.
         cbn.
         reflexivity.
 Qed.
-Instance card_mult_comm_class : MultComm card := {
+Global Instance card_mult_comm_class : MultComm card := {
     mult_comm := card_mult_comm
 }.
 
@@ -96,11 +96,11 @@ Lemma card_mult_lanni : ∀ κ, 0 * κ = 0.
     -   intros x.
         contradiction (xf x).
 Qed.
-Instance card_mult_lanni_class : MultLanni card := {
+Global Instance card_mult_lanni_class : MultLanni card := {
     mult_lanni := card_mult_lanni
 }.
 
-Instance card_one : One card := {
+Global Instance card_one : One card := {
     one := nat_to_card 1
 }.
 
@@ -133,7 +133,7 @@ Lemma card_mult_lid : ∀ κ, 1 * κ = κ.
         exists ([0|z_lt], a).
         reflexivity.
 Qed.
-Instance card_mult_lid_class : MultLid card := {
+Global Instance card_mult_lid_class : MultLid card := {
     mult_lid := card_mult_lid
 }.
 
@@ -157,7 +157,7 @@ Lemma card_ldist : ∀ κ μ ν, κ * (μ + ν) = κ * μ + κ * ν.
             cbn.
             reflexivity.
 Qed.
-Instance card_ldist_class : Ldist card := {
+Global Instance card_ldist_class : Ldist card := {
     ldist := card_ldist
 }.
 (* end hide *)
@@ -208,7 +208,7 @@ Lemma card_le_lmult_pos : ∀ κ μ ν, zero <= ν → κ <= μ → ν * κ <= �
     intros κ μ ν ν_pos.
     apply card_le_lmult.
 Qed.
-Instance card_le_lmult_pos_class : OrderLmult card := {
+Global Instance card_le_lmult_pos_class : OrderLmult card := {
     le_lmult_pos := card_le_lmult_pos
 }.
 (* end hide *)
@@ -230,7 +230,7 @@ Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
         rewrite <- x_eq, <- y_eq.
         reflexivity.
     -   intros [y y_lt].
-        exists [a|refl a].
+        exists [a|Logic.eq_refl a].
         apply set_type_eq; cbn.
         apply nat_lt_1.
         exact y_lt.

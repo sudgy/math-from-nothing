@@ -146,7 +146,7 @@ End OrdMult.
 
 Open Scope ord_scope.
 
-Instance ord_mult_class : Mult ord := {
+Global Instance ord_mult_class : Mult ord := {
     mult := binary_self_op ord_mult_wd
 }.
 
@@ -184,7 +184,7 @@ Lemma ord_ldist : ∀ α β γ, α * (β + γ) = α * β + α * γ.
             rewrite inr_eq.
             reflexivity.
 Qed.
-Instance ord_ldist_class : Ldist ord := {
+Global Instance ord_ldist_class : Ldist ord := {
     ldist := ord_ldist
 }.
 
@@ -230,7 +230,7 @@ Lemma ord_mult_assoc : ∀ α β γ, α * (β * γ) = (α * β) * γ.
                 split; try assumption.
                 apply f_equal2; assumption.
 Qed.
-Instance ord_mult_assoc_class : MultAssoc ord := {
+Global Instance ord_mult_assoc_class : MultAssoc ord := {
     mult_assoc := ord_mult_assoc
 }.
 
@@ -260,7 +260,7 @@ Lemma ord_mult_lanni : ∀ α, 0 * α = 0.
         apply none in a.
         contradiction.
 Qed.
-Instance ord_mult_lanni_class : MultLanni ord := {
+Global Instance ord_mult_lanni_class : MultLanni ord := {
     mult_lanni := ord_mult_lanni
 }.
 
@@ -290,11 +290,11 @@ Lemma ord_mult_ranni : ∀ α, α * 0 = 0.
         apply none in a.
         contradiction.
 Qed.
-Instance ord_mult_ranni_class : MultRanni ord := {
+Global Instance ord_mult_ranni_class : MultRanni ord := {
     mult_ranni := ord_mult_ranni
 }.
 
-Instance ord_one : One ord := {
+Global Instance ord_one : One ord := {
     one := nat_to_ord 1
 }.
 
@@ -339,7 +339,7 @@ Lemma ord_mult_lid : ∀ α, 1 * α = α.
                 destruct (ord_wo A) as [[A_connex] C0]; clear C0.
                 destruct (connex b b); assumption.
 Qed.
-Instance ord_mult_lid_class : MultLid ord := {
+Global Instance ord_mult_lid_class : MultLid ord := {
     mult_lid := ord_mult_lid
 }.
 
@@ -381,7 +381,7 @@ Lemma ord_mult_rid : ∀ α, α * 1 = α.
             *   contradiction.
             *   exact e.
 Qed.
-Instance ord_mult_rid_class : MultRid ord := {
+Global Instance ord_mult_rid_class : MultRid ord := {
     mult_rid := ord_mult_rid
 }.
 
@@ -389,7 +389,7 @@ Lemma ord_le_mult : ∀ α β, 0 <= α → 0 <= β → 0 <= α * β.
     intros α β a b.
     apply ord_le_zero.
 Qed.
-Instance ord_le_mult_class : OrderMult ord := {
+Global Instance ord_le_mult_class : OrderMult ord := {
     le_mult := ord_le_mult
 }.
 (* end hide *)
@@ -515,7 +515,7 @@ Lemma ord_le_lmult_pos : ∀ α β γ, 0 <= γ → α <= β → γ * α <= γ * 
     exact leq.
 Qed.
 (* begin hide *)
-Instance ord_le_lmult_class : OrderLmult ord := {
+Global Instance ord_le_lmult_class : OrderLmult ord := {
     le_lmult_pos := ord_le_lmult_pos
 }.
 (* end hide *)
@@ -598,7 +598,7 @@ Lemma ord_le_rmult_pos : ∀ α β γ, 0 <= γ → α <= β → α * γ <= β * 
     exact leq.
 Qed.
 (* begin hide *)
-Instance ord_le_rmult_class : OrderRmult ord := {
+Global Instance ord_le_rmult_class : OrderRmult ord := {
     le_rmult_pos := ord_le_rmult_pos
 }.
 (* end hide *)
@@ -613,7 +613,7 @@ Lemma ord_mult_lcancel : ∀ α β γ, 0 ≠ γ → γ * α = γ * β → α = �
         destruct leq; contradiction.
 Qed.
 (* begin hide *)
-Instance ord_mult_lcancel_class : MultLcancel ord := {
+Global Instance ord_mult_lcancel_class : MultLcancel ord := {
     mult_lcancel := ord_mult_lcancel
 }.
 (* end hide *)
@@ -643,7 +643,7 @@ Lemma ord_le_mult_lcancel_pos : ∀ α β γ, 0 < γ → γ * α <= γ * β → 
     apply ord_le_mult_lcancel with γ; assumption.
 Qed.
 (* begin hide *)
-Instance ord_le_mult_lcancel_pos_class : OrderMultLcancel ord := {
+Global Instance ord_le_mult_lcancel_pos_class : OrderMultLcancel ord := {
     le_mult_lcancel_pos := ord_le_mult_lcancel_pos
 }.
 (* end hide *)

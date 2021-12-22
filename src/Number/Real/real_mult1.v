@@ -156,7 +156,7 @@ Theorem real_mult_dedekind : ∀ (a b : real), 0 <= a → 0 <= b →
                     exact (trans r'_eq s'_eq).
 Qed.
 
-Instance real_mult_class : Mult real := {
+Global Instance real_mult_class : Mult real := {
     mult a b :=
     match (connex 0 a), (connex 0 b) with
         | strong_or_left a_pos, strong_or_left b_pos =>
@@ -206,7 +206,7 @@ Lemma real_mult_comm : ∀ a b, a * b = b * a.
     -   apply set_type_eq; cbn.
         apply real_mult_comm_pos; apply neg_pos; assumption.
 Qed.
-Instance real_mult_comm_class : MultComm real := {
+Global Instance real_mult_comm_class : MultComm real := {
     mult_comm := real_mult_comm;
 }.
 
@@ -412,7 +412,7 @@ Lemma real_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     exact x_lt.
 Qed.
 
-Instance real_le_mult_class : OrderMult real := {
+Global Instance real_le_mult_class : OrderMult real := {
     le_mult := real_le_mult;
 }.
 (* begin hide *)

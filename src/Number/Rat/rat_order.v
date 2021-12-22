@@ -46,7 +46,7 @@ Lemma rat_le_wd : ∀ a b c d, a ~ b → c ~ d → (a ≦ c) = (b ≦ d).
     split; apply rat_le_wd_1; try assumption; symmetry; assumption.
 Qed.
 
-Instance rat_order : Order rat := {
+Global Instance rat_order : Order rat := {
     le := binary_op rat_le_wd;
 }.
 
@@ -57,7 +57,7 @@ Lemma rat_le_connex : ∀ a b, {a <= b} + {b <= a}.
     unfold le; equiv_simpl.
     apply connex.
 Qed.
-Instance rat_le_connex_class : Connex le := {
+Global Instance rat_le_connex_class : Connex le := {
     connex := rat_le_connex
 }.
 
@@ -68,7 +68,7 @@ Lemma rat_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
     unfold le; equiv_simpl.
     apply antisym.
 Qed.
-Instance rat_le_antisym_class : Antisymmetric le := {
+Global Instance rat_le_antisym_class : Antisymmetric le := {
     antisym := rat_le_antisymmetric
 }.
 
@@ -92,7 +92,7 @@ Lemma rat_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
     exact eq.
 Qed.
 
-Instance rat_le_trans_class : Transitive le := {
+Global Instance rat_le_trans_class : Transitive le := {
     trans := rat_le_transitive;
 }.
 
@@ -119,7 +119,7 @@ Lemma rat_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
     exact ab.
 Qed.
 
-Instance rat_le_lplus_class : OrderLplus rat := {
+Global Instance rat_le_lplus_class : OrderLplus rat := {
     le_lplus := rat_le_lplus;
 }.
 
@@ -136,7 +136,7 @@ Lemma rat_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     apply le_mult.
 Qed.
 
-Instance rat_le_mult_class : OrderMult rat := {
+Global Instance rat_le_mult_class : OrderMult rat := {
     le_mult := rat_le_mult;
 }.
 
@@ -240,7 +240,7 @@ Qed.
 Definition rat_arch := field_impl_arch1 rat_archimedean.
 (* end hide *)
 (* begin show *)
-Existing Instance rat_arch.
+Global Existing Instance rat_arch.
 (* end show *)
 (* begin hide *)
 Close Scope rat_scope.

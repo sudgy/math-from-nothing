@@ -11,7 +11,7 @@ Fixpoint nat_mult_ a b :=
     end.
 
 (* begin hide *)
-Instance nat_mult : Mult nat := {
+Global Instance nat_mult : Mult nat := {
     mult := nat_mult_;
 }.
 
@@ -19,11 +19,11 @@ Lemma nat_mult_lanni_ : ∀ a, zero * a = zero.
     intros a.
     reflexivity.
 Qed.
-Instance nat_mult_lanni : MultLanni nat := {
+Global Instance nat_mult_lanni : MultLanni nat := {
     mult_lanni := nat_mult_lanni_;
 }.
 
-Instance nat_mult_one : One nat := {
+Global Instance nat_mult_one : One nat := {
     one := nat_suc nat_zero;
 }.
 Ltac nat_induction n ::=
@@ -40,7 +40,7 @@ Lemma nat_mult_lid_ : ∀ a, one * a = a.
     unfold one, mult; cbn.
     apply plus_rid.
 Qed.
-Instance nat_mult_lid : MultLid nat := {
+Global Instance nat_mult_lid : MultLid nat := {
     mult_lid := nat_mult_lid_;
 }.
 (* end hide *)
@@ -82,7 +82,7 @@ Lemma nat_mult_comm_ : ∀ a b, a * b = b * a.
         reflexivity.
 Qed.
 
-Instance nat_mult_comm : MultComm nat := {
+Global Instance nat_mult_comm : MultComm nat := {
     mult_comm := nat_mult_comm_;
 }.
 
@@ -103,7 +103,7 @@ Lemma nat_ldist_ : ∀ a b c, a * (b + c) = a * b + a * c.
         apply plus_comm.
 Qed.
 
-Instance nat_ldist : Ldist nat := {
+Global Instance nat_ldist : Ldist nat := {
     ldist := nat_ldist_;
 }.
 
@@ -118,7 +118,7 @@ Lemma nat_mult_assoc_ : ∀ a b c, a * (b * c) = (a * b) * c.
         reflexivity.
 Qed.
 
-Instance nat_mult_assoc : MultAssoc nat := {
+Global Instance nat_mult_assoc : MultAssoc nat := {
     mult_assoc := nat_mult_assoc_;
 }.
 (* end hide *)
@@ -167,7 +167,7 @@ Lemma nat_mult_lcancel_ : ∀ a b c, zero ≠ c → c * a = c * b → a = b.
             exact eq.
 Qed.
 
-Instance nat_mult_lcancel : MultLcancel nat := {
+Global Instance nat_mult_lcancel : MultLcancel nat := {
     mult_lcancel := nat_mult_lcancel_;
 }.
 
@@ -175,7 +175,7 @@ Lemma nat_not_trivial : 0 ≠ 1.
     intro contr; inversion contr.
 Qed.
 
-Instance nat_not_trivial_class : NotTrivial nat := {
+Global Instance nat_not_trivial_class : NotTrivial nat := {
     not_trivial := nat_not_trivial
 }.
 (* end hide *)

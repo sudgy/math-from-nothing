@@ -80,7 +80,7 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
         destruct (le_lt_trans α_upper nup); contradiction.
 Qed.
 
-Instance real_archimedean : Archimedean real := {
+Global Instance real_archimedean : Archimedean real := {
     archimedean := real_archimedean_base
 }.
 
@@ -162,8 +162,8 @@ Theorem real_nested_interval : ∀ I : nat → real → Prop,
     pose proof (sup_complete _ S_ex S_upper) as [x [x_upper x_least]].
     exists x.
     intros n.
-    pose proof (refl (an n)) as a_eq.
-    pose proof (refl (bn n)) as b_eq.
+    pose proof (Logic.eq_refl (an n)) as a_eq.
+    pose proof (Logic.eq_refl (bn n)) as b_eq.
     unfold an in a_eq at 2; unfold bn in b_eq at 2.
     unfold ex_val in a_eq; unfold ex_proof in b_eq.
     destruct (ex_to_type _) as [a C0]; cbn in *.

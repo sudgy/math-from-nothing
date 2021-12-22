@@ -35,7 +35,7 @@ Lemma card_plus_wd : ∀ A B C D, A ~ B → C ~ D → sum A C ~ sum B D.
             exact eq.
 Qed.
 
-Instance card_plus_class : Plus card := {
+Global Instance card_plus_class : Plus card := {
     plus := binary_self_op card_plus_wd
 }.
 
@@ -64,7 +64,7 @@ Lemma card_plus_assoc : ∀ κ μ ν, κ + (μ + ν) = (κ + μ) + ν.
         +   exists (inr (inr c)).
             reflexivity.
 Qed.
-Instance card_plus_assoc_class : PlusAssoc card := {
+Global Instance card_plus_assoc_class : PlusAssoc card := {
     plus_assoc := card_plus_assoc
 }.
 
@@ -86,11 +86,11 @@ Lemma card_plus_comm : ∀ κ μ, κ + μ = μ + κ.
         +   exists (inl a).
             reflexivity.
 Qed.
-Instance card_plus_comm_class : PlusComm card := {
+Global Instance card_plus_comm_class : PlusComm card := {
     plus_comm := card_plus_comm
 }.
 
-Instance card_zero : Zero card := {
+Global Instance card_zero : Zero card := {
     zero := nat_to_card 0
 }.
 
@@ -117,7 +117,7 @@ Lemma card_plus_lid : ∀ κ, 0 + κ = κ.
         exists (inr a).
         reflexivity.
 Qed.
-Instance card_plus_lid_class : PlusLid card := {
+Global Instance card_plus_lid_class : PlusLid card := {
     plus_lid := card_plus_lid
 }.
 
@@ -136,7 +136,7 @@ Theorem card_le_lplus : ∀ κ μ ν, κ <= μ → ν + κ <= ν + μ.
     -   apply f_inj in eq2.
         rewrite eq2; reflexivity.
 Qed.
-Instance card_le_lplus_class : OrderLplus card := {
+Global Instance card_le_lplus_class : OrderLplus card := {
     le_lplus := card_le_lplus
 }.
 (* end hide *)

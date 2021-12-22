@@ -12,7 +12,7 @@ Class TopologySubbasis U := {
 (* begin hide *)
 Open Scope card_scope.
 (* end hide *)
-Program Instance subbasis_topology {U} `{TopologySubbasis U}
+Global Program Instance subbasis_topology {U} `{TopologySubbasis U}
     : TopologyBasis U :=
 {
     top_basis S := ∃ SS, SS ⊆ top_subbasis ∧ finite (|set_type SS|) ∧ S = ⋂ SS

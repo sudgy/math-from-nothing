@@ -19,7 +19,7 @@ Fixpoint nat_le a b :=
     end.
 
 (* begin hide *)
-Instance nat_order : Order nat := {
+Global Instance nat_order : Order nat := {
     le := nat_le;
 }.
 (* end hide *)
@@ -91,7 +91,7 @@ Lemma nat_le_connex_ : ∀ a b, {a <= b} + {b <= a}.
                 exact eq.
 Qed.
 
-Instance nat_le_connex : @Connex nat le := {
+Global Instance nat_le_connex : @Connex nat le := {
     connex := nat_le_connex_
 }.
 
@@ -108,7 +108,7 @@ Lemma nat_le_antisymmetric_ : ∀ a b, a <= b → b <= a → a = b.
             apply IHa; assumption.
 Qed.
 
-Instance nat_le_antisymmetric : @Antisymmetric nat le := {
+Global Instance nat_le_antisymmetric : @Antisymmetric nat le := {
     antisym := nat_le_antisymmetric_
 }.
 
@@ -128,7 +128,7 @@ Lemma nat_le_transitive_ : ∀ a b c, a <= b → b <= c → a <= c.
                 apply IHc with b; assumption.
 Qed.
 
-Instance nat_le_transitive : @Transitive nat le := {
+Global Instance nat_le_transitive : @Transitive nat le := {
     trans := nat_le_transitive_
 }.
 (* end hide *)
@@ -185,7 +185,7 @@ Lemma nat_le_lplus_ : ∀ a b c, a <= b → c + a <= c + b.
         exact IHc.
 Qed.
 
-Instance nat_le_lplus : OrderLplus nat := {
+Global Instance nat_le_lplus : OrderLplus nat := {
     le_lplus := nat_le_lplus_;
 }.
 
@@ -200,7 +200,7 @@ Lemma nat_le_plus_lcancel_ : ∀ a b c, c + a <= c + b → a <= b.
         exact eq.
 Qed.
 
-Instance nat_le_plus_lcancel : OrderPlusLcancel nat := {
+Global Instance nat_le_plus_lcancel : OrderPlusLcancel nat := {
     le_plus_lcancel := nat_le_plus_lcancel_;
 }.
 
@@ -209,7 +209,7 @@ Lemma nat_le_mult_ : ∀ a b, zero <= a → zero <= b → zero <= a * b.
     apply nat_le_zero.
 Qed.
 
-Instance nat_le_mult : OrderMult nat := {
+Global Instance nat_le_mult : OrderMult nat := {
     le_mult := nat_le_mult_;
 }.
 (* end hide *)
@@ -228,7 +228,7 @@ Lemma nat_le_lmult_ : ∀ a b c, zero <= c → a <= b → c * a <= c * b.
     apply nat_le_lmult.
 Qed.
 
-Instance nat_le_lmult_class : OrderLmult nat := {
+Global Instance nat_le_lmult_class : OrderLmult nat := {
     le_lmult_pos := nat_le_lmult_;
 }.
 (* end hide *)
@@ -264,7 +264,7 @@ Lemma nat_le_mult_lcancel_ : ∀ a b c, zero < c → c * a <= c * b → a <= b.
     exact c_pos.
 Qed.
 
-Instance nat_le_mult_lcancel_class : OrderMultLcancel nat := {
+Global Instance nat_le_mult_lcancel_class : OrderMultLcancel nat := {
     le_mult_lcancel_pos := nat_le_mult_lcancel_;
 }.
 (* end hide *)
@@ -405,7 +405,7 @@ Lemma nat_wf : ∀ S : nat → Prop, (∃ x, S x) → has_minimal le S.
     split; try assumption.
     apply x_least; exact Sy.
 Qed.
-Instance nat_wf_class : WellFounded le := {
+Global Instance nat_wf_class : WellFounded le := {
     well_founded := nat_wf
 }.
 (* end hide *)

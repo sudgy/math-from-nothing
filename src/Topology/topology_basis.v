@@ -14,7 +14,7 @@ Class TopologyBasis U := {
         ∃ B3, top_basis B3 ∧ B3 x ∧ B3 ⊆ (B1 ∩ B2);
 }.
 
-Program Instance basis_topology {U} `{b:TopologyBasis U} : Topology U :={
+Global Program Instance basis_topology {U} `{b:TopologyBasis U} : Topology U :={
     open S := ∀ x, S x → ∃ B, top_basis B ∧ B x ∧ B ⊆ S
 }.
 Next Obligation.

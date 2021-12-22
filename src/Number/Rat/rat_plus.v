@@ -57,7 +57,7 @@ Qed.
 
 End RatPlus.
 
-Instance rat_plus : Plus rat := {
+Global Instance rat_plus : Plus rat := {
     plus := binary_self_op rat_plus_wd
 }.
 
@@ -71,7 +71,7 @@ Lemma rat_plus_comm : ∀ a b, a + b = b + a.
     rewrite (mult_comm (nat_suc b2)).
     reflexivity.
 Qed.
-Instance rat_plus_comm_class : PlusComm rat := {
+Global Instance rat_plus_comm_class : PlusComm rat := {
     plus_comm := rat_plus_comm
 }.
 
@@ -89,11 +89,11 @@ Lemma rat_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
     mult_bring_right (nat_suc c2).
     reflexivity.
 Qed.
-Instance rat_plus_assoc_class : PlusAssoc rat := {
+Global Instance rat_plus_assoc_class : PlusAssoc rat := {
     plus_assoc := rat_plus_assoc
 }.
 
-Instance rat_zero : Zero rat := {
+Global Instance rat_zero : Zero rat := {
     zero := int_to_rat 0
 }.
 
@@ -110,7 +110,7 @@ Lemma rat_plus_lid : ∀ a, 0 + a = a.
     rewrite mult_rid.
     reflexivity.
 Qed.
-Instance rat_plus_lid_class : PlusLid rat := {
+Global Instance rat_plus_lid_class : PlusLid rat := {
     plus_lid := rat_plus_lid;
 }.
 (* end hide *)
@@ -131,7 +131,7 @@ Qed.
 
 End RatNeg.
 
-Instance rat_neg : Neg rat := {
+Global Instance rat_neg : Neg rat := {
     neg := unary_self_op rat_neg_wd;
 }.
 
@@ -147,7 +147,7 @@ Lemma rat_plus_linv : ∀ a, -a + a = zero.
     reflexivity.
 Qed.
 
-Instance rat_plus_linv_class : PlusLinv rat := {
+Global Instance rat_plus_linv_class : PlusLinv rat := {
     plus_linv := rat_plus_linv;
 }.
 (* end hide *)

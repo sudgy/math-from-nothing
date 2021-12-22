@@ -130,7 +130,7 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
                     exact r_pos.
 Qed.
 
-Instance real_div_class : Div real := {
+Global Instance real_div_class : Div real := {
     div a :=
     match (trichotomy 0 a) with
     | semi_or_left comps =>
@@ -512,7 +512,7 @@ Lemma real_mult_linv : ∀ a, 0 ≠ a → div a * a = 1.
         apply real_mult_linv1.
         exact a_neg'.
 Qed.
-Instance real_mult_linv_class : MultLinv real := {
+Global Instance real_mult_linv_class : MultLinv real := {
     mult_linv := real_mult_linv
 }.
 
@@ -522,7 +522,7 @@ Lemma real_not_trivial : 0 ≠ 1.
     rewrite <- contr in H.
     destruct H; contradiction.
 Qed.
-Instance real_not_trivial_class : NotTrivial real := {
+Global Instance real_not_trivial_class : NotTrivial real := {
     not_trivial := real_not_trivial;
 }.
 

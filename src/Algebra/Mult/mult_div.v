@@ -70,7 +70,7 @@ Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ r < b.
         exact Sq.
 Qed.
 (* end hide *)
-Instance nat_euclidean_class : EuclideanDomain nat := {
+Global Instance nat_euclidean_class : EuclideanDomain nat := {
     euclidean_f := λ x, x;
     euclidean_division := nat_euclidean
 }.

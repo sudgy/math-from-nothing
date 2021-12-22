@@ -29,7 +29,7 @@ Lemma rat_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
     exact eq.
 Qed.
 
-Instance rat_mult : Mult rat := {
+Global Instance rat_mult : Mult rat := {
     mult := binary_self_op rat_mult_wd;
 }.
 
@@ -43,7 +43,7 @@ Lemma rat_mult_comm : ∀ a b, a * b = b * a.
     rewrite (mult_comm (nat_suc a2)).
     reflexivity.
 Qed.
-Instance rat_mult_comm_class : MultComm rat := {
+Global Instance rat_mult_comm_class : MultComm rat := {
     mult_comm := rat_mult_comm;
 }.
 
@@ -56,7 +56,7 @@ Lemma rat_mult_assoc : ∀ a b c, a * (b * c) = (a * b) * c.
     do 2 rewrite mult_assoc.
     reflexivity.
 Qed.
-Instance rat_mult_assoc_class : MultAssoc rat := {
+Global Instance rat_mult_assoc_class : MultAssoc rat := {
     mult_assoc := rat_mult_assoc;
 }.
 
@@ -74,11 +74,11 @@ Lemma rat_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
     mult_bring_right (nat_suc c2).
     reflexivity.
 Qed.
-Instance rat_ldist_class : Ldist rat := {
+Global Instance rat_ldist_class : Ldist rat := {
     ldist := rat_ldist;
 }.
 
-Instance rat_one : One rat := {
+Global Instance rat_one : One rat := {
     one := int_to_rat 1
 }.
 
@@ -93,7 +93,7 @@ Theorem rat_mult_lid : ∀ a, 1 * a = a.
     do 2 rewrite mult_lid.
     reflexivity.
 Qed.
-Instance rat_mult_lid_class : MultLid rat := {
+Global Instance rat_mult_lid_class : MultLid rat := {
     mult_lid := rat_mult_lid;
 }.
 (* end hide *)
@@ -179,7 +179,7 @@ Lemma rat_inv_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
         exact eq.
 Qed.
 
-Instance rat_inv : Div rat := {
+Global Instance rat_inv : Div rat := {
     div := unary_self_op rat_inv_wd;
 }.
 
@@ -214,7 +214,7 @@ Lemma rat_mult_linv : ∀ a, 0 ≠ a → div a * a = 1.
         rewrite comm.
         reflexivity.
 Qed.
-Instance rat_mult_linv_class : MultLinv rat := {
+Global Instance rat_mult_linv_class : MultLinv rat := {
     mult_linv := rat_mult_linv
 }.
 
@@ -227,7 +227,7 @@ Theorem rat_not_trivial : 0 ≠ 1.
     apply not_trivial in contr.
     exact contr.
 Qed.
-Instance rat_not_trivial_class : NotTrivial rat := {
+Global Instance rat_not_trivial_class : NotTrivial rat := {
     not_trivial := rat_not_trivial;
 }.
 

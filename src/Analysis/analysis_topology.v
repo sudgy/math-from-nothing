@@ -73,7 +73,7 @@ Theorem closed_ball_self : ∀ x ε, closed_ball x ε x.
     apply [|ε].
 Qed.
 
-Program Instance metric_topology : TopologyBasis U := {
+Global Program Instance metric_topology : TopologyBasis U := {
     top_basis S := ∃ x ε, S = open_ball x ε
 }.
 Next Obligation.
@@ -213,7 +213,7 @@ Lemma metric_hausdorff_base : ∀ x1 x2, x1 ≠ x2 →
         destruct ltq; contradiction.
 Qed.
 (* end hide *)
-Instance metric_hausdorff : HausdorffSpace U := {
+Global Instance metric_hausdorff : HausdorffSpace U := {
     hausdorff_space := metric_hausdorff_base
 }.
 
@@ -427,5 +427,3 @@ Qed.
 (* begin hide *)
 End RealMetricTopologyEq.
 (* end hide *)
-Existing Instance metric_topology.
-Existing Instance metric_hausdorff.

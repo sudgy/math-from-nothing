@@ -179,7 +179,7 @@ Definition module_homo_compose {R : CRing} {L M N : Module R}
         (λ x, module_homo_f f (module_homo_f g x))
         module_homo_compose_plus module_homo_compose_scalar.
 
-Program Instance MODULE (R : CRing) : Category := {
+Global Program Instance MODULE (R : CRing) : Category := {
     cat_U := Module R;
     cat_morphism M N := ModuleHomomorphism M N;
     cat_compose {L M N} f g := module_homo_compose f g;
@@ -224,22 +224,22 @@ Context U `{
 
 Definition scalar_cring := make_cring U UP UZ UN UM UO UPA UPC UPZ UPN UMA UMC UMO UMD.
 
-Instance scalar_scalar_mult : ScalarMult U U := {
+Local Instance scalar_scalar_mult : ScalarMult U U := {
     scalar_mult a b := a * b
 }.
-Program Instance scalar_scalar_id : ScalarId U U.
+Local Program Instance scalar_scalar_id : ScalarId U U.
 Next Obligation.
     apply mult_lid.
 Qed.
-Program Instance scalar_scalar_ldist : ScalarLdist U U.
+Local Program Instance scalar_scalar_ldist : ScalarLdist U U.
 Next Obligation.
     apply ldist.
 Qed.
-Program Instance scalar_scalar_rdist : ScalarRdist U U.
+Local Program Instance scalar_scalar_rdist : ScalarRdist U U.
 Next Obligation.
     apply rdist.
 Qed.
-Program Instance scalar_scalar_comp : ScalarComp U U.
+Local Program Instance scalar_scalar_comp : ScalarComp U U.
 Next Obligation.
     apply mult_assoc.
 Qed.

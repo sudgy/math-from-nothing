@@ -104,7 +104,7 @@ End OrdPlus.
 
 Open Scope ord_scope.
 
-Instance ord_plus_class : Plus ord := {
+Global Instance ord_plus_class : Plus ord := {
     plus := binary_self_op ord_plus_wd
 }.
 
@@ -135,11 +135,11 @@ Lemma ord_plus_assoc : ∀ α β γ, α + (β + γ) = (α + β) + γ.
     -   intros [x|[x|x]] [y|[y|y]]; cbn.
         all: reflexivity.
 Qed.
-Instance ord_plus_assoc_class : PlusAssoc ord := {
+Global Instance ord_plus_assoc_class : PlusAssoc ord := {
     plus_assoc := ord_plus_assoc
 }.
 
-Instance ord_zero : Zero ord := {
+Global Instance ord_zero : Zero ord := {
     zero := nat_to_ord 0
 }.
 
@@ -164,7 +164,7 @@ Lemma ord_plus_lid : ∀ α, 0 + α = α.
     -   intros a b.
         reflexivity.
 Qed.
-Instance ord_plus_lid_class : PlusLid ord := {
+Global Instance ord_plus_lid_class : PlusLid ord := {
     plus_lid := ord_plus_lid
 }.
 
@@ -189,7 +189,7 @@ Lemma ord_plus_rid : ∀ α, α + 0 = α.
     -   intros a b.
         reflexivity.
 Qed.
-Instance ord_plus_rid_class : PlusRid ord := {
+Global Instance ord_plus_rid_class : PlusRid ord := {
     plus_rid := ord_plus_rid
 }.
 (* end hide *)
@@ -257,7 +257,7 @@ Lemma ord_plus_lcancel : ∀ α β γ, γ + α = γ + β → α = β.
     destruct leq; contradiction.
 Qed.
 (* begin hide *)
-Instance ord_plus_lcancel_class : PlusLcancel ord := {
+Global Instance ord_plus_lcancel_class : PlusLcancel ord := {
     plus_lcancel := ord_plus_lcancel
 }.
 (* end hide *)
@@ -468,7 +468,7 @@ Lemma ord_le_lplus : ∀ α β γ, α <= β → γ + α <= γ + β.
         apply ltq.
 Qed.
 (* begin hide *)
-Instance ord_le_lplus_class : OrderLplus ord := {
+Global Instance ord_le_lplus_class : OrderLplus ord := {
     le_lplus := ord_le_lplus
 }.
 (* end hide *)
@@ -483,7 +483,7 @@ Lemma ord_le_plus_lcancel : ∀ α β γ, γ + α <= γ + β → α <= β.
         apply ltq.
 Qed.
 (* begin hide *)
-Instance ord_le_plus_lcancel_class : OrderPlusLcancel ord := {
+Global Instance ord_le_plus_lcancel_class : OrderPlusLcancel ord := {
     le_plus_lcancel := ord_le_plus_lcancel
 }.
 (* end hide *)
@@ -558,7 +558,7 @@ Lemma ord_le_rplus : ∀ α β γ, α <= β → α + γ <= β + γ.
         split; assumption.
 Qed.
 (* begin hide *)
-Instance ord_le_rplus_class : OrderRplus ord := {
+Global Instance ord_le_rplus_class : OrderRplus ord := {
     le_rplus := ord_le_rplus
 }.
 (* end hide *)

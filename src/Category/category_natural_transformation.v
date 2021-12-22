@@ -19,7 +19,7 @@ Notation "α • A" := (nat_trans_f α A) (at level 30).
     [(α • B) ∘ (F ⋄ f) = (G ⋄ f) ∘ (α • A)]
 *)
 
-Program Instance id_nat_transformation `{C1 : Category, C2 : Category}
+Local Program Instance id_nat_transformation `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2) : NatTransformation F F :=
 {
     nat_trans_f A := 𝟙
@@ -32,7 +32,7 @@ Qed.
 
 Notation "'𝕀'" := (id_nat_transformation _).
 
-Program Instance vcompose_nat_transformation `{C1 : Category, C2 : Category}
+Local Program Instance vcompose_nat_transformation `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2, H : @Functor C1 C2}
     `(α : @NatTransformation C1 C2 G H, β : @NatTransformation C1 C2 F G)
     : NatTransformation F H :=
@@ -48,7 +48,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Program Instance hcompose_nat_transformation
+Local Program Instance hcompose_nat_transformation
     `{C1 : Category, C2 : Category, C3 : Category}
     `{F' : @Functor C2 C3, G' : @Functor C2 C3}
     `{F : @Functor C1 C2, G : @Functor C1 C2}
@@ -160,7 +160,7 @@ Theorem nat_trans_assoc `{C1 : Category, C2 : Category}
     apply cat_assoc.
 Qed.
 
-Program Instance FUNCTOR `(C1 : Category, C2 : Category) : Category := {
+Local Program Instance FUNCTOR `(C1 : Category, C2 : Category) : Category := {
     cat_U := Functor C1 C2;
     cat_morphism F G := NatTransformation F G;
     cat_compose {A B C} α β := α □ β;

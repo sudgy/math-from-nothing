@@ -42,8 +42,6 @@ Arguments trichotomy: simpl never.
 Definition strict {U} (op : U → U → Prop) a b := op a b ∧ a ≠ b.
 Definition dual_op {U} (op : U → U → Prop) a b := op b a.
 
-Program Instance eq_refl {U : Type} : Reflexive (U := U) equal.
-
 (* begin hide *)
 Lemma neq_sym_ {U : Type} : ∀ x y : U, x ≠ y → y ≠ x.
     intros x y neq eq.

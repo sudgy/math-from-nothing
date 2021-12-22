@@ -4,7 +4,7 @@ Require Import category_base.
 
 Require Import set.
 
-Program Instance TYPE : Category := {
+Local Program Instance TYPE : Category := {
     cat_U := Type;
     cat_morphism A B := A → B;
     cat_compose A B C f g := λ x, f (g x);
@@ -35,7 +35,7 @@ Theorem set_category_isomorphism : ∀ {A B} (f : cat_morphism TYPE A B),
         apply f_eq1.
 Qed.
 
-Program Instance SINGLETON : Category := {
+Local Program Instance SINGLETON : Category := {
     cat_U := singleton_type;
     cat_morphism A B := singleton_type;
     cat_compose A B C f g := Single;

@@ -71,7 +71,7 @@ Theorem real_plus_dedekind : ∀ (a b : real), dedekind_cut ([a|] ⊕ [b|]).
             apply lt_lrplus; assumption.
 Qed.
 
-Instance real_plus_class : Plus real := {
+Global Instance real_plus_class : Plus real := {
     plus a b := [_|real_plus_dedekind a b]
 }.
 
@@ -90,7 +90,7 @@ Lemma real_plus_comm : ∀ a b, a + b = b + a.
         rewrite plus_comm.
         repeat split; assumption.
 Qed.
-Instance real_plus_comm_class : PlusComm real := {
+Global Instance real_plus_comm_class : PlusComm real := {
     plus_comm := real_plus_comm
 }.
 
@@ -120,11 +120,11 @@ Lemma real_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
             rewrite plus_assoc.
             reflexivity.
 Qed.
-Instance real_plus_assoc_class : PlusAssoc real := {
+Global Instance real_plus_assoc_class : PlusAssoc real := {
     plus_assoc := real_plus_assoc
 }.
 
-Instance real_zero : Zero real := {
+Global Instance real_zero : Zero real := {
     zero := rat_to_real 0
 }.
 
@@ -150,7 +150,7 @@ Lemma real_plus_lid : ∀ a, 0 + a = a.
             rewrite plus_rlinv.
             reflexivity.
 Qed.
-Instance real_plus_lid_class : PlusLid real := {
+Global Instance real_plus_lid_class : PlusLid real := {
     plus_lid := real_plus_lid;
 }.
 
@@ -217,7 +217,7 @@ Lemma real_neg_dedekind : ∀ a : real, dedekind_cut (⊖ [a|]).
             exact r2_pos.
 Qed.
 
-Instance real_neg_class : Neg real := {
+Global Instance real_neg_class : Neg real := {
     neg a := [_|real_neg_dedekind a]
 }.
 Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
@@ -453,7 +453,7 @@ Lemma real_plus_linv : ∀ a, -a + a = 0.
         apply real_plus_linv_pos.
         exact a_pos.
 Qed.
-Instance real_plus_linv_class : PlusLinv real := {
+Global Instance real_plus_linv_class : PlusLinv real := {
     plus_linv := real_plus_linv;
 }.
 
@@ -465,7 +465,7 @@ Lemma real_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
     apply ab in as_.
     repeat split; assumption.
 Qed.
-Instance real_le_lplus_class : OrderLplus real := {
+Global Instance real_le_lplus_class : OrderLplus real := {
     le_lplus := real_le_lplus;
 }.
 

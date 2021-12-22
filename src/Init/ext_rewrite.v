@@ -7,7 +7,7 @@ sometimes works, but I'm not good enough at this to figure out how to make it
 work more often.
 *)
 
-Instance ext_rewrite1 T :
+Global Instance ext_rewrite1 T :
         Proper (pointwise_relation T equal ==> equal) (all (A := T)).
     intros x y Heq.
     assert (x = y) as eq.
@@ -22,13 +22,13 @@ Instance ext_rewrite1 T :
     reflexivity.
 Qed.
 
-Instance ext_rewrite2 : subrelation iff equal.
+Global Instance ext_rewrite2 : subrelation iff equal.
     intros A B Hequiv.
     apply propositional_ext.
     exact Hequiv.
 Qed.
 
-Instance ext_rewrite3 U :
+Global Instance ext_rewrite3 U :
         Proper (pointwise_relation U equal ==> Basics.impl) (all (A := U)).
     intros P Q H all_P x.
     rewrite <- H.
