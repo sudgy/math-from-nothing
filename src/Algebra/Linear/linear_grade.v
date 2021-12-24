@@ -865,6 +865,30 @@ Theorem grade_project_of_grade : ∀ v i, of_grade i v → grade_project v i = v
             destruct v_nin; contradiction.
 Qed.
 
+Theorem grade_project_of_grade_neq : ∀ i j v, of_grade i v → i ≠ j →
+        grade_project v j = 0.
+    intros i j v iv neq.
+    case_grade_project v j vj vj_eq vj_in vj_nin; [>|reflexivity].
+    assert (homogeneous v) as v_homo by (exists i; exact iv).
+    classic_case (0 = v) as [v_z|v_nz].
+    1: {
+        subst v.
+        rewrite grade_decomposition_zero in vj_in.
+        contradiction (in_ulist_end _ vj_in).
+    }
+    pose proof (grade_decomposition_homo [v|v_homo] v_nz) as v_eq.
+    cbn in v_eq.
+    rewrite v_eq in vj_in.
+    rewrite in_ulist_add in vj_in.
+    destruct vj_in as [vj_eq'|vj_in]; [>|contradiction (in_ulist_end _ vj_in)].
+    subst vj; cbn.
+    cbn in vj_eq.
+    rewrite_ex_val k vk.
+    subst k.
+    exfalso; apply neq.
+    exact (of_grade_unique _ _ _ v_nz iv vk).
+Qed.
+
 Theorem grade_project_project : ∀ v i,
         grade_project (grade_project v i) i = grade_project v i.
     intros v i.
@@ -876,6 +900,420 @@ Theorem grade_project_eq_of_grade : ∀ v i, v = grade_project v i → of_grade 
     intros v i v_eq.
     rewrite v_eq.
     apply grade_project_grade.
+Qed.
+
+Theorem grade_induction : ∀ S : V → Prop,
+        S 0 → (∀ u v i, of_grade i u →
+            0 = grade_project v i → S v → S (u + v)) → ∀ v, S v.
+    intros S S0 S_ind v.
+    remember (grade_decomposition v) as l.
+    pose proof (grade_decomposition_uni v) as l_uni.
+    pose proof (grade_decomposition_nz v) as l_nz.
+    rewrite (grade_decomposition_eq v).
+    rewrite <- Heql.
+    rewrite <- Heql in l_uni, l_nz.
+    clear Heql.
+    induction l using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        exact S0.
+    }
+    rewrite ulist_image_add, ulist_sum_add.
+    clear v.
+    remember (ulist_sum (ulist_image l (λ x, [x|]))) as v.
+    apply (S_ind _ _ (ex_val [|a])).
+    -   apply (ex_proof [|a]).
+    -   case_grade_project v (ex_val [|a]) vi vi_eq vi_in vi_nin;
+            [>|reflexivity].
+        assert (grade_decomposition v = l) as l_eq.
+        {
+            apply grade_decomposition_unique.
+            -   exact Heqv.
+            -   rewrite ulist_image_add, ulist_unique_add in l_uni.
+                apply l_uni.
+            -   rewrite ulist_prop_add in l_nz.
+                apply l_nz.
+        }
+        rewrite l_eq in vi_in.
+        rewrite ulist_image_add, ulist_unique_add in l_uni.
+        exfalso; apply (land l_uni).
+        rewrite <- vi_eq.
+        apply (in_ulist_image l vi).
+        exact vi_in.
+    -   apply IHl.
+        +   rewrite ulist_image_add, ulist_unique_add in l_uni.
+            apply l_uni.
+        +   rewrite ulist_prop_add in l_nz.
+            apply l_nz.
+Qed.
+
+Lemma grade_decomposition_plus_homo : ∀ (a b : set_type homogeneous) v,
+        ex_val [|a] ≠ ex_val [|b] →
+        in_ulist (grade_decomposition v) a →
+        in_ulist (grade_decomposition ([b|] + v)) a.
+    intros a b v neq a_in.
+    classic_case (0 = [b|]) as [b_z|b_nz].
+    1: {
+        rewrite <- b_z.
+        rewrite plus_lid.
+        exact a_in.
+    }
+    classic_case (∃ c, ex_val [|b] = ex_val [|c] ∧
+            in_ulist (grade_decomposition v) c) as [c_ex|c_nex].
+    -   destruct c_ex as [c [c_eq c_in]].
+        apply in_ulist_split in c_in as [l l_eq].
+        classic_case (0 = [b|] + [c|]).
+        +   assert (grade_decomposition ([b|] + v) = l) as l_eq2.
+            {
+                apply grade_decomposition_unique.
+                -   apply plus_lcancel with [c|].
+                    rewrite <- ulist_sum_add, <- ulist_image_add.
+                    rewrite <- l_eq.
+                    rewrite <- grade_decomposition_eq.
+                    rewrite plus_assoc.
+                    rewrite (plus_comm [c|]).
+                    rewrite <- e.
+                    apply plus_lid.
+                -   pose proof (grade_decomposition_uni v) as l_uni.
+                    rewrite l_eq in l_uni.
+                    rewrite ulist_image_add, ulist_unique_add in l_uni.
+                    apply l_uni.
+                -   pose proof (grade_decomposition_nz v) as l_nz.
+                    rewrite l_eq in l_nz.
+                    rewrite ulist_prop_add in l_nz.
+                    apply l_nz.
+            }
+            rewrite l_eq2.
+            rewrite l_eq in a_in.
+            apply in_ulist_add in a_in as [a_eq|a_in]; [>|exact a_in].
+            subst c.
+            symmetry in c_eq; contradiction.
+        +   assert (homogeneous ([b|] + [c|])) as bc_homo.
+            {
+                exists (ex_val [|b]).
+                apply of_grade_plus.
+                -   exact (ex_proof [|b]).
+                -   rewrite c_eq.
+                    exact (ex_proof [|c]).
+            }
+            assert (grade_decomposition ([b|] + v) = [_|bc_homo] ::: l)
+                as l_eq2.
+            {
+                apply grade_decomposition_unique.
+                -   rewrite ulist_image_add, ulist_sum_add; cbn.
+                    rewrite (grade_decomposition_eq v).
+                    rewrite l_eq.
+                    rewrite ulist_image_add, ulist_sum_add.
+                    apply plus_assoc.
+                -   rewrite ulist_image_add, ulist_unique_add.
+                    pose proof (grade_decomposition_uni v) as l_uni.
+                    rewrite l_eq in l_uni.
+                    rewrite ulist_image_add, ulist_unique_add in l_uni.
+                    destruct l_uni as [c_nin l_uni].
+                    split; [>|exact l_uni].
+                    cbn.
+                    intros bc_in.
+                    apply image_in_ulist in bc_in as [bc [bc_eq bc_in]].
+                    apply c_nin.
+                    assert (ex_val [|c] = ex_val [|bc]) as c_bc_eq.
+                    {
+                        apply (of_grade_unique _ _ _ n).
+                        -   apply of_grade_plus.
+                            +   rewrite <- c_eq.
+                                exact (ex_proof [|b]).
+                            +   exact (ex_proof [|c]).
+                        -   rewrite bc_eq.
+                            exact (ex_proof bc_homo).
+                    }
+                    rewrite c_bc_eq.
+                    apply (in_ulist_image l bc).
+                    exact bc_in.
+                -   rewrite ulist_prop_add; cbn.
+                    split; [>exact n|].
+                    pose proof (grade_decomposition_nz v) as v_nz.
+                    rewrite l_eq in v_nz.
+                    rewrite ulist_prop_add in v_nz.
+                    apply v_nz.
+            }
+            rewrite l_eq2.
+            rewrite in_ulist_add.
+            right.
+            rewrite l_eq in a_in.
+            apply in_ulist_add in a_in as [a_eq|a_in]; [>|exact a_in].
+            subst c.
+            symmetry in c_eq; contradiction.
+    -   rewrite not_ex in c_nex; setoid_rewrite not_and in c_nex.
+        assert (grade_decomposition ([b|] + v) = b ::: grade_decomposition v)
+            as l_eq.
+        {
+            apply grade_decomposition_unique.
+            -   rewrite ulist_image_add, ulist_sum_add.
+                rewrite <- grade_decomposition_eq.
+                reflexivity.
+            -   rewrite ulist_image_add, ulist_unique_add.
+                split; [>|apply grade_decomposition_uni].
+                intros contr.
+                apply image_in_ulist in contr as [a' [a'_eq a'_in]].
+                specialize (c_nex a') as [a'_neq|c_nin].
+                +   rewrite a'_eq in a'_neq.
+                    contradiction.
+                +   contradiction.
+            -   rewrite ulist_prop_add.
+                split; [>exact b_nz|apply grade_decomposition_nz].
+        }
+        rewrite l_eq.
+        rewrite in_ulist_add.
+        right.
+        exact a_in.
+Qed.
+
+Lemma grade_project_plus_neq : ∀ a v i j, i ≠ j → of_grade i a →
+        grade_project (a + v) j = grade_project v j.
+    intros a v i j neq ai.
+    classic_case (0 = a) as [a_z|a_nz].
+    1: {
+        rewrite <- a_z.
+        rewrite plus_lid.
+        reflexivity.
+    }
+    case_grade_project v j vj vj_eq vj_in vj_nin.
+    -   assert (in_ulist (grade_decomposition (a + v)) vj) as vj_in2.
+        {
+            assert (homogeneous a) as a_homo by (exists i; exact ai).
+            change a with [[a|a_homo]|].
+            apply grade_decomposition_plus_homo; [>|exact vj_in].
+            rewrite vj_eq.
+            cbn.
+            rewrite_ex_val i' ai'.
+            assert (i = i') as i_eq.
+            {
+                apply (of_grade_unique _ _ _ a_nz); assumption.
+            }
+            subst i'.
+            rewrite neq_sym; exact neq.
+        }
+        case_grade_project (a + v) j avj avj_eq avj_in avj_nin.
+        +   apply in_ulist_split in vj_in2 as [l l_eq].
+            rewrite l_eq in avj_in.
+            rewrite in_ulist_add in avj_in.
+            destruct avj_in as [eq|avj_in]; [>subst; reflexivity|].
+            pose proof (grade_decomposition_uni (a + v)) as av_uni.
+            rewrite l_eq in av_uni.
+            rewrite ulist_image_add, ulist_unique_add in av_uni.
+            destruct av_uni as [vj_nin av_uni].
+            exfalso; apply vj_nin.
+            rewrite vj_eq, <- avj_eq.
+            apply (in_ulist_image l avj).
+            exact avj_in.
+        +   rewrite not_ex in avj_nin.
+            specialize (avj_nin vj).
+            rewrite not_and in avj_nin.
+            destruct avj_nin; contradiction.
+    -   rewrite not_ex in vj_nin.
+        setoid_rewrite not_and in vj_nin.
+        case_grade_project (a + v) j avj avj_eq avj_in avj_nin.
+        +   specialize (vj_nin avj) as [vj_nin|avj_nin]; [>contradiction|].
+            exfalso; apply avj_nin.
+            rewrite <- (plus_llinv v a).
+            assert (homogeneous (-a)) as a_homo.
+            {
+                apply homo_neg.
+                exists i.
+                exact ai.
+            }
+            change (-a) with [[-a|a_homo]|].
+            apply grade_decomposition_plus_homo; [>|exact avj_in].
+            rewrite avj_eq.
+            cbn.
+            rewrite_ex_val i' ai'.
+            assert (i = i') as i_eq.
+            {
+                apply (of_grade_unique _ _ _ a_nz ai).
+                apply of_grade_neg in ai'.
+                rewrite neg_neg in ai'.
+                exact ai'.
+            }
+            subst i'.
+            rewrite neq_sym; exact neq.
+        +   reflexivity.
+Qed.
+
+Theorem grade_project_plus : ∀ u v i,
+        grade_project (u + v) i = grade_project u i + grade_project v i.
+    intros u v i.
+    revert v.
+    induction u as [|u' u j u'j eq IHu] using grade_induction; intros.
+    {
+        rewrite grade_project_zero.
+        do 2 rewrite plus_lid.
+        reflexivity.
+    }
+    rewrite (plus_comm u' u).
+    rewrite <- plus_assoc.
+    rewrite IHu.
+    rewrite IHu.
+    rewrite <- plus_assoc.
+    apply lplus.
+    clear u eq IHu.
+
+    rename u' into a.
+    revert a j u'j.
+    induction v as [|b v k bk eq IHv] using grade_induction; intros.
+    {
+        rewrite grade_project_zero.
+        do 2 rewrite plus_rid.
+        reflexivity.
+    }
+    classic_case (j = k) as [jk_eq|jk_neq].
+    -   subst k.
+        pose proof (of_grade_plus _ _ _ u'j bk) as ab_j.
+        rewrite plus_assoc.
+        rewrite (IHv _ j) by exact ab_j.
+        rewrite (IHv _ j) by exact bk.
+        rewrite plus_assoc.
+        apply rplus.
+        classic_case (i = j) as [ij_eq|ij_neq].
+        +   subst j.
+            do 3 rewrite grade_project_of_grade by assumption.
+            reflexivity.
+        +   rewrite neq_sym in ij_neq.
+            rewrite (grade_project_of_grade_neq j i) by assumption.
+            rewrite (grade_project_of_grade_neq j i) by assumption.
+            rewrite (grade_project_of_grade_neq j i) by assumption.
+            rewrite plus_rid.
+            reflexivity.
+    -   classic_case (i = j) as [ij_eq|ij_neq].
+        +   subst j.
+            rewrite plus_assoc.
+            rewrite (plus_comm a b).
+            rewrite <- plus_assoc.
+            rewrite neq_sym in jk_neq.
+            rewrite (grade_project_plus_neq _ _ k i) by assumption.
+            rewrite (grade_project_plus_neq b _ k i) by assumption.
+            rewrite (IHv _ i u'j).
+            reflexivity.
+        +   rewrite neq_sym in ij_neq.
+            rewrite (grade_project_plus_neq _ _ j i) by assumption.
+            rewrite (grade_project_of_grade_neq j i a) by assumption.
+            rewrite plus_lid.
+            reflexivity.
+Qed.
+
+Theorem grade_project_scalar : ∀ a v i,
+        grade_project (a · v) i = a · grade_project v i.
+    intros a v i.
+    induction v as [|u v j uj eq IHv] using grade_induction.
+    1: {
+        rewrite scalar_ranni.
+        rewrite grade_project_zero.
+        rewrite scalar_ranni.
+        reflexivity.
+    }
+    rewrite scalar_ldist.
+    do 2 rewrite grade_project_plus.
+    rewrite IHv.
+    rewrite scalar_ldist.
+    apply rplus.
+    clear v eq IHv.
+    pose proof (of_grade_scalar a u j uj) as auj.
+    classic_case (i = j) as [eq|neq].
+    -   subst j.
+        rewrite grade_project_of_grade by exact auj.
+        rewrite grade_project_of_grade by exact uj.
+        reflexivity.
+    -   rewrite neq_sym in neq.
+        rewrite (grade_project_of_grade_neq j) by assumption.
+        rewrite (grade_project_of_grade_neq j) by assumption.
+        rewrite scalar_ranni.
+        reflexivity.
+Qed.
+
+Theorem in_grade_decomposition_project : ∀ v u,
+        in_ulist (grade_decomposition v) u → ∃ i, [u|] = grade_project v i.
+    intros v u u_in.
+    destruct u as [u [i ui]]; cbn.
+    assert (0 ≠ u) as u_nz.
+    {
+        intros contr; subst u.
+        apply in_ulist_split in u_in as [l l_eq].
+        pose proof (grade_decomposition_nz v) as v_nz.
+        rewrite l_eq in v_nz.
+        apply ulist_prop_add in v_nz as [neq v_nz].
+        contradiction.
+    }
+    exists i.
+    case_grade_project v i vi vi_eq vi_in vi_nin.
+    -   pose proof (grade_decomposition_uni v) as v_uni.
+        apply in_ulist_split in vi_in as [l l_eq].
+        rewrite l_eq in v_uni, u_in.
+        rewrite ulist_image_add, ulist_unique_add in v_uni.
+        rewrite vi_eq in v_uni.
+        destruct v_uni as [i_nin v_uni].
+        apply in_ulist_add in u_in as [u_eq|u_in].
+        +   rewrite u_eq.
+            reflexivity.
+        +   apply in_ulist_split in u_in as [l' l'_eq].
+            subst l.
+            rewrite ulist_image_add, in_ulist_add in i_nin.
+            rewrite not_or in i_nin.
+            cbn in i_nin.
+            rewrite_ex_val i' i'_eq.
+            exfalso; apply (land i_nin).
+            apply (of_grade_unique _ _ _ u_nz); assumption.
+    -   rewrite not_ex in vi_nin.
+        specialize (vi_nin [u | ex_intro _ i ui]).
+        rewrite not_and in vi_nin.
+        destruct vi_nin as [neq|nin].
+        +   rewrite_ex_val i' i'_eq.
+            exfalso; apply neq.
+            apply (of_grade_unique _ _ _ u_nz); assumption.
+        +   contradiction.
+Qed.
+
+Theorem all_grade_project_eq : ∀ u v,
+        (∀ i, grade_project u i = grade_project v i) → u = v.
+    intros u v all_eq.
+    rewrite (grade_decomposition_eq u).
+    rewrite (grade_decomposition_eq v).
+    apply f_equal.
+    apply f_equal2; [>|reflexivity].
+    apply ulist_in_unique_eq.
+    1, 2: apply (ulist_image_unique (grade_decomposition _) (λ x, ex_val [|x])).
+    1, 2: apply grade_decomposition_uni.
+    intros x.
+    split; intros x_in.
+    -   assert (0 ≠ [x|]) as x_nz.
+        {
+            pose proof (grade_decomposition_nz u) as u_nz.
+            apply in_ulist_split in x_in as [l l_eq].
+            rewrite l_eq in u_nz.
+            rewrite ulist_prop_add in u_nz.
+            apply u_nz.
+        }
+        apply in_grade_decomposition_project in x_in as [i x_eq].
+        rewrite all_eq in x_eq.
+        case_grade_project v i vi vi_eq vi_in vi_nin.
+        +   apply set_type_eq in x_eq.
+            rewrite x_eq.
+            exact vi_in.
+        +   rewrite x_eq in x_nz.
+            contradiction.
+    -   assert (0 ≠ [x|]) as x_nz.
+        {
+            pose proof (grade_decomposition_nz v) as v_nz.
+            apply in_ulist_split in x_in as [l l_eq].
+            rewrite l_eq in v_nz.
+            rewrite ulist_prop_add in v_nz.
+            apply v_nz.
+        }
+        apply in_grade_decomposition_project in x_in as [i x_eq].
+        rewrite <- all_eq in x_eq.
+        case_grade_project u i ui ui_eq ui_in ui_nin.
+        +   apply set_type_eq in x_eq.
+            rewrite x_eq.
+            exact ui_in.
+        +   rewrite x_eq in x_nz.
+            contradiction.
 Qed.
 
 End LinearGrade.
