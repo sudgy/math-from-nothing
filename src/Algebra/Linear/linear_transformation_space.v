@@ -4,7 +4,9 @@ Require Export linear_base.
 
 Section LinearTransformationSpace.
 
-Context {U V1 V2} `{
+Variables V1 V2 : Type.
+
+Context {U} `{
     UP : Plus U,
     UZ : Zero U,
     UN : Neg U,
