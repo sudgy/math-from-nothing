@@ -162,8 +162,7 @@
 ./src/Algebra/Linear/Tensor/tensor_power.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_base.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_grade.v
-./src/Algebra/Linear/Tensor/tensor_algebra_mult1.v
-./src/Algebra/Linear/Tensor/tensor_algebra_mult2.v
+./src/Algebra/Linear/Tensor/tensor_algebra_mult.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_scalar.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_vector.v
 

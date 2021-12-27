@@ -2,14 +2,14 @@ Require Import init.
 
 Require Export tensor_algebra_base.
 Require Import tensor_algebra_grade.
-Require Import tensor_algebra_mult1.
-Require Import tensor_algebra_mult2.
+Require Import tensor_algebra_mult.
 Require Import tensor_power.
 Require Import tensor_product_isomorphisms.
 Require Import module_category.
 Require Import algebra_category.
+Require Import linear_grade.
 
-Require Import list.
+Require Import unordered_list.
 Require Import set.
 Require Import plus_sum.
 
@@ -61,13 +61,14 @@ Let TASMC := tensor_algebra_scalar_comp V.
 Let TASMO := tensor_algebra_scalar_id V.
 Let TASML := tensor_algebra_scalar_ldist V.
 Let TASMR := tensor_algebra_scalar_rdist V.
-Let TAM := tensor_mult V.
+Let TAG := tensor_grade V.
+Let TAM := tensor_mult_class V.
 Let TAML := tensor_mult_ldist V.
 Let TAMR := tensor_mult_rdist V.
 Let TAMA := tensor_mult_assoc V.
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
     TPA TPZ TPN TSM TSMC TSMO TSML TSMR TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM
-    TASMC TASMO TASML TASMR TAM TAML TAMR TAMA.
+    TASMC TASMO TASML TASMR TAG TAM TAML TAMR TAMA.
 (* end hide *)
 Let k_tensor k := module_V (tensor_power V k).
 
@@ -102,57 +103,10 @@ Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
     -   reflexivity.
 Qed.
 
-Theorem scalar_to_tensor_homogeneous : ∀ α,
-        homogeneous_tensor V (scalar_to_tensor α).
+Theorem scalar_to_tensor_homogeneous : ∀ α, homogeneous (scalar_to_tensor α).
     intros α.
     exists 0, α.
     reflexivity.
-Qed.
-
-Theorem scalar_to_tensor_decompose : ∀ α, 0 ≠ α →
-        tensor_decompose_grade V (scalar_to_tensor α) =
-        [_|scalar_to_tensor_homogeneous α] :: list_end.
-    intros α α_neq.
-    unfold tensor_decompose_grade.
-    assert (tensor_max_nz V (scalar_to_tensor α) = 1) as nz_eq.
-    {
-        remember (tensor_max_nz V (scalar_to_tensor α)) as n.
-        assert (0 < n) as ltq.
-        {
-            rewrite Heqn.
-            apply tensor_max_nz_leq.
-            intros contr.
-            cbn in contr.
-            unfold power_to_tensor_base in contr.
-            destruct (strong_excluded_middle (0 = 0)) as [eq|neq];
-                try contradiction.
-            destruct eq; cbn in contr.
-            contradiction.
-        }
-        nat_destruct n.
-        -   destruct ltq; contradiction.
-        -   pose proof (tensor_max_nz_least V _ _ Heqn) as neq.
-            symmetry; classic_contradiction contr.
-            apply neq; clear neq.
-            cbn.
-            unfold power_to_tensor_base; cbn.
-            destruct (strong_excluded_middle (0 = n)) as [eq|neq].
-            +   exfalso.
-                subst n.
-                contradiction.
-            +   reflexivity.
-    }
-    rewrite nz_eq.
-    unfold one; cbn.
-    apply f_equal2.
-    2: reflexivity.
-    apply set_type_eq; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros n.
-    unfold power_to_tensor_base.
-    change nat_zero with (zero (U := nat)).
-    case_if; reflexivity.
 Qed.
 
 Theorem scalar_to_tensor_mult : ∀ α β,
@@ -175,13 +129,16 @@ Theorem scalar_to_tensor_mult : ∀ α β,
         rewrite scalar_to_tensor_zero.
         reflexivity.
     }
-    unfold mult at 1; cbn.
-    rewrite scalar_to_tensor_decompose by exact α_nz.
-    rewrite scalar_to_tensor_decompose by exact β_nz.
-    cbn.
-    rewrite plus_rid.
+    pose proof (scalar_to_tensor_homogeneous α) as α_homo.
+    pose proof (scalar_to_tensor_homogeneous β) as β_homo.
+    pose proof (tensor_mult_homo V [_|α_homo] [_|β_homo]) as eq.
+    cbn in eq.
+    pose (X := scalar_to_tensor α * scalar_to_tensor β).
+    fold X.
+    change (scalar_to_tensor α * scalar_to_tensor β) with X in eq.
+    rewrite eq.
     unfold scalar_to_tensor.
-    rewrite power_to_tensor_tm.
+    rewrite (power_to_tensor_tm V).
     unfold zero at 8; cbn.
     destruct (Logic.eq_sym (plus_lid_rid_ 0)); cbn.
     fold (tensor_product_comm_f (tensor_power V 0) (cring_module F)).
@@ -205,59 +162,34 @@ Theorem scalar_to_tensor_scalar : ∀ α (A : tensor_algebra_base V),
         rewrite scalar_lanni.
         reflexivity.
     }
-    rewrite (tensor_decompose_grade_eq V A).
-    remember (tensor_decompose_grade V A) as al.
+    rewrite (grade_decomposition_eq A).
+    remember (grade_decomposition A) as al.
     clear Heqal A.
-    induction al.
+    induction al using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_ranni.
         rewrite scalar_ranni.
         reflexivity.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite ldist.
     rewrite scalar_ldist.
     rewrite IHal; clear IHal.
     apply rplus; clear al.
-    unfold mult at 1; cbn.
-    rewrite scalar_to_tensor_decompose by exact α_nz.
-    rewrite list_prod2_lconc.
-    rewrite list_prod2_lend.
-    cbn.
-    rewrite plus_lid.
-    rewrite (tensor_rmult_homogeneous V).
-    destruct a as [a a_homo]; cbn.
-    destruct a_homo as [k [A A_eq]].
-    subst a.
+    pose proof (scalar_to_tensor_homogeneous α) as α_homo.
+    pose proof (tensor_mult_homo V [_|α_homo] a) as eq.
+    cbn in eq.
+    pose (X := scalar_to_tensor α * [a|]).
+    fold X.
+    change (scalar_to_tensor α * [a|]) with X in eq.
+    rewrite eq; clear X eq.
+    destruct a as [a' [i [a a_eq]]].
+    subst a'; cbn.
     unfold scalar_to_tensor.
     rewrite (power_to_tensor_tm V).
     rewrite tensor_power_lscalar.
-    unfold scalar_mult at 2; cbn.
-    apply set_type_eq; cbn.
-    apply functional_ext.
-    intros x.
-    unfold power_to_tensor_base.
-    assert (strong_excluded_middle (0 + k = x) =
-            strong_excluded_middle (k = x)) as eq_eq.
-    {
-        destruct (strong_excluded_middle (0 + k = x)) as [eq1|neq1];
-        destruct (strong_excluded_middle (k = x)) as [eq2|neq2].
-        -   apply f_equal.
-            apply proof_irrelevance.
-        -   exfalso; rewrite plus_lid in eq1.
-            contradiction.
-        -   exfalso; rewrite plus_lid in neq1.
-            contradiction.
-        -   apply f_equal.
-            apply proof_irrelevance.
-    }
-    rewrite eq_eq; clear eq_eq.
-    destruct (strong_excluded_middle (k = x)) as [eq|neq].
-    -   subst; cbn.
-        reflexivity.
-    -   rewrite scalar_ranni.
-        reflexivity.
+    apply (power_to_tensor_scalar V).
 Qed.
 
 Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
@@ -271,31 +203,30 @@ Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
         rewrite mult_ranni.
         reflexivity.
     }
-    rewrite (tensor_decompose_grade_eq V A).
-    remember (tensor_decompose_grade V A) as al.
+    rewrite (grade_decomposition_eq A).
+    remember (grade_decomposition A) as al.
     clear Heqal A.
-    induction al.
+    induction al using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_lanni.
         rewrite mult_ranni.
         reflexivity.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite ldist.
     rewrite rdist.
     rewrite IHal; clear IHal.
     apply rplus; clear al.
-    unfold mult; cbn.
-    rewrite scalar_to_tensor_decompose by exact α_nz.
-    rewrite list_prod2_lconc.
-    rewrite list_prod2_lend.
-    rewrite list_prod2_rconc.
-    rewrite list_prod2_rend.
-    cbn.
-    do 2 rewrite plus_lid.
-    rewrite (tensor_lmult_homogeneous V).
-    rewrite (tensor_rmult_homogeneous V).
+    pose proof (scalar_to_tensor_homogeneous α) as α_homo.
+    pose proof (tensor_mult_homo V [_|α_homo] a) as eq.
+    cbn in eq.
+    unfold TAM, TAP, TAZ, TAPC, TAPA, TASM, TAG, tensor_algebra_base in *.
+    rewrite eq; clear eq.
+    pose proof (tensor_mult_homo V a [_|α_homo]) as eq.
+    cbn in eq.
+    unfold tensor_algebra_base in eq.
+    rewrite eq; clear eq.
     destruct a as [a a_homo]; cbn.
     destruct a_homo as [k [A A_eq]].
     subst a.
@@ -305,21 +236,6 @@ Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
     rewrite <- tensor_power_rscalar.
     symmetry.
     apply power_to_tensor_k_eq.
-Qed.
-
-Program Instance tensor_scalar_lmult : ScalarLMult U (tensor_algebra_base V).
-Next Obligation.
-    do 2 rewrite <- scalar_to_tensor_scalar.
-    rewrite mult_assoc.
-    reflexivity.
-Qed.
-
-Program Instance tensor_scalar_rmult : ScalarRMult U (tensor_algebra_base V).
-Next Obligation.
-    do 2 rewrite <- scalar_to_tensor_scalar.
-    do 2 rewrite mult_assoc.
-    rewrite (scalar_to_tensor_comm _ u).
-    reflexivity.
 Qed.
 
 Instance tensor_one : One (tensor_algebra_base V) := {
@@ -360,7 +276,7 @@ Definition tensor_algebra_object {F : CRing} (V : Module F) := make_algebra F
         (tensor_algebra_scalar_rdist V)
         (tensor_algebra_scalar_comp V)
     )
-    (tensor_mult V)
+    (tensor_mult_class V)
     (tensor_mult_ldist V)
     (tensor_mult_rdist V)
     (tensor_mult_assoc V)

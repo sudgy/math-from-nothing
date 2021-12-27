@@ -5,10 +5,10 @@ Require Import tensor_product_isomorphisms.
 Require Import tensor_power.
 Require Export tensor_algebra_base.
 Require Import tensor_algebra_grade.
-Require Import tensor_algebra_mult1.
-Require Import tensor_algebra_mult2.
+Require Import tensor_algebra_mult.
 Require Import module_category.
 Require Import algebra_category.
+Require Import linear_grade.
 
 Require Import list.
 Require Import set.
@@ -73,19 +73,20 @@ Let TASMC := tensor_algebra_scalar_comp V.
 Let TASMO := tensor_algebra_scalar_id V.
 Let TASML := tensor_algebra_scalar_ldist V.
 Let TASMR := tensor_algebra_scalar_rdist V.
-Let TAM := tensor_mult V.
+Let TAG := tensor_grade V.
+Let TAM := tensor_mult_class V.
 Let TAML := tensor_mult_ldist V.
 Let TAMR := tensor_mult_rdist V.
 Let TAMA := tensor_mult_assoc V.
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP VZ VN VPC
     VPA VPZ VPN VSM VSMC VSMO VSML VSMR TP TZ TN TPC TPA TPZ TPN TSM TSMC TSMO
-    TSML TSMR TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM TASMC TASMO TASML TASMR TAM
-    TAML TAMR TAMA.
+    TSML TSMR TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM TASMC TASMO TASML TASMR TAG
+    TAM TAML TAMR TAMA.
 (* end hide *)
 Let k_tensor k := module_V (tensor_power V k).
 
 Definition vector_to_tensor v := power_to_tensor V (k := 1)
-    (tensor_product_universal.tensor_mult V (cring_module F) v 1).
+    (tensor_mult V (cring_module F) v 1).
 
 Theorem vector_to_tensor_eq : ∀ u v,
         vector_to_tensor u = vector_to_tensor v → u = v.
@@ -125,78 +126,10 @@ Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
 Qed.
 
 Theorem vector_to_tensor_homogeneous :
-        ∀ v, homogeneous_tensor V (vector_to_tensor v).
+        ∀ v, homogeneous (vector_to_tensor v).
     intros v.
-    exists 1, (tensor_product_universal.tensor_mult V (cring_module F) v 1).
+    exists 1, (tensor_mult V (cring_module F) v 1).
     reflexivity.
-Qed.
-
-Theorem vector_to_tensor_decompose : ∀ v, 0 ≠ v →
-        tensor_decompose_grade V (vector_to_tensor v) =
-        [0|tensor_zero_homogeneous V] ::
-        [_|vector_to_tensor_homogeneous v] :: list_end.
-    intros v v_neq.
-    unfold tensor_decompose_grade.
-    assert (tensor_max_nz V (vector_to_tensor v) = 2) as nz_eq.
-    {
-        remember (tensor_max_nz V (vector_to_tensor v)) as n.
-        assert (1 < n) as ltq.
-        {
-            rewrite Heqn.
-            apply tensor_max_nz_leq.
-            intros contr.
-            cbn in contr.
-            unfold power_to_tensor_base in contr.
-            destruct (strong_excluded_middle (1 = 1)) as [eq|neq];
-                try contradiction.
-            destruct eq; cbn in contr.
-            apply (f_equal (tensor_product_rid_f V)) in contr.
-            rewrite tensor_product_rid_eq in contr.
-            unfold tensor_product_rid_f in contr.
-            rewrite module_homo_zero in contr.
-            rewrite scalar_id in contr.
-            contradiction.
-        }
-        nat_destruct n.
-        2: nat_destruct n.
-        1, 2: destruct ltq; contradiction.
-        pose proof (tensor_max_nz_least V _ _ Heqn) as neq.
-        symmetry; classic_contradiction contr.
-        apply neq; clear neq.
-        cbn.
-        unfold power_to_tensor_base; cbn.
-        destruct (strong_excluded_middle (1 = nat_suc n)) as [eq|neq].
-        -   exfalso.
-            rewrite <- eq in contr.
-            contradiction.
-        -   reflexivity.
-    }
-    rewrite nz_eq.
-    unfold one, plus; cbn.
-    apply f_equal2.
-    -   apply set_type_eq; cbn.
-        apply set_type_eq; cbn.
-        apply functional_ext.
-        intros n.
-        unfold power_to_tensor_base.
-        case_if.
-        +   subst n.
-            destruct (strong_excluded_middle (1 = nat_zero)) as [eq|neq].
-            1: inversion eq.
-            reflexivity.
-        +   reflexivity.
-    -   apply f_equal2.
-        2: reflexivity.
-        apply set_type_eq; cbn.
-        apply set_type_eq; cbn.
-        apply functional_ext.
-        intros n.
-        unfold power_to_tensor_base.
-        case_if.
-        +   reflexivity.
-        +   destruct (strong_excluded_middle (1 = n)) as [eq|neq].
-            1: contradiction.
-            reflexivity.
 Qed.
 
 End TensorAlgebra.
