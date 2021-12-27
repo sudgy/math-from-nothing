@@ -144,6 +144,7 @@
 ./src/Topology/topology.v
 
 ./src/Algebra/Linear/linear_base.v
+./src/Algebra/Linear/linear_transformation_space.v
 ./src/Algebra/Linear/linear_bilinear.v
 ./src/Algebra/Linear/linear_free.v
 ./src/Algebra/Linear/linear_subspace.v
