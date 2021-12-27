@@ -36,7 +36,7 @@ Context {U V} `{
     @ScalarComp U V UM SM
 }.
 
-Context `{@GradedSpace U V VP VPC VPA VZ SM}.
+Context `{VG : @GradedSpace U V VP VPC VPA VZ SM}.
 
 Theorem grade_decomposition_zero : grade_decomposition 0 = ulist_end.
     apply grade_decomposition_unique.
@@ -664,6 +664,95 @@ Theorem all_grade_project_eq : ∀ u v,
             exact ui_in.
         +   rewrite x_eq in x_nz.
             contradiction.
+Qed.
+
+Context `{
+    IP : Plus grade_I,
+    @PlusLcancel grade_I IP,
+    @PlusRcancel grade_I IP,
+    VM : Mult V,
+    @Ldist V VP VM,
+    @Rdist V VP VM,
+    @GradedAlgebra U V VP VPC VPA VZ SM VG IP VM
+}.
+
+Theorem of_grade_mult : ∀ u v i j, of_grade i u → of_grade j v →
+        of_grade (i + j) (u * v).
+    apply grade_mult.
+Qed.
+
+Theorem homo_mult : ∀ u v, homogeneous u → homogeneous v → homogeneous (u * v).
+    intros u v [i ui] [j vj].
+    exists (i + j).
+    apply of_grade_mult; assumption.
+Qed.
+
+Theorem homo_lmult_project : ∀ i j u v, of_grade i u →
+        grade_project (u * v) (i + j) = u * (grade_project v j).
+    intros i j u v ui.
+    induction v as [|v' v j' v'j' vj' IHv] using grade_induction.
+    1: {
+        rewrite mult_ranni.
+        do 2 rewrite grade_project_zero.
+        rewrite mult_ranni.
+        reflexivity.
+    }
+    rewrite ldist.
+    do 2 rewrite grade_project_plus.
+    rewrite ldist.
+    rewrite IHv.
+    apply rplus.
+    clear v vj' IHv.
+    rename v' into v.
+    pose proof (of_grade_mult u v _ _ ui v'j') as uv_ij.
+    classic_case (j = j') as [j_eq|j_neq].
+    -   subst j'.
+        rewrite grade_project_of_grade by exact uv_ij.
+        rewrite grade_project_of_grade by exact v'j'.
+        reflexivity.
+    -   rewrite (grade_project_of_grade_neq (i + j')).
+        +   rewrite neq_sym in j_neq.
+            rewrite (grade_project_of_grade_neq j') by assumption.
+            rewrite mult_ranni.
+            reflexivity.
+        +   exact uv_ij.
+        +   intros contr.
+            apply plus_lcancel in contr.
+            symmetry in contr; contradiction.
+Qed.
+
+Theorem homo_rmult_project : ∀ i j u v, of_grade j v →
+        grade_project (u * v) (i + j) = (grade_project u i) * v.
+    intros i j u v vj.
+    induction u as [|u' u i' u'i' ui' IHu] using grade_induction.
+    1: {
+        rewrite mult_lanni.
+        do 2 rewrite grade_project_zero.
+        rewrite mult_lanni.
+        reflexivity.
+    }
+    rewrite rdist.
+    do 2 rewrite grade_project_plus.
+    rewrite rdist.
+    rewrite IHu.
+    apply rplus.
+    clear u ui' IHu.
+    rename u' into u.
+    pose proof (of_grade_mult u v _ _ u'i' vj) as uv_ij.
+    classic_case (i = i') as [i_eq|i_neq].
+    -   subst i'.
+        rewrite grade_project_of_grade by exact uv_ij.
+        rewrite grade_project_of_grade by exact u'i'.
+        reflexivity.
+    -   rewrite (grade_project_of_grade_neq (i' + j)).
+        +   rewrite neq_sym in i_neq.
+            rewrite (grade_project_of_grade_neq i') by assumption.
+            rewrite mult_lanni.
+            reflexivity.
+        +   exact uv_ij.
+        +   intros contr.
+            apply plus_rcancel in contr.
+            symmetry in contr; contradiction.
 Qed.
 
 End LinearGrade.
