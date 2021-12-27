@@ -38,6 +38,23 @@ Class GradedSpace U V `{P : Plus V, @PlusComm V P, @PlusAssoc V P, Zero V, Scala
         ulist_prop (λ S, 0 = sub_vector_v S) l;
 }.
 
+Class GradedAlgebra U V `{
+    P : Plus V,
+    PC : @PlusComm V P,
+    PA : @PlusAssoc V P,
+    Z : Zero V,
+    SM : ScalarMult U V,
+    @GradedSpace U V P PC PA Z SM,
+    Plus grade_I,
+    Mult V
+}
+:= {
+    grade_mult : ∀ u v i j,
+        subspace_set (grade_subspace i) u →
+        subspace_set (grade_subspace j) v →
+        subspace_set (grade_subspace (i + j)) (u * v)
+}.
+
 Section LinearGrade.
 
 Context {U V} `{
@@ -245,6 +262,16 @@ Theorem grade_decomposition_nz : ∀ v,
         ulist_prop (λ x, 0 ≠ [x|]) (grade_decomposition v).
     intros v.
     apply (ex_proof (grade_decompose_ex2 v)).
+Qed.
+
+Theorem in_grade_decomposition_nz : ∀ v a, in_ulist (grade_decomposition v) a →
+        0 ≠ [a|].
+    intros v a a_in.
+    pose proof (grade_decomposition_nz v) as nz.
+    apply in_ulist_split in a_in as [l l_eq].
+    rewrite l_eq in nz.
+    rewrite ulist_prop_add in nz.
+    apply nz.
 Qed.
 
 Lemma grade_decompose_unique_strengthen : ∀ l : ulist (set_type homogeneous),
