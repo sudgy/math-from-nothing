@@ -10,7 +10,6 @@ Require Import module_category.
 Require Import algebra_category.
 Require Import linear_grade.
 
-Require Import list.
 Require Import set.
 Require Import plus_sum.
 

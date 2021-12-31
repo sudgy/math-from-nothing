@@ -144,6 +144,52 @@ Theorem ulist_prop_add {U} : ∀ S (a : U) l,
     reflexivity.
 Qed.
 
+Theorem ulist_prop_sub {U} : ∀ (l : ulist U) S T, S ⊆ T →
+        ulist_prop S l → ulist_prop T l.
+    intros l S T sub.
+    equiv_get_value l.
+    unfold ulist_prop; equiv_simpl.
+    apply list_prop_sub.
+    exact sub.
+Qed.
+
+Theorem ulist_prop_ex {U} : ∀ (l : ulist U) S, ulist_prop S l →
+        ∃ l' : ulist (set_type S), ulist_image l' (λ x, [x|]) = l.
+    intros l S.
+    equiv_get_value l.
+    unfold ulist_prop, ulist_image; equiv_simpl.
+    intros Sl.
+    pose proof (list_prop_ex l S Sl) as [l' l_eq].
+    exists (to_equiv_type (ulist_equiv (set_type S)) l').
+    equiv_simpl.
+    rewrite l_eq.
+    apply list_perm_refl.
+Qed.
+
+Theorem ulist_prop_filter {U} : ∀ (l : ulist U) S T,
+        ulist_prop S l → ulist_prop S (ulist_filter T l).
+    intros l S T.
+    equiv_get_value l.
+    unfold ulist_prop, ulist_filter; equiv_simpl.
+    apply list_prop_filter.
+Qed.
+
+Theorem ulist_prop_split {U} : ∀ l (S : U → Prop),
+        (∀ a l', l = a ::: l' → S a) → ulist_prop S l.
+    intros l S ind.
+    induction l using ulist_induction.
+    -   apply ulist_prop_end.
+    -   rewrite ulist_prop_add.
+        split.
+        +   apply (ind a l).
+            reflexivity.
+        +   apply IHl.
+            intros b l' eq.
+            apply (ind b (a ::: l')).
+            rewrite eq.
+            apply ulist_swap.
+Qed.
+
 Theorem in_ulist_conc {U} : ∀ l1 l2 (a : U),
         in_ulist (l1 +++ l2) a → in_ulist l1 a ∨ in_ulist l2 a.
     intros l1 l2 a.

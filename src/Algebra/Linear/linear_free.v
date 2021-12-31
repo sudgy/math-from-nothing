@@ -5,7 +5,7 @@ Require Import linear_basis.
 Require Import linear_span.
 Require Import set.
 Require Import card.
-Require Import list.
+Require Import unordered_list.
 Require Import plus_sum.
 
 Require Import module_category.
@@ -313,59 +313,24 @@ Definition free_basis v := ∃ b, v = to_free b.
 
 Theorem free_basis_basis : basis free_basis.
     split.
-    -   intros [l l_uni] l_in l_zero α [v v_in].
-        cbn in *.
-        unfold linear_combination_set in l_uni.
-        unfold linear_list_in in l_in; cbn in l_in.
-        pose proof (in_list_split _ _ v_in) as [l1 [l2 l_eq]]; clear v_in.
+    -   intros [l l_uni] l_in l_zero; cbn.
+        apply ulist_prop_split.
+        intros [α v] l' l_eq.
         subst l.
-        pose proof (list_perm_split l1 l2 (α, v)) as l_eq.
-        pose proof (list_image_perm snd l_eq) as l_eq2.
-        apply (list_perm_unique l_eq2) in l_uni.
-        clear l_eq2.
-        pose proof (list_image_perm (λ x, fst x · snd x) l_eq) as l_eq2.
-        rewrite (list_sum_perm _ _ l_eq2) in l_zero.
-        clear l_eq2.
-        assert (∀ u, (∃ β, in_list ((α, v) :: l1 ++ l2) (β, u)) → free_basis u)
-            as l_in'.
-        {
-            intros u [β u_in].
-            apply l_in.
-            exists β.
-            apply (list_perm_in l_eq).
-            exact u_in.
-        }
-        clear l_in l_eq.
-        rename l_in' into l_in.
-        remember (l1 ++ l2) as l.
-        clear l1 l2 Heql.
-        cbn in *.
+        rename l' into l.
+        cbn.
         classic_contradiction α_nz.
-        assert (free_basis v) as v_basis.
-        {
-            apply l_in.
-            exists α.
-            left.
-            reflexivity.
-        }
+        unfold linear_combination_set in l_uni.
+        unfold linear_combination in l_zero; cbn in l_zero.
+        unfold linear_list_in in l_in; cbn in l_in.
+        rewrite ulist_image_add, ulist_unique_add in l_uni.
+        rewrite ulist_image_add, ulist_sum_add in l_zero.
+        rewrite ulist_prop_add in l_in.
+        cbn in *.
+        destruct l_in as [v_basis l_in].
         destruct v_basis as [v' v_eq].
         subst v.
         rename v' into v.
-        (*
-        assert (0 ≠ α · v) as αv_nz.
-        {
-            unfold zero, scalar_mult; cbn.
-            unfold to_free_base.
-            intros eq.
-            inversion eq as [f_eq].
-            pose proof (func_eq _ _ f_eq) as f_eq2.
-            cbn in f_eq2.
-            specialize (f_eq2 v).
-            case_if; try contradiction.
-            rewrite mult_rid in f_eq2.
-            contradiction.
-        }
-        *)
         destruct l_uni as [v_nin l_uni].
         clear l_uni.
         unfold zero, plus in l_zero; equiv_simpl in l_zero.
@@ -376,25 +341,22 @@ Theorem free_basis_basis : basis free_basis.
         unfold free_plus in eq2.
         unfold scalar_mult in eq2 at 1; cbn in eq2.
         unfold to_free_base in eq2.
-        case_if; try contradiction.
+        case_if; [>|contradiction].
         clear e.
         rewrite mult_rid in eq2.
-        induction l.
-        +   cbn in eq2.
+        induction l using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end in eq2.
             unfold zero at 2 in eq2; cbn in eq2.
             rewrite plus_rid in eq2.
             contradiction.
-        +   destruct a as [β u]; cbn in *.
+        +   destruct a as [β u].
+            rewrite ulist_image_add, in_ulist_add in v_nin.
             rewrite not_or in v_nin.
             apply IHl; clear IHl.
-            *   intros w [γ w_in].
-                apply l_in.
-                exists γ.
-                destruct w_in as [w_in|w_in].
-                --  left; exact w_in.
-                --  right; right; exact w_in.
             *   apply v_nin.
-            *   cbn in eq2.
+            *   rewrite ulist_prop_add in l_in.
+                apply l_in.
+            *   rewrite ulist_image_add, ulist_sum_add in eq2.
                 unfold plus at 2 in eq2; cbn in eq2.
                 unfold free_plus in eq2.
                 unfold scalar_mult in eq2 at 1; cbn in eq2.
@@ -403,15 +365,12 @@ Theorem free_basis_basis : basis free_basis.
                 rewrite <- plus_assoc in eq2.
                 rewrite plus_0_ab_na_b in eq2.
                 rewrite <- eq2; clear eq2.
-                rewrite <- (neg_neg 0).
+                rewrite <- neg_zero.
                 apply f_equal.
-                rewrite neg_zero.
                 assert (free_basis u) as u_basis.
                 {
+                    rewrite ulist_prop_add in l_in.
                     apply l_in.
-                    exists β.
-                    right; left.
-                    reflexivity.
                 }
                 destruct u_basis as [u' u_eq].
                 subst u.
@@ -449,16 +408,16 @@ Theorem free_basis_basis : basis free_basis.
             | strong_or_left ltq => [g [m|ltq]|]
             | strong_or_right _ => z
             end).
-        pose (l := func_to_list g' n).
-        pose (l' := list_image l (λ v, (free_f f v, to_free v))).
+        pose (l := func_to_ulist g' n).
+        pose (l' := ulist_image l (λ v, (free_f f v, to_free v))).
         assert (linear_combination_set l') as l_comb.
         {
             unfold linear_combination_set.
             unfold l', l.
-            rewrite list_image_comp.
-            rewrite func_to_list_image.
+            rewrite ulist_image_comp.
+            rewrite func_to_ulist_image.
             cbn.
-            apply func_to_list_unique.
+            apply func_to_ulist_unique.
             intros m1 m2 m1_lt m2_lt eq.
             unfold g' in eq.
             destruct (strong_excluded_middle (m1 < n)) as [m1_lt'|m1_lt'].
@@ -482,18 +441,17 @@ Theorem free_basis_basis : basis free_basis.
         }
         exists [l'|l_comb].
         split.
-        +   cbn.
-            unfold l'.
-            rewrite list_image_comp.
+        +   unfold linear_combination, l'; cbn.
+            rewrite ulist_image_comp.
             cbn.
             apply free_eq.
             intros v.
             unfold l.
-            rewrite func_to_list_image.
-            assert (free_f (list_sum (func_to_list (λ m, free_f f (g' m) · to_free (g' m)) n)) v =
-                list_sum (func_to_list (λ m, free_f f (g' m) * to_free_base (g' m) v) n)) as eq.
+            rewrite func_to_ulist_image.
+            assert (free_f (ulist_sum (func_to_ulist (λ m, free_f f (g' m) · to_free (g' m)) n)) v =
+                ulist_sum (func_to_ulist (λ m, free_f f (g' m) * to_free_base (g' m) v) n)) as eq.
             {
-                do 2 rewrite list_sum_sum_eq.
+                do 2 rewrite ulist_sum_sum_eq.
                 remember n as n'.
                 rewrite Heqn'.
                 assert (n <= n') as n_leq by (rewrite Heqn'; apply refl).
@@ -530,14 +488,14 @@ Theorem free_basis_basis : basis free_basis.
                 rewrite h_eq.
                 clear f z g g_inj g_sur g' v h fv_z h_eq.
                 nat_induction n.
-                --  unfold zero at 3; cbn.
+                --  rewrite func_to_ulist_zero.
+                    rewrite ulist_sum_end.
                     reflexivity.
                 --  cbn.
-                    unfold func_to_list in IHn.
-                    rewrite list_sum_plus.
+                    rewrite func_to_ulist_suc.
+                    rewrite ulist_sum_add.
                     rewrite <- IHn.
-                    cbn.
-                    do 2 rewrite plus_rid.
+                    rewrite plus_rid.
                     reflexivity.
             *   pose proof (g_sur [v|fv_nz]) as [vn vn_eq].
                 pose (h' m := If m < n then h m else 0).
@@ -549,7 +507,7 @@ Theorem free_basis_basis : basis free_basis.
                     -   reflexivity.
                     -   contradiction.
                 }
-                rewrite (func_to_list_eq _ _ h'_eq); clear h'_eq.
+                rewrite (func_to_ulist_eq _ _ _ h'_eq); clear h'_eq.
                 assert (h' = (λ m, If m = [vn|] then free_f f v else 0)) as h_eq.
                 {
                     apply functional_ext.
@@ -577,11 +535,18 @@ Theorem free_basis_basis : basis free_basis.
                     -   reflexivity.
                 }
                 rewrite h_eq.
-                rewrite (list_sum_func_single (free_f f v) _ _ [|vn]).
+                rewrite (ulist_sum_func_single (free_f f v) _ _ [|vn]).
                 reflexivity.
         +   unfold linear_list_in; cbn.
-            intros v [α v_in].
-            apply image_in_list in v_in as [u [u_eq u_in]].
+            apply ulist_prop_split.
+            intros [α v] l'' l'_eq.
+            assert (in_ulist l' (α, v)) as v_in.
+            {
+                rewrite l'_eq.
+                rewrite in_ulist_add.
+                left; reflexivity.
+            }
+            apply image_in_ulist in v_in as [u [u_eq u_in]].
             exists u.
             inversion u_eq.
             reflexivity.
@@ -677,168 +642,133 @@ Theorem free_module_universal : initial to_free_from.
     apply card_unique_one.
     -   apply ex_set_type.
         pose (f1 v := ex_val (basis_coefficients_S_ex _ free_basis_basis v)).
-        pose (f v := list_sum (list_image (f1 v) (λ x, fst x · g (ex_val [|snd x])))).
-        assert (∀ l1 l2 : list (U * set_type free_basis),
-            list_sum (list_image l1 (λ x, fst x · [snd x|])) =
-            list_sum (list_image l2 (λ x, fst x · [snd x|])) →
-            linear_combination_set (list_image l1 (λ x, (fst x, [snd x|]))) →
-            list_sum (list_image l1 (λ x, fst x · g (ex_val [|snd x]))) =
-            list_sum (list_image l2 (λ x, fst x · g (ex_val [|snd x]))))
+        pose (f v := ulist_sum (ulist_image (f1 v) (λ x, fst x · g (ex_val [|snd x])))).
+        assert (∀ l1 l2 : ulist (U * set_type free_basis),
+            ulist_sum (ulist_image l1 (λ x, fst x · [snd x|])) =
+            ulist_sum (ulist_image l2 (λ x, fst x · [snd x|])) →
+            linear_combination_set (ulist_image l1 (λ x, (fst x, [snd x|]))) →
+            ulist_sum (ulist_image l1 (λ x, fst x · g (ex_val [|snd x]))) =
+            ulist_sum (ulist_image l2 (λ x, fst x · g (ex_val [|snd x]))))
             as wlog.
         {
             intros l1 l2 l_eq l1_uni.
             revert l1 l_eq l1_uni.
-            induction l2; intros.
-            -   cbn in *.
+            induction l2 using ulist_induction; intros.
+            -   rewrite ulist_image_end, ulist_sum_end in l_eq.
                 assert (linear_list_in free_basis [_|l1_uni]) as l1_in.
                 {
-                    unfold linear_list_in.
-                    intros u [α u_in].
-                    cbn in *.
-                    apply image_in_list in u_in as [[β v] [v_eq v_in]].
+                    unfold linear_list_in; cbn.
+                    apply ulist_prop_split.
+                    intros [α u] l' l'_eq.
+                    assert (in_ulist (ulist_image l1 (λ x, (fst x, [snd x|])))
+                        (α, u)) as u_in.
+                    {
+                        rewrite l'_eq.
+                        rewrite in_ulist_add.
+                        left; reflexivity.
+                    }
+                    apply image_in_ulist in u_in as [[β v] [v_eq v_in]].
                     inversion v_eq.
                     exact [|v].
                 }
                 assert (0 = linear_combination [_|l1_uni]) as l1_zero.
                 {
-                    cbn.
-                    rewrite list_image_comp.
+                    unfold linear_combination; cbn.
+                    rewrite ulist_image_comp.
                     symmetry; exact l_eq.
                 }
                 pose proof (land free_basis_basis [_|l1_uni] l1_in l1_zero)
                     as all_zero.
                 cbn in all_zero.
                 clear l1_uni l_eq l1_in l1_zero.
-                induction l1.
-                +   cbn.
-                    reflexivity.
-                +   assert (∀ α, (∃ v, in_list
-                        (list_image l1 (λ x, (fst x, [snd x|])))
-                        (α, v)) → 0 = α) as IHl1'.
-                    {
-                        intros α [v v_in].
-                        assert (∃ v, in_list (list_image (a :: l1)
-                            (λ x, (fst x, [snd x|]))) (α, v)) as v_in'.
-                        {
-                            exists v.
-                            right.
-                            exact v_in.
-                        }
-                        exact (all_zero α v_in').
-                    }
-                    specialize (IHl1 IHl1'); clear IHl1'.
-                    cbn.
+                induction l1 using ulist_induction.
+                +   reflexivity.
+                +   change (cring_U F) with U in all_zero.
+                    rewrite ulist_image_add, ulist_prop_add in all_zero.
+                    specialize (IHl1 (rand all_zero)).
+                    rewrite ulist_image_add, ulist_sum_add.
                     rewrite IHl1; clear IHl1.
+                    rewrite ulist_image_end, ulist_sum_end.
                     rewrite plus_rid.
-                    assert (0 = fst a) as a_zero.
-                    {
-                        apply all_zero.
-                        exists [snd a|].
-                        left.
-                        reflexivity.
-                    }
-                    rewrite <- a_zero.
+                    cbn in all_zero.
+                    rewrite <- (land all_zero).
                     apply scalar_lanni.
-            -   cbn in *.
+            -   rewrite ulist_image_add, ulist_sum_add in l_eq.
                 apply plus_rlmove in l_eq.
                 rewrite <- scalar_lneg in l_eq.
-                classic_case (∃ α, in_list l1 (α, snd a)) as [a_in|a_nin].
+                classic_case (∃ α, in_ulist l1 (α, snd a)) as [a_in|a_nin].
                 +   destruct a_in as [α a_in].
-                    apply in_list_split in a_in.
-                    destruct a_in as [l3 [l4 eq]].
+                    apply in_ulist_split in a_in as [l1' l1_eq].
                     subst l1.
-                    rewrite list_image_conc in l_eq.
-                    rewrite list_sum_plus in l_eq.
-                    cbn in l_eq.
+                    rewrite ulist_image_add, ulist_sum_add in l_eq; cbn in l_eq.
                     rewrite (plus_assoc _ (α · _)) in l_eq.
                     rewrite (plus_comm _ (α · _)) in l_eq.
-                    do 2 rewrite plus_assoc in l_eq.
                     rewrite <- scalar_rdist in l_eq.
-                    rewrite <- plus_assoc in l_eq.
-                    rewrite <- list_sum_plus in l_eq.
-                    rewrite <- list_image_conc in l_eq.
-                    pose (l1 := (-fst a + α, snd a) :: l3 ++ l4).
-                    assert ((-fst a + α) · [snd a|] +
-                        list_sum (list_image (l3 ++ l4) (λ x, fst x · [snd x|]))
-                        = list_sum (list_image l1 (λ x, fst x · [snd x|])))
-                        as eq by reflexivity.
-                    rewrite eq in l_eq; clear eq.
-                    assert (linear_combination_set (list_image
-                        ((-fst a + α, snd a) :: l3 ++ l4)
+                    rewrite <- ulist_sum_add in l_eq.
+                    pose proof (ulist_image_add (α - fst a, snd a) l1'
+                        (λ x, fst x · [snd x|])) as eq.
+                    cbn in eq.
+                    rewrite <- eq in l_eq; clear eq.
+                    assert (linear_combination_set (ulist_image
+                        ((α - fst a, snd a) ::: l1')
                         (λ x, (fst x, [snd x|])))) as l1_uni'.
                     {
                         unfold linear_combination_set in *.
-                        rewrite list_image_comp in *.
+                        rewrite ulist_image_comp in *.
+                        rewrite ulist_image_add, ulist_unique_add in l1_uni.
                         cbn in l1_uni.
-                        assert (list_unique (list_image
-                            ((α, snd a) :: l3 ++ l4) (λ x, [snd x|])))
-                            as l1_uni'.
-                        {
-                            assert (list_permutation (l3 ++ (α, snd a) :: l4)
-                                ((α, snd a) :: l3 ++ l4)) as eq.
-                            {
-                                rewrite list_add_conc.
-                                rewrite list_conc_add_assoc.
-                                rewrite list_conc_assoc.
-                                apply list_perm_lpart.
-                                rewrite (list_add_conc (α, snd a) l3).
-                                apply list_perm_conc.
-                            }
-                            apply (list_image_perm (λ x, [snd x|])) in eq.
-                            apply (list_perm_unique eq l1_uni).
-                        }
-                        clear l1_uni.
-                        cbn in *.
-                        exact l1_uni'.
+                        rewrite ulist_image_add, ulist_unique_add; cbn.
+                        apply l1_uni.
                     }
                     specialize (IHl2 _ l_eq l1_uni').
-                    unfold l1 in IHl2.
-                    clear l_eq l1_uni l1_uni' l1.
+                    clear l_eq l1_uni l1_uni'.
+                    do 2 rewrite ulist_image_add, ulist_sum_add; cbn.
                     rewrite <- IHl2.
-                    rewrite list_image_conc.
-                    rewrite list_sum_plus.
-                    cbn.
-                    rewrite list_image_conc.
-                    rewrite list_sum_plus.
-                    do 3 rewrite plus_assoc.
-                    apply rplus.
-                    rewrite plus_comm.
+                    rewrite ulist_image_add, ulist_sum_add; cbn.
+                    rewrite plus_assoc.
                     apply rplus.
                     rewrite scalar_rdist.
                     rewrite scalar_lneg.
-                    rewrite plus_lrinv.
+                    rewrite plus_comm.
+                    rewrite plus_rlinv.
                     reflexivity.
-                +   pose (l1' := (-fst a, snd a) :: l1).
+                +   pose (l1' := (-fst a, snd a) ::: l1).
                     assert (-fst a · [snd a|] +
-                        list_sum (list_image l1 (λ x, fst x · [snd x|]))
-                        = list_sum (list_image l1' (λ x, fst x · [snd x|])))
-                        as eq by reflexivity.
+                        ulist_sum (ulist_image l1 (λ x, fst x · [snd x|]))
+                        = ulist_sum (ulist_image l1' (λ x, fst x · [snd x|])))
+                        as eq.
+                    {
+                        unfold l1'.
+                        rewrite ulist_image_add, ulist_sum_add; cbn.
+                        reflexivity.
+                    }
                     rewrite eq in l_eq; clear eq.
-                    assert (linear_combination_set (list_image
-                        ((-fst a, snd a) :: l1)
+                    assert (linear_combination_set (ulist_image
+                        ((-fst a, snd a) ::: l1)
                         (λ x, (fst x, [snd x|])))) as l1_uni'.
                     {
-                        cbn.
-                        rewrite list_image_comp.
-                        cbn.
+                        unfold linear_combination_set.
+                        rewrite ulist_image_comp.
+                        rewrite ulist_image_add, ulist_unique_add; cbn.
                         split.
                         -   intros contr.
                             apply a_nin.
-                            apply image_in_list in contr as [a' [eq a_in]].
+                            apply image_in_ulist in contr as [a' [eq a_in]].
                             exists (fst a').
                             apply set_type_eq in eq.
                             rewrite <- eq.
                             destruct a' as [α a']; cbn in *.
                             exact a_in.
                         -   unfold linear_combination_set in l1_uni.
-                            rewrite list_image_comp in l1_uni.
+                            rewrite ulist_image_comp in l1_uni.
                             exact l1_uni.
                     }
                     specialize (IHl2 _ l_eq l1_uni').
                     unfold l1' in IHl2.
                     clear l_eq l1_uni l1_uni' l1'.
+                    rewrite ulist_image_add, ulist_sum_add; cbn.
                     rewrite <- IHl2.
-                    cbn.
+                    rewrite ulist_image_add, ulist_sum_add; cbn.
                     rewrite scalar_lneg.
                     rewrite plus_lrinv.
                     reflexivity.
@@ -855,24 +785,24 @@ Theorem free_module_universal : initial to_free_from.
             pose proof (basis_coefficients_combination _ free_basis_basis v) as v_eq.
             pose proof [|basis_coefficients _ free_basis_basis (u + v)] as luv_uni.
             rewrite luv_eq in luv_uni.
-            apply (f_equal (λ l, list_image l (λ x, fst x · snd x))) in luv_eq.
-            apply (f_equal list_sum) in luv_eq.
-            apply (f_equal (λ l, list_image l (λ x, fst x · snd x))) in lu_eq.
-            apply (f_equal list_sum) in lu_eq.
-            apply (f_equal (λ l, list_image l (λ x, fst x · snd x))) in lv_eq.
-            apply (f_equal list_sum) in lv_eq.
-            cbn in *.
+            apply (f_equal (λ l, ulist_image l (λ x, fst x · snd x))) in luv_eq.
+            apply (f_equal ulist_sum) in luv_eq.
+            apply (f_equal (λ l, ulist_image l (λ x, fst x · snd x))) in lu_eq.
+            apply (f_equal ulist_sum) in lu_eq.
+            apply (f_equal (λ l, ulist_image l (λ x, fst x · snd x))) in lv_eq.
+            apply (f_equal ulist_sum) in lv_eq.
+            unfold linear_combination in *.
             rewrite <- uv_eq in luv_eq; clear uv_eq.
             rewrite <- u_eq in lu_eq; clear u_eq.
             rewrite <- v_eq in lv_eq; clear v_eq.
-            rewrite list_image_comp in luv_eq, lu_eq, lv_eq.
+            rewrite ulist_image_comp in luv_eq, lu_eq, lv_eq.
             cbn in *.
             subst u v.
-            rewrite <- list_sum_plus.
-            rewrite <- list_image_conc.
-            rewrite <- list_sum_plus in luv_eq.
-            rewrite <- list_image_conc in luv_eq.
-            remember (lu ++ lv) as luv'.
+            rewrite <- ulist_sum_plus.
+            rewrite <- ulist_image_conc.
+            rewrite <- ulist_sum_plus in luv_eq.
+            rewrite <- ulist_image_conc in luv_eq.
+            remember (lu +++ lv) as luv'.
             clear Heqluv' lu lv.
             symmetry in luv_eq.
             apply (wlog _ _ luv_eq luv_uni).
@@ -887,41 +817,43 @@ Theorem free_module_universal : initial to_free_from.
             pose proof (basis_coefficients_combination _ free_basis_basis v) as v_eq.
             pose proof [|basis_coefficients _ free_basis_basis (a · v)] as av_uni.
             rewrite lav_eq in av_uni.
-            apply (f_equal (λ l, list_image l (λ x, fst x · snd x))) in lav_eq.
-            apply (f_equal list_sum) in lav_eq.
-            apply (f_equal (λ l, list_image l (λ x, fst x · snd x))) in lv_eq.
-            apply (f_equal list_sum) in lv_eq.
-            cbn in *.
+            apply (f_equal (λ l, ulist_image l (λ x, fst x · snd x))) in lav_eq.
+            apply (f_equal ulist_sum) in lav_eq.
+            apply (f_equal (λ l, ulist_image l (λ x, fst x · snd x))) in lv_eq.
+            apply (f_equal ulist_sum) in lv_eq.
+            unfold linear_combination in *.
             rewrite <- av_eq in lav_eq; clear av_eq.
             rewrite <- v_eq in lv_eq; clear v_eq.
-            rewrite list_image_comp in lav_eq, lv_eq.
+            rewrite ulist_image_comp in lav_eq, lv_eq.
             cbn in *.
             subst v.
-            remember (list_image lv (λ x, (a * fst x, snd x))) as lav'.
-            assert (a · list_sum (list_image lv (λ x, fst x · [snd x|])) =
-                    list_sum (list_image lav' (λ x, fst x · [snd x|]))) as eq.
+            remember (ulist_image lv (λ x, (a * fst x, snd x))) as lav'.
+            assert (a · ulist_sum (ulist_image lv (λ x, fst x · [snd x|])) =
+                    ulist_sum (ulist_image lav' (λ x, fst x · [snd x|]))) as eq.
             {
                 rewrite Heqlav'.
                 clear lav_eq av_uni lav' Heqlav'.
-                induction lv.
-                -   cbn.
+                rewrite ulist_image_comp; cbn.
+                induction lv using ulist_induction.
+                -   do 2 rewrite ulist_image_end, ulist_sum_end.
                     apply scalar_ranni.
-                -   cbn.
+                -   do 2 rewrite ulist_image_add, ulist_sum_add.
                     rewrite <- IHlv; clear IHlv.
                     rewrite scalar_ldist.
                     rewrite scalar_comp.
                     reflexivity.
             }
             rewrite eq in lav_eq; clear eq.
-            assert (a · list_sum (list_image lv (λ x, fst x · g (ex_val [|snd x]))) =
-                    list_sum (list_image lav' (λ x, fst x · g (ex_val [|snd x])))) as eq.
+            assert (a · ulist_sum (ulist_image lv (λ x, fst x · g (ex_val [|snd x]))) =
+                    ulist_sum (ulist_image lav' (λ x, fst x · g (ex_val [|snd x])))) as eq.
             {
                 rewrite Heqlav'.
                 clear lav_eq av_uni lav' Heqlav'.
-                induction lv.
-                -   cbn.
+                rewrite ulist_image_comp; cbn.
+                induction lv using ulist_induction.
+                -   do 2 rewrite ulist_image_end, ulist_sum_end.
                     apply scalar_ranni.
-                -   cbn.
+                -   do 2 rewrite ulist_image_add, ulist_sum_add.
                     rewrite <- IHlv; clear IHlv.
                     rewrite scalar_ldist.
                     rewrite scalar_comp.
@@ -941,30 +873,45 @@ Theorem free_module_universal : initial to_free_from.
         clear f f1 f_plus f_scalar.
         classic_case (0 = 1) as [triv|not_triv].
         +   rewrite <- scalar_id.
-            rewrite <- (scalar_id (list_sum _)).
+            rewrite <- (scalar_id (ulist_sum _)).
             rewrite <- triv.
             do 2 rewrite scalar_lanni.
             reflexivity.
         +   assert (free_basis (to_free v)) as v_basis by (exists v; reflexivity).
             rewrite (basis_single not_triv _ _ _ v_basis) in l_eq.
-            assert (l = (1, [_|v_basis]) :: list_end) as l_eq2.
+            assert (l = (1, [_|v_basis]) ::: ulist_end) as l_eq2.
             {
-                destruct l.
-                1: inversion l_eq.
-                destruct l.
-                2: inversion l_eq.
+                destruct l using ulist_destruct.
+                1: {
+                    rewrite ulist_image_end in l_eq.
+                    apply ulist_end_neq in l_eq.
+                    contradiction l_eq.
+                }
+                destruct l using ulist_destruct.
+                2: {
+                    apply not_not_impl2 in l_eq.
+                    exfalso; apply l_eq.
+                    apply ulist_size_neq.
+                    do 2 rewrite ulist_image_add.
+                    do 3 rewrite ulist_size_add.
+                    rewrite ulist_size_end.
+                    intros contr.
+                    inversion contr.
+                }
+                rewrite ulist_image_add in l_eq.
+                rewrite ulist_image_end in l_eq.
+                apply ulist_single_eq in l_eq.
                 inversion l_eq as [[eq1 eq2]].
-                apply f_equal2.
-                2: reflexivity.
-                destruct p as [p1 p2]; cbn in *.
-                rewrite eq1.
-                apply f_equal2.
-                1: reflexivity.
+                apply f_equal2; [>|reflexivity].
+                destruct a as [a u]; cbn in *.
+                subst a.
+                apply f_equal.
                 apply set_type_eq; cbn.
                 symmetry; exact eq2.
             }
             rewrite l_eq2.
-            cbn.
+            rewrite ulist_image_add, ulist_sum_add; cbn.
+            rewrite ulist_image_end, ulist_sum_end.
             rewrite scalar_id.
             rewrite plus_rid.
             rewrite_ex_val v' v'_eq.
@@ -991,35 +938,34 @@ Theorem free_module_universal : initial to_free_from.
         destruct l as [l l_comb].
         unfold linear_list_in in v_in.
         cbn in *.
+        unfold linear_combination; cbn.
         clear l_comb.
-        induction l.
-        +   cbn.
+        induction l using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end.
             rewrite <- (scalar_lanni 0).
             rewrite f1_scalar.
             rewrite f2_scalar.
             do 2 rewrite scalar_lanni.
             reflexivity.
-        +   assert (∀ v, (∃ α, in_list l (α, v)) → free_basis v) as IHl'.
+        +   prove_parts IHl.
             {
                 clear v.
-                intros v [α lv].
+                apply ulist_prop_split.
+                intros [α v] l' l_eq; cbn.
+                subst l.
+                rewrite ulist_swap in v_in.
+                rewrite ulist_prop_add in v_in.
                 apply v_in.
-                exists α.
-                right.
-                exact lv.
             }
-            specialize (IHl IHl'); clear IHl'.
-            cbn.
+            rewrite ulist_image_add, ulist_sum_add.
             rewrite f1_plus, f2_plus.
             rewrite IHl.
             apply rplus.
             rewrite f1_scalar, f2_scalar.
             assert (free_basis (snd a)) as [x x_eq].
             {
+                rewrite ulist_prop_add in v_in.
                 apply v_in.
-                exists (fst a).
-                left.
-                destruct a; reflexivity.
             }
             rewrite x_eq.
             rewrite f1_in, f2_in.

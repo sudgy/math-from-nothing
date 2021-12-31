@@ -300,3 +300,10 @@ Theorem func_to_list_unique {U} : ∀ (f : nat → U) n,
             *   exact (trans m2_lt (nat_lt_suc n)).
             *   exact eq.
 Qed.
+
+Theorem list_size_neq {U} : ∀ l1 l2 : list U, list_size l1 ≠ list_size l2 →
+        l1 ≠ l2.
+    intros l1 l2 eq contr.
+    subst.
+    contradiction.
+Qed.

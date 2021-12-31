@@ -9,7 +9,7 @@ Require Import module_category.
 Require Import set.
 Require Import card.
 
-Require Import list.
+Require Import unordered_list.
 Require Import plus_sum.
 
 Section TensorProduct.
@@ -177,8 +177,8 @@ Definition simple_tensor_base T := ∃ a b, T = a ⊗ b.
 
 Local Open Scope card_scope.
 
-Theorem tensor_sum_base : ∀ T, ∃ l : list (set_type simple_tensor_base),
-        T = list_sum (list_image l (λ x, [x|])).
+Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
+        T = ulist_sum (ulist_image l (λ x, [x|])).
     intros T.
     equiv_get_value T.
     pose proof (free_fin T) as T_fin.
@@ -187,8 +187,8 @@ Theorem tensor_sum_base : ∀ T, ∃ l : list (set_type simple_tensor_base),
     nat_induction n.
     {
         intros T eq.
-        exists list_end.
-        cbn.
+        exists ulist_end.
+        rewrite ulist_image_end, ulist_sum_end.
         unfold zero; cbn.
         apply f_equal.
         apply free_eq.
@@ -277,9 +277,9 @@ Theorem tensor_sum_base : ∀ T, ∃ l : list (set_type simple_tensor_base),
         rewrite tensor_lscalar_base.
         reflexivity.
     }
-    exists ([x'|x'_simple] :: l).
-    cbn.
-    unfold x'.
+    exists ([x'|x'_simple] ::: l).
+    rewrite ulist_image_add, ulist_sum_add.
+    unfold x'; cbn.
     clear x' x'_simple.
     rewrite <- l_eq.
     assert (T = free_f T [x|] · to_FR (fst [x|]) (snd [x|]) + (make_free T' T'_fin)) as eq.

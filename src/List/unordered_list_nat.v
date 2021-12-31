@@ -79,6 +79,19 @@ Theorem func_to_ulist_image {A B} : ∀ (f : nat → A) (g : A → B) n,
     apply list_perm_refl.
 Qed.
 
+Theorem ulist_size_end {U} : ulist_size (@ulist_end U) = 0.
+    unfold ulist_size, ulist_end; equiv_simpl.
+    reflexivity.
+Qed.
+
+Theorem ulist_size_add {U} : ∀ (a : U) l, ulist_size (a ::: l) = nat_suc
+(ulist_size l).
+    intros a l.
+    equiv_get_value l.
+    unfold ulist_size, ulist_add; equiv_simpl.
+    reflexivity.
+Qed.
+
 Theorem ulist_size_plus {U} : ∀ l1 l2 : ulist U,
         ulist_size (l1 +++ l2) = ulist_size l1 + ulist_size l2.
     intros l1 l2.
@@ -114,4 +127,11 @@ Theorem func_to_ulist_suc {U} : ∀ (f : nat → U) n,
     cbn.
     change (list_reverse (func_to_list_base f n)) with (func_to_list f n).
     apply list_perm_refl.
+Qed.
+
+Theorem ulist_size_neq {U} : ∀ l1 l2 : ulist U, ulist_size l1 ≠ ulist_size l2 →
+        l1 ≠ l2.
+    intros l1 l2 eq contr.
+    subst.
+    contradiction.
 Qed.

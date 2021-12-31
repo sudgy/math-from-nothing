@@ -5,7 +5,7 @@ Require Import tensor_product_universal.
 Require Import plus_sum.
 
 Require Import set.
-Require Import list.
+Require Import unordered_list.
 Require Import card.
 
 Require Import module_category.
@@ -168,12 +168,12 @@ Theorem tensor_product_assoc :
             unfold bilinear_from_set in fav_in, fv_in.
             cbn in fav, fav_in, fv, fv_in.
             pose proof (tensor_sum _ _ v2) as [l v2_eq]; subst v2.
-            induction l.
-            +   cbn.
+            induction l using ulist_induction.
+            +   rewrite ulist_image_end, ulist_sum_end.
                 do 2 rewrite module_homo_zero.
                 rewrite scalar_ranni.
                 reflexivity.
-            +   cbn.
+            +   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ fav).
                 rewrite (@module_homo_plus _ _ _ fv).
                 rewrite scalar_ldist.
@@ -197,12 +197,12 @@ Theorem tensor_product_assoc :
             unfold bilinear_from_set in fv12_in, fv1_in, fv2_in.
             cbn in fv12, fv12_in, fv1, fv1_in, fv2, fv2_in.
             pose proof (tensor_sum _ _ v3) as [l v3_eq]; subst v3.
-            induction l.
-            +   cbn.
+            induction l using ulist_induction.
+            +   rewrite ulist_image_end, ulist_sum_end.
                 do 3 rewrite module_homo_zero.
                 rewrite plus_lid.
                 reflexivity.
-            +   cbn.
+            +   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ fv12).
                 rewrite (@module_homo_plus _ _ _ fv1).
                 rewrite (@module_homo_plus _ _ _ fv2).
@@ -261,12 +261,12 @@ Theorem tensor_product_assoc :
                 unfold bilinear_from_set in gav_in, gv_in.
                 cbn in gav, gav_in, gv, gv_in.
                 pose proof (tensor_sum _ _ v1) as [l v1_eq]; subst v1.
-                induction l.
-                +   cbn.
+                induction l using ulist_induction.
+                +   rewrite ulist_image_end, ulist_sum_end.
                     do 2 rewrite module_homo_zero.
                     rewrite scalar_ranni.
                     reflexivity.
-                +   cbn.
+                +   rewrite ulist_image_add, ulist_sum_add.
                     rewrite (@module_homo_plus _ _ _ gav).
                     rewrite (@module_homo_plus _ _ _ gv).
                     rewrite scalar_ldist.
@@ -290,12 +290,12 @@ Theorem tensor_product_assoc :
                 unfold bilinear_from_set in gv12_in, gv1_in, gv2_in.
                 cbn in gv12, gv12_in, gv1, gv1_in, gv2, gv2_in.
                 pose proof (tensor_sum _ _ v1) as [l v1_eq]; subst v1.
-                induction l.
-                +   cbn.
+                induction l using ulist_induction.
+                +   rewrite ulist_image_end, ulist_sum_end.
                     do 3 rewrite module_homo_zero.
                     rewrite plus_lid.
                     reflexivity.
-                +   cbn.
+                +   rewrite ulist_image_add, ulist_sum_add.
                     rewrite (@module_homo_plus _ _ _ gv12).
                     rewrite (@module_homo_plus _ _ _ gv1).
                     rewrite (@module_homo_plus _ _ _ gv2).
@@ -324,11 +324,11 @@ Theorem tensor_product_assoc :
         split; apply module_homomorphism_eq; cbn.
         +   intros x.
             pose proof (tensor_sum _ _ x) as [l1 x_eq]; subst x.
-            induction l1.
-            *   cbn.
+            induction l1 using ulist_induction.
+            *   rewrite ulist_image_end, ulist_sum_end.
                 do 2 rewrite module_homo_zero.
                 reflexivity.
-            *   cbn.
+            *   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ g).
                 rewrite (@module_homo_plus _ _ _ f).
                 rewrite <- IHl1 at 2.
@@ -340,12 +340,12 @@ Theorem tensor_product_assoc :
                 destruct (card_one_ex _) as [h h_in]; cbn.
                 unfold bilinear_from_set in h_in.
                 pose proof (tensor_sum _ _ u) as [l2 u_eq]; subst u.
-                induction l2.
-                --  cbn.
+                induction l2 using ulist_induction.
+                --  rewrite ulist_image_end, ulist_sum_end.
                     rewrite tensor_product_lanni.
                     do 2 rewrite module_homo_zero.
                     reflexivity.
-                --  cbn.
+                --  rewrite ulist_image_add, ulist_sum_add.
                     rewrite (@module_homo_plus _ _ _ h).
                     rewrite (@module_homo_plus _ _ _ f).
                     rewrite tensor_rdist.
@@ -365,11 +365,11 @@ Theorem tensor_product_assoc :
                     reflexivity.
         +   intros x.
             pose proof (tensor_sum _ _ x) as [l x_eq]; subst x.
-            induction l.
-            *   cbn.
+            induction l using ulist_induction.
+            *   rewrite ulist_image_end, ulist_sum_end.
                 do 2 rewrite module_homo_zero.
                 reflexivity.
-            *   cbn.
+            *   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ f).
                 rewrite (@module_homo_plus _ _ _ g).
                 rewrite <- IHl at 2.
@@ -380,12 +380,12 @@ Theorem tensor_product_assoc :
                 destruct (card_one_ex _) as [h h_in]; cbn.
                 unfold bilinear_from_set in h_in.
                 pose proof (tensor_sum _ _ v) as [l2 v_eq]; subst v.
-                induction l2.
-                --  cbn.
+                induction l2 using ulist_induction.
+                --  rewrite ulist_image_end, ulist_sum_end.
                     rewrite tensor_product_ranni.
                     do 2 rewrite module_homo_zero.
                     reflexivity.
-                --  cbn.
+                --  rewrite ulist_image_add, ulist_sum_add.
                     rewrite (@module_homo_plus _ _ _ h).
                     rewrite (@module_homo_plus _ _ _ g).
                     rewrite tensor_ldist.

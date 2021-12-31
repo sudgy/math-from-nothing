@@ -2,7 +2,7 @@ Require Import init.
 
 Require Export linear_base.
 Require Import set.
-Require Import list.
+Require Import unordered_list.
 
 #[universes(template)]
 Record Subspace U V `{Plus V, Zero V, ScalarMult U V} := make_subspace {
@@ -154,23 +154,17 @@ Theorem subspace_linear_combination :
     unfold linear_list_in in Sl.
     unfold linear_combination; cbn in *.
     clear l_unique.
-    induction l.
+    induction l using ulist_induction.
     -   cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         apply subspace_zero.
-    -   cbn.
+    -   rewrite ulist_image_add, ulist_sum_add.
+        rewrite ulist_prop_add in Sl.
         apply subspace_plus.
         +   apply subspace_scalar.
             apply Sl.
-            exists (fst a).
-            cbn.
-            left.
-            destruct a; reflexivity.
         +   apply IHl.
-            intros v [α v_in].
             apply Sl.
-            exists α.
-            right.
-            exact v_in.
 Qed.
 
 Let subspace_eq a b := subspace_set S (a - b).

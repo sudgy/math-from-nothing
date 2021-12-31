@@ -3,10 +3,10 @@ Require Import init.
 Require Export linear_base.
 Require Import linear_subspace.
 Require Import set.
-Require Import list.
+Require Import unordered_list.
 Require Import plus_sum.
 
-Definition linear_span U {V} `{Plus V, Zero V, Neg V, ScalarMult U V}
+Definition linear_span U {V} `{Plus V, Zero V, ScalarMult U V}
     (S : V → Prop) :=
     λ v, ∀ sub : Subspace U V, S ⊆ subspace_set sub → subspace_set sub v.
 
@@ -111,32 +111,36 @@ Theorem span_linear_combination : S = linear_combination_of A.
         cbn.
         clear v Sv.
         intros v Av.
-        pose (l := (1, v) :: list_end).
+        pose (l := (1, v) ::: ulist_end).
         assert (linear_combination_set l) as l_comb.
         {
-            cbn.
-            rewrite not_false.
-            split; exact true.
+            unfold linear_combination_set, l.
+            rewrite ulist_image_add, ulist_unique_add.
+            rewrite ulist_image_end.
+            split.
+            -   apply in_ulist_end.
+            -   apply ulist_unique_end.
         }
         exists [l|l_comb]; cbn.
         split.
-        +   rewrite scalar_id.
+        +   unfold linear_combination, l; cbn.
+            rewrite ulist_image_add, ulist_sum_add; cbn.
+            rewrite scalar_id.
+            rewrite ulist_image_end, ulist_sum_end.
             rewrite plus_rid.
             reflexivity.
-        +   intros u [α u_in].
-            destruct u_in as [u_in|u_in].
-            2: contradiction u_in.
-            inversion u_in.
-            subst.
-            exact Av.
+        +   unfold l, linear_list_in; cbn.
+            rewrite ulist_prop_add; cbn.
+            split; [>exact Av|apply ulist_prop_end].
     -   intros v [l [v_eq Sv]].
         rewrite v_eq; clear v_eq.
         apply (subspace_linear_combination linear_span_subspace).
         cbn.
-        intros u uH.
+        unfold linear_list_in in *.
+        eapply (ulist_prop_sub _ _ _ _ Sv).
+        Unshelve.
+        intros x.
         apply linear_span_sub.
-        apply Sv.
-        exact uH.
 Qed.
 
 End Span.

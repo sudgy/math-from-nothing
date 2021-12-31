@@ -16,6 +16,11 @@ Theorem not_not_impl : ∀ P, ¬¬P → P.
     rewrite not_not.
     trivial.
 Qed.
+Theorem not_not_impl2 : ∀ P : Prop, P → ¬¬P.
+    intros P.
+    rewrite not_not.
+    trivial.
+Qed.
 Ltac classic_contradiction_prop H := apply not_not_impl; intros H.
 
 Theorem not_impl : ∀ A B : Prop, (¬(A → B)) = (A ∧ ¬B).

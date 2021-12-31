@@ -54,6 +54,24 @@ Theorem ulist_destruct {U} : ∀ S : ulist U → Prop,
     -   apply S_ind.
 Qed.
 
+Theorem ulist_end_neq {U} : ∀ (a : U) l, a ::: l ≠ ulist_end.
+    intros a l contr.
+    equiv_get_value l.
+    unfold ulist_add, ulist_end in contr; equiv_simpl in contr.
+    apply list_perm_sym in contr.
+    apply list_perm_nil_eq in contr.
+    inversion contr.
+Qed.
+
+Theorem ulist_single_eq {U} : ∀ (a b : U), a ::: ulist_end = b ::: ulist_end →
+        a = b.
+    intros a b eq.
+    unfold ulist_add, ulist_end in eq; equiv_simpl in eq.
+    pose proof (list_perm_single eq) as eq2.
+    inversion eq2.
+    reflexivity.
+Qed.
+
 Lemma uconc_wd U : ∀ al1 al2 bl1 bl2 : list U,
         list_permutation al1 al2 → list_permutation bl1 bl2 →
         list_permutation (al1 ++ bl1) (al2 ++ bl2).

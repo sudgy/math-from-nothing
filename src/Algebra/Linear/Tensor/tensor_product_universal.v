@@ -9,7 +9,7 @@ Require Import tensor_product_construction.
 Require Import set.
 Require Import card.
 
-Require Import list.
+Require Import unordered_list.
 Require Import plus_sum.
 
 Require Import module_category.
@@ -226,24 +226,24 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
             unfold U, V1, V2.
             rewrite l_eq; clear l_eq.
             destruct l as [l l_comb]; cbn in *.
+            unfold linear_combination; cbn.
             unfold linear_list_in in l_in; cbn in l_in; clear l_comb.
-            induction l.
-            -   cbn.
+            induction l using ulist_induction.
+            -   rewrite ulist_image_end, ulist_sum_end.
                 rewrite <- (scalar_lanni (V := free_linear U (V1 * V2)) 0).
                 rewrite h3_scalar.
                 rewrite scalar_lanni.
                 reflexivity.
-            -   assert (∀ v, (∃ α, in_list l (α, v)) →
-                    tensor_product_ideal M N v) as IHl'.
-                {
-                    intros v [α v_in].
+            -   prove_parts IHl.
+                1: {
+                    apply ulist_prop_split.
+                    intros [α v] l' l_eq; cbn.
+                    subst l.
+                    rewrite ulist_swap in l_in.
+                    rewrite ulist_prop_add in l_in.
                     apply l_in.
-                    exists α.
-                    right.
-                    exact v_in.
                 }
-                specialize (IHl IHl'); clear IHl'.
-                cbn.
+                rewrite ulist_image_add, ulist_sum_add.
                 rewrite h3_plus.
                 unfold U, V1, V2.
                 rewrite <- IHl; clear IHl.
@@ -251,13 +251,11 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
                 rewrite h3_scalar.
                 assert (tensor_product_ideal M N (snd a)) as a_in.
                 {
+                    rewrite ulist_prop_add in l_in.
                     apply l_in.
-                    exists (fst a).
-                    left; destruct a; reflexivity.
                 }
                 pose proof (bilinear_from_bi g) as
                     [g_lscalar [g_rscalar [g_rdist g_ldist]]].
-                cbn in *.
                 destruct a_in as [[[a_in|a_in]|a_in]|a_in].
                 +   destruct a_in as [u [v [w eq]]].
                     unfold U, V1, V2 in eq.
@@ -365,13 +363,13 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
         cbn in x.
         pose proof (tensor_sum_base M N x) as [l x_eq].
         rewrite x_eq; clear x_eq.
-        induction l.
-        +   cbn.
+        induction l using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end.
             rewrite <- (scalar_lanni 0).
             rewrite h1_scalar, h2_scalar.
             do 2 rewrite scalar_lanni.
             reflexivity.
-        +   cbn.
+        +   rewrite ulist_image_add, ulist_sum_add.
             rewrite h1_plus, h2_plus.
             rewrite IHl; clear IHl.
             apply rplus.
@@ -443,8 +441,8 @@ Qed.
 
 Definition simple_tensor T := ∃ a b, T = a ⊗ b.
 
-Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
-        T = list_sum (list_image l (λ x, [x|])).
+Theorem tensor_sum : ∀ T, ∃ l : ulist (set_type simple_tensor),
+        T = ulist_sum (ulist_image l (λ x, [x|])).
     pose (tp := module_plus (tensor_product_base)).
     pose (tz := module_zero (tensor_product_base)).
     pose (tn := module_neg (tensor_product_base)).
@@ -484,20 +482,22 @@ Theorem tensor_sum : ∀ T, ∃ l : list (set_type simple_tensor),
         rewrite h_in.
         reflexivity.
     }
-    exists (list_image l (λ t, [_|f'_in t])).
+    exists (ulist_image l (λ t, [_|f'_in t])).
     unfold f'; cbn.
-    rewrite list_image_comp; cbn.
+    rewrite ulist_image_comp; cbn.
     clear f' f'_in.
     revert T l_eq.
-    induction l; intros.
-    -   cbn in *.
+    induction l using ulist_induction; intros.
+    -   rewrite ulist_image_end, ulist_sum_end.
+        rewrite ulist_image_end, ulist_sum_end in l_eq.
         apply (f_equal (module_homo_f h)) in l_eq.
         rewrite hg in l_eq.
         rewrite l_eq.
         rewrite <- (scalar_ranni 0).
         rewrite (@module_homo_scalar _ _ _ h).
         apply scalar_lanni.
-    -   cbn in *.
+    -   rewrite ulist_image_add, ulist_sum_add.
+        rewrite ulist_image_add, ulist_sum_add in l_eq.
         apply plus_rlmove in l_eq.
         rewrite <- (gh (-[a|])) in l_eq.
         rewrite <- (@module_homo_plus _ _ _ g) in l_eq.

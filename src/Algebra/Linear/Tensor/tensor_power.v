@@ -10,6 +10,7 @@ Require Import module_category.
 Require Import nat.
 Require Import set.
 Require Import list.
+Require Import unordered_list.
 Require Import plus_sum.
 
 Section TensorPower.
@@ -394,8 +395,8 @@ Definition simple_tensor_power n (A : module_V (tensor_power n)) :=
     A = α · module_homo_f (tensor_power_nat_eq [|l]) (vectors_to_power [l|]).
 
 Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
-        ∃ l : list (set_type (simple_tensor_power n)),
-        A = list_sum (list_image l (λ x, [x|])).
+        ∃ l : ulist (set_type (simple_tensor_power n)),
+        A = ulist_sum (ulist_image l (λ x, [x|])).
     intros n A.
     nat_induction n.
     -   assert (simple_tensor_power 0 A) as A_in.
@@ -414,15 +415,16 @@ Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
             symmetry; apply tensor_power_eq_generic.
             reflexivity.
         }
-        exists ([A|A_in] :: list_end).
-        cbn.
+        exists ([A|A_in] ::: ulist_end).
+        rewrite ulist_image_add, ulist_sum_add.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
         reflexivity.
     -   cbn in A.
         pose proof (tensor_sum _ _ A) as [l l_eq]; subst A.
-        induction l.
-        +   exists list_end.
-            cbn.
+        induction l using ulist_induction.
+        +   exists ulist_end.
+            do 2 rewrite ulist_image_end.
             reflexivity.
         +   destruct IHl as [l' IHl].
             destruct a as [a' [a [A eq]]]; subst a'; cbn.
@@ -450,21 +452,22 @@ Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
                 rewrite generic_tensor_eq_generic.
                 reflexivity.
             }
-            pose (laA := list_image lA (λ x, [_|a_in x])).
-            exists (laA ++ l').
-            rewrite list_image_conc.
+            pose (laA := ulist_image lA (λ x, [_|a_in x])).
+            exists (laA +++ l').
+            rewrite ulist_image_conc.
             change (V ⊗ tensor_power n) with (tensor_power (nat_suc n)).
-            rewrite list_sum_plus.
+            rewrite ulist_sum_plus.
             rewrite <- IHl; clear IHl.
+            rewrite ulist_image_add, ulist_sum_add; cbn.
             apply rplus.
             rewrite A_eq.
             unfold laA.
-            rewrite list_image_comp; cbn.
+            rewrite ulist_image_comp; cbn.
             clear A A_eq laA a_in.
-            induction lA.
-            *   cbn.
+            induction lA using ulist_induction.
+            *   do 2 rewrite ulist_image_end, ulist_sum_end.
                 apply tensor_product_ranni.
-            *   cbn.
+            *   do 2 rewrite ulist_image_add, ulist_sum_add.
                 rewrite (tensor_ldist V).
                 apply lplus.
                 exact IHlA.
@@ -492,27 +495,27 @@ Lemma tensor_power_lscalar : ∀ n
     pose proof (tensor_power_sum A) as [lA A_eq].
     pose proof (tensor_power_sum B) as [lB B_eq].
     subst A B.
-    induction lB as [|B lB].
+    induction lB as [|B lB] using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite tensor_ranni'.
         rewrite scalar_ranni.
         apply module_homo_zero.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite tensor_ldist'.
     rewrite f_plus.
     rewrite scalar_ldist.
     rewrite IHlB; clear IHlB.
     apply rplus; clear lB.
-    induction lA as [|A lA].
+    induction lA as [|A lA] using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite tensor_lanni'.
         rewrite scalar_lanni.
         apply module_homo_zero.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite tensor_rdist'.
     rewrite f_plus.
     rewrite scalar_rdist.
@@ -586,9 +589,9 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
     change (module_homo_f (tensor_power_mult (a + b) c) (f (A ⊗' B) ⊗' C))
         with (f (f (A ⊗' B) ⊗' C)).
     pose proof (tensor_power_sum A) as [lA A_eq]; subst A.
-    induction lA as [|A lA].
+    induction lA as [|A lA] using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         do 2 rewrite tensor_lanni'.
         do 2 rewrite f_zero.
         rewrite tensor_lanni'.
@@ -596,16 +599,16 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
         rewrite plus_assoc.
         reflexivity.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     do 2 rewrite tensor_rdist'.
     do 2 rewrite f_plus.
     rewrite tensor_rdist'.
     rewrite f_plus.
     apply (to_generic_tensor_plus IHlA); clear IHlA lA.
     pose proof (tensor_power_sum B) as [lB B_eq]; subst B.
-    induction lB as [|B lB].
+    induction lB as [|B lB] using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite tensor_lanni'.
         rewrite tensor_ranni'.
         do 2 rewrite f_zero.
@@ -615,7 +618,7 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
         rewrite plus_assoc.
         reflexivity.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite tensor_ldist'.
     rewrite tensor_rdist'.
     do 2 rewrite f_plus.
@@ -625,9 +628,9 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
     rewrite f_plus.
     apply (to_generic_tensor_plus IHlB); clear IHlB lB.
     pose proof (tensor_power_sum C) as [lC C_eq]; subst C.
-    induction lC as [|C lC].
+    induction lC as [|C lC] using ulist_induction.
     {
-        cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         do 2 rewrite tensor_ranni'.
         do 2 rewrite f_zero.
         rewrite tensor_ranni'.
@@ -635,7 +638,7 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
         rewrite plus_assoc.
         reflexivity.
     }
-    cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     do 2 rewrite tensor_ldist'.
     do 2 rewrite f_plus.
     rewrite tensor_ldist'.

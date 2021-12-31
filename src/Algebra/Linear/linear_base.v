@@ -3,7 +3,7 @@ Require Import init.
 Require Export plus_group.
 Require Import plus_sum.
 Require Export mult_ring.
-Require Import list.
+Require Import unordered_list.
 Require Import set.
 
 #[universes(template)]
@@ -35,15 +35,17 @@ Class ScalarRMult U V `{Mult V, ScalarMult U V} := {
     scalar_rmult : ∀ a u v, u * (a · v) = a · (u * v)
 }.
 
-Definition linear_combination_set {U V : Type} (l : list (U * V))
-    := list_unique (list_image l snd).
-Definition linear_combination {U V} `{Zero V, Plus V, ScalarMult U V}
+Definition linear_combination_set {U V : Type} (l : ulist (U * V))
+    := ulist_unique (ulist_image l snd).
+Definition linear_combination {U V}
+    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
     (l : set_type (@linear_combination_set U V))
-    := list_sum (list_image [l|] (λ x, fst x · snd x)).
+    := ulist_sum (ulist_image [l|] (λ x, fst x · snd x)).
 Definition linear_list_in {U V}
     (S : V → Prop) (l : set_type (@linear_combination_set U V))
-    := ∀ v, (∃ α, in_list [l|] (α, v)) → S v.
-Definition linear_combination_of {U V} `{Zero V, Plus V, ScalarMult U V}
+    := ulist_prop (λ v, S (snd v)) [l|].
+Definition linear_combination_of {U V}
+    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
     (S : V → Prop) (v : V) :=
     ∃ l, v = linear_combination l ∧ linear_list_in S l.
 
@@ -139,47 +141,57 @@ Theorem scalar_neg_one : ∀ a, (-(1)) · a = -a.
 Qed.
 
 Theorem linear_combination_add : ∀ x l H1 H2,
-        linear_combination [x :: l | H1] =
+        linear_combination [x ::: l | H1] =
         fst x · snd x + linear_combination [l | H2].
     intros x l HH1 HH2.
-    cbn.
+    unfold linear_combination; cbn.
+    rewrite ulist_image_add, ulist_sum_add.
     reflexivity.
 Qed.
 
 Theorem linear_combination_of_zero : ∀ S, linear_combination_of S 0.
     intros S.
-    assert (@linear_combination_set U V list_end) as end_in by exact true.
-    exists [list_end|end_in].
+    assert (@linear_combination_set U V ulist_end) as end_in.
+    {
+        unfold linear_combination_set.
+        rewrite ulist_image_end.
+        apply ulist_unique_end.
+    }
+    exists [ulist_end|end_in].
     split.
-    -   cbn.
+    -   unfold linear_combination; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         reflexivity.
-    -   intros v [α v_in].
-        cbn in v_in.
-        contradiction v_in.
+    -   unfold linear_list_in; cbn.
+        apply ulist_prop_end.
 Qed.
 
 Theorem linear_combination_of_combination : ∀ S l,
-        (∀ v, (∃ α, in_list [l|] (α, v)) → linear_combination_of S v) →
+        (∀ v, (∃ α, in_ulist [l|] (α, v)) → linear_combination_of S v) →
         linear_combination_of S (linear_combination l).
     intros S [l l_comb] v_combs.
-    induction l.
+    induction l using ulist_induction.
     {
-        cbn.
+        unfold linear_combination; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         apply linear_combination_of_zero.
     }
-    change [[a::l|l_comb]|] with (a::l) in v_combs.
+    cbn in v_combs.
     assert (linear_combination_set l) as l_comb'.
     {
+        unfold linear_combination_set in l_comb.
+        rewrite ulist_image_add, ulist_unique_add in l_comb.
         apply l_comb.
     }
     specialize (IHl l_comb').
-    change [[l|l_comb']|] with l in IHl.
-    assert (∀ v, (∃ α, in_list l (α, v)) → linear_combination_of S v)
+    cbn in IHl.
+    assert (∀ v, (∃ α, in_ulist l (α, v)) → linear_combination_of S v)
         as v_combs'.
     {
         intros v [α v_in].
         apply v_combs.
         exists α.
+        rewrite in_ulist_add.
         right.
         exact v_in.
     }
@@ -188,20 +200,24 @@ Theorem linear_combination_of_combination : ∀ S l,
     {
         apply v_combs.
         exists (fst a).
+        rewrite in_ulist_add.
         left.
         destruct a; reflexivity.
     }
-    cbn in *.
+    unfold linear_combination; cbn.
+    unfold linear_combination in IHl; cbn in IHl.
     clear v_combs v_combs' l_comb l_comb'.
     destruct IHl as [bl [bl_eq Sbl]].
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite bl_eq; clear bl_eq l.
     destruct Sa as [al [al_eq Sal]].
     rewrite al_eq; clear al_eq.
     destruct a as [α v]; cbn; clear v.
     destruct al as [al al_comb].
-    induction al.
+    induction al using ulist_induction.
     {
-        cbn.
+        unfold linear_combination at 1; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
         rewrite scalar_ranni.
         rewrite plus_lid.
         exists bl.
@@ -209,148 +225,108 @@ Theorem linear_combination_of_combination : ∀ S l,
         -   reflexivity.
         -   exact Sbl.
     }
-    cbn in *.
+    unfold linear_combination at 1; cbn.
+    unfold linear_combination_set in al_comb.
+    unfold linear_list_in in Sal; cbn in Sal.
+    rewrite ulist_image_add, ulist_unique_add in al_comb.
     assert (linear_combination_set al) as al_comb'.
     {
         apply al_comb.
     }
-    assert (∀ v, (∃ α, in_list al (α, v)) → S v) as Sal'.
+    assert (linear_list_in S [al|al_comb']) as Sal'.
     {
-        intros v [b v_in].
+        rewrite ulist_prop_add in Sal.
         apply Sal.
-        exists b.
-        right.
-        exact v_in.
     }
     specialize (IHal al_comb' Sal').
+    rewrite ulist_image_add, ulist_sum_add.
     rewrite scalar_ldist.
     rewrite <- plus_assoc.
     destruct IHal as [l [l_eq Sl]].
     destruct a as [β v]; cbn in *.
     assert (S v) as Sv.
     {
+        rewrite ulist_prop_add in Sal.
         apply Sal.
-        exists β.
-        left; reflexivity.
     }
+    unfold linear_combination in l_eq at 1; cbn in l_eq.
     rewrite l_eq; clear al al_comb bl Sbl l_eq al_comb' Sal Sal'.
     destruct l as [l l_comb].
-    cbn in Sl.
+    unfold linear_list_in in Sl; cbn in Sl.
     rewrite scalar_comp.
-    classic_case (∃ a, in_list l (a, v)) as [v_in|v_nin].
+    classic_case (∃ a, in_ulist l (a, v)) as [v_in|v_nin].
     -   destruct v_in as [a v_in].
-        pose proof (in_list_split l (a, v) v_in) as [l1 [l2 eq]].
-        subst l; cbn.
-        rewrite list_image_conc; cbn.
-        rewrite list_sum_plus; cbn.
-        rewrite plus_assoc.
-        rewrite (plus_comm (α * β · v)).
-        rewrite <- plus_assoc.
-        rewrite (plus_assoc _ (a · v)).
-        rewrite <- scalar_rdist.
+        apply in_ulist_split in v_in as [l1 l1_eq].
+        subst l.
         remember (α * β + a) as a'.
-        pose (l' := l1 ++ (a', v) :: l2).
+        pose (l' := (a', v) ::: l1).
         assert (linear_combination_set l') as l'_comb.
         {
-            unfold l'.
-            clear α β v_in Sl Sv Heqa' l'.
             unfold linear_combination_set in *.
-            assert (list_image (l1 ++ (a, v) :: l2) snd =
-                    list_image (l1 ++ (a', v) :: l2) snd) as l_eq.
-            {
-                clear l_comb.
-                induction l1.
-                -   cbn.
-                    reflexivity.
-                -   cbn.
-                    rewrite IHl1.
-                    reflexivity.
-            }
-            rewrite <- l_eq.
+            unfold l'.
+            rewrite ulist_image_add, ulist_unique_add; cbn.
+            rewrite ulist_image_add, ulist_unique_add in l_comb; cbn in l_comb.
             exact l_comb.
         }
         exists [l'|l'_comb].
         split.
-        +   unfold l'; cbn.
-            rewrite list_image_conc; cbn.
-            rewrite list_sum_plus; cbn.
-            reflexivity.
-        +   cbn.
-            unfold l'.
-            intros u [b b_in].
-            apply Sl.
-            apply in_list_conc in b_in.
-            cbn in b_in.
-            destruct b_in as [b_in|[b_eq|b_in]].
-            *   exists b.
-                apply in_list_lconc.
-                exact b_in.
-            *   inversion b_eq; clear b_eq.
-                subst b u.
-                exists a.
-                apply in_list_rconc.
-                left.
-                reflexivity.
-            *   exists b.
-                apply in_list_rconc.
-                right.
-                exact b_in.
-    -   pose (l' := (α * β, v) :: l).
+        +   unfold l', linear_combination; cbn.
+            do 2 rewrite ulist_image_add, ulist_sum_add.
+            cbn.
+            rewrite Heqa'.
+            rewrite scalar_rdist.
+            apply plus_assoc.
+        +   unfold linear_list_in, l'; cbn.
+
+            rewrite ulist_prop_add; cbn.
+            rewrite ulist_prop_add in Sl; cbn in Sl.
+            exact Sl.
+    -   pose (l' := (α * β, v) ::: l).
         assert (linear_combination_set l') as l'_comb.
         {
-            unfold l'; cbn.
+            unfold l', linear_combination_set; cbn.
+            rewrite ulist_image_add, ulist_unique_add; cbn.
             split.
             2: exact l_comb.
             intros v_in.
-            clear l' Sl l_comb Sv α β.
-            induction l.
-            -   contradiction v_in.
-            -   classic_case (snd a = v) as [eq|neq].
-                +   subst v.
-                    apply v_nin.
-                    exists (fst a).
-                    left.
-                    destruct a; reflexivity.
-                +   apply IHl.
-                    *   intros [b v_in'].
-                        apply v_nin.
-                        exists b.
-                        right.
-                        exact v_in'.
-                    *   destruct v_in as [eq|v_in].
-                        --  contradiction.
-                        --  exact v_in.
+            apply v_nin.
+            apply image_in_ulist in v_in as [[a v'] [v_eq v_in]].
+            cbn in v_eq.
+            subst v'.
+            exists a.
+            exact v_in.
         }
         exists [l'|l'_comb].
         split.
-        +   unfold l'; cbn.
+        +   unfold l', linear_combination; cbn.
+            rewrite ulist_image_add, ulist_sum_add; cbn.
             reflexivity.
-        +   cbn.
-            intros u [a [u_eq|u_in]].
-            *   inversion u_eq; clear u_eq.
-                subst a u.
-                exact Sv.
-            *   apply Sl.
-                exists a.
-                exact u_in.
+        +   unfold linear_list_in, l'; cbn.
+            rewrite ulist_prop_add; cbn.
+            split; assumption.
 Qed.
 
 Theorem linear_combination_of_scalar : ∀ S a v,
         linear_combination_of S v → linear_combination_of S (a · v).
     intros S a v v_comb.
-    pose (l := (a, v) :: list_end).
+    pose (l := (a, v) ::: ulist_end).
     assert (linear_combination_set l) as l_comb.
     {
-        cbn.
-        rewrite not_false.
-        split; exact true.
+        unfold linear_combination_set, l.
+        rewrite ulist_image_add, ulist_unique_add, ulist_image_end.
+        split.
+        -   apply in_ulist_end.
+        -   apply ulist_unique_end.
     }
     pose proof (linear_combination_of_combination S [l|l_comb]) as eq.
-    cbn in eq.
+    unfold linear_combination, l in eq; cbn in eq.
+    rewrite ulist_image_add, ulist_sum_add in eq.
+    rewrite ulist_image_end, ulist_sum_end in eq.
     rewrite plus_rid in eq.
     apply eq; clear eq.
+    setoid_rewrite in_ulist_add.
     intros u [b [u_eq|contr]].
-    2: contradiction contr.
+    2: contradiction (in_ulist_end _ contr).
     inversion u_eq.
     subst.
     exact v_comb.
@@ -368,34 +344,44 @@ Theorem linear_combination_of_plus : ∀ S u v,
         apply linear_combination_of_scalar.
         exact v_comb.
     }
-    pose (l := (1, u) :: (1, v) :: list_end).
+    pose (l := (1, u) ::: (1, v) ::: ulist_end).
     assert (linear_combination_set l) as l_comb.
     {
-        cbn.
+        unfold linear_combination_set, l; cbn.
+        do 2 rewrite ulist_image_add, ulist_unique_add.
+        rewrite in_ulist_add.
+        rewrite ulist_image_end.
         rewrite not_or.
-        rewrite not_false.
-        repeat split; try exact true.
-        rewrite neq_sym; exact neq.
+        cbn.
+        repeat split.
+        -   rewrite neq_sym; exact neq.
+        -   apply in_ulist_end.
+        -   apply in_ulist_end.
+        -   apply ulist_unique_end.
     }
     pose proof (linear_combination_of_combination S [l|l_comb]) as eq.
-    cbn in eq.
+    unfold linear_combination, l in eq; cbn in eq.
+    do 2 rewrite ulist_image_add, ulist_sum_add in eq; cbn in eq.
+    rewrite ulist_image_end, ulist_sum_end in eq.
     do 2 rewrite scalar_id in eq.
     rewrite plus_rid in eq.
     apply eq; clear eq.
+    setoid_rewrite in_ulist_add.
+    setoid_rewrite in_ulist_add.
     intros w [a [w_eq|[w_eq|contr]]].
-    3: contradiction contr.
+    3: contradiction (in_ulist_end _ contr).
     all: inversion w_eq; subst.
     -   exact u_comb.
     -   exact v_comb.
 Qed.
 
 Definition linear_remove_zeros_base (l : set_type (@linear_combination_set U V))
-    := list_filter (λ x, 0 ≠ fst x) [l|].
+    := ulist_filter (λ x, 0 ≠ fst x) [l|].
 
 Lemma linear_remove_zeros_comb :
         ∀ l, linear_combination_set (linear_remove_zeros_base l).
     intros l.
-    apply list_filter_image_unique.
+    apply ulist_filter_image_unique.
     exact [|l].
 Qed.
 
@@ -405,17 +391,20 @@ Definition linear_remove_zeros l :=
 Theorem linear_combination_remove_zeros : ∀ l,
         linear_combination l = linear_combination (linear_remove_zeros l).
     intros [l l_uni].
+    unfold linear_combination, linear_remove_zeros, linear_remove_zeros_base.
     cbn.
     clear l_uni.
-    induction l.
-    -   cbn.
+    induction l using ulist_induction.
+    -   rewrite ulist_filter_end.
         reflexivity.
-    -   cbn.
+    -   rewrite ulist_image_add, ulist_sum_add.
         rewrite IHl; clear IHl.
-        case_if.
-        +   cbn.
+        classic_case (0 ≠ fst a).
+        +   rewrite ulist_filter_add_in by exact n.
+            rewrite ulist_image_add, ulist_sum_add.
             reflexivity.
-        +   rewrite not_not in n.
+        +   rewrite ulist_filter_add_nin by exact n.
+            rewrite not_not in n.
             rewrite <- n.
             rewrite scalar_lanni.
             rewrite plus_lid.
@@ -424,11 +413,9 @@ Qed.
 
 Theorem linear_list_in_remove_zeros : ∀ l S,
         linear_list_in S l → linear_list_in S (linear_remove_zeros l).
-    intros l S Sl v [a v_in].
-    apply Sl.
-    exists a.
-    apply list_filter_in in v_in.
-    exact v_in.
+    intros l S Sl.
+    apply ulist_prop_filter.
+    exact Sl.
 Qed.
 
 (* begin hide *)

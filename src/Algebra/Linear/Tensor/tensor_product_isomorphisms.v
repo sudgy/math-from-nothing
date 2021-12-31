@@ -5,7 +5,7 @@ Require Import tensor_product_universal.
 Require Import plus_sum.
 
 Require Import set.
-Require Import list.
+Require Import unordered_list.
 Require Import card.
 
 Require Import module_category.
@@ -98,11 +98,11 @@ Theorem tensor_product_lid :
         +   intros x.
             unfold g.
             pose proof (tensor_sum _ _ x) as [l eq]; subst x.
-            induction l.
-            *   cbn.
+            induction l using ulist_induction.
+            *   rewrite ulist_image_end, ulist_sum_end.
                 rewrite module_homo_zero.
                 apply tensor_product_ranni.
-            *   cbn.
+            *   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ f).
                 rewrite tensor_ldist.
                 rewrite <- IHl at 2; clear IHl.
@@ -207,13 +207,13 @@ Theorem tensor_product_comm :
         split; apply module_homomorphism_eq; cbn.
         +   intros x.
             pose proof (tensor_sum _ _ x) as [l x_eq]; subst x.
-            induction l.
-            *   cbn.
+            induction l using ulist_induction.
+            *   rewrite ulist_image_end, ulist_sum_end.
                 rewrite <- (tensor_product_zero N M).
                 rewrite g_in.
                 rewrite f_in.
                 reflexivity.
-            *   cbn.
+            *   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ g).
                 rewrite (@module_homo_plus _ _ _ f).
                 cbn in *.
@@ -225,13 +225,13 @@ Theorem tensor_product_comm :
                 reflexivity.
         +   intros x.
             pose proof (tensor_sum _ _ x) as [l x_eq]; subst x.
-            induction l.
-            *   cbn.
+            induction l using ulist_induction.
+            *   rewrite ulist_image_end, ulist_sum_end.
                 rewrite <- (tensor_product_zero M N).
                 rewrite f_in.
                 rewrite g_in.
                 reflexivity.
-            *   cbn.
+            *   rewrite ulist_image_add, ulist_sum_add.
                 rewrite (@module_homo_plus _ _ _ f).
                 rewrite (@module_homo_plus _ _ _ g).
                 cbn in *.
@@ -557,11 +557,11 @@ Theorem tensor_product_lriso_iso : isomorphism f1 → isomorphism f2 →
     split; apply module_homomorphism_eq; cbn.
     +   intros x.
         pose proof (tensor_sum _ _ x) as [l eq]; subst x.
-        induction l.
-        *   cbn.
+        induction l using ulist_induction.
+        *   rewrite ulist_image_end, ulist_sum_end.
             do 2 rewrite module_homo_zero.
             reflexivity.
-        *   cbn.
+        *   rewrite ulist_image_add, ulist_sum_add.
             rewrite (@module_homo_plus _ _ _ h2).
             rewrite tensor_product_lriso_plus.
             rewrite <- IHl at 2; clear IHl.
@@ -574,11 +574,11 @@ Theorem tensor_product_lriso_iso : isomorphism f1 → isomorphism f2 →
             reflexivity.
     +   intros x.
         pose proof (tensor_sum _ _ x) as [l eq]; subst x.
-        induction l.
-        *   cbn.
+        induction l using ulist_induction.
+        *   rewrite ulist_image_end, ulist_sum_end.
             do 2 rewrite module_homo_zero.
             reflexivity.
-        *   cbn.
+        *   rewrite ulist_image_add, ulist_sum_add.
             rewrite tensor_product_lriso_plus.
             rewrite (@module_homo_plus _ _ _ h2).
             rewrite <- IHl at 2; clear IHl.

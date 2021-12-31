@@ -4,7 +4,7 @@ Require Import tensor_power.
 Require Import module_category.
 
 Require Import nat.
-Require Import list.
+Require Import unordered_list.
 Require Import plus_sum.
 Require Import set.
 Require Import card.
@@ -324,13 +324,15 @@ Lemma power_to_tensor_zero : ∀ k, (power_to_tensor (k := k) 0) = 0.
     -   reflexivity.
 Qed.
 
-Lemma tensor_list_sum_k : ∀ (al : list (tensor_algebra_base)) k,
-        [list_sum al|] k = list_sum (list_image al (λ a, [a|] k)).
+Lemma tensor_list_sum_k : ∀ (al : ulist (tensor_algebra_base)) k,
+        [ulist_sum al|] k = ulist_sum (ulist_image al (λ a, [a|] k)).
     intros al k.
-    induction al.
-    -   cbn.
+    induction al using ulist_induction.
+    -   rewrite ulist_image_end.
+        do 2 rewrite ulist_sum_end.
         reflexivity.
-    -   cbn.
+    -   rewrite ulist_image_add.
+        do 2 rewrite ulist_sum_add.
         unfold plus at 1; cbn.
         rewrite IHal.
         reflexivity.

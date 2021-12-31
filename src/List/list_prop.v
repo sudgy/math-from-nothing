@@ -4,6 +4,7 @@ Require Export list_base.
 Require Export list_func.
 
 Require Import relation.
+Require Import set.
 
 Set Implicit Arguments.
 
@@ -295,4 +296,47 @@ Theorem list_image_unique {U V} : ∀ (l : list U) (f : U → V),
             exact contr.
         +   apply IHl.
             apply l_uni.
+Qed.
+
+Theorem list_prop_sub {U} : ∀ (l : list U) S T, S ⊆ T →
+        list_prop S l → list_prop T l.
+    intros l S T sub Sl.
+    induction l.
+    -   exact true.
+    -   cbn.
+        split.
+        +   apply sub.
+            apply Sl.
+        +   apply IHl.
+            apply Sl.
+Qed.
+
+Theorem list_prop_ex {U} : ∀ (l : list U) S, list_prop S l →
+        ∃ l' : list (set_type S), list_image l' (λ x, [x|]) = l.
+    intros l S Sl.
+    induction l.
+    -   exists list_end.
+        cbn.
+        reflexivity.
+    -   destruct Sl as [Sa Sl].
+        specialize (IHl Sl) as [l' l_eq].
+        exists ([a|Sa] :: l').
+        cbn.
+        rewrite l_eq.
+        reflexivity.
+Qed.
+
+Theorem list_prop_filter {U} : ∀ (l : list U) S T,
+        list_prop S l → list_prop S (list_filter T l).
+    intros l S T Sl.
+    induction l.
+    -   cbn.
+        exact true.
+    -   destruct Sl as [Sa Sl].
+        specialize (IHl Sl).
+        cbn.
+        case_if.
+        +   cbn.
+            split; assumption.
+        +   exact IHl.
 Qed.
