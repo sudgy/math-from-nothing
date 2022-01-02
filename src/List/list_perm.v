@@ -2,6 +2,8 @@ Require Import init.
 
 Require Export list_base.
 Require Export list_prop.
+Require Export list_nat.
+Require Import nat.
 
 Require Import relation.
 
@@ -430,4 +432,216 @@ Theorem list_perm_reverse {U} : ∀ l : list U,
         apply (list_perm_skip a) in IHl.
         apply (list_perm_trans IHl).
         apply list_perm_add.
+Qed.
+
+(** I don't even know if this is the best starting point to prove all of these,
+but this is what the standard library starts with and I couldn't find any way to
+start from somewhere else.
+*)
+Theorem list_perm_inside_eq {U} : ∀ l1 l2 l3 l4 (a : U),
+        list_permutation (l1 ++ a :: l2) (l3 ++ a :: l4) →
+        list_permutation (l1 ++ l2) (l3 ++ l4).
+    intros l1 l2 l3 l4 a eq.
+    remember (l1 ++ a :: l2) as l12.
+    remember (l3 ++ a :: l4) as l34.
+    revert l1 l2 l3 l4 Heql12 Heql34.
+    induction eq; intros.
+    -   destruct l1; inversion Heql12.
+    -   destruct l1 as [|a1 l1].
+        +   inversion Heql12.
+            subst x l2.
+            destruct l3 as [|a3 l3].
+            *   inversion Heql34.
+                subst l4.
+                cbn.
+                exact eq.
+            *   inversion Heql34 as [[eq2 Heql34']].
+                subst a3.
+                cbn.
+                rewrite Heql34' in eq.
+                apply (list_perm_trans eq).
+                rewrite list_add_conc.
+                rewrite list_conc_assoc.
+                rewrite list_conc_add_assoc.
+                apply list_perm_lpart.
+                apply list_perm_sym.
+                apply list_perm_add.
+        +   inversion Heql12 as [[eq2 Heql12']].
+            subst a1.
+            destruct l3 as [|a3 l3].
+            *   inversion Heql34.
+                subst x l4.
+                cbn.
+                rewrite Heql12' in eq.
+                apply (list_perm_trans2 eq).
+                rewrite (list_add_conc a l2).
+                rewrite list_conc_assoc.
+                rewrite list_conc_add_assoc.
+                apply list_perm_lpart.
+                apply list_perm_add.
+            *   inversion Heql34.
+                subst a3.
+                cbn.
+                apply list_perm_skip.
+                apply IHeq; assumption.
+    -   destruct l1 as [|a1 l1].
+        {
+            inversion Heql12.
+            clear Heql12.
+            subst y l2.
+            cbn.
+            destruct l3 as [|a3 l3].
+            {
+                inversion Heql34.
+                subst x l4.
+                cbn.
+                apply list_perm_refl.
+            }
+            inversion Heql34.
+            subst a3.
+            cbn.
+            apply list_perm_skip.
+            destruct l3 as [|a3 l3].
+            {
+                inversion Heql34.
+                cbn.
+                apply list_perm_refl.
+            }
+            inversion Heql34.
+            subst a3 l.
+            cbn.
+            apply list_perm_split.
+        }
+        inversion Heql12 as [[eq Heql12']].
+        subst a1.
+        clear Heql12.
+        destruct l1 as [|a1 l1].
+        {
+            inversion Heql12'.
+            subst x l2.
+            clear Heql12'.
+            cbn.
+            destruct l3 as [|a3 l3].
+            {
+                inversion Heql34.
+                cbn.
+                apply list_perm_refl.
+            }
+            inversion Heql34 as [[eq Heql34']].
+            subst a3.
+            clear Heql34.
+            destruct l3 as [|a3 l3].
+            {
+                inversion Heql34'.
+                cbn.
+                apply list_perm_refl.
+            }
+            inversion Heql34'.
+            clear.
+            rewrite (list_add_conc a l4).
+            rewrite list_conc_assoc.
+            rewrite list_conc_add_assoc.
+            apply list_perm_lpart.
+            pose proof (list_perm_conc l3 (a :: list_end)) as eq.
+            cbn in eq.
+            apply (list_perm_skip a3) in eq.
+            apply (list_perm_trans eq).
+            apply list_perm_swap.
+        }
+        inversion Heql12' as [[eq Heql12]].
+        subst a1.
+        clear Heql12'.
+        destruct l3 as [|a3 l3].
+        {
+            inversion Heql34 as [[eq Heql34']].
+            clear Heql34.
+            subst x l4.
+            rewrite Heql12.
+            cbn.
+            apply list_perm_skip.
+            apply list_perm_sym.
+            apply list_perm_split.
+        }
+        inversion Heql34 as [[eq Heql34']].
+        clear Heql34.
+        subst a3.
+        destruct l3 as [|a3 l3].
+        {
+            inversion Heql34'.
+            subst y l4.
+            rewrite Heql12.
+            cbn.
+            clear.
+            rewrite (list_add_conc a l2).
+            rewrite list_conc_assoc.
+            do 3 rewrite list_conc_add_assoc.
+            apply list_perm_lpart.
+            pose proof (list_perm_conc (a :: list_end) l1) as eq.
+            cbn in eq.
+            apply (list_perm_skip x) in eq.
+            apply (list_perm_trans2 eq).
+            apply list_perm_swap.
+        }
+        inversion Heql34' as [[eq Heql34]]; clear Heql34'.
+        subst a3.
+        cbn.
+        apply list_perm_swap2.
+        rewrite Heql12 in Heql34; clear Heql12 l.
+        rename Heql34 into eq.
+        revert l2 l3 l4 eq.
+        induction l1; intros.
+        +   revert l2 l4 eq.
+            destruct l3; intros.
+            *   cbn in *.
+                inversion eq.
+                apply list_perm_refl.
+            *   inversion eq.
+                cbn.
+                apply list_perm_split.
+        +   destruct l3.
+            *   inversion eq.
+                cbn.
+                apply list_perm_sym.
+                apply list_perm_split.
+            *   inversion eq.
+                subst a0.
+                cbn.
+                apply list_perm_skip.
+                apply IHl1.
+                assumption.
+    -   assert (in_list l' a) as a_in.
+        {
+            apply (list_perm_in eq1).
+            rewrite Heql12.
+            apply in_list_rconc.
+            left.
+            reflexivity.
+        }
+        apply in_list_split in a_in as [l5 [l6 l_eq]].
+        specialize (IHeq1 _ _ _ _ Heql12 l_eq).
+        specialize (IHeq2 _ _ _ _ l_eq Heql34).
+        exact (list_perm_trans IHeq1 IHeq2).
+Qed.
+
+Theorem list_perm_add_eq {U} : ∀ (a : U) l1 l2,
+        list_permutation (a :: l1) (a :: l2) → list_permutation l1 l2.
+    intros a l1 l2 eq.
+    exact (list_perm_inside_eq list_end l1 list_end l2 a eq).
+Qed.
+
+Theorem list_perm_conc_lcancel {U} : ∀ (l1 l2 l3 : list U),
+        list_permutation (l1 ++ l2) (l1 ++ l3) → list_permutation l2 l3.
+    intros l1 l2 l3 eq.
+    induction l1.
+    -   exact eq.
+    -   apply IHl1.
+        apply (list_perm_add_eq eq).
+Qed.
+
+Theorem list_perm_conc_rcancel {U} : ∀ (l1 l2 l3 : list U),
+        list_permutation (l2 ++ l1) (l3 ++ l1) → list_permutation l2 l3.
+    intros l1 l2 l3 eq.
+    apply (list_perm_trans (list_perm_conc l1 l2)) in eq.
+    apply (list_perm_trans2 (list_perm_conc l3 l1)) in eq.
+    apply (list_perm_conc_lcancel _ _ _ eq).
 Qed.

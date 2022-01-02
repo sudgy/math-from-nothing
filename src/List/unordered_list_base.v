@@ -135,3 +135,25 @@ Theorem ulist_swap {U} : ∀ (a b : U) l, a ::: b ::: l = b ::: a ::: l.
     unfold ulist_add; equiv_simpl.
     apply list_perm_swap.
 Qed.
+
+Theorem ulist_skip {U} : ∀ (a : U) l1 l2, a ::: l1 = a ::: l2 → l1 = l2.
+    intros a l1 l2.
+    equiv_get_value l1 l2.
+    unfold ulist_add; equiv_simpl.
+    apply list_perm_add_eq.
+Qed.
+
+Theorem ulist_conc_lcancel {U} : ∀ l1 l2 l3 : ulist U,
+        l1 +++ l2 = l1 +++ l3 → l2 = l3.
+    intros l1 l2 l3.
+    equiv_get_value l1 l2 l3.
+    unfold ulist_conc; equiv_simpl.
+    apply list_perm_conc_lcancel.
+Qed.
+
+Theorem ulist_conc_rcancel {U} : ∀ l1 l2 l3 : ulist U,
+        l2 +++ l1 = l3 +++ l1 → l2 = l3.
+    intros l1 l2 l3.
+    do 2 rewrite (ulist_conc_comm _ l1).
+    apply ulist_conc_lcancel.
+Qed.
