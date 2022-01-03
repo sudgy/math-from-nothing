@@ -7,7 +7,7 @@ Require Import set.
 because unital associative algebras are all I care about for the moment.  I can
 change names later if I need to.
 *)
-Class Algebra (F : CRing) := make_algebra {
+Record Algebra (F : CRing) := make_algebra {
     algebra_module : Module F;
     algebra_mult : Mult (module_V algebra_module);
     algebra_ldist : @Ldist (module_V algebra_module) (module_plus algebra_module) algebra_mult;
