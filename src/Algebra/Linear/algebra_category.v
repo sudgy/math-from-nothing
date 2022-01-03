@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export module_category.
+Require Import set.
 
 (** These are unital associative algebras.  I'm just calling it "Algebra"
 because unital associative algebras are all I care about for the moment.  I can
@@ -34,8 +35,8 @@ Definition algebra_zero {F} (A : Algebra F) := module_zero (algebra_module A).
 Definition algebra_neg {F} (A : Algebra F) := module_neg (algebra_module A).
 Definition algebra_plus_assoc {F} (A : Algebra F) := module_plus_assoc (algebra_module A).
 Definition algebra_plus_comm {F} (A : Algebra F) := module_plus_comm (algebra_module A).
-Definition algebra_lid {F} (A : Algebra F) := module_plus_lid (algebra_module A).
-Definition algebra_linv {F} (A : Algebra F) := module_plus_linv (algebra_module A).
+Definition algebra_plus_lid {F} (A : Algebra F) := module_plus_lid (algebra_module A).
+Definition algebra_plus_linv {F} (A : Algebra F) := module_plus_linv (algebra_module A).
 Definition algebra_scalar {F} (A : Algebra F) := module_scalar (algebra_module A).
 Definition algebra_scalar_id {F} (A : Algebra F) := module_scalar_id (algebra_module A).
 Definition algebra_scalar_ldist {F} (A : Algebra F) := module_scalar_ldist (algebra_module A).
@@ -181,4 +182,20 @@ Next Obligation.
     intros x.
     cbn.
     reflexivity.
+Qed.
+
+Theorem algebra_to_module_iso {R : CRing} {A B : Algebra R} :
+        ∀ f : cat_morphism (ALGEBRA R) A B, isomorphism f →
+        isomorphism (C0 := MODULE R)(algebra_to_module_homomorphism f).
+    intros f [g [fg gf]].
+    exists (algebra_to_module_homomorphism g).
+    split.
+    -   apply module_homomorphism_eq.
+        intros x; cbn.
+        inversion fg as [eq].
+        apply (func_eq _ _ eq).
+    -   apply module_homomorphism_eq.
+        intros x; cbn.
+        inversion gf as [eq].
+        apply (func_eq _ _ eq).
 Qed.

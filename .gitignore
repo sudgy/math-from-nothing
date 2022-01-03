@@ -9,3 +9,5 @@
 /.Makefile.d
 /html/
 /src/Extra/
+.auto_syntax.vim
+.vim_specific.vim
