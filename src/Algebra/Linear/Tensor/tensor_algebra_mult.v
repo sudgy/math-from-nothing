@@ -144,9 +144,7 @@ Lemma power_to_tensor_tm :
     reflexivity.
 Qed.
 
-Theorem tensor_mult_base_ldist : ∀ u v w i (H1 : of_grade i v) (H2 : of_grade i w),
-        tensor_mult_base u [v + w|ex_intro _ i (of_grade_plus v w i H1 H2)] =
-        tensor_mult_base u [v|ex_intro _ i H1] + tensor_mult_base u [w|ex_intro _ i H2].
+Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
     intros [u' u_homo] v' w' j vj wj.
     destruct u_homo as [i [u u_eq]].
     destruct vj as [v v_eq].
@@ -181,9 +179,7 @@ Theorem tensor_mult_base_ldist : ∀ u v w i (H1 : of_grade i v) (H2 : of_grade 
     rewrite <- power_to_tensor_plus.
     reflexivity.
 Qed.
-Theorem tensor_mult_base_rdist : ∀ u v w i (H1 : of_grade i u) (H2 : of_grade i v),
-        tensor_mult_base [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] w =
-        tensor_mult_base [u|ex_intro _ i H1] w + tensor_mult_base [v|ex_intro _ i H2] w.
+Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
     intros u' v' [w' w_homo] i ui vi.
     destruct w_homo as [j [w w_eq]].
     destruct ui as [u u_eq].
@@ -218,9 +214,8 @@ Theorem tensor_mult_base_rdist : ∀ u v w i (H1 : of_grade i u) (H2 : of_grade 
     rewrite <- power_to_tensor_plus.
     reflexivity.
 Qed.
-Theorem tensor_mult_base_lscalar : ∀ a u v i (H : of_grade i u),
-        tensor_mult_base [a · u|ex_intro _ i (of_grade_scalar a u i H)] v =
-        a · tensor_mult_base [u|ex_intro _ i H] v.
+Theorem tensor_mult_base_lscalar :
+        bilinear_extend_lscalar_base tensor_mult_base.
     intros a u' [v' v_homo] i ui.
     destruct v_homo as [j [v v_eq]].
     destruct ui as [u u_eq].
@@ -252,9 +247,8 @@ Theorem tensor_mult_base_lscalar : ∀ a u v i (H : of_grade i u),
     rewrite power_to_tensor_scalar.
     reflexivity.
 Qed.
-Theorem tensor_mult_base_rscalar : ∀ a u v i (H : of_grade i v),
-        tensor_mult_base u [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
-        a · tensor_mult_base u [v|ex_intro _ i H].
+Theorem tensor_mult_base_rscalar :
+        bilinear_extend_rscalar_base tensor_mult_base.
     intros a [u' u_homo] v' j vj.
     destruct u_homo as [i [u u_eq]].
     destruct vj as [v v_eq].

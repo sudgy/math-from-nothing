@@ -51,14 +51,19 @@ Context {U V1 V2} `{
 
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
-Variable f_base : set_type homogeneous → V2.
-Variable f_plus_base' : ∀ (u v : V1) (i : grade_I)
+Definition linear_extend_plus_base (f_base : set_type homogeneous → V2) :=
+    ∀ (u v : V1) (i : grade_I)
     (H1 : of_grade i u) (H2 : of_grade i v),
     f_base [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] =
     f_base [u|ex_intro _ i H1] + f_base [v|ex_intro _ i H2].
-Variable f_scalar_base' : ∀ a v i (H : of_grade i v),
+Definition linear_extend_scalar_base (f_base : set_type homogeneous → V2) :=
+    ∀ a v i (H : of_grade i v),
     f_base [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
     a · f_base [v|ex_intro _ i H].
+
+Variable f_base : set_type homogeneous → V2.
+Variable f_plus_base' : linear_extend_plus_base f_base.
+Variable f_scalar_base' : linear_extend_scalar_base f_base.
 
 Theorem f_scalar_base : ∀ a v H1 H2, f_base [a · v|H1] = a · f_base [v|H2].
     intros a v av_homo v_homo.
@@ -462,25 +467,40 @@ Context {U V1 V2} `{
 
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
-Variable op : set_type homogeneous → set_type homogeneous → V2.
-Variable op_ldist' : ∀ u v w i (H1 : of_grade i v) (H2 : of_grade i w),
+Definition bilinear_extend_ldist_base
+    (op : set_type homogeneous → set_type homogeneous → V2) :=
+    ∀ u v w i (H1 : of_grade i v) (H2 : of_grade i w),
     op u [v + w|ex_intro _ i (of_grade_plus v w i H1 H2)] =
     op u [v|ex_intro _ i H1] + op u [w|ex_intro _ i H2].
-Variable op_rdist' : ∀ u v w i (H1 : of_grade i u) (H2 : of_grade i v),
+Definition bilinear_extend_rdist_base
+    (op : set_type homogeneous → set_type homogeneous → V2) :=
+    ∀ u v w i (H1 : of_grade i u) (H2 : of_grade i v),
     op [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] w =
     op [u|ex_intro _ i H1] w + op [v|ex_intro _ i H2] w.
-Variable op_lscalar' : ∀ a u v i (H : of_grade i u),
+Definition bilinear_extend_lscalar_base
+    (op : set_type homogeneous → set_type homogeneous → V2) :=
+    ∀ a u v i (H : of_grade i u),
     op [a · u|ex_intro _ i (of_grade_scalar a u i H)] v =
     a · op [u|ex_intro _ i H] v.
-Variable op_rscalar' : ∀ a u v i (H : of_grade i v),
+Definition bilinear_extend_rscalar_base
+    (op : set_type homogeneous → set_type homogeneous → V2) :=
+    ∀ a u v i (H : of_grade i v),
     op u [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
     a · op u [v|ex_intro _ i H].
+
+Variable op : set_type homogeneous → set_type homogeneous → V2.
+
+Variable op_ldist' : bilinear_extend_ldist_base op.
+Variable op_rdist' : bilinear_extend_rdist_base op.
+Variable op_lscalar' : bilinear_extend_lscalar_base op.
+Variable op_rscalar' : bilinear_extend_rscalar_base op.
 
 Lemma op_ldist : ∀ u v w H1 H2 H3, op u [v + w|H1] = op u [v|H2] + op u [w|H3].
     intros u v w vw_homo v_homo w_homo.
     apply f_plus_base.
-    -   apply op_ldist'.
-    -   intros; apply op_rscalar'.
+    -   unfold linear_extend_plus_base.
+        apply op_ldist'.
+    -   unfold linear_extend_scalar_base; intros; apply op_rscalar'.
 Qed.
 
 Lemma op_rdist : ∀ u v w H1 H2 H3, op [u + v|H1] w = op [u|H2] w + op [v|H3] w.
@@ -490,8 +510,8 @@ Lemma op_rdist : ∀ u v w H1 H2 H3, op [u + v|H1] w = op [u|H2] w + op [v|H3] w
     change (op [_|u_homo] w) with (op' w [_|u_homo]).
     change (op [_|v_homo] w) with (op' w [_|v_homo]).
     apply f_plus_base; unfold op'.
-    -   intros; apply op_rdist'.
-    -   intros; apply op_lscalar'.
+    -   unfold linear_extend_plus_base; intros; apply op_rdist'.
+    -   unfold linear_extend_scalar_base; intros; apply op_lscalar'.
 Qed.
 
 Lemma op_lscalar : ∀ a u v H1 H2, op [a · u|H1] v = a · op [u|H2] v.
@@ -500,13 +520,13 @@ Lemma op_lscalar : ∀ a u v H1 H2, op [a · u|H1] v = a · op [u|H2] v.
     change (op [_|au_homo] v) with (op' v [_|au_homo]).
     change (op [_|u_homo] v) with (op' v [_|u_homo]).
     apply f_scalar_base.
-    intros; apply op_lscalar'.
+    unfold linear_extend_scalar_base; intros; apply op_lscalar'.
 Qed.
 
 Lemma op_rscalar : ∀ a u v H1 H2, op u [a · v|H1] = a · op u [v|H2].
     intros a u v av_homo v_homo.
     apply f_scalar_base.
-    intros; apply op_rscalar'.
+    unfold linear_extend_scalar_base; intros; apply op_rscalar'.
 Qed.
 
 Lemma bilinear_extend_lanni_base : ∀ v H, op [0|H] v = 0.
@@ -684,8 +704,8 @@ Theorem bilinear_extend_ldist : ∀ u v w, f u (v + w) = f u v + f u w.
     clear l u.
     unfold f_base, bilinear_extend_base.
     apply linear_extend_plus.
-    -   apply bilinear_extend_base_plus.
-    -   apply bilinear_extend_base_scalar.
+    -   unfold linear_extend_plus_base; apply bilinear_extend_base_plus.
+    -   unfold linear_extend_scalar_base; apply bilinear_extend_base_scalar.
 Qed.
 
 Theorem bilinear_extend_rdist : ∀ u v w, f (u + v) w = f u w + f v w.
@@ -693,8 +713,8 @@ Theorem bilinear_extend_rdist : ∀ u v w, f (u + v) w = f u w + f v w.
     unfold f, bilinear_extend.
     rewrite linear_extend_plus.
     -   reflexivity.
-    -   apply bilinear_extend_plus_base.
-    -   apply bilinear_extend_scalar_base.
+    -   unfold linear_extend_plus_base; apply bilinear_extend_plus_base.
+    -   unfold linear_extend_scalar_base; apply bilinear_extend_scalar_base.
 Qed.
 
 Theorem bilinear_extend_lscalar : ∀ a u v, f (a · u) v = a · f u v.
@@ -702,8 +722,8 @@ Theorem bilinear_extend_lscalar : ∀ a u v, f (a · u) v = a · f u v.
     unfold f, bilinear_extend.
     rewrite linear_extend_scalar.
     -   reflexivity.
-    -   apply bilinear_extend_plus_base.
-    -   apply bilinear_extend_scalar_base.
+    -   unfold linear_extend_plus_base; apply bilinear_extend_plus_base.
+    -   unfold linear_extend_scalar_base; apply bilinear_extend_scalar_base.
 Qed.
 
 Theorem bilinear_extend_rscalar : ∀ a u v, f u (a · v) = a · f u v.
@@ -726,8 +746,8 @@ Theorem bilinear_extend_rscalar : ∀ a u v, f u (a · v) = a · f u v.
     (* This makes a huge speed difference for some reason *)
     unfold f_base, bilinear_extend_base.
     apply linear_extend_scalar.
-    -   apply bilinear_extend_base_plus.
-    -   apply bilinear_extend_base_scalar.
+    -   unfold linear_extend_plus_base; apply bilinear_extend_base_plus.
+    -   unfold linear_extend_scalar_base; apply bilinear_extend_base_scalar.
 Qed.
 
 Theorem bilinear_extend_prod2 : ∀ u v,
