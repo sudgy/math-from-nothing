@@ -420,6 +420,21 @@ Theorem linear_extend_scalar : ∀ a v, f (a · v) = a · f v.
     apply plus_rid.
 Qed.
 
+Theorem linear_extend_homo : ∀ v, f [v|] = f_base v.
+    intros [v v_homo]; cbn.
+    unfold f, linear_extend.
+    classic_case (0 = v) as [v_z|v_nz].
+    -   subst v.
+        rewrite grade_decomposition_zero.
+        rewrite ulist_image_end, ulist_sum_end.
+        symmetry; apply linear_extend_zero_base.
+    -   change v with [[v|v_homo]|] at 1.
+        rewrite grade_decomposition_homo by exact v_nz.
+        rewrite ulist_image_add, ulist_sum_add.
+        rewrite ulist_image_end, ulist_sum_end.
+        apply plus_rid.
+Qed.
+
 End LinearExtend.
 
 Section BilinearExtend.

@@ -69,3 +69,9 @@ Theorem list_prod2_base_image {A B} (op : A → A → B) : ∀ l b,
         rewrite IHl.
         reflexivity.
 Qed.
+
+Fixpoint rfold {U} (op : U → U → U) (init : U) (l : list U) :=
+    match l with
+    | list_end => init
+    | a :: l' => op a (rfold op init l')
+    end.

@@ -167,6 +167,7 @@
 ./src/Algebra/Linear/Tensor/tensor_algebra_mult.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_scalar.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_vector.v
+./src/Algebra/Linear/Tensor/tensor_algebra_universal.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
