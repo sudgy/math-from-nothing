@@ -1,0 +1,231 @@
+Require Import init.
+
+Require Export plus_group.
+Require Export mult_ring.
+
+Require Import set.
+
+#[universes(template)]
+Record Ideal U `{Plus U, Mult U} := make_ideal {
+    ideal_set : U → Prop;
+    ideal_nempty : ∃ a, ideal_set a;
+    ideal_plus : ∀ a b, ideal_set a → ideal_set b → ideal_set (a + b);
+    ideal_lmult : ∀ a b, ideal_set b → ideal_set (a * b);
+    ideal_rmult : ∀ a b, ideal_set a → ideal_set (a * b);
+}.
+Arguments make_ideal {U H H0}.
+Arguments ideal_set {U H H0}.
+Arguments ideal_nempty {U H H0}.
+Arguments ideal_plus {U H H0}.
+Arguments ideal_lmult {U H H0}.
+Arguments ideal_rmult {U H H0}.
+
+Section RingIdeal.
+
+Context {U} `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UM : Mult U,
+    UO : One U,
+    @PlusAssoc U UP,
+    @PlusComm U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+    @Ldist U UP UM,
+    @Rdist U UP UM,
+    @MultAssoc U UM,
+    @MultLid U UM UO,
+    @MultRid U UM UO
+}.
+
+Variable I : Ideal U.
+
+Theorem ideal_neg : ∀ a, ideal_set I a → ideal_set I (-a).
+    intros a a_in.
+    rewrite <- mult_neg_one.
+    apply ideal_lmult.
+    exact a_in.
+Qed.
+
+Theorem ideal_zero : ideal_set I 0.
+    pose proof (ideal_nempty I) as [a a_in].
+    rewrite <- (plus_linv a).
+    apply ideal_plus.
+    1: apply ideal_neg.
+    all: exact a_in.
+Qed.
+
+Let ideal_eq a b := ideal_set I (a - b).
+Local Infix "~" := ideal_eq : algebra_scope.
+
+Lemma ideal_eq_reflexive : ∀ a, a ~ a.
+    intros a.
+    unfold ideal_eq.
+    rewrite plus_rinv.
+    apply ideal_zero.
+Qed.
+Instance ideal_eq_reflexive_class : Reflexive _ := {
+    refl := ideal_eq_reflexive
+}.
+
+Lemma ideal_eq_symmetric : ∀ a b, a ~ b → b ~ a.
+    unfold ideal_eq.
+    intros a b ab.
+    apply ideal_neg in ab.
+    rewrite neg_plus in ab.
+    rewrite neg_neg in ab.
+    rewrite plus_comm in ab.
+    exact ab.
+Qed.
+Instance ideal_eq_symmetric_class : Symmetric _ := {
+    sym := ideal_eq_symmetric
+}.
+
+Lemma ideal_eq_transitive : ∀ a b c, a ~ b → b ~ c → a ~ c.
+    unfold ideal_eq.
+    intros a b c ab bc.
+    pose proof (ideal_plus I _ _ ab bc) as eq.
+    rewrite plus_assoc in eq.
+    rewrite plus_rlinv in eq.
+    exact eq.
+Qed.
+Instance ideal_eq_transitive_class : Transitive _ := {
+    trans := ideal_eq_transitive
+}.
+
+Definition ideal_equiv := make_equiv _ ideal_eq_reflexive_class
+    ideal_eq_symmetric_class ideal_eq_transitive_class.
+
+Definition quotient_ring := equiv_type ideal_equiv.
+
+Local Infix "~" := (eq_equal ideal_equiv).
+
+Lemma qring_plus_wd : ∀ a b c d, a ~ b → c ~ d → a + c ~ b + d.
+    cbn; unfold ideal_eq.
+    intros a b c d ab cd.
+    rewrite neg_plus.
+    rewrite <- plus_assoc.
+    rewrite (plus_assoc c).
+    rewrite (plus_comm c).
+    do 2 rewrite plus_assoc.
+    rewrite <- plus_assoc.
+    apply ideal_plus; assumption.
+Qed.
+
+Instance quotient_ring_plus : Plus quotient_ring := {
+    plus := binary_self_op qring_plus_wd
+}.
+
+Program Instance quotient_ring_plus_assoc : PlusAssoc quotient_ring.
+Next Obligation.
+    equiv_get_value a b c.
+    unfold plus; equiv_simpl.
+    rewrite plus_assoc.
+    reflexivity.
+Qed.
+
+Program Instance quotient_ring_plus_comm : PlusComm quotient_ring.
+Next Obligation.
+    equiv_get_value a b.
+    unfold plus; equiv_simpl.
+    rewrite plus_comm.
+    reflexivity.
+Qed.
+
+Instance quotient_ring_zero : Zero quotient_ring := {
+    zero := to_equiv_type ideal_equiv 0
+}.
+
+Program Instance quotient_ring_plus_lid : PlusLid quotient_ring.
+Next Obligation.
+    equiv_get_value a.
+    unfold zero, plus; equiv_simpl.
+    rewrite plus_lid.
+    reflexivity.
+Qed.
+
+Lemma qring_neg_wd : ∀ a b, a ~ b → -a ~ -b.
+    cbn; unfold ideal_eq.
+    intros a b eq.
+    rewrite <- neg_plus.
+    apply ideal_neg.
+    exact eq.
+Qed.
+Instance quotient_ring_neg : Neg quotient_ring := {
+    neg := unary_self_op qring_neg_wd
+}.
+
+Program Instance quotient_ring_plus_linv : PlusLinv quotient_ring.
+Next Obligation.
+    equiv_get_value a.
+    unfold plus, neg, zero; equiv_simpl.
+    rewrite plus_linv.
+    reflexivity.
+Qed.
+
+Lemma qring_mult_wd : ∀ a b c d, a ~ b → c ~ d → a * c ~ b * d.
+    cbn; unfold ideal_eq.
+    intros a b c d ab cd.
+    rewrite <- (plus_llinv (-(b * d)) (b * c)).
+    rewrite plus_assoc.
+    apply ideal_plus.
+    -   rewrite <- mult_lneg.
+        rewrite <- rdist.
+        apply ideal_rmult.
+        exact ab.
+    -   rewrite <- mult_rneg.
+        rewrite <- ldist.
+        apply ideal_lmult.
+        exact cd.
+Qed.
+
+Instance quotient_ring_mult : Mult quotient_ring := {
+    mult := binary_self_op qring_mult_wd
+}.
+
+Program Instance quotient_ring_ldist : Ldist quotient_ring.
+Next Obligation.
+    equiv_get_value a b c.
+    unfold plus, mult; equiv_simpl.
+    rewrite ldist.
+    reflexivity.
+Qed.
+
+Program Instance quotient_ring_rdist : Rdist quotient_ring.
+Next Obligation.
+    equiv_get_value a b c.
+    unfold plus, mult; equiv_simpl.
+    rewrite rdist.
+    reflexivity.
+Qed.
+
+Program Instance quotient_ring_mult_assoc : MultAssoc quotient_ring.
+Next Obligation.
+    equiv_get_value a b c.
+    unfold mult; equiv_simpl.
+    rewrite mult_assoc.
+    reflexivity.
+Qed.
+
+Instance quotient_ring_one : One quotient_ring := {
+    one := to_equiv_type ideal_equiv 1
+}.
+
+Program Instance quotient_ring_mult_lid : MultLid quotient_ring.
+Next Obligation.
+    equiv_get_value a.
+    unfold one, mult; equiv_simpl.
+    rewrite mult_lid.
+    reflexivity.
+Qed.
+
+Program Instance quotient_ring_mult_rid : MultRid quotient_ring.
+Next Obligation.
+    equiv_get_value a.
+    unfold one, mult; equiv_simpl.
+    rewrite mult_rid.
+    reflexivity.
+Qed.
+
+End RingIdeal.
