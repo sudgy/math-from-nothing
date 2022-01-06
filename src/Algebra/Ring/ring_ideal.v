@@ -4,6 +4,7 @@ Require Export plus_group.
 Require Export mult_ring.
 
 Require Import set.
+Require Import unordered_list.
 
 #[universes(template)]
 Record Ideal U `{Plus U, Mult U} := make_ideal {
@@ -229,3 +230,86 @@ Next Obligation.
 Qed.
 
 End RingIdeal.
+
+Section IdealGenerated.
+
+Context {U} `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UM : Mult U,
+    UO : One U,
+    @PlusAssoc U UP,
+    @PlusComm U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+    @Ldist U UP UM,
+    @Rdist U UP UM,
+    @MultAssoc U UM,
+    @MultLid U UM UO,
+    @MultRid U UM UO
+}.
+
+Variable S : U → Prop.
+
+Definition ideal_generated_by_set x := ∃ l : ulist ((U * U) * set_type S),
+    x = ulist_sum (ulist_image l (λ p, fst (fst p) * [snd p|] * snd (fst p))).
+
+Lemma ideal_generated_by_nempty : ∃ x, ideal_generated_by_set x.
+    exists 0.
+    exists ulist_end.
+    rewrite ulist_image_end, ulist_sum_end.
+    reflexivity.
+Qed.
+
+Lemma ideal_generated_by_plus : ∀ a b,
+        ideal_generated_by_set a → ideal_generated_by_set b →
+        ideal_generated_by_set (a + b).
+    intros a b [al al_eq] [bl bl_eq]; subst a b.
+    exists (al +++ bl).
+    rewrite ulist_image_conc, ulist_sum_plus.
+    reflexivity.
+Qed.
+
+Lemma ideal_generated_by_lmult : ∀ a b,
+        ideal_generated_by_set b → ideal_generated_by_set (a * b).
+    intros a b [l l_eq]; subst b.
+    exists (ulist_image l (λ p, ((a * fst (fst p), snd (fst p)), snd p))).
+    rewrite ulist_image_comp.
+    cbn.
+    induction l as [|b l] using ulist_induction.
+    -   do 2 rewrite ulist_image_end, ulist_sum_end.
+        apply mult_ranni.
+    -   do 2 rewrite ulist_image_add, ulist_sum_add.
+        rewrite ldist.
+        rewrite IHl.
+        apply rplus.
+        do 2 rewrite mult_assoc.
+        reflexivity.
+Qed.
+
+Lemma ideal_generated_by_rmult : ∀ a b,
+        ideal_generated_by_set a → ideal_generated_by_set (a * b).
+    intros a b [l l_eq]; subst a.
+    exists (ulist_image l (λ p, ((fst (fst p), snd (fst p) * b), snd p))).
+    rewrite ulist_image_comp.
+    cbn.
+    induction l as [|a l] using ulist_induction.
+    -   do 2 rewrite ulist_image_end, ulist_sum_end.
+        apply mult_lanni.
+    -   do 2 rewrite ulist_image_add, ulist_sum_add.
+        rewrite rdist.
+        rewrite IHl.
+        apply rplus.
+        rewrite mult_assoc.
+        reflexivity.
+Qed.
+
+Definition ideal_generated_by := make_ideal
+    ideal_generated_by_set
+    ideal_generated_by_nempty
+    ideal_generated_by_plus
+    ideal_generated_by_lmult
+    ideal_generated_by_rmult.
+
+End IdealGenerated.
