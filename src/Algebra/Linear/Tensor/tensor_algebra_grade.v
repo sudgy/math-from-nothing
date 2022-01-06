@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export tensor_algebra_base.
-Require Import tensor_power.
+Require Import tensor_power_base.
 Require Import module_category.
 Require Import linear_subspace.
 Require Import linear_grade.

@@ -156,11 +156,12 @@
 ./src/Algebra/Linear/linear_basis.v
 ./src/Algebra/Linear/module_category.v
 ./src/Algebra/Linear/algebra_category.v
+
 ./src/Algebra/Linear/Tensor/tensor_product_construction.v
 ./src/Algebra/Linear/Tensor/tensor_product_universal.v
 ./src/Algebra/Linear/Tensor/tensor_product_isomorphisms.v
 ./src/Algebra/Linear/Tensor/tensor_product_assoc.v
-./src/Algebra/Linear/Tensor/tensor_power.v
+./src/Algebra/Linear/Tensor/tensor_power_base.v
 ./src/Algebra/Linear/Tensor/tensor_power_universal.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_base.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_grade.v
@@ -169,6 +170,9 @@
 ./src/Algebra/Linear/Tensor/tensor_algebra_vector.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_universal.v
 ./src/Algebra/Linear/Tensor/tensor_algebra_universal2.v
+./src/Algebra/Linear/Tensor/tensor_product.v
+./src/Algebra/Linear/Tensor/tensor_power.v
+./src/Algebra/Linear/Tensor/tensor_algebra.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v

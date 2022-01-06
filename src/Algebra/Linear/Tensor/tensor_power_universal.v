@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export tensor_power.
+Require Export tensor_power_base.
 Require Import tensor_product_universal.
 Require Import linear_bilinear.
 Require Import module_category.

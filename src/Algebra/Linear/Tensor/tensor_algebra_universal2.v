@@ -2,7 +2,7 @@ Require Import init.
 
 Require Import linear_extend.
 Require Import linear_grade_isomorphism.
-Require Import tensor_power.
+Require Import tensor_power_base.
 Require Import tensor_algebra_base.
 Require Import tensor_algebra_scalar.
 Require Import tensor_algebra_vector.
