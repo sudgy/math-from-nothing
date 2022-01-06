@@ -80,9 +80,9 @@ Let f := make_module_homomorphism F V (algebra_module (tensor_algebra_object V))
     (vector_to_tensor_plus V)
     (vector_to_tensor_scalar V).
 
-Let f_to_algebra := make_to_algebra _ f.
+Definition tensor_to_algebra_base := make_to_algebra _ f.
 
-Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA f_to_algebra.
+Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
     pose (UP := cring_plus F).
     pose (UZ := cring_zero F).
     pose (UN := cring_neg F).
@@ -111,7 +111,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA f_to_algebra.
     pose (TAO := tensor_one V).
     pose (TAL := tensor_mult_ldist V).
     pose (TAR := tensor_mult_rdist V).
-    unfold f_to_algebra, initial; cbn.
+    unfold tensor_to_algebra_base, initial; cbn.
     intros [A g].
     pose (AP := algebra_plus A).
     pose (AZ := algebra_zero A).
@@ -660,7 +660,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA f_to_algebra.
 Qed.
 
 Theorem tensor_algebra_ex : ∃ T, @initial TO_ALGEBRA T.
-    exists f_to_algebra.
+    exists tensor_to_algebra_base.
     exact tensor_algebra_ex_base.
 Qed.
 
@@ -670,3 +670,5 @@ Definition vector_to_tensor_homo := to_algebra_homo to_tensor_algebra.
 Definition vector_to_tensor := module_homo_f vector_to_tensor_homo.
 
 End TensorAlgebraCategory.
+
+Arguments vector_to_tensor {F V}.
