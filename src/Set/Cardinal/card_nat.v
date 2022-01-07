@@ -9,7 +9,7 @@ Require Import card_pow.
 Require Import set.
 Require Import function.
 Require Import ord_basic.
-Require Import mult_div.
+Require Import euclidean_domain.
 
 Theorem nat_to_card_plus :
         ∀ a b, nat_to_card a + nat_to_card b = nat_to_card (a + b).

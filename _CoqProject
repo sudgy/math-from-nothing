@@ -176,6 +176,7 @@
 
 ./src/Algebra/Ring/ring_ideal.v
 ./src/Algebra/Ring/Domain/mult_div.v
+./src/Algebra/Ring/Domain/euclidean_domain.v
 
 ./src/Algebra/Geometric/geometric_construct.v
 
