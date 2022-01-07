@@ -177,6 +177,8 @@
 
 ./src/Algebra/Ring/ring_ideal.v
 
+./src/Algebra/Geometric/geometric_construct.v
+
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
 ./src/Analysis/analysis_sequence.v
