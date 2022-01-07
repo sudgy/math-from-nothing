@@ -64,7 +64,6 @@
 ./src/Number/Nat/nat_order.v
 ./src/Number/Nat/nat.v
 
-./src/Algebra/Mult/mult_div.v
 ./src/Algebra/Mult/mult_pow.v
 ./src/Algebra/nat_abstract.v
 ./src/Algebra/Plus/plus_sum.v
@@ -176,6 +175,7 @@
 ./src/Algebra/Linear/Tensor/tensor_algebra.v
 
 ./src/Algebra/Ring/ring_ideal.v
+./src/Algebra/Ring/Domain/mult_div.v
 
 ./src/Algebra/Geometric/geometric_construct.v
 
