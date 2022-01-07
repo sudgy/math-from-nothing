@@ -169,14 +169,14 @@ Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
     assert ([_|vw_homo] = [_|vw_homo2]) as eq.
     {
         apply set_type_eq; cbn.
-        apply power_to_tensor_plus.
+        symmetry; apply power_to_tensor_plus.
     }
     unfold tensor_algebra_base in *.
     rewrite eq; clear eq.
     do 3 rewrite power_to_tensor_tm.
     rewrite (tensor_ldist (tensor_power V i)).
     rewrite module_homo_plus.
-    rewrite <- power_to_tensor_plus.
+    rewrite power_to_tensor_plus.
     reflexivity.
 Qed.
 Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
@@ -204,14 +204,14 @@ Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
     assert ([_|uv_homo] = [_|uv_homo2]) as eq.
     {
         apply set_type_eq; cbn.
-        apply power_to_tensor_plus.
+        symmetry; apply power_to_tensor_plus.
     }
     unfold tensor_algebra_base in *.
     rewrite eq; clear eq.
     do 3 rewrite power_to_tensor_tm.
     rewrite (tensor_rdist (tensor_power V i)).
     rewrite module_homo_plus.
-    rewrite <- power_to_tensor_plus.
+    rewrite power_to_tensor_plus.
     reflexivity.
 Qed.
 Theorem tensor_mult_base_lscalar :

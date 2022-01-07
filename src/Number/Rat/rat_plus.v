@@ -41,7 +41,7 @@ Lemma rat_plus_wd : ∀ a b c d, a ~ b → c ~ d → a ⊕ c ~ b ⊕ d.
     cbn in *.
     do 2 rewrite rdist.
     do 2 rewrite nat1_mult_eq.
-    do 2 rewrite <- nat_to_int_mult.
+    do 2 rewrite nat_to_int_mult.
     mult_bring_left (nat_to_int (nat_suc b2)).
     mult_bring_left a1.
     rewrite mult_assoc.
@@ -84,7 +84,7 @@ Lemma rat_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
     do 6 rewrite rdist.
     rewrite plus_assoc.
     repeat rewrite <- mult_assoc.
-    repeat rewrite nat_to_int_mult.
+    repeat rewrite <- nat_to_int_mult.
     mult_bring_left (nat_suc a2).
     mult_bring_right (nat_suc c2).
     reflexivity.
@@ -152,9 +152,9 @@ Global Instance rat_plus_linv_class : PlusLinv rat := {
 }.
 (* end hide *)
 Theorem int_to_rat_plus : ∀ a b,
-        int_to_rat a + int_to_rat b = int_to_rat (a + b).
+        int_to_rat (a + b) = int_to_rat a + int_to_rat b.
     intros a b.
-    unfold int_to_rat, plus at 1; equiv_simpl.
+    unfold int_to_rat, plus at 2; equiv_simpl.
     rewrite nat1_mult_eq.
     change (nat_suc 0) with (one (U := nat)).
     rewrite mult_lid.
@@ -164,24 +164,16 @@ Theorem int_to_rat_plus : ∀ a b,
 Qed.
 
 Theorem nat_to_rat_plus : ∀ a b,
-        nat_to_rat a + nat_to_rat b = nat_to_rat (a + b).
+        nat_to_rat (a + b) = nat_to_rat a + nat_to_rat b.
     intros a b.
     unfold nat_to_rat.
-    rewrite int_to_rat_plus.
     rewrite nat_to_int_plus.
+    rewrite int_to_rat_plus.
     reflexivity.
 Qed.
 
-(* DELETE
-Theorem nat1_nz_rat : ∀ n, 0 ≠ nat1_to_rat n.
-    intros n n_eq.
-    apply (nat_to_rat_eq 0 (nat1_to_nat n)) in n_eq.
-    exact (nat1_nz _ n_eq).
-Qed.
-*)
-
-Theorem int_to_rat_neg : ∀ a, -int_to_rat a = int_to_rat (-a).
+Theorem int_to_rat_neg : ∀ a, int_to_rat (-a) = -int_to_rat a.
     intros a.
-    unfold neg at 1, int_to_rat; equiv_simpl.
+    unfold neg at 2, int_to_rat; equiv_simpl.
     reflexivity.
 Qed.

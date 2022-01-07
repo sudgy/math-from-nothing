@@ -22,7 +22,7 @@ Theorem nat_to_abstract_real : ∀ n, nat_to_abstract n = nat_to_real n.
     -   cbn.
         rewrite IHn.
         change (nat_suc n) with (1 + n).
-        rewrite <- nat_to_real_plus.
+        rewrite nat_to_real_plus.
         reflexivity.
 Qed.
 
@@ -73,7 +73,7 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
             exists (n + 1).
             rewrite <- nat_to_abstract_mult.
             rewrite nat_to_abstract_real.
-            rewrite <- nat_to_real_plus.
+            rewrite nat_to_real_plus.
             reflexivity.
         }
         specialize (α_upper _ n_in).
@@ -202,8 +202,8 @@ Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
     clear m' m'_ltq S_ex.
     remember (nat_to_real m) as m'.
     exists (nat_to_rat m / nat_to_rat (nat_suc n)).
-    rewrite <- rat_to_real_mult.
-    rewrite <- rat_to_real_div.
+    rewrite rat_to_real_mult.
+    rewrite rat_to_real_div.
     2: {
         change 0 with (nat_to_rat 0).
         intros contr.
@@ -241,7 +241,7 @@ Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
         apply (le_lt_trans2 ltq).
         rewrite Heqm'.
         change (nat_suc m) with (1 + m).
-        rewrite <- nat_to_real_plus.
+        rewrite nat_to_real_plus.
         apply le_lplus.
         exact m_ltq2.
 Qed.
@@ -263,7 +263,7 @@ Theorem rat_dense_in_real : ∀ a b : real, a < b →
     apply lt_neg in ab.
     pose proof (rat_dense_in_real_pos (-b) (-a) b_neg ab) as [r [r_gt r_lt]].
     exists (-r).
-    rewrite <- rat_to_real_neg.
+    rewrite rat_to_real_neg.
     apply lt_neg in r_gt, r_lt.
     rewrite neg_neg in r_gt, r_lt.
     split; assumption.

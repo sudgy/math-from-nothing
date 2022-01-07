@@ -83,8 +83,8 @@ Theorem scalar_to_tensor_eq : ∀ α β,
 Qed.
 
 Theorem scalar_to_tensor_plus : ∀ α β,
-        scalar_to_tensor α + scalar_to_tensor β =
-        scalar_to_tensor (α + β).
+        scalar_to_tensor (α + β) =
+        scalar_to_tensor α + scalar_to_tensor β.
     intros α β.
     unfold scalar_to_tensor.
     rewrite (power_to_tensor_plus V).
@@ -110,8 +110,8 @@ Theorem scalar_to_tensor_homogeneous : ∀ α, homogeneous (scalar_to_tensor α)
 Qed.
 
 Theorem scalar_to_tensor_mult : ∀ α β,
-        scalar_to_tensor α * scalar_to_tensor β =
-        scalar_to_tensor (α * β).
+        scalar_to_tensor (α * β) =
+        scalar_to_tensor α * scalar_to_tensor β.
     intros α β.
     classic_case (0 = α) as [α_z|α_nz].
     {
@@ -139,7 +139,7 @@ Theorem scalar_to_tensor_mult : ∀ α β,
     rewrite eq.
     unfold scalar_to_tensor.
     rewrite (power_to_tensor_tm V).
-    unfold zero at 8; cbn.
+    unfold zero at 10; cbn.
     destruct (Logic.eq_sym (plus_lid_rid_ 0)); cbn.
     fold (tensor_product_comm_f (tensor_power V 0) (cring_module F)).
     rewrite tensor_product_comm_eq.

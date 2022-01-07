@@ -105,10 +105,10 @@ Global Instance int_plus_linv_class : PlusLinv int := {
 }.
 (* end hide *)
 Theorem nat_to_int_plus : ∀ a b,
-        nat_to_int a + nat_to_int b = nat_to_int (a + b).
+        nat_to_int (a + b) = nat_to_int a + nat_to_int b.
     intros a b.
-    unfold plus at 1, nat_to_int; equiv_simpl.
-    do 3 rewrite plus_rid.
+    unfold plus at 2, nat_to_int; equiv_simpl.
+    do 2 rewrite plus_rid.
     reflexivity.
 Qed.
 

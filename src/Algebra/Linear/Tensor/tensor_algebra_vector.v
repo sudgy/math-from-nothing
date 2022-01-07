@@ -103,8 +103,8 @@ Theorem vector_to_tensor_plus : ∀ u v,
         vector_to_tensor (u + v) = vector_to_tensor u + vector_to_tensor v.
     intros u v.
     unfold vector_to_tensor.
-    rewrite (power_to_tensor_plus V).
     rewrite (tensor_rdist V).
+    rewrite (power_to_tensor_plus V).
     reflexivity.
 Qed.
 

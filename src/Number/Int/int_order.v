@@ -260,7 +260,7 @@ Theorem nat_to_int_le : ∀ a b, nat_to_int a <= nat_to_int b ↔ a <= b.
             destruct b.
             *   change (nat_suc a) with (1 + a) in eq.
                 change (nat_to_int 0) with 0 in eq.
-                rewrite <- nat_to_int_plus in eq.
+                rewrite nat_to_int_plus in eq.
                 change (nat_to_int 1) with 1 in eq.
                 pose proof one_pos as pos1.
                 pose proof (nat_to_int_pos a) as pos2.
@@ -272,7 +272,7 @@ Theorem nat_to_int_le : ∀ a b, nat_to_int a <= nat_to_int b ↔ a <= b.
             *   apply IHa.
                 change (nat_suc a) with (1 + a) in eq.
                 change (nat_suc b) with (1 + b) in eq.
-                do 2 rewrite <- nat_to_int_plus in eq.
+                do 2 rewrite nat_to_int_plus in eq.
                 apply le_plus_lcancel in eq.
                 exact eq.
     -   revert b.
@@ -284,7 +284,7 @@ Theorem nat_to_int_le : ∀ a b, nat_to_int a <= nat_to_int b ↔ a <= b.
             *   inversion eq.
             *   change (nat_suc a) with (1 + a).
                 change (nat_suc b) with (1 + b).
-                do 2 rewrite <- nat_to_int_plus.
+                do 2 rewrite nat_to_int_plus.
                 apply le_lplus.
                 apply IHa.
                 exact eq.

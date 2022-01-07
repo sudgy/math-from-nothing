@@ -24,7 +24,7 @@ Lemma rat_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
     rewrite (mult_comm _ c1) in eq.
     rewrite (mult_comm _ d1) in eq.
     do 2 rewrite <- mult_assoc in eq.
-    do 2 rewrite nat_to_int_mult in eq.
+    do 2 rewrite <- nat_to_int_mult in eq.
     do 2 rewrite mult_assoc in eq.
     exact eq.
 Qed.
@@ -69,7 +69,7 @@ Lemma rat_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
     rewrite ldist.
     do 2 rewrite rdist.
     repeat rewrite <- mult_assoc.
-    do 4 rewrite nat_to_int_mult.
+    do 4 rewrite <- nat_to_int_mult.
     mult_bring_left (nat_suc a2).
     mult_bring_right (nat_suc c2).
     reflexivity.
@@ -197,7 +197,7 @@ Lemma rat_mult_linv : ∀ a, 0 ≠ a → div a * a = 1.
         change (nat_to_int (nat_suc 0)) with (one (U := int)).
         rewrite mult_lid, mult_rid.
         rewrite nat1_mult_eq.
-        rewrite <- nat_to_int_mult.
+        rewrite nat_to_int_mult.
         rewrite <- a1_eq.
         apply comm.
     -   rewrite <- a1_z in a_nz.
@@ -234,9 +234,9 @@ Global Instance rat_not_trivial_class : NotTrivial rat := {
 Close Scope rat_scope.
 (* end hide *)
 Theorem int_to_rat_mult : ∀ a b,
-        int_to_rat a * int_to_rat b = int_to_rat (a * b).
+        int_to_rat (a * b) = int_to_rat a * int_to_rat b.
     intros a b.
-    unfold mult at 1, int_to_rat; equiv_simpl.
+    unfold mult at 2, int_to_rat; equiv_simpl.
     rewrite nat1_mult_eq.
     change (nat_suc 0) with (one (U := nat)).
     rewrite mult_rid.
@@ -244,10 +244,10 @@ Theorem int_to_rat_mult : ∀ a b,
 Qed.
 
 Theorem nat_to_rat_mult : ∀ a b,
-        nat_to_rat a * nat_to_rat b = nat_to_rat (a * b).
+        nat_to_rat (a * b) = nat_to_rat a * nat_to_rat b.
     intros a b.
     unfold nat_to_rat.
-    rewrite int_to_rat_mult.
     rewrite nat_to_int_mult.
+    rewrite int_to_rat_mult.
     reflexivity.
 Qed.

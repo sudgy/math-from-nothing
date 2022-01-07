@@ -79,7 +79,7 @@ Lemma tensor_subspace_plus : ∀ n u v,
         tensor_subspace_set n (u + v).
     intros n u' v' [u u_eq] [v v_eq]; subst u' v'.
     exists (u + v).
-    symmetry; apply power_to_tensor_plus.
+    apply power_to_tensor_plus.
 Qed.
 
 Lemma tensor_subspace_scalar : ∀ n a v,

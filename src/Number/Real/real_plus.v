@@ -470,8 +470,9 @@ Global Instance real_le_lplus_class : OrderLplus real := {
 }.
 
 Theorem rat_to_real_plus : ∀ a b,
-        rat_to_real a + rat_to_real b = rat_to_real (a + b).
+        rat_to_real (a + b) = rat_to_real a + rat_to_real b.
     intros a b.
+    symmetry.
     unfold plus at 1, rat_to_real, rat_to_real_base; cbn.
     apply set_type_eq; cbn.
     apply predicate_ext; intros x; split.
@@ -530,36 +531,36 @@ Theorem rat_to_real_plus : ∀ a b,
 Qed.
 
 Theorem int_to_real_plus : ∀ a b,
-        int_to_real a + int_to_real b = int_to_real (a + b).
+        int_to_real (a + b) = int_to_real a + int_to_real b.
     intros a b.
     unfold int_to_real.
-    rewrite rat_to_real_plus.
     rewrite int_to_rat_plus.
+    rewrite rat_to_real_plus.
     reflexivity.
 Qed.
 
 Theorem nat_to_real_plus : ∀ a b,
-        nat_to_real a + nat_to_real b = nat_to_real (a + b).
+        nat_to_real (a + b) = nat_to_real a + nat_to_real b.
     intros a b.
     unfold nat_to_real.
-    rewrite rat_to_real_plus.
     rewrite nat_to_rat_plus.
+    rewrite rat_to_real_plus.
     reflexivity.
 Qed.
 
-Theorem rat_to_real_neg : ∀ a, -rat_to_real a = rat_to_real (-a).
+Theorem rat_to_real_neg : ∀ a, rat_to_real (-a) = -rat_to_real a.
     intros a.
     apply plus_lcancel with (rat_to_real a).
-    rewrite rat_to_real_plus.
+    rewrite <- rat_to_real_plus.
     do 2 rewrite plus_rinv.
     reflexivity.
 Qed.
 
-Theorem int_to_real_neg : ∀ a, -int_to_real a = int_to_real (-a).
+Theorem int_to_real_neg : ∀ a, int_to_real (-a) = -int_to_real a.
     intros a.
     unfold int_to_real.
-    rewrite rat_to_real_neg.
     rewrite int_to_rat_neg.
+    rewrite rat_to_real_neg.
     reflexivity.
 Qed.
 (* begin hide *)

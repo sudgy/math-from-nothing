@@ -240,12 +240,12 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
     rewrite_ex_val n' n'_eq;
     rewrite_ex_val mn' mn'_eq.
     -   subst m n.
-        rewrite nat_to_int_plus in mn'_eq.
+        rewrite <- nat_to_int_plus in mn'_eq.
         apply nat_to_int_eq in mn'_eq.
         rewrite <- mn'_eq.
         apply op_pow_nat_mult.
     -   subst m n.
-        rewrite nat_to_int_plus in mn'_eq.
+        rewrite <- nat_to_int_plus in mn'_eq.
         rewrite <- op_pow_int_neg.
         rewrite <- mn'_eq.
         rewrite neg_neg.
@@ -258,7 +258,7 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
         rewrite <- plus_assoc, plus_linv, plus_rid in mn'_eq.
         rewrite <- op_pow_int_pos.
         rewrite mn'_eq.
-        rewrite nat_to_int_plus.
+        rewrite <- nat_to_int_plus.
         rewrite op_pow_int_pos.
         rewrite <- op_pow_nat_mult.
         rewrite op_pow_nat_inv.
@@ -272,7 +272,7 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
         rewrite assoc, plus_rinv, plus_lid in mn'_eq.
         rewrite <- (op_pow_int_pos (inv a)).
         rewrite mn'_eq.
-        rewrite nat_to_int_plus.
+        rewrite <- nat_to_int_plus.
         rewrite op_pow_int_pos.
         rewrite <- op_pow_nat_mult.
         rewrite op_pow_nat_inv.
@@ -285,7 +285,7 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
         rewrite plus_assoc, plus_rinv, plus_lid in mn'_eq.
         rewrite <- (op_pow_int_pos a).
         rewrite mn'_eq.
-        rewrite nat_to_int_plus.
+        rewrite <- nat_to_int_plus.
         rewrite op_pow_int_pos.
         rewrite <- op_pow_nat_mult.
         rewrite op_pow_nat_inv.
@@ -299,7 +299,7 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
         rewrite <- assoc, plus_linv, plus_rid in mn'_eq.
         rewrite <- (op_pow_int_pos (inv a)).
         rewrite mn'_eq.
-        rewrite nat_to_int_plus.
+        rewrite <- nat_to_int_plus.
         rewrite op_pow_int_pos.
         rewrite <- op_pow_nat_mult.
         rewrite (op_pow_nat_inv a n').
@@ -314,7 +314,7 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
         apply rplus with (nat_to_int n') in mn'_eq.
         rewrite <- plus_assoc, plus_linv, plus_rid in mn'_eq.
         rewrite mn'_eq.
-        rewrite nat_to_int_plus.
+        rewrite <- nat_to_int_plus.
         rewrite op_pow_int_pos.
         rewrite <- op_pow_nat_mult.
         rewrite op_pow_nat_inv.
@@ -326,7 +326,7 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
         rewrite neg_neg in n'_eq.
         subst m n.
         rewrite neg_plus, neg_neg, neg_neg in mn'_eq.
-        rewrite nat_to_int_plus in mn'_eq.
+        rewrite <- nat_to_int_plus in mn'_eq.
         apply nat_to_int_eq in mn'_eq.
         rewrite <- mn'_eq.
         apply op_pow_nat_mult.
@@ -339,7 +339,7 @@ Theorem op_pow_int_pow1 :
     destruct (connex 0 m) as [m_pos|m_neg];
     rewrite_ex_val m' m'_eq.
     -   subst m.
-        rewrite nat_to_int_mult.
+        rewrite <- nat_to_int_mult.
         do 2 rewrite op_pow_int_pos.
         apply op_pow_nat_pow.
     -   apply (f_equal neg) in m'_eq.
@@ -347,7 +347,7 @@ Theorem op_pow_int_pow1 :
         subst m.
         rewrite mult_lneg.
         rewrite op_pow_int_neg_inv.
-        rewrite nat_to_int_mult.
+        rewrite <- nat_to_int_mult.
         do 2 rewrite op_pow_int_pos.
         apply op_pow_nat_pow.
 Qed.

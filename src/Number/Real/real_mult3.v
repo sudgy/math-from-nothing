@@ -346,7 +346,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     rewrite Heqm.
                     change 0 with (nat_to_rat 0).
                     change 1 with (nat_to_rat 1).
-                    rewrite nat_to_rat_plus.
+                    rewrite <- nat_to_rat_plus.
                     rewrite plus_comm.
                     rewrite nat_to_rat_lt.
                     apply nat_zero_lt_suc.
@@ -378,7 +378,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     rewrite <- nat_to_rat_le in contr.
                     change (nat_suc m') with (1 + m') in contr.
                     rewrite plus_comm in contr.
-                    rewrite <- nat_to_rat_plus in contr.
+                    rewrite nat_to_rat_plus in contr.
                     change (nat_to_rat 1) with (one (U := rat)) in contr.
                     rewrite <- Heqm, <- Heqn in contr.
                     apply le_mult_adb_1_a_b_pos in contr.
@@ -393,7 +393,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     rewrite nat_to_abstract_rat in nam.
                     change (nat_suc m') with (1 + m') in nam.
                     rewrite plus_comm in nam.
-                    rewrite <- nat_to_rat_plus in nam.
+                    rewrite nat_to_rat_plus in nam.
                     rewrite <- Heqm in nam.
                     change (nat_to_rat 1) with (one (U := rat)) in nam.
                     rewrite mult_comm in nam.
@@ -462,7 +462,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 rewrite <- nat_to_abstract_mult in nam.
                 rewrite nat_to_abstract_rat in nam.
                 change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
-                rewrite <- nat_to_rat_plus in nam.
+                rewrite nat_to_rat_plus in nam.
                 rewrite <- Heqm in nam.
                 change (nat_to_rat 1) with (one (U := rat)) in nam.
                 rewrite plus_comm in nam.
@@ -637,49 +637,50 @@ Lemma rat_to_real_mult2 : ∀ a b, 0 <= a →
     destruct (connex 0 b) as [b_pos|b_neg].
     -   apply rat_to_real_mult1; assumption.
     -   rewrite <- (neg_neg b).
-        rewrite <- rat_to_real_neg.
+        rewrite rat_to_real_neg.
         rewrite mult_rneg.
         rewrite mult_rneg.
-        rewrite <- (rat_to_real_neg (a * -b)).
+        rewrite (rat_to_real_neg (a * -b)).
         apply f_equal.
         apply neg_pos in b_neg.
         apply rat_to_real_mult1; assumption.
 Qed.
 Theorem rat_to_real_mult : ∀ a b,
-        rat_to_real a * rat_to_real b = rat_to_real (a * b).
+        rat_to_real (a * b) = rat_to_real a * rat_to_real b.
     intros a b.
+    symmetry.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply rat_to_real_mult2; assumption.
     -   rewrite <- (neg_neg a).
-        rewrite <- rat_to_real_neg.
+        rewrite rat_to_real_neg.
         rewrite mult_lneg.
         rewrite mult_lneg.
-        rewrite <- (rat_to_real_neg (-a * b)).
+        rewrite (rat_to_real_neg (-a * b)).
         apply f_equal.
         apply neg_pos in a_neg.
         apply rat_to_real_mult2; assumption.
 Qed.
 
 Theorem int_to_real_mult : ∀ a b,
-        int_to_real a * int_to_real b = int_to_real (a * b).
+        int_to_real (a * b) = int_to_real a * int_to_real b.
     intros a b.
     unfold int_to_real.
-    rewrite rat_to_real_mult.
     rewrite int_to_rat_mult.
+    rewrite rat_to_real_mult.
     reflexivity.
 Qed.
 
 Theorem nat_to_real_mult : ∀ a b,
-        nat_to_real a * nat_to_real b = nat_to_real (a * b).
+        nat_to_real (a * b) = nat_to_real a * nat_to_real b.
     intros a b.
     unfold nat_to_real.
-    rewrite rat_to_real_mult.
     rewrite nat_to_rat_mult.
+    rewrite rat_to_real_mult.
     reflexivity.
 Qed.
 
 Theorem rat_to_real_div : ∀ a, 0 ≠ a →
-        div (rat_to_real a) = rat_to_real (div a).
+        rat_to_real (/a) = / rat_to_real a.
     intros a a_nz.
     assert (0 ≠ rat_to_real a) as ra_neq.
     {
@@ -691,7 +692,7 @@ Theorem rat_to_real_div : ∀ a, 0 ≠ a →
     apply mult_rcancel with (rat_to_real a).
     1: exact ra_neq.
     rewrite mult_linv by exact ra_neq.
-    rewrite rat_to_real_mult.
+    rewrite <- rat_to_real_mult.
     rewrite mult_linv by exact a_nz.
     reflexivity.
 Qed.

@@ -135,7 +135,7 @@ Theorem scalar_to_tensor_plus : ∀ a b,
         scalar_to_tensor (a + b) = scalar_to_tensor a + scalar_to_tensor b.
     intros a b.
     unfold scalar_to_tensor.
-    rewrite <- (scalar_to_tensor_plus V).
+    rewrite (scalar_to_tensor_plus V).
     apply algebra_homo_plus.
 Qed.
 
@@ -153,7 +153,7 @@ Theorem scalar_to_tensor_mult : ∀ a b,
         scalar_to_tensor (a * b) = scalar_to_tensor a * scalar_to_tensor b.
     intros a b.
     unfold scalar_to_tensor.
-    rewrite <- (scalar_to_tensor_mult V).
+    rewrite (scalar_to_tensor_mult V).
     apply algebra_homo_mult.
 Qed.
 
@@ -268,7 +268,7 @@ Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H10 := tensor_grade) i x �
         symmetry; apply (algebra_homo_zero f).
     -   do 2 rewrite ulist_image_add, ulist_sum_add.
         rewrite IHl; clear IHl.
-        rewrite <- power_to_tensor_plus.
+        rewrite power_to_tensor_plus.
         rewrite algebra_homo_plus.
         apply rplus; clear l.
         unfold ex_val, ex_proof.

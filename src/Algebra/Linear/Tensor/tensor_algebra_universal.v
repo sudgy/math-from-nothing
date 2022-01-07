@@ -259,7 +259,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             destruct (ex_to_type _) as [v' v_eq]; cbn in *.
             clear H1 H2 H3.
             rewrite <- u_eq, <- v_eq in uv_eq.
-            rewrite (power_to_tensor_plus V) in uv_eq.
+            rewrite <- (power_to_tensor_plus V) in uv_eq.
             apply power_to_tensor_eq in uv_eq.
             rewrite uv_eq.
             apply module_homo_plus.
@@ -394,7 +394,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
                 apply h_zero.
             }
             rewrite ulist_image_add, ulist_sum_add.
-            rewrite <- power_to_tensor_plus.
+            rewrite power_to_tensor_plus.
             rewrite rdist.
             do 2 rewrite h_plus.
             rewrite rdist.
@@ -411,7 +411,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
                 apply h_zero.
             }
             rewrite ulist_image_add, ulist_sum_add.
-            rewrite <- power_to_tensor_plus.
+            rewrite power_to_tensor_plus.
             rewrite ldist.
             do 2 rewrite h_plus.
             rewrite ldist.
@@ -592,7 +592,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             reflexivity.
         }
         rewrite ulist_image_add, ulist_sum_add.
-        rewrite <- power_to_tensor_plus.
+        rewrite power_to_tensor_plus.
         do 2 rewrite algebra_homo_plus.
         rewrite IHl; clear IHl.
         apply rplus; clear l.

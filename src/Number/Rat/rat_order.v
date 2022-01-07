@@ -105,14 +105,14 @@ Lemma rat_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
     do 2 rewrite rdist.
     do 4 rewrite <- mult_assoc.
     do 2 rewrite nat1_mult_eq.
-    do 4 rewrite nat_to_int_mult.
+    do 4 rewrite <- nat_to_int_mult.
     rewrite (mult_comm (nat_suc a2)).
     rewrite (mult_comm (nat_suc c2)).
     rewrite <- (mult_assoc (nat_suc b2)).
     apply le_lplus.
     mult_bring_right (nat_suc c2).
     do 2 rewrite <- (mult_assoc _ (nat_suc c2)).
-    do 2 rewrite <- (nat_to_int_mult _ (nat_suc c2 * nat_suc c2)).
+    do 2 rewrite (nat_to_int_mult _ (nat_suc c2 * nat_suc c2)).
     do 2 rewrite mult_assoc.
     apply le_rmult_pos.
     apply nat_to_int_pos.
@@ -184,7 +184,7 @@ Theorem nat_to_abstract_rat : ∀ a, nat_to_abstract a = nat_to_rat a.
     -   cbn.
         rewrite IHa.
         change (nat_suc a) with (1 + a).
-        rewrite <- nat_to_rat_plus.
+        rewrite nat_to_rat_plus.
         reflexivity.
 Qed.
 
@@ -223,7 +223,7 @@ Theorem rat_archimedean : ∀ x : rat, ∃ n, x < nat_to_abstract n.
         split; unfold nat_to_rat, int_to_rat, le; equiv_simpl.
         all: change (nat_to_int (nat_suc 0)) with (one (U := int)).
         all: rewrite mult_rid.
-        all: rewrite <- nat_to_int_plus.
+        all: rewrite nat_to_int_plus.
         all: rewrite rdist.
         all: change (nat_to_int 1) with (one (U := int)).
         all: rewrite mult_lid.

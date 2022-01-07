@@ -223,15 +223,15 @@ Next Obligation.
 Qed.
 
 Theorem power_to_tensor_plus : ∀ k (A B : k_tensor k),
-        power_to_tensor A + power_to_tensor B =
-        power_to_tensor (A + B).
+        power_to_tensor (A + B) =
+        power_to_tensor A + power_to_tensor B.
     intros k A B.
     apply set_type_eq; cbn.
     apply functional_ext; intros x.
-    unfold plus at 1; cbn.
+    unfold plus at 2; cbn.
     unfold power_to_tensor_base.
     destruct (strong_excluded_middle (k = x)) as [eq|neq].
-    2: apply plus_rid.
+    2: symmetry; apply plus_rid.
     destruct eq; cbn.
     reflexivity.
 Qed.
