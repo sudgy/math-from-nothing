@@ -197,6 +197,26 @@ Theorem prime_irreducible : ∀ p, prime p → irreducible p.
         contradiction.
 Qed.
 
+Theorem associates_refl : ∀ a, associates a a.
+    intros a.
+    split.
+    all: exists 1.
+    all: apply mult_lid.
+Qed.
+
+Theorem associates_sym : ∀ a b, associates a b → associates b a.
+    intros a b [ab ba].
+    split; assumption.
+Qed.
+
+Theorem associates_trans :
+        ∀ a b c, associates a b → associates b c → associates a c.
+    intros a b c [ab ba] [bc cb].
+    split.
+    -   exact (divides_trans _ _ _ ab bc).
+    -   exact (divides_trans _ _ _ cb ba).
+Qed.
+
 (* begin hide *)
 End Div.
 (* end hide *)
