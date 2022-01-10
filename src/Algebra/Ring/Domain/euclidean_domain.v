@@ -8,11 +8,12 @@ Require Import mult_div.
 Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
     euclidean_f : U → nat;
     euclidean_division :
-        ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ euclidean_f r < euclidean_f b
+        ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧
+            (0 = r ∨ euclidean_f r < euclidean_f b)
 }.
 
 (* begin hide *)
-Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ r < b.
+Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
     intros a b b_nz.
     pose (S n := a < b * n).
     assert (∃ n, S n) as S_ex.
@@ -54,7 +55,8 @@ Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ r < b.
     symmetry in r_eq.
     split.
     -   exact r_eq.
-    -   unfold S in Sq.
+    -   right.
+        unfold S in Sq.
         rewrite nat_mult_rsuc in Sq.
         rewrite r_eq in Sq.
         rewrite plus_comm in Sq.
@@ -152,7 +154,9 @@ Theorem nat_odd_plus_one : ∀ a, odd a → ∃ b, a = 2 * b + 1.
     apply antisym.
     -   change 2 with (nat_suc 1) in ltq.
         rewrite nat_lt_suc_le in ltq.
-        exact ltq.
+        destruct ltq as [r_z|ltq].
+        +   contradiction.
+        +   exact ltq.
     -   classic_contradiction contr.
         rewrite nle_lt in contr.
         unfold one in contr; cbn in contr.

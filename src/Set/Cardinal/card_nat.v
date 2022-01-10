@@ -348,6 +348,13 @@ Theorem nat_to_card_mult :
             apply lt_plus_lcancel in ltq.
             contradiction (nat_lt_zero _ ltq).
         }
+        rename r_lt into r_lt'.
+        assert (r < nat_suc b) as r_lt.
+        {
+            destruct r_lt' as [r_z|r_lt]; [>|exact r_lt].
+            rewrite <- r_z.
+            apply nat_zero_lt_suc.
+        }
         exists ([q|q_lt], [r|r_lt]).
         apply set_type_eq; cbn.
         unfold f; cbn.
