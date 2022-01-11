@@ -181,6 +181,7 @@
 ./src/Algebra/Ring/Domain/euclidean_domain.v
 ./src/Algebra/Ring/Domain/gcd.v
 ./src/Algebra/Ring/Domain/principle_ideal.v
+./src/Algebra/Ring/Domain/factorization.v
 
 ./src/Algebra/Geometric/geometric_construct.v
 

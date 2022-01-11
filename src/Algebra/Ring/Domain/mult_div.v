@@ -158,6 +158,16 @@ Theorem div_lcancel : ∀ a b c, 0 ≠ a → a * b ∣ a * c → b ∣ c.
     exact a_nz.
 Qed.
 
+Theorem unit_mult : ∀ a b, unit a → unit b → unit (a * b).
+    intros a b [a' a_eq] [b' b_eq].
+    exists (b' * a').
+    rewrite <- mult_assoc.
+    rewrite (mult_assoc a').
+    rewrite a_eq.
+    rewrite mult_lid.
+    apply b_eq.
+Qed.
+
 Theorem div_mult_unit : ∀ a b, 0 ≠ a → a * b ∣ a → unit b.
     intros a b a_nz eq.
     destruct eq as [c eq].
