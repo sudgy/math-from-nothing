@@ -21,22 +21,25 @@ Arguments ideal_plus {U H H0}.
 Arguments ideal_lmult {U H H0}.
 Arguments ideal_rmult {U H H0}.
 
-Theorem ideal_eq {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
-        (∀ x, ideal_set I x ↔ ideal_set J x) → I = J.
+Theorem ideal_eq_set {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
+        ideal_set I = ideal_set J → I = J.
     intros [I_set I_nempty I_plus I_lmult I_rmult]
            [J_set J_nempty J_plus J_lmult J_rmult] eq.
     cbn in eq.
-    assert (I_set = J_set) as eq2.
-    {
-        apply predicate_ext.
-        exact eq.
-    }
     subst J_set.
     rewrite (proof_irrelevance J_nempty I_nempty).
     rewrite (proof_irrelevance J_plus I_plus).
     rewrite (proof_irrelevance J_lmult I_lmult).
     rewrite (proof_irrelevance J_rmult I_rmult).
     reflexivity.
+Qed.
+
+Theorem ideal_eq {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
+        (∀ x, ideal_set I x ↔ ideal_set J x) → I = J.
+    intros I J eq.
+    apply ideal_eq_set.
+    apply predicate_ext.
+    exact eq.
 Qed.
 
 Section RingIdeal.
