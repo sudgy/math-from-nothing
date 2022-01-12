@@ -185,6 +185,7 @@
 ./src/Algebra/Ring/Domain/nat_domain.v
 
 ./src/Algebra/Geometric/geometric_construct.v
+./src/Algebra/Geometric/exterior_construct.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
