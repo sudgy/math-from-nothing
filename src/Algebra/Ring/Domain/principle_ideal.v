@@ -3,6 +3,8 @@ Require Import init.
 Require Export ring_ideal.
 
 Require Import euclidean_domain.
+Require Import gcd.
+Require Import mult_div.
 Require Import nat.
 Require Import set.
 Require Import unordered_list.
@@ -23,14 +25,68 @@ Context {U} `{
     @Ldist U UP UM,
     @Rdist U UP UM,
     @MultAssoc U UM,
+    @MultComm U UM,
     @MultLid U UM UO,
     @MultRid U UM UO
 }.
 
-Definition principle_ideal_by x := ideal_generated_by x.
+Definition principle_ideal_by x := ideal_generated_by (singleton x).
 
 Definition principle_ideal (I : Ideal U)
-    := ∃ x, I = principle_ideal_by (singleton x).
+    := ∃ x, I = principle_ideal_by x.
+
+Theorem principle_ideal_div : ∀ a b, ideal_set (principle_ideal_by a) b ↔ a ∣ b.
+    intros a b.
+    split.
+    -   intros [l eq].
+        subst b.
+        induction l as [|b l] using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end.
+            apply divides_zero.
+        +   rewrite ulist_image_add, ulist_sum_add.
+            apply plus_stays_divides.
+            *   destruct b as [[b1 b2] [b3 b3_eq]]; cbn.
+                unfold singleton in b3_eq; subst b3.
+                exists (b1 * b2).
+                do 2 rewrite <- mult_assoc.
+                apply f_equal.
+                apply mult_comm.
+            *   exact IHl.
+    -   intros [c eq].
+        exists (((c, 1), [a|Logic.eq_refl]) ::: ulist_end).
+        rewrite ulist_image_add, ulist_sum_add; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite mult_rid, plus_rid.
+        symmetry; exact eq.
+Qed.
+
+Theorem principle_ideal_associates : ∀ a b,
+        principle_ideal_by a = principle_ideal_by b ↔ associates a b.
+    intros a b.
+    split.
+    -   intros eq.
+        assert (ideal_set (principle_ideal_by a) b) as ab.
+        {
+            rewrite eq.
+            rewrite principle_ideal_div.
+            apply refl.
+        }
+        assert (ideal_set (principle_ideal_by b) a) as ba.
+        {
+            rewrite <- eq.
+            rewrite principle_ideal_div.
+            apply refl.
+        }
+        rewrite principle_ideal_div in ab, ba.
+        split; assumption.
+    -   intros [ab ba].
+        apply ideal_eq.
+        intros x.
+        do 2 rewrite principle_ideal_div.
+        split; intros x_div.
+        +   exact (trans ba x_div).
+        +   exact (trans ab x_div).
+Qed.
 
 Class PrincipleIdealDomain := {
     ideal_principle : ∀ I : Ideal U, principle_ideal I
@@ -166,6 +222,7 @@ Context {U} `{
     UL : @Ldist U UP UM,
     UR : @Rdist U UP UM,
     UMA : @MultAssoc U UM,
+    @MultComm U UM,
     @MultLid U UM UO,
     @MultRid U UM UO,
     @PrincipleIdealDomain U UP UZ UN UM UPA UPC UPZ UPN UL UR UMA
@@ -258,6 +315,57 @@ Theorem pid_noetherian : ∀ I : nat → Ideal U,
         apply ideal_lmult.
         unfold singleton in a3_eq; subst.
         exact Ia0.
+Qed.
+
+Program Instance pid_gcd : GCDDomain U := {
+    gcd a b := ex_val (ideal_principle
+        (ideal_generated_by (singleton a ∪ singleton b)))
+}.
+Next Obligation.
+    rewrite_ex_val d d_eq.
+    split.
+    -   rewrite <- principle_ideal_div.
+        rewrite <- d_eq.
+        cbn.
+        exists (((1, 1), [a|make_lor Logic.eq_refl]) ::: ulist_end).
+        rewrite ulist_image_add, ulist_sum_add; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite plus_rid.
+        rewrite mult_lid, mult_rid.
+        reflexivity.
+    -   rewrite <- principle_ideal_div.
+        rewrite <- d_eq.
+        cbn.
+        exists (((1, 1), [b|make_ror Logic.eq_refl]) ::: ulist_end).
+        rewrite ulist_image_add, ulist_sum_add; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite plus_rid.
+        rewrite mult_lid, mult_rid.
+        reflexivity.
+Qed.
+Next Obligation.
+    destruct H4 as [da db].
+    rewrite_ex_val d' d'_eq.
+    assert (ideal_set (principle_ideal_by d') d') as d'_in.
+    {
+        rewrite principle_ideal_div.
+        apply refl.
+    }
+    rewrite <- d'_eq in d'_in.
+    destruct d'_in as [l eq].
+    subst d'.
+    clear d'_eq.
+    induction l as [|c l] using ulist_induction.
+    -   rewrite ulist_image_end, ulist_sum_end.
+        apply divides_zero.
+    -   rewrite ulist_image_add, ulist_sum_add.
+        apply plus_stays_divides; [>clear IHl|exact IHl].
+        destruct c as [[c1 c2] [c3 c3_eq]]; cbn.
+        apply mult_factors_extend.
+        rewrite mult_comm.
+        apply mult_factors_extend.
+        unfold singleton, union in c3_eq; cbn in c3_eq.
+        destruct c3_eq; subst c3; assumption.
 Qed.
 
 End PrincipleIdeal.
