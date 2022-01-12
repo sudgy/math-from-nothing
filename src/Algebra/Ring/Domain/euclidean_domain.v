@@ -1,8 +1,10 @@
 Require Import init.
 
-Require Import nat.
+Require Import principle_ideal.
 
-Require Import mult_div.
+Require Import unordered_list.
+Require Import nat.
+Require Import set.
 
 #[universes(template)]
 Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
@@ -12,173 +14,116 @@ Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
             (0 = r ∨ euclidean_f r < euclidean_f b)
 }.
 
-(* begin hide *)
-Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
-    intros a b b_nz.
-    pose (S n := a < b * n).
-    assert (∃ n, S n) as S_ex.
-    {
-        exists (nat_suc a).
-        unfold S.
-        rewrite nat_mult_rsuc.
-        assert (a <= b * a) as eq.
-        {
-            rewrite <- (mult_lid a) at 1.
-            apply nat_le_rmult.
-            nat_destruct b; try contradiction.
-            unfold one; cbn; rewrite nat_sucs_le.
-            apply nat_le_zero.
-        }
-        assert (0 < b) as b_pos by (split; try assumption; apply nat_le_zero).
-        apply le_lplus with b in eq.
-        apply lt_rplus with a in b_pos.
-        rewrite plus_lid in b_pos.
-        exact (lt_le_trans b_pos eq).
-    }
-    pose proof (nat_wo _ S_ex) as [q [Sq q_min]].
-    nat_destruct q.
-    {
-        unfold S in Sq.
-        rewrite mult_ranni in Sq.
-        contradiction (nat_lt_zero _ Sq).
-    }
-    assert (b * q <= a) as leq.
-    {
-        classic_contradiction contr.
-        rewrite nle_lt in contr.
-        specialize (q_min _ contr).
-        rewrite <- nlt_le in q_min.
-        contradiction (q_min (nat_lt_suc q)).
-    }
-    apply nat_le_ex in leq as [r r_eq].
-    exists q, r.
-    symmetry in r_eq.
-    split.
-    -   exact r_eq.
-    -   right.
-        unfold S in Sq.
-        rewrite nat_mult_rsuc in Sq.
-        rewrite r_eq in Sq.
-        rewrite plus_comm in Sq.
-        apply lt_plus_rcancel in Sq.
-        exact Sq.
-Qed.
-(* end hide *)
-Global Instance nat_euclidean_class : EuclideanDomain nat := {
-    euclidean_f := λ x, x;
-    euclidean_division := nat_euclidean
+Section Euclidean.
+
+Context {U} `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UM : Mult U,
+    UO : One U,
+    @PlusAssoc U UP,
+    @PlusComm U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+    @Ldist U UP UM,
+    @Rdist U UP UM,
+    @MultAssoc U UM,
+    @MultLid U UM UO,
+    @MultRid U UM UO,
+    @EuclideanDomain U UP UZ UM
 }.
 
-Theorem nat_plus_changes_divides : ∀ p a b,
-                                    p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
-    intros p a b [c c_eq] not [d d_eq].
-    rewrite <- c_eq in d_eq.
-    destruct (trichotomy d c) as [[ltq|eq]|ltq].
-    -   apply nat_lt_ex in ltq.
-        destruct ltq as [x [x_nz x_eq]].
-        rewrite <- x_eq in d_eq.
-        rewrite rdist, <- plus_assoc in d_eq.
-        rewrite <- (plus_rid (d * p)) in d_eq at 1.
-        apply plus_lcancel in d_eq.
-        apply nat_plus_zero in d_eq as [eq1 eq2].
-        apply nat_mult_zero in eq1 as [x_z|p_z]; try contradiction.
-        subst.
-        apply not.
-        apply refl.
-    -   subst.
-        rewrite <- (plus_rid (c * p)) in d_eq at 1.
-        apply plus_lcancel in d_eq.
-        subst.
-        apply not.
-        apply divides_zero.
-    -   apply nat_lt_ex in ltq.
-        destruct ltq as [x [x_nz x_eq]].
-        rewrite <- x_eq in d_eq.
-        rewrite rdist in d_eq.
-        apply plus_lcancel in d_eq.
-        subst.
-        apply not.
-        exists x.
-        reflexivity.
-Qed.
-
-Theorem nat_even_neq_odd : ∀ m n, m * 2 ≠ n * 2 + 1.
-    intros m n eq.
-    assert (even (m * 2)) as m_even by (exists m; reflexivity).
-    assert (even (n * 2)) as n_even by (exists n; reflexivity).
-    assert (¬2 ∣ (one (U := nat))) as ndiv.
+Program Instance euclidean_principle_ideal : PrincipleIdealDomain.
+Next Obligation.
+    classic_case (∀ x, ideal_set I x → 0 = x) as [I_z|I_nz].
     {
-        intros [c c_eq].
-        nat_destruct c.
-        -   rewrite mult_lanni in c_eq.
-            inversion c_eq.
-        -   rewrite nat_mult_lsuc in c_eq.
-            assert ((one (U := nat)) < 2) as leq.
+        exists 0.
+        apply ideal_eq.
+        intros x.
+        split.
+        -   intros Ix.
+            apply I_z in Ix.
+            rewrite <- Ix.
+            apply ideal_zero.
+        -   intros [l x_eq].
+            assert (0 = x) as x_z.
             {
-                split.
-                -   unfold one; cbn.
-                    unfold plus; cbn.
-                    unfold le; cbn.
-                    exact true.
-                -   intro contr; inversion contr.
+                rewrite x_eq.
+                clear x_eq.
+                induction l using ulist_induction.
+                -   rewrite ulist_image_end, ulist_sum_end.
+                    reflexivity.
+                -   rewrite ulist_image_add, ulist_sum_add.
+                    rewrite <- IHl.
+                    rewrite plus_rid.
+                    destruct a as [[a1 a2] [a3 a3_eq]].
+                    unfold singleton in a3_eq.
+                    rewrite <- a3_eq; cbn.
+                    rewrite mult_ranni, mult_lanni.
+                    reflexivity.
             }
-            pose proof (nat_le_zero (c * 2)) as leq2.
-            apply le_lplus with 2 in leq2.
-            rewrite plus_rid in leq2.
-            pose proof (lt_le_trans leq leq2) as [C0 C1].
-            symmetry in c_eq; contradiction.
+            rewrite <- x_z.
+            apply ideal_zero.
     }
-    pose proof (nat_plus_changes_divides 2 (n * 2) 1 n_even ndiv).
-    rewrite <- eq in H.
-    contradiction.
-Qed.
-
-Theorem nat_odd_plus_one : ∀ a, odd a → ∃ b, a = 2 * b + 1.
-    intros a a_odd.
-    assert (0 ≠ 2) as two_nz by (intro contr; inversion contr).
-    pose proof (euclidean_division a 2 two_nz) as [q [r [eq ltq]]].
-    cbn in ltq.
-    exists q.
-    assert (0 ≠ r) as r_nz.
+    pose (S n := ∃ a, 0 ≠ a ∧ ideal_set I a ∧ euclidean_f a = n).
+    assert (∃ n, S n) as S_ex.
     {
-        intro contr.
-        subst.
-        rewrite plus_rid in a_odd.
-        unfold odd, divides in a_odd.
-        rewrite not_ex in a_odd.
-        apply (a_odd q).
-        apply mult_comm.
+        rewrite not_all in I_nz.
+        destruct I_nz as [a a_nz].
+        rewrite not_impl in a_nz.
+        exists (euclidean_f a).
+        exists a.
+        repeat split; apply a_nz.
     }
-    rewrite eq.
-    apply lplus.
-    apply antisym.
-    -   change 2 with (nat_suc 1) in ltq.
-        rewrite nat_lt_suc_le in ltq.
-        destruct ltq as [r_z|ltq].
-        +   contradiction.
-        +   exact ltq.
-    -   classic_contradiction contr.
-        rewrite nle_lt in contr.
-        unfold one in contr; cbn in contr.
-        rewrite nat_lt_suc_le in contr.
-        apply nat_le_zero_eq in contr.
-        contradiction.
+    pose proof (well_ordered S S_ex) as [n [[b [b_nz [Ib n_eq]]] n_min]].
+    exists b.
+    apply ideal_eq.
+    intros a.
+    split.
+    -   intros Ia.
+        cbn.
+        unfold ideal_generated_by_set.
+        pose proof (euclidean_division a b b_nz) as [q [r [eq ltq]]].
+        classic_case (0 = r) as [r_z | r_nz].
+        +   rewrite <- r_z in eq.
+            rewrite plus_rid in eq.
+            exists (((1, q), [b|Logic.eq_refl]) ::: ulist_end).
+            rewrite ulist_image_add, ulist_sum_add; cbn.
+            rewrite ulist_image_end, ulist_sum_end.
+            rewrite plus_rid.
+            rewrite mult_lid.
+            exact eq.
+        +   destruct ltq as [|ltq]; [>contradiction|].
+            assert (S (euclidean_f r)) as Sr.
+            {
+                exists r.
+                repeat split.
+                -   exact r_nz.
+                -   apply plus_rlmove in eq.
+                    rewrite <- eq.
+                    apply ideal_plus.
+                    +   apply ideal_neg.
+                        apply ideal_rmult.
+                        exact Ib.
+                    +   exact Ia.
+            }
+            specialize (n_min _ Sr).
+            rewrite n_eq in ltq.
+            destruct (le_lt_trans n_min ltq); contradiction.
+    -   intros [l a_eq].
+        rewrite a_eq; clear a_eq.
+        induction l as [|c l] using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end.
+            apply ideal_zero.
+        +   rewrite ulist_image_add, ulist_sum_add.
+            apply ideal_plus; [>clear IHl|exact IHl].
+            destruct c as [[c1 c2] [c3 c3_eq]]; cbn.
+            unfold singleton in c3_eq.
+            rewrite <- c3_eq.
+            apply ideal_rmult.
+            apply ideal_lmult.
+            exact Ib.
 Qed.
 
-Theorem nat_div_le : ∀ a b, 0 ≠ b → a ∣ b → a <= b.
-    intros a b b_nz [c c_eq].
-    rewrite <- c_eq.
-    nat_destruct a.
-    -   rewrite mult_ranni.
-        apply refl.
-    -   rewrite <- (mult_lid (nat_suc a)) at 1.
-        apply nat_le_rmult.
-        classic_contradiction contr.
-        rewrite nle_lt in contr.
-        change 1 with (nat_suc 0) in contr.
-        rewrite nat_lt_suc_le in contr.
-        apply nat_le_zero_eq in contr.
-        subst c.
-        rewrite mult_lanni in c_eq.
-        contradiction.
-Qed.
+End Euclidean.

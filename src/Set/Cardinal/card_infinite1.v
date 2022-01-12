@@ -9,7 +9,7 @@ Require Import set.
 Require Import function.
 Require Import nat.
 Require Import mult_div.
-Require Import euclidean_domain.
+Require Import nat_domain.
 Require Import mult_pow.
 
 (* begin hide *)
