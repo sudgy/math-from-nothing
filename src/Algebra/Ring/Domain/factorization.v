@@ -46,7 +46,7 @@ Context U `{
     @UniqueFactorizationDomain U UZ UM UO UMA UMC
 }.
 
-Theorem factorization : ∀ x : U, 0 ≠ x → ∃ a l,
+Theorem factorization_ex : ∀ x : U, 0 ≠ x → ∃ a l,
         unit a ∧
         ulist_prop (λ x, irreducible x) l ∧
         x = a * ulist_prod l ∧
@@ -172,6 +172,38 @@ Theorem factorization : ∀ x : U, 0 ≠ x → ∃ a l,
     -   rewrite ulist_image_add; cbn.
         apply f_equal.
         exact l''_l'.
+Qed.
+
+Definition factorization_unit x x_nz := ex_val (factorization_ex x x_nz).
+Definition factorization x x_nz := ex_val (ex_proof (factorization_ex x x_nz)).
+
+Theorem factorization_unit_unit : ∀ x x_nz, unit (factorization_unit x x_nz).
+    intros x x_nz.
+    apply (ex_proof (ex_proof (factorization_ex x x_nz))).
+Qed.
+
+Theorem factorization_irreducible : ∀ x x_nz,
+        ulist_prop (λ x, irreducible x) (factorization x x_nz).
+    intros x x_nz.
+    apply (ex_proof (ex_proof (factorization_ex x x_nz))).
+Qed.
+
+Theorem factorization_eq : ∀ x x_nz,
+        x = factorization_unit x x_nz * ulist_prod (factorization x x_nz).
+    intros x x_nz.
+    apply (ex_proof (ex_proof (factorization_ex x x_nz))).
+Qed.
+
+Theorem factorization_uni : ∀ (x : U) (x_nz : 0 ≠ x),
+        ∀ a l,
+            unit a →
+            ulist_prop (λ x, irreducible x) l →
+            x = a * ulist_prod l →
+            ∃ l', ulist_prop (λ x, unit (fst x)) l' ∧
+                   ulist_image l' (λ x, snd x) = factorization x x_nz ∧
+                   ulist_image l' (λ x, fst x * snd x) = l.
+    intros x x_nz.
+    apply (ex_proof (ex_proof (factorization_ex x x_nz))).
 Qed.
 
 End UniqueFactorization.
