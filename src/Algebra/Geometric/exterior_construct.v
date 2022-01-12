@@ -3,6 +3,7 @@ Require Import init.
 Require Import module_category.
 Require Import algebra_category.
 Require Import tensor_algebra.
+Require Import linear_grade.
 
 Require Import ring_ideal.
 
@@ -56,10 +57,12 @@ Let TAR := algebra_rdist (tensor_algebra V).
 Let TAMA := algebra_mult_assoc (tensor_algebra V).
 Let TAML := algebra_mult_lid (tensor_algebra V).
 Let TAMR := algebra_mult_rid (tensor_algebra V).
+Let TAG := tensor_grade V.
+Let TAGM := tensor_grade_mult V.
 
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UR UMC UMO VP VZ VN VPA VPC
     VPZ VPN VSM VSMO VSMR TAP TAZ TAN TAPA TAPC TAPZ TAPN TASM TASMO TASMC TASL
-    TASR TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR.
+    TASR TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR TAG TAGM.
 
 Definition ext_ideal_base (x : algebra_V (tensor_algebra V))
     := ∃ v, x = vector_to_tensor v * vector_to_tensor v.
@@ -330,6 +333,128 @@ Theorem ext_anticomm : ∀ u v,
     rewrite plus_rid, plus_lid in eq.
     rewrite plus_0_ab_a_nb in eq.
     exact eq.
+Qed.
+
+Theorem scalar_to_ext_eq : ∀ a b, scalar_to_ext a = scalar_to_ext b → a = b.
+    intros a b eq.
+    rewrite <- plus_0_nab_a_b.
+    rewrite <- plus_0_nab_a_b in eq.
+    rewrite <- scalar_to_ext_neg in eq.
+    rewrite <- scalar_to_ext_plus in eq.
+    remember (-a + b) as c; clear a b Heqc.
+    unfold scalar_to_ext, to_ext, zero in eq; equiv_simpl in eq.
+    rewrite plus_lid in eq.
+    apply (ideal_neg ext_ideal) in eq.
+    rewrite neg_neg in eq.
+    destruct eq as [l eq].
+    apply (scalar_to_tensor_eq V).
+    unfold TAZ, UZ.
+    rewrite (scalar_to_tensor_zero V).
+    pose proof (scalar_to_tensor_grade V c) as c0.
+    rewrite <- (grade_project_of_grade _ _ c0).
+    rewrite eq.
+    clear eq c0.
+    induction l as [|v l] using ulist_induction.
+    -   rewrite ulist_image_end, ulist_sum_end.
+        symmetry; apply grade_project_zero.
+    -   rewrite ulist_image_add, ulist_sum_add.
+        rewrite grade_project_plus.
+        rewrite <- IHl; clear IHl l.
+        rewrite plus_rid.
+        destruct v as [[v1 v2] [v3 [v v3_eq]]]; cbn.
+        subst v3.
+        induction v1 as [|v11 v12 i iv11 i_z] using grade_induction.
+        +   do 2 rewrite mult_lanni.
+            symmetry; apply grade_project_zero.
+        +   do 2 rewrite rdist.
+            rewrite grade_project_plus.
+            rewrite <- IHv1; clear IHv1 v12 i_z.
+            rewrite plus_rid.
+            induction v2 as [|v21 v22 j jv12 j_z] using grade_induction.
+            *   rewrite mult_ranni.
+                symmetry; apply grade_project_zero.
+            *   rewrite ldist.
+                rewrite grade_project_plus.
+                rewrite <- IHv2; clear IHv2 v22 j_z.
+                rewrite plus_rid.
+                assert (of_grade (i + 2 + j)
+                    (v11 * (vector_to_tensor v * vector_to_tensor v) * v21))
+                    as ij.
+                {
+                    apply of_grade_mult; [>|exact jv12].
+                    apply of_grade_mult; [>exact iv11|].
+                    apply of_grade_mult; apply vector_to_tensor_grade.
+                }
+                assert (i + 2 + j ≠ 0 ) as neq.
+                {
+                    intros contr.
+                    rewrite (plus_comm i 2) in contr.
+                    rewrite <- plus_assoc in contr.
+                    inversion contr.
+                }
+                rewrite (grade_project_of_grade_neq _ _ _ ij neq).
+                reflexivity.
+Qed.
+
+Theorem vector_to_ext_eq : ∀ a b, vector_to_ext a = vector_to_ext b → a = b.
+    intros a b eq.
+    rewrite <- plus_0_nab_a_b.
+    rewrite <- plus_0_nab_a_b in eq.
+    rewrite <- vector_to_ext_neg in eq.
+    rewrite <- vector_to_ext_plus in eq.
+    remember (-a + b) as c; clear a b Heqc.
+    unfold vector_to_ext, to_ext, zero in eq; equiv_simpl in eq.
+    rewrite plus_lid in eq.
+    apply (ideal_neg ext_ideal) in eq.
+    rewrite neg_neg in eq.
+    destruct eq as [l eq].
+    apply (vector_to_tensor_eq V).
+    unfold TAZ, VZ.
+    rewrite (vector_to_tensor_zero V).
+    pose proof (vector_to_tensor_grade V c) as c0.
+    rewrite <- (grade_project_of_grade _ _ c0).
+    rewrite eq.
+    clear eq c0.
+    induction l as [|v l] using ulist_induction.
+    -   rewrite ulist_image_end, ulist_sum_end.
+        symmetry; apply grade_project_zero.
+    -   rewrite ulist_image_add, ulist_sum_add.
+        rewrite grade_project_plus.
+        rewrite <- IHl; clear IHl l.
+        rewrite plus_rid.
+        destruct v as [[v1 v2] [v3 [v v3_eq]]]; cbn.
+        subst v3.
+        induction v1 as [|v11 v12 i iv11 i_z] using grade_induction.
+        +   do 2 rewrite mult_lanni.
+            symmetry; apply grade_project_zero.
+        +   do 2 rewrite rdist.
+            rewrite grade_project_plus.
+            rewrite <- IHv1; clear IHv1 v12 i_z.
+            rewrite plus_rid.
+            induction v2 as [|v21 v22 j jv12 j_z] using grade_induction.
+            *   rewrite mult_ranni.
+                symmetry; apply grade_project_zero.
+            *   rewrite ldist.
+                rewrite grade_project_plus.
+                rewrite <- IHv2; clear IHv2 v22 j_z.
+                rewrite plus_rid.
+                assert (of_grade (i + 2 + j)
+                    (v11 * (vector_to_tensor v * vector_to_tensor v) * v21))
+                    as ij.
+                {
+                    apply of_grade_mult; [>|exact jv12].
+                    apply of_grade_mult; [>exact iv11|].
+                    apply of_grade_mult; apply vector_to_tensor_grade.
+                }
+                assert (i + 2 + j ≠ 1) as neq.
+                {
+                    intros contr.
+                    rewrite (plus_comm i 2) in contr.
+                    rewrite <- plus_assoc in contr.
+                    inversion contr.
+                }
+                rewrite (grade_project_of_grade_neq _ _ _ ij neq).
+                reflexivity.
 Qed.
 
 End ExteriorConstruct.
