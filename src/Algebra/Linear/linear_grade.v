@@ -578,6 +578,13 @@ Theorem grade_project_scalar : ∀ a v i,
         reflexivity.
 Qed.
 
+Theorem grade_project_neg : ∀ v i, grade_project (-v) i = -grade_project v i.
+    intros v i.
+    rewrite <- scalar_neg_one.
+    rewrite grade_project_scalar.
+    apply scalar_neg_one.
+Qed.
+
 Theorem in_grade_decomposition_project : ∀ v u,
         in_ulist (grade_decomposition v) u → ∃ i, [u|] = grade_project v i.
     intros v u u_in.

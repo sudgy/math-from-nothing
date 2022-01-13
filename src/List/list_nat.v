@@ -307,3 +307,14 @@ Theorem list_size_neq {U} : ∀ l1 l2 : list U, list_size l1 ≠ list_size l2 �
     subst.
     contradiction.
 Qed.
+
+Theorem list_image_size {A B} : ∀ l (f : A → B),
+        list_size (list_image l f) = list_size l.
+    intros l f.
+    induction l.
+    -   cbn.
+        reflexivity.
+    -   cbn.
+        rewrite IHl.
+        reflexivity.
+Qed.

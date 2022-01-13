@@ -77,12 +77,11 @@ Theorem equiv_eq_class : ∀ a b, equiv_class E a = equiv_class E b → a ~ b.
     exact bb.
 Qed.
 
-Theorem equiv_eq : ∀ a b, (to_equiv_type E a = to_equiv_type E b) = (a ~ b).
+Theorem equiv_eq : ∀ a b, (to_equiv_type E a = to_equiv_type E b) ↔ (a ~ b).
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
     intros a b.
-    apply propositional_ext.
     split; intros eq.
     -   unfold to_equiv_type in eq.
         inversion eq as [eq']; clear eq.

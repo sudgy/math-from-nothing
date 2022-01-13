@@ -186,6 +186,7 @@
 
 ./src/Algebra/Geometric/geometric_construct.v
 ./src/Algebra/Geometric/exterior_construct.v
+./src/Algebra/Geometric/exterior_grade.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v

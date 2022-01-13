@@ -202,6 +202,13 @@ Theorem to_ext_scalar : ∀ a v, to_ext (a · v) = a · to_ext v.
     exact (ideal_zero ext_ideal).
 Qed.
 
+Theorem to_ext_neg : ∀ v, to_ext (-v) = -to_ext v.
+    intros v.
+    rewrite <- scalar_neg_one.
+    rewrite to_ext_scalar.
+    apply scalar_neg_one.
+Qed.
+
 Theorem to_ext_zero : to_ext 0 = 0.
     reflexivity.
 Qed.
