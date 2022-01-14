@@ -49,6 +49,7 @@
 ./src/Algebra/Plus/plus.v
 ./src/Algebra/Mult/mult_ring.v
 ./src/Algebra/Mult/mult_field.v
+./src/Algebra/Mult/mult_characteristic.v
 ./src/Algebra/Mult/mult.v
 
 ./src/Algebra/Relation/relation.v
@@ -148,6 +149,7 @@
 ./src/Algebra/Linear/linear_transformation_space.v
 ./src/Algebra/Linear/linear_bilinear.v
 ./src/Algebra/Linear/linear_quadratic.v
+./src/Algebra/Linear/linear_bilinear_form.v
 ./src/Algebra/Linear/linear_free.v
 ./src/Algebra/Linear/linear_subspace.v
 ./src/Algebra/Linear/linear_span.v
