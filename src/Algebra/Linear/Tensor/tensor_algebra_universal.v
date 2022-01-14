@@ -669,6 +669,10 @@ Definition tensor_algebra := to_algebra_algebra to_tensor_algebra.
 Definition vector_to_tensor_homo := to_algebra_homo to_tensor_algebra.
 Definition vector_to_tensor := module_homo_f vector_to_tensor_homo.
 
+Theorem tensor_algebra_universal : @initial TO_ALGEBRA to_tensor_algebra.
+    apply (ex_proof tensor_algebra_ex).
+Qed.
+
 End TensorAlgebraCategory.
 
 Arguments vector_to_tensor {F V}.

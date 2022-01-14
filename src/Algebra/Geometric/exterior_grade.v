@@ -66,13 +66,13 @@ Let TAG := tensor_grade_mult V.
 Existing Instances TG TAG.
 
 Definition ext_grade_set n (v : ext V)
-    := ∃ v', to_ext V v' = v ∧ of_grade (H10 := TG) n v'.
+    := ∃ v', tensor_to_ext V v' = v ∧ of_grade (H10 := TG) n v'.
 
 Lemma ext_grade_zero : ∀ n, ext_grade_set n 0.
     intros n.
     exists 0.
     split.
-    -   apply to_ext_zero.
+    -   apply tensor_to_ext_zero.
     -   apply of_grade_zero.
 Qed.
 
@@ -82,7 +82,7 @@ Lemma ext_grade_plus : ∀ n u v,
     subst u v.
     exists (u' + v').
     split.
-    -   apply to_ext_plus.
+    -   apply tensor_to_ext_plus.
     -   apply of_grade_plus; assumption.
 Qed.
 
@@ -90,7 +90,7 @@ Lemma ext_grade_scalar : ∀ n a v, ext_grade_set n v → ext_grade_set n (a · 
     intros n a v [v' [v_eq nv]]; subst v.
     exists (a · v').
     split.
-    -   apply to_ext_scalar.
+    -   apply tensor_to_ext_scalar.
     -   apply of_grade_scalar.
         exact nv.
 Qed.
@@ -115,9 +115,9 @@ Next Obligation.
     rewrite <- v''_eq in v'_eq.
     clear v v''_eq.
     rewrite <- plus_0_anb_a_b in v'_eq.
-    rewrite <- (to_ext_neg V) in v'_eq.
-    rewrite <- (to_ext_plus V) in v'_eq.
-    unfold to_ext, zero in v'_eq; equiv_simpl in v'_eq.
+    rewrite <- (tensor_to_ext_neg V) in v'_eq.
+    rewrite <- (tensor_to_ext_plus V) in v'_eq.
+    unfold tensor_to_ext, zero in v'_eq; equiv_simpl in v'_eq.
     rewrite plus_lid in v'_eq.
     rewrite neg_plus, neg_neg in v'_eq.
     destruct v'_eq as [l l_eq].
@@ -132,11 +132,11 @@ Next Obligation.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite grade_project_zero.
-        symmetry; apply to_ext_zero.
+        symmetry; apply tensor_to_ext_zero.
     }
     rewrite ulist_image_add, ulist_sum_add.
     rewrite grade_project_plus.
-    rewrite (to_ext_plus V).
+    rewrite (tensor_to_ext_plus V).
     rewrite <- IHl; clear IHl l.
     rewrite plus_rid.
     destruct a as [[a1 a2] [a3 [v a3_eq]]]; subst a3; cbn.
@@ -144,22 +144,22 @@ Next Obligation.
     {
         do 2 rewrite mult_lanni.
         rewrite grade_project_zero.
-        symmetry; apply to_ext_zero.
+        symmetry; apply tensor_to_ext_zero.
     }
     do 2 rewrite rdist.
     rewrite grade_project_plus.
-    rewrite (to_ext_plus V).
+    rewrite (tensor_to_ext_plus V).
     rewrite <- IHa1; clear i_z IHa1.
     rewrite plus_rid.
     induction a2 as [|a21 a22 k a22k k_z] using grade_induction.
     {
         rewrite mult_ranni.
         rewrite grade_project_zero.
-        symmetry; apply to_ext_zero.
+        symmetry; apply tensor_to_ext_zero.
     }
     rewrite ldist.
     rewrite grade_project_plus.
-    rewrite (to_ext_plus V).
+    rewrite (tensor_to_ext_plus V).
     rewrite <- IHa2; clear k_z IHa2.
     rewrite plus_rid.
     assert (of_grade (i + 2 + k)
@@ -172,7 +172,7 @@ Next Obligation.
     classic_case (i + 2 + k = j) as [j_eq|j_neq].
     -   rewrite j_eq in a_grade.
         rewrite (grade_project_of_grade _ _ a_grade).
-        unfold to_ext, zero; equiv_simpl.
+        unfold tensor_to_ext, zero; equiv_simpl.
         symmetry; apply equiv_eq; cbn.
         rewrite neg_zero, plus_rid.
         assert (ext_ideal_base V (vector_to_tensor v * vector_to_tensor v))
@@ -183,23 +183,23 @@ Next Obligation.
         rewrite plus_rid.
         reflexivity.
     -   rewrite (grade_project_of_grade_neq _ _ _ a_grade j_neq).
-        symmetry; apply to_ext_zero.
+        symmetry; apply tensor_to_ext_zero.
 Qed.
 Next Obligation.
     equiv_get_value v.
     change (to_equiv_type (ring_ideal.ideal_equiv (ext_ideal V)) v)
-        with (to_ext V v).
+        with (tensor_to_ext V v).
     pose proof (grade_decompose_ex v) as [l [l_eq l_in]].
     pose (ST := SubspaceVector (cring_U F) (algebra_V (tensor_algebra V))).
     (* TODO: Make this and the definiiton of ext_grade_set fuse somehow *)
     pose (ext_subset (S : ST) := λ x : ext V,
-        ∃ x', to_ext V x' = x ∧ subspace_set (sub_vector_sub S) x').
+        ∃ x', tensor_to_ext V x' = x ∧ subspace_set (sub_vector_sub S) x').
     assert (ext_sub_zero : ∀ S, ext_subset S 0).
     {
         intros S.
         exists 0.
         split.
-        -   apply to_ext_zero.
+        -   apply tensor_to_ext_zero.
         -   apply subspace_zero.
     }
     assert (ext_sub_plus : ∀ S, ∀ u v,
@@ -209,7 +209,7 @@ Next Obligation.
         intros S u v [u' [u_eq u'_in]] [v' [v_eq v'_in]]; subst u v.
         exists (u' + v').
         split.
-        -   apply to_ext_plus.
+        -   apply tensor_to_ext_plus.
         -   apply subspace_plus; assumption.
     }
     assert (ext_sub_scalar : ∀ S, ∀ a v, ext_subset S v → ext_subset S (a · v)).
@@ -217,7 +217,7 @@ Next Obligation.
         intros S a u [u' [u_eq u'_in]]; subst u.
         exists (a · u').
         split.
-        -   apply to_ext_scalar.
+        -   apply tensor_to_ext_scalar.
         -   apply subspace_scalar.
             exact u'_in.
     }
@@ -226,7 +226,7 @@ Next Obligation.
         (ext_sub_zero S)
         (ext_sub_plus S)
         (ext_sub_scalar S)).
-    assert (S_in : ∀ S, ext_subset S (to_ext V (sub_vector_v S))).
+    assert (S_in : ∀ S, ext_subset S (tensor_to_ext V (sub_vector_v S))).
     {
         intros [S u Su]; cbn.
         exists u; cbn.
@@ -244,10 +244,10 @@ Next Obligation.
         subst v.
         induction l using ulist_induction.
         +   do 2 rewrite ulist_image_end, ulist_sum_end.
-            apply to_ext_zero.
+            apply tensor_to_ext_zero.
         +   do 2 rewrite ulist_image_add, ulist_sum_add.
             rewrite <- IHl; clear IHl.
-            apply to_ext_plus.
+            apply tensor_to_ext_plus.
     -   clear l_eq.
         induction l using ulist_induction.
         +   rewrite ulist_image_end.
@@ -275,7 +275,7 @@ Next Obligation.
     rename H into l_in, H0 into l_uni, H1 into l_z.
     assert (∀ i (l : ulist (algebra_V (tensor_algebra V) * algebra_V
         (tensor_algebra V) * set_type (ext_ideal_base V))),
-        to_ext V (grade_project (ulist_sum (ulist_image l
+        tensor_to_ext V (grade_project (ulist_sum (ulist_image l
             (λ p, fst (fst p) * [snd p|] * snd (fst p)))) i) = 0) as lem.
     {
         clear l l_in l_uni l_z.
@@ -283,10 +283,10 @@ Next Obligation.
         induction l using ulist_induction.
         -   rewrite ulist_image_end, ulist_sum_end.
             rewrite grade_project_zero.
-            apply to_ext_zero.
+            apply tensor_to_ext_zero.
         -   rewrite ulist_image_add, ulist_sum_add.
             rewrite grade_project_plus.
-            rewrite (to_ext_plus V).
+            rewrite (tensor_to_ext_plus V).
             rewrite IHl; clear IHl l.
             rewrite plus_rid.
             destruct a as [[a1 a2] [a3 a3_in]]; cbn.
@@ -294,20 +294,20 @@ Next Obligation.
             {
                 do 2 rewrite mult_lanni.
                 rewrite grade_project_zero.
-                apply to_ext_zero.
+                apply tensor_to_ext_zero.
             }
             do 2 rewrite rdist.
-            rewrite grade_project_plus, (to_ext_plus V).
+            rewrite grade_project_plus, (tensor_to_ext_plus V).
             rewrite IHa1; clear IHa1 a1' a1'j.
             rewrite plus_rid.
             induction a2 as [|a2 a2' k a2k a2'k] using grade_induction.
             {
                 rewrite mult_ranni.
                 rewrite grade_project_zero.
-                apply to_ext_zero.
+                apply tensor_to_ext_zero.
             }
             rewrite ldist.
-            rewrite grade_project_plus, (to_ext_plus V).
+            rewrite grade_project_plus, (tensor_to_ext_plus V).
             rewrite IHa2; clear IHa2 a2' a2'k.
             rewrite plus_rid.
             assert (of_grade (j + 2 + k) (a1 * a3 * a2)) as a_grade.
@@ -321,7 +321,7 @@ Next Obligation.
             classic_case (j + 2 + k = i) as [eq|neq].
             +   rewrite eq in a_grade.
                 rewrite (grade_project_of_grade _ _ a_grade).
-                unfold to_ext, zero; equiv_simpl.
+                unfold tensor_to_ext, zero; equiv_simpl.
                 rewrite neg_zero, plus_rid.
                 exists (((a1, a2), [a3|a3_in]) ::: ulist_end).
                 rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -329,7 +329,7 @@ Next Obligation.
                 rewrite plus_rid.
                 reflexivity.
             +   rewrite (grade_project_of_grade_neq _ _ _ a_grade neq).
-                apply to_ext_zero.
+                apply tensor_to_ext_zero.
     }
     apply ulist_prop_split.
     intros [A v Av] l' l_eq; cbn in *.
@@ -342,21 +342,21 @@ Next Obligation.
     rewrite <- Ai in Av'.
     destruct Av' as [v' [v'_eq v'i]].
     subst v.
-    assert (∃ lv, to_ext V (lv - grade_project lv i) =
+    assert (∃ lv, tensor_to_ext V (lv - grade_project lv i) =
         ulist_sum (ulist_image l sub_vector_v)) as [lv lv_eq].
     {
         clear v' l_z v'i Av.
         pose (l' := ulist_image l (λ x, ex_val [|sub_vector_v x])).
         assert (ulist_sum (ulist_image l sub_vector_v) =
-            to_ext V (ulist_sum l')) as l_eq.
+            tensor_to_ext V (ulist_sum l')) as l_eq.
         {
             unfold l'.
             clear l' l_in A A_nin i Ai.
             induction l using ulist_induction.
             -   do 2 rewrite ulist_image_end, ulist_sum_end.
-                symmetry; apply to_ext_zero.
+                symmetry; apply tensor_to_ext_zero.
             -   do 2 rewrite ulist_image_add, ulist_sum_add.
-                rewrite (to_ext_plus V).
+                rewrite (tensor_to_ext_plus V).
                 rewrite <- IHl; clear IHl.
                 apply rplus; clear l.
                 rewrite_ex_val v v_eq.
@@ -365,10 +365,10 @@ Next Obligation.
                 reflexivity.
         }
         exists (ulist_sum l').
-        rewrite (to_ext_plus V).
+        rewrite (tensor_to_ext_plus V).
         rewrite l_eq.
         apply plus_0_a_ba_b.
-        rewrite (to_ext_neg V).
+        rewrite (tensor_to_ext_neg V).
         rewrite <- neg_zero.
         apply f_equal.
         unfold l'.
@@ -376,7 +376,7 @@ Next Obligation.
         induction l using ulist_induction.
         -   rewrite ulist_image_end, ulist_sum_end.
             rewrite grade_project_zero.
-            symmetry; apply to_ext_zero.
+            symmetry; apply tensor_to_ext_zero.
         -   rewrite ulist_image_add, in_ulist_add in A_nin.
             rewrite not_or in A_nin.
             destruct A_nin as [Aa A_nin].
@@ -386,11 +386,11 @@ Next Obligation.
             clear A_nin l_in.
             rewrite ulist_image_add, ulist_sum_add.
             rewrite grade_project_plus.
-            rewrite (to_ext_plus V).
+            rewrite (tensor_to_ext_plus V).
             rewrite <- IHl; clear IHl.
             rewrite plus_rid.
             assert (∃ v, v = ex_val [|sub_vector_v a] ∧
-                to_ext V v = sub_vector_v a) as [v [v_eq1 v_eq2]].
+                tensor_to_ext V v = sub_vector_v a) as [v [v_eq1 v_eq2]].
             {
                 rewrite_ex_val v v_eq.
                 exists v.
@@ -414,7 +414,7 @@ Next Obligation.
                 contradiction.
             }
             symmetry in v'_eq.
-            unfold to_ext in v'_eq; equiv_simpl in v'_eq.
+            unfold tensor_to_ext in v'_eq; equiv_simpl in v'_eq.
             clear l.
             destruct v'_eq as [l l_eq].
             rewrite <- plus_rrmove in l_eq.
@@ -427,7 +427,7 @@ Next Obligation.
             symmetry; apply lem.
     }
     rewrite <- lv_eq in l_z.
-    unfold plus at 1, zero, to_ext in l_z; equiv_simpl in l_z.
+    unfold plus at 1, zero, tensor_to_ext in l_z; equiv_simpl in l_z.
     symmetry in l_z.
     apply equiv_eq in l_z; cbn in l_z.
     rewrite neg_zero, plus_rid in l_z.
