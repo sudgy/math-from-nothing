@@ -607,18 +607,18 @@ Definition bilinear_extend_base := linear_extend f1_base.
 
 End BilinearBase.
 
-Let TP := linear_trans_plus V1 V2.
-Let TZ := linear_trans_zero V1 V2.
-Let TN := linear_trans_neg V1 V2.
-Let TPC := linear_trans_plus_comm V1 V2.
-Let TPA := linear_trans_plus_assoc V1 V2.
-Let TPZ := linear_trans_plus_lid V1 V2.
-Let TPN := linear_trans_plus_linv V1 V2.
-Let TSM := linear_trans_scalar V1 V2.
-Let TSMO := linear_trans_scalar_id V1 V2.
-Let TSML := linear_trans_scalar_ldist V1 V2.
-Let TSMR := linear_trans_scalar_rdist V1 V2.
-Let TSMC := linear_trans_scalar_comp V1 V2.
+Let TP := linear_func_plus V1 V2.
+Let TZ := linear_func_zero V1 V2.
+Let TN := linear_func_neg V1 V2.
+Let TPC := linear_func_plus_comm V1 V2.
+Let TPA := linear_func_plus_assoc V1 V2.
+Let TPZ := linear_func_plus_lid V1 V2.
+Let TPN := linear_func_plus_linv V1 V2.
+Let TSM := linear_func_scalar V1 V2.
+Let TSMO := linear_func_scalar_id V1 V2.
+Let TSML := linear_func_scalar_ldist V1 V2.
+Let TSMR := linear_func_scalar_rdist V1 V2.
+Let TSMC := linear_func_scalar_comp V1 V2.
 Local Existing Instances TP TZ TN TPC TPA TPZ TPN TSM TSMO TSML TSMR TSMC.
 
 Let f_base := bilinear_extend_base.
