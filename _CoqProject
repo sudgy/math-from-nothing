@@ -193,6 +193,7 @@
 ./src/Algebra/Geometric/exterior_universal.v
 ./src/Algebra/Geometric/exterior_outermorphism.v
 ./src/Algebra/Geometric/exterior_involutions.v
+./src/Algebra/Geometric/geometric_to_exterior.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
