@@ -150,6 +150,7 @@
 ./src/Algebra/Linear/linear_bilinear.v
 ./src/Algebra/Linear/linear_quadratic.v
 ./src/Algebra/Linear/linear_bilinear_form.v
+./src/Algebra/Linear/linear_sum.v
 ./src/Algebra/Linear/linear_free.v
 ./src/Algebra/Linear/linear_subspace.v
 ./src/Algebra/Linear/linear_span.v
