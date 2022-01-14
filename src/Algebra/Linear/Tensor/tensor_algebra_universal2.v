@@ -17,6 +17,7 @@ Require Import set.
 Require Import card.
 Require Import list.
 Require Import unordered_list.
+Require Import mult_product.
 
 Section TensorAlgebra.
 
@@ -388,6 +389,37 @@ Theorem tensor_simple_sum : ∀ x, ∃ l : ulist (set_type simple_tensor),
     rewrite v_eq.
     clear X v_eq.
     rewrite ulist_image_conc, ulist_sum_plus.
+    reflexivity.
+Qed.
+
+Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
+        x = ulist_sum (ulist_image l (λ p, fst p · list_prod
+            (list_image (snd p) (λ v, vector_to_tensor v)))).
+    intros x.
+    pose proof (tensor_simple_sum x) as [l l_eq]; subst x.
+    exists (ulist_image l (λ x, (ex_val [|x], ex_val (ex_proof [|x])))).
+    rewrite ulist_image_comp; cbn.
+    induction l using ulist_induction.
+    {
+        do 2 rewrite ulist_image_end, ulist_sum_end.
+        reflexivity.
+    }
+    do 2 rewrite ulist_image_add, ulist_sum_add.
+    rewrite <- IHl; clear IHl.
+    apply rplus; clear l.
+    destruct a as [a l_ex]; cbn.
+    unfold ex_val at 1, ex_proof.
+    destruct (ex_to_type l_ex) as [α C0]; cbn.
+    rewrite_ex_val l l_eq; clear l_ex C0.
+    subst a.
+    apply f_equal.
+    induction l.
+    {
+        cbn.
+        reflexivity.
+    }
+    cbn.
+    rewrite <- IHl; clear IHl.
     reflexivity.
 Qed.
 

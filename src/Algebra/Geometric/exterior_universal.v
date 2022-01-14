@@ -204,28 +204,19 @@ Theorem exterior_universal : @initial TO_EXT ext_to_ext.
         apply set_type_eq; cbn.
         apply algebra_homomorphism_eq.
         intros x.
-        equiv_get_value x.
-        change (to_equiv_type (ideal_equiv (ext_ideal V)) x)
-            with (tensor_to_ext V x).
-        unfold vector_to_ext in g_eq, h_eq.
-        pose proof (tensor_simple_sum V x) as [l x_eq]; subst x.
+        pose proof (ext_sum V x) as [l l_eq]; subst x.
         induction l using ulist_induction.
         {
             rewrite ulist_image_end, ulist_sum_end.
-            change (module_V (algebra_module (to_algebra_algebra V
-                (to_tensor_algebra V)))) with (algebra_V (tensor_algebra V)).
-            rewrite (tensor_to_ext_zero V).
             replace (algebra_homo_f g 0) with 0;
                 [>|symmetry; apply (algebra_homo_zero g)].
             symmetry; apply (algebra_homo_zero h).
         }
         rewrite ulist_image_add, ulist_sum_add.
-        rewrite (tensor_to_ext_plus V).
         do 2 rewrite algebra_homo_plus.
         rewrite IHl; clear IHl.
         apply rplus; clear l.
-        destruct a as [a [α [l a_eq]]]; cbn; subst a.
-        rewrite (tensor_to_ext_scalar V).
+        destruct a as [α l]; cbn.
         do 2 rewrite algebra_homo_scalar.
         apply f_equal; clear α.
         induction l.
@@ -236,9 +227,7 @@ Theorem exterior_universal : @initial TO_EXT ext_to_ext.
             reflexivity.
         }
         cbn.
-        rewrite (tensor_to_ext_mult V).
         do 2 rewrite algebra_homo_mult.
-        unfold vectors_to_tensor in IHl.
         rewrite IHl; clear IHl.
         apply rmult; clear l.
         rewrite g_eq, h_eq.

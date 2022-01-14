@@ -6,6 +6,7 @@ Require Import tensor_algebra.
 Require Import linear_grade.
 
 Require Import ring_ideal.
+Require Import mult_product.
 
 Require Import set.
 Require Import unordered_list.
@@ -462,6 +463,37 @@ Theorem vector_to_ext_eq : ∀ a b, vector_to_ext a = vector_to_ext b → a = b.
                 }
                 rewrite (grade_project_of_grade_neq _ _ _ ij neq).
                 reflexivity.
+Qed.
+
+Theorem ext_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
+        x = ulist_sum (ulist_image l (λ p, fst p · list_prod
+            (list_image (snd p) (λ v, vector_to_ext v)))).
+    intros x.
+    equiv_get_value x.
+    change (to_equiv_type _ x) with (tensor_to_ext x).
+    pose proof (tensor_sum V x) as [l l_eq]; subst x.
+    exists l.
+    induction l using ulist_induction.
+    {
+        do 2 rewrite ulist_image_end, ulist_sum_end.
+        apply tensor_to_ext_zero.
+    }
+    do 2 rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite tensor_to_ext_plus.
+    rewrite IHl; clear IHl.
+    apply rplus; clear l.
+    destruct a as [a l]; cbn.
+    rewrite tensor_to_ext_scalar.
+    apply f_equal; clear a.
+    induction l.
+    {
+        cbn.
+        reflexivity.
+    }
+    cbn.
+    rewrite tensor_to_ext_mult.
+    rewrite IHl; clear IHl.
+    reflexivity.
 Qed.
 
 End ExteriorConstruct.
