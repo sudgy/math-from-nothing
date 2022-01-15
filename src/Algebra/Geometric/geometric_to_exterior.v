@@ -5,7 +5,7 @@ Require Import card.
 
 Require Import module_category.
 Require Import algebra_category.
-Require Import linear_quadratic.
+Require Import linear_bilinear_form.
 Require Import linear_sum.
 Require Import linear_transformation_space.
 
@@ -32,6 +32,8 @@ Let VP := module_plus V.
 Let VS := module_scalar V.
 
 Existing Instances VP VS.
+
+Context (B : set_type bilinear_form).
 
 Let EP := ext_plus V.
 Let EZ := ext_zero V.
@@ -63,12 +65,10 @@ Let E12S := module_scalar E12.
 
 Existing Instances E12P E12S.
 
-Context (Q : set_type (quadratic_form (cring_U F) (module_V V))).
-
 Definition ext_inner_base1 (a : module_V V) (v : module_V V) (p : module_V E12)
     := (
         vector_to_ext V v * fst p,
-        -vector_to_ext V v * snd p + qf_polar [Q|] a v · (fst p)
+        -vector_to_ext V v * snd p + [B|] a v · (fst p)
     ) : module_V E12.
 
 Lemma ext_inner_base_plus : ∀ a v p1 p2, ext_inner_base1 a v (p1 + p2) =
@@ -133,7 +133,7 @@ Lemma ext_inner_base2_plus : ∀ a v1 v2, ext_inner_base2 a (v1 + v2) =
         rewrite rdist.
         do 2 rewrite <- plus_assoc.
         apply lplus.
-        rewrite qf_polar_rplus.
+        rewrite bilinear_form_rplus.
         rewrite scalar_rdist.
         do 2 rewrite plus_assoc.
         apply rplus.
@@ -153,7 +153,7 @@ Lemma ext_inner_base2_scalar : ∀ a b v,
     -   rewrite (vector_to_ext_scalar V).
         apply scalar_lmult.
     -   rewrite (vector_to_ext_scalar V).
-        rewrite qf_polar_rscalar.
+        rewrite bilinear_form_rscalar.
         rewrite <- scalar_comp.
         rewrite scalar_ldist.
         do 2 rewrite mult_lneg.
@@ -237,7 +237,7 @@ Theorem ext_inner_scalar : ∀ a α, 0 = ext_inner a (scalar_to_ext V α).
 Qed.
 
 Theorem ext_inner_vector : ∀ a v,
-        ext_inner a (vector_to_ext V v) = qf_polar [Q|] a v · 1.
+        ext_inner a (vector_to_ext V v) = [B|] a v · 1.
     intros a v.
     unfold ext_inner.
     rewrite ext_inner_f_eq.
@@ -248,8 +248,8 @@ Qed.
 
 Theorem ext_inner_bivector : ∀ a u v,
         ext_inner a (vector_to_ext V u * vector_to_ext V v) =
-        qf_polar [Q|] a u · vector_to_ext V v -
-        qf_polar [Q|] a v · vector_to_ext V u.
+        [B|] a u · vector_to_ext V v -
+        [B|] a v · vector_to_ext V u.
     intros a u v.
     unfold ext_inner.
     rewrite ext_inner_f_mult.

@@ -5,7 +5,7 @@ Require Import card.
 Require Import ring_ideal.
 Require Import unordered_list.
 
-Require Import linear_quadratic.
+Require Import linear_bilinear_form.
 Require Import module_category.
 Require Import algebra_category.
 Require Import category_initterm.
@@ -25,7 +25,7 @@ Let VS := module_scalar V.
 
 Existing Instances UP UN UM VP VS.
 
-Context (Q : set_type (quadratic_form (cring_U F) (module_V V))).
+Context (B : set_type bilinear_form).
 
 Record to_ga := make_to_ga {
     to_ga_algebra : Algebra F;
@@ -35,7 +35,7 @@ Record to_ga := make_to_ga {
         (module_homo_f to_ga_homo v)
         (module_homo_f to_ga_homo v) =
         @scalar_mult _ _ (algebra_scalar to_ga_algebra)
-            ([Q|] v) (@one _ (algebra_one to_ga_algebra))
+            ([B|] v v) (@one _ (algebra_one to_ga_algebra))
 }.
 
 Definition to_ga_set (f g : to_ga)
@@ -90,29 +90,23 @@ Qed.
 Definition vector_to_ga_homo := make_module_homomorphism
     F
     V
-    (algebra_module (geometric_algebra Q))
-    (vector_to_ga Q)
-    (vector_to_ga_plus Q)
-    (vector_to_ga_scalar Q).
+    (algebra_module (geometric_algebra B))
+    (vector_to_ga B)
+    (vector_to_ga_plus B)
+    (vector_to_ga_scalar B).
 
-Let GM := ga_mult Q.
-Let GO := ga_one Q.
-Let GS := ga_scalar Q.
+Let GM := ga_mult B.
+Let GO := ga_one B.
+Let GS := ga_scalar B.
 
 Existing Instances GM GO GS.
 
-Lemma ga_contract2 : ∀ v, vector_to_ga Q v * vector_to_ga Q v = [Q|] v · 1.
-    intros v.
-    rewrite (ga_contract Q).
-    apply scalar_to_ga_one_scalar.
-Qed.
-
 Definition ga_to_ga := make_to_ga
-    (geometric_algebra Q)
+    (geometric_algebra B)
     vector_to_ga_homo
-    ga_contract2.
+    (ga_contract B).
 
-Theorem gaerior_universal : @initial TO_GA ga_to_ga.
+Theorem geometric_universal : @initial TO_GA ga_to_ga.
     pose (UZ := cring_zero F).
     pose (UPC := cring_plus_comm F).
     pose (UPZ := cring_plus_lid F).
@@ -133,7 +127,7 @@ Theorem gaerior_universal : @initial TO_GA ga_to_ga.
     pose (TMR := algebra_mult_rid (tensor_algebra V)).
     pose (TSMO := algebra_scalar_id (tensor_algebra V)).
     pose (TSMR := algebra_scalar_rdist (tensor_algebra V)).
-    pose (GP := ga_plus Q).
+    pose (GP := ga_plus B).
     unfold ga_to_ga, initial; cbn.
     intros [A f f_contr].
     unfold to_ga_set; cbn.
@@ -160,7 +154,7 @@ Theorem gaerior_universal : @initial TO_GA ga_to_ga.
             with (tensor_algebra V) in g.
         change (module_homo_f (to_algebra_homo V (to_tensor_algebra V)))
             with (@vector_to_tensor F V) in g_eq.
-        assert (∀ a b, eq_equal (ideal_equiv (ga_ideal Q)) a b →
+        assert (∀ a b, eq_equal (ideal_equiv (ga_ideal B)) a b →
             algebra_homo_f g a = algebra_homo_f g b) as g_wd.
         {
             intros a b eq.
@@ -194,7 +188,7 @@ Theorem gaerior_universal : @initial TO_GA ga_to_ga.
             reflexivity.
         }
         pose (h := unary_op g_wd).
-        change (equiv_type (ideal_equiv (ga_ideal Q))) with (ga Q) in h.
+        change (equiv_type (ideal_equiv (ga_ideal B))) with (ga B) in h.
         assert (h_plus : ∀ u v, h (u + v) = h u + h v).
         {
             intros u v.
@@ -221,7 +215,7 @@ Theorem gaerior_universal : @initial TO_GA ga_to_ga.
             unfold one at 1, h; equiv_simpl.
             apply algebra_homo_one.
         }
-        exists (make_algebra_homomorphism F (geometric_algebra Q) A h
+        exists (make_algebra_homomorphism F (geometric_algebra B) A h
             h_plus h_scalar h_mult h_one).
         cbn.
         intros x.
@@ -231,7 +225,7 @@ Theorem gaerior_universal : @initial TO_GA ga_to_ga.
         apply set_type_eq; cbn.
         apply algebra_homomorphism_eq.
         intros x.
-        pose proof (ga_sum Q x) as [l l_eq]; subst x.
+        pose proof (ga_sum B x) as [l l_eq]; subst x.
         induction l using ulist_induction.
         {
             rewrite ulist_image_end, ulist_sum_end.
@@ -249,7 +243,7 @@ Theorem gaerior_universal : @initial TO_GA ga_to_ga.
         induction l.
         {
             cbn.
-            change (tensor_to_ga Q 1) with (@one _ EO).
+            change (tensor_to_ga B 1) with (@one _ EO).
             do 2 rewrite algebra_homo_one.
             reflexivity.
         }

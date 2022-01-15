@@ -3,7 +3,7 @@ Require Import init.
 Require Import module_category.
 Require Import algebra_category.
 Require Import tensor_algebra.
-Require Import linear_quadratic.
+Require Import linear_bilinear_form.
 
 Require Import ring_ideal.
 Require Import mult_product.
@@ -59,14 +59,16 @@ Let TAMA := algebra_mult_assoc (tensor_algebra V).
 Let TAML := algebra_mult_lid (tensor_algebra V).
 Let TAMR := algebra_mult_rid (tensor_algebra V).
 
-Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UR UMC UMO VP VZ VN VPA VPC
-    VPZ VPN VSM VSMO VSMR TAP TAZ TAN TAPA TAPC TAPZ TAPN TASM TASMO TASMC TASL
-    TASR TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UR UMC UMO.
+Existing Instances VP VZ VN VPA VPC VPZ VPN VSM VSMO VSMR.
 
-Context (Q : set_type (quadratic_form (cring_U F) (module_V V))).
+Context (B : set_type bilinear_form).
+
+Existing Instances TAP TAZ TAN TAPA TAPC TAPZ TAPN TASM TASMO TASMC TASL TASR
+    TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR.
 
 Definition ga_ideal_base (x : algebra_V (tensor_algebra V)) :=
-    ∃ v, x = vector_to_tensor v * vector_to_tensor v - [Q|] v · 1.
+    ∃ v, x = vector_to_tensor v * vector_to_tensor v - [B|] v v · 1.
 
 Definition ga_ideal := ideal_generated_by ga_ideal_base.
 
@@ -302,12 +304,13 @@ Theorem scalar_to_ga_one_scalar : ∀ a, scalar_to_ga a = a · 1.
     apply scalar_to_ga_scalar.
 Qed.
 
-Theorem ga_contract :
-        ∀ v, vector_to_ga v * vector_to_ga v = scalar_to_ga ([Q|] v).
+Theorem ga_contract : ∀ v, vector_to_ga v * vector_to_ga v = [B|] v v · 1.
     intros v.
-    unfold vector_to_ga, scalar_to_ga, tensor_to_ga, mult; equiv_simpl.
+    rewrite <- scalar_to_ga_one_scalar.
+    unfold vector_to_ga, scalar_to_ga, tensor_to_ga, mult, scalar_mult, one;
+        equiv_simpl.
     assert (ga_ideal_base (vector_to_tensor v * vector_to_tensor v -
-        scalar_to_tensor V ([Q|] v))) as v2_in.
+        scalar_to_tensor V ([B|] v v))) as v2_in.
     {
         exists v.
         rewrite <- (scalar_to_tensor_scalar V).
