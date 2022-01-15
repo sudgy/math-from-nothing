@@ -2,6 +2,7 @@ Require Import init.
 
 Require Import set.
 Require Import card.
+Require Import unordered_list.
 
 Require Import module_category.
 Require Import algebra_category.
@@ -10,6 +11,7 @@ Require Import linear_sum.
 Require Import linear_transformation_space.
 
 Require Export geometric_construct.
+Require Export geometric_universal.
 Require Export exterior_construct.
 Require Import exterior_universal.
 
@@ -24,9 +26,10 @@ Let UPC := cring_plus_comm F.
 Let UPZ := cring_plus_lid F.
 Let UPN := cring_plus_linv F.
 Let UM := cring_mult F.
+Let UO := cring_one F.
 Let UMC := cring_mult_comm F.
 
-Existing Instances UP UZ UN UPC UPZ UPN UM UMC.
+Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
 
 Let VP := module_plus V.
 Let VS := module_scalar V.
@@ -48,6 +51,7 @@ Let EMA := ext_mult_assoc V.
 Let EML := ext_mult_lid V.
 Let EMR := ext_mult_rid V.
 Let ES := ext_scalar V.
+Let ESO := ext_scalar_id V.
 Let ESL := ext_scalar_ldist V.
 Let ESR := ext_scalar_rdist V.
 Let ESC := ext_scalar_comp V.
@@ -56,7 +60,8 @@ Let ER := ext_rdist V.
 Let ESML := ext_scalar_lmult V.
 Let ESMR := ext_scalar_rmult V.
 
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EMA EML EMR ES ESL ESR ESC EL ER ESML ESMR.
+Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EMA EML EMR ES ESO ESL ESR ESC
+    EL ER ESML ESMR.
 
 Let E12 := direct_sum (algebra_module (exterior_algebra V))
                        (algebra_module (exterior_algebra V)).
@@ -204,8 +209,8 @@ Definition ext_inner_base4 a := make_to_ext
 Definition ext_inner_base a
     := card_one_ex (exterior_universal V (ext_inner_base4 a)).
 
-Definition ext_inner_homo a := [ext_inner_base a|].
-Definition ext_inner_f a := algebra_homo_f (ext_inner_homo a).
+Definition ext_inner_f_homo a := [ext_inner_base a|].
+Definition ext_inner_f a := algebra_homo_f (ext_inner_f_homo a).
 
 Theorem ext_inner_f_eq : ∀ a v,
         ext_inner_f a (vector_to_ext V v) = ext_inner_base2 a v.
@@ -221,7 +226,110 @@ Qed.
 
 Definition ext_inner a v := snd (module_homo_f (ext_inner_f a v) (1, 0)).
 
-Theorem ext_inner_scalar : ∀ a α, 0 = ext_inner a (scalar_to_ext V α).
+Theorem ext_inner_rplus :
+        ∀ a u v, ext_inner a (u + v) = ext_inner a u + ext_inner a v.
+    intros a u v.
+    unfold ext_inner.
+    unfold ext_inner_f.
+    rewrite algebra_homo_plus.
+    unfold plus at 1; cbn.
+    unfold linear_trans_plus_base.
+    unfold plus at 1; cbn.
+    reflexivity.
+Qed.
+
+Theorem ext_inner_rscalar : ∀ a α v, ext_inner a (α · v) = α · ext_inner a v.
+    intros a α v.
+    unfold ext_inner.
+    unfold ext_inner_f.
+    rewrite algebra_homo_scalar.
+    unfold scalar_mult at 1; cbn.
+    unfold linear_trans_scalar_base.
+    unfold scalar_mult at 1; cbn.
+    reflexivity.
+Qed.
+
+Theorem ext_inner_rzero : ∀ a, ext_inner a 0 = 0.
+    intros a.
+    rewrite <- (scalar_lanni 0).
+    rewrite ext_inner_rscalar.
+    apply scalar_lanni.
+Qed.
+
+Theorem ext_inner_rneg : ∀ a v, ext_inner a (-v) = -ext_inner a v.
+    intros a v.
+    rewrite <- scalar_neg_one.
+    rewrite ext_inner_rscalar.
+    apply scalar_neg_one.
+Qed.
+
+Theorem ext_inner_add : ∀ a v x,
+        ext_inner a (vector_to_ext V v * x) =
+        [B|] a v · x - vector_to_ext V v * ext_inner a x.
+    intros a v x.
+    pose proof (ext_sum V x) as [l l_eq]; subst x.
+    induction l as [|[α x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite mult_ranni.
+        rewrite ext_inner_rzero.
+        rewrite mult_ranni.
+        rewrite scalar_ranni.
+        rewrite neg_zero, plus_rid.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite ldist.
+    rewrite scalar_rmult.
+    rewrite ext_inner_rplus.
+    rewrite IHl; clear IHl.
+    rewrite ext_inner_rplus.
+    rewrite ldist.
+    rewrite neg_plus.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    rewrite scalar_ldist.
+    rewrite <- plus_assoc.
+    rewrite (plus_comm _ (-(vector_to_ext V v * _))).
+    rewrite plus_assoc.
+    apply rplus.
+    clear l.
+    do 2 rewrite ext_inner_rscalar.
+    rewrite scalar_rmult.
+    rewrite scalar_comp.
+    rewrite (mult_comm _ α).
+    rewrite <- scalar_comp.
+    rewrite <- scalar_rneg.
+    rewrite <- scalar_ldist.
+    apply f_equal.
+    unfold ext_inner.
+    rewrite ext_inner_f_mult.
+    rewrite ext_inner_f_eq.
+    unfold mult at 1; cbn.
+    rewrite plus_comm.
+    rewrite mult_lneg.
+    apply rplus.
+    induction x as [|x l].
+    {
+        cbn.
+        unfold ext_inner_f.
+        rewrite algebra_homo_one.
+        unfold one at 1; cbn.
+        reflexivity.
+    }
+    cbn.
+    rewrite ext_inner_f_mult.
+    unfold mult at 1; cbn.
+    unfold linear_trans_mult_base.
+    rewrite ext_inner_f_eq.
+    cbn.
+    rewrite <- scalar_rmult.
+    rewrite IHl; clear IHl.
+    rewrite scalar_rmult.
+    reflexivity.
+Qed.
+
+Theorem ext_inner_scalar : ∀ a α, ext_inner a (scalar_to_ext V α) = 0.
     intros a α.
     unfold ext_inner.
     unfold ext_inner_f.
@@ -239,10 +347,13 @@ Qed.
 Theorem ext_inner_vector : ∀ a v,
         ext_inner a (vector_to_ext V v) = [B|] a v · 1.
     intros a v.
-    unfold ext_inner.
-    rewrite ext_inner_f_eq.
-    cbn.
-    rewrite mult_ranni, plus_lid.
+    rewrite <- (mult_rid (vector_to_ext V v)).
+    rewrite ext_inner_add.
+    unfold EO.
+    rewrite <- scalar_to_ext_one at 2.
+    rewrite ext_inner_scalar.
+    rewrite mult_ranni.
+    rewrite neg_zero, plus_rid.
     reflexivity.
 Qed.
 
@@ -251,15 +362,344 @@ Theorem ext_inner_bivector : ∀ a u v,
         [B|] a u · vector_to_ext V v -
         [B|] a v · vector_to_ext V u.
     intros a u v.
-    unfold ext_inner.
-    rewrite ext_inner_f_mult.
-    do 2 rewrite ext_inner_f_eq.
-    unfold mult; cbn.
-    rewrite mult_ranni, plus_lid.
-    rewrite plus_comm.
+    rewrite ext_inner_add.
+    rewrite ext_inner_vector.
     rewrite scalar_rmult.
-    do 2 rewrite mult_rid.
+    rewrite mult_rid.
+    reflexivity.
+Qed.
+
+Theorem ext_inner_lplus :
+        ∀ a b v, ext_inner (a + b) v = ext_inner a v + ext_inner b v.
+    intros a b v.
+    pose proof (ext_sum V v) as [l l_eq]; subst v.
+    induction l as [|[α v] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 3 rewrite ext_inner_rzero.
+        rewrite plus_rid.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    do 3 rewrite ext_inner_rplus.
+    rewrite IHl; clear IHl.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    rewrite <- plus_assoc.
+    rewrite (plus_comm (ext_inner a (ulist_sum _))).
+    rewrite plus_assoc.
+    apply rplus; clear l.
+    do 3 rewrite ext_inner_rscalar.
+    rewrite <- scalar_ldist.
+    apply f_equal.
+    induction v as [|v l].
+    {
+        cbn.
+        rewrite <- scalar_to_ext_one.
+        do 3 rewrite ext_inner_scalar.
+        rewrite plus_rid.
+        reflexivity.
+    }
+    cbn.
+    do 3 rewrite ext_inner_add.
+    rewrite IHl; clear IHl.
+    rewrite ldist.
+    rewrite neg_plus.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    rewrite bilinear_form_lplus.
+    rewrite scalar_rdist.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    apply plus_comm.
+Qed.
+
+Theorem ext_inner_lscalar : ∀ α a v, ext_inner (α · a) v = α · ext_inner a v.
+    intros α a v.
+    pose proof (ext_sum V v) as [l l_eq]; subst v.
+    induction l as [|[β v] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 2 rewrite ext_inner_rzero.
+        rewrite scalar_ranni.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    do 2 rewrite ext_inner_rplus.
+    rewrite IHl; clear IHl.
+    rewrite scalar_ldist.
+    apply rplus; clear l.
+    do 2 rewrite ext_inner_rscalar.
+    rewrite scalar_comp.
+    rewrite mult_comm.
+    rewrite <- scalar_comp.
+    apply f_equal; clear β.
+    induction v as [|v l].
+    {
+        cbn.
+        rewrite <- scalar_to_ext_one.
+        do 2 rewrite ext_inner_scalar.
+        rewrite scalar_ranni.
+        reflexivity.
+    }
+    cbn.
+    do 2 rewrite ext_inner_add.
+    rewrite IHl; clear IHl.
+    rewrite bilinear_form_lscalar.
+    rewrite scalar_ldist.
+    rewrite scalar_comp.
     rewrite scalar_rneg.
+    rewrite scalar_rmult.
+    reflexivity.
+Qed.
+
+Definition ext_inner_homo a := make_module_homomorphism
+    F
+    (algebra_module (exterior_algebra V))
+    (algebra_module (exterior_algebra V))
+    (ext_inner a)
+    (ext_inner_rplus a)
+    (ext_inner_rscalar a).
+
+Definition ext_outer_homo a := make_module_homomorphism
+    F
+    (algebra_module (exterior_algebra V))
+    (algebra_module (exterior_algebra V))
+    (mult (vector_to_ext V a))
+    (ldist (vector_to_ext V a))
+    (λ α v, scalar_rmult α (vector_to_ext V a) v).
+
+Let EE := linear_trans_algebra (algebra_module (exterior_algebra V)).
+Let EEP := algebra_plus EE.
+Let EEZ := algebra_zero EE.
+Let EEPC := algebra_plus_comm EE.
+Let EEPZ := algebra_plus_lid EE.
+Let EEM := algebra_mult EE.
+Let EEO := algebra_one EE.
+Let EEL := algebra_ldist EE.
+Let EER := algebra_rdist EE.
+Let EES := algebra_scalar EE.
+Let EESL := algebra_scalar_ldist EE.
+
+Existing Instances EEP EEZ EEPC EEPZ EEM EEO EEL EER EES EESL.
+
+Theorem ext_inner_alternating : ∀ a, ext_inner_homo a * ext_inner_homo a = 0.
+    intros a.
+    apply module_homomorphism_eq.
+    intros x.
+    unfold mult at 1; cbn.
+    unfold zero at 1; cbn.
+    unfold linear_trans_zero_base.
+    pose proof (ext_sum V x) as [l l_eq]; subst x.
+    induction l as [|[α x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 2 rewrite ext_inner_rzero.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    do 2 rewrite ext_inner_rplus.
+    rewrite IHl; clear IHl l.
+    rewrite plus_rid.
+    do 2 rewrite ext_inner_rscalar.
+    rewrite <- (scalar_ranni α).
+    apply f_equal.
+    induction x as [|v l].
+    {
+        cbn.
+        rewrite <- scalar_to_ext_one.
+        rewrite ext_inner_scalar.
+        apply ext_inner_rzero.
+    }
+    cbn.
+    rewrite ext_inner_add.
+    rewrite ext_inner_rplus.
+    rewrite ext_inner_rneg.
+    rewrite ext_inner_add.
+    rewrite IHl.
+    rewrite mult_ranni.
+    rewrite neg_zero, plus_rid.
+    rewrite ext_inner_rscalar.
+    rewrite plus_rinv.
+    reflexivity.
+Qed.
+
+Theorem ext_outer_alternating : ∀ a, ext_outer_homo a * ext_outer_homo a = 0.
+    intros a.
+    apply module_homomorphism_eq.
+    intros x.
+    unfold mult at 1; cbn.
+    unfold zero at 1; cbn.
+    unfold linear_trans_zero_base.
+    rewrite mult_assoc.
+    rewrite <- (ext_alternating V).
+    apply mult_lanni.
+Qed.
+
+Definition geo_to_ext_base1 a := ext_inner_homo a + ext_outer_homo a.
+
+Lemma geo_to_ext_base1_plus : ∀ u v,
+        geo_to_ext_base1 (u + v) = geo_to_ext_base1 u + geo_to_ext_base1 v.
+    intros u v.
+    unfold geo_to_ext_base1.
+    apply module_homomorphism_eq.
+    intros x.
+    unfold plus at 1 4 5 6; cbn.
+    unfold linear_trans_plus_base; cbn.
+    rewrite ext_inner_lplus.
+    rewrite (vector_to_ext_plus V).
+    rewrite rdist.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    apply plus_comm.
+Qed.
+
+Lemma geo_to_ext_base1_scalar : ∀ a v,
+        geo_to_ext_base1 (a · v) = a · geo_to_ext_base1 v.
+    intros a v.
+    unfold geo_to_ext_base1.
+    apply module_homomorphism_eq.
+    intros x.
+    rewrite scalar_ldist.
+    unfold scalar_mult at 3 4, plus at 1 2; cbn.
+    unfold linear_trans_plus_base, linear_trans_scalar_base; cbn.
+    rewrite ext_inner_lscalar.
+    rewrite (vector_to_ext_scalar V).
+    rewrite scalar_lmult.
+    reflexivity.
+Qed.
+
+Lemma geo_to_ext_base_contract : ∀ v,
+        geo_to_ext_base1 v * geo_to_ext_base1 v = [B|] v v · 1.
+    intros v.
+    unfold geo_to_ext_base1.
+    rewrite ldist.
+    do 2 rewrite rdist.
+    rewrite ext_inner_alternating, ext_outer_alternating.
+    rewrite plus_lid, plus_rid.
+    apply module_homomorphism_eq.
+    intros x.
+    unfold mult at 1 2, plus at 1; cbn.
+    unfold linear_trans_plus_base; cbn.
+    unfold scalar_mult at 1; cbn.
+    unfold linear_trans_scalar_base.
+    unfold one at 1; cbn.
+    rewrite ext_inner_add.
+    rewrite plus_comm.
+    apply plus_rlinv.
+Qed.
+
+Definition geo_to_ext_base2 := make_module_homomorphism
+    F
+    V
+    (algebra_module EE)
+    geo_to_ext_base1
+    geo_to_ext_base1_plus
+    geo_to_ext_base1_scalar.
+
+Definition geo_to_ext_base3 := make_to_ga
+    B EE geo_to_ext_base2 geo_to_ext_base_contract.
+
+Definition geo_to_ext_base :=
+    card_one_ex (geometric_universal B geo_to_ext_base3).
+Definition geo_to_ext_f_homo := [geo_to_ext_base|].
+Definition geo_to_ext_f := algebra_homo_f geo_to_ext_f_homo.
+
+Let GP := ga_plus B.
+Let GM := ga_mult B.
+Let GO := ga_one B.
+Let GMR := ga_mult_rid B.
+Let GS := ga_scalar B.
+
+Existing Instances GP GM GO GMR GS.
+
+Theorem geo_to_ext_f_eq :
+        ∀ v, geo_to_ext_f (vector_to_ga B v) = geo_to_ext_base1 v.
+    apply [|geo_to_ext_base].
+Qed.
+
+Theorem geo_to_ext_f_mult :
+        ∀ u v, geo_to_ext_f (u * v) = geo_to_ext_f u * geo_to_ext_f v.
+    apply algebra_homo_mult.
+Qed.
+
+Definition geo_to_ext (v : ga B) := module_homo_f (geo_to_ext_f v) 1 : ext V.
+
+Theorem geo_to_ext_plus : ∀ u v,
+        geo_to_ext (u + v) = geo_to_ext u + geo_to_ext v.
+    intros u v.
+    unfold geo_to_ext.
+    unfold geo_to_ext_f.
+    rewrite algebra_homo_plus.
+    unfold plus at 1; cbn.
+    unfold linear_trans_plus_base.
+    reflexivity.
+Qed.
+
+Theorem geo_to_ext_scalar : ∀ a v, geo_to_ext (a · v) = a · geo_to_ext v.
+    intros a v.
+    unfold geo_to_ext.
+    unfold geo_to_ext_f.
+    rewrite algebra_homo_scalar.
+    unfold scalar_mult at 1; cbn.
+    unfold linear_trans_scalar_base.
+    reflexivity.
+Qed.
+
+Theorem geo_to_ext_add : ∀ v x, geo_to_ext (vector_to_ga B v * x) =
+        ext_inner v (geo_to_ext x) + vector_to_ext V v * geo_to_ext x.
+    intros v x.
+    unfold geo_to_ext.
+    rewrite geo_to_ext_f_mult.
+    rewrite geo_to_ext_f_eq.
+    unfold mult at 1; cbn.
+    unfold linear_trans_mult_base; cbn.
+    unfold geo_to_ext_base1; cbn.
+    unfold plus at 1; cbn.
+    unfold linear_trans_plus_base; cbn.
+    reflexivity.
+Qed.
+
+Theorem geo_to_ext_one : geo_to_ext 1 = 1.
+    unfold geo_to_ext.
+    unfold geo_to_ext_f.
+    rewrite algebra_homo_one.
+    unfold one at 1; cbn.
+    reflexivity.
+Qed.
+
+Theorem geo_to_ext_of_scalar : ∀ α,
+        geo_to_ext (scalar_to_ga B α) = scalar_to_ext V α.
+    intros α.
+    rewrite scalar_to_ga_one_scalar.
+    rewrite geo_to_ext_scalar.
+    change 1 with (one (U := ga B)).
+    rewrite geo_to_ext_one.
+    symmetry; apply scalar_to_ext_one_scalar.
+Qed.
+
+Theorem geo_to_ext_vector : ∀ v,
+        geo_to_ext (vector_to_ga B v) = vector_to_ext V v.
+    intros v.
+    rewrite <- (mult_rid (vector_to_ga B v)).
+    rewrite geo_to_ext_add.
+    change 1 with (one (U := ga B)).
+    rewrite geo_to_ext_one.
+    rewrite mult_rid.
+    replace 1 with (scalar_to_ext V 1) by apply scalar_to_ext_one.
+    rewrite ext_inner_scalar.
+    apply plus_lid.
+Qed.
+
+Theorem geo_to_ext_vector2 : ∀ u v,
+        geo_to_ext (vector_to_ga B u * vector_to_ga B v) =
+        [B|] u v · 1 + vector_to_ext V u * vector_to_ext V v.
+    intros u v.
+    rewrite geo_to_ext_add.
+    rewrite geo_to_ext_vector.
+    rewrite ext_inner_vector.
     reflexivity.
 Qed.
 
