@@ -6,6 +6,7 @@ Require Import tensor_algebra.
 Require Import linear_quadratic.
 
 Require Import ring_ideal.
+Require Import mult_product.
 
 Require Import set.
 Require Import unordered_list.
@@ -179,55 +180,55 @@ Definition geometric_algebra := make_algebra F
     ga_scalar_lmult
     ga_scalar_rmult.
 
-Definition to_ga v := to_equiv_type (ideal_equiv ga_ideal) v.
+Definition tensor_to_ga v := to_equiv_type (ideal_equiv ga_ideal) v.
 
-Theorem to_ga_plus : ∀ u v, to_ga (u + v) = to_ga u + to_ga v.
+Theorem tensor_to_ga_plus : ∀ u v, tensor_to_ga (u + v) = tensor_to_ga u + tensor_to_ga v.
     intros u v.
-    unfold to_ga, plus at 2; equiv_simpl.
+    unfold tensor_to_ga, plus at 2; equiv_simpl.
     rewrite plus_rinv.
     exact (ideal_zero ga_ideal).
 Qed.
 
-Theorem to_ga_mult : ∀ u v, to_ga (u * v) = to_ga u * to_ga v.
+Theorem tensor_to_ga_mult : ∀ u v, tensor_to_ga (u * v) = tensor_to_ga u * tensor_to_ga v.
     intros u v.
-    unfold to_ga, mult at 2; equiv_simpl.
+    unfold tensor_to_ga, mult at 2; equiv_simpl.
     rewrite plus_rinv.
     exact (ideal_zero ga_ideal).
 Qed.
 
-Theorem to_ga_scalar : ∀ a v, to_ga (a · v) = a · to_ga v.
+Theorem tensor_to_ga_scalar : ∀ a v, tensor_to_ga (a · v) = a · tensor_to_ga v.
     intros a v.
-    unfold to_ga, scalar_mult at 2; equiv_simpl.
+    unfold tensor_to_ga, scalar_mult at 2; equiv_simpl.
     rewrite plus_rinv.
     exact (ideal_zero ga_ideal).
 Qed.
 
-Theorem to_ga_zero : to_ga 0 = 0.
+Theorem tensor_to_ga_zero : tensor_to_ga 0 = 0.
     reflexivity.
 Qed.
 
-Definition vector_to_ga v := to_ga (vector_to_tensor v).
+Definition vector_to_ga v := tensor_to_ga (vector_to_tensor v).
 
 Theorem vector_to_ga_plus :
         ∀ u v, vector_to_ga (u + v) = vector_to_ga u + vector_to_ga v.
     intros u v.
     unfold vector_to_ga.
     rewrite (vector_to_tensor_plus V).
-    apply to_ga_plus.
+    apply tensor_to_ga_plus.
 Qed.
 
 Theorem vector_to_ga_scalar : ∀ a v, vector_to_ga (a · v) = a · vector_to_ga v.
     intros a v.
     unfold vector_to_ga.
     rewrite (vector_to_tensor_scalar V).
-    apply to_ga_scalar.
+    apply tensor_to_ga_scalar.
 Qed.
 
 Theorem vector_to_ga_zero : vector_to_ga 0 = 0.
     unfold vector_to_ga.
     unfold VZ.
     rewrite (vector_to_tensor_zero V).
-    apply to_ga_zero.
+    apply tensor_to_ga_zero.
 Qed.
 
 Theorem vector_to_ga_neg : ∀ v, vector_to_ga (-v) = -vector_to_ga v.
@@ -237,21 +238,21 @@ Theorem vector_to_ga_neg : ∀ v, vector_to_ga (-v) = -vector_to_ga v.
     apply scalar_neg_one.
 Qed.
 
-Definition scalar_to_ga a := to_ga (scalar_to_tensor V a).
+Definition scalar_to_ga a := tensor_to_ga (scalar_to_tensor V a).
 
 Theorem scalar_to_ga_plus : ∀ a b,
         scalar_to_ga (a + b) = scalar_to_ga a + scalar_to_ga b.
     intros a b.
     unfold scalar_to_ga.
     rewrite (scalar_to_tensor_plus V).
-    apply to_ga_plus.
+    apply tensor_to_ga_plus.
 Qed.
 
 Theorem scalar_to_ga_zero : scalar_to_ga 0 = 0.
     unfold scalar_to_ga.
     unfold UZ.
     rewrite (scalar_to_tensor_zero V).
-    apply to_ga_zero.
+    apply tensor_to_ga_zero.
 Qed.
 
 Theorem scalar_to_ga_mult : ∀ a b,
@@ -259,13 +260,13 @@ Theorem scalar_to_ga_mult : ∀ a b,
     intros a b.
     unfold scalar_to_ga.
     rewrite (scalar_to_tensor_mult V).
-    apply to_ga_mult.
+    apply tensor_to_ga_mult.
 Qed.
 
 Theorem scalar_to_ga_scalar : ∀ a A, scalar_to_ga a * A = a · A.
     intros a A.
     equiv_get_value A.
-    unfold scalar_to_ga, to_ga, mult, scalar_mult; equiv_simpl.
+    unfold scalar_to_ga, tensor_to_ga, mult, scalar_mult; equiv_simpl.
     rewrite (scalar_to_tensor_scalar V).
     rewrite plus_rinv.
     exact (ideal_zero ga_ideal).
@@ -289,7 +290,7 @@ Qed.
 Theorem scalar_to_ga_comm : ∀ a A, scalar_to_ga a * A = A * scalar_to_ga a.
     intros a A.
     equiv_get_value A.
-    unfold scalar_to_ga, to_ga, mult; equiv_simpl.
+    unfold scalar_to_ga, tensor_to_ga, mult; equiv_simpl.
     rewrite (scalar_to_tensor_comm V).
     rewrite plus_rinv.
     exact (ideal_zero ga_ideal).
@@ -304,7 +305,7 @@ Qed.
 Theorem ga_contract :
         ∀ v, vector_to_ga v * vector_to_ga v = scalar_to_ga ([Q|] v).
     intros v.
-    unfold vector_to_ga, scalar_to_ga, to_ga, mult; equiv_simpl.
+    unfold vector_to_ga, scalar_to_ga, tensor_to_ga, mult; equiv_simpl.
     assert (ga_ideal_base (vector_to_tensor v * vector_to_tensor v -
         scalar_to_tensor V ([Q|] v))) as v2_in.
     {
@@ -317,6 +318,37 @@ Theorem ga_contract :
     rewrite ulist_image_add, ulist_sum_add; cbn.
     rewrite ulist_image_end, ulist_sum_end.
     rewrite plus_rid, mult_lid, mult_rid.
+    reflexivity.
+Qed.
+
+Theorem ga_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
+        x = ulist_sum (ulist_image l (λ p, fst p · list_prod
+            (list_image (snd p) (λ v, vector_to_ga v)))).
+    intros x.
+    equiv_get_value x.
+    change (to_equiv_type _ x) with (tensor_to_ga x).
+    pose proof (tensor_sum V x) as [l l_eq]; subst x.
+    exists l.
+    induction l using ulist_induction.
+    {
+        do 2 rewrite ulist_image_end, ulist_sum_end.
+        apply tensor_to_ga_zero.
+    }
+    do 2 rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite tensor_to_ga_plus.
+    rewrite IHl; clear IHl.
+    apply rplus; clear l.
+    destruct a as [a l]; cbn.
+    rewrite tensor_to_ga_scalar.
+    apply f_equal; clear a.
+    induction l.
+    {
+        cbn.
+        reflexivity.
+    }
+    cbn.
+    rewrite tensor_to_ga_mult.
+    rewrite IHl; clear IHl.
     reflexivity.
 Qed.
 
