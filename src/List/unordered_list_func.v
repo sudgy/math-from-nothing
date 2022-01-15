@@ -5,6 +5,8 @@ Require Export unordered_list_base.
 
 Require Import equivalence.
 
+Unset Keyed Unification.
+
 Lemma ulist_image_wd A B : ∀ a b (f : A → B), list_permutation a b →
         to_equiv_type (ulist_equiv B) (list_image a f) =
         to_equiv_type (ulist_equiv B) (list_image b f).

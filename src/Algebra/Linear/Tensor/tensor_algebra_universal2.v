@@ -19,6 +19,8 @@ Require Import list.
 Require Import unordered_list.
 Require Import mult_product.
 
+Unset Keyed Unification.
+
 Section TensorAlgebra.
 
 Context {F : CRing} (V : Module F).

@@ -6,6 +6,8 @@ Require Import topology_connected.
 Require Export relation.
 Require Import order_minmax.
 
+Unset Keyed Unification.
+
 (* begin hide *)
 Section OrderTopology.
 

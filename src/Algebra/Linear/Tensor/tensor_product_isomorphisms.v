@@ -10,6 +10,8 @@ Require Import card.
 
 Require Import module_category.
 
+Unset Keyed Unification.
+
 Section TensorProductIsomorphisms.
 
 Context {F : CRing} (M : Module F).

@@ -3,3 +3,4 @@ Require Export logic.
 Require Export tactics.
 Require Export notations.
 Require Export types.
+Global Set Keyed Unification.

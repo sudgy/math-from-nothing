@@ -7,6 +7,8 @@ Require Import function.
 Require Export ord_basic.
 Require Import nat.
 
+Unset Keyed Unification.
+
 (* begin hide *)
 Open Scope card_scope.
 

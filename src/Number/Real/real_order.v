@@ -5,6 +5,8 @@ Require Import set.
 
 Require Export real_base.
 
+Unset Keyed Unification.
+
 (* begin hide *)
 Open Scope set_scope.
 (* end hide *)

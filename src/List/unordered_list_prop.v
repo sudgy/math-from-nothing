@@ -6,6 +6,8 @@ Require Import unordered_list_func.
 
 Require Import equivalence.
 
+Unset Keyed Unification.
+
 Lemma in_ulist_wd U : ∀ l1 l2 (a : U), list_permutation l1 l2 →
         in_list l1 a = in_list l2 a.
     intros l1 l2 a eq.

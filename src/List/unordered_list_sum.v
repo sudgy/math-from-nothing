@@ -8,6 +8,8 @@ Require Export unordered_list_nat.
 
 Require Import equivalence.
 
+Unset Keyed Unification.
+
 Section Sum.
 
 Context {U} `{

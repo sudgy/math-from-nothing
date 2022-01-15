@@ -3,6 +3,8 @@ Require Import init.
 Require Export relation.
 Require Export op.
 
+Unset Keyed Unification.
+
 Declare Scope set_scope.
 Delimit Scope set_scope with set.
 

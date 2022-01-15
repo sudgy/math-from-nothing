@@ -10,6 +10,8 @@ Require Import nat.
 Require Import card.
 Require Import ord_induction.
 
+Unset Keyed Unification.
+
 (* begin hide *)
 Open Scope card_scope.
 Open Scope ord_scope.

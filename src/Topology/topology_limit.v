@@ -7,6 +7,8 @@ Require Import topology_closure.
 Require Import topology_subspace.
 Require Import order_minmax.
 
+Unset Keyed Unification.
+
 Open Scope set_scope.
 
 Definition limit_point {U} `{Topology U} A x := ∀ S, open S → S x →

@@ -6,6 +6,8 @@ Require Import analysis_sequence.
 Require Import analysis_compact.
 Require Import analysis_function.
 
+Unset Keyed Unification.
+
 Definition uniformly_continuous {U V} `{Metric U, Metric V} (f : U → V) :=
     ∀ ε, 0 < ε → ∃ δ, 0 < δ ∧ (∀ a x, d a x < δ → d (f a) (f x) < ε).
 (* begin hide *)
