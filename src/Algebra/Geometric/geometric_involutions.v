@@ -1,5 +1,6 @@
 Require Import init.
 
+Require Import mult_product.
 Require Import card.
 
 Require Export geometric_construct.
@@ -140,6 +141,37 @@ Theorem ga_conjugate_vector : ∀ v, (φ v)∗ = -φ v.
     apply [|ga_conjugate_base].
 Qed.
 
+Theorem ga_conjugate_conjugate : ∀ v, v∗∗ = v.
+    intros v.
+    pose proof (ga_sum B v) as [l l_eq]; subst v.
+    induction l as [|[a x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 2 rewrite ga_conjugate_zero.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    do 2 rewrite ga_conjugate_plus.
+    rewrite IHl; clear IHl.
+    apply rplus.
+    do 2 rewrite ga_conjugate_scalar.
+    apply f_equal.
+    clear a l.
+    induction x as [|v l].
+    {
+        cbn.
+        do 2 rewrite ga_conjugate_one.
+        reflexivity.
+    }
+    cbn.
+    do 2 rewrite ga_conjugate_mult.
+    rewrite IHl; clear IHl.
+    apply rmult.
+    rewrite ga_conjugate_vector.
+    rewrite ga_conjugate_neg.
+    rewrite ga_conjugate_vector.
+    apply neg_neg.
+Qed.
 
 Definition ga_op := ga B.
 Local Instance ga_op_mult : Mult ga_op := {
@@ -279,6 +311,36 @@ Qed.
 
 Theorem ga_reverse_vector : ∀ v, (φ v)† = φ v.
     apply [|ga_reverse_base].
+Qed.
+
+Theorem ga_reverse_reverse : ∀ v, v†† = v.
+    intros v.
+    pose proof (ga_sum B v) as [l l_eq]; subst v.
+    induction l as [|[a x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 2 rewrite ga_reverse_zero.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    do 2 rewrite ga_reverse_plus.
+    rewrite IHl; clear IHl.
+    apply rplus.
+    do 2 rewrite ga_reverse_scalar.
+    apply f_equal.
+    clear a l.
+    induction x as [|v l].
+    {
+        cbn.
+        do 2 rewrite ga_reverse_one.
+        reflexivity.
+    }
+    cbn.
+    do 2 rewrite ga_reverse_mult.
+    rewrite IHl; clear IHl.
+    apply rmult.
+    do 2 rewrite ga_reverse_vector.
+    reflexivity.
 Qed.
 
 End GeometricInvolutions.
