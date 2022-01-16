@@ -36,9 +36,10 @@ Let EPC := ext_plus_comm V.
 Let EPA := ext_plus_assoc V.
 Let EPZ := ext_plus_lid V.
 Let EPN := ext_plus_linv V.
+Let EM := ext_mult V.
 Let ESM := ext_scalar V.
 
-Existing Instances EP EZ EN EPC EPA EPZ EPN ESM.
+Existing Instances EP EZ EN EPC EPA EPZ EPN EM ESM.
 
 Let TP := algebra_plus (tensor_algebra V).
 Let TZ := algebra_zero (tensor_algebra V).
@@ -443,6 +444,17 @@ Next Obligation.
     rewrite vl_eq.
     clear vl_eq A_nin Ai l_in v'i.
     symmetry; apply lem.
+Qed.
+
+Program Instance exterior_grade_mult : GradedAlgebra (cring_U F) (ext V).
+Next Obligation.
+    destruct H as [u' [u_eq u'i]].
+    destruct H0 as [v' [v_eq v'j]].
+    subst u v.
+    exists (u' * v').
+    split.
+    -   apply tensor_to_ext_mult.
+    -   apply (grade_mult (GradedAlgebra := TAG)); assumption.
 Qed.
 
 End ExteriorGrade.
