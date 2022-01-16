@@ -11,6 +11,9 @@ Require Import mult_product.
 Require Import set.
 Require Import unordered_list.
 
+Declare Scope ga_scope.
+Delimit Scope ga_scope with ga.
+
 Section GeometricConstruct.
 
 Context {F : CRing} {V : Module F}.
@@ -210,30 +213,30 @@ Theorem tensor_to_ga_zero : tensor_to_ga 0 = 0.
 Qed.
 
 Definition vector_to_ga v := tensor_to_ga (vector_to_tensor v).
+Local Notation "'φ'" := vector_to_ga.
 
-Theorem vector_to_ga_plus :
-        ∀ u v, vector_to_ga (u + v) = vector_to_ga u + vector_to_ga v.
+Theorem vector_to_ga_plus : ∀ u v, φ (u + v) = φ u + φ v.
     intros u v.
     unfold vector_to_ga.
     rewrite (vector_to_tensor_plus V).
     apply tensor_to_ga_plus.
 Qed.
 
-Theorem vector_to_ga_scalar : ∀ a v, vector_to_ga (a · v) = a · vector_to_ga v.
+Theorem vector_to_ga_scalar : ∀ a v, φ (a · v) = a · φ v.
     intros a v.
     unfold vector_to_ga.
     rewrite (vector_to_tensor_scalar V).
     apply tensor_to_ga_scalar.
 Qed.
 
-Theorem vector_to_ga_zero : vector_to_ga 0 = 0.
+Theorem vector_to_ga_zero : φ 0 = 0.
     unfold vector_to_ga.
     unfold VZ.
     rewrite (vector_to_tensor_zero V).
     apply tensor_to_ga_zero.
 Qed.
 
-Theorem vector_to_ga_neg : ∀ v, vector_to_ga (-v) = -vector_to_ga v.
+Theorem vector_to_ga_neg : ∀ v, φ (-v) = -φ v.
     intros v.
     rewrite <- scalar_neg_one.
     rewrite vector_to_ga_scalar.
@@ -241,31 +244,30 @@ Theorem vector_to_ga_neg : ∀ v, vector_to_ga (-v) = -vector_to_ga v.
 Qed.
 
 Definition scalar_to_ga a := tensor_to_ga (scalar_to_tensor V a).
+Local Notation "'σ'" := scalar_to_ga.
 
-Theorem scalar_to_ga_plus : ∀ a b,
-        scalar_to_ga (a + b) = scalar_to_ga a + scalar_to_ga b.
+Theorem scalar_to_ga_plus : ∀ a b, σ (a + b) = σ a + σ b.
     intros a b.
     unfold scalar_to_ga.
     rewrite (scalar_to_tensor_plus V).
     apply tensor_to_ga_plus.
 Qed.
 
-Theorem scalar_to_ga_zero : scalar_to_ga 0 = 0.
+Theorem scalar_to_ga_zero : σ 0 = 0.
     unfold scalar_to_ga.
     unfold UZ.
     rewrite (scalar_to_tensor_zero V).
     apply tensor_to_ga_zero.
 Qed.
 
-Theorem scalar_to_ga_mult : ∀ a b,
-        scalar_to_ga (a * b) = scalar_to_ga a * scalar_to_ga b.
+Theorem scalar_to_ga_mult : ∀ a b, σ (a * b) = σ a * σ b.
     intros a b.
     unfold scalar_to_ga.
     rewrite (scalar_to_tensor_mult V).
     apply tensor_to_ga_mult.
 Qed.
 
-Theorem scalar_to_ga_scalar : ∀ a A, scalar_to_ga a * A = a · A.
+Theorem scalar_to_ga_scalar : ∀ a A, σ a * A = a · A.
     intros a A.
     equiv_get_value A.
     unfold scalar_to_ga, tensor_to_ga, mult, scalar_mult; equiv_simpl.
@@ -274,7 +276,7 @@ Theorem scalar_to_ga_scalar : ∀ a A, scalar_to_ga a * A = a · A.
     exact (ideal_zero ga_ideal).
 Qed.
 
-Theorem scalar_to_ga_neg : ∀ a, scalar_to_ga (-a) = -scalar_to_ga a.
+Theorem scalar_to_ga_neg : ∀ a, σ (-a) = -σ a.
     intros a.
     rewrite <- mult_neg_one.
     rewrite scalar_to_ga_mult.
@@ -282,14 +284,14 @@ Theorem scalar_to_ga_neg : ∀ a, scalar_to_ga (-a) = -scalar_to_ga a.
     apply scalar_neg_one.
 Qed.
 
-Theorem scalar_to_ga_one : scalar_to_ga 1 = 1.
+Theorem scalar_to_ga_one : σ 1 = 1.
     unfold scalar_to_ga.
     unfold UO.
     rewrite (scalar_to_tensor_one V).
     reflexivity.
 Qed.
 
-Theorem scalar_to_ga_comm : ∀ a A, scalar_to_ga a * A = A * scalar_to_ga a.
+Theorem scalar_to_ga_comm : ∀ a A, σ a * A = A * σ a.
     intros a A.
     equiv_get_value A.
     unfold scalar_to_ga, tensor_to_ga, mult; equiv_simpl.
@@ -298,13 +300,13 @@ Theorem scalar_to_ga_comm : ∀ a A, scalar_to_ga a * A = A * scalar_to_ga a.
     exact (ideal_zero ga_ideal).
 Qed.
 
-Theorem scalar_to_ga_one_scalar : ∀ a, scalar_to_ga a = a · 1.
+Theorem scalar_to_ga_one_scalar : ∀ a, σ a = a · 1.
     intros a.
-    rewrite <- (mult_rid (scalar_to_ga a)).
+    rewrite <- (mult_rid (σ a)).
     apply scalar_to_ga_scalar.
 Qed.
 
-Theorem ga_contract : ∀ v, vector_to_ga v * vector_to_ga v = [B|] v v · 1.
+Theorem ga_contract : ∀ v, φ v * φ v = [B|] v v · 1.
     intros v.
     rewrite <- scalar_to_ga_one_scalar.
     unfold vector_to_ga, scalar_to_ga, tensor_to_ga, mult, scalar_mult, one;
@@ -326,7 +328,7 @@ Qed.
 
 Theorem ga_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
         x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-            (list_image (snd p) (λ v, vector_to_ga v)))).
+            (list_image (snd p) (λ v, φ v)))).
     intros x.
     equiv_get_value x.
     change (to_equiv_type _ x) with (tensor_to_ga x).
