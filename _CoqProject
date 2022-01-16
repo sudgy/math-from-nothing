@@ -197,6 +197,7 @@
 ./src/Algebra/Geometric/geometric_to_exterior.v
 ./src/Algebra/Geometric/geometric_exterior_isomorphism.v
 ./src/Algebra/Geometric/geometric_grade.v
+./src/Algebra/Geometric/geometric_involutions.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
