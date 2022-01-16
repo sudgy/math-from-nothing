@@ -32,6 +32,16 @@ Fixpoint list_prop {U} (S : U → Prop) (l : list U) :=
     | a :: l' => S a ∧ list_prop S l'
     end.
 
+(** Note that this only checks all pairs from left to right and doesn't evaluate
+S on an element with itself.  If you want both directions, give an S that
+manually checks both directions, and if you want to check an element with
+itself, use list_prop. *)
+Fixpoint list_prop2 {U} (S : U → U → Prop) (l : list U) :=
+    match l with
+    | list_end => True
+    | a :: l' => list_prop (S a) l' ∧ list_prop2 S l'
+    end.
+
 Theorem in_list_conc (A : Type) : ∀ (l1 l2 : list A) (x : A),
         in_list (l1 ++ l2) x → in_list l1 x ∨ in_list l2 x.
     intros l1 l2 x in12.
