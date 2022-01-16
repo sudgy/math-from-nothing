@@ -457,4 +457,48 @@ Next Obligation.
     -   apply (grade_mult (GradedAlgebra := TAG)); assumption.
 Qed.
 
+Theorem scalar_to_ext_grade : ∀ a, of_grade 0 (scalar_to_ext V a).
+    intros a.
+    exists (scalar_to_tensor V a).
+    split.
+    -   reflexivity.
+    -   apply scalar_to_tensor_grade.
+Qed.
+
+Theorem ext_grade_zero_scalar : ∀ v : ext V,
+        of_grade 0 v ↔ (∃ a, v = scalar_to_ext V a).
+    intros v.
+    split.
+    -   intros [v' [v_eq v0]].
+        subst v.
+        apply tensor_grade_zero_scalar in v0 as [a v'_eq].
+        subst v'.
+        exists a.
+        reflexivity.
+    -   intros [a v_eq]; subst v.
+        apply scalar_to_ext_grade.
+Qed.
+
+Theorem vector_to_ext_grade : ∀ a, of_grade 1 (vector_to_ext V a).
+    intros a.
+    exists (vector_to_tensor a).
+    split.
+    -   reflexivity.
+    -   apply vector_to_tensor_grade.
+Qed.
+
+Theorem ext_grade_one_vector : ∀ v : ext V,
+        of_grade 1 v ↔ (∃ a, v = vector_to_ext V a).
+    intros v.
+    split.
+    -   intros [v' [v_eq v0]].
+        subst v.
+        apply tensor_grade_one_vector in v0 as [a v'_eq].
+        subst v'.
+        exists a.
+        reflexivity.
+    -   intros [a v_eq]; subst v.
+        apply vector_to_ext_grade.
+Qed.
+
 End ExteriorGrade.

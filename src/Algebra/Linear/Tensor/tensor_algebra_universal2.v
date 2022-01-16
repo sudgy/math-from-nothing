@@ -9,6 +9,7 @@ Require Import tensor_algebra_vector.
 Require Import tensor_algebra_grade.
 Require Import tensor_algebra_mult.
 Require Import tensor_algebra_universal.
+Require Import tensor_product_isomorphisms.
 
 Require Import algebra_category.
 Require Import category_initterm.
@@ -39,6 +40,7 @@ Let UO := cring_one F.
 Let VP := module_plus V.
 Let VZ := module_zero V.
 Let VSM := module_scalar V.
+Let VSO := module_scalar_id V.
 Let TAP := algebra_plus (tensor_algebra V).
 Let TAZ := algebra_zero (tensor_algebra V).
 Let TAN := algebra_neg (tensor_algebra V).
@@ -52,7 +54,7 @@ Let TAM := algebra_mult (tensor_algebra V).
 Let TAMR := algebra_mult_rid (tensor_algebra V).
 Let TAO := algebra_one (tensor_algebra V).
 
-Existing Instances UP UZ UN UPC UPZ UPN UM UO VP VZ VSM TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM TASO TAM TAMR TAO.
+Existing Instances UP UZ UN UPC UPZ UPN UM UO VP VZ VSM VSO TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM TASO TAM TAMR TAO.
 
 Theorem vector_to_tensor_plus : ∀ u v, vector_to_tensor (u + v) =
         vector_to_tensor u + vector_to_tensor v.
@@ -214,6 +216,20 @@ Theorem scalar_to_tensor_grade : ∀ a,
     -   reflexivity.
 Qed.
 
+Theorem tensor_grade_zero_scalar : ∀ v,
+        of_grade 0 v ↔ (∃ a, v = scalar_to_tensor a).
+    intros v.
+    split.
+    -   intros [v' [v_in v_eq]].
+        cbn in v_in.
+        subst v.
+        destruct v_in as [a v'_eq]; subst v'.
+        exists a.
+        reflexivity.
+    -   intros [a v_eq]; subst v.
+        apply scalar_to_tensor_grade.
+Qed.
+
 Theorem vector_to_tensor_grade : ∀ v,
         of_grade (H10 := tensor_grade) 1 (vector_to_tensor v).
     intros v.
@@ -224,6 +240,43 @@ Theorem vector_to_tensor_grade : ∀ v,
     -   exists (vectors_to_power V (v :: list_end)).
         reflexivity.
     -   apply tensor_algebra_iso_eq.
+Qed.
+
+Theorem tensor_grade_one_vector : ∀ v,
+        of_grade 1 v ↔ (∃ a, v = vector_to_tensor a).
+    intros v.
+    split.
+    -   intros [v' [v_in v_eq]].
+        cbn in v_in, v_eq.
+        subst v.
+        destruct v_in as [a v'_eq]; subst v'.
+        unfold one in a; cbn in a.
+        exists (tensor_product_rid_f V a).
+        unfold f.
+        rewrite_ex_val f' [f'_iso f'_eq].
+        unfold vector_to_tensor; cbn.
+        rewrite <- f'_eq.
+        apply f_equal.
+        apply set_type_eq; cbn.
+        apply f_equal.
+        change (module_homo_f (tensor_product_lid_homo V)
+            (module_homo_f (tensor_product_comm_homo V (cring_module F)) a))
+            with (module_homo_f (tensor_product_rid_homo V) a).
+        pose proof (tensor_product_rid_iso V) as [g' [g'_eq1 g'_eq2]].
+        inversion g'_eq2 as [eq].
+        pose proof (func_eq _ _ eq) as eq2.
+        cbn in eq2.
+        rewrite <- (eq2 (tensor_product_universal.tensor_mult _ _ _ _)).
+        change (module_homo_f (tensor_product_lid_homo V)
+            (module_homo_f (tensor_product_comm_homo V (cring_module F)) _))
+            with (tensor_product_rid_f V
+                (tensor_product_universal.tensor_mult V (cring_module F)
+                    (module_homo_f (tensor_product_rid_homo V) a) 1)).
+        rewrite tensor_product_rid_eq.
+        rewrite scalar_id.
+        symmetry; apply eq2.
+    -   intros [a v_eq]; subst v.
+        apply vector_to_tensor_grade.
 Qed.
 
 Definition vectors_to_tensor (l : list (module_V V))
