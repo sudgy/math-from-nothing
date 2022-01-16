@@ -282,3 +282,6 @@ Theorem ga_reverse_vector : ∀ v, (φ v)† = φ v.
 Qed.
 
 End GeometricInvolutions.
+
+Notation "a '∗'" := (ga_conjugate _ a) (at level 10) : ga_scope.
+Notation "a '†'" := (ga_reverse _ a) (at level 10) : ga_scope.
