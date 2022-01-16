@@ -1,15 +1,15 @@
 Require Import init.
 
-Require Import module_category.
-Require Import algebra_category.
+Require Export module_category.
+Require Export algebra_category.
 Require Import tensor_algebra.
-Require Import linear_bilinear_form.
+Require Export linear_bilinear_form.
 
 Require Import ring_ideal.
 Require Import mult_product.
 
-Require Import set.
-Require Import unordered_list.
+Require Export set.
+Require Export unordered_list.
 
 Declare Scope ga_scope.
 Delimit Scope ga_scope with ga.

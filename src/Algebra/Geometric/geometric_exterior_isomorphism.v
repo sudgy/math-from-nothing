@@ -10,8 +10,8 @@ Require Import linear_bilinear_form.
 
 Require Export geometric_construct.
 Require Export exterior_construct.
-Require Import exterior_to_geometric.
-Require Import geometric_to_exterior.
+Require Export exterior_to_geometric.
+Require Export geometric_to_exterior.
 
 Section GeometricExteriorIso.
 
