@@ -608,12 +608,20 @@ Definition geo_to_ext_f_homo := [geo_to_ext_base|].
 Definition geo_to_ext_f := algebra_homo_f geo_to_ext_f_homo.
 
 Let GP := ga_plus B.
+Let GZ := ga_zero B.
+Let GN := ga_neg B.
+Let GPA := ga_plus_assoc B.
+Let GPC := ga_plus_comm B.
+Let GPZ := ga_plus_lid B.
+Let GPN := ga_plus_linv B.
 Let GM := ga_mult B.
 Let GO := ga_one B.
 Let GMR := ga_mult_rid B.
 Let GS := ga_scalar B.
+Let GSO := ga_scalar_id B.
+Let GSR := ga_scalar_rdist B.
 
-Existing Instances GP GM GO GMR GS.
+Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GMR GS GSO GSR.
 
 Theorem geo_to_ext_f_eq :
         ∀ v, geo_to_ext_f (vector_to_ga B v) = geo_to_ext_base1 v.
@@ -660,6 +668,19 @@ Theorem geo_to_ext_add : ∀ v x, geo_to_ext (vector_to_ga B v * x) =
     unfold plus at 1; cbn.
     unfold linear_trans_plus_base; cbn.
     reflexivity.
+Qed.
+
+Theorem geo_to_ext_neg : ∀ x, geo_to_ext (-x) = -geo_to_ext x.
+    intros x.
+    rewrite <- scalar_neg_one.
+    rewrite geo_to_ext_scalar.
+    apply scalar_neg_one.
+Qed.
+
+Theorem geo_to_ext_zero : geo_to_ext 0 = 0.
+    rewrite <- (scalar_lanni 0).
+    rewrite geo_to_ext_scalar.
+    apply scalar_lanni.
 Qed.
 
 Theorem geo_to_ext_one : geo_to_ext 1 = 1.
