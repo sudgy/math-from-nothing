@@ -70,74 +70,19 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
 (* end hide *)
 Let k_tensor k := module_V (tensor_power V k).
 
-Definition tensor_mult_base (A' B' : set_type homogeneous)
+Definition tensor_mult_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := power_to_tensor V (module_homo_f (tensor_power_mult V _ _)
-        (tensor_mult _ _ (ex_val (ex_proof [|A']))
-        (ex_val (ex_proof [|B'])))).
+        (tensor_mult _ _ (ex_val ai) (ex_val bj))).
 
 Lemma power_to_tensor_tm :
         ∀ k1 k2 (A : k_tensor k1) (B : k_tensor k2) AH BH,
-        tensor_mult_base [power_to_tensor V A|AH] [power_to_tensor V B|BH] =
-        power_to_tensor V (module_homo_f (tensor_power_mult V _ _) (tensor_mult _ _ A B)).
-    intros k1 k2 A B A_homo B_homo.
+        tensor_mult_base k1 k2 (power_to_tensor V A) (power_to_tensor V B) AH BH
+        = power_to_tensor V
+            (module_homo_f (tensor_power_mult V _ _) (tensor_mult _ _ A B)).
+    intros k1 k2 A B Ak1 Bk2.
     unfold tensor_mult_base.
-    cbn.
-    unfold ex_proof.
-    pose (X := ex_to_type A_homo).
-    change (ex_to_type A_homo) with X.
-    destruct X as [k1' A_k1']; cbn.
-    pose (X := ex_to_type B_homo).
-    change (ex_to_type B_homo) with X.
-    destruct X as [k2' B_k2']; cbn.
     rewrite_ex_val A' A'_eq.
     rewrite_ex_val B' B'_eq.
-    classic_case (0 = power_to_tensor V A) as [A_z|A_nz].
-    1: {
-        rewrite <- A_z in A'_eq.
-        unfold TAZ in *.
-        rewrite <- (power_to_tensor_zero V k1) in A_z.
-        apply power_to_tensor_eq in A_z.
-        subst A.
-        rewrite <- (power_to_tensor_zero V k1') in A'_eq.
-        apply power_to_tensor_eq in A'_eq.
-        subst A'.
-        do 2 rewrite tensor_product_lanni.
-        do 2 rewrite module_homo_zero.
-        do 2 rewrite power_to_tensor_zero.
-        reflexivity.
-    }
-    classic_case (0 = power_to_tensor V B) as [B_z|B_nz].
-    1: {
-        rewrite <- B_z in B'_eq.
-        unfold TAZ in *.
-        rewrite <- (power_to_tensor_zero V k2) in B_z.
-        apply power_to_tensor_eq in B_z.
-        subst B.
-        rewrite <- (power_to_tensor_zero V k2') in B'_eq.
-        apply power_to_tensor_eq in B'_eq.
-        subst B'.
-        do 2 rewrite tensor_product_ranni.
-        do 2 rewrite module_homo_zero.
-        do 2 rewrite power_to_tensor_zero.
-        reflexivity.
-    }
-    assert (k1 = k1') as k1_eq.
-    {
-        change nat with grade_I in k1.
-        apply (of_grade_unique _ k1 k1' A_nz).
-        -   exists A.
-            reflexivity.
-        -   exact A_k1'.
-    }
-    assert (k2 = k2') as k2_eq.
-    {
-        change nat with grade_I in k2.
-        apply (of_grade_unique _ k2 k2' B_nz).
-        -   exists B.
-            reflexivity.
-        -   exact B_k2'.
-    }
-    subst k1' k2'.
     apply power_to_tensor_eq in A'_eq.
     apply power_to_tensor_eq in B'_eq.
     subst A' B'.
@@ -145,34 +90,18 @@ Lemma power_to_tensor_tm :
 Qed.
 
 Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
-    intros [u' u_homo] v' w' j vj wj.
-    destruct u_homo as [i [u u_eq]].
-    destruct vj as [v v_eq].
-    destruct wj as [w w_eq].
+    intros u' v' w' i j ui vj wj.
+    pose proof ui as [u u_eq].
+    pose proof vj as [v v_eq].
+    pose proof wj as [w w_eq].
     subst u' v' w'.
-    assert (homogeneous (power_to_tensor V v + power_to_tensor V w)) as vw_homo.
+    assert (of_grade j (power_to_tensor V (v + w))) as vwj.
     {
-        exists j.
-        apply of_grade_plus.
-        -   exists v.
-            reflexivity.
-        -   exists w.
-            reflexivity.
+        rewrite power_to_tensor_plus.
+        apply of_grade_plus; assumption.
     }
-    rewrite (proof_irrelevance _ vw_homo).
-    assert (homogeneous (power_to_tensor V (v + w))) as vw_homo2.
-    {
-        exists j.
-        exists (v + w).
-        reflexivity.
-    }
-    assert ([_|vw_homo] = [_|vw_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        symmetry; apply power_to_tensor_plus.
-    }
-    unfold tensor_algebra_base in *.
-    rewrite eq; clear eq.
+    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ vwj)
+        by (symmetry; apply power_to_tensor_plus).
     do 3 rewrite power_to_tensor_tm.
     rewrite (tensor_ldist (tensor_power V i)).
     rewrite module_homo_plus.
@@ -180,34 +109,18 @@ Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
     reflexivity.
 Qed.
 Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
-    intros u' v' [w' w_homo] i ui vi.
-    destruct w_homo as [j [w w_eq]].
-    destruct ui as [u u_eq].
-    destruct vi as [v v_eq].
+    intros u' v' w' i j ui vi wj.
+    pose proof ui as [u u_eq].
+    pose proof vi as [v v_eq].
+    pose proof wj as [w w_eq].
     subst u' v' w'.
-    assert (homogeneous (power_to_tensor V u + power_to_tensor V v)) as uv_homo.
+    assert (of_grade i (power_to_tensor V (u + v))) as uvi.
     {
-        exists i.
-        apply of_grade_plus.
-        -   exists u.
-            reflexivity.
-        -   exists v.
-            reflexivity.
+        rewrite power_to_tensor_plus.
+        apply of_grade_plus; assumption.
     }
-    rewrite (proof_irrelevance _ uv_homo).
-    assert (homogeneous (power_to_tensor V (u + v))) as uv_homo2.
-    {
-        exists i.
-        exists (u + v).
-        reflexivity.
-    }
-    assert ([_|uv_homo] = [_|uv_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        symmetry; apply power_to_tensor_plus.
-    }
-    unfold tensor_algebra_base in *.
-    rewrite eq; clear eq.
+    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ uvi)
+        by (symmetry; apply power_to_tensor_plus).
     do 3 rewrite power_to_tensor_tm.
     rewrite (tensor_rdist (tensor_power V i)).
     rewrite module_homo_plus.
@@ -216,31 +129,18 @@ Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
 Qed.
 Theorem tensor_mult_base_lscalar :
         bilinear_extend_lscalar_base tensor_mult_base.
-    intros a u' [v' v_homo] i ui.
-    destruct v_homo as [j [v v_eq]].
-    destruct ui as [u u_eq].
+    intros a u' v' i j ui vj.
+    pose proof ui as [u u_eq].
+    pose proof vj as [v v_eq].
     subst u' v'.
-    assert (homogeneous (a · power_to_tensor V u)) as au_homo.
+    assert (of_grade i (power_to_tensor V (a · u))) as aui.
     {
-        exists i.
+        rewrite power_to_tensor_scalar.
         apply of_grade_scalar.
-        exists u.
-        reflexivity.
+        exact ui.
     }
-    rewrite (proof_irrelevance _ au_homo).
-    assert (homogeneous (power_to_tensor V (a · u))) as au_homo2.
-    {
-        exists i.
-        exists (a · u).
-        reflexivity.
-    }
-    assert ([_|au_homo] = [_|au_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        symmetry; apply power_to_tensor_scalar.
-    }
-    unfold tensor_algebra_base in *.
-    rewrite eq; clear eq.
+    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ aui)
+        by (symmetry; apply power_to_tensor_scalar).
     do 2 rewrite power_to_tensor_tm.
     rewrite (tensor_lscalar (tensor_power V i)).
     rewrite module_homo_scalar.
@@ -249,31 +149,18 @@ Theorem tensor_mult_base_lscalar :
 Qed.
 Theorem tensor_mult_base_rscalar :
         bilinear_extend_rscalar_base tensor_mult_base.
-    intros a [u' u_homo] v' j vj.
-    destruct u_homo as [i [u u_eq]].
-    destruct vj as [v v_eq].
+    intros a u' v' i j ui vj.
+    pose proof ui as [u u_eq].
+    pose proof vj as [v v_eq].
     subst u' v'.
-    assert (homogeneous (a · power_to_tensor V v)) as av_homo.
+    assert (of_grade j (power_to_tensor V (a · v))) as avj.
     {
-        exists j.
+        rewrite power_to_tensor_scalar.
         apply of_grade_scalar.
-        exists v.
-        reflexivity.
+        exact vj.
     }
-    rewrite (proof_irrelevance _ av_homo).
-    assert (homogeneous (power_to_tensor V (a · v))) as av_homo2.
-    {
-        exists j.
-        exists (a · v).
-        reflexivity.
-    }
-    assert ([_|av_homo] = [_|av_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        symmetry; apply power_to_tensor_scalar.
-    }
-    unfold tensor_algebra_base in *.
-    rewrite eq; clear eq.
+    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ avj)
+        by (symmetry; apply power_to_tensor_scalar).
     do 2 rewrite power_to_tensor_tm.
     rewrite (tensor_rscalar (tensor_power V i)).
     rewrite module_homo_scalar.
@@ -313,73 +200,28 @@ Next Obligation.
     -   apply tensor_mult_base_rscalar.
 Qed.
 
-Theorem tensor_mult_homo : ∀ u v, [u|] * [v|] = tensor_mult_base u v.
+Theorem tensor_mult_homo : ∀ i j u v H1 H2,
+        u * v = tensor_mult_base i j u v H1 H2.
     apply bilinear_extend_homo.
+    -   apply tensor_mult_base_ldist.
+    -   apply tensor_mult_base_rdist.
     -   apply tensor_mult_base_lscalar.
     -   apply tensor_mult_base_rscalar.
 Qed.
 
 Lemma tensor_mult_base_grade : ∀ u v i j H1 H2,
-        of_grade i u → of_grade j v →
-        of_grade (plus (U := nat) i j) (tensor_mult_base [u|H1] [v|H2]).
-    intros u v i j u_homo v_homo ui vj.
-    classic_case (0 = u) as [u_z|u_nz].
-    1: {
-        subst u.
-        rewrite bilinear_extend_lanni_base by exact tensor_mult_base_lscalar.
-        apply of_grade_zero.
-    }
-    classic_case (0 = v) as [v_z|v_nz].
-    1: {
-        subst v.
-        rewrite bilinear_extend_ranni_base by exact tensor_mult_base_rscalar.
-        apply of_grade_zero.
-    }
-    assert (i = ex_val u_homo) as i_eq.
-    {
-        rewrite_ex_val i' i'_eq.
-        change nat with grade_I in i, j.
-        apply (of_grade_unique u i i' u_nz).
-        -   destruct ui as [u' u'_eq].
-            rewrite <- u'_eq.
-            exists u'; reflexivity.
-        -   exact i'_eq.
-    }
-    assert (j = ex_val v_homo) as j_eq.
-    {
-        rewrite_ex_val j' j'_eq.
-        change nat with grade_I in i, j.
-        apply (of_grade_unique v j j' v_nz).
-        -   destruct vj as [v' v'_eq].
-            rewrite <- v'_eq.
-            exists v'; reflexivity.
-        -   exact j'_eq.
-    }
-    rewrite i_eq, j_eq.
+        of_grade (plus (U := nat) i j) (tensor_mult_base i j u v H1 H2).
+    intros u v i j ui vj.
     exists (module_homo_f (tensor_power_mult V _ _)
-        (tensor_mult _ _ (ex_val (ex_proof u_homo)) (ex_val (ex_proof v_homo)))).
+        (tensor_mult _ _ (ex_val ui) (ex_val vj))).
     reflexivity.
-Qed.
-
-Lemma tensor_mult_base_homo : ∀ u v, homogeneous (tensor_mult_base u v).
-    intros [u [i ui]] [v [j vj]].
-    exists (i + j).
-    apply tensor_mult_base_grade.
-    -   exact ui.
-    -   exact vj.
 Qed.
 
 Program Instance tensor_grade_mult : GradedAlgebra U (tensor_algebra_base V).
 Next Obligation.
     rename H into ui, H0 into vj.
-    assert (homogeneous u) as u_homo by (exists i; exact ui).
-    assert (homogeneous v) as v_homo by (exists j; exact vj).
-    change u with [[u|u_homo]|].
-    change v with [[v|v_homo]|].
-    rewrite (tensor_mult_homo [u|u_homo] [v|v_homo]).
+    rewrite (tensor_mult_homo i j u v ui vj).
     apply tensor_mult_base_grade.
-    -   exact ui.
-    -   exact vj.
 Qed.
 
 Program Instance tensor_mult_assoc : MultAssoc (tensor_algebra_base V).
@@ -429,53 +271,43 @@ Next Obligation.
     rewrite rdist.
     rewrite IHal; clear IHal.
     apply rplus.
-    do 2 rewrite tensor_mult_homo.
-    pose proof (tensor_mult_base_homo b c) as bc_homo.
-    pose proof (tensor_mult_base_homo a b) as ab_homo.
-    change (tensor_mult_base b c) with [[_|bc_homo]|].
-    change (tensor_mult_base a b) with [[_|ab_homo]|].
-    do 2 rewrite tensor_mult_homo.
+
     clear A B C al.
-    destruct a as [a a_homo]; cbn.
-    destruct b as [b b_homo]; cbn.
-    destruct c as [c c_homo]; cbn.
-    pose proof a_homo as [ak [A A_eq]].
-    pose proof b_homo as [bk [B B_eq]].
-    pose proof c_homo as [ck [C C_eq]].
-    subst a b c.
-    pose proof (power_to_tensor_tm _ _ B C b_homo c_homo) as eq.
-    assert (homogeneous (power_to_tensor V (module_homo_f (tensor_power_mult V bk ck) (tensor_product_universal.tensor_mult _ _ B C))))
-        as bc_homo2.
+    destruct a as [a [i ai]]; cbn.
+    destruct b as [b [j bj]]; cbn.
+    destruct c as [c [k ck]]; cbn.
+    rewrite (tensor_mult_homo j k b c bj ck).
+    rewrite (tensor_mult_homo i j a b ai bj).
+    pose proof (tensor_mult_base_grade _ _ _ _ bj ck) as bcjk.
+    pose proof (tensor_mult_base_grade _ _ _ _ ai bj) as abij.
+    rewrite (tensor_mult_homo _ _ _ _ ai bcjk).
+    rewrite (tensor_mult_homo _ _ _ _ abij ck).
+    rename a into a', b into b', c into c'.
+    pose proof ai as [a a_eq].
+    pose proof bj as [b b_eq].
+    pose proof ck as [c c_eq].
+    subst a' b' c'.
+
+    pose proof (power_to_tensor_tm i j a b ai bj) as eq.
+    assert (of_grade (i + j) (power_to_tensor V (module_homo_f
+        (tensor_power_mult V i j) (tensor_mult _ _ a b)))) as abij'.
     {
-        exists (bk + ck), (module_homo_f (tensor_power_mult V bk ck) (tensor_product_universal.tensor_mult _ _ B C)).
-        reflexivity.
+        rewrite <- eq.
+        exact abij.
     }
-    assert ([tensor_mult_base [_|b_homo] [_|c_homo] | bc_homo] = [_|bc_homo2]) as eq2.
+    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ abij' _ eq); clear eq.
+    pose proof (power_to_tensor_tm j k b c bj ck) as eq.
+    assert (of_grade (j + k) (power_to_tensor V (module_homo_f
+        (tensor_power_mult V j k) (tensor_mult _ _ b c)))) as bcjk'.
     {
-        apply set_type_eq; exact eq.
+        rewrite <- eq.
+        exact bcjk.
     }
-    change (set_type (tensor_finite V)) with (tensor_algebra_base V) in *.
-    rewrite eq2.
-    rewrite power_to_tensor_tm.
-    clear eq eq2 bc_homo bc_homo2.
-    pose proof (power_to_tensor_tm _ _ A B a_homo b_homo) as eq.
-    assert (homogeneous (power_to_tensor V (module_homo_f (tensor_power_mult V ak bk) (tensor_product_universal.tensor_mult _ _ A B))))
-        as ab_homo2.
-    {
-        exists (ak + bk), (module_homo_f (tensor_power_mult V ak bk) (tensor_product_universal.tensor_mult _ _ A B)).
-        reflexivity.
-    }
-    assert ([tensor_mult_base [_|a_homo] [_|b_homo] | ab_homo] = [_|ab_homo2]) as eq2.
-    {
-        apply set_type_eq; exact eq.
-    }
-    change (set_type (tensor_finite V)) with (tensor_algebra_base V) in *.
-    rewrite eq2.
-    rewrite power_to_tensor_tm.
-    clear eq eq2 ab_homo ab_homo2 a_homo b_homo c_homo.
+    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ bcjk' eq); clear eq.
+    do 2 rewrite power_to_tensor_tm.
     rewrite <- tensor_power_mult_assoc.
-    destruct (plus_assoc ak bk ck); cbn.
-    destruct (nat_plus_assoc_ ak bk ck); cbn.
+    destruct (plus_assoc i j k); cbn.
+    destruct (nat_plus_assoc_ i j k); cbn.
     reflexivity.
 Qed.
 (* begin hide *)

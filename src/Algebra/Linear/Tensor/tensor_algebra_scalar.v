@@ -113,33 +113,19 @@ Theorem scalar_to_tensor_mult : ∀ α β,
         scalar_to_tensor (α * β) =
         scalar_to_tensor α * scalar_to_tensor β.
     intros α β.
-    classic_case (0 = α) as [α_z|α_nz].
+    assert (of_grade 0 (scalar_to_tensor α)) as α0.
     {
-        subst α.
-        rewrite scalar_to_tensor_zero.
-        do 2 rewrite mult_lanni.
-        rewrite scalar_to_tensor_zero.
+        exists α.
         reflexivity.
     }
-    classic_case (0 = β) as [β_z|β_nz].
+    assert (of_grade 0 (scalar_to_tensor β)) as β0.
     {
-        subst β.
-        rewrite scalar_to_tensor_zero.
-        do 2 rewrite mult_ranni.
-        rewrite scalar_to_tensor_zero.
+        exists β.
         reflexivity.
     }
-    pose proof (scalar_to_tensor_homogeneous α) as α_homo.
-    pose proof (scalar_to_tensor_homogeneous β) as β_homo.
-    pose proof (tensor_mult_homo V [_|α_homo] [_|β_homo]) as eq.
-    cbn in eq.
-    pose (X := scalar_to_tensor α * scalar_to_tensor β).
-    fold X.
-    change (scalar_to_tensor α * scalar_to_tensor β) with X in eq.
-    rewrite eq.
-    unfold scalar_to_tensor.
-    rewrite (power_to_tensor_tm V).
-    unfold zero at 10; cbn.
+    rewrite (tensor_mult_homo _ _ _ _ _ α0 β0).
+    rewrite power_to_tensor_tm.
+    unfold zero at 9; cbn.
     destruct (Logic.eq_sym (plus_lid_rid_ 0)); cbn.
     fold (tensor_product_comm_f (tensor_power V 0) (cring_module F)).
     rewrite tensor_product_comm_eq.
@@ -154,14 +140,6 @@ Qed.
 Theorem scalar_to_tensor_scalar : ∀ α (A : tensor_algebra_base V),
         scalar_to_tensor α * A = α · A.
     intros α A.
-    classic_case (0 = α) as [α_z|α_nz].
-    {
-        subst α.
-        rewrite scalar_to_tensor_zero.
-        rewrite mult_lanni.
-        rewrite scalar_lanni.
-        reflexivity.
-    }
     rewrite (grade_decomposition_eq A).
     remember (grade_decomposition A) as al.
     clear Heqal A.
@@ -177,32 +155,24 @@ Theorem scalar_to_tensor_scalar : ∀ α (A : tensor_algebra_base V),
     rewrite scalar_ldist.
     rewrite IHal; clear IHal.
     apply rplus; clear al.
-    pose proof (scalar_to_tensor_homogeneous α) as α_homo.
-    pose proof (tensor_mult_homo V [_|α_homo] a) as eq.
-    cbn in eq.
-    pose (X := scalar_to_tensor α * [a|]).
-    fold X.
-    change (scalar_to_tensor α * [a|]) with X in eq.
-    rewrite eq; clear X eq.
-    destruct a as [a' [i [a a_eq]]].
-    subst a'; cbn.
+    assert (of_grade 0 (scalar_to_tensor α)) as α0.
+    {
+        exists α.
+        reflexivity.
+    }
+    destruct a as [a [i ai]]; cbn.
+    rewrite (tensor_mult_homo _ _ _ _ _ α0 ai).
+    pose proof ai as [a' a_eq].
+    subst a; cbn.
     unfold scalar_to_tensor.
-    rewrite (power_to_tensor_tm V).
+    rewrite power_to_tensor_tm.
     rewrite tensor_power_lscalar.
-    apply (power_to_tensor_scalar V).
+    apply power_to_tensor_scalar.
 Qed.
 
 Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
         scalar_to_tensor α * A = A * scalar_to_tensor α.
     intros α A.
-    classic_case (0 = α) as [α_z|α_nz].
-    {
-        subst α.
-        rewrite scalar_to_tensor_zero.
-        rewrite mult_lanni.
-        rewrite mult_ranni.
-        reflexivity.
-    }
     rewrite (grade_decomposition_eq A).
     remember (grade_decomposition A) as al.
     clear Heqal A.
@@ -218,20 +188,17 @@ Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
     rewrite rdist.
     rewrite IHal; clear IHal.
     apply rplus; clear al.
-    pose proof (scalar_to_tensor_homogeneous α) as α_homo.
-    pose proof (tensor_mult_homo V [_|α_homo] a) as eq.
-    cbn in eq.
-    unfold TAM, TAP, TAZ, TAPC, TAPA, TASM, TAG, tensor_algebra_base in *.
-    rewrite eq; clear eq.
-    pose proof (tensor_mult_homo V a [_|α_homo]) as eq.
-    cbn in eq.
-    unfold tensor_algebra_base in eq.
-    rewrite eq; clear eq.
-    destruct a as [a a_homo]; cbn.
-    destruct a_homo as [k [A A_eq]].
-    subst a.
+    assert (of_grade 0 (scalar_to_tensor α)) as α0.
+    {
+        exists α.
+        reflexivity.
+    }
+    destruct a as [a [i ai]]; cbn.
+    rewrite (tensor_mult_homo _ _ _ _ _ α0 ai).
+    rewrite (tensor_mult_homo _ _ _ _ _ ai α0).
+    pose proof ai as [a' a_eq]; subst a.
     unfold scalar_to_tensor.
-    do 2 rewrite (power_to_tensor_tm V).
+    do 2 rewrite power_to_tensor_tm.
     rewrite tensor_power_lscalar.
     rewrite <- tensor_power_rscalar.
     symmetry.

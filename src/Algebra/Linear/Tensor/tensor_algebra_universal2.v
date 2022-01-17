@@ -359,37 +359,23 @@ Theorem tensor_grade_sum : âˆ€ x (i : nat), of_grade (H10 := tensor_grade) i x â
                 reflexivity.
             }
             rewrite a_eq; clear a_eq.
-            assert (homogeneous (H10 := TAG) (vector_to_tensor_base a))
+            assert (of_grade 1 (H10 := TAG) (vector_to_tensor_base a))
                 as a_homo.
             {
-                exists 1.
                 exists (vectors_to_power V (a :: list_end)).
                 reflexivity.
             }
-            assert (homogeneous (H10 := TAG)
+            assert (of_grade (list_size l) (H10 := TAG)
                 (power_to_tensor V (vectors_to_power V l))) as l_homo.
             {
-                exists (list_size l).
                 exists (vectors_to_power V l).
                 reflexivity.
             }
-            unfold mult; cbn.
-            change (vector_to_tensor_base a) with [[_|a_homo]|].
-            change (power_to_tensor V (vectors_to_power V l))
-                with [[_|l_homo]|].
-            pose (TA'N := tensor_algebra_neg V).
-            pose (TA'PZ := tensor_algebra_plus_lid V).
-            pose (TA'PN := tensor_algebra_plus_linv V).
-            pose (TA'SM := tensor_algebra_scalar_mult V).
-            pose (TA'SMO := tensor_algebra_scalar_id V).
-            pose (TA'SML := tensor_algebra_scalar_ldist V).
-            pose (TA'SMR := tensor_algebra_scalar_rdist V).
-            rewrite bilinear_extend_homo.
-            2: apply tensor_mult_base_lscalar.
-            2: apply tensor_mult_base_rscalar.
+            cbn.
+            rewrite (tensor_mult_homo _ _ _ _ _ a_homo l_homo).
             unfold vector_to_tensor_base,
                 tensor_algebra_vector.vector_to_tensor.
-            rewrite (power_to_tensor_tm V).
+            rewrite power_to_tensor_tm.
             change (tensor_product_universal.tensor_mult V (cring_module F) a 1)
                 with (vectors_to_power V (a :: list_end)).
             change (one (U := nat)) with (list_size (a :: list_end)).

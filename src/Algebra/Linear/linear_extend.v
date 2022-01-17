@@ -51,149 +51,57 @@ Context {U V1 V2} `{
 
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
-Definition linear_extend_plus_base (f_base : set_type homogeneous → V2) :=
-    ∀ (u v : V1) (i : grade_I)
-    (H1 : of_grade i u) (H2 : of_grade i v),
-    f_base [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] =
-    f_base [u|ex_intro _ i H1] + f_base [v|ex_intro _ i H2].
-Definition linear_extend_scalar_base (f_base : set_type homogeneous → V2) :=
+Definition linear_extend_plus_base (f_base : ∀ i a, of_grade i a → V2) :=
+    ∀ (u v : V1) (i : grade_I) (H1 : of_grade i u) (H2 : of_grade i v),
+    f_base i (u + v) (of_grade_plus u v i H1 H2) =
+    f_base i u H1 + f_base i v H2.
+Definition linear_extend_scalar_base (f_base : ∀ i a, of_grade i a → V2) :=
     ∀ a v i (H : of_grade i v),
-    f_base [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
-    a · f_base [v|ex_intro _ i H].
+    f_base i (a · v) (of_grade_scalar a v i H) = a · f_base i v H.
 
-Variable f_base : set_type homogeneous → V2.
+Variable f_base : ∀ i a, of_grade i a → V2.
 Variable f_plus_base' : linear_extend_plus_base f_base.
 Variable f_scalar_base' : linear_extend_scalar_base f_base.
 
-Theorem f_scalar_base : ∀ a v H1 H2, f_base [a · v|H1] = a · f_base [v|H2].
-    intros a v av_homo v_homo.
-    destruct v_homo as [i vi].
-    pose proof (of_grade_scalar a v i vi) as avi.
+Lemma linear_extend_base_eq : ∀ i u v H1 H2,
+        u = v → f_base i u H1 = f_base i v H2.
+    intros i u v iu iv uv.
+    subst v.
+    rewrite (proof_irrelevance iu iv).
+    reflexivity.
+Qed.
+
+Theorem f_scalar_base : ∀ i a v H1 H2, f_base i (a · v) H1 = a · f_base i v H2.
+    intros i a v avi vi.
     pose proof (f_scalar_base' a v i vi) as eq.
-    rewrite (proof_irrelevance _ av_homo) in eq.
+    rewrite (proof_irrelevance _ avi) in eq.
     exact eq.
 Qed.
 
-Theorem linear_extend_zero_base : ∀ H, f_base [0|H] = 0.
-    intros z_homo.
-    assert (homogeneous (0 · 0)) as z_homo2.
-    {
-        rewrite scalar_lanni.
-        exact z_homo.
-    }
-    assert ([_|z_homo] = [_|z_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        rewrite scalar_lanni.
-        reflexivity.
-    }
-    rewrite eq.
-    rewrite (f_scalar_base _ _ _ z_homo).
-    apply scalar_lanni.
+Theorem linear_extend_zero_base : ∀ i H, f_base i 0 H = 0.
+    intros i i0.
+    pose proof (scalar_lanni 0).
+    pose proof i0 as i0'.
+    rewrite <- (scalar_lanni 0) in i0'.
+    pose proof (f_scalar_base i _ _ i0' i0) as eq.
+    rewrite scalar_lanni in eq.
+    rewrite <- eq.
+    apply linear_extend_base_eq.
+    rewrite scalar_lanni.
+    reflexivity.
 Qed.
 
-Theorem f_plus_base : ∀ u v H1 H2 H3,
-        f_base [u + v|H1] = f_base [u|H2] + f_base [v|H3].
-    intros u v uv_homo u_homo v_homo.
-    classic_case (0 = u) as [u_z|u_nz].
-    {
-        subst u.
-        rewrite linear_extend_zero_base.
-        rewrite plus_lid.
-        apply f_equal.
-        apply set_type_eq; cbn.
-        apply plus_lid.
-    }
-    classic_case (0 = v) as [v_z|v_nz].
-    {
-        subst v.
-        rewrite linear_extend_zero_base.
-        rewrite plus_rid.
-        apply f_equal.
-        apply set_type_eq; cbn.
-        apply plus_rid.
-    }
-    pose proof u_homo as [i1 ui1].
-    pose proof v_homo as [i2 vi2].
-    assert (ex_val u_homo = i1) as i1_eq.
-    {
-        apply (of_grade_unique _ _ _ u_nz).
-        -   exact (ex_proof u_homo).
-        -   exact ui1.
-    }
-    assert (ex_val v_homo = i2) as i2_eq.
-    {
-        apply (of_grade_unique _ _ _ v_nz).
-        -   exact (ex_proof v_homo).
-        -   exact vi2.
-    }
-    assert (i1 = i2) as i_eq.
-    {
-        classic_contradiction contr.
-        assert (grade_decomposition (u + v) =
-            [u|u_homo] ::: [v|v_homo] ::: ulist_end) as uv_eq.
-        {
-            apply grade_decomposition_unique.
-            -   do 2 rewrite ulist_image_add, ulist_sum_add.
-                rewrite ulist_image_end, ulist_sum_end, plus_rid.
-                reflexivity.
-            -   do 2 rewrite ulist_image_add, ulist_unique_add.
-                rewrite ulist_image_end.
-                rewrite in_ulist_add.
-                rewrite not_or.
-                repeat split.
-                +   cbn.
-                    rewrite i1_eq, i2_eq.
-                    rewrite neq_sym.
-                    exact contr.
-                +   apply in_ulist_end.
-                +   apply in_ulist_end.
-                +   apply ulist_unique_end.
-            -   do 2 rewrite ulist_prop_add.
-                repeat split.
-                +   exact u_nz.
-                +   exact v_nz.
-                +   apply ulist_prop_end.
-        }
-        classic_case (0 = u + v) as [uv_z|uv_nz].
-        -   rewrite <- uv_z in uv_eq.
-            rewrite grade_decomposition_zero in uv_eq.
-            assert (in_ulist ulist_end [u|u_homo]) as u_in.
-            {
-                rewrite uv_eq.
-                rewrite in_ulist_add.
-                left; reflexivity.
-            }
-            apply (in_ulist_end _ u_in).
-        -   pose proof (grade_decomposition_homo [_|uv_homo] uv_nz) as uv_eq2.
-            cbn in uv_eq2.
-            rewrite uv_eq2 in uv_eq.
-            assert (ulist_size ([u + v|uv_homo] ::: ulist_end) = 1) as eq1.
-            {
-                unfold ulist_size, ulist_end, ulist_add; equiv_simpl.
-                reflexivity.
-            }
-            assert (ulist_size ([u|u_homo] ::: [v|v_homo] ::: ulist_end) = 2)
-                as eq2.
-            {
-                unfold ulist_size, ulist_end, ulist_add; equiv_simpl.
-                reflexivity.
-            }
-            rewrite uv_eq in eq1.
-            rewrite eq1 in eq2.
-            inversion eq2.
-    }
-    clear i2_eq.
-    subst i2.
-    pose proof (f_plus_base' _ _ _ ui1 vi2) as eq.
-    rewrite (proof_irrelevance _ uv_homo) in eq.
-    rewrite (proof_irrelevance _ u_homo) in eq.
-    rewrite (proof_irrelevance _ v_homo) in eq.
+Theorem f_plus_base : ∀ i u v H1 H2 H3,
+        f_base i (u + v) H1 = f_base i u H2 + f_base i v H3.
+    intros i u v uvi ui vi.
+    pose proof (f_plus_base' u v i ui vi) as eq.
+    rewrite (proof_irrelevance _ uvi) in eq.
     exact eq.
 Qed.
 
 Definition linear_extend (v : V1) :=
-    ulist_sum (ulist_image (grade_decomposition v) f_base).
+    ulist_sum (ulist_image (grade_decomposition v)
+        (λ x, f_base (ex_val [|x]) [x|] (ex_proof [|x]))).
 
 Let f := linear_extend.
 
@@ -276,6 +184,14 @@ Theorem linear_extend_plus : ∀ u v, f (u + v) = f u + f v.
     -   pose proof (grade_project_in _ _ vi_nz) as vi_in.
         apply in_ulist_split in vi_in as [l l_eq].
         rewrite l_eq.
+        cbn.
+        unfold ex_val at 2, ex_proof at 2.
+        destruct (ex_to_type _) as [i' ai']; cbn.
+        assert (i = i').
+        {
+            apply (of_grade_unique _ _ _ a_nz); assumption.
+        }
+        subst i'.
         classic_case (0 = a + grade_project v i) as [b_z|b_nz].
         +   assert (grade_decomposition (a + v) = l) as eq.
             {
@@ -298,18 +214,20 @@ Theorem linear_extend_plus : ∀ u v, f (u + v) = f u + f v.
             rewrite eq.
             rewrite ulist_image_add, ulist_sum_add.
             rewrite plus_assoc.
-            assert (homogeneous 0) as z_homo by (exists i; apply of_grade_zero).
-            assert (homogeneous (a + grade_project v i)) as b_homo.
+            cbn.
+            unfold ex_val at 2, ex_proof at 2.
+            destruct (ex_to_type _) as [i' vi']; cbn.
+            assert (i = i').
             {
-                rewrite <- b_z.
-                exact z_homo.
+                apply (of_grade_unique _ _ _ vi_nz).
+                -   apply grade_project_grade.
+                -   exact vi'.
             }
-            rewrite <- (f_plus_base _ _ b_homo).
-            assert ([_|b_homo] = [_|z_homo]) as eq'.
-            {
-                apply set_type_eq; symmetry; exact b_z.
-            }
-            rewrite eq'.
+            subst i'.
+            rewrite <- (f_plus_base _ _ _ (of_grade_plus _ _ _ ai' vi')).
+            replace (f_base i (a + grade_project v i) _) with
+                (f_base i 0 (of_grade_zero i)).
+            2: apply linear_extend_base_eq; exact b_z.
             rewrite linear_extend_zero_base.
             rewrite plus_lid.
             reflexivity.
@@ -370,7 +288,27 @@ Theorem linear_extend_plus : ∀ u v, f (u + v) = f u + f v.
             do 2 rewrite ulist_image_add, ulist_sum_add.
             rewrite plus_assoc.
             apply rplus.
-            rewrite <- (f_plus_base _ _ b_homo).
+            cbn.
+            unfold ex_val at 2, ex_proof at 2.
+            destruct (ex_to_type _) as [i' vi']; cbn.
+            assert (i = i').
+            {
+                apply (of_grade_unique _ _ _ vi_nz).
+                -   apply grade_project_grade.
+                -   exact vi'.
+            }
+            subst i'.
+            rewrite <- (f_plus_base _ _ _ (of_grade_plus _ _ _ ai' vi')).
+            unfold ex_val, ex_proof.
+            destruct (ex_to_type _) as [i' bi']; cbn.
+            assert (i = i').
+            {
+                apply (of_grade_unique _ _ _ b_nz).
+                -   apply of_grade_plus; assumption.
+                -   exact bi'.
+            }
+            subst i'.
+            apply linear_extend_base_eq.
             reflexivity.
 Qed.
 
@@ -400,39 +338,67 @@ Theorem linear_extend_scalar : ∀ a v, f (a · v) = a · f v.
     rewrite (grade_decomposition_of_grade u i u_nz ui).
     rewrite ulist_image_add, ulist_sum_add.
     rewrite ulist_image_end, ulist_sum_end, plus_rid.
-    pose proof (homo_scalar a u (ex_intro _ i ui)) as au_homo.
-    rewrite <- (f_scalar_base _ _ au_homo).
+    cbn.
+    unfold ex_val, ex_proof.
+    destruct (ex_to_type _) as [i' ui']; cbn.
+    assert (i = i').
+    {
+        apply (of_grade_unique _ _ _ u_nz); assumption.
+    }
+    subst i'.
+    rewrite <- (f_scalar_base _ _ _ (of_grade_scalar a _ _ ui')).
     classic_case (0 = a · u) as [au_z|au_nz].
     1: {
-        assert (homogeneous 0) as z_homo by (exists i; apply of_grade_zero).
-        assert ([_|au_homo] = [_|z_homo]) as eq
-            by (apply set_type_eq; symmetry; exact au_z).
-        rewrite eq.
-        rewrite <- au_z.
-        rewrite linear_extend_zero_base.
+        rewrite <- au_z at 1.
         rewrite grade_decomposition_zero.
         rewrite ulist_image_end, ulist_sum_end.
-        reflexivity.
+        rewrite <- (linear_extend_zero_base i (of_grade_zero i)).
+        apply linear_extend_base_eq.
+        exact au_z.
     }
+    pose proof (homo_scalar a u (ex_intro _ i ui)) as au_homo.
     rewrite (grade_decomposition_homo [_|au_homo] au_nz).
     rewrite ulist_image_add, ulist_sum_add.
     rewrite ulist_image_end, ulist_sum_end.
-    apply plus_rid.
+    cbn.
+    rewrite plus_rid.
+    destruct (ex_to_type _) as [i' aui']; cbn.
+    assert (i = i').
+    {
+        apply (of_grade_unique _ _ _ au_nz).
+        -   apply of_grade_scalar.
+            exact ui.
+        -   exact aui'.
+    }
+    subst i'.
+    apply linear_extend_base_eq.
+    reflexivity.
 Qed.
 
-Theorem linear_extend_homo : ∀ v, f [v|] = f_base v.
-    intros [v v_homo]; cbn.
+Theorem linear_extend_homo : ∀ i v H, f v = f_base i v H.
+    intros i v iv; cbn.
     unfold f, linear_extend.
     classic_case (0 = v) as [v_z|v_nz].
     -   subst v.
         rewrite grade_decomposition_zero.
         rewrite ulist_image_end, ulist_sum_end.
         symmetry; apply linear_extend_zero_base.
-    -   change v with [[v|v_homo]|] at 1.
+    -   assert (homogeneous v) as v_homo by (exists i; exact iv).
+        change v with [[v|v_homo]|] at 1.
         rewrite grade_decomposition_homo by exact v_nz.
         rewrite ulist_image_add, ulist_sum_add.
         rewrite ulist_image_end, ulist_sum_end.
-        apply plus_rid.
+        cbn.
+        rewrite plus_rid.
+        unfold ex_val, ex_proof.
+        destruct (ex_to_type v_homo) as [i' vi']; cbn.
+        assert (i = i').
+        {
+            apply (of_grade_unique _ _ _ v_nz); assumption.
+        }
+        subst i'.
+        apply linear_extend_base_eq.
+        reflexivity.
 Qed.
 
 End LinearExtend.
@@ -483,122 +449,116 @@ Context {U V1 V2} `{
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
 Definition bilinear_extend_ldist_base
-    (op : set_type homogeneous → set_type homogeneous → V2) :=
-    ∀ u v w i (H1 : of_grade i v) (H2 : of_grade i w),
-    op u [v + w|ex_intro _ i (of_grade_plus v w i H1 H2)] =
-    op u [v|ex_intro _ i H1] + op u [w|ex_intro _ i H2].
+    (op : ∀ i j a b, of_grade i a → of_grade j b → V2) :=
+    ∀ u v w i j (H1 : of_grade i u) (H2 : of_grade j v) (H3 : of_grade j w),
+    op i j u (v + w) H1 (of_grade_plus v w j H2 H3) =
+    op i j u v H1 H2 + op i j u w H1 H3.
 Definition bilinear_extend_rdist_base
-    (op : set_type homogeneous → set_type homogeneous → V2) :=
-    ∀ u v w i (H1 : of_grade i u) (H2 : of_grade i v),
-    op [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] w =
-    op [u|ex_intro _ i H1] w + op [v|ex_intro _ i H2] w.
+    (op : ∀ i j a b, of_grade i a → of_grade j b → V2) :=
+    ∀ u v w i j (H1 : of_grade i u) (H2 : of_grade i v) (H3: of_grade j w),
+    op i j (u + v) w (of_grade_plus u v i H1 H2) H3 =
+    op i j u w H1 H3 + op i j v w H2 H3.
 Definition bilinear_extend_lscalar_base
-    (op : set_type homogeneous → set_type homogeneous → V2) :=
-    ∀ a u v i (H : of_grade i u),
-    op [a · u|ex_intro _ i (of_grade_scalar a u i H)] v =
-    a · op [u|ex_intro _ i H] v.
+    (op : ∀ i j a b, of_grade i a → of_grade j b → V2) :=
+    ∀ a u v i j (H1 : of_grade i u) (H2 : of_grade j v),
+    op i j (a · u) v (of_grade_scalar a u i H1) H2 = a · op i j u v H1 H2.
 Definition bilinear_extend_rscalar_base
-    (op : set_type homogeneous → set_type homogeneous → V2) :=
-    ∀ a u v i (H : of_grade i v),
-    op u [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
-    a · op u [v|ex_intro _ i H].
+    (op : ∀ i j a b, of_grade i a → of_grade j b → V2) :=
+    ∀ a u v i j (H1 : of_grade i u) (H2 : of_grade j v),
+    op i j u (a · v) H1 (of_grade_scalar a v j H2) = a · op i j u v H1 H2.
 
-Variable op : set_type homogeneous → set_type homogeneous → V2.
+Variable op : ∀ i j a b, of_grade i a → of_grade j b → V2.
 
 Variable op_ldist' : bilinear_extend_ldist_base op.
 Variable op_rdist' : bilinear_extend_rdist_base op.
 Variable op_lscalar' : bilinear_extend_lscalar_base op.
 Variable op_rscalar' : bilinear_extend_rscalar_base op.
 
-Lemma op_ldist : ∀ u v w H1 H2 H3, op u [v + w|H1] = op u [v|H2] + op u [w|H3].
-    intros u v w vw_homo v_homo w_homo.
-    apply f_plus_base.
-    -   unfold linear_extend_plus_base.
-        apply op_ldist'.
-    -   unfold linear_extend_scalar_base; intros; apply op_rscalar'.
+Lemma bilinear_extend_base_leq : ∀ i j u v w H1 H2 H3,
+        u = v → op i j u w H1 H3 = op i j v w H2 H3.
+    intros i j u v w iu iv jw eq.
+    subst v.
+    rewrite (proof_irrelevance iu iv).
+    reflexivity.
 Qed.
 
-Lemma op_rdist : ∀ u v w H1 H2 H3, op [u + v|H1] w = op [u|H2] w + op [v|H3] w.
-    intros u v w uv_homo u_homo v_homo.
-    pose (op' a b := op b a).
-    change (op [_|uv_homo] w) with (op' w [_|uv_homo]).
-    change (op [_|u_homo] w) with (op' w [_|u_homo]).
-    change (op [_|v_homo] w) with (op' w [_|v_homo]).
-    apply f_plus_base; unfold op'.
-    -   unfold linear_extend_plus_base; intros; apply op_rdist'.
-    -   unfold linear_extend_scalar_base; intros; apply op_lscalar'.
+Lemma bilinear_extend_base_req : ∀ i j u v w H1 H2 H3,
+        v = w → op i j u v H1 H2 = op i j u w H1 H3.
+    intros i j u v w iu jv jw eq.
+    subst v.
+    rewrite (proof_irrelevance jv jw).
+    reflexivity.
 Qed.
 
-Lemma op_lscalar : ∀ a u v H1 H2, op [a · u|H1] v = a · op [u|H2] v.
-    intros a u v au_homo u_homo.
-    pose (op' a b := op b a).
-    change (op [_|au_homo] v) with (op' v [_|au_homo]).
-    change (op [_|u_homo] v) with (op' v [_|u_homo]).
-    apply f_scalar_base.
-    unfold linear_extend_scalar_base; intros; apply op_lscalar'.
+Lemma op_ldist : ∀ i j u v w H1 H2 H3 H4,
+        op i j u (v + w) H1 H2 = op i j u v H1 H3 + op i j u w H1 H4.
+    intros i j u v w iu jvw jv jw.
+    rewrite <- op_ldist'.
+    rewrite (proof_irrelevance (of_grade_plus _ _ _ _ _) jvw).
+    reflexivity.
 Qed.
 
-Lemma op_rscalar : ∀ a u v H1 H2, op u [a · v|H1] = a · op u [v|H2].
-    intros a u v av_homo v_homo.
-    apply f_scalar_base.
-    unfold linear_extend_scalar_base; intros; apply op_rscalar'.
+Lemma op_rdist : ∀ i j u v w H1 H2 H3 H4,
+        op i j (u + v) w H1 H2 = op i j u w H3 H2 + op i j v w H4 H2.
+    intros i j u v w iuv jw iu iv.
+    rewrite <- op_rdist'.
+    rewrite (proof_irrelevance (of_grade_plus _ _ _ _ _) iuv).
+    reflexivity.
 Qed.
 
-Lemma bilinear_extend_lanni_base : ∀ v H, op [0|H] v = 0.
-    intros v z_homo.
-    assert (homogeneous (0 · 0)) as z_homo2.
-    {
-        rewrite scalar_lanni.
-        exact z_homo.
-    }
-    assert ([_|z_homo] = [_|z_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        rewrite scalar_ranni.
-        reflexivity.
-    }
-    rewrite eq.
-    rewrite (op_lscalar _ _ _ _ z_homo).
-    apply scalar_lanni.
+Lemma op_lscalar : ∀ i j a u v H1 H2 H3,
+        op i j (a · u) v H1 H3 = a · op i j u v H2 H3.
+    intros i j a u v iau iu jv.
+    rewrite <- op_lscalar'.
+    rewrite (proof_irrelevance (of_grade_scalar _ _ _ _) iau).
+    reflexivity.
 Qed.
 
-Lemma bilinear_extend_ranni_base : ∀ v H, op v [0|H] = 0.
-    intros v z_homo.
-    assert (homogeneous (0 · 0)) as z_homo2.
-    {
-        rewrite scalar_lanni.
-        exact z_homo.
-    }
-    assert ([_|z_homo] = [_|z_homo2]) as eq.
-    {
-        apply set_type_eq; cbn.
-        rewrite scalar_ranni.
-        reflexivity.
-    }
-    rewrite eq.
-    rewrite (op_rscalar _ _ _ _ z_homo).
-    apply scalar_lanni.
+Lemma op_rscalar : ∀ i j a u v H1 H2 H3,
+        op i j u (a · v) H1 H2 = a · op i j u v H1 H3.
+    intros i j a u v iu jav jv.
+    rewrite <- op_rscalar'.
+    rewrite (proof_irrelevance (of_grade_scalar _ _ _ _) jav).
+    reflexivity.
+Qed.
+
+Lemma bilinear_extend_lanni_base : ∀ i j v H1 H2, op i j 0 v H1 H2 = 0.
+    intros i j v i0 jv.
+    pose (op' i u H1 j v H2 := op j i v u H2 H1).
+    change (op i j 0 v i0 jv) with (op' j v jv i 0 i0).
+    apply linear_extend_zero_base.
+    unfold op'.
+    clear i i0 op'.
+    unfold linear_extend_scalar_base.
+    intros a u i iu.
+    apply op_lscalar.
+Qed.
+
+Lemma bilinear_extend_ranni_base : ∀ i j v H1 H2, op i j v 0 H1 H2 = 0.
+    intros i j v iv j0.
+    pose (op' i u H1 j v H2 := op i j u v H1 H2).
+    change (op i j v 0 iv j0) with (op' i v iv j 0 j0).
+    apply linear_extend_zero_base.
+    clear j j0.
+    unfold linear_extend_scalar_base, op'.
+    intros a u j vj.
+    apply op_rscalar.
 Qed.
 
 Section BilinearBase.
 
-Variable a : set_type homogeneous.
+Context i a (ia : of_grade i a).
 
-Let f1_base := op a.
+Let f1_base := λ j v jv, op i j a v ia jv.
 
-Lemma bilinear_extend_base_plus : ∀ (u v : V1) (i : grade_I)
-        (H1 : of_grade i u) (H2 : of_grade i v),
-        f1_base [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] =
-        f1_base [u|ex_intro _ i H1] + f1_base [v|ex_intro _ i H2].
-    intros u v i iu iv.
+Lemma bilinear_extend_base_plus : linear_extend_plus_base f1_base.
+    intros u v j ju jv.
     unfold f1_base.
     apply op_ldist.
 Qed.
 
-Lemma bilinear_extend_base_scalar : ∀ a v i (H : of_grade i v),
-        f1_base [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
-        a · f1_base [v|ex_intro _ i H].
-    intros α v i iv.
+Lemma bilinear_extend_base_scalar : linear_extend_scalar_base f1_base.
+    intros α v j jv.
     unfold f1_base.
     apply op_rscalar.
 Qed.
@@ -623,18 +583,8 @@ Local Existing Instances TP TZ TN TPC TPA TPZ TPN TSM TSMO TSML TSMR TSMC.
 
 Let f_base := bilinear_extend_base.
 
-Lemma bilinear_extend_plus_base : ∀ (u v : V1) (i : grade_I)
-        (H1 : of_grade i u) (H2 : of_grade i v),
-        f_base [u + v|ex_intro _ i (of_grade_plus u v i H1 H2)] =
-        f_base [u|ex_intro _ i H1] + f_base [v|ex_intro _ i H2].
+Lemma bilinear_extend_plus_base : linear_extend_plus_base f_base.
     intros u v i iu iv.
-    assert (homogeneous (u + v)) as uv_homo
-        by (exists i; apply of_grade_plus; assumption).
-    assert (homogeneous u) as u_homo by (exists i; exact iu).
-    assert (homogeneous v) as v_homo by (exists i; exact iv).
-    rewrite (proof_irrelevance _ uv_homo).
-    rewrite (proof_irrelevance _ u_homo).
-    rewrite (proof_irrelevance _ v_homo).
     unfold f_base, bilinear_extend_base.
     apply functional_ext.
     intros x.
@@ -654,22 +604,15 @@ Lemma bilinear_extend_plus_base : ∀ (u v : V1) (i : grade_I)
     do 2 rewrite plus_assoc.
     apply rplus.
     rewrite <- plus_assoc.
-    rewrite (plus_comm _ (op _ a)).
+    rewrite (plus_comm _ (op _ _ v _ _ _)).
     rewrite plus_assoc.
     apply rplus.
     clear IHl l.
     apply op_rdist.
 Qed.
 
-Lemma bilinear_extend_scalar_base : ∀ a v i (H : of_grade i v),
-        f_base [a · v|ex_intro _ i (of_grade_scalar a v i H)] =
-        a · f_base [v|ex_intro _ i H].
+Lemma bilinear_extend_scalar_base : linear_extend_scalar_base f_base.
     intros a v i vi.
-    assert (homogeneous (a · v)) as av_homo
-        by (exists i; apply of_grade_scalar; exact vi).
-    assert (homogeneous v) as v_homo by (exists i; exact vi).
-    rewrite (proof_irrelevance _ av_homo).
-    rewrite (proof_irrelevance _ v_homo).
     unfold f_base, bilinear_extend_base.
     apply functional_ext.
     intros x.
@@ -713,7 +656,7 @@ Theorem bilinear_extend_ldist : ∀ u v w, f u (v + w) = f u v + f u w.
     do 2 rewrite plus_assoc.
     apply rplus.
     rewrite <- plus_assoc.
-    rewrite (plus_comm _ (f_base a w)).
+    rewrite (plus_comm _ (f_base _ [a|] _ _)).
     rewrite plus_assoc.
     apply rplus.
     clear l u.
@@ -764,59 +707,22 @@ Theorem bilinear_extend_rscalar : ∀ a u v, f u (a · v) = a · f u v.
     -   unfold linear_extend_plus_base; apply bilinear_extend_base_plus.
     -   unfold linear_extend_scalar_base; apply bilinear_extend_base_scalar.
 Qed.
-
-Theorem bilinear_extend_prod2 : ∀ u v,
-        f u v = ulist_sum (ulist_prod2 op
-            (grade_decomposition u) (grade_decomposition v)).
-    intros u v.
-    unfold f, bilinear_extend, linear_extend.
-    remember (grade_decomposition u) as l.
-    clear Heql u.
-    induction l using ulist_induction.
-    1: {
-        rewrite ulist_image_end.
-        rewrite ulist_prod2_lend.
-        do 2 rewrite ulist_sum_end.
-        reflexivity.
-    }
-    rewrite ulist_image_add, ulist_sum_add.
-    unfold plus; cbn.
-    rewrite ulist_prod2_ladd, ulist_sum_plus.
-    rewrite IHl; clear IHl.
-    apply rplus.
-    clear l.
-    unfold f_base, bilinear_extend_base.
-    unfold linear_extend.
-    remember (grade_decomposition v) as l.
-    clear v Heql.
-    induction l as [|b l] using ulist_induction.
-    1: {
-        do 2 rewrite ulist_image_end.
-        reflexivity.
-    }
-    do 2 rewrite ulist_image_add, ulist_sum_add.
-    rewrite IHl.
-    reflexivity.
-Qed.
-
 Theorem bilinear_extend_lanni : ∀ v, f 0 v = 0.
     intros v.
-    rewrite bilinear_extend_prod2.
-    rewrite grade_decomposition_zero.
-    rewrite ulist_prod2_lend.
-    apply ulist_sum_end.
+    rewrite <- (scalar_lanni 0).
+    rewrite bilinear_extend_lscalar.
+    apply scalar_lanni.
 Qed.
 
 Theorem bilinear_extend_ranni : ∀ v, f v 0 = 0.
     intros v.
-    rewrite bilinear_extend_prod2.
-    rewrite grade_decomposition_zero.
-    rewrite ulist_prod2_rend.
-    apply ulist_sum_end.
+    rewrite <- (scalar_lanni 0).
+    rewrite bilinear_extend_rscalar.
+    apply scalar_lanni.
 Qed.
 
-Theorem bilinear_extend_homo : ∀ u v, f [u|] [v|] = op u v.
-    intros [u u_homo] [v v_homo]; cbn.
+Theorem bilinear_extend_homo : ∀ i j u v H1 H2, f u v = op i j u v H1 H2.
+    intros i j u v iu jv.
     classic_case (0 = u) as [u_z|u_nz].
     2: classic_case (0 = v) as [v_z|v_nz].
     -   subst u.
@@ -825,14 +731,15 @@ Theorem bilinear_extend_homo : ∀ u v, f [u|] [v|] = op u v.
     -   subst v.
         rewrite bilinear_extend_ranni_base.
         apply bilinear_extend_ranni.
-    -   rewrite bilinear_extend_prod2.
-        rewrite (grade_decomposition_homo [u|u_homo] u_nz).
-        rewrite (grade_decomposition_homo [v|v_homo] v_nz).
-        rewrite ulist_prod2_ladd.
-        rewrite ulist_prod2_lend, ulist_conc_rid.
-        rewrite ulist_image_add, ulist_sum_add.
-        rewrite ulist_image_end, ulist_sum_end.
-        apply plus_rid.
+    -   unfold f.
+        unfold bilinear_extend.
+        rewrite (linear_extend_homo f_base bilinear_extend_scalar_base _ _ iu).
+        unfold f_base.
+        unfold bilinear_extend_base.
+        pose proof (linear_extend_homo (λ j v jv, op i j u v iu jv)) as eq.
+        prove_parts eq.
+        1: apply bilinear_extend_base_scalar.
+        apply (eq _ _ jv).
 Qed.
 
 End BilinearExtend.

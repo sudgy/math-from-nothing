@@ -172,87 +172,31 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
         pose (h2 n := make_multilinear _ n _ (h1 n) (h1_plus n) (h1_scalar n)).
         pose (h3 n := card_one_ex (tensor_power_universal V n (h2 n))).
         cbn in h3.
-        pose (h4 (v : set_type (homogeneous (H10 := TAG))) :=
-            module_homo_f [h3 (ex_val [|v])|] (ex_val (ex_proof [|v]))).
-        assert (∀ v i (H : of_grade i [v|]),
-            h4 v = module_homo_f [h3 i|] (ex_val H)) as h4_eq1.
-        {
-            intros v i H.
-            rewrite_ex_val u v_eq.
-            unfold h4.
-            unfold ex_proof, ex_val.
-            destruct (ex_to_type _) as [j jv]; cbn.
-            destruct (ex_to_type _) as [u' v_eq2]; cbn.
-            pose (ViZ := module_zero (tensor_power V i)).
-            classic_case (0 = u) as [u_z|u_nz].
-            {
-                subst u.
-                rewrite <- v_eq2 in v_eq.
-                rewrite (power_to_tensor_zero V) in v_eq.
-                rewrite <- (power_to_tensor_zero V j) in v_eq.
-                apply power_to_tensor_eq in v_eq.
-                subst u'.
-                rewrite module_homo_zero.
-                symmetry; apply module_homo_zero.
-            }
-            assert (i = j) as eq.
-            {
-                apply (of_grade_unique (power_to_tensor V u)).
-                -   intros contr.
-                    unfold TAZ in contr.
-                    rewrite <- (power_to_tensor_zero V i) in contr.
-                    apply power_to_tensor_eq in contr.
-                    contradiction.
-                -   exists u.
-                    reflexivity.
-                -   rewrite v_eq.
-                    rewrite <- v_eq2.
-                    exists u'.
-                    reflexivity.
-            }
-            subst j.
-            rewrite <- v_eq2 in v_eq.
-            apply power_to_tensor_eq in v_eq.
-            rewrite v_eq.
-            reflexivity.
-        }
-        assert (∀ n, ∀ l eq l_homo,
-            h4 [power_to_tensor V (vectors_to_power V l)|l_homo] = h1 n l eq)
+        pose (h4 i v (H : of_grade i v) := module_homo_f [h3 i|] (ex_val H)).
+        assert (∀ n, ∀ l eq li,
+            h4 n (power_to_tensor V (vectors_to_power V l)) li = h1 n l eq)
             as h4_eq2.
         {
-            intros n l eq l_homo.
-            assert (of_grade n (power_to_tensor V (vectors_to_power V l)))
-                as ln.
-            {
-                subst n.
-                exists (vectors_to_power V l).
-                reflexivity.
-            }
-            change (power_to_tensor V (vectors_to_power V l)) with
-                [[_|l_homo]|] in ln.
-            rewrite (h4_eq1 _ n ln).
-            cbn in ln.
-            pose proof (ex_proof ln) as l_eq; cbn in l_eq.
-            change (ex_type_val (ex_to_type ln)) with (ex_val ln) in l_eq.
+            intros n l eq li.
+            unfold h4.
             unfold h3.
             pose proof [|card_one_ex (tensor_power_universal V n (h2 n))]
                 as h2_eq.
             unfold multilinear_from_set in h2_eq; cbn in h2_eq.
+            specialize (h2_eq _ eq).
+            rewrite_ex_val a a_eq.
             subst n.
-            apply power_to_tensor_eq in l_eq.
-            specialize (h2_eq l Logic.eq_refl).
-            cbn in h2_eq.
-            rewrite <- l_eq in h2_eq.
+            destruct (Logic.eq_refl); cbn in h2_eq.
+            apply power_to_tensor_eq in a_eq.
+            subst a.
             exact h2_eq.
         }
         assert (linear_extend_plus_base h4) as h_plus_base.
         {
             intros u v i H1 H2.
-            rewrite (h4_eq1 [u|ex_intro _ i H1] i H1).
-            rewrite (h4_eq1 [v|ex_intro _ i H2] i H2).
+            unfold h4.
             pose proof (of_grade_plus u v i H1 H2) as H3.
             rewrite (proof_irrelevance _ H3).
-            rewrite (h4_eq1 [u+v|ex_intro _ i H3] i H3).
             unfold ex_val.
             destruct (ex_to_type _) as [uv' uv_eq]; cbn in *.
             destruct (ex_to_type _) as [u' u_eq]; cbn in *.
@@ -267,10 +211,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
         assert (linear_extend_scalar_base h4) as h_scalar_base.
         {
             intros a v i H.
-            pose proof (of_grade_scalar a v i H) as H2.
-            rewrite (proof_irrelevance _ H2).
-            rewrite (h4_eq1 [a·v|ex_intro _ i H2] i H2).
-            rewrite (h4_eq1 [v|ex_intro _ i H] i H).
+            unfold h4.
             unfold ex_val.
             destruct (ex_to_type _) as [av' av_eq]; cbn in *.
             destruct (ex_to_type _) as [v' v_eq]; cbn in *.
@@ -297,49 +238,17 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
         }
         assert (h 1 = 1) as h_one.
         {
-            classic_case ((zero (U := tensor_algebra_base V)) = 1)
-                as [triv|not_triv].
+            assert (of_grade 0 1) as o_homo.
             {
-                rewrite <- triv.
-                rewrite h_zero.
-                unfold TAZ, tensor_algebra_base in triv.
-                rewrite <- scalar_to_tensor_zero in triv.
-                unfold one in triv; cbn in triv.
-                apply scalar_to_tensor_eq in triv.
-                rewrite <- (scalar_id 1).
-                unfold zero in triv; cbn in triv.
-                unfold UO.
-                rewrite <- triv.
-                symmetry; apply scalar_lanni.
-            }
-            assert (homogeneous 1) as o_homo.
-            {
-                exists 0.
                 exists 1.
-                unfold one at 2; cbn.
-                unfold scalar_to_tensor.
                 reflexivity.
             }
-            unfold h, linear_extend.
-            change (one (U := tensor_algebra_base V)) with [[1|o_homo]|].
-            rewrite (grade_decomposition_homo [_|o_homo]) by exact not_triv.
-            rewrite ulist_image_add, ulist_sum_add.
-            rewrite ulist_image_end, ulist_sum_end.
-            rewrite plus_rid.
+            unfold h.
+            rewrite (linear_extend_homo h4 h_scalar_base _ _ o_homo).
             pose (o := power_to_tensor V (vectors_to_power V list_end)).
-            assert (homogeneous o) as o_homo'.
-            {
-                exists 0.
-                exists (vectors_to_power V list_end).
-                reflexivity.
-            }
-            assert ([1|o_homo] = [o|o_homo']) as o_eq.
-            {
-                apply set_type_eq; cbn.
-                reflexivity.
-            }
-            rewrite o_eq.
+            change (one (U := tensor_algebra_base V)) with o.
             unfold o.
+            cbn.
             rewrite (h4_eq2 0 list_end Logic.eq_refl).
             cbn.
             reflexivity.
@@ -418,30 +327,23 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             rewrite IHvl; clear IHvl.
             apply rplus; clear vl.
             assert (∀ n (x : module_V (tensor_power V n)),
-                homogeneous (power_to_tensor V x)) as l_homo.
+                of_grade n (power_to_tensor V x)) as ln.
             {
                 intros n x.
-                exists n.
                 exists x.
                 reflexivity.
             }
+            unfold h.
             assert (∀ n x, linear_extend h4 (power_to_tensor V x) =
-                h4 [power_to_tensor V x | l_homo n x]) as h4_eq.
+                h4 n (power_to_tensor V x) (ln n x)) as h4_eq.
             {
                 intros n x.
-                change (power_to_tensor V x) with [[_|l_homo _ x]|] at 1.
-                rewrite linear_extend_homo by assumption.
+                rewrite (linear_extend_homo _ h_scalar_base n _ (ln n x)).
                 reflexivity.
             }
-            unfold h.
-            unfold mult at 1; cbn.
             do 2 rewrite h4_eq.
-            change (power_to_tensor V [u|]) with [[_|l_homo _ [u|]]|] at 1.
-            change (power_to_tensor V [v|]) with [[_|l_homo _ [v|]]|] at 1.
-            rewrite bilinear_extend_homo; [>|
-                exact (tensor_mult_base_lscalar V)|
-                exact (tensor_mult_base_rscalar V)].
-            rewrite (power_to_tensor_tm V).
+            rewrite (tensor_mult_homo _ i j _ _ (ln i [u|]) (ln j [v|])).
+            rewrite power_to_tensor_tm.
             rewrite h4_eq; clear h4_eq.
             destruct u as [u [α [[ul ul_eq] u_eq]]].
             destruct v as [v [β [[vl vl_eq] v_eq]]].
@@ -452,17 +354,17 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             pose (VuSM := module_scalar (tensor_power V (list_size ul))).
             pose (VvSM := module_scalar (tensor_power V (list_size vl))).
             pose (VuvSM := module_scalar (tensor_power V (list_size (ul++vl)))).
-            assert (power_to_tensor V
-                    (module_homo_f
-                        (tensor_power_mult V (list_size ul) (list_size vl))
-                        (tensor_mult
-                            (tensor_power V (list_size ul))
-                            (tensor_power V (list_size vl))
-                            (α · vectors_to_power V ul)
-                            (β · vectors_to_power V vl))) =
-                power_to_tensor V
-                    ((α * β) · vectors_to_power V (ul ++ vl))) as eq.
+            assert (of_grade (list_size ul + list_size vl)
+                (power_to_tensor V (α * β · vectors_to_power V (ul ++ vl))))
+                as uv_grade.
             {
+                rewrite power_to_tensor_scalar.
+                apply of_grade_scalar.
+                rewrite <- list_size_plus.
+                apply ln.
+            }
+            rewrite (linear_extend_base_eq _ _ _ _ _ uv_grade).
+            2: {
                 rewrite (tensor_lscalar (tensor_power V (list_size ul))).
                 rewrite (tensor_rscalar (tensor_power V (list_size ul))).
                 do 2 rewrite module_homo_scalar.
@@ -472,58 +374,43 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
                 apply f_equal.
                 symmetry; apply power_to_tensor_k_eq.
             }
-            assert (∀ m n x y, power_to_tensor V x = power_to_tensor V y →
-                [power_to_tensor V x | l_homo m x] =
-                [power_to_tensor V y | l_homo n y]) as eq'.
+            assert (∀ (γ : cring_U F) n l H1 H2, n = list_size l →
+                h4 n (power_to_tensor V (scalar_mult (ScalarMult := module_scalar
+                (tensor_power V (list_size l))) γ (vectors_to_power V l))) H1 =
+                γ · h4 n (power_to_tensor V (vectors_to_power V l)) H2) as h4_eq.
             {
-                intros m n x y eq'.
-                apply set_type_eq; cbn.
-                exact eq'.
-            }
-            specialize (eq' _ _ _ _ eq).
-            unfold VuSM, VvSM, VuvSM in *.
-            rewrite eq'.
-            clear VuSM VvSM VuvSM eq' eq.
-            assert (∀ (γ : cring_U F) l,
-                h4 [power_to_tensor V (scalar_mult (ScalarMult := module_scalar
-                (tensor_power V (list_size l))) γ (vectors_to_power V l))
-                    |l_homo (list_size l) (γ · vectors_to_power V l)] =
-                γ · h4 [power_to_tensor V (vectors_to_power V l)
-                        |l_homo (list_size l) (vectors_to_power V l)]) as h4_eq.
-            {
-                intros γ l.
-                assert (of_grade (list_size l)
-                    (power_to_tensor V (vectors_to_power V l))) as Vl.
-                {
-                    exists (vectors_to_power V l).
-                    reflexivity.
-                }
-                pose proof (of_grade_scalar γ _ _ Vl) as γVl.
-                rewrite <- (power_to_tensor_scalar V) in γVl.
-                rewrite (h4_eq1 [_|l_homo _ _] (list_size l) Vl).
-                rewrite (h4_eq1 [_|l_homo _ _] (list_size l) γVl).
+                intros γ n l γVl Vl l_eq.
+                unfold h4.
                 pose proof (ex_proof γVl) as eq1; cbn in eq1.
                 pose proof (ex_proof Vl) as eq2; cbn in eq2.
+                subst n.
                 apply power_to_tensor_eq in eq1.
                 apply power_to_tensor_eq in eq2.
-                pose (X := ex_val γVl).
-                pose (Y := ex_val Vl).
-                change (ex_val γVl) with X.
-                change (ex_val Vl) with Y.
-                change (ex_type_val (ex_to_type γVl)) with X in eq1.
-                change (ex_type_val (ex_to_type Vl)) with Y in eq2.
+                change (ex_type_val (ex_to_type γVl)) with (ex_val γVl) in eq1.
+                change (ex_type_val (ex_to_type Vl)) with (ex_val Vl) in eq2.
                 rewrite eq1, eq2.
                 apply module_homo_scalar.
             }
-            do 3 rewrite h4_eq; clear h4_eq.
+            assert (∀ l, of_grade (list_size l)
+                (power_to_tensor V (vectors_to_power V l))) as l_grade.
+            {
+                intros l.
+                apply ln.
+            }
+            pose proof (l_grade (ul ++ vl)) as uvl_grade.
+            rewrite (list_size_plus ul vl) in uvl_grade at 1.
+            rewrite (h4_eq _ _ _ _ uvl_grade (Logic.eq_sym (list_size_plus ul vl))).
+            rewrite (h4_eq _ _ _ _ (l_grade ul) Logic.eq_refl).
+            rewrite (h4_eq _ _ _ _ (l_grade vl) Logic.eq_refl).
             rewrite scalar_lmult, scalar_rmult.
             rewrite scalar_comp.
             apply f_equal.
-            rewrite (h4_eq2 (list_size (ul ++ vl)) (ul ++ vl) Logic.eq_refl).
+            rewrite (h4_eq2 (list_size ul + list_size vl) (ul ++ vl) (list_size_plus ul vl)).
             rewrite (h4_eq2 (list_size ul) ul Logic.eq_refl).
             rewrite (h4_eq2 (list_size vl) vl Logic.eq_refl).
             unfold h1; cbn.
             rewrite list_image_conc.
+            clear l_grade uv_grade uvl_grade ln VuSM VvSM VuvSM.
             induction ul.
             -   cbn.
                 rewrite mult_lid.
@@ -536,24 +423,17 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             h h_plus h_scalar h_mult h_one).
         cbn.
         intros v.
-        pose proof (vector_to_tensor_homogeneous V v) as v_homo.
-        unfold h.
-        change (vector_to_tensor V v) with [[_|v_homo]|].
-        rewrite (linear_extend_homo) by assumption.
-        assert (homogeneous (power_to_tensor V (vectors_to_power V
-            (v :: list_end)))) as v_homo'.
+        assert (of_grade 1 (vector_to_tensor V v)) as v_grade.
         {
-            exists 1.
             exists (vectors_to_power V (v :: list_end)).
             reflexivity.
         }
-        assert ([_|v_homo] = [_|v_homo']) as eq.
-        {
-            apply set_type_eq.
-            reflexivity.
-        }
-        rewrite eq.
-        rewrite (h4_eq2 _ _ Logic.eq_refl).
+        unfold h.
+        rewrite (linear_extend_homo _ h_scalar_base _ _ v_grade).
+        change (vector_to_tensor V v)
+            with (power_to_tensor V (vectors_to_power V (v :: list_end))).
+        assert (list_size (v :: list_end) = 1) as eq by reflexivity.
+        rewrite (h4_eq2 1 (v :: list_end) eq).
         unfold h1; cbn.
         apply mult_rid.
     -   intros [f1 f1_eq] [f2 f2_eq].
@@ -621,28 +501,20 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             vector_to_tensor V v * power_to_tensor V (vectors_to_power V l))
             as eq.
         {
-            assert (homogeneous (vector_to_tensor V v)) as v_homo.
+            assert (of_grade 1 (vector_to_tensor V v)) as v_homo.
             {
-                exists 1.
                 exists (vectors_to_power V (v :: list_end)).
                 cbn.
                 unfold vector_to_tensor.
                 reflexivity.
             }
-            assert (homogeneous (power_to_tensor V (vectors_to_power V l)))
+            assert (of_grade (list_size l) (power_to_tensor V (vectors_to_power V l)))
                 as l_homo.
             {
-                exists (list_size l).
                 exists (vectors_to_power V l).
                 reflexivity.
             }
-            unfold mult; cbn.
-            change (vector_to_tensor V v) with [[_|v_homo]|].
-            change (power_to_tensor V (vectors_to_power V l))with [[_|l_homo]|].
-            rewrite bilinear_extend_homo; [>
-                |apply tensor_mult_base_lscalar
-                |apply tensor_mult_base_rscalar].
-            unfold vector_to_tensor.
+            rewrite (tensor_mult_homo _ _ _ _ _ v_homo l_homo).
             rewrite (power_to_tensor_tm V).
             change (tensor_mult V (cring_module F) v 1) with
                 (vectors_to_power V (v :: list_end)).
