@@ -75,7 +75,7 @@ Theorem scalar_to_ga_grade : ∀ a, of_grade 0 (σ a).
     -   apply ext_to_geo_of_scalar.
 Qed.
 
-Theorem ext_grade_zero_scalar : ∀ v : ga B, of_grade 0 v ↔ (∃ a, v = σ a).
+Theorem ga_grade_zero_scalar : ∀ v : ga B, of_grade 0 v ↔ (∃ a, v = σ a).
     intros v.
     split.
     -   intros [v' [v0 v_eq]].
