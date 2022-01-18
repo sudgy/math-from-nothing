@@ -100,3 +100,8 @@ Qed.
 (* begin hide *)
 End Sum.
 (* end hide *)
+
+#[universes(template)]
+Inductive optional (A : Type) : Type :=
+  | opt_val : A → optional A
+  | opt_nil : optional A.
