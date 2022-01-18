@@ -200,6 +200,7 @@
 ./src/Algebra/Geometric/geometric_grade.v
 ./src/Algebra/Geometric/geometric_involutions.v
 ./src/Algebra/Geometric/geometric_outer.v
+./src/Algebra/Geometric/geometric_inner.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
