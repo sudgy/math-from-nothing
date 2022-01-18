@@ -10,6 +10,7 @@ Require Import nat.
 Require Import set.
 Require Import unordered_list.
 Require Import ring_ideal.
+Require Import mult_product.
 
 Require Export exterior_construct.
 
@@ -37,9 +38,10 @@ Let EPA := ext_plus_assoc V.
 Let EPZ := ext_plus_lid V.
 Let EPN := ext_plus_linv V.
 Let EM := ext_mult V.
+Let EO := ext_one V.
 Let ESM := ext_scalar V.
 
-Existing Instances EP EZ EN EPC EPA EPZ EPN EM ESM.
+Existing Instances EP EZ EN EPC EPA EPZ EPN EM EO ESM.
 
 Let TP := algebra_plus (tensor_algebra V).
 Let TZ := algebra_zero (tensor_algebra V).
@@ -499,6 +501,53 @@ Theorem ext_grade_one_vector : ∀ v : ext V,
         reflexivity.
     -   intros [a v_eq]; subst v.
         apply vector_to_ext_grade.
+Qed.
+
+Theorem ext_list_grade : ∀ l,
+        of_grade (H10 := exterior_grade) (list_size l)
+        (list_prod (list_image l (vector_to_ext V))).
+    intros l.
+    induction l.
+    -   cbn.
+        rewrite <- scalar_to_ext_one.
+        apply scalar_to_ext_grade.
+    -   cbn.
+        change (nat_suc (list_size l)) with (1 + list_size l).
+        apply (grade_mult (GradedAlgebra := exterior_grade_mult)).
+        +   apply vector_to_ext_grade.
+        +   exact IHl.
+Qed.
+
+Theorem ext_grade_sum : ∀ (v : ext V) n, of_grade n v →
+        ∃ l : ulist (cring_U F * set_type (λ l', list_size l' = n)),
+            v = ulist_sum (ulist_image l
+            (λ p, fst p · list_prod (list_image [snd p|] (vector_to_ext V)))).
+    intros v' n nv.
+    destruct nv as [v [v_eq nv]]; subst v'.
+    pose proof (tensor_grade_sum _ _ _ nv) as [l l_eq].
+    subst v; clear nv.
+    exists l.
+    induction l as [|[α x] l] using ulist_induction.
+    {
+        do 2 rewrite ulist_image_end, ulist_sum_end.
+        reflexivity.
+    }
+    do 2 rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite tensor_to_ext_plus.
+    rewrite IHl; clear IHl.
+    apply rplus; clear l.
+    rewrite tensor_to_ext_scalar.
+    apply f_equal.
+    destruct x as [l l_size]; cbn; clear l_size.
+    induction l.
+    {
+        cbn.
+        reflexivity.
+    }
+    cbn.
+    rewrite tensor_to_ext_mult.
+    rewrite IHl.
+    reflexivity.
 Qed.
 
 End ExteriorGrade.
