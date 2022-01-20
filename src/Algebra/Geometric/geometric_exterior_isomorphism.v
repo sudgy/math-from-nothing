@@ -54,20 +54,20 @@ Let ESR := ext_scalar_rdist V.
 
 Existing Instances EP EZ EN EPA EPC EPZ EPN EM EL ER EO EMA ES ESL ESR.
 
-Let GP := ga_plus B.
-Let GZ := ga_zero B.
-Let GN := ga_neg B.
-Let GPA := ga_plus_assoc B.
-Let GPC := ga_plus_comm B.
-Let GPZ := ga_plus_lid B.
-Let GPN := ga_plus_linv B.
-Let GM := ga_mult B.
-Let GL := ga_ldist B.
-Let GR := ga_rdist B.
-Let GS := ga_scalar B.
-Let GSL := ga_scalar_ldist B.
-Let GSC := ga_scalar_comp B.
-Let GSMR := ga_scalar_rmult B.
+Let GP := geo_plus B.
+Let GZ := geo_zero B.
+Let GN := geo_neg B.
+Let GPA := geo_plus_assoc B.
+Let GPC := geo_plus_comm B.
+Let GPZ := geo_plus_lid B.
+Let GPN := geo_plus_linv B.
+Let GM := geo_mult B.
+Let GL := geo_ldist B.
+Let GR := geo_rdist B.
+Let GS := geo_scalar B.
+Let GSL := geo_scalar_ldist B.
+Let GSC := geo_scalar_comp B.
+Let GSMR := geo_scalar_rmult B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GL GR GS GSL GSC GSMR.
 
@@ -115,69 +115,69 @@ Lemma ext_inner_inner : ∀ a b (x : ext V),
     apply plus_comm.
 Qed.
 
-Lemma ga_mult_inner_inner : ∀ a b (x : ga B),
-        ga_mult_inner B a (ga_mult_inner B b x) +
-        ga_mult_inner B b (ga_mult_inner B a x) = 0.
+Lemma geo_mult_inner_inner : ∀ a b (x : geo B),
+        geo_mult_inner B a (geo_mult_inner B b x) +
+        geo_mult_inner B b (geo_mult_inner B a x) = 0.
     intros a b x.
     symmetry; apply plus_0_ab_a_nb.
-    pose proof (ga_sum B x) as [l l_eq]; subst x.
+    pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        do 4 rewrite ga_mult_inner_rzero.
+        do 4 rewrite geo_mult_inner_rzero.
         symmetry; apply neg_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    do 4 rewrite ga_mult_inner_rplus.
+    do 4 rewrite geo_mult_inner_rplus.
     rewrite IHl; clear IHl.
     rewrite neg_plus.
     apply rplus; clear l.
-    do 4 rewrite ga_mult_inner_rscalar.
+    do 4 rewrite geo_mult_inner_rscalar.
     rewrite <- scalar_rneg.
     apply f_equal.
     induction x as [|u l].
     {
         cbn.
-        rewrite <- scalar_to_ga_one.
-        do 2 rewrite ga_mult_inner_scalar.
-        do 2 rewrite ga_mult_inner_rzero.
+        rewrite <- scalar_to_geo_one.
+        do 2 rewrite geo_mult_inner_scalar.
+        do 2 rewrite geo_mult_inner_rzero.
         symmetry; apply neg_zero.
     }
     cbn.
-    do 2 rewrite ga_mult_inner_add.
-    do 2 rewrite ga_mult_inner_rplus.
+    do 2 rewrite geo_mult_inner_add.
+    do 2 rewrite geo_mult_inner_rplus.
     rewrite neg_plus.
-    do 2 rewrite ga_mult_inner_rneg.
+    do 2 rewrite geo_mult_inner_rneg.
     rewrite neg_neg.
-    do 2 rewrite ga_mult_inner_add.
+    do 2 rewrite geo_mult_inner_add.
     rewrite IHl; clear IHl.
     rewrite mult_rneg.
     rewrite neg_neg.
     rewrite neg_plus.
     do 2 rewrite plus_assoc.
     apply rplus.
-    do 2 rewrite ga_mult_inner_rscalar.
+    do 2 rewrite geo_mult_inner_rscalar.
     apply plus_comm.
 Qed.
 
-Lemma geo_to_ext_inner : ∀ a (x : ga B),
-        geo_to_ext B (ga_mult_inner B a x) = ext_inner B a (geo_to_ext B x).
+Lemma geo_to_ext_inner : ∀ a (x : geo B),
+        geo_to_ext B (geo_mult_inner B a x) = ext_inner B a (geo_to_ext B x).
     intros a x.
-    pose proof (ga_sum B x) as [l l_eq]; subst x.
+    pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        rewrite ga_mult_inner_rzero.
+        rewrite geo_mult_inner_rzero.
         do 2 rewrite geo_to_ext_zero.
         symmetry; apply ext_inner_rzero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    rewrite ga_mult_inner_rplus.
+    rewrite geo_mult_inner_rplus.
     do 2 rewrite geo_to_ext_plus.
     rewrite ext_inner_rplus.
     rewrite IHl; clear IHl.
     apply rplus.
-    rewrite ga_mult_inner_rscalar.
+    rewrite geo_mult_inner_rscalar.
     do 2 rewrite geo_to_ext_scalar.
     rewrite ext_inner_rscalar.
     apply f_equal.
@@ -185,14 +185,14 @@ Lemma geo_to_ext_inner : ∀ a (x : ga B),
     induction x as [|b l].
     {
         cbn.
-        rewrite <- scalar_to_ga_one.
+        rewrite <- scalar_to_geo_one.
         rewrite geo_to_ext_of_scalar.
-        rewrite ga_mult_inner_scalar.
+        rewrite geo_mult_inner_scalar.
         rewrite ext_inner_scalar.
         apply geo_to_ext_zero.
     }
     cbn.
-    rewrite ga_mult_inner_add.
+    rewrite geo_mult_inner_add.
     rewrite geo_to_ext_add.
     rewrite geo_to_ext_plus, geo_to_ext_neg.
     rewrite ext_inner_rplus.
@@ -210,7 +210,7 @@ Lemma geo_to_ext_inner : ∀ a (x : ga B),
 Qed.
 
 Lemma ext_to_geo_inner : ∀ a (x : ext V),
-        ext_to_geo B (ext_inner B a x) = ga_mult_inner B a (ext_to_geo B x).
+        ext_to_geo B (ext_inner B a x) = geo_mult_inner B a (ext_to_geo B x).
     intros a x.
     pose proof (ext_sum V x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -218,17 +218,17 @@ Lemma ext_to_geo_inner : ∀ a (x : ext V),
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_inner_rzero.
         do 2 rewrite ext_to_geo_zero.
-        symmetry; apply ga_mult_inner_rzero.
+        symmetry; apply geo_mult_inner_rzero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
     rewrite ext_inner_rplus.
     do 2 rewrite ext_to_geo_plus.
-    rewrite ga_mult_inner_rplus.
+    rewrite geo_mult_inner_rplus.
     rewrite IHl; clear IHl.
     apply rplus.
     rewrite ext_inner_rscalar.
     do 2 rewrite ext_to_geo_scalar.
-    rewrite ga_mult_inner_rscalar.
+    rewrite geo_mult_inner_rscalar.
     apply f_equal.
     clear α l.
     induction x as [|b l].
@@ -237,17 +237,17 @@ Lemma ext_to_geo_inner : ∀ a (x : ext V),
         rewrite <- scalar_to_ext_one.
         rewrite ext_to_geo_of_scalar.
         rewrite ext_inner_scalar.
-        rewrite ga_mult_inner_scalar.
+        rewrite geo_mult_inner_scalar.
         apply ext_to_geo_zero.
     }
     cbn.
     rewrite ext_inner_add.
     rewrite ext_to_geo_add.
     rewrite ext_to_geo_plus, ext_to_geo_neg.
-    rewrite ga_mult_inner_rplus.
+    rewrite geo_mult_inner_rplus.
     rewrite ext_to_geo_add.
     rewrite IHl; clear IHl.
-    rewrite ga_mult_inner_add.
+    rewrite geo_mult_inner_add.
     rewrite neg_plus.
     do 2 rewrite plus_assoc.
     apply rplus.
@@ -255,9 +255,9 @@ Lemma ext_to_geo_inner : ∀ a (x : ext V),
     rewrite plus_comm.
     apply rplus.
     rewrite neg_neg.
-    rewrite ga_mult_inner_rneg.
+    rewrite geo_mult_inner_rneg.
     apply plus_0_ab_a_nb.
-    symmetry; apply ga_mult_inner_inner.
+    symmetry; apply geo_mult_inner_inner.
 Qed.
 
 Theorem geo_to_ext_to_geo : ∀ x, geo_to_ext B (ext_to_geo B x) = x.
@@ -280,7 +280,7 @@ Theorem geo_to_ext_to_geo : ∀ x, geo_to_ext B (ext_to_geo B x) = x.
     induction x as [|a l].
     {
         cbn.
-        replace (ext_to_geo B 1) with (@one _ (ga_one B))
+        replace (ext_to_geo B 1) with (@one _ (geo_one B))
             by (symmetry; apply (ext_to_geo_one B)).
         apply geo_to_ext_one.
     }
@@ -300,7 +300,7 @@ Qed.
 
 Theorem ext_to_geo_to_ext : ∀ x, ext_to_geo B (geo_to_ext B x) = x.
     intros x.
-    pose proof (ga_sum B x) as [l l_eq]; subst x.
+    pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
@@ -383,7 +383,7 @@ Theorem geo_ext_iso : isomorphic (C0 := MODULE F)
     exact geo_to_ext_iso.
 Qed.
 
-Theorem scalar_to_ga_eq : ∀ a b, scalar_to_ga B a = scalar_to_ga B b → a = b.
+Theorem scalar_to_geo_eq : ∀ a b, scalar_to_geo B a = scalar_to_geo B b → a = b.
     intros a b eq.
     apply (f_equal (geo_to_ext B)) in eq.
     do 2 rewrite geo_to_ext_of_scalar in eq.
@@ -391,7 +391,7 @@ Theorem scalar_to_ga_eq : ∀ a b, scalar_to_ga B a = scalar_to_ga B b → a = b
     exact eq.
 Qed.
 
-Theorem vector_to_ga_eq : ∀ a b, vector_to_ga B a = vector_to_ga B b → a = b.
+Theorem vector_to_geo_eq : ∀ a b, vector_to_geo B a = vector_to_geo B b → a = b.
     intros a b eq.
     apply (f_equal (geo_to_ext B)) in eq.
     do 2 rewrite geo_to_ext_vector in eq.

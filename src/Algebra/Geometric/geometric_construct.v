@@ -11,8 +11,8 @@ Require Import mult_product.
 Require Export set.
 Require Export unordered_list.
 
-Declare Scope ga_scope.
-Delimit Scope ga_scope with ga.
+Declare Scope geo_scope.
+Delimit Scope geo_scope with geo.
 
 Section GeometricConstruct.
 
@@ -70,48 +70,48 @@ Context (B : set_type bilinear_form).
 Existing Instances TAP TAZ TAN TAPA TAPC TAPZ TAPN TASM TASMO TASMC TASL TASR
     TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR.
 
-Definition ga_ideal_base (x : algebra_V (tensor_algebra V)) :=
+Definition geo_ideal_base (x : algebra_V (tensor_algebra V)) :=
     ∃ v, x = vector_to_tensor v * vector_to_tensor v - [B|] v v · 1.
 
-Definition ga_ideal := ideal_generated_by ga_ideal_base.
+Definition geo_ideal := ideal_generated_by geo_ideal_base.
 
-Definition ga := quotient_ring ga_ideal.
-Definition ga_plus := quotient_ring_plus ga_ideal.
-Definition ga_plus_assoc := quotient_ring_plus_assoc ga_ideal.
-Definition ga_plus_comm := quotient_ring_plus_comm ga_ideal.
-Definition ga_zero := quotient_ring_zero ga_ideal.
-Definition ga_plus_lid := quotient_ring_plus_lid ga_ideal.
-Definition ga_neg := quotient_ring_neg ga_ideal.
-Definition ga_plus_linv := quotient_ring_plus_linv ga_ideal.
-Definition ga_mult := quotient_ring_mult ga_ideal.
-Definition ga_ldist := quotient_ring_ldist ga_ideal.
-Definition ga_rdist := quotient_ring_rdist ga_ideal.
-Definition ga_mult_assoc := quotient_ring_mult_assoc ga_ideal.
-Definition ga_one := quotient_ring_one ga_ideal.
-Definition ga_mult_lid := quotient_ring_mult_lid ga_ideal.
-Definition ga_mult_rid := quotient_ring_mult_rid ga_ideal.
+Definition geo := quotient_ring geo_ideal.
+Definition geo_plus := quotient_ring_plus geo_ideal.
+Definition geo_plus_assoc := quotient_ring_plus_assoc geo_ideal.
+Definition geo_plus_comm := quotient_ring_plus_comm geo_ideal.
+Definition geo_zero := quotient_ring_zero geo_ideal.
+Definition geo_plus_lid := quotient_ring_plus_lid geo_ideal.
+Definition geo_neg := quotient_ring_neg geo_ideal.
+Definition geo_plus_linv := quotient_ring_plus_linv geo_ideal.
+Definition geo_mult := quotient_ring_mult geo_ideal.
+Definition geo_ldist := quotient_ring_ldist geo_ideal.
+Definition geo_rdist := quotient_ring_rdist geo_ideal.
+Definition geo_mult_assoc := quotient_ring_mult_assoc geo_ideal.
+Definition geo_one := quotient_ring_one geo_ideal.
+Definition geo_mult_lid := quotient_ring_mult_lid geo_ideal.
+Definition geo_mult_rid := quotient_ring_mult_rid geo_ideal.
 
-Existing Instances ga_plus ga_plus_assoc ga_plus_comm ga_zero ga_plus_lid ga_neg
-    ga_plus_linv ga_mult ga_ldist ga_rdist ga_mult_assoc ga_one ga_mult_lid
-    ga_mult_rid.
+Existing Instances geo_plus geo_plus_assoc geo_plus_comm geo_zero geo_plus_lid
+    geo_neg geo_plus_linv geo_mult geo_ldist geo_rdist geo_mult_assoc geo_one
+    geo_mult_lid geo_mult_rid.
 
-Lemma ga_scalar_wd : ∀ u v c, eq_equal (ideal_equiv ga_ideal) u v →
-        eq_equal (ideal_equiv ga_ideal) (c · u) (c · v).
+Lemma geo_scalar_wd : ∀ u v c, eq_equal (ideal_equiv geo_ideal) u v →
+        eq_equal (ideal_equiv geo_ideal) (c · u) (c · v).
     cbn.
-    change (ideal_generated_by_set ga_ideal_base) with (ideal_set ga_ideal).
+    change (ideal_generated_by_set geo_ideal_base) with (ideal_set geo_ideal).
     intros u v c eq.
     rewrite <- scalar_rneg.
     rewrite <- scalar_ldist.
     rewrite <- (scalar_to_tensor_scalar V).
-    apply (ideal_lmult ga_ideal).
+    apply (ideal_lmult geo_ideal).
     exact eq.
 Qed.
 
-Instance ga_scalar : ScalarMult (cring_U F) ga := {
-    scalar_mult := binary_rself_op ga_scalar_wd
+Instance geo_scalar : ScalarMult (cring_U F) geo := {
+    scalar_mult := binary_rself_op geo_scalar_wd
 }.
 
-Program Instance ga_scalar_id : ScalarId (cring_U F) ga.
+Program Instance geo_scalar_id : ScalarId (cring_U F) geo.
 Next Obligation.
     equiv_get_value v.
     unfold scalar_mult; equiv_simpl.
@@ -119,7 +119,7 @@ Next Obligation.
     apply scalar_id.
 Qed.
 
-Program Instance ga_scalar_ldist : ScalarLdist (cring_U F) ga.
+Program Instance geo_scalar_ldist : ScalarLdist (cring_U F) geo.
 Next Obligation.
     equiv_get_value u v.
     unfold scalar_mult, plus; equiv_simpl.
@@ -127,7 +127,7 @@ Next Obligation.
     apply scalar_ldist.
 Qed.
 
-Program Instance ga_scalar_rdist : ScalarRdist (cring_U F) ga.
+Program Instance geo_scalar_rdist : ScalarRdist (cring_U F) geo.
 Next Obligation.
     equiv_get_value v.
     unfold scalar_mult, plus at 2; equiv_simpl.
@@ -135,7 +135,7 @@ Next Obligation.
     apply scalar_rdist.
 Qed.
 
-Program Instance ga_scalar_comp : ScalarComp (cring_U F) ga.
+Program Instance geo_scalar_comp : ScalarComp (cring_U F) geo.
 Next Obligation.
     equiv_get_value v.
     unfold scalar_mult; equiv_simpl.
@@ -143,7 +143,7 @@ Next Obligation.
     apply scalar_comp.
 Qed.
 
-Program Instance ga_scalar_lmult : ScalarLMult (cring_U F) ga.
+Program Instance geo_scalar_lmult : ScalarLMult (cring_U F) geo.
 Next Obligation.
     equiv_get_value u v.
     unfold scalar_mult, mult; equiv_simpl.
@@ -151,7 +151,7 @@ Next Obligation.
     apply scalar_lmult.
 Qed.
 
-Program Instance ga_scalar_rmult : ScalarRMult (cring_U F) ga.
+Program Instance geo_scalar_rmult : ScalarRMult (cring_U F) geo.
 Next Obligation.
     equiv_get_value u v.
     unfold scalar_mult, mult; equiv_simpl.
@@ -161,157 +161,157 @@ Qed.
 
 Definition geometric_algebra := make_algebra F
     (make_module F
-        ga
-        ga_plus
-        ga_zero
-        ga_neg
-        ga_plus_assoc
-        ga_plus_comm
-        ga_plus_lid
-        ga_plus_linv
-        ga_scalar
-        ga_scalar_id
-        ga_scalar_ldist
-        ga_scalar_rdist
-        ga_scalar_comp
+        geo
+        geo_plus
+        geo_zero
+        geo_neg
+        geo_plus_assoc
+        geo_plus_comm
+        geo_plus_lid
+        geo_plus_linv
+        geo_scalar
+        geo_scalar_id
+        geo_scalar_ldist
+        geo_scalar_rdist
+        geo_scalar_comp
     )
-    ga_mult
-    ga_ldist
-    ga_rdist
-    ga_mult_assoc
-    ga_one
-    ga_mult_lid
-    ga_mult_rid
-    ga_scalar_lmult
-    ga_scalar_rmult.
+    geo_mult
+    geo_ldist
+    geo_rdist
+    geo_mult_assoc
+    geo_one
+    geo_mult_lid
+    geo_mult_rid
+    geo_scalar_lmult
+    geo_scalar_rmult.
 
-Definition tensor_to_ga v := to_equiv_type (ideal_equiv ga_ideal) v.
+Definition tensor_to_geo v := to_equiv_type (ideal_equiv geo_ideal) v.
 
-Theorem tensor_to_ga_plus : ∀ u v, tensor_to_ga (u + v) = tensor_to_ga u + tensor_to_ga v.
+Theorem tensor_to_geo_plus : ∀ u v, tensor_to_geo (u + v) = tensor_to_geo u + tensor_to_geo v.
     intros u v.
-    unfold tensor_to_ga, plus at 2; equiv_simpl.
+    unfold tensor_to_geo, plus at 2; equiv_simpl.
     rewrite plus_rinv.
-    exact (ideal_zero ga_ideal).
+    exact (ideal_zero geo_ideal).
 Qed.
 
-Theorem tensor_to_ga_mult : ∀ u v, tensor_to_ga (u * v) = tensor_to_ga u * tensor_to_ga v.
+Theorem tensor_to_geo_mult : ∀ u v, tensor_to_geo (u * v) = tensor_to_geo u * tensor_to_geo v.
     intros u v.
-    unfold tensor_to_ga, mult at 2; equiv_simpl.
+    unfold tensor_to_geo, mult at 2; equiv_simpl.
     rewrite plus_rinv.
-    exact (ideal_zero ga_ideal).
+    exact (ideal_zero geo_ideal).
 Qed.
 
-Theorem tensor_to_ga_scalar : ∀ a v, tensor_to_ga (a · v) = a · tensor_to_ga v.
+Theorem tensor_to_geo_scalar : ∀ a v, tensor_to_geo (a · v) = a · tensor_to_geo v.
     intros a v.
-    unfold tensor_to_ga, scalar_mult at 2; equiv_simpl.
+    unfold tensor_to_geo, scalar_mult at 2; equiv_simpl.
     rewrite plus_rinv.
-    exact (ideal_zero ga_ideal).
+    exact (ideal_zero geo_ideal).
 Qed.
 
-Theorem tensor_to_ga_zero : tensor_to_ga 0 = 0.
+Theorem tensor_to_geo_zero : tensor_to_geo 0 = 0.
     reflexivity.
 Qed.
 
-Definition vector_to_ga v := tensor_to_ga (vector_to_tensor v).
-Local Notation "'φ'" := vector_to_ga.
+Definition vector_to_geo v := tensor_to_geo (vector_to_tensor v).
+Local Notation "'φ'" := vector_to_geo.
 
-Theorem vector_to_ga_plus : ∀ u v, φ (u + v) = φ u + φ v.
+Theorem vector_to_geo_plus : ∀ u v, φ (u + v) = φ u + φ v.
     intros u v.
-    unfold vector_to_ga.
+    unfold vector_to_geo.
     rewrite (vector_to_tensor_plus V).
-    apply tensor_to_ga_plus.
+    apply tensor_to_geo_plus.
 Qed.
 
-Theorem vector_to_ga_scalar : ∀ a v, φ (a · v) = a · φ v.
+Theorem vector_to_geo_scalar : ∀ a v, φ (a · v) = a · φ v.
     intros a v.
-    unfold vector_to_ga.
+    unfold vector_to_geo.
     rewrite (vector_to_tensor_scalar V).
-    apply tensor_to_ga_scalar.
+    apply tensor_to_geo_scalar.
 Qed.
 
-Theorem vector_to_ga_zero : φ 0 = 0.
-    unfold vector_to_ga.
+Theorem vector_to_geo_zero : φ 0 = 0.
+    unfold vector_to_geo.
     unfold VZ.
     rewrite (vector_to_tensor_zero V).
-    apply tensor_to_ga_zero.
+    apply tensor_to_geo_zero.
 Qed.
 
-Theorem vector_to_ga_neg : ∀ v, φ (-v) = -φ v.
+Theorem vector_to_geo_neg : ∀ v, φ (-v) = -φ v.
     intros v.
     rewrite <- scalar_neg_one.
-    rewrite vector_to_ga_scalar.
+    rewrite vector_to_geo_scalar.
     apply scalar_neg_one.
 Qed.
 
-Definition scalar_to_ga a := tensor_to_ga (scalar_to_tensor V a).
-Local Notation "'σ'" := scalar_to_ga.
+Definition scalar_to_geo a := tensor_to_geo (scalar_to_tensor V a).
+Local Notation "'σ'" := scalar_to_geo.
 
-Theorem scalar_to_ga_plus : ∀ a b, σ (a + b) = σ a + σ b.
+Theorem scalar_to_geo_plus : ∀ a b, σ (a + b) = σ a + σ b.
     intros a b.
-    unfold scalar_to_ga.
+    unfold scalar_to_geo.
     rewrite (scalar_to_tensor_plus V).
-    apply tensor_to_ga_plus.
+    apply tensor_to_geo_plus.
 Qed.
 
-Theorem scalar_to_ga_zero : σ 0 = 0.
-    unfold scalar_to_ga.
+Theorem scalar_to_geo_zero : σ 0 = 0.
+    unfold scalar_to_geo.
     unfold UZ.
     rewrite (scalar_to_tensor_zero V).
-    apply tensor_to_ga_zero.
+    apply tensor_to_geo_zero.
 Qed.
 
-Theorem scalar_to_ga_mult : ∀ a b, σ (a * b) = σ a * σ b.
+Theorem scalar_to_geo_mult : ∀ a b, σ (a * b) = σ a * σ b.
     intros a b.
-    unfold scalar_to_ga.
+    unfold scalar_to_geo.
     rewrite (scalar_to_tensor_mult V).
-    apply tensor_to_ga_mult.
+    apply tensor_to_geo_mult.
 Qed.
 
-Theorem scalar_to_ga_scalar : ∀ a A, σ a * A = a · A.
+Theorem scalar_to_geo_scalar : ∀ a A, σ a * A = a · A.
     intros a A.
     equiv_get_value A.
-    unfold scalar_to_ga, tensor_to_ga, mult, scalar_mult; equiv_simpl.
+    unfold scalar_to_geo, tensor_to_geo, mult, scalar_mult; equiv_simpl.
     rewrite (scalar_to_tensor_scalar V).
     rewrite plus_rinv.
-    exact (ideal_zero ga_ideal).
+    exact (ideal_zero geo_ideal).
 Qed.
 
-Theorem scalar_to_ga_neg : ∀ a, σ (-a) = -σ a.
+Theorem scalar_to_geo_neg : ∀ a, σ (-a) = -σ a.
     intros a.
     rewrite <- mult_neg_one.
-    rewrite scalar_to_ga_mult.
-    rewrite scalar_to_ga_scalar.
+    rewrite scalar_to_geo_mult.
+    rewrite scalar_to_geo_scalar.
     apply scalar_neg_one.
 Qed.
 
-Theorem scalar_to_ga_one : σ 1 = 1.
-    unfold scalar_to_ga.
+Theorem scalar_to_geo_one : σ 1 = 1.
+    unfold scalar_to_geo.
     unfold UO.
     rewrite (scalar_to_tensor_one V).
     reflexivity.
 Qed.
 
-Theorem scalar_to_ga_comm : ∀ a A, σ a * A = A * σ a.
+Theorem scalar_to_geo_comm : ∀ a A, σ a * A = A * σ a.
     intros a A.
     equiv_get_value A.
-    unfold scalar_to_ga, tensor_to_ga, mult; equiv_simpl.
+    unfold scalar_to_geo, tensor_to_geo, mult; equiv_simpl.
     rewrite (scalar_to_tensor_comm V).
     rewrite plus_rinv.
-    exact (ideal_zero ga_ideal).
+    exact (ideal_zero geo_ideal).
 Qed.
 
-Theorem scalar_to_ga_one_scalar : ∀ a, σ a = a · 1.
+Theorem scalar_to_geo_one_scalar : ∀ a, σ a = a · 1.
     intros a.
     rewrite <- (mult_rid (σ a)).
-    apply scalar_to_ga_scalar.
+    apply scalar_to_geo_scalar.
 Qed.
 
-Theorem ga_contract : ∀ v, φ v * φ v = [B|] v v · 1.
+Theorem geo_contract : ∀ v, φ v * φ v = [B|] v v · 1.
     intros v.
-    rewrite <- scalar_to_ga_one_scalar.
-    unfold vector_to_ga, scalar_to_ga, tensor_to_ga, mult, scalar_mult, one;
+    rewrite <- scalar_to_geo_one_scalar.
+    unfold vector_to_geo, scalar_to_geo, tensor_to_geo, mult, scalar_mult, one;
         equiv_simpl.
-    assert (ga_ideal_base (vector_to_tensor v * vector_to_tensor v -
+    assert (geo_ideal_base (vector_to_tensor v * vector_to_tensor v -
         scalar_to_tensor V ([B|] v v))) as v2_in.
     {
         exists v.
@@ -326,25 +326,25 @@ Theorem ga_contract : ∀ v, φ v * φ v = [B|] v v · 1.
     reflexivity.
 Qed.
 
-Theorem ga_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
+Theorem geo_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
         x = ulist_sum (ulist_image l (λ p, fst p · list_prod
             (list_image (snd p) (λ v, φ v)))).
     intros x.
     equiv_get_value x.
-    change (to_equiv_type _ x) with (tensor_to_ga x).
+    change (to_equiv_type _ x) with (tensor_to_geo x).
     pose proof (tensor_sum V x) as [l l_eq]; subst x.
     exists l.
     induction l using ulist_induction.
     {
         do 2 rewrite ulist_image_end, ulist_sum_end.
-        apply tensor_to_ga_zero.
+        apply tensor_to_geo_zero.
     }
     do 2 rewrite ulist_image_add, ulist_sum_add; cbn.
-    rewrite tensor_to_ga_plus.
+    rewrite tensor_to_geo_plus.
     rewrite IHl; clear IHl.
     apply rplus; clear l.
     destruct a as [a l]; cbn.
-    rewrite tensor_to_ga_scalar.
+    rewrite tensor_to_geo_scalar.
     apply f_equal; clear a.
     induction l.
     {
@@ -352,7 +352,7 @@ Theorem ga_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
         reflexivity.
     }
     cbn.
-    rewrite tensor_to_ga_mult.
+    rewrite tensor_to_geo_mult.
     rewrite IHl; clear IHl.
     reflexivity.
 Qed.

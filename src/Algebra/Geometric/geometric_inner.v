@@ -31,179 +31,179 @@ Existing Instances VP VS.
 
 Context (B : set_type bilinear_form).
 
-Let GP := ga_plus B.
-Let GZ := ga_zero B.
-Let GN := ga_neg B.
-Let GPA := ga_plus_assoc B.
-Let GPC := ga_plus_comm B.
-Let GPZ := ga_plus_lid B.
-Let GPN := ga_plus_linv B.
-Let GM := ga_mult B.
-Let GO := ga_one B.
-Let GL := ga_ldist B.
-Let GR := ga_rdist B.
-Let GS := ga_scalar B.
-Let GSO := ga_scalar_id B.
-Let GSL := ga_scalar_ldist B.
-Let GSR := ga_scalar_rdist B.
-Let GSC := ga_scalar_comp B.
-Let GSML := ga_scalar_lmult B.
-Let GSMR := ga_scalar_rmult B.
-Let GG := ga_grade B.
+Let GP := geo_plus B.
+Let GZ := geo_zero B.
+Let GN := geo_neg B.
+Let GPA := geo_plus_assoc B.
+Let GPC := geo_plus_comm B.
+Let GPZ := geo_plus_lid B.
+Let GPN := geo_plus_linv B.
+Let GM := geo_mult B.
+Let GO := geo_one B.
+Let GL := geo_ldist B.
+Let GR := geo_rdist B.
+Let GS := geo_scalar B.
+Let GSO := geo_scalar_id B.
+Let GSL := geo_scalar_ldist B.
+Let GSR := geo_scalar_rdist B.
+Let GSC := geo_scalar_comp B.
+Let GSML := geo_scalar_lmult B.
+Let GSMR := geo_scalar_rmult B.
+Let GG := geo_grade B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSO GSL GSR GSC GSML
     GSMR GG.
 
-Local Notation "'φ'" := (vector_to_ga B).
-Local Notation "'σ'" := (scalar_to_ga B).
+Local Notation "'φ'" := (vector_to_geo B).
+Local Notation "'σ'" := (scalar_to_geo B).
 
 Local Open Scope nat_scope.
 
-Definition ga_inner_base i j a b (ai : of_grade i a) (bj : of_grade j b)
+Definition geo_inner_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := grade_project (a * b) (i ⊖ j).
 
-Definition ga_lcontr_base i j a b (ai : of_grade i a) (bj : of_grade j b)
+Definition geo_lcontr_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := match j ¯ i with
        | opt_val n => grade_project (a * b) n
        | opt_nil _ => 0
        end.
 
-Definition ga_rcontr_base i j a b (ai : of_grade i a) (bj : of_grade j b)
+Definition geo_rcontr_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := match i ¯ j with
        | opt_val n => grade_project (a * b) n
        | opt_nil _ => 0
        end.
 
-Lemma ga_inner_ldist_base : bilinear_extend_ldist_base ga_inner_base.
+Lemma geo_inner_ldist_base : bilinear_extend_ldist_base geo_inner_base.
     intros u v w i j ui vj wj.
-    unfold ga_inner_base.
+    unfold geo_inner_base.
     rewrite ldist.
     apply grade_project_plus.
 Qed.
 
-Lemma ga_inner_rdist_base : bilinear_extend_rdist_base ga_inner_base.
+Lemma geo_inner_rdist_base : bilinear_extend_rdist_base geo_inner_base.
     intros u v w i j ui vi wj.
-    unfold ga_inner_base.
+    unfold geo_inner_base.
     rewrite rdist.
     apply grade_project_plus.
 Qed.
 
-Lemma ga_inner_lscalar_base : bilinear_extend_lscalar_base ga_inner_base.
+Lemma geo_inner_lscalar_base : bilinear_extend_lscalar_base geo_inner_base.
     intros a u v i j ui vj.
-    unfold ga_inner_base.
+    unfold geo_inner_base.
     rewrite scalar_lmult.
     apply grade_project_scalar.
 Qed.
 
-Lemma ga_inner_rscalar_base : bilinear_extend_rscalar_base ga_inner_base.
+Lemma geo_inner_rscalar_base : bilinear_extend_rscalar_base geo_inner_base.
     intros a u v i j ui vj.
-    unfold ga_inner_base.
+    unfold geo_inner_base.
     rewrite scalar_rmult.
     apply grade_project_scalar.
 Qed.
 
-Lemma ga_lcontr_ldist_base : bilinear_extend_ldist_base ga_lcontr_base.
+Lemma geo_lcontr_ldist_base : bilinear_extend_ldist_base geo_lcontr_base.
     intros u v w i j ui vj wj.
-    unfold ga_lcontr_base.
+    unfold geo_lcontr_base.
     rewrite ldist.
     destruct (j ¯ i).
     -   apply grade_project_plus.
     -   symmetry; apply plus_rid.
 Qed.
 
-Lemma ga_lcontr_rdist_base : bilinear_extend_rdist_base ga_lcontr_base.
+Lemma geo_lcontr_rdist_base : bilinear_extend_rdist_base geo_lcontr_base.
     intros u v w i j ui vi wj.
-    unfold ga_lcontr_base.
+    unfold geo_lcontr_base.
     rewrite rdist.
     destruct (j ¯ i).
     -   apply grade_project_plus.
     -   symmetry; apply plus_rid.
 Qed.
 
-Lemma ga_lcontr_lscalar_base : bilinear_extend_lscalar_base ga_lcontr_base.
+Lemma geo_lcontr_lscalar_base : bilinear_extend_lscalar_base geo_lcontr_base.
     intros a u v i j ui vj.
-    unfold ga_lcontr_base.
+    unfold geo_lcontr_base.
     rewrite scalar_lmult.
     destruct (j ¯ i).
     -   apply grade_project_scalar.
     -   symmetry; apply scalar_ranni.
 Qed.
 
-Lemma ga_lcontr_rscalar_base : bilinear_extend_rscalar_base ga_lcontr_base.
+Lemma geo_lcontr_rscalar_base : bilinear_extend_rscalar_base geo_lcontr_base.
     intros a u v i j ui vj.
-    unfold ga_lcontr_base.
+    unfold geo_lcontr_base.
     rewrite scalar_rmult.
     destruct (j ¯ i).
     -   apply grade_project_scalar.
     -   symmetry; apply scalar_ranni.
 Qed.
 
-Lemma ga_rcontr_ldist_base : bilinear_extend_ldist_base ga_rcontr_base.
+Lemma geo_rcontr_ldist_base : bilinear_extend_ldist_base geo_rcontr_base.
     intros u v w i j ui vj wj.
-    unfold ga_rcontr_base.
+    unfold geo_rcontr_base.
     rewrite ldist.
     destruct (i ¯ j).
     -   apply grade_project_plus.
     -   symmetry; apply plus_rid.
 Qed.
 
-Lemma ga_rcontr_rdist_base : bilinear_extend_rdist_base ga_rcontr_base.
+Lemma geo_rcontr_rdist_base : bilinear_extend_rdist_base geo_rcontr_base.
     intros u v w i j ui vi wj.
-    unfold ga_rcontr_base.
+    unfold geo_rcontr_base.
     rewrite rdist.
     destruct (i ¯ j).
     -   apply grade_project_plus.
     -   symmetry; apply plus_rid.
 Qed.
 
-Lemma ga_rcontr_lscalar_base : bilinear_extend_lscalar_base ga_rcontr_base.
+Lemma geo_rcontr_lscalar_base : bilinear_extend_lscalar_base geo_rcontr_base.
     intros a u v i j ui vj.
-    unfold ga_rcontr_base.
+    unfold geo_rcontr_base.
     rewrite scalar_lmult.
     destruct (i ¯ j).
     -   apply grade_project_scalar.
     -   symmetry; apply scalar_ranni.
 Qed.
 
-Lemma ga_rcontr_rscalar_base : bilinear_extend_rscalar_base ga_rcontr_base.
+Lemma geo_rcontr_rscalar_base : bilinear_extend_rscalar_base geo_rcontr_base.
     intros a u v i j ui vj.
-    unfold ga_rcontr_base.
+    unfold geo_rcontr_base.
     rewrite scalar_rmult.
     destruct (i ¯ j).
     -   apply grade_project_scalar.
     -   symmetry; apply scalar_ranni.
 Qed.
 
-Definition ga_inner := bilinear_extend ga_inner_base : ga B → ga B → ga B.
-Definition ga_lcontr := bilinear_extend ga_lcontr_base : ga B → ga B → ga B.
-Definition ga_rcontr := bilinear_extend ga_rcontr_base : ga B → ga B → ga B.
+Definition geo_inner := bilinear_extend geo_inner_base : geo B → geo B → geo B.
+Definition geo_lcontr := bilinear_extend geo_lcontr_base : geo B → geo B → geo B.
+Definition geo_rcontr := bilinear_extend geo_rcontr_base : geo B → geo B → geo B.
 
-Local Infix "•" := ga_inner (at level 34, left associativity).
-Local Infix "⌋" := ga_lcontr (at level 34, left associativity).
-Local Infix "⌊" := ga_rcontr (at level 34, left associativity).
+Local Infix "•" := geo_inner (at level 34, left associativity).
+Local Infix "⌋" := geo_lcontr (at level 34, left associativity).
+Local Infix "⌊" := geo_rcontr (at level 34, left associativity).
 
 Theorem inner_ldist : ∀ a b c, a • (b + c) = a • b + a • c.
     apply bilinear_extend_ldist.
-    -   exact ga_inner_ldist_base.
-    -   exact ga_inner_rscalar_base.
+    -   exact geo_inner_ldist_base.
+    -   exact geo_inner_rscalar_base.
 Qed.
 
 Theorem inner_rdist : ∀ a b c, (a + b) • c = a • c + b • c.
     apply bilinear_extend_rdist.
-    -   exact ga_inner_rdist_base.
-    -   exact ga_inner_lscalar_base.
+    -   exact geo_inner_rdist_base.
+    -   exact geo_inner_lscalar_base.
 Qed.
 
 Theorem inner_lscalar : ∀ a u v, (a · u) • v = a · (u • v).
     apply bilinear_extend_lscalar.
-    -   apply ga_inner_rdist_base.
-    -   apply ga_inner_lscalar_base.
+    -   apply geo_inner_rdist_base.
+    -   apply geo_inner_lscalar_base.
 Qed.
 
 Theorem inner_rscalar : ∀ a u v, u • (a · v) = a · (u • v).
     apply bilinear_extend_rscalar.
-    -   apply ga_inner_ldist_base.
-    -   apply ga_inner_rscalar_base.
+    -   apply geo_inner_ldist_base.
+    -   apply geo_inner_rscalar_base.
 Qed.
 
 Theorem inner_lanni : ∀ a, 0 • a = 0.
@@ -222,26 +222,26 @@ Qed.
 
 Theorem lcontr_ldist : ∀ a b c, a ⌋ (b + c) = a ⌋ b + a ⌋ c.
     apply bilinear_extend_ldist.
-    -   exact ga_lcontr_ldist_base.
-    -   exact ga_lcontr_rscalar_base.
+    -   exact geo_lcontr_ldist_base.
+    -   exact geo_lcontr_rscalar_base.
 Qed.
 
 Theorem lcontr_rdist : ∀ a b c, (a + b) ⌋ c = a ⌋ c + b ⌋ c.
     apply bilinear_extend_rdist.
-    -   exact ga_lcontr_rdist_base.
-    -   exact ga_lcontr_lscalar_base.
+    -   exact geo_lcontr_rdist_base.
+    -   exact geo_lcontr_lscalar_base.
 Qed.
 
 Theorem lcontr_lscalar : ∀ a u v, (a · u) ⌋ v = a · (u ⌋ v).
     apply bilinear_extend_lscalar.
-    -   apply ga_lcontr_rdist_base.
-    -   apply ga_lcontr_lscalar_base.
+    -   apply geo_lcontr_rdist_base.
+    -   apply geo_lcontr_lscalar_base.
 Qed.
 
 Theorem lcontr_rscalar : ∀ a u v, u ⌋ (a · v) = a · (u ⌋ v).
     apply bilinear_extend_rscalar.
-    -   apply ga_lcontr_ldist_base.
-    -   apply ga_lcontr_rscalar_base.
+    -   apply geo_lcontr_ldist_base.
+    -   apply geo_lcontr_rscalar_base.
 Qed.
 
 Theorem lcontr_lanni : ∀ a, 0 ⌋ a = 0.
@@ -260,26 +260,26 @@ Qed.
 
 Theorem rcontr_ldist : ∀ a b c, a ⌊ (b + c) = a ⌊ b + a ⌊ c.
     apply bilinear_extend_ldist.
-    -   exact ga_rcontr_ldist_base.
-    -   exact ga_rcontr_rscalar_base.
+    -   exact geo_rcontr_ldist_base.
+    -   exact geo_rcontr_rscalar_base.
 Qed.
 
 Theorem rcontr_rdist : ∀ a b c, (a + b) ⌊ c = a ⌊ c + b ⌊ c.
     apply bilinear_extend_rdist.
-    -   exact ga_rcontr_rdist_base.
-    -   exact ga_rcontr_lscalar_base.
+    -   exact geo_rcontr_rdist_base.
+    -   exact geo_rcontr_lscalar_base.
 Qed.
 
 Theorem rcontr_lscalar : ∀ a u v, (a · u) ⌊ v = a · (u ⌊ v).
     apply bilinear_extend_lscalar.
-    -   apply ga_rcontr_rdist_base.
-    -   apply ga_rcontr_lscalar_base.
+    -   apply geo_rcontr_rdist_base.
+    -   apply geo_rcontr_lscalar_base.
 Qed.
 
 Theorem rcontr_rscalar : ∀ a u v, u ⌊ (a · v) = a · (u ⌊ v).
     apply bilinear_extend_rscalar.
-    -   apply ga_rcontr_ldist_base.
-    -   apply ga_rcontr_rscalar_base.
+    -   apply geo_rcontr_ldist_base.
+    -   apply geo_rcontr_rscalar_base.
 Qed.
 
 Theorem rcontr_lanni : ∀ a, 0 ⌊ a = 0.
@@ -297,40 +297,40 @@ Theorem rcontr_ranni : ∀ a, a ⌊ 0 = 0.
 Qed.
 
 Lemma inner_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u • v = ga_inner_base i j u v ui vj.
+        u • v = geo_inner_base i j u v ui vj.
     intros i j u v ui vj.
-    unfold ga_inner.
+    unfold geo_inner.
     apply bilinear_extend_homo.
-    -   exact ga_inner_ldist_base.
-    -   exact ga_inner_rdist_base.
-    -   exact ga_inner_lscalar_base.
-    -   exact ga_inner_rscalar_base.
+    -   exact geo_inner_ldist_base.
+    -   exact geo_inner_rdist_base.
+    -   exact geo_inner_lscalar_base.
+    -   exact geo_inner_rscalar_base.
 Qed.
 
 Lemma lcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u ⌋ v = ga_lcontr_base i j u v ui vj.
+        u ⌋ v = geo_lcontr_base i j u v ui vj.
     intros i j u v ui vj.
-    unfold ga_lcontr.
+    unfold geo_lcontr.
     apply bilinear_extend_homo.
-    -   exact ga_lcontr_ldist_base.
-    -   exact ga_lcontr_rdist_base.
-    -   exact ga_lcontr_lscalar_base.
-    -   exact ga_lcontr_rscalar_base.
+    -   exact geo_lcontr_ldist_base.
+    -   exact geo_lcontr_rdist_base.
+    -   exact geo_lcontr_lscalar_base.
+    -   exact geo_lcontr_rscalar_base.
 Qed.
 
 Lemma rcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u ⌊ v = ga_rcontr_base i j u v ui vj.
+        u ⌊ v = geo_rcontr_base i j u v ui vj.
     intros i j u v ui vj.
-    unfold ga_rcontr.
+    unfold geo_rcontr.
     apply bilinear_extend_homo.
-    -   exact ga_rcontr_ldist_base.
-    -   exact ga_rcontr_rdist_base.
-    -   exact ga_rcontr_lscalar_base.
-    -   exact ga_rcontr_rscalar_base.
+    -   exact geo_rcontr_ldist_base.
+    -   exact geo_rcontr_rdist_base.
+    -   exact geo_rcontr_lscalar_base.
+    -   exact geo_rcontr_rscalar_base.
 Qed.
 
 End GeometricInner.
 
-Infix "•" := (ga_inner _) (at level 34, left associativity) : ga_scope.
-Infix "⌋" := (ga_lcontr _) (at level 34, left associativity) : ga_scope.
-Infix "⌊" := (ga_rcontr _) (at level 34, left associativity) : ga_scope.
+Infix "•" := (geo_inner _) (at level 34, left associativity) : geo_scope.
+Infix "⌋" := (geo_lcontr _) (at level 34, left associativity) : geo_scope.
+Infix "⌊" := (geo_rcontr _) (at level 34, left associativity) : geo_scope.

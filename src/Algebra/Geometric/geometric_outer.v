@@ -31,89 +31,89 @@ Existing Instances VP VS.
 
 Context (B : set_type bilinear_form).
 
-Let GP := ga_plus B.
-Let GZ := ga_zero B.
-Let GN := ga_neg B.
-Let GPA := ga_plus_assoc B.
-Let GPC := ga_plus_comm B.
-Let GPZ := ga_plus_lid B.
-Let GPN := ga_plus_linv B.
-Let GM := ga_mult B.
-Let GO := ga_one B.
-Let GL := ga_ldist B.
-Let GR := ga_rdist B.
-Let GS := ga_scalar B.
-Let GSO := ga_scalar_id B.
-Let GSL := ga_scalar_ldist B.
-Let GSR := ga_scalar_rdist B.
-Let GSC := ga_scalar_comp B.
-Let GSML := ga_scalar_lmult B.
-Let GSMR := ga_scalar_rmult B.
-Let GG := ga_grade B.
+Let GP := geo_plus B.
+Let GZ := geo_zero B.
+Let GN := geo_neg B.
+Let GPA := geo_plus_assoc B.
+Let GPC := geo_plus_comm B.
+Let GPZ := geo_plus_lid B.
+Let GPN := geo_plus_linv B.
+Let GM := geo_mult B.
+Let GO := geo_one B.
+Let GL := geo_ldist B.
+Let GR := geo_rdist B.
+Let GS := geo_scalar B.
+Let GSO := geo_scalar_id B.
+Let GSL := geo_scalar_ldist B.
+Let GSR := geo_scalar_rdist B.
+Let GSC := geo_scalar_comp B.
+Let GSML := geo_scalar_lmult B.
+Let GSMR := geo_scalar_rmult B.
+Let GG := geo_grade B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSO GSL GSR GSC GSML
     GSMR GG.
 
-Local Notation "'φ'" := (vector_to_ga B).
-Local Notation "'σ'" := (scalar_to_ga B).
+Local Notation "'φ'" := (vector_to_geo B).
+Local Notation "'σ'" := (scalar_to_geo B).
 
-Definition ga_outer_base i j a b (ai : of_grade i a) (bj : of_grade j b)
+Definition geo_outer_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := grade_project (a * b) (i + j).
 
-Lemma ga_outer_ldist_base : bilinear_extend_ldist_base ga_outer_base.
+Lemma geo_outer_ldist_base : bilinear_extend_ldist_base geo_outer_base.
     intros u v w i j ui vj wj.
-    unfold ga_outer_base.
+    unfold geo_outer_base.
     rewrite ldist.
     apply grade_project_plus.
 Qed.
 
-Lemma ga_outer_rdist_base : bilinear_extend_rdist_base ga_outer_base.
+Lemma geo_outer_rdist_base : bilinear_extend_rdist_base geo_outer_base.
     intros u v w i j ui vi wj.
-    unfold ga_outer_base.
+    unfold geo_outer_base.
     rewrite rdist.
     apply grade_project_plus.
 Qed.
 
-Lemma ga_outer_lscalar_base : bilinear_extend_lscalar_base ga_outer_base.
+Lemma geo_outer_lscalar_base : bilinear_extend_lscalar_base geo_outer_base.
     intros a u v i j ui vj.
-    unfold ga_outer_base.
+    unfold geo_outer_base.
     rewrite scalar_lmult.
     apply grade_project_scalar.
 Qed.
 
-Lemma ga_outer_rscalar_base : bilinear_extend_rscalar_base ga_outer_base.
+Lemma geo_outer_rscalar_base : bilinear_extend_rscalar_base geo_outer_base.
     intros a u v i j ui vj.
-    unfold ga_outer_base.
+    unfold geo_outer_base.
     rewrite scalar_rmult.
     apply grade_project_scalar.
 Qed.
 
-Definition ga_outer := bilinear_extend ga_outer_base : ga B → ga B → ga B.
+Definition geo_outer := bilinear_extend geo_outer_base : geo B → geo B → geo B.
 
-Local Infix "⋀" := ga_outer (at level 34, left associativity).
+Local Infix "⋀" := geo_outer (at level 34, left associativity).
 
 Theorem outer_ldist : ∀ a b c, a ⋀ (b + c) = a ⋀ b + a ⋀ c.
     apply bilinear_extend_ldist.
-    -   exact ga_outer_ldist_base.
-    -   exact ga_outer_rscalar_base.
+    -   exact geo_outer_ldist_base.
+    -   exact geo_outer_rscalar_base.
 Qed.
 
 Theorem outer_rdist : ∀ a b c, (a + b) ⋀ c = a ⋀ c + b ⋀ c.
     apply bilinear_extend_rdist.
-    -   exact ga_outer_rdist_base.
-    -   exact ga_outer_lscalar_base.
+    -   exact geo_outer_rdist_base.
+    -   exact geo_outer_lscalar_base.
 Qed.
 
 Theorem outer_lscalar : ∀ a u v, (a · u) ⋀ v = a · (u ⋀ v).
     apply bilinear_extend_lscalar.
-    -   apply ga_outer_rdist_base.
-    -   apply ga_outer_lscalar_base.
+    -   apply geo_outer_rdist_base.
+    -   apply geo_outer_lscalar_base.
 Qed.
 
 Theorem outer_rscalar : ∀ a u v, u ⋀ (a · v) = a · (u ⋀ v).
     apply bilinear_extend_rscalar.
-    -   apply ga_outer_ldist_base.
-    -   apply ga_outer_rscalar_base.
+    -   apply geo_outer_ldist_base.
+    -   apply geo_outer_rscalar_base.
 Qed.
 
 Theorem outer_lanni : ∀ a, 0 ⋀ a = 0.
@@ -131,16 +131,16 @@ Theorem outer_ranni : ∀ a, a ⋀ 0 = 0.
 Qed.
 
 Lemma outer_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u ⋀ v = ga_outer_base i j u v ui vj.
+        u ⋀ v = geo_outer_base i j u v ui vj.
     intros i j u v ui vj.
-    unfold ga_outer.
+    unfold geo_outer.
     apply bilinear_extend_homo.
-    -   exact ga_outer_ldist_base.
-    -   exact ga_outer_rdist_base.
-    -   exact ga_outer_lscalar_base.
-    -   exact ga_outer_rscalar_base.
+    -   exact geo_outer_ldist_base.
+    -   exact geo_outer_rdist_base.
+    -   exact geo_outer_lscalar_base.
+    -   exact geo_outer_rscalar_base.
 Qed.
 
 End GeometricOuter.
 
-Infix "⋀" := (ga_outer _) (at level 34, left associativity) : ga_scope.
+Infix "⋀" := (geo_outer _) (at level 34, left associativity) : geo_scope.

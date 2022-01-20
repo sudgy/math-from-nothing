@@ -38,27 +38,27 @@ Existing Instances VP VS.
 
 Context (B : set_type bilinear_form).
 
-Let GP := ga_plus B.
-Let GZ := ga_zero B.
-Let GN := ga_neg B.
-Let GPA := ga_plus_assoc B.
-Let GPC := ga_plus_comm B.
-Let GPZ := ga_plus_lid B.
-Let GPN := ga_plus_linv B.
-Let GM := ga_mult B.
-Let GO := ga_one B.
-Let GMA := ga_mult_assoc B.
-Let GML := ga_mult_lid B.
-Let GMR := ga_mult_rid B.
-Let GS := ga_scalar B.
-Let GSO := ga_scalar_id B.
-Let GSL := ga_scalar_ldist B.
-Let GSR := ga_scalar_rdist B.
-Let GSC := ga_scalar_comp B.
-Let GL := ga_ldist B.
-Let GR := ga_rdist B.
-Let GSML := ga_scalar_lmult B.
-Let GSMR := ga_scalar_rmult B.
+Let GP := geo_plus B.
+Let GZ := geo_zero B.
+Let GN := geo_neg B.
+Let GPA := geo_plus_assoc B.
+Let GPC := geo_plus_comm B.
+Let GPZ := geo_plus_lid B.
+Let GPN := geo_plus_linv B.
+Let GM := geo_mult B.
+Let GO := geo_one B.
+Let GMA := geo_mult_assoc B.
+Let GML := geo_mult_lid B.
+Let GMR := geo_mult_rid B.
+Let GS := geo_scalar B.
+Let GSO := geo_scalar_id B.
+Let GSL := geo_scalar_ldist B.
+Let GSR := geo_scalar_rdist B.
+Let GSC := geo_scalar_comp B.
+Let GL := geo_ldist B.
+Let GR := geo_rdist B.
+Let GSML := geo_scalar_lmult B.
+Let GSMR := geo_scalar_rmult B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GMA GML GMR GS GSO GSL GSR GSC
     GL GR GSML GSMR.
@@ -70,16 +70,16 @@ Let G12S := module_scalar G12.
 
 Existing Instances G12P G12S.
 
-Definition ga_mult_inner_base1 (a : module_V V) (v : module_V V) (p : module_V G12)
+Definition geo_mult_inner_base1 (a : module_V V) (v : module_V V) (p : module_V G12)
     := (
-        vector_to_ga B v * fst p,
-        -vector_to_ga B v * snd p + [B|] a v · (fst p)
+        vector_to_geo B v * fst p,
+        -vector_to_geo B v * snd p + [B|] a v · (fst p)
     ) : module_V G12.
 
-Lemma ga_mult_inner_base_plus : ∀ a v p1 p2, ga_mult_inner_base1 a v (p1 + p2) =
-        ga_mult_inner_base1 a v p1 + ga_mult_inner_base1 a v p2.
+Lemma geo_mult_inner_base_plus : ∀ a v p1 p2, geo_mult_inner_base1 a v (p1 + p2) =
+        geo_mult_inner_base1 a v p1 + geo_mult_inner_base1 a v p2.
     intros a v [p11 p12] [p21 p22]; cbn.
-    unfold ga_mult_inner_base1; cbn.
+    unfold geo_mult_inner_base1; cbn.
     unfold plus at 1 3 4 5; cbn.
     apply f_equal2.
     -   apply ldist.
@@ -92,10 +92,10 @@ Lemma ga_mult_inner_base_plus : ∀ a v p1 p2, ga_mult_inner_base1 a v (p1 + p2)
         apply plus_comm.
 Qed.
 
-Lemma ga_mult_inner_base_scalar : ∀ a v b p, ga_mult_inner_base1 a v (b · p) =
-        b · ga_mult_inner_base1 a v p.
+Lemma geo_mult_inner_base_scalar : ∀ a v b p, geo_mult_inner_base1 a v (b · p) =
+        b · geo_mult_inner_base1 a v p.
     intros a v b [p1 p2].
-    unfold ga_mult_inner_base1; cbn.
+    unfold geo_mult_inner_base1; cbn.
     unfold scalar_mult at 1 2 4 5; cbn.
     apply f_equal2.
     -   apply scalar_rmult.
@@ -107,11 +107,11 @@ Lemma ga_mult_inner_base_scalar : ∀ a v b p, ga_mult_inner_base1 a v (b · p) 
         reflexivity.
 Qed.
 
-Definition ga_mult_inner_base2 (a : module_V V) (v : module_V V) :=
+Definition geo_mult_inner_base2 (a : module_V V) (v : module_V V) :=
     make_module_homomorphism F G12 G12
-    (ga_mult_inner_base1 a v)
-    (ga_mult_inner_base_plus a v)
-    (ga_mult_inner_base_scalar a v).
+    (geo_mult_inner_base1 a v)
+    (geo_mult_inner_base_plus a v)
+    (geo_mult_inner_base_scalar a v).
 
 Let G3 := linear_trans_algebra G12.
 Let G3P := algebra_plus G3.
@@ -121,19 +121,19 @@ Let G3O := algebra_one G3.
 
 Existing Instances G3P G3S G3M G3O.
 
-Lemma ga_mult_inner_base2_plus : ∀ a v1 v2, ga_mult_inner_base2 a (v1 + v2) =
-        ga_mult_inner_base2 a v1 + ga_mult_inner_base2 a v2.
+Lemma geo_mult_inner_base2_plus : ∀ a v1 v2, geo_mult_inner_base2 a (v1 + v2) =
+        geo_mult_inner_base2 a v1 + geo_mult_inner_base2 a v2.
     intros a v1 v2.
     apply module_homomorphism_eq.
     intros [x1 x2].
     unfold plus at 2; cbn.
-    unfold ga_mult_inner_base2, linear_trans_plus_base; cbn.
-    unfold ga_mult_inner_base1; cbn.
+    unfold geo_mult_inner_base2, linear_trans_plus_base; cbn.
+    unfold geo_mult_inner_base1; cbn.
     unfold plus at 5; cbn.
     apply f_equal2.
-    -   rewrite (vector_to_ga_plus B).
+    -   rewrite (vector_to_geo_plus B).
         apply rdist.
-    -   rewrite (vector_to_ga_plus B).
+    -   rewrite (vector_to_geo_plus B).
         rewrite neg_plus.
         rewrite rdist.
         do 2 rewrite <- plus_assoc.
@@ -145,19 +145,19 @@ Lemma ga_mult_inner_base2_plus : ∀ a v1 v2, ga_mult_inner_base2 a (v1 + v2) =
         apply plus_comm.
 Qed.
 
-Lemma ga_mult_inner_base2_scalar : ∀ a b v,
-        ga_mult_inner_base2 a (b · v) = b · ga_mult_inner_base2 a v.
+Lemma geo_mult_inner_base2_scalar : ∀ a b v,
+        geo_mult_inner_base2 a (b · v) = b · geo_mult_inner_base2 a v.
     intros a b v.
     apply module_homomorphism_eq.
     intros [x1 x2].
     unfold scalar_mult at 2; cbn.
     unfold linear_trans_scalar_base; cbn.
-    unfold ga_mult_inner_base1; cbn.
+    unfold geo_mult_inner_base1; cbn.
     unfold scalar_mult at 5; cbn.
     apply f_equal2.
-    -   rewrite (vector_to_ga_scalar B).
+    -   rewrite (vector_to_geo_scalar B).
         apply scalar_lmult.
-    -   rewrite (vector_to_ga_scalar B).
+    -   rewrite (vector_to_geo_scalar B).
         rewrite bilinear_form_rscalar.
         rewrite <- scalar_comp.
         rewrite scalar_ldist.
@@ -167,24 +167,24 @@ Lemma ga_mult_inner_base2_scalar : ∀ a b v,
         reflexivity.
 Qed.
 
-Lemma ga_mult_inner_base_contract : ∀ a v,
-        ga_mult_inner_base2 a v * ga_mult_inner_base2 a v = [B|] v v · 1.
+Lemma geo_mult_inner_base_contract : ∀ a v,
+        geo_mult_inner_base2 a v * geo_mult_inner_base2 a v = [B|] v v · 1.
     intros a v.
     apply module_homomorphism_eq.
     intros [x1 x2].
     unfold mult, scalar_mult, one; cbn.
-    unfold linear_trans_scalar_base, ga_mult_inner_base1; cbn.
+    unfold linear_trans_scalar_base, geo_mult_inner_base1; cbn.
     unfold scalar_mult at 3; cbn.
     apply f_equal2.
     -   rewrite mult_assoc.
-        rewrite (ga_contract B).
+        rewrite (geo_contract B).
         rewrite scalar_lmult.
         rewrite mult_lid.
         reflexivity.
     -   rewrite ldist.
         rewrite mult_assoc.
         rewrite mult_lneg, mult_rneg.
-        rewrite (ga_contract B).
+        rewrite (geo_contract B).
         rewrite neg_neg.
         rewrite <- scalar_rmult.
         rewrite mult_lneg.
@@ -194,45 +194,45 @@ Lemma ga_mult_inner_base_contract : ∀ a v,
         reflexivity.
 Qed.
 
-Definition ga_mult_inner_base3 a := make_module_homomorphism
+Definition geo_mult_inner_base3 a := make_module_homomorphism
     F
     V
     (algebra_module G3)
-    (ga_mult_inner_base2 a)
-    (ga_mult_inner_base2_plus a)
-    (ga_mult_inner_base2_scalar a).
+    (geo_mult_inner_base2 a)
+    (geo_mult_inner_base2_plus a)
+    (geo_mult_inner_base2_scalar a).
 
-Definition ga_mult_inner_base4 a := make_to_ga
+Definition geo_mult_inner_base4 a := make_to_geo
     B
     G3
-    (ga_mult_inner_base3 a)
-    (ga_mult_inner_base_contract a).
+    (geo_mult_inner_base3 a)
+    (geo_mult_inner_base_contract a).
 
-Definition ga_mult_inner_base a
-    := card_one_ex (geometric_universal B (ga_mult_inner_base4 a)).
+Definition geo_mult_inner_base a
+    := card_one_ex (geometric_universal B (geo_mult_inner_base4 a)).
 
-Definition ga_mult_inner_f_homo a := [ga_mult_inner_base a|].
-Definition ga_mult_inner_f a := algebra_homo_f (ga_mult_inner_f_homo a).
+Definition geo_mult_inner_f_homo a := [geo_mult_inner_base a|].
+Definition geo_mult_inner_f a := algebra_homo_f (geo_mult_inner_f_homo a).
 
-Theorem ga_mult_inner_f_eq : ∀ a v,
-        ga_mult_inner_f a (vector_to_ga B v) = ga_mult_inner_base2 a v.
+Theorem geo_mult_inner_f_eq : ∀ a v,
+        geo_mult_inner_f a (vector_to_geo B v) = geo_mult_inner_base2 a v.
     intros a.
-    apply [|ga_mult_inner_base a].
+    apply [|geo_mult_inner_base a].
 Qed.
 
-Theorem ga_mult_inner_f_mult : ∀ a u v,
-        ga_mult_inner_f a (u * v) = ga_mult_inner_f a u * ga_mult_inner_f a v.
+Theorem geo_mult_inner_f_mult : ∀ a u v,
+        geo_mult_inner_f a (u * v) = geo_mult_inner_f a u * geo_mult_inner_f a v.
     intros a u v.
     apply algebra_homo_mult.
 Qed.
 
-Definition ga_mult_inner a v := snd (module_homo_f (ga_mult_inner_f a v) (1, 0)).
+Definition geo_mult_inner a v := snd (module_homo_f (geo_mult_inner_f a v) (1, 0)).
 
-Theorem ga_mult_inner_rplus : ∀ a u v,
-        ga_mult_inner a (u + v) = ga_mult_inner a u + ga_mult_inner a v.
+Theorem geo_mult_inner_rplus : ∀ a u v,
+        geo_mult_inner a (u + v) = geo_mult_inner a u + geo_mult_inner a v.
     intros a u v.
-    unfold ga_mult_inner.
-    unfold ga_mult_inner_f.
+    unfold geo_mult_inner.
+    unfold geo_mult_inner_f.
     rewrite algebra_homo_plus.
     unfold plus at 1; cbn.
     unfold linear_trans_plus_base.
@@ -240,11 +240,11 @@ Theorem ga_mult_inner_rplus : ∀ a u v,
     reflexivity.
 Qed.
 
-Theorem ga_mult_inner_rscalar : ∀ a α v,
-        ga_mult_inner a (α · v) = α · ga_mult_inner a v.
+Theorem geo_mult_inner_rscalar : ∀ a α v,
+        geo_mult_inner a (α · v) = α · geo_mult_inner a v.
     intros a α v.
-    unfold ga_mult_inner.
-    unfold ga_mult_inner_f.
+    unfold geo_mult_inner.
+    unfold geo_mult_inner_f.
     rewrite algebra_homo_scalar.
     unfold scalar_mult at 1; cbn.
     unfold linear_trans_scalar_base.
@@ -252,30 +252,30 @@ Theorem ga_mult_inner_rscalar : ∀ a α v,
     reflexivity.
 Qed.
 
-Theorem ga_mult_inner_rzero : ∀ a, ga_mult_inner a 0 = 0.
+Theorem geo_mult_inner_rzero : ∀ a, geo_mult_inner a 0 = 0.
     intros a.
     rewrite <- (scalar_lanni 0).
-    rewrite ga_mult_inner_rscalar.
+    rewrite geo_mult_inner_rscalar.
     apply scalar_lanni.
 Qed.
 
-Theorem ga_mult_inner_rneg : ∀ a v, ga_mult_inner a (-v) = -ga_mult_inner a v.
+Theorem geo_mult_inner_rneg : ∀ a v, geo_mult_inner a (-v) = -geo_mult_inner a v.
     intros a v.
     rewrite <- scalar_neg_one.
-    rewrite ga_mult_inner_rscalar.
+    rewrite geo_mult_inner_rscalar.
     apply scalar_neg_one.
 Qed.
 
-Theorem ga_mult_inner_add : ∀ a v x,
-        ga_mult_inner a (vector_to_ga B v * x) =
-        [B|] a v · x - vector_to_ga B v * ga_mult_inner a x.
+Theorem geo_mult_inner_add : ∀ a v x,
+        geo_mult_inner a (vector_to_geo B v * x) =
+        [B|] a v · x - vector_to_geo B v * geo_mult_inner a x.
     intros a v x.
-    pose proof (ga_sum B x) as [l l_eq]; subst x.
+    pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_ranni.
-        rewrite ga_mult_inner_rzero.
+        rewrite geo_mult_inner_rzero.
         rewrite mult_ranni.
         rewrite scalar_ranni.
         rewrite neg_zero, plus_rid.
@@ -284,20 +284,20 @@ Theorem ga_mult_inner_add : ∀ a v x,
     rewrite ulist_image_add, ulist_sum_add; cbn.
     rewrite ldist.
     rewrite scalar_rmult.
-    rewrite ga_mult_inner_rplus.
+    rewrite geo_mult_inner_rplus.
     rewrite IHl; clear IHl.
-    rewrite ga_mult_inner_rplus.
+    rewrite geo_mult_inner_rplus.
     rewrite ldist.
     rewrite neg_plus.
     do 2 rewrite plus_assoc.
     apply rplus.
     rewrite scalar_ldist.
     rewrite <- plus_assoc.
-    rewrite (plus_comm _ (-(vector_to_ga B v * _))).
+    rewrite (plus_comm _ (-(vector_to_geo B v * _))).
     rewrite plus_assoc.
     apply rplus.
     clear l.
-    do 2 rewrite ga_mult_inner_rscalar.
+    do 2 rewrite geo_mult_inner_rscalar.
     rewrite scalar_rmult.
     rewrite scalar_comp.
     rewrite (mult_comm _ α).
@@ -305,9 +305,9 @@ Theorem ga_mult_inner_add : ∀ a v x,
     rewrite <- scalar_rneg.
     rewrite <- scalar_ldist.
     apply f_equal.
-    unfold ga_mult_inner.
-    rewrite ga_mult_inner_f_mult.
-    rewrite ga_mult_inner_f_eq.
+    unfold geo_mult_inner.
+    rewrite geo_mult_inner_f_mult.
+    rewrite geo_mult_inner_f_eq.
     unfold mult at 1; cbn.
     rewrite plus_comm.
     rewrite mult_lneg.
@@ -315,16 +315,16 @@ Theorem ga_mult_inner_add : ∀ a v x,
     induction x as [|x l].
     {
         cbn.
-        unfold ga_mult_inner_f.
+        unfold geo_mult_inner_f.
         rewrite algebra_homo_one.
         unfold one at 1; cbn.
         reflexivity.
     }
     cbn.
-    rewrite ga_mult_inner_f_mult.
+    rewrite geo_mult_inner_f_mult.
     unfold mult at 1; cbn.
     unfold linear_trans_mult_base.
-    rewrite ga_mult_inner_f_eq.
+    rewrite geo_mult_inner_f_eq.
     cbn.
     rewrite <- scalar_rmult.
     rewrite IHl; clear IHl.
@@ -332,11 +332,11 @@ Theorem ga_mult_inner_add : ∀ a v x,
     reflexivity.
 Qed.
 
-Theorem ga_mult_inner_scalar : ∀ a α, ga_mult_inner a (scalar_to_ga B α) = 0.
+Theorem geo_mult_inner_scalar : ∀ a α, geo_mult_inner a (scalar_to_geo B α) = 0.
     intros a α.
-    unfold ga_mult_inner.
-    unfold ga_mult_inner_f.
-    rewrite scalar_to_ga_one_scalar.
+    unfold geo_mult_inner.
+    unfold geo_mult_inner_f.
+    rewrite scalar_to_geo_one_scalar.
     rewrite algebra_homo_scalar.
     rewrite algebra_homo_one.
     unfold scalar_mult; cbn.
@@ -347,64 +347,64 @@ Theorem ga_mult_inner_scalar : ∀ a α, ga_mult_inner a (scalar_to_ga B α) = 0
     reflexivity.
 Qed.
 
-Theorem ga_mult_inner_vector : ∀ a v,
-        ga_mult_inner a (vector_to_ga B v) = [B|] a v · 1.
+Theorem geo_mult_inner_vector : ∀ a v,
+        geo_mult_inner a (vector_to_geo B v) = [B|] a v · 1.
     intros a v.
-    rewrite <- (mult_rid (vector_to_ga B v)).
-    rewrite ga_mult_inner_add.
+    rewrite <- (mult_rid (vector_to_geo B v)).
+    rewrite geo_mult_inner_add.
     unfold GO.
-    rewrite <- scalar_to_ga_one at 2.
-    rewrite ga_mult_inner_scalar.
+    rewrite <- scalar_to_geo_one at 2.
+    rewrite geo_mult_inner_scalar.
     rewrite mult_ranni.
     rewrite neg_zero, plus_rid.
     reflexivity.
 Qed.
 
-Theorem ga_mult_inner_bivector : ∀ a u v,
-        ga_mult_inner a (vector_to_ga B u * vector_to_ga B v) =
-        [B|] a u · vector_to_ga B v -
-        [B|] a v · vector_to_ga B u.
+Theorem geo_mult_inner_bivector : ∀ a u v,
+        geo_mult_inner a (vector_to_geo B u * vector_to_geo B v) =
+        [B|] a u · vector_to_geo B v -
+        [B|] a v · vector_to_geo B u.
     intros a u v.
-    rewrite ga_mult_inner_add.
-    rewrite ga_mult_inner_vector.
+    rewrite geo_mult_inner_add.
+    rewrite geo_mult_inner_vector.
     rewrite scalar_rmult.
     rewrite mult_rid.
     reflexivity.
 Qed.
 
-Theorem ga_mult_inner_lplus : ∀ a b v,
-        ga_mult_inner (a + b) v = ga_mult_inner a v + ga_mult_inner b v.
+Theorem geo_mult_inner_lplus : ∀ a b v,
+        geo_mult_inner (a + b) v = geo_mult_inner a v + geo_mult_inner b v.
     intros a b v.
-    pose proof (ga_sum B v) as [l l_eq]; subst v.
+    pose proof (geo_sum B v) as [l l_eq]; subst v.
     induction l as [|[α v] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        do 3 rewrite ga_mult_inner_rzero.
+        do 3 rewrite geo_mult_inner_rzero.
         rewrite plus_rid.
         reflexivity.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    do 3 rewrite ga_mult_inner_rplus.
+    do 3 rewrite geo_mult_inner_rplus.
     rewrite IHl; clear IHl.
     do 2 rewrite plus_assoc.
     apply rplus.
     rewrite <- plus_assoc.
-    rewrite (plus_comm (ga_mult_inner a (ulist_sum _))).
+    rewrite (plus_comm (geo_mult_inner a (ulist_sum _))).
     rewrite plus_assoc.
     apply rplus; clear l.
-    do 3 rewrite ga_mult_inner_rscalar.
+    do 3 rewrite geo_mult_inner_rscalar.
     rewrite <- scalar_ldist.
     apply f_equal.
     induction v as [|v l].
     {
         cbn.
-        rewrite <- scalar_to_ga_one.
-        do 3 rewrite ga_mult_inner_scalar.
+        rewrite <- scalar_to_geo_one.
+        do 3 rewrite geo_mult_inner_scalar.
         rewrite plus_rid.
         reflexivity.
     }
     cbn.
-    do 3 rewrite ga_mult_inner_add.
+    do 3 rewrite geo_mult_inner_add.
     rewrite IHl; clear IHl.
     rewrite ldist.
     rewrite neg_plus.
@@ -417,23 +417,23 @@ Theorem ga_mult_inner_lplus : ∀ a b v,
     apply plus_comm.
 Qed.
 
-Theorem ga_mult_inner_lscalar : ∀ α a v,
-        ga_mult_inner (α · a) v = α · ga_mult_inner a v.
+Theorem geo_mult_inner_lscalar : ∀ α a v,
+        geo_mult_inner (α · a) v = α · geo_mult_inner a v.
     intros α a v.
-    pose proof (ga_sum B v) as [l l_eq]; subst v.
+    pose proof (geo_sum B v) as [l l_eq]; subst v.
     induction l as [|[β v] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        do 2 rewrite ga_mult_inner_rzero.
+        do 2 rewrite geo_mult_inner_rzero.
         rewrite scalar_ranni.
         reflexivity.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    do 2 rewrite ga_mult_inner_rplus.
+    do 2 rewrite geo_mult_inner_rplus.
     rewrite IHl; clear IHl.
     rewrite scalar_ldist.
     apply rplus; clear l.
-    do 2 rewrite ga_mult_inner_rscalar.
+    do 2 rewrite geo_mult_inner_rscalar.
     rewrite scalar_comp.
     rewrite mult_comm.
     rewrite <- scalar_comp.
@@ -441,13 +441,13 @@ Theorem ga_mult_inner_lscalar : ∀ α a v,
     induction v as [|v l].
     {
         cbn.
-        rewrite <- scalar_to_ga_one.
-        do 2 rewrite ga_mult_inner_scalar.
+        rewrite <- scalar_to_geo_one.
+        do 2 rewrite geo_mult_inner_scalar.
         rewrite scalar_ranni.
         reflexivity.
     }
     cbn.
-    do 2 rewrite ga_mult_inner_add.
+    do 2 rewrite geo_mult_inner_add.
     rewrite IHl; clear IHl.
     rewrite bilinear_form_lscalar.
     rewrite scalar_ldist.
@@ -457,21 +457,21 @@ Theorem ga_mult_inner_lscalar : ∀ α a v,
     reflexivity.
 Qed.
 
-Definition ga_mult_inner_homo a := make_module_homomorphism
+Definition geo_mult_inner_homo a := make_module_homomorphism
     F
     (algebra_module (geometric_algebra B))
     (algebra_module (geometric_algebra B))
-    (ga_mult_inner a)
-    (ga_mult_inner_rplus a)
-    (ga_mult_inner_rscalar a).
+    (geo_mult_inner a)
+    (geo_mult_inner_rplus a)
+    (geo_mult_inner_rscalar a).
 
-Definition ga_mult_homo a := make_module_homomorphism
+Definition geo_mult_homo a := make_module_homomorphism
     F
     (algebra_module (geometric_algebra B))
     (algebra_module (geometric_algebra B))
-    (mult (vector_to_ga B a))
-    (ldist (vector_to_ga B a))
-    (λ α v, scalar_rmult α (vector_to_ga B a) v).
+    (mult (vector_to_geo B a))
+    (ldist (vector_to_geo B a))
+    (λ α v, scalar_rmult α (vector_to_geo B a) v).
 
 Let GG := linear_trans_algebra (algebra_module (geometric_algebra B)).
 Let GGP := algebra_plus GG.
@@ -490,49 +490,49 @@ Let GGSL := algebra_scalar_ldist GG.
 
 Existing Instances GGP GGZ GGN GGPA GGPC GGPZ GGPN GGM GGO GGL GGR GGS GGSL.
 
-Theorem ga_mult_inner_alternating : ∀ a,
-        ga_mult_inner_homo a * ga_mult_inner_homo a = 0.
+Theorem geo_mult_inner_alternating : ∀ a,
+        geo_mult_inner_homo a * geo_mult_inner_homo a = 0.
     intros a.
     apply module_homomorphism_eq.
     intros x.
     unfold mult at 1; cbn.
     unfold zero at 1; cbn.
     unfold linear_trans_zero_base.
-    pose proof (ga_sum B x) as [l l_eq]; subst x.
+    pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        do 2 rewrite ga_mult_inner_rzero.
+        do 2 rewrite geo_mult_inner_rzero.
         reflexivity.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    do 2 rewrite ga_mult_inner_rplus.
+    do 2 rewrite geo_mult_inner_rplus.
     rewrite IHl; clear IHl l.
     rewrite plus_rid.
-    do 2 rewrite ga_mult_inner_rscalar.
+    do 2 rewrite geo_mult_inner_rscalar.
     rewrite <- (scalar_ranni α).
     apply f_equal.
     induction x as [|v l].
     {
         cbn.
-        rewrite <- scalar_to_ga_one.
-        rewrite ga_mult_inner_scalar.
-        apply ga_mult_inner_rzero.
+        rewrite <- scalar_to_geo_one.
+        rewrite geo_mult_inner_scalar.
+        apply geo_mult_inner_rzero.
     }
     cbn.
-    rewrite ga_mult_inner_add.
-    rewrite ga_mult_inner_rplus.
-    rewrite ga_mult_inner_rneg.
-    rewrite ga_mult_inner_add.
+    rewrite geo_mult_inner_add.
+    rewrite geo_mult_inner_rplus.
+    rewrite geo_mult_inner_rneg.
+    rewrite geo_mult_inner_add.
     rewrite IHl.
     rewrite mult_ranni.
     rewrite neg_zero, plus_rid.
-    rewrite ga_mult_inner_rscalar.
+    rewrite geo_mult_inner_rscalar.
     rewrite plus_rinv.
     reflexivity.
 Qed.
 
-Theorem ga_mult_contract : ∀ a, ga_mult_homo a * ga_mult_homo a = [B|] a a · 1.
+Theorem geo_mult_contract : ∀ a, geo_mult_homo a * geo_mult_homo a = [B|] a a · 1.
     intros a.
     apply module_homomorphism_eq.
     intros x.
@@ -540,13 +540,13 @@ Theorem ga_mult_contract : ∀ a, ga_mult_homo a * ga_mult_homo a = [B|] a a · 
     unfold scalar_mult at 1, one at 1; cbn.
     unfold linear_trans_scalar_base; cbn.
     rewrite mult_assoc.
-    rewrite (ga_contract B).
+    rewrite (geo_contract B).
     rewrite scalar_lmult.
     rewrite mult_lid.
     reflexivity.
 Qed.
 
-Definition ext_to_geo_base1 a := -ga_mult_inner_homo a + ga_mult_homo a.
+Definition ext_to_geo_base1 a := -geo_mult_inner_homo a + geo_mult_homo a.
 
 Lemma ext_to_geo_base1_plus : ∀ u v,
         ext_to_geo_base1 (u + v) = ext_to_geo_base1 u + ext_to_geo_base1 v.
@@ -558,8 +558,8 @@ Lemma ext_to_geo_base1_plus : ∀ u v,
     unfold linear_trans_plus_base; cbn.
     unfold neg at 1 2 3; cbn.
     unfold linear_trans_neg_base; cbn.
-    rewrite ga_mult_inner_lplus.
-    rewrite (vector_to_ga_plus B).
+    rewrite geo_mult_inner_lplus.
+    rewrite (vector_to_geo_plus B).
     rewrite rdist.
     rewrite neg_plus.
     do 2 rewrite <- plus_assoc.
@@ -580,8 +580,8 @@ Lemma ext_to_geo_base1_scalar : ∀ a v,
     unfold linear_trans_plus_base, linear_trans_scalar_base; cbn.
     unfold neg at 1 2; cbn.
     unfold linear_trans_neg_base; cbn.
-    rewrite ga_mult_inner_lscalar.
-    rewrite (vector_to_ga_scalar B).
+    rewrite geo_mult_inner_lscalar.
+    rewrite (vector_to_geo_scalar B).
     rewrite scalar_lmult.
     rewrite scalar_rneg.
     reflexivity.
@@ -597,7 +597,7 @@ Lemma ext_to_geo_base_alternating : ∀ v,
     rewrite mult_rneg.
     rewrite neg_neg.
     rewrite mult_lneg, mult_rneg.
-    rewrite ga_mult_inner_alternating, ga_mult_contract.
+    rewrite geo_mult_inner_alternating, geo_mult_contract.
     rewrite plus_lid.
     apply module_homomorphism_eq.
     intros x.
@@ -611,7 +611,7 @@ Lemma ext_to_geo_base_alternating : ∀ v,
     unfold mult at 2; cbn.
     unfold zero at 1; cbn.
     unfold linear_trans_zero_base.
-    rewrite ga_mult_inner_add.
+    rewrite geo_mult_inner_add.
     rewrite neg_plus.
     rewrite neg_neg.
     rewrite (plus_comm (-([B|] v v · x))).
@@ -662,7 +662,7 @@ Theorem ext_to_geo_f_mult :
     apply algebra_homo_mult.
 Qed.
 
-Definition ext_to_geo (v : ext V) := module_homo_f (ext_to_geo_f v) 1 : ga B.
+Definition ext_to_geo (v : ext V) := module_homo_f (ext_to_geo_f v) 1 : geo B.
 
 Theorem ext_to_geo_plus : ∀ u v,
         ext_to_geo (u + v) = ext_to_geo u + ext_to_geo v.
@@ -686,7 +686,7 @@ Theorem ext_to_geo_scalar : ∀ a v, ext_to_geo (a · v) = a · ext_to_geo v.
 Qed.
 
 Theorem ext_to_geo_add : ∀ v x, ext_to_geo (vector_to_ext V v * x) =
-        -ga_mult_inner v (ext_to_geo x) + vector_to_ga B v * ext_to_geo x.
+        -geo_mult_inner v (ext_to_geo x) + vector_to_geo B v * ext_to_geo x.
     intros v x.
     unfold ext_to_geo.
     rewrite ext_to_geo_f_mult.
@@ -721,36 +721,36 @@ Theorem ext_to_geo_one : ext_to_geo 1 = 1.
 Qed.
 
 Theorem ext_to_geo_of_scalar : ∀ α,
-        ext_to_geo (scalar_to_ext V α) = scalar_to_ga B α.
+        ext_to_geo (scalar_to_ext V α) = scalar_to_geo B α.
     intros α.
     rewrite scalar_to_ext_one_scalar.
     rewrite ext_to_geo_scalar.
     change 1 with (one (U := ext V)).
     rewrite ext_to_geo_one.
-    symmetry; apply scalar_to_ga_one_scalar.
+    symmetry; apply scalar_to_geo_one_scalar.
 Qed.
 
 Theorem ext_to_geo_vector : ∀ v,
-        ext_to_geo (vector_to_ext V v) = vector_to_ga B v.
+        ext_to_geo (vector_to_ext V v) = vector_to_geo B v.
     intros v.
     rewrite <- (mult_rid (vector_to_ext V v)).
     rewrite ext_to_geo_add.
     change 1 with (one (U := ext V)).
     rewrite ext_to_geo_one.
     rewrite mult_rid.
-    replace 1 with (scalar_to_ga B 1) by apply scalar_to_ga_one.
-    rewrite ga_mult_inner_scalar.
+    replace 1 with (scalar_to_geo B 1) by apply scalar_to_geo_one.
+    rewrite geo_mult_inner_scalar.
     rewrite neg_zero.
     apply plus_lid.
 Qed.
 
 Theorem ext_to_geo_vector2 : ∀ u v,
         ext_to_geo (vector_to_ext V u * vector_to_ext V v) =
-        -[B|] u v · 1 + vector_to_ga B u * vector_to_ga B v.
+        -[B|] u v · 1 + vector_to_geo B u * vector_to_geo B v.
     intros u v.
     rewrite ext_to_geo_add.
     rewrite ext_to_geo_vector.
-    rewrite ga_mult_inner_vector.
+    rewrite geo_mult_inner_vector.
     rewrite scalar_lneg.
     reflexivity.
 Qed.

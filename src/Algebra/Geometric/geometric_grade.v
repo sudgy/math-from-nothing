@@ -32,27 +32,27 @@ Existing Instances VP VS.
 
 Context (B : set_type bilinear_form).
 
-Let GP := ga_plus B.
-Let GZ := ga_zero B.
-Let GN := ga_neg B.
-Let GPA := ga_plus_assoc B.
-Let GPC := ga_plus_comm B.
-Let GPZ := ga_plus_lid B.
-Let GPN := ga_plus_linv B.
-Let GM := ga_mult B.
-Let GO := ga_one B.
-Let GL := ga_ldist B.
-Let GR := ga_rdist B.
-Let GS := ga_scalar B.
-Let GSL := ga_scalar_ldist B.
-Let GSR := ga_scalar_rdist B.
-Let GSC := ga_scalar_comp B.
-Let GSMR := ga_scalar_rmult B.
+Let GP := geo_plus B.
+Let GZ := geo_zero B.
+Let GN := geo_neg B.
+Let GPA := geo_plus_assoc B.
+Let GPC := geo_plus_comm B.
+Let GPZ := geo_plus_lid B.
+Let GPN := geo_plus_linv B.
+Let GM := geo_mult B.
+Let GO := geo_one B.
+Let GL := geo_ldist B.
+Let GR := geo_rdist B.
+Let GS := geo_scalar B.
+Let GSL := geo_scalar_ldist B.
+Let GSR := geo_scalar_rdist B.
+Let GSC := geo_scalar_comp B.
+Let GSMR := geo_scalar_rmult B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSL GSR GSC GSMR.
 
-Local Notation "'φ'" := (vector_to_ga B).
-Local Notation "'σ'" := (scalar_to_ga B).
+Local Notation "'φ'" := (vector_to_geo B).
+Local Notation "'σ'" := (scalar_to_geo B).
 Local Notation "'E'" := (geo_to_ext B).
 Local Notation "'G'" := (ext_to_geo B).
 
@@ -62,11 +62,11 @@ Let EG := exterior_grade V.
 
 Existing Instances EM EO EG.
 
-Definition ga_grade := grade_isomorphism (ext_to_geo_homo B) (ext_to_geo_iso B).
+Definition geo_grade := grade_isomorphism (ext_to_geo_homo B) (ext_to_geo_iso B).
 
-Existing Instance ga_grade.
+Existing Instance geo_grade.
 
-Theorem scalar_to_ga_grade : ∀ a, of_grade 0 (σ a).
+Theorem scalar_to_geo_grade : ∀ a, of_grade 0 (σ a).
     intros a.
     exists (scalar_to_ext V a).
     cbn.
@@ -75,7 +75,7 @@ Theorem scalar_to_ga_grade : ∀ a, of_grade 0 (σ a).
     -   apply ext_to_geo_of_scalar.
 Qed.
 
-Theorem ga_grade_zero_scalar : ∀ v : ga B, of_grade 0 v ↔ (∃ a, v = σ a).
+Theorem geo_grade_zero_scalar : ∀ v : geo B, of_grade 0 v ↔ (∃ a, v = σ a).
     intros v.
     split.
     -   intros [v' [v0 v_eq]].
@@ -85,10 +85,10 @@ Theorem ga_grade_zero_scalar : ∀ v : ga B, of_grade 0 v ↔ (∃ a, v = σ a).
         exists a.
         apply ext_to_geo_of_scalar.
     -   intros [a v_eq]; subst v.
-        apply scalar_to_ga_grade.
+        apply scalar_to_geo_grade.
 Qed.
 
-Theorem vector_to_ga_grade : ∀ a, of_grade 1 (φ a).
+Theorem vector_to_geo_grade : ∀ a, of_grade 1 (φ a).
     intros a.
     exists (vector_to_ext V a).
     cbn.
@@ -97,7 +97,7 @@ Theorem vector_to_ga_grade : ∀ a, of_grade 1 (φ a).
     -   apply ext_to_geo_vector.
 Qed.
 
-Theorem ga_grade_one_vector : ∀ v : ga B, of_grade 1 v ↔ (∃ a, v = φ a).
+Theorem geo_grade_one_vector : ∀ v : geo B, of_grade 1 v ↔ (∃ a, v = φ a).
     intros v.
     split.
     -   intros [v' [v0 v_eq]].
@@ -107,10 +107,10 @@ Theorem ga_grade_one_vector : ∀ v : ga B, of_grade 1 v ↔ (∃ a, v = φ a).
         exists a.
         apply ext_to_geo_vector.
     -   intros [a v_eq]; subst v.
-        apply vector_to_ga_grade.
+        apply vector_to_geo_grade.
 Qed.
 
-Theorem ga_orthogonal_grade : ∀ l : list (module_V V),
+Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
         list_prop2 (λ a b, [B|] a b = 0) l →
         of_grade (list_size l) (list_prod (list_image l φ)).
     intros l l_orth.
@@ -140,12 +140,12 @@ Theorem ga_orthogonal_grade : ∀ l : list (module_V V),
         clear l_orth IHl1 IHl2.
         induction l as [|u l].
         +   cbn.
-            rewrite <- scalar_to_ga_one.
-            symmetry; apply ga_mult_inner_scalar.
+            rewrite <- scalar_to_geo_one.
+            symmetry; apply geo_mult_inner_scalar.
         +   destruct v_orth as [uv_orth u_orth].
             specialize (IHl u_orth).
             cbn.
-            rewrite ga_mult_inner_add.
+            rewrite geo_mult_inner_add.
             rewrite <- IHl.
             rewrite mult_ranni.
             rewrite neg_zero, plus_rid.

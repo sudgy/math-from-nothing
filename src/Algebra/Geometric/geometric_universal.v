@@ -27,52 +27,52 @@ Existing Instances UP UN UM VP VS.
 
 Context (B : set_type bilinear_form).
 
-Record to_ga := make_to_ga {
-    to_ga_algebra : Algebra F;
-    to_ga_homo : ModuleHomomorphism V (algebra_module to_ga_algebra);
-    to_ga_contract : ∀ v,
-        @mult _ (algebra_mult to_ga_algebra)
-        (module_homo_f to_ga_homo v)
-        (module_homo_f to_ga_homo v) =
-        @scalar_mult _ _ (algebra_scalar to_ga_algebra)
-            ([B|] v v) (@one _ (algebra_one to_ga_algebra))
+Record to_geo := make_to_geo {
+    to_geo_algebra : Algebra F;
+    to_geo_homo : ModuleHomomorphism V (algebra_module to_geo_algebra);
+    to_geo_contract : ∀ v,
+        @mult _ (algebra_mult to_geo_algebra)
+        (module_homo_f to_geo_homo v)
+        (module_homo_f to_geo_homo v) =
+        @scalar_mult _ _ (algebra_scalar to_geo_algebra)
+            ([B|] v v) (@one _ (algebra_one to_geo_algebra))
 }.
 
-Definition to_ga_set (f g : to_ga)
+Definition to_geo_set (f g : to_geo)
     (h : cat_morphism (ALGEBRA F)
-                      (to_ga_algebra f)
-                      (to_ga_algebra g))
-    := ∀ x, algebra_homo_f h (module_homo_f (to_ga_homo f) x) =
-            module_homo_f (to_ga_homo g) x.
+                      (to_geo_algebra f)
+                      (to_geo_algebra g))
+    := ∀ x, algebra_homo_f h (module_homo_f (to_geo_homo f) x) =
+            module_homo_f (to_geo_homo g) x.
 
-Definition to_ga_compose {F G H : to_ga}
-    (f : set_type (to_ga_set G H)) (g : set_type (to_ga_set F G))
+Definition to_geo_compose {F G H : to_geo}
+    (f : set_type (to_geo_set G H)) (g : set_type (to_geo_set F G))
     := [f|] ∘ [g|].
 
-Lemma to_ga_set_compose_in {F' G H : to_ga} :
-        ∀ (f : set_type (to_ga_set G H)) g,
-        to_ga_set F' H (to_ga_compose f g).
+Lemma to_geo_set_compose_in {F' G H : to_geo} :
+        ∀ (f : set_type (to_geo_set G H)) g,
+        to_geo_set F' H (to_geo_compose f g).
     intros [f f_eq] [g g_eq].
-    unfold to_ga_set in *.
-    unfold to_ga_compose; cbn.
+    unfold to_geo_set in *.
+    unfold to_geo_compose; cbn.
     intros x.
     rewrite g_eq.
     apply f_eq.
 Qed.
 
-Lemma to_ga_set_id_in : ∀ f : to_ga, to_ga_set f f 𝟙.
+Lemma to_geo_set_id_in : ∀ f : to_geo, to_geo_set f f 𝟙.
     intros f.
-    unfold to_ga_set.
+    unfold to_geo_set.
     intros x.
     cbn.
     reflexivity.
 Qed.
 
-Program Instance TO_GA : Category := {
-    cat_U := to_ga;
-    cat_morphism f g := set_type (to_ga_set f g);
-    cat_compose {F G H} f g := [_|to_ga_set_compose_in f g];
-    cat_id f := [_|to_ga_set_id_in f];
+Program Instance TO_GEO : Category := {
+    cat_U := to_geo;
+    cat_morphism f g := set_type (to_geo_set f g);
+    cat_compose {F G H} f g := [_|to_geo_set_compose_in f g];
+    cat_id f := [_|to_geo_set_id_in f];
 }.
 Next Obligation.
     apply set_type_eq; cbn.
@@ -87,26 +87,26 @@ Next Obligation.
     apply (@cat_rid (ALGEBRA F)).
 Qed.
 
-Definition vector_to_ga_homo := make_module_homomorphism
+Definition vector_to_geo_homo := make_module_homomorphism
     F
     V
     (algebra_module (geometric_algebra B))
-    (vector_to_ga B)
-    (vector_to_ga_plus B)
-    (vector_to_ga_scalar B).
+    (vector_to_geo B)
+    (vector_to_geo_plus B)
+    (vector_to_geo_scalar B).
 
-Let GM := ga_mult B.
-Let GO := ga_one B.
-Let GS := ga_scalar B.
+Let GM := geo_mult B.
+Let GO := geo_one B.
+Let GS := geo_scalar B.
 
 Existing Instances GM GO GS.
 
-Definition ga_to_ga := make_to_ga
+Definition geo_to_geo := make_to_geo
     (geometric_algebra B)
-    vector_to_ga_homo
-    (ga_contract B).
+    vector_to_geo_homo
+    (geo_contract B).
 
-Theorem geometric_universal : @initial TO_GA ga_to_ga.
+Theorem geometric_universal : @initial TO_GEO geo_to_geo.
     pose (UZ := cring_zero F).
     pose (UPC := cring_plus_comm F).
     pose (UPZ := cring_plus_lid F).
@@ -127,10 +127,10 @@ Theorem geometric_universal : @initial TO_GA ga_to_ga.
     pose (TMR := algebra_mult_rid (tensor_algebra V)).
     pose (TSMO := algebra_scalar_id (tensor_algebra V)).
     pose (TSMR := algebra_scalar_rdist (tensor_algebra V)).
-    pose (GP := ga_plus B).
-    unfold ga_to_ga, initial; cbn.
+    pose (GP := geo_plus B).
+    unfold geo_to_geo, initial; cbn.
     intros [A f f_contr].
-    unfold to_ga_set; cbn.
+    unfold to_geo_set; cbn.
     pose (AP := algebra_plus A).
     pose (AZ := algebra_zero A).
     pose (AN := algebra_neg A).
@@ -154,7 +154,7 @@ Theorem geometric_universal : @initial TO_GA ga_to_ga.
             with (tensor_algebra V) in g.
         change (module_homo_f (to_algebra_homo V (to_tensor_algebra V)))
             with (@vector_to_tensor F V) in g_eq.
-        assert (∀ a b, eq_equal (ideal_equiv (ga_ideal B)) a b →
+        assert (∀ a b, eq_equal (ideal_equiv (geo_ideal B)) a b →
             algebra_homo_f g a = algebra_homo_f g b) as g_wd.
         {
             intros a b eq.
@@ -188,7 +188,7 @@ Theorem geometric_universal : @initial TO_GA ga_to_ga.
             reflexivity.
         }
         pose (h := unary_op g_wd).
-        change (equiv_type (ideal_equiv (ga_ideal B))) with (ga B) in h.
+        change (equiv_type (ideal_equiv (geo_ideal B))) with (geo B) in h.
         assert (h_plus : ∀ u v, h (u + v) = h u + h v).
         {
             intros u v.
@@ -219,13 +219,13 @@ Theorem geometric_universal : @initial TO_GA ga_to_ga.
             h_plus h_scalar h_mult h_one).
         cbn.
         intros x.
-        unfold h, vector_to_ga, tensor_to_ga; equiv_simpl.
+        unfold h, vector_to_geo, tensor_to_geo; equiv_simpl.
         apply g_eq.
     -   intros [g g_eq] [h h_eq].
         apply set_type_eq; cbn.
         apply algebra_homomorphism_eq.
         intros x.
-        pose proof (ga_sum B x) as [l l_eq]; subst x.
+        pose proof (geo_sum B x) as [l l_eq]; subst x.
         induction l using ulist_induction.
         {
             rewrite ulist_image_end, ulist_sum_end.
@@ -243,7 +243,7 @@ Theorem geometric_universal : @initial TO_GA ga_to_ga.
         induction l.
         {
             cbn.
-            change (tensor_to_ga B 1) with (@one _ EO).
+            change (tensor_to_geo B 1) with (@one _ EO).
             do 2 rewrite algebra_homo_one.
             reflexivity.
         }

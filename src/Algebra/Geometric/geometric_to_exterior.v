@@ -599,7 +599,7 @@ Definition geo_to_ext_base2 := make_module_homomorphism
     geo_to_ext_base1_plus
     geo_to_ext_base1_scalar.
 
-Definition geo_to_ext_base3 := make_to_ga
+Definition geo_to_ext_base3 := make_to_geo
     B EE geo_to_ext_base2 geo_to_ext_base_contract.
 
 Definition geo_to_ext_base :=
@@ -607,24 +607,24 @@ Definition geo_to_ext_base :=
 Definition geo_to_ext_f_homo := [geo_to_ext_base|].
 Definition geo_to_ext_f := algebra_homo_f geo_to_ext_f_homo.
 
-Let GP := ga_plus B.
-Let GZ := ga_zero B.
-Let GN := ga_neg B.
-Let GPA := ga_plus_assoc B.
-Let GPC := ga_plus_comm B.
-Let GPZ := ga_plus_lid B.
-Let GPN := ga_plus_linv B.
-Let GM := ga_mult B.
-Let GO := ga_one B.
-Let GMR := ga_mult_rid B.
-Let GS := ga_scalar B.
-Let GSO := ga_scalar_id B.
-Let GSR := ga_scalar_rdist B.
+Let GP := geo_plus B.
+Let GZ := geo_zero B.
+Let GN := geo_neg B.
+Let GPA := geo_plus_assoc B.
+Let GPC := geo_plus_comm B.
+Let GPZ := geo_plus_lid B.
+Let GPN := geo_plus_linv B.
+Let GM := geo_mult B.
+Let GO := geo_one B.
+Let GMR := geo_mult_rid B.
+Let GS := geo_scalar B.
+Let GSO := geo_scalar_id B.
+Let GSR := geo_scalar_rdist B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GMR GS GSO GSR.
 
 Theorem geo_to_ext_f_eq :
-        ∀ v, geo_to_ext_f (vector_to_ga B v) = geo_to_ext_base1 v.
+        ∀ v, geo_to_ext_f (vector_to_geo B v) = geo_to_ext_base1 v.
     apply [|geo_to_ext_base].
 Qed.
 
@@ -633,7 +633,7 @@ Theorem geo_to_ext_f_mult :
     apply algebra_homo_mult.
 Qed.
 
-Definition geo_to_ext (v : ga B) := module_homo_f (geo_to_ext_f v) 1 : ext V.
+Definition geo_to_ext (v : geo B) := module_homo_f (geo_to_ext_f v) 1 : ext V.
 
 Theorem geo_to_ext_plus : ∀ u v,
         geo_to_ext (u + v) = geo_to_ext u + geo_to_ext v.
@@ -656,7 +656,7 @@ Theorem geo_to_ext_scalar : ∀ a v, geo_to_ext (a · v) = a · geo_to_ext v.
     reflexivity.
 Qed.
 
-Theorem geo_to_ext_add : ∀ v x, geo_to_ext (vector_to_ga B v * x) =
+Theorem geo_to_ext_add : ∀ v x, geo_to_ext (vector_to_geo B v * x) =
         ext_inner v (geo_to_ext x) + vector_to_ext V v * geo_to_ext x.
     intros v x.
     unfold geo_to_ext.
@@ -692,21 +692,21 @@ Theorem geo_to_ext_one : geo_to_ext 1 = 1.
 Qed.
 
 Theorem geo_to_ext_of_scalar : ∀ α,
-        geo_to_ext (scalar_to_ga B α) = scalar_to_ext V α.
+        geo_to_ext (scalar_to_geo B α) = scalar_to_ext V α.
     intros α.
-    rewrite scalar_to_ga_one_scalar.
+    rewrite scalar_to_geo_one_scalar.
     rewrite geo_to_ext_scalar.
-    change 1 with (one (U := ga B)).
+    change 1 with (one (U := geo B)).
     rewrite geo_to_ext_one.
     symmetry; apply scalar_to_ext_one_scalar.
 Qed.
 
 Theorem geo_to_ext_vector : ∀ v,
-        geo_to_ext (vector_to_ga B v) = vector_to_ext V v.
+        geo_to_ext (vector_to_geo B v) = vector_to_ext V v.
     intros v.
-    rewrite <- (mult_rid (vector_to_ga B v)).
+    rewrite <- (mult_rid (vector_to_geo B v)).
     rewrite geo_to_ext_add.
-    change 1 with (one (U := ga B)).
+    change 1 with (one (U := geo B)).
     rewrite geo_to_ext_one.
     rewrite mult_rid.
     replace 1 with (scalar_to_ext V 1) by apply scalar_to_ext_one.
@@ -715,7 +715,7 @@ Theorem geo_to_ext_vector : ∀ v,
 Qed.
 
 Theorem geo_to_ext_vector2 : ∀ u v,
-        geo_to_ext (vector_to_ga B u * vector_to_ga B v) =
+        geo_to_ext (vector_to_geo B u * vector_to_geo B v) =
         [B|] u v · 1 + vector_to_ext V u * vector_to_ext V v.
     intros u v.
     rewrite geo_to_ext_add.
