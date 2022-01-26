@@ -102,6 +102,29 @@ Theorem pow_not_zero_nat : ∀ a n, 0 ≠ a → 0 ≠ a ^ n.
         rewrite <- (mult_lanni a) in eq.
         apply mult_rcancel in eq; auto.
 Qed.
+
+Theorem pow_neg_one_even : ∀ n, (-(1)) ^ (2*n) = 1.
+    intros n.
+    nat_induction n.
+    -   rewrite mult_ranni.
+        apply pow_0_nat.
+    -   rewrite nat_mult_rsuc.
+        rewrite <- pow_mult_nat.
+        rewrite IHn.
+        rewrite mult_rid.
+        unfold one at 2 3, plus; cbn.
+        rewrite mult_lid.
+        rewrite mult_neg_one.
+        apply neg_neg.
+Qed.
+
+Theorem pow_neg_one_odd : ∀ n, (-(1)) ^ (2*n + 1) = -(1).
+    intros n.
+    rewrite <- pow_mult_nat.
+    rewrite pow_neg_one_even.
+    rewrite mult_lid.
+    apply pow_1_nat.
+Qed.
 (* begin hide *)
 End Pow.
 (* end hide *)
