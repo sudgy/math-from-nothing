@@ -125,6 +125,26 @@ Theorem pow_neg_one_odd : ∀ n, (-(1)) ^ (2*n + 1) = -(1).
     rewrite mult_lid.
     apply pow_1_nat.
 Qed.
+
+Theorem pow_neg_one_binom2 : ∀ n,
+        (-(1)) ^ binom (nat_suc (nat_suc n)) 2 = -(-(1)) ^ binom n 2.
+    intros n.
+    change 2 with (nat_suc (nat_suc 0)) at 1.
+    do 3 rewrite binom_suc.
+    rewrite binom_zero.
+    rewrite binom_one.
+    rewrite <- plus_assoc.
+    rewrite <- pow_mult_nat.
+    rewrite pow_1_nat.
+    rewrite mult_neg_one.
+    rewrite plus_assoc.
+    rewrite <- (mult_lid n) at 1 2.
+    rewrite <- rdist.
+    rewrite <- pow_mult_nat.
+    rewrite pow_neg_one_even.
+    rewrite mult_lid.
+    reflexivity.
+Qed.
 (* begin hide *)
 End Pow.
 (* end hide *)
