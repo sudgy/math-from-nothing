@@ -65,6 +65,7 @@
 ./src/Number/Nat/nat_mult.v
 ./src/Number/Nat/nat_order.v
 ./src/Number/Nat/nat_minus.v
+./src/Number/Nat/nat_binom.v
 ./src/Number/Nat/nat.v
 
 ./src/Algebra/Mult/mult_pow.v
