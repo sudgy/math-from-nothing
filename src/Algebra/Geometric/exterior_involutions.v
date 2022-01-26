@@ -4,7 +4,9 @@ Require Import mult_product.
 Require Import card.
 Require Import set.
 Require Import unordered_list.
+Require Import mult_pow.
 
+Require Import linear_grade.
 Require Import module_category.
 Require Import algebra_category.
 
@@ -19,14 +21,18 @@ Context {F : CRing} {V : Module F}.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
 Let UN := cring_neg F.
+Let UPA := cring_plus_assoc F.
 Let UPC := cring_plus_comm F.
 Let UPZ := cring_plus_lid F.
 Let UPN := cring_plus_linv F.
 Let UM := cring_mult F.
 Let UO := cring_one F.
+Let UL := cring_ldist F.
+Let UMA := cring_mult_assoc F.
 Let UMC := cring_mult_comm F.
+Let UMO := cring_mult_lid F.
 
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UL UMA UMC UMO.
 
 Let VP := module_plus V.
 Let VS := module_scalar V.
@@ -44,24 +50,26 @@ Let EM := ext_mult V.
 Let EO := ext_one V.
 Let EL := ext_ldist V.
 Let ER := ext_rdist V.
-Let EMA := ext_mult_assoc V.
 Let EML := ext_mult_lid V.
 Let EMR := ext_mult_rid V.
+Let EMA := ext_mult_assoc V.
 Let ES := ext_scalar V.
+Let ESO := ext_scalar_id V.
 Let ESL := ext_scalar_ldist V.
 Let ESR := ext_scalar_rdist V.
 Let ESC := ext_scalar_comp V.
 Let ESML := ext_scalar_lmult V.
 Let ESMR := ext_scalar_rmult V.
 Let EG := exterior_grade V.
+Let EGA := exterior_grade_mult V.
 
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMA EML EMR ES ESL ESR
-    ESC ESML ESMR EG.
+Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EML EMR EMA ES ESO ESL
+    ESR ESC ESML ESMR EG EGA.
 
 Local Notation "'φ'" := (vector_to_ext V).
 Local Notation "'σ'" := (scalar_to_ext V).
-Local Notation "'E'" := (ext_to_ext V).
-Local Notation "'E'" := (ext_to_ext V).
+
+Local Open Scope nat_scope.
 
 Definition ext_involute_base1 (v : module_V V) := -φ v.
 
@@ -237,6 +245,10 @@ Definition ext_op_algebra := make_algebra
     ext_op_scalar_rmult
 .
 
+Remove Hints ext_op_mult ext_op_ldist ext_op_rdist ext_op_mult_assoc
+    ext_op_one ext_op_mult_lid ext_op_mult_rid ext_op_scalar_lmult
+    ext_op_scalar_rmult : typeclass_instances.
+
 Definition ext_reverse_base1 (v : module_V V) := φ v : ext_op.
 
 Lemma ext_reverse_base_plus : ∀ u v, ext_reverse_base1 (u + v) =
@@ -348,6 +360,136 @@ Theorem ext_reverse_reverse : ∀ v, v†† = v.
     apply rmult.
     do 2 rewrite ext_reverse_vector.
     reflexivity.
+Qed.
+
+Theorem ext_involute_grade : ∀ (X : ext V) (n : nat), of_grade n X →
+        X∗ = (-(1))^n · X.
+    intros X n Xn.
+    apply ext_grade_sum in Xn as [l l_eq]; subst X.
+    induction l as [|[α x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite scalar_ranni.
+        apply ext_involute_zero.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite ext_involute_plus.
+    rewrite scalar_ldist.
+    rewrite IHl; clear IHl.
+    apply rplus; clear l.
+    rewrite ext_involute_scalar.
+    rewrite scalar_comp.
+    rewrite (mult_comm _ α).
+    rewrite <- scalar_comp.
+    apply lscalar.
+    destruct x as [l n_eq]; cbn.
+    subst n.
+    induction l.
+    -   cbn.
+        rewrite pow_0_nat.
+        rewrite scalar_id.
+        apply ext_involute_one.
+    -   cbn.
+        rewrite ext_involute_mult.
+        rewrite IHl.
+        rewrite ext_involute_vector.
+        rewrite <- scalar_comp.
+        rewrite scalar_neg_one.
+        rewrite scalar_rmult.
+        rewrite mult_lneg.
+        reflexivity.
+Qed.
+
+Theorem ext_involute_swap : ∀ v (X : ext V), φ v * X = X∗ * φ v.
+    Set Printing All.
+    intros v X.
+    pose proof (ext_sum V X) as [l l_eq]; subst X.
+    induction l as [|[α x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite ext_involute_zero.
+        rewrite mult_lanni, mult_ranni.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite ext_involute_plus.
+    rewrite ldist, rdist.
+    rewrite IHl; clear IHl.
+    apply rplus; clear l.
+    rewrite ext_involute_scalar.
+    rewrite scalar_lmult, scalar_rmult.
+    apply lscalar.
+    induction x as [|a l].
+    -   cbn.
+        rewrite ext_involute_one.
+        rewrite mult_lid, mult_rid.
+        reflexivity.
+    -   cbn.
+        rewrite mult_assoc.
+        rewrite ext_anticomm.
+        rewrite <- mult_lneg.
+        rewrite <- mult_assoc.
+        rewrite IHl; clear IHl.
+        rewrite ext_involute_mult.
+        rewrite ext_involute_vector.
+        apply mult_assoc.
+Qed.
+
+Theorem ext_reverse_grade : ∀ (X : ext V) (n : nat), of_grade n X →
+        X† = (-(1))^(binom n 2) · X.
+    intros X n Xn.
+    apply ext_grade_sum in Xn as [l l_eq]; subst X.
+    induction l as [|[α x] l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite scalar_ranni.
+        apply ext_reverse_zero.
+    }
+    rewrite ulist_image_add, ulist_sum_add; cbn.
+    rewrite ext_reverse_plus.
+    rewrite scalar_ldist.
+    rewrite IHl; clear IHl.
+    apply rplus; clear l.
+    rewrite ext_reverse_scalar.
+    rewrite scalar_comp.
+    rewrite (mult_comm _ α).
+    rewrite <- scalar_comp.
+    apply lscalar.
+    destruct x as [l n_eq]; cbn.
+    subst n.
+    induction l.
+    -   cbn.
+        rewrite pow_0_nat.
+        rewrite scalar_id.
+        apply ext_reverse_one.
+    -   cbn.
+        rewrite ext_reverse_mult.
+        rewrite IHl; clear IHl.
+        rewrite ext_reverse_vector.
+        rewrite scalar_lmult.
+        rewrite ext_involute_swap.
+        pose proof (ext_list_grade V l) as l_grade.
+        rewrite (ext_involute_grade _ _ l_grade).
+        rewrite scalar_lmult.
+        rewrite scalar_comp.
+        apply rscalar.
+        remember (list_size l) as n.
+        clear Heqn l_grade.
+        unfold one at 5; cbn.
+        rewrite nat_plus_lsuc.
+        unfold plus at 2; cbn.
+        rewrite binom_suc.
+        rewrite pow_mult_nat.
+        change (nat_suc 1) with (one (U := nat) + 1).
+        rewrite binom_one.
+        rewrite (plus_comm n).
+        rewrite <- plus_assoc.
+        rewrite <- pow_mult_nat.
+        rewrite <- (mult_lid n) at 3 4.
+        rewrite <- rdist.
+        rewrite pow_neg_one_even.
+        rewrite mult_rid.
+        reflexivity.
 Qed.
 
 End ExteriorInvolutions.
