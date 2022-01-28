@@ -230,6 +230,10 @@ Definition geo_op_algebra := make_algebra
     geo_op_scalar_rmult
 .
 
+Remove Hints geo_op_mult geo_op_ldist geo_op_rdist geo_op_mult_assoc
+    geo_op_one geo_op_mult_lid geo_op_mult_rid geo_op_scalar_lmult
+    geo_op_scalar_rmult : typeclass_instances.
+
 Definition geo_reverse_base1 (v : module_V V) := φ v : geo_op.
 
 Lemma geo_reverse_base_plus : ∀ u v, geo_reverse_base1 (u + v) =
@@ -284,12 +288,11 @@ Theorem geo_reverse_scalar : ∀ a v, (a · v)† = a · v†.
     apply (algebra_homo_scalar _ _ geo_reverse_homo).
 Qed.
 
-Theorem geo_reverse_mult : ∀ u v,
-        (@mult _ (geo_mult B) u v)† = @mult _ (geo_mult B) (v†) (u†).
+Theorem geo_reverse_mult : ∀ u v, (u * v)† = (v†) * (u†).
     apply (algebra_homo_mult _ _ geo_reverse_homo).
 Qed.
 
-Theorem geo_reverse_one : (@one _ (geo_one B))† = (@one _ (geo_one B)) .
+Theorem geo_reverse_one : 1† = 1.
     apply (algebra_homo_one _ _ geo_reverse_homo).
 Qed.
 

@@ -106,7 +106,7 @@ Theorem geo_mult_inner_involute : ∀ a (X : geo B),
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite geo_involute_zero.
-        do 2 rewrite geo_mult_inner_rzero.
+        rewrite geo_mult_inner_rzero.
         rewrite neg_zero, geo_involute_zero.
         reflexivity.
     }
@@ -126,7 +126,7 @@ Theorem geo_mult_inner_involute : ∀ a (X : geo B),
     {
         cbn.
         rewrite geo_involute_one.
-        do 2 rewrite <- scalar_to_geo_one.
+        rewrite <- scalar_to_geo_one.
         rewrite geo_mult_inner_scalar.
         rewrite neg_zero, geo_involute_zero.
         reflexivity.
