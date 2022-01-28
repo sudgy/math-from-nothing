@@ -7,7 +7,7 @@ Require Export geometric_construct.
 Require Import geometric_exterior_isomorphism.
 Require Import geometric_grade.
 Require Import exterior_grade.
-Require Import geometric_involutions.
+Require Export geometric_involutions.
 Require Import exterior_involutions.
 
 Section GeometricInvolutions.
@@ -575,6 +575,30 @@ Theorem geo_reverse_project : ∀ (X : geo B) n,
     rewrite (grade_project_of_grade_neq _ _ _ Xi neq).
     rewrite (grade_project_of_grade_neq _ _ _ Xi' neq).
     apply geo_reverse_zero.
+Qed.
+
+Theorem geo_reverse_involute : ∀ X : geo B, X†∗ = X∗†.
+    intros X.
+    induction X as [|X X' n Xn X'n IHX] using grade_induction.
+    {
+        rewrite geo_involute_zero.
+        do 2 rewrite geo_reverse_zero.
+        apply geo_involute_zero.
+    }
+    rewrite geo_involute_plus.
+    do 2 rewrite geo_reverse_plus.
+    rewrite geo_involute_plus.
+    rewrite IHX; clear IHX.
+    apply rplus; clear X' X'n.
+    rewrite (geo_reverse_grade _ _ Xn).
+    rewrite (geo_involute_grade _ _ Xn).
+    rewrite geo_reverse_scalar.
+    rewrite geo_involute_scalar.
+    rewrite (geo_reverse_grade _ _ Xn).
+    rewrite (geo_involute_grade _ _ Xn).
+    do 2 rewrite scalar_comp.
+    rewrite mult_comm.
+    reflexivity.
 Qed.
 
 End GeometricInvolutions.

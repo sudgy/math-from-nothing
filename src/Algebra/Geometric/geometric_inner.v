@@ -6,7 +6,7 @@ Require Import linear_extend.
 
 Require Export geometric_construct.
 Require Import geometric_grade.
-Require Import geometric_exterior_isomorphism.
+Require Import geometric_involutions_grade.
 
 Section GeometricInner.
 
@@ -57,6 +57,7 @@ Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSO GSL GSR GSC GSML
 Local Notation "'φ'" := (vector_to_geo B).
 Local Notation "'σ'" := (scalar_to_geo B).
 
+Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
 Definition geo_inner_base i j a b (ai : of_grade i a) (bj : of_grade j b)
@@ -327,6 +328,199 @@ Lemma rcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
     -   exact geo_rcontr_rdist_base.
     -   exact geo_rcontr_lscalar_base.
     -   exact geo_rcontr_rscalar_base.
+Qed.
+
+Theorem lrcontr_reverse : ∀ a b, (a ⌋ b)† = b† ⌊ a†.
+    intros a b.
+    induction a as [|a a' m am a'm IHa] using grade_induction.
+    {
+        rewrite lcontr_lanni.
+        rewrite geo_reverse_zero.
+        rewrite rcontr_ranni.
+        reflexivity.
+    }
+    rewrite lcontr_rdist.
+    do 2 rewrite geo_reverse_plus.
+    rewrite rcontr_ldist.
+    rewrite IHa.
+    apply rplus; clear a' a'm IHa.
+    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    {
+        rewrite lcontr_ranni.
+        rewrite geo_reverse_zero.
+        rewrite rcontr_lanni.
+        reflexivity.
+    }
+    rewrite lcontr_ldist.
+    do 2 rewrite geo_reverse_plus.
+    rewrite rcontr_rdist.
+    rewrite IHb.
+    apply rplus; clear b' b'n IHb.
+    pose proof (of_grade_reverse _ _ _ am) as am'.
+    pose proof (of_grade_reverse _ _ _ bn) as bn'.
+    rewrite (lcontr_homo _ _ _ _ am bn).
+    rewrite (rcontr_homo _ _ _ _ bn' am').
+    unfold geo_lcontr_base, geo_rcontr_base.
+    destruct (n ¯ m) as [z|].
+    -   rewrite geo_reverse_project.
+        rewrite geo_reverse_mult.
+        reflexivity.
+    -   apply geo_reverse_zero.
+Qed.
+
+Theorem rlcontr_reverse : ∀ a b, (a ⌊ b)† = b† ⌋ a†.
+    intros a b.
+    rewrite <- (geo_reverse_reverse B (b † ⌋ a †)).
+    rewrite lrcontr_reverse.
+    do 2 rewrite geo_reverse_reverse.
+    reflexivity.
+Qed.
+
+Theorem inner_reverse : ∀ a b, (a • b)† = b† • a†.
+    intros a b.
+    induction a as [|a a' m am a'm IHa] using grade_induction.
+    {
+        rewrite inner_lanni.
+        rewrite geo_reverse_zero.
+        rewrite inner_ranni.
+        reflexivity.
+    }
+    rewrite inner_rdist.
+    do 2 rewrite geo_reverse_plus.
+    rewrite inner_ldist.
+    rewrite IHa.
+    apply rplus; clear a' a'm IHa.
+    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    {
+        rewrite inner_ranni.
+        rewrite geo_reverse_zero.
+        rewrite inner_lanni.
+        reflexivity.
+    }
+    rewrite inner_ldist.
+    do 2 rewrite geo_reverse_plus.
+    rewrite inner_rdist.
+    rewrite IHb.
+    apply rplus; clear b' b'n IHb.
+    pose proof (of_grade_reverse _ _ _ am) as am'.
+    pose proof (of_grade_reverse _ _ _ bn) as bn'.
+    rewrite (inner_homo _ _ _ _ am bn).
+    rewrite (inner_homo _ _ _ _ bn' am').
+    unfold geo_inner_base, geo_inner_base.
+    rewrite geo_reverse_project.
+    rewrite geo_reverse_mult.
+    rewrite nat_abs_minus_comm.
+    reflexivity.
+Qed.
+
+Theorem lcontr_inner : ∀ a b (m n : nat), m <= n → of_grade m a → of_grade n b →
+        a ⌋ b = a • b.
+    intros a b m n leq an bn.
+    rewrite (lcontr_homo _ _ _ _ an bn).
+    rewrite (inner_homo _ _ _ _ an bn).
+    unfold geo_lcontr_base, geo_inner_base.
+    apply nat_le_ex in leq as [c eq]; subst n.
+    rewrite nat_minus_plus.
+    rewrite nat_abs_minus_comm.
+    rewrite nat_abs_minus_plus.
+    reflexivity.
+Qed.
+
+Theorem rcontr_inner : ∀ a b (m n : nat), n <= m → of_grade m a → of_grade n b →
+        a ⌊ b = a • b.
+    intros a b m n leq an bn.
+    rewrite (rcontr_homo _ _ _ _ an bn).
+    rewrite (inner_homo _ _ _ _ an bn).
+    unfold geo_rcontr_base, geo_inner_base.
+    apply nat_le_ex in leq as [c eq]; subst m.
+    rewrite nat_minus_plus.
+    rewrite nat_abs_minus_plus.
+    reflexivity.
+Qed.
+
+Theorem inner_involute : ∀ a b, (a • b)∗ = a∗ • b∗.
+    intros a b.
+    induction a as [|a a' m am a'm IHa] using grade_induction.
+    {
+        rewrite inner_lanni.
+        rewrite geo_involute_zero.
+        rewrite inner_lanni.
+        reflexivity.
+    }
+    rewrite inner_rdist.
+    do 2 rewrite geo_involute_plus.
+    rewrite inner_rdist.
+    rewrite IHa.
+    apply rplus; clear a' a'm IHa.
+    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    {
+        rewrite inner_ranni.
+        rewrite geo_involute_zero.
+        rewrite inner_ranni.
+        reflexivity.
+    }
+    rewrite inner_ldist.
+    do 2 rewrite geo_involute_plus.
+    rewrite inner_ldist.
+    rewrite IHb.
+    apply rplus; clear b' b'n IHb.
+    pose proof (of_grade_involute _ _ _ am) as am'.
+    pose proof (of_grade_involute _ _ _ bn) as bn'.
+    rewrite (inner_homo _ _ _ _ am bn).
+    rewrite (inner_homo _ _ _ _ am' bn').
+    unfold geo_inner_base, geo_inner_base.
+    rewrite geo_involute_project.
+    rewrite geo_involute_mult.
+    reflexivity.
+Qed.
+
+Theorem lcontr_involute : ∀ a b, (a ⌋ b)∗ = a∗ ⌋ b∗.
+    intros a b.
+    induction a as [|a a' m am a'm IHa] using grade_induction.
+    {
+        rewrite lcontr_lanni.
+        rewrite geo_involute_zero.
+        rewrite lcontr_lanni.
+        reflexivity.
+    }
+    rewrite lcontr_rdist.
+    do 2 rewrite geo_involute_plus.
+    rewrite lcontr_rdist.
+    rewrite IHa.
+    apply rplus; clear a' a'm IHa.
+    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    {
+        rewrite lcontr_ranni.
+        rewrite geo_involute_zero.
+        rewrite lcontr_ranni.
+        reflexivity.
+    }
+    rewrite lcontr_ldist.
+    do 2 rewrite geo_involute_plus.
+    rewrite lcontr_ldist.
+    rewrite IHb.
+    apply rplus; clear b' b'n IHb.
+    pose proof (of_grade_involute _ _ _ am) as am'.
+    pose proof (of_grade_involute _ _ _ bn) as bn'.
+    rewrite (lcontr_homo _ _ _ _ am bn).
+    rewrite (lcontr_homo _ _ _ _ am' bn').
+    unfold geo_lcontr_base, geo_lcontr_base.
+    destruct (n ¯ m) as [z|].
+    -   rewrite geo_involute_project.
+        rewrite geo_involute_mult.
+        reflexivity.
+    -   apply geo_involute_zero.
+Qed.
+
+Theorem rcontr_involute : ∀ a b, (a ⌊ b)∗ = a∗ ⌊ b∗.
+    intros a b.
+    rewrite <- (geo_reverse_reverse B ((a ⌊ b)∗)).
+    rewrite <- geo_reverse_involute.
+    rewrite rlcontr_reverse.
+    rewrite lcontr_involute.
+    do 2 rewrite geo_reverse_involute.
+    rewrite <- rlcontr_reverse.
+    apply geo_reverse_reverse.
 Qed.
 
 End GeometricInner.
