@@ -4,6 +4,8 @@ Require Export nat_base.
 Require Export nat_plus.
 Require Export nat_order.
 
+Require Import order_minmax.
+
 Fixpoint nat_minus a b := match a, b with
     | a', nat_zero => opt_val a'
     | nat_zero, _ => opt_nil nat
@@ -103,6 +105,20 @@ Theorem nat_abs_minus_plus : ∀ a b, (a + b) ⊖ a = b.
     -   rewrite nat_plus_lsuc.
         cbn.
         exact IHa.
+Qed.
+
+Theorem nat_abs_minus_min : ∀ a b, a ⊖ b + min a b = max a b.
+    intros a b.
+    unfold min, max; case_if.
+    -   apply nat_le_ex in l as [c eq]; subst.
+        rewrite nat_abs_minus_comm.
+        rewrite nat_abs_minus_plus.
+        apply plus_comm.
+    -   rewrite nle_lt in n.
+        destruct n as [leq neq].
+        apply nat_le_ex in leq as [c eq]; subst.
+        rewrite nat_abs_minus_plus.
+        apply plus_comm.
 Qed.
 
 Close Scope nat_scope.

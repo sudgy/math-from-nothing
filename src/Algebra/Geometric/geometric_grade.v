@@ -46,21 +46,39 @@ Let GR := geo_rdist B.
 Let GS := geo_scalar B.
 Let GSL := geo_scalar_ldist B.
 Let GSR := geo_scalar_rdist B.
+Let GSO := geo_scalar_id B.
 Let GSC := geo_scalar_comp B.
 Let GSMR := geo_scalar_rmult B.
 
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSL GSR GSC GSMR.
+Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSL GSR GSO GSC GSMR.
 
 Local Notation "'φ'" := (vector_to_geo B).
 Local Notation "'σ'" := (scalar_to_geo B).
 Local Notation "'E'" := (geo_to_ext B).
 Local Notation "'G'" := (ext_to_geo B).
 
+Let EP := ext_plus V.
+Let EZ := ext_zero V.
+Let EN := ext_neg V.
+Let EPA := ext_plus_assoc V.
+Let EPC := ext_plus_comm V.
+Let EPZ := ext_plus_lid V.
+Let EPN := ext_plus_linv V.
 Let EM := ext_mult V.
 Let EO := ext_one V.
+Let EL := ext_ldist V.
+Let ER := ext_rdist V.
+Let EMR := ext_mult_rid V.
+Let EMA := ext_mult_assoc V.
+Let ES := ext_scalar V.
+Let ESO := ext_scalar_id V.
+Let ESL := ext_scalar_ldist V.
+Let ESR := ext_scalar_rdist V.
 Let EG := exterior_grade V.
+Let EGA := exterior_grade_mult V.
 
-Existing Instances EM EO EG.
+Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR
+    EG EGA.
 
 Definition geo_grade := grade_isomorphism (ext_to_geo_homo B) (ext_to_geo_iso B).
 
@@ -112,7 +130,7 @@ Qed.
 
 Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
         list_prop2 (λ a b, [B|] a b = 0) l →
-        of_grade (list_size l) (list_prod (list_image l φ)).
+        of_grade (H10 := geo_grade) (list_size l) (list_prod (list_image l φ)).
     intros l l_orth.
     exists (list_prod (list_image l (vector_to_ext V))).
     induction l as [|v l].
@@ -152,6 +170,44 @@ Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
             rewrite uv_orth.
             rewrite scalar_lanni.
             reflexivity.
+Qed.
+
+Theorem ext_to_geo_project : ∀ (a : ext V) (n : nat),
+        grade_project (G a) n = G (grade_project (VG := EG) a n).
+    intros a n.
+    induction a as [|a a' i ai a'i IHa] using grade_induction.
+    {
+        rewrite ext_to_geo_zero.
+        do 2 rewrite grade_project_zero.
+        rewrite ext_to_geo_zero.
+        reflexivity.
+    }
+    rewrite ext_to_geo_plus.
+    do 2 rewrite grade_project_plus.
+    rewrite ext_to_geo_plus.
+    rewrite IHa.
+    apply rplus; clear a' a'i IHa.
+    assert (of_grade (H10 := geo_grade) i (G a)) as ai'.
+    {
+        exists a.
+        split; [>exact ai|reflexivity].
+    }
+    classic_case (i = n) as [eq|neq].
+    -   subst.
+        rewrite (grade_project_of_grade _ _ ai).
+        apply (grade_project_of_grade _ _ ai').
+    -   rewrite (grade_project_of_grade_neq _ _ _ ai neq).
+        rewrite ext_to_geo_zero.
+        apply (grade_project_of_grade_neq _ _ _ ai' neq).
+Qed.
+
+Theorem geo_to_ext_project : ∀ (a : geo B) (n : nat),
+        grade_project (VG := EG) (E a) n = E (grade_project a n).
+    intros a n.
+    rewrite <- (geo_to_ext_to_geo B (grade_project (VG := EG) (E a) n)).
+    rewrite <- ext_to_geo_project.
+    rewrite ext_to_geo_to_ext.
+    reflexivity.
 Qed.
 
 End GeometricGrade.

@@ -762,4 +762,62 @@ Theorem homo_rmult_project : ∀ i j u v, of_grade j v →
             symmetry in contr; contradiction.
 Qed.
 
+Theorem grade_project_sum : ∀ f n a b,
+        grade_project (sum f a b) n = sum (λ m, grade_project (f m) n) a b.
+    intros f n a b.
+    nat_induction b.
+    -   unfold zero; cbn.
+        apply grade_project_zero.
+    -   cbn.
+        rewrite grade_project_plus.
+        rewrite IHb.
+        reflexivity.
+Qed.
+
+Theorem sum_grade_project_single : ∀ f A n a b, injective f →
+        ∀ m, f m = n → a <= m → m < a + b →
+        sum (λ m, grade_project (grade_project A (f m)) n) a b =
+        grade_project A n.
+    intros f A n a b f_inj m eq m_geq m_leq.
+    subst n.
+    nat_induction b.
+    {
+        rewrite plus_rid in m_leq.
+        exfalso; clear - m_leq m_geq.
+        destruct (lt_le_trans m_leq m_geq); contradiction.
+    }
+    cbn.
+    classic_case (m = a + b) as [eq|neq].
+    -   subst m.
+        rewrite sum_zero.
+        {
+            rewrite plus_lid.
+            apply grade_project_project.
+        }
+        intros n n_geq n_lt.
+        assert (f n ≠ f (a + b)) as neq.
+        {
+            intros contr.
+            apply f_inj in contr.
+            subst n.
+            destruct n_lt; contradiction.
+        }
+        pose proof (grade_project_grade A (f n)) as A_grade.
+        apply (grade_project_of_grade_neq _ _ _ A_grade neq).
+    -   rewrite nat_plus_rsuc in m_leq.
+        rewrite nat_lt_suc_le in m_leq.
+        specialize (IHb (make_and m_leq neq)).
+        rewrite IHb.
+        assert (f (a + b) ≠ f m) as neq'.
+        {
+            intros contr.
+            apply f_inj in contr.
+            subst m.
+            contradiction.
+        }
+        pose proof (grade_project_grade A (f (a + b))) as A_grade.
+        rewrite (grade_project_of_grade_neq _ _ _ A_grade neq').
+        apply plus_rid.
+Qed.
+
 End LinearGrade.

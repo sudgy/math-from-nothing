@@ -88,6 +88,13 @@ Theorem rmax : ∀ a b, b <= max a b.
     rewrite max_comm.
     apply lmax.
 Qed.
+
+Theorem min_max_plus : ∀ a b, min a b + max a b = a + b.
+    intros a b.
+    unfold min, max; case_if.
+    -   reflexivity.
+    -   apply plus_comm.
+Qed.
 (* begin hide *)
 End MinMax.
 (* end hide *)

@@ -68,6 +68,27 @@ Theorem sum_minus : ∀ f a b c, sum f a (b + c) - sum f a b = sum f (a + b) c.
         reflexivity.
 Qed.
 
+Theorem sum_zero : ∀ f a b, (∀ n, a <= n → n < a + b → f n = 0) → sum f a b = 0.
+    intros f a b n_zero.
+    nat_induction b.
+    -   unfold zero at 1; cbn.
+        reflexivity.
+    -   cbn.
+        rewrite <- (plus_rid 0).
+        apply lrplus.
+        +   apply IHb.
+            intros n n_geq n_ltq.
+            apply n_zero.
+            *   exact n_geq.
+            *   rewrite nat_plus_rsuc.
+                apply (trans n_ltq).
+                apply nat_lt_suc.
+        +   apply n_zero.
+            *   apply nat_le_self_rplus.
+            *   rewrite nat_plus_rsuc.
+                apply nat_lt_suc.
+Qed.
+
 Theorem list_sum_plus :
         ∀ l1 l2, list_sum (l1 ++ l2) = list_sum l1 + list_sum l2.
     intros l1 l2.
