@@ -93,7 +93,6 @@ Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR.
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 Local Arguments of_grade: simpl never.
-(* use m/2 somehow *)
 
 Theorem geo_mult_inner_grade : ∀ v (A : geo B) i, of_grade (nat_suc i) A
         → of_grade i (geo_mult_inner B v A).

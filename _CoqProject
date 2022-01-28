@@ -205,6 +205,7 @@
 ./src/Algebra/Geometric/geometric_decomposition.v
 ./src/Algebra/Geometric/geometric_outer.v
 ./src/Algebra/Geometric/geometric_inner.v
+./src/Algebra/Geometric/geometric_product_formulae.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
