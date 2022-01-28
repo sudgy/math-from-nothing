@@ -531,4 +531,13 @@ Theorem geo_grade_decompose : ∀ (a b : geo B) (r s : nat),
             exact n_leq.
 Qed.
 
+Theorem geo_mult_project_bigger : ∀ (a b : geo B) (r s : nat),
+        of_grade r a → of_grade s b →
+        ∀ n, r + s < n → grade_project (a * b) n = 0.
+    intros a b r s ar bs n n_gt.
+    apply (geo_grade_decompose2 _ _ _ _ _ ar bs).
+    right; left.
+    exact n_gt.
+Qed.
+
 End GeometricDecompose.

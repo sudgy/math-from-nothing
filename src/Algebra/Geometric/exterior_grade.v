@@ -121,6 +121,7 @@ Next Obligation.
     rewrite <- (tensor_to_ext_neg V) in v'_eq.
     rewrite <- (tensor_to_ext_plus V) in v'_eq.
     unfold tensor_to_ext, zero in v'_eq; equiv_simpl in v'_eq.
+    apply equiv_eq in v'_eq; cbn in v'_eq.
     rewrite plus_lid in v'_eq.
     rewrite neg_plus, neg_neg in v'_eq.
     destruct v'_eq as [l l_eq].
@@ -325,6 +326,7 @@ Next Obligation.
             +   rewrite eq in a_grade.
                 rewrite (grade_project_of_grade _ _ a_grade).
                 unfold tensor_to_ext, zero; equiv_simpl.
+                apply equiv_eq; cbn.
                 rewrite neg_zero, plus_rid.
                 exists (((a1, a2), [a3|a3_in]) ::: ulist_end).
                 rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -418,6 +420,7 @@ Next Obligation.
             }
             symmetry in v'_eq.
             unfold tensor_to_ext in v'_eq; equiv_simpl in v'_eq.
+            apply equiv_eq in v'_eq; cbn in v'_eq.
             clear l.
             destruct v'_eq as [l l_eq].
             rewrite <- plus_rrmove in l_eq.

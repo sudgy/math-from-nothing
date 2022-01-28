@@ -156,7 +156,7 @@ Theorem ext_to_geo_involute : ∀ X, (G X)∗ = G (ext_involute X).
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_involute_zero.
-        do 2 rewrite ext_to_geo_zero.
+        rewrite ext_to_geo_zero.
         apply geo_involute_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -173,7 +173,7 @@ Theorem ext_to_geo_involute : ∀ X, (G X)∗ = G (ext_involute X).
     {
         cbn.
         rewrite ext_involute_one.
-        do 2 rewrite ext_to_geo_one.
+        rewrite ext_to_geo_one.
         apply geo_involute_one.
     }
     cbn.
@@ -379,7 +379,7 @@ Theorem ext_to_geo_reverse : ∀ X : ext V, (G X)† = G (ext_reverse X).
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_reverse_zero.
-        do 2 rewrite ext_to_geo_zero.
+        rewrite ext_to_geo_zero.
         apply geo_reverse_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
