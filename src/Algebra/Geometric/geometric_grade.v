@@ -93,17 +93,14 @@ Theorem scalar_to_geo_grade : ∀ a, of_grade 0 (σ a).
     -   apply ext_to_geo_of_scalar.
 Qed.
 
-Theorem geo_grade_zero_scalar : ∀ v : geo B, of_grade 0 v ↔ (∃ a, v = σ a).
+Theorem geo_grade_zero_scalar : ∀ v : geo B, of_grade 0 v → (∃ a, v = σ a).
     intros v.
-    split.
-    -   intros [v' [v0 v_eq]].
-        subst v.
-        apply (ext_grade_zero_scalar V v') in v0 as [a v'_eq].
-        subst v'.
-        exists a.
-        apply ext_to_geo_of_scalar.
-    -   intros [a v_eq]; subst v.
-        apply scalar_to_geo_grade.
+    intros [v' [v0 v_eq]].
+    subst v.
+    apply (ext_grade_zero_scalar V v') in v0 as [a v'_eq].
+    subst v'.
+    exists a.
+    apply ext_to_geo_of_scalar.
 Qed.
 
 Theorem vector_to_geo_grade : ∀ a, of_grade 1 (φ a).
@@ -115,17 +112,14 @@ Theorem vector_to_geo_grade : ∀ a, of_grade 1 (φ a).
     -   apply ext_to_geo_vector.
 Qed.
 
-Theorem geo_grade_one_vector : ∀ v : geo B, of_grade 1 v ↔ (∃ a, v = φ a).
+Theorem geo_grade_one_vector : ∀ v : geo B, of_grade 1 v → (∃ a, v = φ a).
     intros v.
-    split.
-    -   intros [v' [v0 v_eq]].
-        subst v.
-        apply (ext_grade_one_vector V v') in v0 as [a v'_eq].
-        subst v'.
-        exists a.
-        apply ext_to_geo_vector.
-    -   intros [a v_eq]; subst v.
-        apply vector_to_geo_grade.
+    intros [v' [v0 v_eq]].
+    subst v.
+    apply (ext_grade_one_vector V v') in v0 as [a v'_eq].
+    subst v'.
+    exists a.
+    apply ext_to_geo_vector.
 Qed.
 
 Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
