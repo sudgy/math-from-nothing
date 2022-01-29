@@ -367,6 +367,15 @@ Theorem outer_involute : ∀ a b, (a ⋀ b)∗ = a∗ ⋀ b∗.
     reflexivity.
 Qed.
 
+Theorem outer_involute_swap : ∀ a X, φ a ⋀ X = X∗ ⋀ φ a.
+    intros a X.
+    do 2 rewrite outer_exterior.
+    rewrite geo_to_ext_vector.
+    rewrite ext_involute_swap.
+    rewrite geo_to_ext_involute.
+    reflexivity.
+Qed.
+
 End GeometricOuter.
 
 Infix "⋀" := (geo_outer _) (at level 34, left associativity) : geo_scope.

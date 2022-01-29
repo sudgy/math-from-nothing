@@ -2,6 +2,8 @@ Require Import init.
 
 Require Import order_minmax.
 
+Require Import linear_transformation_space.
+
 Require Export geometric_construct.
 Require Export geometric_inner.
 Require Export geometric_outer.
@@ -316,6 +318,15 @@ Theorem vector_rmult : ∀ X v, X * φ v = X ⌊ φ v + X ⋀ φ v.
     rewrite geo_reverse_reverse.
     rewrite geo_reverse_vector.
     reflexivity.
+Qed.
+
+Theorem lcontr_twice : ∀ a X, φ a ⌋ (φ a ⌋ X) = 0.
+    intros a X.
+    do 2 rewrite lcontr_mult_inner.
+    pose proof (geo_mult_inner_alternating B a) as eq.
+    inversion eq as [eq2].
+    unfold linear_trans_mult_base, linear_trans_zero_base in eq2; cbn in eq2.
+    apply (func_eq _ _ eq2).
 Qed.
 
 End GeometricFormulae.
