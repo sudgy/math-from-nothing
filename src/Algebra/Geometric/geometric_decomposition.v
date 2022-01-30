@@ -539,4 +539,13 @@ Theorem geo_mult_project_bigger : ∀ (a b : geo B) (r s : nat),
     exact n_gt.
 Qed.
 
+Theorem geo_mult_project_smaller : ∀ (a b : geo B) (r s : nat),
+        of_grade r a → of_grade s b →
+        ∀ n, n < r ⊖ s → grade_project (a * b) n = 0.
+    intros a b r s ar bs n n_lt.
+    apply (geo_grade_decompose2 _ _ _ _ _ ar bs).
+    left.
+    exact n_lt.
+Qed.
+
 End GeometricDecompose.

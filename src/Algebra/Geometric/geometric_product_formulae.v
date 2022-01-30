@@ -203,6 +203,15 @@ Theorem lcontr_vector_scalar : ∀ v a, φ v ⌋ σ a = 0.
     apply geo_mult_inner_scalar.
 Qed.
 
+Theorem rcontr_scalar_vector : ∀ a v, σ a ⌊ φ v = 0.
+    intros a v.
+    rewrite <- (geo_reverse_reverse B (σ a ⌊ φ v)).
+    rewrite rlcontr_reverse.
+    rewrite geo_reverse_vector, geo_reverse_of_scalar.
+    rewrite lcontr_vector_scalar.
+    apply geo_reverse_zero.
+Qed.
+
 Theorem rcontr_geo_add : ∀ a v X,
         (X * φ v) ⌊ φ a = φ a ⌋ φ v * X - (X ⌊ φ a) * φ v.
     intros a v X.

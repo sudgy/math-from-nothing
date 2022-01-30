@@ -121,4 +121,17 @@ Theorem nat_abs_minus_min : ∀ a b, a ⊖ b + min a b = max a b.
         apply plus_comm.
 Qed.
 
+Theorem nat_abs_minus_eq_zero : ∀ a b, 0 = a ⊖ b → a = b.
+    intros a.
+    nat_induction a; intros b eq.
+    -   rewrite nat_abs_minus_lid in eq.
+        exact eq.
+    -   nat_destruct b.
+        +   rewrite nat_abs_minus_rid in eq.
+            symmetry; exact eq.
+        +   cbn in eq.
+            rewrite (IHa b eq).
+            reflexivity.
+Qed.
+
 Close Scope nat_scope.

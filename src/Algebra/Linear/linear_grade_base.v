@@ -88,6 +88,8 @@ Context `{@GradedSpace U V VP VPC VPA VZ SM}.
 
 Definition of_grade i v := subspace_set (grade_subspace i) v.
 
+Global Arguments of_grade : simpl never.
+
 Definition homogeneous v := ∃ i, of_grade i v.
 
 Theorem of_grade_unique : ∀ v i j, 0 ≠ v → of_grade i v → of_grade j v → i = j.
