@@ -207,6 +207,7 @@
 ./src/Topology/topology_real.v
 ./src/Topology/topology_path.v
 ./src/Topology/topology_compact.v
+./src/Topology/topology_function_limit.v
 ./src/Topology/topology.v
 
 ./src/Analysis/analysis_base.v
