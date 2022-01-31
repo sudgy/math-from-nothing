@@ -1,11 +1,13 @@
 Require Import init.
 
+Require Import order_minmax.
+Require Import plus_sum.
+Require Import mult_pow.
+
 Require Export analysis_norm.
 Require Import analysis_topology.
 Require Import analysis_sequence.
 Require Import analysis_series.
-Require Import order_minmax.
-Require Import plus_sum.
 
 (* If I ever want to do analysis on an ordered field that's not the real
  * numbers, I'll figure it out then.
@@ -386,6 +388,187 @@ Theorem seq_squeeze : ∀ an bn cn l, (∀ n, an n <= bn n ∧ bn n <= cn n) →
     -   apply (le_lt_trans2 cnl2).
         apply le_rplus.
         exact leq2.
+Qed.
+
+Local Open Scope nat_scope.
+
+Theorem alternating_series_test : ∀ an,
+        (∀ n, an (nat_suc n) <= an n) →
+        seq_lim an 0 →
+        seq_converges (series (λ n, (-(1))^n * an n)).
+    intros an an_dec an0'.
+    pose proof an0' as an0.
+    rewrite metric_seq_lim in an0.
+    pose (an' n := (-(1))^n * an n).
+    fold an'.
+    pose (an'_even n := series an' (2*n)).
+    pose (an'_odd n := series an' (2*n + 1)).
+    assert (∀ n, an'_odd n = an'_even n + an (2*n)) as even_odd.
+    {
+        intros n.
+        unfold an'_odd, an'_even.
+        rewrite plus_comm.
+        change (1 + 2*n) with (nat_suc (2*n)).
+        cbn.
+        rewrite plus_lid.
+        unfold an' at 2.
+        rewrite pow_neg_one_even.
+        rewrite mult_lid.
+        reflexivity.
+    }
+    assert (∀ m n, an (m + n) <= an n) as an_dec2.
+    {
+        intros m n.
+        nat_induction m.
+        -   rewrite plus_lid.
+            apply refl.
+        -   rewrite nat_plus_lsuc.
+            apply (trans2 IHm).
+            apply an_dec.
+    }
+    assert (∀ n, 0 <= an n) as an_pos.
+    {
+        intros n.
+        classic_contradiction contr.
+        rewrite nle_lt in contr.
+        apply neg_pos2 in contr.
+        specialize (an0 _ contr) as [N an0].
+        destruct (connex n N) as [leq|leq].
+        -   specialize (an0 N (refl N)).
+            cbn in an0.
+            rewrite plus_lid in an0.
+            apply nat_le_ex in leq as [c eq]; subst N.
+            specialize (an_dec2 c n).
+            apply le_neg in an_dec2.
+            pose proof (lt_le_trans an0 an_dec2) as ltq.
+            pose proof (lt_le_trans contr an_dec2) as pos.
+            rewrite plus_comm in ltq.
+            rewrite abs_pos_eq in ltq by apply pos.
+            destruct ltq; contradiction.
+        -   specialize (an0 n leq).
+            cbn in an0.
+            rewrite plus_lid in an0.
+            rewrite abs_pos_eq in an0 by apply contr.
+            destruct an0; contradiction.
+    }
+    assert (∀ n, 0 <= an'_even n) as even_pos.
+    {
+        intros n.
+        nat_induction n.
+        -   unfold an'_even.
+            rewrite mult_ranni.
+            apply refl.
+        -   unfold an'_even.
+            rewrite nat_mult_rsuc.
+            change (2 + 2*n) with (nat_suc (nat_suc (2*n))).
+            cbn.
+            do 2 rewrite plus_lid.
+            rewrite <- (plus_rid 0).
+            rewrite <- plus_assoc.
+            apply le_lrplus; [>exact IHn|].
+            unfold an'.
+            change (nat_suc (2*n)) with (1 + 2*n).
+            rewrite (plus_comm 1 (2*n)).
+            rewrite pow_neg_one_even.
+            rewrite pow_neg_one_odd.
+            rewrite mult_lid.
+            rewrite mult_neg_one.
+            apply le_plus_0_anb_b_a.
+            rewrite plus_comm.
+            apply an_dec.
+    }
+    assert (∀ n, 0 <= an'_odd n) as odd_pos.
+    {
+        intros n.
+        rewrite even_odd.
+        rewrite <- (plus_rid 0).
+        apply le_lrplus.
+        -   apply even_pos.
+        -   apply an_pos.
+    }
+    assert (seq_converges an'_odd) as [l l_odd].
+    {
+        apply decreasing_seq_converges.
+        -   exists (an 0).
+            intros n.
+            rewrite abs_pos_eq by apply odd_pos.
+            nat_induction n.
+            +   unfold an'_odd.
+                rewrite mult_ranni, plus_lid.
+                unfold one; cbn.
+                do 2 rewrite plus_lid.
+                unfold an'; cbn.
+                rewrite mult_lid.
+                apply refl.
+            +   apply (trans2 IHn).
+                unfold an'_odd.
+                rewrite nat_mult_rsuc.
+                rewrite <- plus_assoc.
+                change (2 + (2*n + 1)) with (nat_suc (nat_suc (2*n + 1))).
+                cbn.
+                do 2 rewrite plus_lid.
+                unfold series.
+                rewrite <- (plus_rid (sum _ _ _)) at 2.
+                rewrite <- plus_assoc.
+                apply le_lplus.
+                unfold an'.
+                change (nat_suc (2 * n + 1)) with (1 + (2*n + 1)) at 1.
+                rewrite (plus_comm 1 (2*n + 1)).
+                rewrite <- plus_assoc.
+                rewrite <- (mult_rid 2) at 4.
+                rewrite <- ldist.
+                rewrite pow_neg_one_even, pow_neg_one_odd.
+                rewrite mult_lid, mult_neg_one.
+                apply le_plus_nab_0_b_a.
+                apply an_dec.
+        -   intros n.
+            unfold an'_odd.
+            rewrite nat_mult_rsuc.
+            rewrite <- plus_assoc.
+            change (2 + (2*n + 1)) with (nat_suc (nat_suc (2*n + 1))).
+            cbn.
+            rewrite <- (plus_rid (series _ _)).
+            rewrite <- plus_assoc.
+            apply le_lplus.
+            do 2 rewrite plus_lid.
+            unfold an'; cbn.
+            rewrite pow_neg_one_odd.
+            do 2 rewrite mult_neg_one.
+            rewrite neg_neg.
+            rewrite mult_lid.
+            apply le_plus_nab_0_b_a.
+            apply an_dec.
+    }
+    assert (seq_lim an'_even l) as l_even.
+    {
+        replace an'_even with (λ n, an'_odd n - an (2 * n)).
+        2: {
+            apply functional_ext; intros n.
+            rewrite <- plus_rrmove.
+            apply even_odd.
+        }
+        rewrite <- (plus_rid l).
+        apply seq_lim_plus; [>exact l_odd|].
+        rewrite <- neg_zero.
+        apply seq_lim_neg.
+        apply (subsequence_lim_eq _ _ _ an0').
+        exists (λ n, 2*n).
+        split; [>|reflexivity].
+        split.
+        -   rewrite nat_mult_rsuc.
+            rewrite <- (plus_lid (2*n)) at 1.
+            apply le_rplus.
+            exact true.
+        -   intros contr.
+            rewrite nat_mult_rsuc in contr.
+            rewrite <- (plus_lid (2*n)) in contr at 1.
+            apply plus_rcancel in contr.
+            inversion contr.
+    }
+    exists l.
+    apply seq_lim_even_odd.
+    -   exact l_even.
+    -   exact l_odd.
 Qed.
 (* begin hide *)
 End AnalysisOrder.

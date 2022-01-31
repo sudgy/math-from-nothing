@@ -1,11 +1,14 @@
 Require Import init.
 
+Require Import order_minmax.
+Require Import mult_div.
+Require Import nat_domain.
+
 Require Export topology_base.
 Require Export topology_basis.
 Require Import topology_axioms.
 Require Import topology_closure.
 Require Import topology_subspace.
-Require Import order_minmax.
 
 Unset Keyed Unification.
 
@@ -165,6 +168,29 @@ Qed.
 (* begin hide *)
 Close Scope set_scope.
 (* end hide *)
+Theorem seq_lim_even_odd : ∀ a x,
+        seq_lim (λ n, a (2*n)) x → seq_lim (λ n, a (2*n + 1)) x → seq_lim a x.
+    intros a x x1 x2 S S_open Sx.
+    specialize (x1 S S_open Sx) as [N1 x1].
+    specialize (x2 S S_open Sx) as [N2 x2].
+    exists (max (2*N1) (2*N2 + 1)).
+    intros n' n_max.
+    classic_case (even n') as [n_even|n_odd].
+    -   destruct n_even as [n eq]; subst n'.
+        rewrite mult_comm.
+        apply x1.
+        rewrite (mult_comm n 2) in n_max.
+        pose proof (trans (lmax _ _) n_max) as leq.
+        apply nat_le_mult_lcancel in leq; [>|intros contr; inversion contr].
+        exact leq.
+    -   apply nat_odd_plus_one in n_odd as [n eq]; subst n'.
+        apply x2.
+        pose proof (trans (rmax _ _) n_max) as leq.
+        apply le_plus_rcancel in leq.
+        apply nat_le_mult_lcancel in leq; [>|intros contr; inversion contr].
+        exact leq.
+Qed.
+
 Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
     intros a n x.
     split.
