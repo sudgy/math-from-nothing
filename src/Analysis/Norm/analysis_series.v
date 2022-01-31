@@ -39,6 +39,8 @@ Context {V} `{
 Existing Instance abs_metric.
 (* end hide *)
 
+Definition abs_converges (a : nat → V) := seq_converges (series (λ n, |a n|)).
+
 Theorem series_scalar : ∀ af a c, seq_lim (series af) a →
         seq_lim (series (λ n, c · af n)) (c · a).
     intros af a c a_lim.
@@ -130,6 +132,70 @@ Theorem cauchy_series_converges : complete V →
         rewrite plus_lid.
         apply af_conv.
         exact j_ge.
+Qed.
+(* begin hide *)
+End AnalysisSeries.
+
+Section AnalysisSeries.
+
+Context {V} `{
+    VP : Plus V,
+    VZ : Zero V,
+    VN : Neg V,
+    @PlusComm V VP,
+    @PlusAssoc V VP,
+    @PlusLid V VP VZ,
+    @PlusLinv V VP VZ VN,
+
+    SM : ScalarMult real V,
+    @ScalarId real V real_one SM,
+    @ScalarLdist real V VP SM,
+    @ScalarRdist real V real_plus_class VP SM,
+
+    VA : AbsoluteValue V,
+    @AbsDefinite V VA VZ,
+    @AbsNeg V VA VN,
+    @AbsTriangle V VA VP,
+    @AbsPositive V VA,
+    @AbsScalar V VA SM
+}.
+
+Existing Instance abs_metric.
+(* end hide *)
+
+Theorem abs_converge_test : complete V → ∀ af,
+        abs_converges af → seq_converges (series af).
+    intros V_comp af af_conv.
+    apply (cauchy_series_converges V_comp).
+    intros ε ε_pos.
+    unfold abs_converges in af_conv.
+    apply series_converges_cauchy in af_conv.
+    specialize (af_conv ε ε_pos) as [N af_conv].
+    exists N.
+    intros i j i_geq.
+    specialize (af_conv i j i_geq) as ltq.
+    apply (le_lt_trans2 ltq).
+    clear ε ε_pos N af_conv i_geq ltq.
+    assert (0 <= sum (λ n, |af n|) i j) as sum_pos.
+    {
+        nat_induction j.
+        -   unfold zero at 2; cbn.
+            apply refl.
+        -   cbn.
+            rewrite <- (plus_rid 0).
+            apply le_lrplus; [>exact IHj|].
+            apply abs_pos.
+    }
+    rewrite (abs_pos_eq _ sum_pos).
+    clear sum_pos.
+    nat_induction j.
+    -   unfold zero; cbn.
+        rewrite <- abs_zero.
+        apply refl.
+    -   cbn.
+        apply (trans (abs_tri _ _)).
+        apply le_rplus.
+        exact IHj.
 Qed.
 (* begin hide *)
 End AnalysisSeries.
