@@ -211,6 +211,20 @@ Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
         apply nat_le_self_rplus.
 Qed.
 
+Theorem seq_converges_part : ∀ a n,
+        seq_converges a ↔ seq_converges (λ m, a (m + n)).
+    intros a n.
+    split.
+    -   intros [x a_lim].
+        exists x.
+        apply seq_lim_part.
+        exact a_lim.
+    -   intros [x a_lim].
+        exists x.
+        apply seq_lim_part in a_lim.
+        exact a_lim.
+Qed.
+
 (* begin hide *)
 Open Scope set_scope.
 

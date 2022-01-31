@@ -1,10 +1,11 @@
 Require Import init.
 
+Require Import order_minmax.
+Require Import plus_sum.
+
 Require Export analysis_norm.
 Require Export analysis_sequence.
 Require Import analysis_topology.
-
-Require Import plus_sum.
 
 Definition series {V} `{Plus V, Zero V} (a : nat → V) (n : nat) := sum a 0 n.
 
@@ -196,6 +197,51 @@ Theorem abs_converge_test : complete V → ∀ af,
         apply (trans (abs_tri _ _)).
         apply le_rplus.
         exact IHj.
+Qed.
+
+Theorem series_skip : ∀ an n,
+        seq_converges (series an) ↔ seq_converges (series (λ m, an (m + n))).
+    intros an n.
+    split.
+    -   intros [x anx].
+        exists (x - sum an 0 n).
+        rewrite metric_seq_lim in *.
+        intros ε ε_pos.
+        specialize (anx ε ε_pos) as [N anx].
+        exists N.
+        intros m m_geq.
+        specialize (anx (n + m) (trans m_geq (nat_le_self_lplus m n))).
+        cbn in *.
+        unfold series in *.
+        rewrite sum_argument_plus.
+        rewrite plus_lid.
+        rewrite <- plus_assoc.
+        rewrite <- neg_plus.
+        rewrite <- (plus_lid n) at 2.
+        rewrite sum_plus.
+        exact anx.
+    -   intros [x anx].
+        exists (x + sum an 0 n).
+        rewrite metric_seq_lim in *.
+        intros ε ε_pos.
+        specialize (anx ε ε_pos) as [N anx].
+        exists (N + n).
+        intros m m_geq.
+        apply nat_le_ex in m_geq as [c eq]; subst m.
+        specialize (anx (N + c) (nat_le_self_rplus _ _)).
+        cbn in *.
+        unfold series in *.
+        rewrite sum_argument_plus in anx.
+        rewrite plus_lid in anx.
+        rewrite <- (neg_neg (sum an 0 n)).
+        rewrite <- plus_assoc.
+        rewrite <- neg_plus.
+        rewrite (plus_comm (-sum an 0 n)).
+        rewrite (plus_comm N n).
+        rewrite <- plus_assoc.
+        rewrite sum_minus.
+        rewrite plus_lid.
+        exact anx.
 Qed.
 (* begin hide *)
 End AnalysisSeries.

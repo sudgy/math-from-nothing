@@ -257,4 +257,142 @@ Theorem geometric_series_sum_constant : ∀ a r, |r| < 1 →
 Qed.
 (* begin hide *)
 End GeometricSeries.
+Section GeometricSeries.
+
+Context {U} `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    @PlusComm U UP,
+    @PlusAssoc U UP,
+    @PlusLid U UP UZ,
+    @PlusRid U UP UZ,
+    @PlusLinv U UP UZ UN,
+    @PlusRinv U UP UZ UN,
+
+    SM : ScalarMult real U,
+    @ScalarComp real U real_mult_class SM,
+    @ScalarId real U real_one SM,
+    @ScalarLdist real U UP SM,
+    @ScalarRdist real U real_plus_class UP SM,
+
+    UA : AbsoluteValue U,
+    @AbsDefinite U UA UZ,
+    @AbsNeg U UA UN,
+    @AbsTriangle U UA UP,
+    @AbsPositive U UA,
+    @AbsScalar U UA SM
+}.
+
+Local Open Scope nat_scope.
+
+Existing Instance abs_metric.
+(* end hide *)
+
+(** This doesn't really fit here, but it requires the previous theorems and I
+can't think of a better place to put it
+*)
+Theorem ratio_test : ∀ an, (∀ n, 0 ≠ an n) →
+        ∀ r, seq_lim (λ n, |an (nat_suc n) / an n|) r → r < 1 →
+        abs_converges an.
+    intros an an_nz r r_lim r_lt.
+    assert (∀ n, 0 < |an n|) as an_pos.
+    {
+        intros n.
+        split.
+        -   apply abs_pos.
+        -   intros contr.
+            rewrite abs_def in contr.
+            apply an_nz in contr.
+            exact contr.
+    }
+    pose proof (dense r 1 r_lt) as [r' [r'_gt r'_lt]].
+    assert (0 < r') as r'_pos.
+    {
+        apply (le_lt_trans2 r'_gt).
+        rewrite metric_seq_lim in r_lim.
+        classic_contradiction contr.
+        rewrite nle_lt in contr.
+        apply neg_pos2 in contr.
+        specialize (r_lim _ contr) as [N r_lim].
+        specialize (r_lim N (refl N)).
+        cbn in r_lim.
+        rewrite abs_minus in r_lim.
+        apply abs_lt in r_lim as [r_lim1 r_lim2].
+        apply lt_plus_a_0_ab_b in r_lim2.
+        rewrite <- nle_lt in r_lim2.
+        apply r_lim2.
+        apply abs_pos.
+    }
+    assert (|r'| < 1) as r'_lt'.
+    {
+        apply abs_lt.
+        split; [>|exact r'_lt].
+        pose proof one_pos as op.
+        apply pos_neg2 in op.
+        apply (trans op).
+        exact r'_pos.
+    }
+    assert (∃ N, ∀ n, N <= n → |an (nat_suc n)| <= |an n| * r') as [N N_leq].
+    {
+        rewrite metric_seq_lim in r_lim.
+        apply lt_plus_0_anb_b_a in r'_gt.
+        specialize (r_lim (r' - r) r'_gt) as [N r_lim].
+        exists N.
+        intros n n_geq.
+        specialize (r_lim n n_geq).
+        cbn in r_lim.
+        rewrite abs_minus in r_lim.
+        apply abs_lt in r_lim as [r_lim1 r_lim2].
+        apply lt_plus_rcancel in r_lim2.
+        rewrite abs_mult in r_lim2.
+        rewrite <- abs_div in r_lim2 by apply an_nz.
+        rewrite <- lt_mult_rrmove_pos in r_lim2 by apply an_pos.
+        rewrite mult_comm.
+        apply r_lim2.
+    }
+    unfold abs_converges.
+    rewrite (series_skip _ N).
+    pose (bn n := |an (n + N)|).
+    fold bn.
+    assert (∀ n, bn (nat_suc n) <= bn n * r') as bn_leq.
+    {
+        intros n.
+        unfold bn.
+        rewrite nat_plus_lsuc.
+        apply N_leq.
+        apply nat_le_self_lplus.
+    }
+    assert (∀ n, 0 <= bn n) as bn_pos.
+    {
+        intros n.
+        apply abs_pos.
+    }
+    clearbody bn.
+    clear r r_lim r_lt an_pos r'_gt N N_leq.
+    assert (∀ n, bn n <= bn 0 * r' ^ n) as bn_leqn.
+    {
+        intros n.
+        nat_induction n.
+        -   rewrite pow_0_nat.
+            rewrite mult_rid.
+            apply refl.
+        -   apply (trans (bn_leq n)).
+            cbn.
+            rewrite mult_assoc.
+            apply le_rmult_pos; [>apply r'_pos|].
+            exact IHn.
+    }
+    eapply (series_le_converge _ _ _ bn_pos bn_leqn).
+    Unshelve.
+    exists (bn 0 / (1 - r')).
+    change (bn 0 / (1 - r')) with (bn 0 · /(1 - r')).
+    replace (λ n, bn 0 * r' ^ n) with (λ n, bn 0 · r' ^ n).
+    2: apply functional_ext; reflexivity.
+    apply series_scalar.
+    apply geometric_series_sum.
+    exact r'_lt'.
+Qed.
+(* begin hide *)
+End GeometricSeries.
 (* end hide *)

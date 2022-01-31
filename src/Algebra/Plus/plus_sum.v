@@ -89,6 +89,33 @@ Theorem sum_zero : ∀ f a b, (∀ n, a <= n → n < a + b → f n = 0) → sum 
                 apply nat_lt_suc.
 Qed.
 
+Theorem sum_argument_plus : ∀ f a b c, sum (λ n, f (n + c)) a b = sum f (a + c) b.
+    intros f a b c.
+    nat_induction b.
+    -   unfold zero; cbn.
+        reflexivity.
+    -   cbn.
+        rewrite IHb.
+        rewrite <- plus_assoc.
+        rewrite (plus_comm b c).
+        rewrite plus_assoc.
+        reflexivity.
+Qed.
+
+Theorem sum_plus : ∀ f a b c, sum f a b + sum f (a + b) c = sum f a (b + c).
+    intros f a b c.
+    nat_induction c.
+    -   rewrite plus_rid.
+        unfold zero; cbn.
+        apply plus_rid.
+    -   rewrite nat_plus_rsuc.
+        cbn.
+        rewrite plus_assoc.
+        rewrite IHc.
+        rewrite plus_assoc.
+        reflexivity.
+Qed.
+
 Theorem list_sum_plus :
         ∀ l1 l2, list_sum (l1 ++ l2) = list_sum l1 + list_sum l2.
     intros l1 l2.
