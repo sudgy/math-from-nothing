@@ -361,6 +361,32 @@ Theorem series_le_converge : ∀ a b,
         +   exact IHj.
         +   apply ab.
 Qed.
+
+Theorem seq_squeeze : ∀ an bn cn l, (∀ n, an n <= bn n ∧ bn n <= cn n) →
+        seq_lim an l → seq_lim cn l → seq_lim bn l.
+    intros an bn cn l leqs anl cnl.
+    rewrite metric_seq_lim in *.
+    intros ε ε_pos.
+    cbn in *.
+    specialize (anl ε ε_pos) as [N1 anl].
+    specialize (cnl ε ε_pos) as [N2 cnl].
+    exists (max N1 N2).
+    intros n n_geq.
+    specialize (anl n (trans (lmax N1 N2) n_geq)).
+    specialize (cnl n (trans (rmax N1 N2) n_geq)).
+    specialize (leqs n) as [leq1 leq2].
+    rewrite abs_minus in *.
+    apply abs_lt.
+    apply abs_lt in anl as [anl1 anl2].
+    apply abs_lt in cnl as [cnl1 cnl2].
+    split.
+    -   apply (lt_le_trans anl1).
+        apply le_rplus.
+        exact leq1.
+    -   apply (le_lt_trans2 cnl2).
+        apply le_rplus.
+        exact leq2.
+Qed.
 (* begin hide *)
 End AnalysisOrder.
 (* end hide *)
