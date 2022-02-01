@@ -8,6 +8,7 @@ Require Export analysis_norm.
 Require Import analysis_topology.
 Require Import analysis_sequence.
 Require Import analysis_series.
+Require Import analysis_function.
 
 (* If I ever want to do analysis on an ordered field that's not the real
  * numbers, I'll figure it out then.
@@ -390,8 +391,24 @@ Theorem seq_squeeze : ∀ an bn cn l, (∀ n, an n <= bn n ∧ bn n <= cn n) →
         exact leq2.
 Qed.
 
-Local Open Scope nat_scope.
+Theorem func_squeeze : ∀ (A : real → Prop) (af bf cf : set_type A → real) c l,
+        (∀ x, af x <= bf x ∧ bf x <= cf x) →
+        func_lim A af c l → func_lim A cf c l → func_lim A bf c l.
+    intros A af bf cf c l leq al cl.
+    pose proof (land al) as Ac.
+    rewrite metric_func_seq_lim in * by exact Ac.
+    intros xn xnc.
+    specialize (al xn xnc).
+    specialize (cl xn xnc).
+    eapply (seq_squeeze _ _ _ _ _ al cl).
+    Unshelve.
+    intros n.
+    apply leq.
+Qed.
 
+(* begin hide *)
+Local Open Scope nat_scope.
+(* end hide *)
 Theorem alternating_series_test : ∀ an,
         (∀ n, an (nat_suc n) <= an n) →
         seq_lim an 0 →
