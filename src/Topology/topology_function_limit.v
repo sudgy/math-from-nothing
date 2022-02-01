@@ -15,12 +15,13 @@ Definition func_lim {U V} `{Topology U, Topology V}
         ∃ S : U → Prop, neighborhood c S ∧
             image_under f (λ x, S [x|] ∧ c ≠ [x|]) ⊆ T.
 
+(* begin hide *)
 Section TopologyFunction.
 
 Context {U V} `{Topology U, HausdorffSpace V}.
 
 Local Open Scope set_scope.
-
+(* end hide *)
 Theorem func_lim_unique : ∀ (A : U → Prop) (f : set_type A → V) c l1 l2,
         func_lim A f c l1 → func_lim A f c l2 → l1 = l2.
     intros A f c l1 l2 [c_lim l1_lim] [c_lim' l2_lim]; clear c_lim'.
@@ -123,5 +124,46 @@ Theorem func_lim_continuous : ∀ (f : U → V) c, limit_point all c →
         exists [x|true]; cbn.
         repeat split; assumption.
 Qed.
-
+(* begin hide *)
 End TopologyFunction.
+
+Section BasisFunction.
+
+Context {U V} `{TopologyBasis U, TopologyBasis V}.
+(* end hide *)
+Theorem basis_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
+        limit_point A c → func_lim A f c l ↔
+        (∀ T, top_basis T → T l → ∃ S, top_basis S ∧ S c ∧
+            image_under f (λ x, S [x|] ∧ c ≠ [x|]) ⊆ T).
+    intros A f c l Ac.
+    split.
+    -   intros [Ac' f_lim] T T_basis Tx; clear Ac'.
+        apply basis_open in T_basis.
+        specialize (f_lim T (make_and T_basis Tx)) as [S [[S_open Sc] S_sub]].
+        specialize (S_open c Sc) as [B [B_basis [Bc B_sub]]].
+        exists B.
+        repeat split; [>exact B_basis|exact Bc|].
+        intros y [[x Ax] [[Bx c_neq] y_eq]]; cbn in *.
+        apply S_sub.
+        exists [x|Ax]; cbn.
+        repeat split.
+        +   apply B_sub.
+            exact Bx.
+        +   exact c_neq.
+        +   exact y_eq.
+    -   intros all_T.
+        split; [>exact Ac|].
+        intros T [T_open Tl].
+        specialize (T_open l Tl) as [B [B_basis [Bl B_sub]]].
+        specialize (all_T B B_basis Bl) as [S [S_basis [Sc S_sub]]].
+        exists S.
+        split.
+        +   split; [>|exact Sc].
+            apply basis_open.
+            exact S_basis.
+        +   apply (trans S_sub).
+            exact B_sub.
+Qed.
+(* begin hide *)
+End BasisFunction.
+(* end hide *)

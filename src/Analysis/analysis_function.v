@@ -117,6 +117,51 @@ Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
             rewrite plus_lid, abs_neg, abs_one in f_conv.
             destruct f_conv; contradiction.
 Qed.
+
+Theorem metric_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
+        limit_point A c → func_lim A f c l ↔
+            (∀ ε, 0 < ε →
+                ∃ δ, 0 < δ ∧ ∀ x, [x|] ≠ c → d [x|] c < δ → d (f x) l < ε).
+    intros A f c l Ac.
+    rewrite (basis_func_lim A f c l Ac).
+    split.
+    -   intros l_lim ε ε_pos.
+        pose proof (open_ball_basis l [ε|ε_pos]) as l_basis.
+        pose proof (open_ball_self l [ε|ε_pos]) as l_in.
+        specialize (l_lim _ l_basis l_in) as [S [S_basis [Sc S_sub]]].
+        apply basis_open in S_basis.
+        rewrite open_all_balls in S_basis.
+        specialize (S_basis c Sc) as [[δ δ_pos] δ_sub].
+        exists δ.
+        split; [>exact δ_pos|].
+        intros [x Ax] x_neq x_lt; cbn in *.
+        rewrite d_sym; apply S_sub.
+        exists [x|Ax]; cbn.
+        repeat split; [>|rewrite neq_sym; exact x_neq].
+        apply δ_sub.
+        rewrite d_sym in x_lt.
+        exact x_lt.
+    -   intros l_lim T T_basis Tl.
+        apply basis_open in T_basis.
+        rewrite open_all_balls in T_basis.
+        specialize (T_basis l Tl) as [[ε ε_pos] ε_sub].
+        specialize (l_lim ε ε_pos) as [δ [δ_pos l_lim]].
+        exists (open_ball c [δ|δ_pos]).
+        split; [>|split].
+        +   apply open_ball_basis.
+        +   unfold open_ball.
+            rewrite d_zero.
+            exact δ_pos.
+        +   intros y [[x Ax] [[c_lt c_neq] y_eq]]; cbn in *.
+            apply ε_sub.
+            rewrite y_eq.
+            unfold open_ball.
+            rewrite d_sym.
+            apply l_lim; [>rewrite neq_sym; exact c_neq|].
+            cbn.
+            rewrite d_sym.
+            exact c_lt.
+Qed.
 (* begin hide *)
 
 End AnalysisFunction.
