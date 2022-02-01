@@ -91,6 +91,14 @@ Theorem not_all : ∀ {U} (P : U → Prop), equal (¬(∀ a, P a)) (∃ a, ¬P a
         contradiction.
 Qed.
 
+Theorem not_and_impl : ∀ A B, (¬(A ∧ B)) = (A → ¬B).
+    intros A B.
+    rewrite <- (not_not (A → ¬B)).
+    rewrite not_impl.
+    rewrite not_not.
+    reflexivity.
+Qed.
+
 Theorem and_comm : ∀ A B, (A ∧ B) = (B ∧ A).
     intros A B.
     apply propositional_ext; split.

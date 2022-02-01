@@ -162,7 +162,86 @@ Theorem metric_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
             rewrite d_sym.
             exact c_lt.
 Qed.
-(* begin hide *)
 
+Local Open Scope set_scope.
+
+Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
+        limit_point A c → func_lim A f c l ↔
+        (∀ xn : nat → set_type (A - singleton c),
+        seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l).
+    intros A f c l Ac.
+    split; [>apply func_seq_lim|].
+    intros all_seqs.
+    rewrite metric_func_lim by exact Ac.
+    intros ε ε_pos.
+    classic_contradiction contr.
+    rewrite not_ex in contr.
+    setoid_rewrite not_and_impl in contr.
+    setoid_rewrite not_all in contr.
+    pose (xn' n := ex_val (contr _ (real_n_div_pos n))).
+    assert (∀ n, (A - singleton c) [xn' n|]) as xn_in.
+    {
+        intros n.
+        split.
+        -   apply [|xn' n].
+        -   unfold xn'.
+            rewrite_ex_val x x_eq.
+            do 2 rewrite not_impl in x_eq.
+            unfold singleton.
+            rewrite neq_sym.
+            apply x_eq.
+    }
+    pose (xn n := [_|xn_in n]).
+    assert (∀ n, d [xn n|] c < /nat_to_real (nat_suc n)) as xn_lt.
+    {
+        intros n.
+        unfold xn, xn'; cbn.
+        rewrite_ex_val x x_eq.
+        do 2 rewrite not_impl in x_eq.
+        apply x_eq.
+    }
+    assert (∀ n, ¬d (f [[xn n|] | land [|xn n]]) l < ε) as fxn_lt.
+    {
+        intros n.
+        unfold xn, xn'; cbn.
+        unpack_ex_val x x_eq xH.
+        replace (f _) with (f x).
+        2: {
+            apply f_equal.
+            apply set_type_eq; cbn.
+            apply eq_set_type.
+            symmetry; exact x_eq.
+        }
+        clear x_eq.
+        do 2 rewrite not_impl in xH.
+        apply xH.
+    }
+    clearbody xn.
+    clear contr xn' xn_in.
+    specialize (all_seqs xn).
+    do 2 rewrite metric_seq_lim in all_seqs.
+    prove_parts all_seqs.
+    {
+        intros ε' ε'_pos.
+        apply archimedean2 in ε'_pos as [n n_lt].
+        exists n.
+        intros m m_leq.
+        specialize (xn_lt m).
+        rewrite d_sym.
+        apply (trans xn_lt).
+        apply (le_lt_trans2 n_lt).
+        rewrite nat_to_abstract_real.
+        apply le_div_pos; [>apply real_n_pos|].
+        rewrite nat_to_real_le.
+        rewrite nat_sucs_le.
+        exact m_leq.
+    }
+    specialize (all_seqs ε ε_pos) as [N all_seqs].
+    specialize (fxn_lt N).
+    specialize (all_seqs N (refl N)).
+    rewrite d_sym in all_seqs.
+    contradiction.
+Qed.
+(* begin hide *)
 End AnalysisFunction.
 (* end hide *)
