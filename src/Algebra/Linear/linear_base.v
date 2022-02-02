@@ -56,6 +56,7 @@ Context {U V} `{
     UP : Plus U,
     UZ : Zero U,
     UN : Neg U,
+    @PlusAssoc U UP,
     @PlusComm U UP,
     @PlusLid U UP UZ,
     @PlusLinv U UP UZ UN,
@@ -138,6 +139,28 @@ Theorem scalar_neg_one : ∀ a, (-(1)) · a = -a.
     rewrite scalar_lneg.
     rewrite scalar_id.
     reflexivity.
+Qed.
+
+Theorem scalar_lcancel : ∀ {a b} c, 0 ≠ c → c · a = c · b → a = b.
+    intros a b c c_nz eq.
+    apply lscalar with (/c) in eq.
+    do 2 rewrite scalar_comp in eq.
+    rewrite mult_linv in eq by exact c_nz.
+    do 2 rewrite scalar_id in eq.
+    exact eq.
+Qed.
+
+Theorem scalar_rcancel : ∀ {a b} c, 0 ≠ c → a · c = b · c → a = b.
+    intros a b c c_nz eq.
+    rewrite <- plus_0_anb_a_b in eq.
+    rewrite <- scalar_lneg in eq.
+    rewrite <- scalar_rdist in eq.
+    classic_contradiction contr.
+    rewrite <- (scalar_ranni (a - b)) in eq.
+    apply scalar_lcancel in eq; [>contradiction|].
+    intros contr2.
+    rewrite plus_0_anb_a_b in contr2.
+    contradiction.
 Qed.
 
 Theorem linear_combination_add : ∀ x l H1 H2,
