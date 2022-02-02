@@ -9,6 +9,7 @@ Fixpoint list_prod {U} `{Mult U, One U} (l : list U) :=
     | a :: l' => a * list_prod l'
     end.
 
+(* begin hide *)
 Section Product.
 
 Context {U} `{
@@ -19,6 +20,7 @@ Context {U} `{
     UMO : @MultLid U UM UO
 }.
 
+(* end hide *)
 Theorem list_prod_mult :
         ∀ l1 l2, list_prod (l1 ++ l2) = list_prod l1 * list_prod l2.
     intros l1 l2.
@@ -45,5 +47,7 @@ Theorem list_prod_perm : ∀ l1 l2, list_permutation l1 l2 →
     -   rewrite IHeq1.
         exact IHeq2.
 Qed.
+(* begin hide *)
 
 End Product.
+(* end hide *)

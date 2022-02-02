@@ -585,8 +585,8 @@ Section AnalysisCompact.
 
 Context {U} `{Metric U}.
 Existing Instance subspace_metric.
-(* end hide *)
 
+(* end hide *)
 Theorem compact_totally_bounded : ∀ X, compact (set_type X) → totally_bounded X.
     intros X X_compact.
     apply compact_totally_bounded_all in X_compact.
@@ -1015,7 +1015,6 @@ Theorem complete_closed_tbounded_compact : complete U → ∀ X,
     apply AnalysisCompact3.complete_closed_tbounded_compact.
     all: assumption.
 Qed.
-
 (* begin hide *)
 End AnalysisCompact.
 (* end hide *)

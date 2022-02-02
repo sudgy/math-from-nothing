@@ -9,9 +9,12 @@ Require Import geometric_grade.
 Require Import geometric_exterior_isomorphism.
 Require Import geometric_decomposition.
 
+(* begin hide *)
 Section GeometricNorm.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -34,8 +37,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -67,6 +72,7 @@ Local Notation "'σ'" := (scalar_to_geo B).
 
 Local Open Scope geo_scope.
 
+(* end hide *)
 Definition scalar_part (A : geo B) := ex_val
     (geo_grade_zero_scalar B (grade_project A 0) (grade_project_grade A 0)).
 
@@ -160,7 +166,9 @@ Qed.
 Definition geo_norm2 (A : geo B) := scalar_part (A† * A).
 
 Definition geo_normalized (A : geo B) := geo_norm2 A = 1.
+(* begin hide *)
 
 (* Eventually define it for real numbers as well *)
 
 End GeometricNorm.
+(* end hide *)

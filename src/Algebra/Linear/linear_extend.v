@@ -6,6 +6,7 @@ Require Import linear_transformation_space.
 Require Import set.
 Require Import unordered_list.
 
+(* begin hide *)
 Section LinearExtend.
 
 Context {U V1 V2} `{
@@ -51,6 +52,7 @@ Context {U V1 V2} `{
 
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
+(* end hide *)
 Definition linear_extend_plus_base (f_base : ∀ i a, of_grade i a → V2) :=
     ∀ (u v : V1) (i : grade_I) (H1 : of_grade i u) (H2 : of_grade i v),
     f_base i (u + v) (of_grade_plus u v i H1 H2) =
@@ -63,6 +65,7 @@ Variable f_base : ∀ i a, of_grade i a → V2.
 Variable f_plus_base' : linear_extend_plus_base f_base.
 Variable f_scalar_base' : linear_extend_scalar_base f_base.
 
+(* begin hide *)
 Lemma linear_extend_base_eq : ∀ i u v H1 H2,
         u = v → f_base i u H1 = f_base i v H2.
     intros i u v iu iv uv.
@@ -99,6 +102,7 @@ Theorem f_plus_base : ∀ i u v H1 H2 H3,
     exact eq.
 Qed.
 
+(* end hide *)
 Definition linear_extend (v : V1) :=
     ulist_sum (ulist_image (grade_decomposition v)
         (λ x, f_base (ex_val [|x]) [x|] (ex_proof [|x]))).
@@ -401,6 +405,7 @@ Theorem linear_extend_homo : ∀ i v H, f v = f_base i v H.
         reflexivity.
 Qed.
 
+(* begin hide *)
 End LinearExtend.
 
 Section BilinearExtend.
@@ -448,6 +453,7 @@ Context {U V1 V2} `{
 
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
+(* end hide *)
 Definition bilinear_extend_ldist_base
     (op : ∀ i j a b, of_grade i a → of_grade j b → V2) :=
     ∀ u v w i j (H1 : of_grade i u) (H2 : of_grade j v) (H3 : of_grade j w),
@@ -474,6 +480,7 @@ Variable op_rdist' : bilinear_extend_rdist_base op.
 Variable op_lscalar' : bilinear_extend_lscalar_base op.
 Variable op_rscalar' : bilinear_extend_rscalar_base op.
 
+(* begin hide *)
 Lemma bilinear_extend_base_leq : ∀ i j u v w H1 H2 H3,
         u = v → op i j u w H1 H3 = op i j v w H2 H3.
     intros i j u v w iu iv jw eq.
@@ -634,6 +641,7 @@ Lemma bilinear_extend_scalar_base : linear_extend_scalar_base f_base.
     apply op_lscalar.
 Qed.
 
+(* end hide *)
 Definition bilinear_extend := linear_extend f_base.
 Let f := bilinear_extend.
 
@@ -741,5 +749,7 @@ Theorem bilinear_extend_homo : ∀ i j u v H1 H2, f u v = op i j u v H1 H2.
         1: apply bilinear_extend_base_scalar.
         apply (eq _ _ jv).
 Qed.
+(* begin hide *)
 
 End BilinearExtend.
+(* end hide *)

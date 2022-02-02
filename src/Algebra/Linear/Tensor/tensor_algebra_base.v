@@ -13,10 +13,13 @@ Require Import card.
 forms a vector space over the original field.
 *)
 
+(* begin hide *)
 Section TensorAlgebra.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -46,9 +49,10 @@ Let TSMR k := module_scalar_rdist (tensor_power V k).
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
     TPA TPZ TPN TSM TSMC TSMO TSML TSMR.
 
-Let k_tensor k := module_V (tensor_power V k).
-
 Local Open Scope card_scope.
+
+(* end hide *)
+Let k_tensor k := module_V (tensor_power V k).
 
 Definition tensor_algebra_base_base := (∀ k, module_V (tensor_power V k)).
 Definition tensor_finite (A : tensor_algebra_base_base) :=
@@ -337,5 +341,7 @@ Lemma tensor_list_sum_k : ∀ (al : ulist (tensor_algebra_base)) k,
         rewrite IHal.
         reflexivity.
 Qed.
+(* begin hide *)
 
 End TensorAlgebra.
+(* end hide *)

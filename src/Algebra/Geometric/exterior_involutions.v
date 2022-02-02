@@ -14,10 +14,13 @@ Require Export exterior_construct.
 Require Import exterior_universal.
 Require Import exterior_grade.
 
+(* begin hide *)
 Section ExteriorInvolutions.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
 
+(* begin hide *)
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
 Let UN := cring_neg F.
@@ -120,6 +123,7 @@ Definition ext_involute := algebra_homo_f ext_involute_homo : ext V → ext V.
 
 Local Notation "a '∗'" := (ext_involute a) (at level 10).
 
+(* end hide *)
 Theorem ext_involute_plus : ∀ u v, (u + v)∗ = u∗ + v∗.
     apply (algebra_homo_plus _ _ ext_involute_homo).
 Qed.
@@ -188,6 +192,7 @@ Theorem ext_involute_involute : ∀ v, v∗∗ = v.
     apply neg_neg.
 Qed.
 
+(* begin hide *)
 Definition ext_op := ext V.
 Local Instance ext_op_mult : Mult ext_op := {
     mult a b := b * a
@@ -295,6 +300,7 @@ Definition ext_reverse := algebra_homo_f ext_reverse_homo : ext V → ext V.
 
 Local Notation "a '†'" := (ext_reverse a) (at level 10).
 
+(* end hide *)
 Theorem ext_reverse_plus : ∀ u v, (u + v)† = u† + v†.
     apply (algebra_homo_plus _ _ ext_reverse_homo).
 Qed.
@@ -401,7 +407,6 @@ Theorem ext_involute_grade : ∀ (X : ext V) (n : nat), of_grade n X →
 Qed.
 
 Theorem ext_involute_swap : ∀ v (X : ext V), φ v * X = X∗ * φ v.
-    Set Printing All.
     intros v X.
     pose proof (ext_sum V X) as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.
@@ -491,5 +496,7 @@ Theorem ext_reverse_grade : ∀ (X : ext V) (n : nat), of_grade n X →
         rewrite mult_rid.
         reflexivity.
 Qed.
+(* begin hide *)
 
 End ExteriorInvolutions.
+(* end hide *)

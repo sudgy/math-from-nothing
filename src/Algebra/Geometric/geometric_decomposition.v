@@ -5,8 +5,6 @@ Require Import mult_product.
 Require Import mult_div.
 Require Import nat_domain.
 
-Require Import linear_extend.
-
 Require Export geometric_construct.
 Require Import geometric_grade.
 Require Import geometric_exterior_isomorphism.
@@ -14,9 +12,12 @@ Require Import exterior_grade.
 Require Import geometric_involutions.
 Require Import geometric_involutions_grade.
 
+(* begin hide *)
 Section GeometricDecompose.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -35,8 +36,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -92,8 +95,8 @@ Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR.
 
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
-Local Arguments of_grade: simpl never.
 
+(* end hide *)
 Theorem geo_mult_inner_grade : ∀ v (A : geo B) i, of_grade (nat_suc i) A
         → of_grade i (geo_mult_inner B v A).
     intros v A' i [A [Ai A_eq]]; subst A'; cbn.
@@ -139,8 +142,10 @@ Theorem mult_inner_grade_add : ∀ v (A : geo B) n,
         reflexivity.
 Qed.
 
+(* begin hide *)
 Existing Instances EG EGA.
 
+(* end hide *)
 Theorem exterior_grade_add : ∀ v (A : ext V) n,
         grade_project (vector_to_ext V v * A) (nat_suc n) =
         vector_to_ext V v * grade_project A n.
@@ -176,8 +181,10 @@ Theorem exterior_grade_add : ∀ v (A : ext V) n,
         reflexivity.
 Qed.
 
+(* begin hide *)
 Remove Hints EG EGA : typeclass_instances.
 
+(* end hide *)
 Lemma geo_grade_decompose1 : ∀ (a b : geo B) (r s n : nat),
         of_grade r a → of_grade s b → r <= s →
         (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
@@ -547,5 +554,7 @@ Theorem geo_mult_project_smaller : ∀ (a b : geo B) (r s : nat),
     left.
     exact n_lt.
 Qed.
+(* begin hide *)
 
 End GeometricDecompose.
+(* end hide *)

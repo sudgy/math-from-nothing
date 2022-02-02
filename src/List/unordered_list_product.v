@@ -6,6 +6,7 @@ Require Export unordered_list_base.
 
 Require Import equivalence.
 
+(* begin hide *)
 Section Product.
 
 Context {U} `{
@@ -16,6 +17,7 @@ Context {U} `{
     @MultLid U UM UO
 }.
 
+(* end hide *)
 Definition ulist_prod := unary_op (E := ulist_equiv U) list_prod_perm.
 
 Theorem ulist_prod_end : ulist_prod ulist_end = 1.
@@ -37,5 +39,7 @@ Theorem ulist_prod_mult :
     unfold ulist_prod, ulist_conc; equiv_simpl.
     apply list_prod_mult.
 Qed.
+(* begin hide *)
 
 End Product.
+(* end hide *)

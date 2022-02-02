@@ -73,9 +73,11 @@ Theorem closed_ball_self : ∀ x ε, closed_ball x ε x.
     apply [|ε].
 Qed.
 
+(* begin show *)
 Global Program Instance metric_topology : TopologyBasis U := {
     top_basis S := ∃ x ε, S = open_ball x ε
 }.
+(* end show *)
 Next Obligation.
     exists (open_ball x [1|one_pos]).
     split.

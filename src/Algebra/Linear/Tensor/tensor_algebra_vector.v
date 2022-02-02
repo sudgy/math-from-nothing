@@ -20,8 +20,10 @@ algebra and the basic facts about it.
 (* begin hide *)
 Section TensorAlgebra.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -130,5 +132,7 @@ Theorem vector_to_tensor_homogeneous :
     exists 1, (tensor_mult V (cring_module F) v 1).
     reflexivity.
 Qed.
+(* begin hide *)
 
 End TensorAlgebra.
+(* end hide *)

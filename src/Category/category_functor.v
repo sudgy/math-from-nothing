@@ -18,19 +18,23 @@ Arguments functor_morphism {C1 C2} Functor {A B} f.
 Notation "F ⌈ A ⌉" := (functor_f F A) (at level 69).
 Notation "F ⋄ f" := (functor_morphism F f) (at level 40, left associativity).
 
+(* begin show *)
 Local Program Instance id_functor `(C0 : Category) : Functor C0 C0 := {
     functor_f A := A;
     functor_morphism {A B} f := f;
 }.
+(* end show *)
 
 Notation "𝟏" := (id_functor _).
 
+(* begin show *)
 Local Program Instance compose_functor `{C1 : Category, C2 : Category, C3 : Category}
     `(F : @Functor C2 C3) `(G : @Functor C1 C2) : Functor C1 C3 :=
 {
     functor_f a := functor_f F (functor_f G a);
     functor_morphism {A B} (f : cat_morphism C1 A B) := F ⋄ (G ⋄ f);
 }.
+(* end show *)
 Next Obligation.
     rewrite functor_compose.
     rewrite functor_compose.
@@ -44,13 +48,14 @@ Qed.
 
 Notation "F ○ G" := (compose_functor F G) (at level 40, left associativity).
 
+(* begin show *)
 Local Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
     : Functor (subcategory S) C :=
 {
     functor_f x := [x|];
     functor_morphism {A B} (f : cat_morphism _ A B) := [f|];
 }.
-
+(* end show *)
 Global Remove Hints id_functor compose_functor inclusion_functor : typeclass_instances.
 
 Definition faithful_functor `(F : Functor) := ∀ A B,
@@ -93,10 +98,12 @@ Definition essentially_surjective `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2)
     := ∀ B, ∃ A, isomorphic (F⌈A⌉) B.
 
+(* begin hide *)
 Section Functor.
 
 Context `{C1 : Category, C2 : Category, F : @Functor C1 C2}.
 
+(* end hide *)
 Theorem functor_isomorphism : ∀ A B,
         isomorphic A B → isomorphic (F ⌈A⌉) (F ⌈B⌉).
     intros A B [f [g [fg gf]]].
@@ -108,8 +115,10 @@ Theorem functor_isomorphism : ∀ A B,
     split; apply functor_id.
 Qed.
 
+(* begin hide *)
 End Functor.
 
+(* end hide *)
 Definition functor_morphism_convert_type `{C1 : Category, C2 : Category}
         `{F : @Functor C1 C2, G : @Functor C1 C2} {A B} (H : ∀ A, F ⌈A⌉ = G ⌈A⌉)
         (f : cat_morphism C2 (F ⌈A⌉) (F ⌈B⌉)) : cat_morphism C2 (G ⌈A⌉) (G ⌈B⌉).

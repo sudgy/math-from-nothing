@@ -163,8 +163,10 @@ Theorem metric_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
             exact c_lt.
 Qed.
 
+(* begin hide *)
 Local Open Scope set_scope.
 
+(* end hide *)
 Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
         limit_point A c → func_lim A f c l ↔
         (∀ xn : nat → set_type (A - singleton c),

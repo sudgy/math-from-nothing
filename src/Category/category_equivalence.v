@@ -66,8 +66,10 @@ Theorem cat_equiv_trans : ∀ (C1 C2 C3 : Category), C1 ⋍ C2 → C2 ⋍ C3 →
     split; assumption.
 Qed.
 
+(* begin hide *)
 Section FunctorEquivalence1.
 
+(* end hide *)
 Context `{C1 : Category, C2 : Category}.
 Context `(F : @Functor C1 C2, G : @Functor C2 C1).
 Context `(η : @NatTransformation C1 C1 𝟏 (G ○ F)).
@@ -169,8 +171,10 @@ Theorem functor_equiv_sur1 : essentially_surjective F.
     apply ε_iso.
 Qed.
 
+(* begin hide *)
 End FunctorEquivalence1.
 
+(* end hide *)
 Theorem cat_equiv_sym : ∀ C1 C2, cat_equivalent C1 C2 → cat_equivalent C2 C1.
     intros C1 C2 [F [G [η [ε equiv]]]].
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
@@ -178,6 +182,7 @@ Theorem cat_equiv_sym : ∀ C1 C2, cat_equivalent C1 C2 → cat_equivalent C2 C1
     exact equiv'.
 Qed.
 
+(* begin hide *)
 Section FunctorEquivalence2.
 
 Context `{C1 : Category, C2 : Category}.
@@ -186,6 +191,7 @@ Context `(η : @NatTransformation C1 C1 𝟏 (G ○ F)).
 Context `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏).
 Hypothesis equiv : cat_equivalence F G η ε.
 
+(* end hide *)
 Theorem functor_equiv_faithful2 : faithful_functor G.
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
     apply (functor_equiv_faithful1 G F η' ε' equiv').
@@ -232,6 +238,7 @@ Theorem functor_equiv_full1 : full_functor F.
     reflexivity.
 Qed.
 
+(* begin hide *)
 End FunctorEquivalence2.
 Section FunctorEquivalence3.
 
@@ -241,13 +248,16 @@ Context `(η : @NatTransformation C1 C1 𝟏 (G ○ F)).
 Context `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏).
 Hypothesis equiv : cat_equivalence F G η ε.
 
+(* end hide *)
 Theorem functor_equiv_full2 : full_functor G.
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
     apply (functor_equiv_full1 G F η' ε' equiv').
 Qed.
 
+(* begin hide *)
 End FunctorEquivalence3.
 
+(* end hide *)
 Theorem functor_equivalence `{C1 : Category, C2 : Category} :
         ∀ `(F : @Functor C1 C2),
         full_functor F → faithful_functor F → essentially_surjective F →

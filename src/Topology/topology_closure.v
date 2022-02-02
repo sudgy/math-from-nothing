@@ -216,8 +216,8 @@ Qed.
 
 (* begin hide *)
 End ClosureBasis.
-(* end hide *)
 
+(* end hide *)
 Section ClosureHausdorff.
 
 (* begin hide *)

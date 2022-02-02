@@ -11,8 +11,10 @@ Require Import algebra_category.
 Require Import category_initterm.
 Require Import tensor_algebra.
 
+(* begin hide *)
 Section ExteriorCategory.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
 Record to_ext := make_to_ext {
@@ -233,5 +235,7 @@ Theorem exterior_universal : @initial TO_EXT ext_to_ext.
         rewrite g_eq, h_eq.
         reflexivity.
 Qed.
+(* begin hide *)
 
 End ExteriorCategory.
+(* end hide *)

@@ -14,9 +14,12 @@ Require Export unordered_list.
 Declare Scope geo_scope.
 Delimit Scope geo_scope with geo.
 
+(* begin hide *)
 Section GeometricConstruct.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -65,11 +68,14 @@ Let TAMR := algebra_mult_rid (tensor_algebra V).
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UR UMC UMO.
 Existing Instances VP VZ VN VPA VPC VPZ VPN VSM VSMO VSMR.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Existing Instances TAP TAZ TAN TAPA TAPC TAPZ TAPN TASM TASMO TASMC TASL TASR
     TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR.
 
+(* end hide *)
 Definition geo_ideal_base (x : algebra_V (tensor_algebra V)) :=
     ∃ v, x = vector_to_tensor v * vector_to_tensor v - [B|] v v · 1.
 
@@ -91,10 +97,12 @@ Definition geo_one := quotient_ring_one geo_ideal.
 Definition geo_mult_lid := quotient_ring_mult_lid geo_ideal.
 Definition geo_mult_rid := quotient_ring_mult_rid geo_ideal.
 
+(* begin hide *)
 Existing Instances geo_plus geo_plus_assoc geo_plus_comm geo_zero geo_plus_lid
     geo_neg geo_plus_linv geo_mult geo_ldist geo_rdist geo_mult_assoc geo_one
     geo_mult_lid geo_mult_rid.
 
+(* end hide *)
 Lemma geo_scalar_wd : ∀ u v c, eq_equal (ideal_equiv geo_ideal) u v →
         eq_equal (ideal_equiv geo_ideal) (c · u) (c · v).
     cbn.
@@ -359,5 +367,7 @@ Theorem geo_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
     rewrite IHl; clear IHl.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End GeometricConstruct.
+(* end hide *)

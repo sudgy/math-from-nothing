@@ -13,9 +13,12 @@ Require Import exterior_involutions.
 Require Import geometric_involutions_grade.
 Require Import exterior_grade.
 
+(* begin hide *)
 Section GeometricOuter.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -34,8 +37,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -94,6 +99,7 @@ Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EML EMR EMA ES ESO ESL
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
+(* end hide *)
 Definition geo_outer_base i j (a b : geo B) (ai : of_grade i a) (bj : of_grade j b)
     := grade_project (a * b) (i + j) : geo B.
 
@@ -130,7 +136,9 @@ Definition geo_outer := bilinear_extend geo_outer_base : geo B → geo B → geo
 (** Note: Because Coq already uses ∧ for logical and, this symbol is actually
 \bigwedge, not \wedge!
 *)
+(* begin show *)
 Local Infix "⋀" := geo_outer (at level 34, left associativity).
+(* end show *)
 
 Theorem outer_ldist : ∀ a b c, a ⋀ (b + c) = a ⋀ b + a ⋀ c.
     apply bilinear_extend_ldist.
@@ -181,11 +189,13 @@ Lemma outer_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
     -   exact geo_outer_rscalar_base.
 Qed.
 
+(* begin hide *)
 Let EG := exterior_grade V.
 Let EGA := exterior_grade_mult V.
 
 Existing Instances EG EGA.
 
+(* end hide *)
 Theorem outer_exterior : ∀ a b, a ⋀ b = G (E a * E b).
     intros a' b'.
     rewrite <- (ext_to_geo_to_ext B a') at 1.
@@ -376,6 +386,8 @@ Theorem outer_involute_swap : ∀ a X, φ a ⋀ X = X∗ ⋀ φ a.
     reflexivity.
 Qed.
 
+(* begin hide *)
 End GeometricOuter.
 
+(* end hide *)
 Infix "⋀" := (geo_outer _) (at level 34, left associativity) : geo_scope.

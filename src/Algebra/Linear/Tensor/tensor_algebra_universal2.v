@@ -20,15 +20,18 @@ Require Import list.
 Require Import unordered_list.
 Require Import mult_product.
 
+(* begin hide *)
 Unset Keyed Unification.
 
 Section TensorAlgebra.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
 Let vector_to_tensor_base := tensor_algebra_vector.vector_to_tensor V.
 Let scalar_to_tensor_base := tensor_algebra_scalar.scalar_to_tensor V.
 
+(* begin hide *)
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
 Let UN := cring_neg F.
@@ -56,6 +59,7 @@ Let TAO := algebra_one (tensor_algebra V).
 
 Existing Instances UP UZ UN UPC UPZ UPN UM UO VP VZ VSM VSO TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM TASO TAM TAMR TAO.
 
+(* end hide *)
 Theorem vector_to_tensor_plus : ∀ u v, vector_to_tensor (u + v) =
         vector_to_tensor u + vector_to_tensor v.
     apply module_homo_plus.
@@ -193,10 +197,12 @@ Theorem scalar_to_tensor_comm : ∀ a A,
     reflexivity.
 Qed.
 
+(* begin hide *)
 Let TAG := tensor_grade V.
 Let TAGM := tensor_grade_mult V.
 Existing Instances TAG TAGM.
 
+(* end hide *)
 Definition tensor_grade := grade_isomorphism
     (algebra_to_module_homomorphism f)
     (algebra_to_module_iso f f_iso).
@@ -463,5 +469,7 @@ Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
     rewrite <- IHl; clear IHl.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End TensorAlgebra.
+(* end hide *)

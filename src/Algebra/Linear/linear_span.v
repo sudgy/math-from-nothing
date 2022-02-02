@@ -10,6 +10,7 @@ Definition linear_span U {V} `{Plus V, Zero V, ScalarMult U V}
     (S : V → Prop) :=
     λ v, ∀ sub : Subspace U V, S ⊆ subspace_set sub → subspace_set sub v.
 
+(* begin hide *)
 Section Span.
 
 Context U {V} `{
@@ -40,6 +41,7 @@ Context U {V} `{
     @ScalarLdist U V VP SM,
     @ScalarRdist U V UP VP SM
 }.
+(* end hide *)
 Variable A : V → Prop.
 
 Let S := linear_span U A.
@@ -142,5 +144,7 @@ Theorem span_linear_combination : S = linear_combination_of A.
         intros x.
         apply linear_span_sub.
 Qed.
+(* begin hide *)
 
 End Span.
+(* end hide *)

@@ -2,13 +2,16 @@ Require Import init.
 
 Require Import set.
 
+(* begin show *)
 Set Universe Polymorphism.
+(* end show *)
 
 (** Note: I am learning category theory while writing this.  Apologies if
 anything here is incorrect/not specified in the best way.
 *)
 
-Polymorphic Class Category := {
+(* begin show *)
+Class Category := {
     cat_U : Type;
     cat_morphism : cat_U → cat_U → Type;
     cat_compose : ∀ {A B C},
@@ -20,6 +23,7 @@ Polymorphic Class Category := {
     cat_lid : ∀ {A B} (f : cat_morphism A B), cat_compose (cat_id B) f = f;
     cat_rid : ∀ {A B} (f : cat_morphism A B), cat_compose f (cat_id A) = f;
 }.
+(* end show *)
 
 Arguments cat_U : clear implicits.
 Arguments cat_morphism : clear implicits.
@@ -32,23 +36,25 @@ Notation "𝟙" := (cat_id _ _).
 Definition cat_domain `{C0 : Category} {A B} (f : cat_morphism C0 A B) := A.
 Definition cat_codomain `{C0 : Category} {A B} (f : cat_morphism C0 A B) := B.
 
-Polymorphic Definition isomorphism `{C0 : Category} {A B} (f : cat_morphism C0 A B)
+Definition isomorphism `{C0 : Category} {A B} (f : cat_morphism C0 A B)
     := ∃ g, f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
 
-Polymorphic Definition cat_inverse `{C0 : Category} {A B}
+Definition cat_inverse `{C0 : Category} {A B}
     (f : cat_morphism C0 A B) (H : isomorphism f) := ex_val H.
 
-Polymorphic Definition isomorphic `{C0 : Category} A B
+Definition isomorphic `{C0 : Category} A B
     := ∃ f : cat_morphism C0 A B, isomorphism f.
 
 Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
 
+(* begin show *)
 Local Program Instance dual_category `(C0 : Category) : Category := {
     cat_U := cat_U C0;
     cat_morphism A B := cat_morphism C0 B A;
     cat_compose {A B C} f g := cat_compose C0 g f;
     cat_id A := cat_id C0 A;
 }.
+(* end show *)
 Next Obligation.
     symmetry.
     apply cat_assoc.
@@ -60,6 +66,7 @@ Next Obligation.
     apply cat_lid.
 Qed.
 
+(* begin show *)
 Local Program Instance product_category `(C1 : Category) `(C2 : Category) : Category
 := {
     cat_U := prod (cat_U C1) (cat_U C2);
@@ -68,6 +75,7 @@ Local Program Instance product_category `(C1 : Category) `(C2 : Category) : Cate
     cat_compose {A B C} f g := (fst f ∘ fst g, snd f ∘ snd g);
     cat_id A := (𝟙, 𝟙);
 }.
+(* end show *)
 Next Obligation.
     do 2 rewrite cat_assoc.
     reflexivity.
@@ -89,12 +97,14 @@ Class SubCategory `(C0 : Category) := {
     subcat_id : ∀ A, subcat_morphism (cat_id C0 A);
 }.
 
+(* begin show *)
 Local Program Instance subcategory `(SubCategory) : Category := {
     cat_U := set_type subcat_S;
     cat_morphism A B := set_type (subcat_morphism (A:=[A|]) (B:=[B|]));
     cat_compose {A B C} f g := [_|subcat_compose [f|] [g|] [|f] [|g]];
     cat_id A := [_|subcat_id [A|]];
 }.
+(* end show *)
 Next Obligation.
     apply set_type_eq; cbn.
     apply cat_assoc.
@@ -107,18 +117,19 @@ Next Obligation.
     apply set_type_eq; cbn.
     apply cat_rid.
 Qed.
-
 Global Remove Hints dual_category product_category subcategory : typeclass_instances.
 
 Definition full_subcategory `(SubCategory) := ∀ A B,
     subcat_morphism (A:=A) (B:=B) = all.
 
+(* begin hide *)
 Section Category.
 
 Context `{C0 : Category}.
 
 Local Arguments cat_morphism {Category}.
 
+(* end hide *)
 Theorem lcompose : ∀ {A B C} {f g : cat_morphism A B} (h : cat_morphism B C),
         f = g → h ∘ f = h ∘ g.
     intros A B C f g h eq.
@@ -138,7 +149,7 @@ Theorem lrcompose : ∀ {A B C} {f g : cat_morphism B C} {h i : cat_morphism A B
     reflexivity.
 Qed.
 
-Polymorphic Theorem id_isomorphism : ∀ A, isomorphism (cat_id _ A).
+Theorem id_isomorphism : ∀ A, isomorphism (cat_id _ A).
     intros A.
     exists 𝟙.
     split; apply cat_lid.
@@ -218,8 +229,10 @@ Theorem dual_isomorphism : ∀ {A B} (f : cat_morphism A B),
         split; assumption.
 Qed.
 
+(* begin hide *)
 End Category.
 
+(* end hide *)
 Definition convert_type {A B : Type} (H : A = B) (x : A) : B.
     rewrite H in x.
     exact x.

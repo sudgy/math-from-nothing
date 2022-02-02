@@ -9,9 +9,12 @@ Require Import geometric_grade.
 Require Import geometric_norm.
 Require Import geometric_product_formulae.
 
+(* begin hide *)
 Section GeometricVersor.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -30,8 +33,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -63,6 +68,7 @@ Local Notation "'σ'" := (scalar_to_geo B).
 
 Local Open Scope geo_scope.
 
+(* end hide *)
 Definition versor (A : geo B) := ∃ l : list (module_V V),
         A = list_prod (list_image l φ).
 
@@ -282,5 +288,7 @@ Theorem versor_outermorphism : ∀ A, versor A → ∀ (X Y : geo B),
         rewrite mult_ranni, mult_lanni.
         reflexivity.
 Qed.
+(* begin hide *)
 
 End GeometricVersor.
+(* end hide *)

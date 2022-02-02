@@ -14,12 +14,15 @@ Require Import mult_product.
 
 Require Export exterior_construct.
 
+(* begin hide *)
 Section ExteriorGrade.
 
 Local Arguments grade_subspace : simpl never.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
 Let UN := cring_neg F.
@@ -68,6 +71,7 @@ Let TAG := tensor_grade_mult V.
 
 Existing Instances TG TAG.
 
+(* end hide *)
 Definition ext_grade_set n (v : ext V)
     := ∃ v', tensor_to_ext V v' = v ∧ of_grade (H10 := TG) n v'.
 
@@ -552,5 +556,7 @@ Theorem ext_grade_sum : ∀ (v : ext V) n, of_grade n v →
     rewrite IHl.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End ExteriorGrade.
+(* end hide *)

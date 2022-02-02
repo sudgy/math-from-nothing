@@ -12,6 +12,7 @@ Definition quadratic_form U V `{Plus U, Neg U, Mult U, Plus V, ScalarMult U V}
     (Q : V → U)
     := (∀ a v, Q (a · v) = a * a * Q v) ∧ bilinear_form (qf_polar Q).
 
+(* begin hide *)
 Section QuadraticForm.
 
 Context {U V} `{
@@ -22,6 +23,7 @@ Context {U V} `{
     ScalarMult U V
 }.
 
+(* end hide *)
 Variable Q : set_type (quadratic_form U V).
 
 Theorem qf_eq : ∀ a v, [Q|] (a · v) = a * a * [Q|] v.
@@ -43,5 +45,7 @@ Theorem qf_polar_rplus : ∀ u v w,
         qf_polar [Q|] u (v + w) = qf_polar [Q|] u v + qf_polar [Q|] u w.
     apply [|Q].
 Qed.
+(* begin hide *)
 
 End QuadraticForm.
+(* end hide *)

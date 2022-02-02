@@ -17,6 +17,7 @@ Arguments subspace_zero {U V H H0 H1}.
 Arguments subspace_plus {U V H H0 H1}.
 Arguments subspace_scalar {U V H H0 H1}.
 
+(* begin hide *)
 Section Subspace.
 
 Context {U V} `{
@@ -44,6 +45,7 @@ Context {U V} `{
     @ScalarRdist U V UP VP SM
 }.
 
+(* end hide *)
 Theorem subspace_eq : ∀ S1 S2 : Subspace U V, subspace_set S1 = subspace_set S2
         → S1 = S2.
     intros [S1 S1_zero S1_plus S1_scalar] [S2 S2_zero S2_plus S2_scalar] eq.
@@ -117,6 +119,7 @@ Next Obligation.
     apply scalar_rdist.
 Qed.
 
+(* begin hide *)
 End Subspace.
 
 Section QuotientSpace.
@@ -145,6 +148,7 @@ Context {U V} `{
     @ScalarLdist U V VP SM,
     @ScalarRdist U V UP VP SM
 }.
+(* end hide *)
 Variable S : Subspace U V.
 
 Theorem subspace_linear_combination :
@@ -168,10 +172,12 @@ Theorem subspace_linear_combination :
 Qed.
 
 Let subspace_eq a b := subspace_set S (a - b).
-(* Declaring this in algebra_scope is a bit of a hack to allow us to redefine it
- * later.
- *)
+(** Declaring this in algebra_scope is a bit of a hack to allow us to redefine
+it later.
+*)
+(* begin show *)
 Local Infix "~" := subspace_eq : algebra_scope.
+(* end show *)
 
 Lemma subspace_eq_reflexive : ∀ a, a ~ a.
     intros a.
@@ -213,7 +219,9 @@ Definition subspace_equiv := make_equiv _ subspace_eq_reflexive_class
 
 Definition quotient_space := equiv_type subspace_equiv.
 
+(* begin show *)
 Local Infix "~" := (eq_equal subspace_equiv).
+(* end show *)
 
 Lemma qspace_plus_wd : ∀ a b c d, a ~ b → c ~ d → a + c ~ b + d.
     unfold eq_equal; cbn.
@@ -349,5 +357,7 @@ Qed.
 Instance quotient_space_scalar_rdist : ScalarRdist _ _ := {
     scalar_rdist := qspace_scalar_rdist
 }.
+(* begin hide *)
 
 End QuotientSpace.
+(* end hide *)

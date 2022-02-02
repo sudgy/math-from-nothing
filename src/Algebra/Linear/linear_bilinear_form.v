@@ -21,6 +21,7 @@ Definition degenerate_bilinear_form
     {U V} `{Plus U, Zero U, Mult U, Plus V, Zero V, ScalarMult U V}
     (f : set_type bilinear_form) := ∃ x, 0 ≠ x ∧ ∀ y, 0 = [f|] x y.
 
+(* begin hide *)
 Section BilinearForm.
 
 Context {U V} `{
@@ -43,6 +44,7 @@ Context {U V} `{
     Zero V,
     ScalarMult U V
 }.
+(* end hide *)
 Variable f : set_type bilinear_form.
 
 Theorem bilinear_form_lscalar : ∀ a v1 v2, [f|] (a · v1) v2 = a * ([f|] v1 v2).
@@ -107,5 +109,7 @@ Theorem nondegenerate_nz_ex :
     apply mult_lcancel in eq; [>|apply two_nz].
     symmetry in eq; contradiction.
 Qed.
+(* begin hide *)
 
 End BilinearForm.
+(* end hide *)

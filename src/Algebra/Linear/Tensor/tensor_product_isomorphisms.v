@@ -10,12 +10,15 @@ Require Import card.
 
 Require Import module_category.
 
+(* begin hide *)
 Unset Keyed Unification.
 
 Section TensorProductIsomorphisms.
 
+(* end hide *)
 Context {F : CRing} (M : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -54,6 +57,7 @@ Let TU1_scalar := module_scalar (tensor_product (cring_module F) M).
 
 Existing Instances TU1_plus TU1_scalar.
 
+(* end hide *)
 Theorem tensor_product_lid :
     ∃ f : cat_morphism (MODULE F) (tensor_product (cring_module F) M) M,
         isomorphism f ∧ ∀ a v, module_homo_f f (a ⊗ v) = a · v.
@@ -154,6 +158,7 @@ Theorem tensor_product_lid_bij : bijective lf.
 Qed.
 
 Context (N : Module F).
+(* begin hide *)
 Let V2 := module_V N.
 Let VP2 := module_plus N.
 Let VZ2 := module_zero N.
@@ -169,15 +174,18 @@ Let SMR2 := module_scalar_rdist N.
 Let SMC2 := module_scalar_comp N.
 Existing Instances VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2 SM2 SMO2 SML2 SMR2 SMC2.
 
+(* end hide *)
 Local Infix "⊗12" := (tensor_mult M N) (at level 40, left associativity).
 Local Infix "⊗21" := (tensor_mult N M) (at level 40, left associativity).
 
+(* begin hide *)
 Let T12_plus := module_plus (tensor_product M N).
 Let T12_scalar := module_scalar (tensor_product M N).
 Let T21_plus := module_plus (tensor_product N M).
 Let T21_scalar := module_scalar (tensor_product N M).
 Existing Instances T12_plus T12_scalar T21_plus T21_scalar.
 
+(* end hide *)
 Theorem tensor_product_comm :
     ∃ f : cat_morphism (MODULE F) (tensor_product M N) (tensor_product N M),
         isomorphism f ∧ ∀ a b, module_homo_f f (a ⊗12 b) = b ⊗21 a.
@@ -279,6 +287,7 @@ Theorem tensor_product_comm_bij : bijective cf.
         exact gf'.
 Qed.
 
+(* begin hide *)
 End TensorProductIsomorphisms.
 
 Section TensorProductIsomorphism.
@@ -325,6 +334,7 @@ Let TVU_scalar := module_scalar (tensor_product M (cring_module F)).
 
 Existing Instances TVU_plus TVU_scalar.
 
+(* end hide *)
 Definition tensor_product_rid_homo :=
     tensor_product_lid_homo M ∘ tensor_product_comm_homo M (cring_module F).
 Definition tensor_product_rid_f := module_homo_f tensor_product_rid_homo.
@@ -382,12 +392,15 @@ Theorem tensor_product_rid_bij : bijective f.
     -   apply tensor_product_lid_bij.
 Qed.
 
+(* begin hide *)
 End TensorProductIsomorphism.
 
 Section TensorProductIsomorphism.
 
+(* end hide *)
 Context {F : CRing} (M1 M2 N1 N2 : Module F).
 
+(* begin hide *)
 Let U := cring_U.
 Let UP := cring_plus.
 Let UZ := cring_zero.
@@ -470,6 +483,7 @@ Let T2_scalar := module_scalar (tensor_product M2 N2).
 
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
+(* end hide *)
 Theorem tensor_product_lriso :
     ∀ (f1 : cat_morphism (MODULE F) M1 M2) (f2 : cat_morphism (MODULE F) N1 N2),
     ∃ h : cat_morphism (MODULE F) (tensor_product M1 N1) (tensor_product M2 N2),
@@ -609,11 +623,15 @@ Theorem tensor_product_lriso_bij : isomorphism f1 → isomorphism f2 →
         exact gf'.
 Qed.
 
+(* begin hide *)
 End TensorProductIsomorphism.
 
 Section TensorProductIsomorphism.
 
+(* end hide *)
 Context {F : CRing} (M1 M2 N : Module F).
+
+(* begin hide *)
 Let U := cring_U.
 Let UP := cring_plus.
 Let UZ := cring_zero.
@@ -682,6 +700,7 @@ Let T2_scalar := module_scalar (tensor_product M2 N).
 
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
+(* end hide *)
 Theorem tensor_product_liso :
     ∀ (f : cat_morphism (MODULE F) M1 M2),
     ∃ g : cat_morphism (MODULE F) (tensor_product M1 N) (tensor_product M2 N),
@@ -733,12 +752,15 @@ Theorem tensor_product_liso_bij : isomorphism f → bijective lf.
         exact gf'.
 Qed.
 
+(* begin hide *)
 End TensorProductIsomorphism.
 
 Section TensorProductIsomorphism.
 
+(* end hide *)
 Context {F : CRing} (M N1 N2 : Module F).
 
+(* begin hide *)
 Let U := cring_U.
 Let UP := cring_plus.
 Let UZ := cring_zero.
@@ -807,6 +829,7 @@ Let T2_scalar := module_scalar (tensor_product M N2).
 
 Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
+(* end hide *)
 Theorem tensor_product_riso :
     ∀ (f : cat_morphism (MODULE F) N1 N2),
     ∃ g : cat_morphism (MODULE F) (tensor_product M N1) (tensor_product M N2),
@@ -856,5 +879,7 @@ Theorem tensor_product_riso_bij : isomorphism f → bijective rf.
     -   apply func_eq.
         exact gf'.
 Qed.
+(* begin hide *)
 
 End TensorProductIsomorphism.
+(* end hide *)

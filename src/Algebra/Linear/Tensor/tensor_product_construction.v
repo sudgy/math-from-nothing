@@ -12,10 +12,13 @@ Require Import card.
 Require Import unordered_list.
 Require Import plus_sum.
 
+(* begin hide *)
 Section TensorProduct.
 
+(* end hide *)
 Context {F : CRing} (M N : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -60,9 +63,11 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
     SM2 SMO2 SML2 SMR2 SMC2.
 
+(* end hide *)
 Let FR := free_linear U (V1 * V2).
 Let to_FR a b := to_free F (V1 * V2) (a, b).
 
+(* begin hide *)
 Let FR_plus := free_plus_class F (V1 * V2).
 Let FR_zero := free_zero F (V1 * V2).
 Let FR_neg := free_neg F (V1 * V2).
@@ -79,6 +84,7 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist
     FR_scalar_comp.
 
+(* end hide *)
 Let sub1 v := ∃ a b c, v = to_FR (a + b) c - to_FR a c - to_FR b c.
 Let sub2 v := ∃ a b c, v = to_FR a (b + c) - to_FR a b - to_FR a c.
 Let sub3 v := ∃ a m n, v = a · to_FR m n - to_FR (a · m) n.
@@ -175,8 +181,10 @@ Qed.
 
 Definition simple_tensor_base T := ∃ a b, T = a ⊗ b.
 
+(* begin hide *)
 Local Open Scope card_scope.
 
+(* end hide *)
 Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
         T = ulist_sum (ulist_image l (λ x, [x|])).
     intros T.
@@ -312,5 +320,7 @@ Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
     rewrite plus_rinv.
     apply linear_span_zero.
 Qed.
+(* begin hide *)
 
 End TensorProduct.
+(* end hide *)

@@ -19,8 +19,10 @@ algebra.
 (* begin hide *)
 Section TensorAlgebra.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -63,6 +65,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
     TPA TPZ TPN TSM TSMC TSMO TSML TSMR TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM
     TASMC TASMO TASML TASMR.
 
+(* end hide *)
 Let k_tensor k := module_V (tensor_power V k).
 
 Definition tensor_subspace_set n (v : tensor_algebra_base V)
@@ -370,7 +373,7 @@ Next Obligation.
         rewrite plus_lid in l_zero.
         exact l_zero.
 Qed.
-
 (* begin hide *)
+
 End TensorAlgebra.
 (* end hide *)

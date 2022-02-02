@@ -3,10 +3,13 @@ Require Import init.
 Require Export linear_base.
 Require Export module_category.
 
+(* begin hide *)
 Section DirectSum.
 
+(* end hide *)
 Context {F : CRing} (V1 V2 : Module F).
 
+(* begin hide *)
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
 Let UN := cring_neg F.
@@ -48,6 +51,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
     SM2 SMO2 SML2 SMR2 SMC2.
 
+(* end hide *)
 Instance direct_sum_plus : Plus (module_V V1 * module_V V2) := {
     plus a b := (fst a + fst b, snd a + snd b)
 }.
@@ -142,5 +146,7 @@ Definition direct_sum := make_module
     direct_sum_scalar_rdist
     direct_sum_scalar_comp
 .
+(* begin hide *)
 
 End DirectSum.
+(* end hide *)

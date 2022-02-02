@@ -8,6 +8,7 @@ Require Export unordered_list_nat.
 
 Require Import equivalence.
 
+(* begin hide *)
 Unset Keyed Unification.
 
 Section Sum.
@@ -22,6 +23,7 @@ Context {U} `{
     @PlusLinv U UP UZ UN
 }.
 
+(* end hide *)
 Lemma ulist_sum_wd : ∀ l1 l2 : list U, list_permutation l1 l2 →
         list_sum l1 = list_sum l2.
     intros l1 l2 eq.
@@ -88,5 +90,7 @@ Theorem ulist_sum_func_single : ∀ a m n, m < n →
     apply list_sum_func_single.
     exact ltq.
 Qed.
+(* begin hide *)
 
 End Sum.
+(* end hide *)

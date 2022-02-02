@@ -11,11 +11,14 @@ Require Import unordered_list.
 Require Import set.
 Require Import card.
 
+(* begin hide *)
 Section TensorPowerCategory.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 Variable n : nat.
 
+(* begin hide *)
 Let VP := module_plus V.
 Let VSM := module_scalar V.
 Let VnP := module_plus (tensor_power V n).
@@ -23,6 +26,7 @@ Let VnSM := module_scalar (tensor_power V n).
 
 Existing Instances VP VSM VnP VnSM.
 
+(* end hide *)
 Record multilinear_from := make_multilinear {
     multilinear_from_module : Module F;
     multilinear_from_f : ∀ l : list (module_V V), list_size l = n →
@@ -169,6 +173,7 @@ Definition tensor_multilinear_from := make_multilinear
     tensor_multilinear_from_plus
     tensor_multilinear_from_scalar.
 
+(* begin hide *)
 End TensorPowerCategory.
 
 Section TensorPowerCategory.
@@ -181,6 +186,7 @@ Let UMC := cring_mult_comm F.
 
 Existing Instances UM UMC.
 
+(* end hide *)
 Theorem tensor_power_universal :
         @initial (MULTILINEAR_FROM V n) (tensor_multilinear_from V n).
     unfold tensor_multilinear_from, initial; cbn.
@@ -384,5 +390,7 @@ Theorem tensor_power_universal :
             rewrite f1_eq, f2_eq.
             reflexivity.
 Qed.
+(* begin hide *)
 
 End TensorPowerCategory.
+(* end hide *)

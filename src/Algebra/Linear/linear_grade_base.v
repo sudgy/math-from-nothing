@@ -55,6 +55,7 @@ Class GradedAlgebra U V `{
         subspace_set (grade_subspace (i + j)) (u * v)
 }.
 
+(* begin hide *)
 Section LinearGrade.
 
 Context {U V} `{
@@ -86,6 +87,7 @@ Context {U V} `{
 
 Context `{@GradedSpace U V VP VPC VPA VZ SM}.
 
+(* end hide *)
 Definition of_grade i v := subspace_set (grade_subspace i) v.
 
 Global Arguments of_grade : simpl never.
@@ -716,5 +718,7 @@ Theorem grade_decomposition_unique : ∀ v l,
         pose proof (grade_decomposition_nz v).
         split; apply (grade_decomposition_perm_wlog v); assumption.
 Qed.
+(* begin hide *)
 
 End LinearGrade.
+(* end hide *)

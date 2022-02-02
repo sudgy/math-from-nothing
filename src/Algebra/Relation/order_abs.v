@@ -383,8 +383,8 @@ Context {U : Type} `{
     @AbsScalar U UA SM,
     @AbsPositive U UA
 }.
-(* end hide *)
 
+(* end hide *)
 Theorem abs_abs : ∀ x, | |x| | = |x|.
     intros x.
     unfold abs at 1; cbn.

@@ -6,9 +6,12 @@ Require Import card.
 Require Export geometric_construct.
 Require Import geometric_universal.
 
+(* begin hide *)
 Section GeometricInvolutions.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -27,8 +30,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -105,6 +110,7 @@ Definition geo_involute := algebra_homo_f geo_involute_homo : geo B → geo B.
 
 Local Notation "a '∗'" := (geo_involute a) (at level 10).
 
+(* end hide *)
 Theorem geo_involute_plus : ∀ u v, (u + v)∗ = u∗ + v∗.
     apply (algebra_homo_plus _ _ geo_involute_homo).
 Qed.
@@ -173,6 +179,7 @@ Theorem geo_involute_involute : ∀ v, v∗∗ = v.
     apply neg_neg.
 Qed.
 
+(* begin hide *)
 Definition geo_op := geo B.
 Local Instance geo_op_mult : Mult geo_op := {
     mult a b := b * a
@@ -280,6 +287,7 @@ Definition geo_reverse := algebra_homo_f geo_reverse_homo : geo B → geo B.
 
 Local Notation "a '†'" := (geo_reverse a) (at level 10).
 
+(* end hide *)
 Theorem geo_reverse_plus : ∀ u v, (u + v)† = u† + v†.
     apply (algebra_homo_plus _ _ geo_reverse_homo).
 Qed.
@@ -346,7 +354,9 @@ Theorem geo_reverse_reverse : ∀ v, v†† = v.
     reflexivity.
 Qed.
 
+(* begin hide *)
 End GeometricInvolutions.
 
+(* end hide *)
 Notation "a '∗'" := (geo_involute _ a) (at level 10) : geo_scope.
 Notation "a '†'" := (geo_reverse _ a) (at level 10) : geo_scope.

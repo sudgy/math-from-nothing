@@ -2,14 +2,9 @@ Require Import init.
 
 Require Export linear_base.
 Require Export category_base.
-
-(** I don't know if this is the best way to define this, but I'll try it for now
-*)
-
 (** This requires a commutative ring, not just any old ring.  If I ever need
 one-sided modules, I'll just make a different category for those.
 *)
-(* Sorry if I forget any conditions, I'll add them if I find them *)
 Record CRing := make_cring {
     cring_U : Type;
     cring_plus : Plus cring_U;

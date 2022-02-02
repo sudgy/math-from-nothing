@@ -24,6 +24,7 @@ Definition basis {U V} `{Zero U}
     `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
     (S : V → Prop) := linearly_independent S ∧ linear_span U S = all.
 
+(* begin hide *)
 Section Basis.
 
 Context {U V} `{
@@ -59,6 +60,7 @@ Context {U V} `{
     @ScalarRdist U V UP VP SM
 }.
 
+(* end hide *)
 Theorem empty_linearly_independent : linearly_independent ∅.
     intros l l_in eq.
     destruct l as [l l_comb].
@@ -570,8 +572,10 @@ Qed.
 Local Instance subset_order : Order (V → Prop) := {
     le A B := A ⊆ B
 }.
+(* begin hide *)
 Local Open Scope card_scope.
 
+(* end hide *)
 Theorem basis_extend_ex : ∀ S, linearly_independent S → ∃ B, S ⊆ B ∧ basis B.
     intros S S_ind.
     pose (SS T := S ⊆ T ∧ linearly_independent T).
@@ -819,5 +823,7 @@ Theorem basis_ex : ∃ B, basis B.
     exists B.
     exact B_basis.
 Qed.
+(* begin hide *)
 
 End Basis.
+(* end hide *)

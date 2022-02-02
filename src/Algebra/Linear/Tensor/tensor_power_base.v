@@ -13,21 +13,26 @@ Require Import list.
 Require Import unordered_list.
 Require Import plus_sum.
 
+(* begin hide *)
 Section TensorPower.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Local Arguments cat_compose : simpl never.
 Local Arguments cat_id : simpl never.
 
 Infix "⊗" := tensor_product.
 
+(* end hide *)
 Fixpoint tensor_power (n : nat) :=
     match n with
     | nat_zero => cring_module F
     | nat_suc n' => V ⊗ tensor_power n'
     end.
 
+(* begin hide *)
 Let TPP a := module_plus (tensor_power a).
 Let TPZ a := module_zero (tensor_power a).
 Let TPN a := module_neg (tensor_power a).
@@ -47,6 +52,7 @@ Let TP2SM a b := module_scalar (tensor_power a ⊗ tensor_power b).
 Existing Instances TPP TPZ TPN TPPC TPPA TPPZ TPPN TPSM TPSMO TPSML TPSMR TPSMC
     TP2P TP2Z TP2SM.
 
+(* end hide *)
 Record generic_tensor_power := make_generic_tensor_power {
     generic_tensor_power_n : nat;
     generic_tensor_power_t : module_V (tensor_power generic_tensor_power_n);
@@ -687,5 +693,7 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
     rewrite list_conc_assoc.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End TensorPower.
+(* end hide *)

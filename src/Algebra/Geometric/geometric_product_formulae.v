@@ -13,9 +13,12 @@ Require Import geometric_involutions_grade.
 Require Import geometric_decomposition.
 Require Import exterior_grade.
 
+(* begin hide *)
 Section GeometricFormulae.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -34,8 +37,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -92,6 +97,7 @@ Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR.
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
+(* end hide *)
 Theorem lcontr_mult_inner : ∀ v X, φ v ⌋ X = geo_mult_inner B v X.
     intros v X.
     induction X as [|X X' n Xn X'n IHX] using grade_induction.
@@ -337,5 +343,7 @@ Theorem lcontr_twice : ∀ a X, φ a ⌋ (φ a ⌋ X) = 0.
     unfold linear_trans_mult_base, linear_trans_zero_base in eq2; cbn in eq2.
     apply (func_eq _ _ eq2).
 Qed.
+(* begin hide *)
 
 End GeometricFormulae.
+(* end hide *)

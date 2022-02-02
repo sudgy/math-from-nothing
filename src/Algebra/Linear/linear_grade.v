@@ -7,6 +7,7 @@ Require Export linear_grade_base.
 Require Import set.
 Require Import unordered_list.
 
+(* begin hide *)
 Section LinearGrade.
 
 Context {U V} `{
@@ -38,6 +39,7 @@ Context {U V} `{
 
 Context `{VG : @GradedSpace U V VP VPC VPA VZ SM}.
 
+(* end hide *)
 Theorem grade_decomposition_zero : grade_decomposition 0 = ulist_end.
     apply grade_decomposition_unique.
     -   rewrite ulist_image_end, ulist_sum_end.
@@ -673,6 +675,7 @@ Theorem all_grade_project_eq : ∀ u v,
             contradiction.
 Qed.
 
+(* begin hide *)
 Context `{
     IP : Plus grade_I,
     @PlusLcancel grade_I IP,
@@ -683,6 +686,7 @@ Context `{
     @GradedAlgebra U V VP VPC VPA VZ SM VG IP VM
 }.
 
+(* end hide *)
 Theorem of_grade_mult : ∀ u v i j, of_grade i u → of_grade j v →
         of_grade (i + j) (u * v).
     apply grade_mult.
@@ -819,5 +823,7 @@ Theorem sum_grade_project_single : ∀ f A n a b, injective f →
         rewrite (grade_project_of_grade_neq _ _ _ A_grade neq').
         apply plus_rid.
 Qed.
+(* begin hide *)
 
 End LinearGrade.
+(* end hide *)

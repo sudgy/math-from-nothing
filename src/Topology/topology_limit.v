@@ -10,10 +10,12 @@ Require Import topology_axioms.
 Require Import topology_closure.
 Require Import topology_subspace.
 
+(* begin hide *)
 Unset Keyed Unification.
 
 Open Scope set_scope.
 
+(* end hide *)
 Definition limit_point {U} `{Topology U} A x := ∀ S, open S → S x →
     intersects (A - singleton x) S.
 

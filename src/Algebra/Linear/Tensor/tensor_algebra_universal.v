@@ -17,8 +17,10 @@ Require Import card.
 Require Import list.
 Require Import unordered_list.
 
+(* begin hide *)
 Section TensorAlgebraCategory.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
 Record to_algebra := make_to_algebra {
@@ -545,6 +547,8 @@ Theorem tensor_algebra_universal : @initial TO_ALGEBRA to_tensor_algebra.
     apply (ex_proof tensor_algebra_ex).
 Qed.
 
+(* begin hide *)
 End TensorAlgebraCategory.
 
+(* end hide *)
 Arguments vector_to_tensor {F V}.

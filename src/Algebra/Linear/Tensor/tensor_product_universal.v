@@ -15,10 +15,13 @@ Require Import plus_sum.
 Require Import module_category.
 Require Import category_initterm.
 
+(* begin hide *)
 Section TensorProductCategory.
 
+(* end hide *)
 Context {F : CRing} (M N : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -63,6 +66,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
     SM2 SMO2 SML2 SMR2 SMC2.
 
+(* end hide *)
 Definition tensor_product_base := make_module
     F
     (tensor_space M N)
@@ -137,6 +141,7 @@ Next Obligation.
     apply (@cat_rid (MODULE F)).
 Qed.
 
+(* begin hide *)
 Let FR_plus := free_plus_class F (V1 * V2).
 Let FR_zero := free_zero F (V1 * V2).
 Let FR_neg := free_neg F (V1 * V2).
@@ -155,6 +160,7 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist
     FR_scalar_comp V3P SM3.
 
+(* end hide *)
 Let f x y := tensor_mult_base M N x y.
 
 Lemma tensor_product_bilinear_base : bilinear f.
@@ -395,6 +401,7 @@ Qed.
 
 Infix "⊗" := tensor_mult : algebra_scope.
 
+(* begin hide *)
 Let tensor_plus := module_plus tensor_product.
 Let tensor_zero := module_zero tensor_product.
 Let tensor_neg := module_neg tensor_product.
@@ -410,6 +417,7 @@ Existing Instances tensor_plus tensor_zero tensor_neg tensor_plus_comm
     tensor_plus_assoc tensor_plus_lid tensor_plus_linv tensor_scalar
     tensor_scalar_comp tensor_scalar_id tensor_scalar_rdist.
 
+(* end hide *)
 Theorem tensor_ldist : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
     apply tensor_bilinear.
 Qed.
@@ -528,5 +536,7 @@ Qed.
 Theorem tensor_product_zero : 0 ⊗ 0 = 0.
     apply tensor_product_lanni.
 Qed.
+(* begin hide *)
 
 End TensorProductCategory.
+(* end hide *)

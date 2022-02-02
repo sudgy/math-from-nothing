@@ -13,9 +13,12 @@ Require Export exterior_construct.
 Require Export exterior_to_geometric.
 Require Export geometric_to_exterior.
 
+(* begin hide *)
 Section GeometricExteriorIso.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -34,8 +37,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let EP := ext_plus V.
 Let EZ := ext_zero V.
 Let EN := ext_neg V.
@@ -71,6 +76,7 @@ Let GSMR := geo_scalar_rmult B.
 
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GL GR GS GSL GSC GSMR.
 
+(* end hide *)
 Lemma ext_inner_inner : ∀ a b (x : ext V),
         ext_inner B a (ext_inner B b x) + ext_inner B b (ext_inner B a x) = 0.
     intros a b x.
@@ -398,5 +404,7 @@ Theorem vector_to_geo_eq : ∀ a b, vector_to_geo B a = vector_to_geo B b → a 
     apply vector_to_ext_eq in eq.
     exact eq.
 Qed.
+(* begin hide *)
 
 End GeometricExteriorIso.
+(* end hide *)

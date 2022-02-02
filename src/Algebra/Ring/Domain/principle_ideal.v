@@ -10,6 +10,7 @@ Require Import set.
 Require Import unordered_list.
 Require Import order_minmax.
 
+(* begin hide *)
 Section PrincipleIdealDef.
 
 Context {U} `{
@@ -30,6 +31,7 @@ Context {U} `{
     @MultRid U UM UO
 }.
 
+(* end hide *)
 Definition principle_ideal_by x := ideal_generated_by (singleton x).
 
 Definition principle_ideal (I : Ideal U)
@@ -92,6 +94,7 @@ Class PrincipleIdealDomain := {
     ideal_principle : ∀ I : Ideal U, principle_ideal I
 }.
 
+(* begin hide *)
 End PrincipleIdealDef.
 Section PrincipleIdeal.
 
@@ -115,6 +118,7 @@ Context {U} `{
     @PrincipleIdealDomain U UP UZ UN UM UPA UPC UPZ UPN UL UR UMA
 }.
 
+(* end hide *)
 Theorem pid_noetherian : ∀ I : nat → Ideal U,
         (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) →
         ∃ n0, ∀ n, n0 <= n → I n0 = I n.
@@ -524,5 +528,7 @@ Next Obligation.
     exists c.
     symmetry; exact a'_eq.
 Qed.
+(* begin hide *)
 
 End PrincipleIdeal.
+(* end hide *)

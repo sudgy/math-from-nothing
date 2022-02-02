@@ -10,9 +10,12 @@ Require Import exterior_grade.
 Require Export geometric_involutions.
 Require Import exterior_involutions.
 
+(* begin hide *)
 Section GeometricInvolutions.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -35,8 +38,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -98,6 +103,7 @@ Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EML EMR EMA ES ESO ESL
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
+(* end hide *)
 Theorem geo_mult_inner_involute : ∀ a (X : geo B),
         (geo_mult_inner B a X)∗ = -geo_mult_inner B a (X∗).
     intros a X.
@@ -222,8 +228,6 @@ Theorem vector_bilinear_eq : ∀ a b, φ a * φ b + φ b * φ a = [B|] a b · 2.
     do 3 rewrite scalar_rdist.
     reflexivity.
 Qed.
-
-Local Arguments of_grade : simpl never.
 
 Theorem ext_inner_grade : ∀ v (A : ext V) i, of_grade (nat_suc i) A
         → of_grade i (ext_inner B v A).
@@ -600,5 +604,7 @@ Theorem geo_reverse_involute : ∀ X : geo B, X†∗ = X∗†.
     rewrite mult_comm.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End GeometricInvolutions.
+(* end hide *)

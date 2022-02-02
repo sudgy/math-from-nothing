@@ -15,9 +15,12 @@ Require Export geometric_universal.
 Require Export exterior_construct.
 Require Import exterior_universal.
 
+(* begin hide *)
 Section GeometricToExterior.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -36,8 +39,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let EP := ext_plus V.
 Let EZ := ext_zero V.
 Let EN := ext_neg V.
@@ -226,6 +231,7 @@ Qed.
 
 Definition ext_inner a v := snd (module_homo_f (ext_inner_f a v) (1, 0)).
 
+(* end hide *)
 Theorem ext_inner_rplus :
         ∀ a u v, ext_inner a (u + v) = ext_inner a u + ext_inner a v.
     intros a u v.
@@ -453,6 +459,7 @@ Theorem ext_inner_lscalar : ∀ α a v, ext_inner (α · a) v = α · ext_inner 
     reflexivity.
 Qed.
 
+(* begin hide *)
 Definition ext_inner_homo a := make_module_homomorphism
     F
     (algebra_module (exterior_algebra V))
@@ -635,6 +642,7 @@ Qed.
 
 Definition geo_to_ext (v : geo B) := module_homo_f (geo_to_ext_f v) 1 : ext V.
 
+(* end hide *)
 Theorem geo_to_ext_plus : ∀ u v,
         geo_to_ext (u + v) = geo_to_ext u + geo_to_ext v.
     intros u v.
@@ -723,5 +731,7 @@ Theorem geo_to_ext_vector2 : ∀ u v,
     rewrite ext_inner_vector.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End GeometricToExterior.
+(* end hide *)

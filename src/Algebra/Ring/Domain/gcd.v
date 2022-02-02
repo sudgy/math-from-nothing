@@ -15,6 +15,7 @@ Class GCDDomain U `{Mult U, Zero U} := {
         ∀ a b, (0 ≠ a ∨ 0 ≠ b) → ∀ d, common_divisor a b d → d ∣ (gcd a b)
 }.
 
+(* begin hide *)
 Section GCD.
 
 Context {U} `{Up : Plus U,
@@ -36,6 +37,7 @@ Context {U} `{Up : Plus U,
                   @MultRcancel U Uz Um
               }.
 
+(* end hide *)
 Theorem gcd_associates :
         ∀ a b d1 d2, is_gcd a b d1 → is_gcd a b d2 → associates d1 d2.
     intros a b d1 d2 [d1_cd d1_gcd] [d2_cd d2_gcd].
@@ -44,8 +46,10 @@ Theorem gcd_associates :
     split; assumption.
 Qed.
 
+(* begin hide *)
 Context `{@GCDDomain U Um Uz}.
 
+(* end hide *)
 Theorem gcd_gcd : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → is_gcd a b (gcd a b).
     intros a b nz.
     split.
@@ -153,5 +157,7 @@ Theorem irreducible_prime : ∀ p, irreducible p → prime p.
         apply div_rcancel in d2; [>|exact b_nz].
         exact (trans pv d2).
 Qed.
+(* begin hide *)
 
 End GCD.
+(* end hide *)

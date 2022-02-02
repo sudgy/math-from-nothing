@@ -7,6 +7,7 @@ Require Import set.
 
 Require Import unordered_list.
 
+(* begin hide *)
 Section UniqueFactorizationDef.
 
 Context U `{
@@ -17,12 +18,14 @@ Context U `{
     @MultComm U UM
 }.
 
+(* end hide *)
 #[universes(template)]
 Class UniqueFactorizationDomain := {
     factorization_base : ∀ x : U, 0 ≠ x →
         ∃ a l, unit a ∧ ulist_prop (λ x, prime x) l ∧ x = a * ulist_prod l
 }.
 
+(* begin hide *)
 End UniqueFactorizationDef.
 Arguments factorization_base {U UZ UM UO H H0 UniqueFactorizationDomain}.
 Section UniqueFactorization.
@@ -46,6 +49,7 @@ Context U `{
     @UniqueFactorizationDomain U UZ UM UO UMA UMC
 }.
 
+(* end hide *)
 Theorem factorization_ex : ∀ x : U, 0 ≠ x → ∃ a l,
         unit a ∧
         ulist_prop (λ x, irreducible x) l ∧
@@ -205,5 +209,7 @@ Theorem factorization_uni : ∀ (x : U) (x_nz : 0 ≠ x),
     intros x x_nz.
     apply (ex_proof (ex_proof (factorization_ex x x_nz))).
 Qed.
+(* begin hide *)
 
 End UniqueFactorization.
+(* end hide *)

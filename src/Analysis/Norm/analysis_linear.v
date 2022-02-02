@@ -6,6 +6,7 @@ Require Export analysis_norm.
 Require Import analysis_continuous.
 Require Import topology_continuous.
 
+(* begin hide *)
 Section AnalysisLinear.
 
 Context {U V} `{
@@ -51,6 +52,7 @@ Context {U V} `{
 }.
 Existing Instance abs_metric.
 
+(* end hide *)
 (** Yes, I know [ModuleHomomorphism] is already just this, but that requires
 [Module]s whereas this just requires a few typeclasses.
 *)
@@ -61,14 +63,14 @@ Record linear_map := make_linear_map {
         linear_map_f (u + v) = linear_map_f u + linear_map_f v;
 }.
 
-Definition linear_map_zero : ∀ f : linear_map, linear_map_f f 0 = 0.
+Theorem linear_map_zero : ∀ f : linear_map, linear_map_f f 0 = 0.
     intros f.
     rewrite <- (scalar_lanni 0).
     rewrite linear_map_scalar.
     apply scalar_lanni.
 Qed.
 
-Definition linear_map_neg : ∀ f : linear_map, ∀ x,
+Theorem linear_map_neg : ∀ f : linear_map, ∀ x,
         linear_map_f f (-x) = -linear_map_f f x.
     intros f x.
     rewrite <- scalar_neg_one.
@@ -343,6 +345,7 @@ Theorem continuous_bounded : ∀ f,
         apply refl.
 Qed.
 
+(* begin hide *)
 End AnalysisLinear.
 
 Arguments linear_map U V {UP USM VP VSM}.
@@ -411,6 +414,7 @@ Context {U V W} `{
     @AbsScalar W WA WSM
 }.
 
+(* end hide *)
 Lemma linear_map_compose_plus : ∀ (f : linear_map V W) (g : linear_map U V),
         ∀ u v, linear_map_f f (linear_map_f g (u + v)) =
         linear_map_f f (linear_map_f g u) + linear_map_f f (linear_map_f g v).
@@ -445,5 +449,7 @@ Theorem linear_map_compose_bounded : ∀ f g,
     apply le_lmult_pos; [>apply operator_norm_pos|].
     apply operator_norm_bound.
 Qed.
+(* begin hide *)
 
 End AnalysisLinearCompose.
+(* end hide *)

@@ -19,11 +19,13 @@ Notation "α • A" := (nat_trans_f α A) (at level 30).
     [(α • B) ∘ (F ⋄ f) = (G ⋄ f) ∘ (α • A)]
 *)
 
+(* begin show *)
 Local Program Instance id_nat_transformation `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2) : NatTransformation F F :=
 {
     nat_trans_f A := 𝟙
 }.
+(* end show *)
 Next Obligation.
     rewrite cat_lid.
     rewrite cat_rid.
@@ -32,6 +34,7 @@ Qed.
 
 Notation "'𝕀'" := (id_nat_transformation _).
 
+(* begin show *)
 Local Program Instance vcompose_nat_transformation `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2, H : @Functor C1 C2}
     `(α : @NatTransformation C1 C2 G H, β : @NatTransformation C1 C2 F G)
@@ -39,6 +42,7 @@ Local Program Instance vcompose_nat_transformation `{C1 : Category, C2 : Categor
 {
     nat_trans_f A := α • A ∘ β • A
 }.
+(* end show *)
 Next Obligation.
     rewrite cat_assoc.
     rewrite <- cat_assoc.
@@ -48,6 +52,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
+(* begin show *)
 Local Program Instance hcompose_nat_transformation
     `{C1 : Category, C2 : Category, C3 : Category}
     `{F' : @Functor C2 C3, G' : @Functor C2 C3}
@@ -57,6 +62,7 @@ Local Program Instance hcompose_nat_transformation
 {
     nat_trans_f A := β • (G ⌈A⌉) ∘ (F' ⋄ α • A)
 }.
+(* end show *)
 Next Obligation.
     rewrite nat_trans_commute.
     rewrite <- cat_assoc.
@@ -72,7 +78,6 @@ Qed.
 
 Notation "α □ β" := (vcompose_nat_transformation α β) (at level 20, left associativity).
 Notation "α ⊡ β" := (hcompose_nat_transformation α β) (at level 20, left associativity).
-
 Global Remove Hints id_nat_transformation vcompose_nat_transformation hcompose_nat_transformation : typeclass_instances.
 
 Theorem nat_trans_compose_eq `{C1 : Category, C2 : Category}
@@ -160,12 +165,14 @@ Theorem nat_trans_assoc `{C1 : Category, C2 : Category}
     apply cat_assoc.
 Qed.
 
+(* begin show *)
 Local Program Instance FUNCTOR `(C1 : Category, C2 : Category) : Category := {
     cat_U := Functor C1 C2;
     cat_morphism F G := NatTransformation F G;
     cat_compose {A B C} α β := α □ β;
     cat_id F := id_nat_transformation F;
 }.
+(* end show *)
 Next Obligation.
     apply nat_trans_assoc.
 Qed.
@@ -175,7 +182,6 @@ Qed.
 Next Obligation.
     apply nat_trans_rid.
 Qed.
-
 Global Remove Hints FUNCTOR : typeclass_instances.
 
 Definition nat_isomorphism `{C1 : Category, C2 : Category}

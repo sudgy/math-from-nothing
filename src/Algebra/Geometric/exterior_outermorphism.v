@@ -8,10 +8,13 @@ Require Import exterior_universal.
 Require Import module_category.
 Require Import algebra_category.
 
+(* begin hide *)
 Section ExteriorOutermorphism.
 
+(* end hide *)
 Context {F : CRing} (V1 V2 : Module F).
 
+(* begin hide *)
 Let V1P := module_plus V1.
 Let V1S := module_scalar V1.
 
@@ -35,8 +38,10 @@ Let E2S := ext_scalar V2.
 
 Existing Instances E2P E2Z E2N E2M E2O E2S.
 
+(* end hide *)
 Variable f : ModuleHomomorphism V1 V2.
 
+(* begin hide *)
 Definition outermorphism_base1 x := vector_to_ext V2 (module_homo_f f x) : ext V2.
 
 Lemma outermorphism_base_plus : ∀ u v, outermorphism_base1 (u + v) =
@@ -80,6 +85,7 @@ Definition outermorphism_base
     := card_one_ex (exterior_universal V1 outermorphism_base3).
 
 Definition outermorphism_homo := [outermorphism_base|].
+(* end hide *)
 Definition outermorphism := algebra_homo_f outermorphism_homo : ext V1 → ext V2.
 
 Theorem outermorphism_eq : ∀ v, outermorphism (vector_to_ext V1 v) =
@@ -114,6 +120,8 @@ Theorem outermorphism_zero : outermorphism 0 = 0.
     apply (algebra_homo_zero outermorphism_homo).
 Qed.
 
+(* begin hide *)
 End ExteriorOutermorphism.
 
+(* end hide *)
 Arguments outermorphism {F V1 V2}.

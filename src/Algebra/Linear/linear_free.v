@@ -22,6 +22,7 @@ Arguments make_free {U V H}.
 Arguments free_f {U V H}.
 Arguments free_fin {U V H}.
 
+(* begin hide *)
 Section LinearFree.
 
 Context (F : CRing) (V : Type).
@@ -41,6 +42,7 @@ Let UMO := cring_mult_lid F.
 Let UMD := cring_ldist F.
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD.
 
+(* end hide *)
 Theorem free_eq :
         ∀ (A B : free_linear U V), (∀ x, free_f A x = free_f B x) → A = B.
     intros [Af A_fin] [Bf B_fin] eq.
@@ -971,5 +973,9 @@ Theorem free_module_universal : initial to_free_from.
             rewrite f1_in, f2_in.
             reflexivity.
 Qed.
+(* begin hide *)
 
 End LinearFree.
+
+Close Scope card_scope.
+(* end hide *)

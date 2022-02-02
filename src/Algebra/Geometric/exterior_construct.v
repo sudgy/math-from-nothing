@@ -11,10 +11,13 @@ Require Import mult_product.
 Require Import set.
 Require Import unordered_list.
 
+(* begin hide *)
 Section ExteriorConstruct.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
 Let UN := cring_neg F.
@@ -65,6 +68,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UR UMC UMO VP VZ VN VPA VPC
     VPZ VPN VSM VSMO VSMR TAP TAZ TAN TAPA TAPC TAPZ TAPN TASM TASMO TASMC TASL
     TASR TASLM TASRM TAM TAO TAL TAR TAMA TAML TAMR TAG TAGM.
 
+(* end hide *)
 Definition ext_ideal_base (x : algebra_V (tensor_algebra V))
     := ∃ v, x = vector_to_tensor v * vector_to_tensor v.
 
@@ -503,5 +507,7 @@ Theorem ext_sum : ∀ x : ext, ∃ l : ulist (cring_U F * list (module_V V)),
     rewrite IHl; clear IHl.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End ExteriorConstruct.
+(* end hide *)

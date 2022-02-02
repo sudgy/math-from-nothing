@@ -21,8 +21,10 @@ scalars.
 (* begin hide *)
 Section TensorAlgebra.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.

@@ -159,12 +159,14 @@ Definition algebra_homo_compose {R : CRing} {L M N : Algebra R}
         algebra_homo_compose_plus algebra_homo_compose_scalar
         algebra_homo_compose_mult algebra_homo_compose_one.
 
+(* begin show *)
 Global Program Instance ALGEBRA (R : CRing) : Category := {
     cat_U := Algebra R;
     cat_morphism M N := AlgebraHomomorphism M N;
     cat_compose {L M N} f g := algebra_homo_compose f g;
     cat_id M := algebra_homo_id M;
 }.
+(* end show *)
 Next Obligation.
     apply algebra_homomorphism_eq.
     intros x.

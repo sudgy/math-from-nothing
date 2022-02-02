@@ -42,6 +42,7 @@ Theorem ideal_eq {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
     exact eq.
 Qed.
 
+(* begin hide *)
 Section RingIdeal.
 
 Context {U} `{
@@ -61,6 +62,7 @@ Context {U} `{
     @MultRid U UM UO
 }.
 
+(* end hide *)
 Variable I : Ideal U.
 
 Theorem ideal_neg : ∀ a, ideal_set I a → ideal_set I (-a).
@@ -121,7 +123,9 @@ Definition ideal_equiv := make_equiv _ ideal_eq_reflexive_class
 
 Definition quotient_ring := equiv_type ideal_equiv.
 
+(* begin show *)
 Local Infix "~" := (eq_equal ideal_equiv).
+(* end show *)
 
 Lemma qring_plus_wd : ∀ a b c d, a ~ b → c ~ d → a + c ~ b + d.
     cbn; unfold ideal_eq.
@@ -250,6 +254,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
+(* begin hide *)
 End RingIdeal.
 
 Section IdealGenerated.
@@ -271,6 +276,7 @@ Context {U} `{
     @MultRid U UM UO
 }.
 
+(* end hide *)
 Variable S : U → Prop.
 
 Definition ideal_generated_by_set x := ∃ l : ulist ((U * U) * set_type S),
@@ -332,5 +338,7 @@ Definition ideal_generated_by := make_ideal
     ideal_generated_by_plus
     ideal_generated_by_lmult
     ideal_generated_by_rmult.
+(* begin hide *)
 
 End IdealGenerated.
+(* end hide *)

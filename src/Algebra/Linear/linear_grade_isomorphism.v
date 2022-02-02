@@ -14,6 +14,7 @@ Context {F : CRing} {M N : Module F}.
 
 Variable (f : cat_morphism (MODULE F) M N).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -58,6 +59,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
     SM2 SMO2 SML2 SMR2 SMC2.
 
+(* end hide *)
 Definition subspace_homo_set (S : Subspace U V1) y
     := ∃ x, subspace_set S x ∧ module_homo_f f x = y.
 
@@ -102,12 +104,15 @@ Definition subspace_homo S := make_subspace
 
 End SubspaceHomomorphism.
 
+(* begin hide *)
 Section Grade.
 
+(* end hide *)
 Context {F : CRing} {M N : Module F}.
 
 Variables (f : cat_morphism (MODULE F) M N) (f_iso : isomorphism f).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -152,6 +157,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
     SM2 SMO2 SML2 SMR2 SMC2.
 
+(* end hide *)
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 
 Let g := ex_val f_iso.
@@ -374,6 +380,7 @@ Next Obligation.
             exact a_z.
 Qed.
 
+(* begin hide *)
 End Grade.
 
 Section GradeAlgebra.
@@ -427,13 +434,16 @@ Let VM2 := algebra_mult N.
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VM1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2
     VPN2 SM2 SMO2 SML2 SMR2 SMC2 VM2.
+(* end hide *)
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 Context `{IP : Plus grade_I}.
 Context `{GA : @GradedAlgebra U V1 VP1 VPC1 VPA1 VZ1 SM1 VG IP VM1}.
+(* begin hide *)
 Let VG2 := grade_isomorphism
     (algebra_to_module_homomorphism f)
     (algebra_to_module_iso f f_iso).
 Existing Instance VG2.
+(* end hide *)
 Program Instance graded_algebra_isomorphism : GradedAlgebra U V2.
 Next Obligation.
     destruct H as [a [a_in a_eq]].
@@ -448,5 +458,7 @@ Next Obligation.
         rewrite a_eq, b_eq.
         reflexivity.
 Qed.
+(* begin hide *)
 
 End GradeAlgebra.
+(* end hide *)

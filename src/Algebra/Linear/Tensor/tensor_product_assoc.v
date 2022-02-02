@@ -10,10 +10,13 @@ Require Import card.
 
 Require Import module_category.
 
+(* begin hide *)
 Section TensorProductIsomorphisms.
 
+(* end hide *)
 Context {F : CRing} (M N O : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -72,11 +75,15 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     SM2 SMO2 SML2 SMR2 SMC2 VP3 VZ3 VN3 VPA3 VPC3 VPZ3 VPN3 SM3 SMO3 SML3 SMR3
     SMC3.
 
+(* end hide *)
+(* begin show *)
 Local Infix "⊗12" := (tensor_mult M N) (at level 40, left associativity).
 Local Infix "⊗23" := (tensor_mult N O) (at level 40, left associativity).
 Local Infix "⊗1_23" := (tensor_mult M (tensor_product N O)) (at level 40, left associativity).
 Local Infix "⊗12_3" := (tensor_mult (tensor_product M N) O) (at level 40, left associativity).
+(* end show *)
 
+(* begin hide *)
 Let V12 := tensor_product M N.
 Let V23 := tensor_product N O.
 Let V1_23 := tensor_product M V23.
@@ -87,6 +94,7 @@ Let T12_3_plus := module_plus V12_3.
 Let T12_3_scalar := module_scalar V12_3.
 Existing Instances T1_23_plus T1_23_scalar T12_3_plus T12_3_scalar.
 
+(* end hide *)
 Theorem tensor_product_assoc :
     ∃ f : cat_morphism (MODULE F)
             (tensor_product M (tensor_product N O))
@@ -496,5 +504,7 @@ Theorem tensor_product_assoc_inv_bij : bijective af'.
     -   apply func_eq.
         exact gf'.
 Qed.
+(* begin hide *)
 
 End TensorProductIsomorphisms.
+(* end hide *)

@@ -8,9 +8,12 @@ Require Export geometric_construct.
 Require Import geometric_grade.
 Require Import geometric_involutions_grade.
 
+(* begin hide *)
 Section GeometricInner.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -29,8 +32,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -60,6 +65,7 @@ Local Notation "'σ'" := (scalar_to_geo B).
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
+(* end hide *)
 Definition geo_inner_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := grade_project (a * b) (i ⊖ j).
 
@@ -179,9 +185,11 @@ Definition geo_inner := bilinear_extend geo_inner_base : geo B → geo B → geo
 Definition geo_lcontr := bilinear_extend geo_lcontr_base : geo B → geo B → geo B.
 Definition geo_rcontr := bilinear_extend geo_rcontr_base : geo B → geo B → geo B.
 
+(* begin show *)
 Local Infix "•" := geo_inner (at level 34, left associativity).
 Local Infix "⌋" := geo_lcontr (at level 34, left associativity).
 Local Infix "⌊" := geo_rcontr (at level 34, left associativity).
+(* end show *)
 
 Theorem inner_ldist : ∀ a b c, a • (b + c) = a • b + a • c.
     apply bilinear_extend_ldist.
@@ -523,8 +531,10 @@ Theorem rcontr_involute : ∀ a b, (a ⌊ b)∗ = a∗ ⌊ b∗.
     apply geo_reverse_reverse.
 Qed.
 
+(* begin hide *)
 End GeometricInner.
 
+(* end hide *)
 Infix "•" := (geo_inner _) (at level 34, left associativity) : geo_scope.
 Infix "⌋" := (geo_lcontr _) (at level 34, left associativity) : geo_scope.
 Infix "⌊" := (geo_rcontr _) (at level 34, left associativity) : geo_scope.

@@ -13,9 +13,12 @@ Require Import tensor_algebra.
 
 Require Export geometric_construct.
 
+(* begin hide *)
 Section GeometricCategory.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UN := cring_neg F.
@@ -25,6 +28,7 @@ Let VS := module_scalar V.
 
 Existing Instances UP UN UM VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
 Record to_geo := make_to_geo {
@@ -95,12 +99,14 @@ Definition vector_to_geo_homo := make_module_homomorphism
     (vector_to_geo_plus B)
     (vector_to_geo_scalar B).
 
+(* begin hide *)
 Let GM := geo_mult B.
 Let GO := geo_one B.
 Let GS := geo_scalar B.
 
 Existing Instances GM GO GS.
 
+(* end hide *)
 Definition geo_to_geo := make_to_geo
     (geometric_algebra B)
     vector_to_geo_homo
@@ -254,5 +260,7 @@ Theorem geometric_universal : @initial TO_GEO geo_to_geo.
         rewrite g_eq, h_eq.
         reflexivity.
 Qed.
+(* begin hide *)
 
 End GeometricCategory.
+(* end hide *)

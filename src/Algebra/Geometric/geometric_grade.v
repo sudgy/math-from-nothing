@@ -9,9 +9,12 @@ Require Export geometric_construct.
 Require Import geometric_exterior_isomorphism.
 Require Import exterior_grade.
 
+(* begin hide *)
 Section GeometricGrade.
 
+(* end hide *)
 Context {F : CRing} {V : Module F}.
+(* begin hide *)
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -30,8 +33,10 @@ Let VS := module_scalar V.
 
 Existing Instances VP VS.
 
+(* end hide *)
 Context (B : set_type bilinear_form).
 
+(* begin hide *)
 Let GP := geo_plus B.
 Let GZ := geo_zero B.
 Let GN := geo_neg B.
@@ -80,6 +85,7 @@ Let EGA := exterior_grade_mult V.
 Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR
     EG EGA.
 
+(* end hide *)
 Definition geo_grade := grade_isomorphism (ext_to_geo_homo B) (ext_to_geo_iso B).
 
 Existing Instance geo_grade.
@@ -203,5 +209,7 @@ Theorem geo_to_ext_project : ∀ (a : geo B) (n : nat),
     rewrite ext_to_geo_to_ext.
     reflexivity.
 Qed.
+(* begin hide *)
 
 End GeometricGrade.
+(* end hide *)

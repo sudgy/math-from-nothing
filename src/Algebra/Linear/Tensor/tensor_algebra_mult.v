@@ -23,8 +23,10 @@ and the proofs that it forms a rng.
 (* begin hide *)
 Section TensorAlgebra.
 
+(* end hide *)
 Context {F : CRing} (V : Module F).
 
+(* begin hide *)
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -172,28 +174,36 @@ Instance tensor_mult_class : Mult (tensor_algebra_base V) := {
     mult A B := bilinear_extend tensor_mult_base A B
 }.
 
+(* begin show *)
 Local Program Instance tensor_mult_ldist : Ldist (tensor_algebra_base V).
+(* end show *)
 Next Obligation.
     apply bilinear_extend_ldist.
     -   apply tensor_mult_base_ldist.
     -   apply tensor_mult_base_rscalar.
 Qed.
 
+(* begin show *)
 Local Program Instance tensor_mult_rdist : Rdist (tensor_algebra_base V).
+(* end show *)
 Next Obligation.
     apply bilinear_extend_rdist.
     -   apply tensor_mult_base_rdist.
     -   apply tensor_mult_base_lscalar.
 Qed.
 
+(* begin show *)
 Local Program Instance tensor_scalar_lmult : ScalarLMult U (tensor_algebra_base V).
+(* end show *)
 Next Obligation.
     apply bilinear_extend_lscalar.
     -   apply tensor_mult_base_rdist.
     -   apply tensor_mult_base_lscalar.
 Qed.
 
+(* begin show *)
 Local Program Instance tensor_scalar_rmult : ScalarRMult U (tensor_algebra_base V).
+(* end show *)
 Next Obligation.
     apply bilinear_extend_rscalar.
     -   apply tensor_mult_base_ldist.
