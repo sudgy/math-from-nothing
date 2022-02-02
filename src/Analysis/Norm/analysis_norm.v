@@ -19,11 +19,13 @@ Context {V} `{
     @PlusAssoc V VP,
     @PlusLid V VP VZ,
     @PlusLinv V VP VZ VN,
+    NotTrivial V,
 
     SM : ScalarMult real V,
     @ScalarId real V real_one SM,
     @ScalarLdist real V VP SM,
     @ScalarRdist real V real_plus_class VP SM,
+    @ScalarComp real V real_mult_class SM,
 
     VA : AbsoluteValue V,
     @AbsDefinite V VA VZ,
@@ -78,6 +80,115 @@ Theorem converges_bounded : ∀ f, seq_converges f → seq_norm_bounded f.
     apply cauchy_bounded.
     apply converges_cauchy.
     exact f_conv.
+Qed.
+
+Theorem norm_open_limit_point : ∀ S x, open S → S x → limit_point S x.
+    intros S x S_open Sx T T_open Tx.
+    assert (∀ ε x, 0 < ε → 0 ≠ x → |ε / 2 / |x| · x| < ε) as lem.
+    {
+        clear x Sx Tx.
+        intros ε x ε_pos x_nz.
+        rewrite abs_scalar.
+        rewrite abs_mult.
+        rewrite abs_pos_eq by (apply half_pos; exact ε_pos).
+        rewrite abs_pos_eq.
+        2: {
+            apply div_pos.
+            split; [>apply abs_pos|].
+            intros contr.
+            rewrite abs_def in contr.
+            contradiction.
+        }
+        rewrite mult_rlinv.
+        2: {
+            intros contr.
+            rewrite abs_def in contr.
+            contradiction.
+        }
+        apply lt_mult_rcancel_pos with 2; [>apply two_pos|].
+        rewrite mult_rlinv by apply two_pos.
+        rewrite ldist.
+        rewrite mult_rid.
+        rewrite <- lt_plus_0_a_b_ab.
+        exact ε_pos.
+    }
+    assert (∀ ε x, 0 < ε → 0 ≠ x → 0 ≠ ε / 2 / |x| · x) as lem2.
+    {
+        clear x Sx Tx.
+        intros ε x ε_pos x_nz contr.
+        rewrite <- (scalar_lanni x) in contr.
+        apply scalar_rcancel in contr; [>|exact x_nz].
+        rewrite <- mult_lrmove in contr.
+        2: {
+            intros contr2.
+            rewrite abs_def in contr2.
+            contradiction.
+        }
+        rewrite mult_lanni in contr.
+        clear - ε_pos contr.
+        rewrite <- mult_lrmove in contr by apply two_pos.
+        rewrite mult_lanni in contr.
+        destruct ε_pos; contradiction.
+    }
+    unfold intersects.
+    apply ex_not_empty.
+    pose proof (inter_open2 S T S_open T_open) as ST_open.
+    pose proof ST_open as ST_ball.
+    rewrite open_all_balls in ST_ball.
+    classic_case (0 = x) as [x_z|x_nz].
+    -   subst x.
+        specialize (ST_open 0 (make_and Sx Tx)) as [B [B_basis [B0 B_sub]]].
+        destruct B_basis as [y [[ε ε_pos] B_eq]]; subst B.
+        classic_case (0 = y) as [y_z|y_nz].
+        +   subst y.
+            pose proof not_trivial_zero as [x x_nz].
+            pose (x' := ε / 2 / |x| · x).
+            assert ((S ∩ T) x') as [Sx' Tx'].
+            {
+                apply B_sub.
+                unfold open_ball; cbn.
+                rewrite abs_minus.
+                rewrite neg_zero, plus_rid.
+                unfold x'.
+                apply lem; assumption.
+            }
+            exists x'.
+            repeat split.
+            *   exact Sx'.
+            *   unfold singleton, x'.
+                apply lem2; assumption.
+            *   exact Tx'.
+        +   assert ((S ∩ T) y) as [Sy Ty].
+            {
+                apply B_sub.
+                unfold open_ball; cbn.
+                rewrite plus_rinv.
+                rewrite <- abs_zero.
+                exact ε_pos.
+            }
+            exists y.
+            repeat split.
+            *   exact Sy.
+            *   exact y_nz.
+            *   exact Ty.
+    -   specialize (ST_ball x (make_and Sx Tx)) as [[ε ε_pos] sub].
+        pose (x' := x + ε/2 / |x| · x).
+        assert ((S ∩ T) x') as [Sx' Tx'].
+        {
+            apply sub.
+            unfold open_ball, x'; cbn.
+            rewrite neg_plus.
+            rewrite plus_lrinv.
+            rewrite abs_neg.
+            apply lem; assumption.
+        }
+        exists x'.
+        repeat split.
+        +   exact Sx'.
+        +   unfold singleton, x'.
+            rewrite <- plus_0_a_b_ba.
+            apply lem2; assumption.
+        +   exact Tx'.
 Qed.
 
 Theorem abs_seq_lim : ∀ xf x, seq_lim xf x → seq_lim (λ n, |xf n|) (|x|).
