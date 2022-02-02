@@ -83,7 +83,7 @@ Context {U} `{
     @Rdist U UP UM,
     @MultLid U UM UO,
     @MultRid U UM UO,
-    @NotTrivial U UZ UO,
+    NotTrivial U,
     @AbsDefinite U UA UZ,
     @AbsNeg U UA UN,
     @AbsTriangle U UA UP

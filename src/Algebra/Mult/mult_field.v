@@ -107,7 +107,7 @@ Context {U} `{
     @MultRid U m o,
     @MultLinv U z m o d,
     @MultRinv U z m o d,
-    @NotTrivial U z o
+    NotTrivial U
 }.
 (* end hide *)
 Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
@@ -115,7 +115,7 @@ Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
     apply rmult with a in eq.
     rewrite mult_lanni in eq.
     rewrite mult_linv in eq by exact a_nz.
-    exact (not_trivial eq).
+    exact (not_trivial_one eq).
 Qed.
 
 Theorem div_div : ∀ a, 0 ≠ a → /(/a) = a.

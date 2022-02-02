@@ -112,7 +112,8 @@ Context {U} `{
     @PlusRcancel U p,
     n : Neg U,
     @PlusLinv U p z n,
-    @PlusRinv U p z n
+    @PlusRinv U p z n,
+    NotTrivial U
 }.
 
 Global Instance plus_op_assoc : Assoc plus := {assoc := plus_assoc}.
@@ -136,6 +137,10 @@ Theorem rplus : ∀ {a b} c, a = b → a + c = b + c.
 Qed.
 Theorem lrplus : ∀ {a b c d}, a = b → c = d → a + c = b + d.
     apply lrop.
+Qed.
+
+Theorem not_trivial_zero : ∃ a, 0 ≠ a.
+    apply not_trivial2.
 Qed.
 
 (* begin hide *)

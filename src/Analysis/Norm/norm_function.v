@@ -31,7 +31,7 @@ Context {U V} `{
     @MultRid U UM UO,
     @MultLinv U UZ UM UO UD,
     @MultRinv U UZ UM UO UD,
-    @NotTrivial U UZ UO,
+    NotTrivial U,
 
     USM : ScalarMult real U,
     @ScalarComp real U real_mult_class USM,
@@ -70,7 +70,7 @@ Context {U V} `{
     @MultRid V VM VO,
     @MultLinv V VZ VM VO VD,
     @MultRinv V VZ VM VO VD,
-    @NotTrivial V VZ VO,
+    NotTrivial V,
 
     VSM : ScalarMult real V,
     @ScalarComp real V real_mult_class VSM,

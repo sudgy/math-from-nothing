@@ -41,7 +41,7 @@ Context {U V} `{
     @MultAssoc U UM,
     @MultLid U UM UO,
     @MultLinv U UZ UM UO UD,
-    @NotTrivial U UZ UO,
+    NotTrivial U,
     @Ldist U UP UM,
     @Rdist U UP UM,
 
@@ -100,7 +100,7 @@ Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_depende
         reflexivity.
     -   unfold l in eq; cbn in eq.
         rewrite ulist_prop_add in eq; cbn in eq.
-        apply not_trivial.
+        apply not_trivial_one.
         apply eq.
 Qed.
 

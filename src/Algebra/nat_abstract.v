@@ -58,7 +58,7 @@ Context {U} `{
     @OrderRmult U z m1 o,
     @OrderMultLcancel U z m1 o,
     @OrderMultRcancel U z m1 o,
-    @NotTrivial U z e,
+    NotTrivial U,
     d : Div U,
     @MultLinv U z m1 e d,
     @MultRinv U z m1 e d

@@ -35,7 +35,7 @@ Context {U} `{Up : Plus U,
                   @Connex U le,
                   @Antisymmetric U le,
                   @Transitive U le,
-                  @NotTrivial U Uz Uo
+                  NotTrivial U
               }.
 
 Local Open Scope nat_scope.
@@ -95,7 +95,7 @@ Theorem pow_not_zero_nat : ∀ a n, 0 ≠ a → 0 ≠ a ^ n.
     intros a n a_nz eq.
     nat_induction n.
     -   rewrite pow_0_nat in eq.
-        apply not_trivial.
+        apply not_trivial_one.
         exact eq.
     -   apply IHn.
         cbn in eq.

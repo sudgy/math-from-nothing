@@ -448,15 +448,14 @@ Context {U V} `{
     Reflexive V le,
     Connex V le,
     Antisymmetric V le,
-    Transitive V le
+    Transitive V le,
+    NotTrivial V
 }.
 (* end hide *)
 Hypothesis con : connected U.
-Hypothesis distinct : ∃ a b : V, a ≠ b.
 
 (* begin hide *)
-Let ot := order_topology distinct.
-Existing Instance ot.
+Existing Instance order_topology.
 (* end hide *)
 Theorem ivt : ∀ f : U → V, continuous f →
         ∀ a b r, f a < r → r < f b → ∃ c, f c = r.
@@ -519,16 +518,15 @@ Context {U V} `{
     Reflexive V le,
     Connex V le,
     Antisymmetric V le,
-    Transitive V le
+    Transitive V le,
+    NotTrivial V
 }.
 (* end hide *)
 Hypothesis com : compact U.
-Hypothesis distinct : ∃ a b : V, a ≠ b.
 Hypothesis U_inhab : U.
 
 (* begin hide *)
-Let ot := order_topology distinct.
-Existing Instance ot.
+Existing Instance order_topology.
 (* end hide *)
 Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f x <= f d.
     intros f f_cont.

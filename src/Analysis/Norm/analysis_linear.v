@@ -98,7 +98,7 @@ Theorem operator_norm_ex :
                 apply refl.
             *   rewrite <- (all_z u) in u1.
                 rewrite <- abs_zero in u1.
-                apply not_trivial in u1.
+                apply not_trivial_one in u1.
                 contradiction.
         +   exists A.
             intros x [x0|[u [x_eq u1]]].

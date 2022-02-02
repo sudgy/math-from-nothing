@@ -105,3 +105,23 @@ End Sum.
 Inductive optional (A : Type) : Type :=
   | opt_val : A → optional A
   | opt_nil : optional A.
+
+(** This doesn't really fit in Algebra so I'm putting it here.  It's an
+incredibly basic concept.
+*)
+#[universes(template)]
+Class NotTrivial U := {
+    not_trivial_a : U;
+    not_trivial_b : U;
+    not_trivial : not_trivial_a ≠ not_trivial_b;
+}.
+
+Theorem not_trivial2 {U} `{NotTrivial U} : ∀ a : U, ∃ b, a ≠ b.
+    intros a.
+    classic_case (a = not_trivial_a) as [eq|neq].
+    -   exists not_trivial_b.
+        rewrite eq.
+        apply not_trivial.
+    -   exists not_trivial_a.
+        exact neq.
+Qed.

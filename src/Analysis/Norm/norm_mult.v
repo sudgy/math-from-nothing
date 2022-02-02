@@ -33,7 +33,7 @@ Context {U} `{
     @MultRid U UM UO,
     @MultLinv U UZ UM UO UD,
     @MultRinv U UZ UM UO UD,
-    @NotTrivial U UZ UO,
+    NotTrivial U,
 
     SM : ScalarMult real U,
     @ScalarComp real U real_mult_class SM,

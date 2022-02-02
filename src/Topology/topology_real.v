@@ -7,13 +7,7 @@ Require Export topology_connected.
 Require Export real.
 Require Import order_minmax.
 
-(* begin hide *)
-Lemma real_distinct : ∃ a b : real, a ≠ b.
-    exists 0, 1.
-    exact not_trivial.
-Qed.
-(* end hide *)
-Definition real_order_topology := order_topology real_distinct.
+Definition real_order_topology := order_topology (U := real).
 
 (* begin hide *)
 Section RealOrderTopology.

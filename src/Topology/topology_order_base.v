@@ -18,23 +18,9 @@ Context {U} `{
     Reflexive U le,
     Connex U le,
     Antisymmetric U le,
-    Transitive U le
+    Transitive U le,
+    NotTrivial U
 }.
-(* end hide *)
-Hypothesis distinct : ∃ a b : U, a ≠ b.
-
-(* begin hide *)
-Lemma distinct2 : ∀ a : U, ∃ b, a ≠ b.
-    intros c.
-    destruct distinct as [a [b neq]].
-    classic_case (a = c).
-    -   subst.
-        exists b.
-        exact neq.
-    -   exists a.
-        rewrite neq_sym.
-        exact n.
-Qed.
 (* end hide *)
 Program Instance order_topology : TopologyBasis U := {
     top_basis S :=
@@ -43,7 +29,7 @@ Program Instance order_topology : TopologyBasis U := {
         (∃ a b, S = closed_open_interval a b ∧ ∀ x, a <= x)
 }.
 Next Obligation.
-    specialize (distinct2 x) as [y neq].
+    specialize (not_trivial2 x) as [y neq].
     classic_case (∀ a, a <= x) as [x_max|x_nmax].
     2: classic_case (∀ b, x <= b) as [x_min|x_nmin].
     -   exists (open_closed_interval y x).
@@ -83,10 +69,10 @@ Next Obligation.
         +   split; assumption.
 Qed.
 Next Obligation.
-    rename H6 into x1.
-    rename H7 into x2.
-    destruct H4 as [ [a [b eq1]] |[ [a [b [eq1 b_max]]] | [a [b [eq1 a_min]]] ]].
-    all: destruct H5 as [ [c [d eq2]] |[ [c [d [eq2 d_max]]] | [c [d [eq2 c_min]]] ]].
+    rename H7 into x1.
+    rename H8 into x2.
+    destruct H5 as [ [a [b eq1]] |[ [a [b [eq1 b_max]]] | [a [b [eq1 a_min]]] ]].
+    all: destruct H6 as [ [c [d eq2]] |[ [c [d [eq2 d_max]]] | [c [d [eq2 c_min]]] ]].
     all: subst.
     -   classic_case (a <= c) as [ac|ca].
         all: classic_case (b <= d) as [bd|db].
@@ -608,7 +594,7 @@ Qed.
 (* end hide *)
 Program Instance order_hausdorff : HausdorffSpace U.
 Next Obligation.
-    rename H4 into neq.
+    rename H5 into neq.
     destruct (trichotomy x1 x2) as [[ltq|eq]|ltq].
     -   exact (order_hausdorff_wlog x1 x2 ltq).
     -   contradiction.

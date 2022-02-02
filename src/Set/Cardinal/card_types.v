@@ -203,7 +203,7 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
             intro; subst a.
             rewrite mult_ranni, neg_zero in eq.
             symmetry in eq.
-            apply (not_trivial eq).
+            apply (not_trivial_one eq).
         }
         rewrite <- mult_lneg in eq.
         apply mult_1_ab_db_a in eq.

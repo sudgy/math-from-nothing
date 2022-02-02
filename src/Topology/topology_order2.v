@@ -15,14 +15,12 @@ Context {U} `{
     Antisymmetric U le,
     Transitive U le,
     SupremumComplete U le,
-    Dense U lt
+    Dense U lt,
+    NotTrivial U
 }.
 
-Hypothesis distinct : ∃ a b : U, a ≠ b.
-
 (* begin hide *)
-Let order_top := order_topology distinct.
-Existing Instance order_top.
+Existing Instance order_topology.
 Existing Instance subspace_topology.
 (* end hide *)
 Theorem complete_connected : connected U.

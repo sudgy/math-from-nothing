@@ -156,7 +156,7 @@ Context {U} `{
     @OrderRmult U z m o,
     @OrderMultLcancel U z m o,
     @OrderMultRcancel U z m o,
-    @NotTrivial U z e,
+    NotTrivial U,
     d : Div U,
     @MultLinv U z m e d
 }.
@@ -317,7 +317,7 @@ Theorem lt_mult_rcancel_neg : ∀ {a b} c, c < 0 → a * c < b * c → b < a.
 Qed.
 
 Theorem one_pos : 0 < 1.
-    split; try exact not_trivial.
+    split; [>|exact not_trivial_one].
     classic_contradiction contr.
     rewrite nle_lt in contr.
     pose proof (lt_neg _ _ contr) as eq.
@@ -408,7 +408,7 @@ Theorem square_one_one : ∀ a, a * a = 1 → a = 1 ∨ a = -(1).
     {
         subst.
         rewrite mult_ranni in eq.
-        contradiction (not_trivial eq).
+        contradiction (not_trivial_one eq).
     }
     destruct (trichotomy 0 a) as [[a_pos|a_z]|a_neg]; try contradiction.
     -   left.

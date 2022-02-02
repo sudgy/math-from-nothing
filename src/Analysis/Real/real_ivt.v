@@ -46,8 +46,7 @@ Theorem real_ivt : ∀ f : real → real, continuous f →
         -   apply refl.
     }
     pose proof (ivt
-        (closed_interval_connected real_distinct a b)
-        real_distinct
+        (closed_interval_connected a b)
         g
         g_cont
         [a|a_in]

@@ -72,7 +72,7 @@ Context {U : Type} `{
     @OrderMult U UZ UM UO,
     @OrderLmult U UZ UM UO,
     @OrderRmult U UZ UM UO,
-    @NotTrivial U UZ UE,
+    NotTrivial U,
 
     UA : AbsoluteValue U,
     @AbsDefinite U UA UZ,
@@ -96,7 +96,7 @@ Theorem abs_one : |1| = 1.
     -   exact eq.
     -   intro contr.
         apply abs_def in contr.
-        apply not_trivial in contr.
+        apply not_trivial_one in contr.
         exact contr.
 Qed.
 

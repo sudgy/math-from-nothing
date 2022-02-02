@@ -16,7 +16,8 @@ Context {U} `{
     Reflexive U le,
     Connex U le,
     Antisymmetric U le,
-    Transitive U le
+    Transitive U le,
+    NotTrivial U
 }.
 (* end hide *)
 Definition top_convex (S : U → Prop) :=
@@ -65,11 +66,8 @@ Qed.
 
 (* begin hide *)
 Context `{SupremumComplete U le, Dense U lt}.
-(* end hide *)
-Hypothesis distinct : ∃ a b : U, a ≠ b.
 
-(* begin hide *)
-Let order_top := order_topology distinct.
+Let order_top := order_topology.
 Existing Instance order_top.
 Existing Instance subspace_topology.
 

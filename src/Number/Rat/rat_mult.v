@@ -224,7 +224,7 @@ Theorem rat_not_trivial : 0 ≠ 1.
     unfold int_to_rat in contr; equiv_simpl in contr.
     rewrite mult_lanni, mult_lid in contr.
     change (nat_to_int (nat_suc 0)) with (one (U := int)) in contr.
-    apply not_trivial in contr.
+    apply not_trivial_one in contr.
     exact contr.
 Qed.
 Global Instance rat_not_trivial_class : NotTrivial rat := {

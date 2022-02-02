@@ -48,10 +48,6 @@ Class MultRcancel U `{Zero U, Mult U} := {
     mult_rcancel : ∀ {a b} c, zero ≠ c → a * c = b * c → a = b;
 }.
 
-Class NotTrivial U `{Zero U, One U} := {
-    not_trivial : zero ≠ one;
-}.
-
 Arguments mult : simpl never.
 Arguments one : simpl never.
 
@@ -149,7 +145,8 @@ Context {U} `{
     @MultLanni U z m,
     @MultRanni U z m,
     @Ldist U p m,
-    @Rdist U p m
+    @Rdist U p m,
+    NotTrivial U
 }.
 
 Global Instance mult_op_assoc : Assoc mult := {assoc := mult_assoc}.
@@ -169,6 +166,15 @@ Theorem rmult : ∀ {a b} c, a = b → a * c = b * c.
 Qed.
 Theorem lrmult : ∀ {a b c d}, a = b → c = d → a * c = b * d.
     apply lrop.
+Qed.
+
+Theorem not_trivial_one : 0 ≠ 1.
+    intros contr.
+    pose proof not_trivial_zero as [a a_nz].
+    apply rmult with a in contr.
+    rewrite mult_lanni in contr.
+    rewrite mult_lid in contr.
+    contradiction.
 Qed.
 
 (* begin hide *)
