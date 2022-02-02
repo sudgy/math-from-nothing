@@ -133,45 +133,28 @@ Theorem norm_open_limit_point : ∀ S x, open S → S x → limit_point S x.
     unfold intersects.
     apply ex_not_empty.
     pose proof (inter_open2 S T S_open T_open) as ST_open.
-    pose proof ST_open as ST_ball.
-    rewrite open_all_balls in ST_ball.
+    rewrite open_all_balls in ST_open.
     classic_case (0 = x) as [x_z|x_nz].
     -   subst x.
-        specialize (ST_open 0 (make_and Sx Tx)) as [B [B_basis [B0 B_sub]]].
-        destruct B_basis as [y [[ε ε_pos] B_eq]]; subst B.
-        classic_case (0 = y) as [y_z|y_nz].
-        +   subst y.
-            pose proof not_trivial_zero as [x x_nz].
-            pose (x' := ε / 2 / |x| · x).
-            assert ((S ∩ T) x') as [Sx' Tx'].
-            {
-                apply B_sub.
-                unfold open_ball; cbn.
-                rewrite abs_minus.
-                rewrite neg_zero, plus_rid.
-                unfold x'.
-                apply lem; assumption.
-            }
-            exists x'.
-            repeat split.
-            *   exact Sx'.
-            *   unfold singleton, x'.
-                apply lem2; assumption.
-            *   exact Tx'.
-        +   assert ((S ∩ T) y) as [Sy Ty].
-            {
-                apply B_sub.
-                unfold open_ball; cbn.
-                rewrite plus_rinv.
-                rewrite <- abs_zero.
-                exact ε_pos.
-            }
-            exists y.
-            repeat split.
-            *   exact Sy.
-            *   exact y_nz.
-            *   exact Ty.
-    -   specialize (ST_ball x (make_and Sx Tx)) as [[ε ε_pos] sub].
+        specialize (ST_open 0 (make_and Sx Tx)) as [[ε ε_pos] sub].
+        pose proof not_trivial_zero as [x x_nz].
+        pose (x' := ε / 2 / |x| · x).
+        assert ((S ∩ T) x') as [Sx' Tx'].
+        {
+            apply sub.
+            unfold open_ball; cbn.
+            rewrite abs_minus.
+            rewrite neg_zero, plus_rid.
+            unfold x'.
+            apply lem; assumption.
+        }
+        exists x'.
+        repeat split.
+        +   exact Sx'.
+        +   unfold singleton, x'.
+            apply lem2; assumption.
+        +   exact Tx'.
+    -   specialize (ST_open x (make_and Sx Tx)) as [[ε ε_pos] sub].
         pose (x' := x + ε/2 / |x| · x).
         assert ((S ∩ T) x') as [Sx' Tx'].
         {
