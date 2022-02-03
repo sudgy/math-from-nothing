@@ -62,6 +62,13 @@ Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| <= d y z.
         rewrite (d_sym y z).
         apply d_tri.
 Qed.
+
+Theorem all_lt_eq : ∀ x y, (∀ ε, 0 < ε → d x y < ε) → x = y.
+    intros x y xy_lim.
+    classic_contradiction contr.
+    specialize (xy_lim _ (d_neq_pos _ _ contr)).
+    destruct xy_lim; contradiction.
+Qed.
 (* begin hide *)
 
 End MetricBase.

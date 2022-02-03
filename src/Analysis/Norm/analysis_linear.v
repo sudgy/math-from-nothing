@@ -63,6 +63,21 @@ Record linear_map := make_linear_map {
         linear_map_f (u + v) = linear_map_f u + linear_map_f v;
 }.
 
+Theorem linear_map_eq : ∀ f g : linear_map,
+        (∀ x, linear_map_f f x = linear_map_f g x) → f = g.
+    intros [f f_scalar f_plus] [g g_scalar g_plus] eq.
+    cbn in *.
+    assert (f = g) as eq'.
+    {
+        apply functional_ext.
+        exact eq.
+    }
+    subst g.
+    rewrite (proof_irrelevance f_scalar g_scalar).
+    rewrite (proof_irrelevance f_plus g_plus).
+    reflexivity.
+Qed.
+
 Theorem linear_map_zero : ∀ f : linear_map, linear_map_f f 0 = 0.
     intros f.
     rewrite <- (scalar_lanni 0).
