@@ -225,5 +225,6 @@
 ./src/Analysis/Norm/analysis_linear.v
 ./src/Analysis/Norm/norm_function.v
 ./src/Analysis/Real/analysis_order.v
+./src/Analysis/Real/analysis_func_order.v
 ./src/Analysis/Real/real_ivt.v
 ./src/Analysis/Real/real_sqrt.v
