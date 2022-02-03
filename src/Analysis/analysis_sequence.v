@@ -131,9 +131,9 @@ Theorem converges_cauchy : ∀ f, seq_converges f → cauchy_seq f.
 Qed.
 
 Theorem limit_point_seq_ex :
-        ∀ X x, limit_point X x → ∃ f, (∀ n, X (f n)) ∧ seq_lim f x.
+        ∀ X x, limit_point X x → ∃ f, (∀ n, X (f n) ∧ x ≠ f n) ∧ seq_lim f x.
     intros X x x_lim.
-    assert (∀ n, ∃ a, open_ball x [_|real_n_div_pos n] a ∧ X a) as f_ex.
+    assert (∀ n, ∃ a, open_ball x [_|real_n_div_pos n] a ∧ X a ∧ x ≠ a) as f_ex.
     {
         intros n.
         unfold limit_point in x_lim.
@@ -142,13 +142,14 @@ Theorem limit_point_seq_ex :
         apply not_empty_ex in x_lim.
         destruct x_lim as [a [[Xa nxa] a_in]].
         exists a.
-        split; assumption.
+        unfold singleton in nxa.
+        split; [>|split]; assumption.
     }
     exists (λ n, ex_val (f_ex n)).
     split.
     -   intros n.
         rewrite_ex_val a a_H.
-        exact (rand a_H).
+        split; apply a_H.
     -   rewrite metric_seq_lim.
         intros ε ε_pos.
         pose proof (archimedean2 ε ε_pos) as [N N_lt].
@@ -156,7 +157,7 @@ Theorem limit_point_seq_ex :
         exists N.
         intros m m_geq.
         rewrite_ex_val b b_H.
-        destruct b_H as [b_in Xb].
+        destruct b_H as [b_in [Xb xb]].
         unfold open_ball in b_in; cbn in b_in.
         apply (trans b_in).
         apply (le_lt_trans2 N_lt).

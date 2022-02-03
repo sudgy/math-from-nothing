@@ -626,7 +626,7 @@ Theorem metric_compact_closed : ∀ X, compact (set_type X) → closed X.
     apply closed_limit_points.
     intros x x_lim.
     apply limit_point_seq_ex in x_lim as [f [Xf f_lim]].
-    pose (f' n := [f n | Xf n]).
+    pose (f' n := [f n | land (Xf n)]).
     specialize (X_comp f') as [g' [g'_sub [y g'_lim]]].
     pose (g n := [g' n|]).
     assert (subsequence f g) as g_sub.
