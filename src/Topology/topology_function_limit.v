@@ -111,34 +111,48 @@ Theorem func_lim_restrict : ∀ (A : U → Prop) (f : set_type A → V) c l,
         exact y_eq.
 Qed.
 
-Theorem func_lim_continuous : ∀ (f : U → V) c, limit_point all c →
-        continuous_at f c ↔ func_lim all (λ x, f [x|]) c (f c).
-    intros f c c_lim.
+Existing Instance subspace_topology.
+
+Theorem func_lim_continuous : ∀ (A : U → Prop) (f : set_type A → V) c,
+        limit_point A [c|] →
+        continuous_at f c ↔ func_lim A f [c|] (f c).
+    intros A f c c_lim.
     split.
     -   intros f_cont.
         split; [>exact c_lim|].
         intros T T_neigh.
         specialize (f_cont T T_neigh) as [S [Sc S_sub]].
-        exists S.
-        split; [>exact Sc|].
-        intros y [[x C0] [[Sx x_neq] y_eq]]; cbn in *; clear C0.
-        apply S_sub.
-        exists x.
-        split; assumption.
+        destruct Sc as [S_open Sc].
+        destruct S_open as [S' [S'_open S_eq]]; subst S.
+        exists S'.
+        split; [>split|].
+        +   exact S'_open.
+        +   exact Sc.
+        +   intros y [[x Ax] [[Sx x_neq] y_eq]]; cbn in *.
+            apply S_sub.
+            exists [x|Ax].
+            split; assumption.
     -   intros [C0 f_lim] T T_neigh; clear C0.
         specialize (f_lim T T_neigh) as [S [S_neigh S_sub]].
-        exists S.
-        split; [>exact S_neigh|].
-        intros y [x [Sx y_eq]].
-        classic_case (c = x) as [eq|neq].
-        {
-            subst x.
-            rewrite y_eq.
-            apply T_neigh.
-        }
-        apply S_sub.
-        exists [x|true]; cbn.
-        repeat split; assumption.
+        destruct S_neigh as [S_open Sc].
+        exists (to_set_type A S).
+        split; [>split|].
+        +   apply subspace_open.
+            exact S_open.
+        +   exact Sc.
+        +   intros y [x [Sx y_eq]].
+            classic_case (c = x) as [eq|neq].
+            {
+                subst x.
+                rewrite y_eq.
+                apply T_neigh.
+            }
+            apply S_sub.
+            exists x; cbn.
+            repeat split; try assumption.
+            intros contr.
+            apply set_type_eq in contr.
+            contradiction.
 Qed.
 (* begin hide *)
 End TopologyFunction.
