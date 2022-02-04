@@ -10,6 +10,7 @@ Require Import analysis_function.
 Require Import norm_function.
 Require Import analysis_func_order.
 Require Import analysis_subspace.
+Require Import analysis_continuous.
 
 (* begin hide *)
 Section AnalysisDerivative.
@@ -237,6 +238,86 @@ Theorem frechet_derivative_unique : ∀ a A B,
     rewrite mult_comm in ltq.
     rewrite mult_rlinv in ltq by apply x_nz'.
     exact ltq.
+Qed.
+
+Existing Instance subspace_metric.
+
+Theorem frechet_differentiable_continuous : ∀ a,
+        frechet_differentiable_at O f a → continuous_at f a.
+    intros a [A A_lim].
+    unfold frechet_derivative_at in A_lim.
+    pose proof (land A_lim) as Aa.
+    rewrite <- metric_subspace_topology.
+    rewrite func_lim_continuous by exact Aa.
+    pose (bf (x : set_type [O|]) := |[x|] - [a|]|).
+    assert (func_lim [O|] bf [a|] 0) as bf_lim.
+    {
+        unfold bf.
+        rewrite (abs_zero (U := U)).
+        apply abs_func_lim.
+        rewrite <- (plus_rinv [a|]).
+        apply (func_lim_plus [O|] (λ x, [x|])).
+        -   cbn.
+            apply func_lim_id.
+            exact Aa.
+        -   apply constant_func_lim.
+            exact Aa.
+    }
+    pose proof (func_lim_mult _ _ _ _ _ _ A_lim bf_lim) as lim.
+    unfold bf in lim; cbn in lim.
+    rewrite mult_lanni in lim.
+    destruct A as [A A_bounded]; cbn in *.
+    assert (func_lim [O|]
+        (λ x, |f x - f a - linear_map_f A ([x|] - [a|])|) [a|] 0) as lim1.
+    {
+        apply (func_lim_eq _ _ _ _ _ lim).
+        intros x x_neq.
+        apply mult_rlinv.
+        intros contr.
+        rewrite abs_def in contr.
+        rewrite plus_0_anb_b_a in contr.
+        contradiction.
+    }
+    clear A_lim lim.
+    apply func_lim_zero in lim1.
+    assert (func_lim [O|]
+        (λ x, linear_map_f A [x|] - linear_map_f A [a|]) [a|] 0) as lim2.
+    {
+        rewrite <- (plus_rinv (linear_map_f A [a|])).
+        apply func_lim_plus.
+        -   apply bounded_uniformly_continuous in A_bounded.
+            apply unformly_implies_continuous in A_bounded.
+            specialize (A_bounded [a|]).
+            pose (A' (x : set_type [O|]) := linear_map_f A [x|]).
+            assert (continuous_at A' a) as A'_cont.
+            {
+                unfold A'.
+                rewrite <- metric_subspace_topology.
+                apply continuous_subspace.
+                exact A_bounded.
+            }
+            rewrite <- metric_subspace_topology in A'_cont.
+            rewrite func_lim_continuous in A'_cont by exact Aa.
+            exact A'_cont.
+        -   apply constant_func_lim.
+            exact Aa.
+    }
+    pose proof (func_lim_plus _ _ _ _ _ _ lim1 lim2) as lim3; clear lim1 lim2.
+    cbn in lim3.
+    rewrite plus_rid in lim3.
+    pose proof (constant_func_lim [O|] [a|] (f a) Aa) as lim4.
+    pose proof (func_lim_plus _ _ _ _ _ _ lim3 lim4) as lim5; clear lim3 lim4.
+    cbn in lim5.
+    rewrite plus_lid in lim5.
+    apply (func_lim_eq _ _ _ _ _ lim5).
+    intros x x_neq.
+    rewrite (plus_comm [x|]).
+    rewrite linear_map_plus, linear_map_neg.
+    rewrite neg_plus, neg_neg.
+    do 2 rewrite plus_assoc.
+    rewrite plus_rlinv.
+    rewrite plus_rrinv.
+    apply plus_rlinv.
 Qed.
 (* begin hide *)
 

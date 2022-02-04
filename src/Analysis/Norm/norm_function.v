@@ -95,6 +95,30 @@ Existing Instance abs_metric.
 Definition func_bounded {A : U → Prop} (f : set_type A → V)
     := ∃ M, ∀ x, |f x| <= M.
 
+Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
+        func_lim A xf c l → func_lim A (λ x, |xf x|) c (|l|).
+    intros A xf c l xf_lim.
+    pose proof (land xf_lim) as Ac.
+    rewrite metric_func_seq_lim in xf_lim by exact Ac.
+    rewrite metric_func_seq_lim by exact Ac.
+    intros xn xnc.
+    apply abs_seq_lim.
+    apply xf_lim.
+    exact xnc.
+Qed.
+
+Theorem func_lim_zero : ∀ (A : U → Prop) (xf : set_type A → V) c,
+        func_lim A (λ x, |xf x|) c 0 → func_lim A xf c 0.
+    intros A xf c xf_lim.
+    pose proof (land xf_lim) as Ac.
+    rewrite metric_func_seq_lim in xf_lim by exact Ac.
+    rewrite metric_func_seq_lim by exact Ac.
+    intros xn xnc.
+    apply seq_lim_zero.
+    apply xf_lim.
+    exact xnc.
+Qed.
+
 Theorem func_lim_plus : ∀ (A : U → Prop) (xf yf : set_type A → V)
         (c : U) (x y : V), func_lim A xf c x → func_lim A yf c y →
         func_lim A (λ n, xf n + yf n) c (x + y).

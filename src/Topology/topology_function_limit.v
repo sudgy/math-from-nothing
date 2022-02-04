@@ -23,6 +23,21 @@ Context {U V} `{Topology U, TV : Topology V, @HausdorffSpace V TV}.
 
 Local Open Scope set_scope.
 (* end hide *)
+Theorem func_lim_eq : ∀ (A : U → Prop) (f g : set_type A → V) c l,
+        func_lim A f c l → (∀ x, c ≠ [x|] → f x = g x) → func_lim A g c l.
+    intros A f g c l [Ac A_lim] eq.
+    split; [>exact Ac|].
+    intros T Tl.
+    specialize (A_lim T Tl) as [S [Sc S_sub]].
+    exists S.
+    split; [>exact Sc|].
+    intros y [x [[Sx c_neq] eq']].
+    apply S_sub.
+    rewrite <- eq in eq' by exact c_neq.
+    exists x.
+    repeat split; assumption.
+Qed.
+
 Theorem func_lim_unique : ∀ (A : U → Prop) (f : set_type A → V) c l1 l2,
         func_lim A f c l1 → func_lim A f c l2 → l1 = l2.
     intros A f c l1 l2 [c_lim l1_lim] [c_lim' l2_lim]; clear c_lim'.
@@ -58,6 +73,18 @@ Theorem func_lim_unique : ∀ (A : U → Prop) (f : set_type A → V) c l1 l2,
         repeat split.
         +   exact S2x.
         +   exact xc.
+Qed.
+
+Theorem func_lim_id : ∀ (A : U → Prop) c, limit_point A c →
+        func_lim A (λ x, [x|]) c c.
+    intros A c Ac.
+    split; [>exact Ac|].
+    intros S Sc.
+    exists S.
+    split; [>exact Sc|].
+    intros y [x [[Sx c_neq] y_eq]].
+    rewrite y_eq.
+    exact Sx.
 Qed.
 
 Theorem constant_func_lim : ∀ (A : U → Prop) c l, limit_point A c →

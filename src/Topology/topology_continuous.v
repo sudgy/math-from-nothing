@@ -388,6 +388,21 @@ Theorem continuous_compact_image : ∀ (f : U → V), continuous f →
             exact Ax.
 Qed.
 
+Theorem continuous_subspace : ∀ (f : U → V) (S : U → Prop) x,
+        continuous_at f [x|] → continuous_at (λ x : set_type S, f [x|]) x.
+    intros f S x f_cont T T_neigh.
+    specialize (f_cont T T_neigh) as [R [Rx R_sub]].
+    exists (to_set_type S R).
+    split; [>split|].
+    -   exists R.
+        split; [>apply Rx|reflexivity].
+    -   apply Rx.
+    -   intros z [y [Ry z_eq]].
+        apply R_sub.
+        exists [y|].
+        split; assumption.
+Qed.
+
 (* begin hide *)
 End Continuous.
 
