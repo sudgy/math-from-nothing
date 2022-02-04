@@ -92,6 +92,9 @@ Context {U V} `{
 
 Existing Instance abs_metric.
 (* end hide *)
+Definition func_bounded {A : U → Prop} (f : set_type A → V)
+    := ∃ M, ∀ x, |f x| <= M.
+
 Theorem func_lim_plus : ∀ (A : U → Prop) (xf yf : set_type A → V)
         (c : U) (x y : V), func_lim A xf c x → func_lim A yf c y →
         func_lim A (λ n, xf n + yf n) c (x + y).
@@ -166,6 +169,32 @@ Theorem func_lim_div : ∀ (A : U → Prop) (xf : set_type A → V)
     apply seq_lim_div; [>|exact x_nz].
     apply cx.
     exact xnc.
+Qed.
+
+Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
+        func_bounded af → func_lim A bf c 0 → func_lim A (λ x, af x * bf x) c 0.
+    intros A af bf c [M M_bound] bf_lim.
+    pose proof (land bf_lim) as Ac.
+    rewrite metric_func_seq_lim in * by exact Ac.
+    intros xn xnc.
+    apply seq_lim_zero_mult; [>|apply bf_lim; exact xnc].
+    exists M.
+    intros n.
+    apply M_bound.
+Qed.
+
+Theorem func_lim_zero_mult2 : ∀ (A : U → Prop) (af bf : set_type A → V) c x,
+        func_lim A af c x → func_lim A bf c 0 →
+        func_lim A (λ x, af x * bf x) c 0.
+    intros A af bf c x af_lim bf_lim.
+    pose proof (land af_lim) as Ac.
+    rewrite metric_func_seq_lim in * by exact Ac.
+    intros xn xnc.
+    apply (seq_lim_zero_mult2 _ _ x).
+    -   apply af_lim.
+        exact xnc.
+    -   apply bf_lim.
+        exact xnc.
 Qed.
 (* begin hide *)
 End NormFunction.

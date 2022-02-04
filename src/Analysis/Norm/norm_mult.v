@@ -167,6 +167,60 @@ Theorem seq_lim_div : ∀ a af, seq_lim af a →
     rewrite mult_rrinv in eq by exact a_neq.
     exact eq.
 Qed.
+
+Theorem seq_lim_zero_mult : ∀ an bn, seq_norm_bounded an → seq_lim bn 0 →
+        seq_lim (λ n, an n * bn n) 0.
+    intros an bn [M M_bound] bn_zero.
+    classic_case (0 = M) as [M_z|M_nz].
+    {
+        subst M.
+        assert ((λ n, an n * bn n) = (λ n, 0)) as eq.
+        {
+            apply functional_ext.
+            intros n.
+            specialize (M_bound n).
+            apply (antisym (abs_pos _)) in M_bound.
+            rewrite abs_def in M_bound.
+            rewrite <- M_bound.
+            apply mult_lanni.
+        }
+        rewrite eq.
+        apply constant_seq_lim.
+    }
+    assert (0 < M) as M_pos.
+    {
+        split; [>|exact M_nz].
+        apply (trans2 (M_bound 0)).
+        apply abs_pos.
+    }
+    rewrite metric_seq_lim in *.
+    intros ε ε_pos.
+    pose proof (div_pos _ M_pos) as M'_pos.
+    pose proof (lt_mult _ _ ε_pos M'_pos) as ε'_pos.
+    specialize (bn_zero _ ε'_pos) as [N bn_zero].
+    exists N.
+    intros n n_geq.
+    specialize (bn_zero n n_geq).
+    cbn in *.
+    rewrite plus_lid in *.
+    rewrite abs_neg in *.
+    rewrite abs_mult.
+    specialize (M_bound n).
+    apply le_rmult_pos with (|bn n|) in M_bound; [>|apply abs_pos].
+    apply (le_lt_trans M_bound).
+    rewrite lt_mult_llmove_pos by exact M_pos.
+    rewrite mult_comm.
+    exact bn_zero.
+Qed.
+
+Theorem seq_lim_zero_mult2 : ∀ an bn x, seq_lim an x → seq_lim bn 0 →
+        seq_lim (λ n, an n * bn n) 0.
+    intros an bn x anx bn0.
+    apply seq_lim_zero_mult; [>|exact bn0].
+    apply converges_bounded.
+    exists x.
+    exact anx.
+Qed.
 (* begin hide *)
 End NormMult.
 (* end hide *)
