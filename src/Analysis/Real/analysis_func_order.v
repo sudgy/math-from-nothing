@@ -1,9 +1,6 @@
 Require Import init.
 
 Require Export analysis_norm.
-Require Import analysis_topology.
-Require Import analysis_sequence.
-Require Import analysis_function.
 Require Import analysis_order.
 
 (* begin hide *)

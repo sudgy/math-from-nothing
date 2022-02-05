@@ -4,8 +4,6 @@ Require Import order_minmax.
 Require Import plus_sum.
 
 Require Export analysis_norm.
-Require Export analysis_sequence.
-Require Import analysis_topology.
 
 Definition series {V} `{Plus V, Zero V} (a : nat → V) (n : nat) := sum a 0 n.
 

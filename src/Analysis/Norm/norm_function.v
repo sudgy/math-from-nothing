@@ -3,8 +3,6 @@ Require Import init.
 Require Import set.
 
 Require Export analysis_norm.
-Require Export analysis_function.
-Require Import analysis_topology.
 Require Import norm_mult.
 
 (* begin hide *)

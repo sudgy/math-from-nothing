@@ -5,8 +5,6 @@ Require Import plus_sum.
 Require Import mult_pow.
 
 Require Export analysis_norm.
-Require Import analysis_topology.
-Require Import analysis_sequence.
 Require Import analysis_series.
 
 (* If I ever want to do analysis on an ordered field that's not the real

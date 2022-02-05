@@ -1,6 +1,5 @@
 Require Import init.
 
-Require Import topology.
 Require Import analysis_topology.
 
 (* begin hide *)

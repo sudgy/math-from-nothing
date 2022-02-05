@@ -3,15 +3,8 @@ Require Import init.
 Require Import set.
 Require Import order_minmax.
 
-Require Export analysis_norm.
-Require Import analysis_linear.
-Require Import analysis_topology.
-Require Import analysis_function.
-Require Import norm_function.
+Require Export analysis_algebraic.
 Require Import analysis_func_order.
-Require Import analysis_subspace.
-Require Import analysis_continuous.
-Require Import analysis_scalar.
 
 (* begin hide *)
 Section AnalysisDerivative.

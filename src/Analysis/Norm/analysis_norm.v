@@ -1,8 +1,6 @@
 Require Import init.
 
-Require Export analysis_base.
-Require Import analysis_topology.
-Require Import analysis_sequence.
+Require Export analysis_basic.
 Require Export linear_bilinear.
 Require Import order_minmax.
 Require Export order_abs.

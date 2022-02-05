@@ -217,6 +217,8 @@
 ./src/Analysis/analysis_subspace.v
 ./src/Analysis/analysis_compact.v
 ./src/Analysis/analysis_function.v
+./src/Analysis/analysis_basic.v
+
 ./src/Analysis/Norm/analysis_norm.v
 ./src/Analysis/Norm/analysis_series.v
 ./src/Analysis/Norm/norm_continuous.v
@@ -225,8 +227,12 @@
 ./src/Analysis/Norm/analysis_linear.v
 ./src/Analysis/Norm/norm_function.v
 ./src/Analysis/Norm/analysis_scalar.v
-./src/Analysis/Norm/analysis_frechet_derivative.v
+./src/Analysis/Norm/analysis_algebraic.v
+
 ./src/Analysis/Real/analysis_order.v
 ./src/Analysis/Real/analysis_func_order.v
 ./src/Analysis/Real/real_ivt.v
 ./src/Analysis/Real/real_sqrt.v
+./src/Analysis/Real/analysis_real.v
+
+./src/Analysis/Differential/analysis_frechet_derivative.v

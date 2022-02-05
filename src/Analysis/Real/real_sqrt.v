@@ -1,6 +1,5 @@
 Require Import init.
 
-Require Import topology.
 Require Import analysis_topology.
 Require Import norm_mult.
 Require Import real_ivt.
@@ -10,7 +9,7 @@ Section Sqrt.
 
 Existing Instance real_order_topology.
 (* end hide *)
-Theorem sqrt_ex : ∀ a, 0 <= a → ∃ b, b * b = a ∧ 0 <= b.
+Theorem sqrt_ex : ∀ a : real, 0 <= a → ∃ b, b * b = a ∧ 0 <= b.
     intros a a_pos.
     classic_case (0 = a) as [a_z|a_nz].
     1: {
@@ -28,7 +27,7 @@ Theorem sqrt_ex : ∀ a, 0 <= a → ∃ b, b * b = a ∧ 0 <= b.
         -   apply mult_lid.
         -   apply one_pos.
     }
-    pose (f x := x*x).
+    pose (f (x : real) := x*x).
     assert (continuous f) as f_con.
     {
         intros x.
@@ -68,7 +67,8 @@ Theorem sqrt_ex : ∀ a, 0 <= a → ∃ b, b * b = a ∧ 0 <= b.
         split; apply b_eq.
 Qed.
 
-Definition sqrt (x : set_type (λ a, 0 <= a)) := ex_val (sqrt_ex [x|] [|x]).
+Definition sqrt (x : set_type (λ a : real, 0 <= a))
+    := ex_val (sqrt_ex [x|] [|x]).
 
 Theorem sqrt_squares : ∀ x, sqrt(x) * sqrt(x) = [x|].
     intros [x x_pos]; cbn.
