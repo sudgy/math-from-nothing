@@ -107,6 +107,30 @@ Qed.
 Definition zero_linear_map
     := make_linear_map (λ _, 0) zero_linear_map_scalar zero_linear_map_plus.
 
+Lemma plus_linear_map_scalar (f g : linear_map) : ∀ a v,
+        linear_map_f f (a · v) + linear_map_f g (a · v) =
+        a · (linear_map_f f v + linear_map_f g v).
+    intros a v.
+    do 2 rewrite linear_map_scalar.
+    rewrite scalar_ldist.
+    reflexivity.
+Qed.
+Lemma plus_linear_map_plus (f g : linear_map) : ∀ u v,
+        linear_map_f f (u + v) + linear_map_f g (u + v) =
+        (linear_map_f f u + linear_map_f g u) + (linear_map_f f v + linear_map_f g v).
+    intros u v.
+    do 2 rewrite linear_map_plus.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    apply plus_comm.
+Qed.
+
+Definition plus_linear_map (f g : linear_map)
+    := make_linear_map (λ x, linear_map_f f x + linear_map_f g x)
+        (plus_linear_map_scalar f g) (plus_linear_map_plus f g).
+
 Definition bounded_linear_map (f : linear_map)
     := ∃ M : real, ∀ x : U, |linear_map_f f x| <= M * |x|.
 
@@ -117,6 +141,19 @@ Theorem zero_linear_bounded : bounded_linear_map zero_linear_map.
     rewrite <- abs_zero.
     rewrite mult_lanni.
     apply refl.
+Qed.
+
+Theorem plus_linear_bounded : ∀ f g : set_type bounded_linear_map,
+        bounded_linear_map (plus_linear_map [f|] [g|]).
+    intros [f [M M_bound]] [g [N N_bound]]; cbn.
+    unfold bounded_linear_map; cbn.
+    exists (M + N).
+    intros x.
+    apply (trans (abs_tri _ _)).
+    rewrite rdist.
+    apply le_lrplus.
+    -   apply M_bound.
+    -   apply N_bound.
 Qed.
 
 Definition linear_map_bound_set (f : linear_map) (x : real)

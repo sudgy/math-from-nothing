@@ -80,13 +80,14 @@ Definition frechet_differentiable_at
     := ∃ A, frechet_derivative_at O f a A.
 
 Context (O : set_type (open (U := U))).
-Context (f : set_type [O|] → V).
+Context (f g : set_type [O|] → V).
 
 Existing Instance subspace_metric.
 
 Theorem frechet_derivative_unique : ∀ a A B,
         frechet_derivative_at O f a A → frechet_derivative_at O f a B →
         A = B.
+    clear g.
     intros a [A A_bound] [B B_bound] A_dif B_dif.
     apply set_type_eq; cbn.
     apply linear_map_eq.
@@ -395,6 +396,45 @@ Theorem frechet_derivative_constant : ∀ x a,
     rewrite <- abs_zero.
     rewrite mult_lanni.
     reflexivity.
+Qed.
+
+Theorem frechet_derivative_plus : ∀ a A B,
+        frechet_derivative_at O f a A → frechet_derivative_at O g a B →
+        frechet_derivative_at O (λ x, f x + g x) a
+            [plus_linear_map [A|] [B|] | plus_linear_bounded A B].
+    intros a A B f_lim g_lim.
+    unfold frechet_derivative_at in *; cbn.
+    pose proof (land f_lim) as Oa.
+    pose proof (func_lim_plus _ _ _ _ _ _ f_lim g_lim) as lim1.
+    clear f_lim g_lim.
+    cbn in lim1.
+    rewrite plus_rid in lim1.
+    pose proof (constant_func_lim [O|] [a|] (zero (U := real)) Oa) as lim2.
+    eapply (func_squeeze _ _ _ _ _ _ _ lim2 lim1).
+    Unshelve.
+    intros x x_neq.
+    cbn.
+    assert (0 < |[x|] - [a|]|) as xa_pos.
+    {
+        split; [>apply abs_pos|].
+        intros contr.
+        rewrite abs_def in contr.
+        rewrite plus_0_anb_b_a in contr.
+        contradiction.
+    }
+    split.
+    -   apply le_mult.
+        +   apply abs_pos.
+        +   apply div_pos.
+            exact xa_pos.
+    -   rewrite <- rdist.
+        apply le_rmult_pos; [>apply div_pos; exact xa_pos|].
+        apply (trans2 (abs_tri _ _ )).
+        do 2 rewrite neg_plus.
+        plus_bring_left (g x).
+        plus_bring_left (-g a).
+        rewrite (plus_comm (-linear_map_f _ _)).
+        apply refl.
 Qed.
 (* begin hide *)
 
