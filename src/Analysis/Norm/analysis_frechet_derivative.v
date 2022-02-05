@@ -37,6 +37,7 @@ Context {U V} `{
     @AbsTriangle U UA UP,
     @AbsPositive U UA,
     @AbsScalar U UA USM,
+    NotTrivial U,
 
     VP : Plus V,
     VZ : Zero V,
@@ -344,6 +345,33 @@ Theorem frechet_differentiable_continuous : ∀ a,
     rewrite plus_rlinv.
     rewrite plus_rrinv.
     apply plus_rlinv.
+Qed.
+
+Theorem frechet_derivative_linear : ∀ (F : set_type bounded_linear_map) a,
+        frechet_derivative_at [_|all_open] (λ x, linear_map_f [F|] [x|]) a F.
+    intros [F F_bound] [a a_in].
+    unfold frechet_derivative_at; cbn.
+    clear F_bound a_in.
+    assert (limit_point all a) as a_lim.
+    {
+        apply norm_open_limit_point.
+        -   apply all_open.
+        -   exact true.
+    }
+    pose proof (constant_func_lim all a (zero (U := real)) a_lim) as lim.
+    apply (func_lim_eq _ _ _ _ _ lim).
+    intros [x x_in] x_neq; cbn in *.
+    clear x_in.
+    rewrite linear_map_plus.
+    rewrite linear_map_neg.
+    rewrite neg_plus, neg_neg.
+    rewrite (plus_comm (linear_map_f F x)).
+    rewrite plus_assoc.
+    rewrite plus_rrinv.
+    rewrite plus_linv.
+    rewrite <- abs_zero.
+    rewrite mult_lanni.
+    reflexivity.
 Qed.
 (* begin hide *)
 
