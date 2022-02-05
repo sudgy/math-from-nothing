@@ -93,8 +93,31 @@ Theorem linear_map_neg : ∀ f : linear_map, ∀ x,
     apply scalar_neg_one.
 Qed.
 
+Lemma zero_linear_map_scalar : ∀ a (v : U), 0 = a · 0.
+    intros a v.
+    rewrite scalar_ranni.
+    reflexivity.
+Qed.
+Lemma zero_linear_map_plus : ∀ (u v : U), 0 = 0 + 0.
+    intros a v.
+    rewrite plus_lid.
+    reflexivity.
+Qed.
+
+Definition zero_linear_map
+    := make_linear_map (λ _, 0) zero_linear_map_scalar zero_linear_map_plus.
+
 Definition bounded_linear_map (f : linear_map)
     := ∃ M : real, ∀ x : U, |linear_map_f f x| <= M * |x|.
+
+Theorem zero_linear_bounded : bounded_linear_map zero_linear_map.
+    exists 0.
+    intros x.
+    cbn.
+    rewrite <- abs_zero.
+    rewrite mult_lanni.
+    apply refl.
+Qed.
 
 Definition linear_map_bound_set (f : linear_map) (x : real)
     := x = 0 ∨ ∃ u, |linear_map_f f u| = x ∧ |u| = 1.

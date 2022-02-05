@@ -373,6 +373,29 @@ Theorem frechet_derivative_linear : ∀ (F : set_type bounded_linear_map) a,
     rewrite mult_lanni.
     reflexivity.
 Qed.
+
+Theorem frechet_derivative_constant : ∀ x a,
+        frechet_derivative_at [_|all_open] (λ _, x) a
+            [zero_linear_map|zero_linear_bounded].
+    intros x [a a_in].
+    unfold frechet_derivative_at; cbn.
+    clear a_in.
+    assert (limit_point all a) as a_lim.
+    {
+        apply norm_open_limit_point.
+        -   apply all_open.
+        -   exact true.
+    }
+    pose proof (constant_func_lim all a (zero (U := real)) a_lim) as lim.
+    apply (func_lim_eq _ _ _ _ _ lim).
+    intros [y y_in] y_neq; cbn in *.
+    clear y_in.
+    rewrite neg_zero, plus_rid.
+    rewrite plus_rinv.
+    rewrite <- abs_zero.
+    rewrite mult_lanni.
+    reflexivity.
+Qed.
 (* begin hide *)
 
 End AnalysisDerivative.
