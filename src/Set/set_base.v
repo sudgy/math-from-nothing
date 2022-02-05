@@ -526,6 +526,15 @@ Global Instance set_minus_rinv : Rinv set_minus := {
     rinv := set_minus_inv
 }.
 (* end hide *)
+Theorem set_minus_twice : ∀ S T : U → Prop, S - T - T = S - T.
+    intros S T.
+    apply antisym.
+    -   intros x [[Sx Tx] Tx'].
+        split; assumption.
+    -   intros x [Sx Tx].
+        split; [>split|]; assumption.
+Qed.
+
 Theorem symdif_formula : ∀ S T : U → Prop, S + T = (S ∪ T) - (S ∩ T).
     intros S T.
     unfold symmetric_difference.

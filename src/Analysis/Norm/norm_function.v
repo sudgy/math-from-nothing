@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Import set.
+Require Import order_minmax.
 
 Require Export analysis_norm.
 Require Import norm_mult.
@@ -92,6 +93,99 @@ Existing Instance abs_metric.
 (* end hide *)
 Definition func_bounded {A : U → Prop} (f : set_type A → V)
     := ∃ M, ∀ x, |f x| <= M.
+
+Definition func_bounded_around {A : U → Prop} (f : set_type A → V) a
+    := ∃ ε M, ∀ x, a ≠ [x|] → open_ball a ε [x|] → |f x| <= M.
+
+Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c l,
+        func_lim A f c l → func_bounded_around f c.
+    intros A f c l f_lim.
+    pose proof (land f_lim) as Ac.
+    rewrite metric_func_seq_lim in f_lim; [>|exact Ac].
+    unfold func_bounded_around.
+    classic_contradiction contr.
+    rewrite not_ex in contr.
+    setoid_rewrite not_ex in contr.
+    setoid_rewrite not_all in contr.
+    assert (∀ ε a, ∃ x, c ≠ [x|] ∧ open_ball c ε [x|] ∧ a < |l-f x|) as contr'.
+    {
+        intros ε a.
+        specialize (contr ε (a + |l|)) as [x contr].
+        do 2 rewrite not_impl in contr.
+        rewrite nle_lt in contr.
+        destruct contr as [x_neq [x_lt ltq]].
+        exists x.
+        split; [>|split]; [>exact x_neq|exact x_lt|].
+        rewrite lt_plus_lrmove in ltq.
+        apply (lt_le_trans2 (abs_le_pos _)) in ltq.
+        apply (lt_le_trans ltq).
+        rewrite abs_minus.
+        apply abs_reverse_tri.
+    }
+    pose (a' n := ex_val (contr' [_|real_n_div_pos n] 1)).
+    assert (∀ n, (A - singleton c)%set [a' n|]) as a_in.
+    {
+        intros n.
+        split.
+        -   exact [|a' n].
+        -   unfold singleton; intros eq.
+            unfold a' in eq.
+            rewrite_ex_val x [x_neq xH].
+            contradiction.
+    }
+    pose (a n := [_|a_in n]).
+    specialize (f_lim a).
+    assert (seq_lim (λ n, [a n|]) c) as c_lim.
+    {
+        unfold a, a'; cbn.
+        rewrite metric_seq_lim.
+        intros ε ε_pos.
+        pose proof (archimedean2 ε ε_pos) as [N N_ltq].
+        exists N.
+        intros n n_geq.
+        rewrite_ex_val x [x_neq [x_lt fx_gt]].
+        unfold open_ball in x_lt; cbn in x_lt.
+        cbn.
+        apply (trans x_lt).
+        apply (le_lt_trans2 N_ltq).
+        rewrite nat_to_abstract_real.
+        apply le_div_pos; [>apply real_n_pos|].
+        rewrite nat_to_real_le.
+        rewrite nat_sucs_le.
+        exact n_geq.
+    }
+    specialize (f_lim c_lim).
+    rewrite metric_seq_lim in f_lim.
+    specialize (f_lim 1 one_pos) as [N f_lim].
+    specialize (f_lim N (refl _)).
+    cbn in f_lim.
+    unfold a' in f_lim.
+    unpack_ex_val x x_eq [x_neq [x_lt ltq]].
+    pose proof (trans f_lim ltq) as ltq'.
+    subst x.
+    apply ltq'.
+    apply f_equal.
+    apply f_equal.
+    apply f_equal.
+    apply f_equal.
+    apply set_type_eq; reflexivity.
+Qed.
+
+Theorem func_bounded_around_plus : ∀ (A : U → Prop) (xf yf : set_type A → V) a,
+        func_bounded_around xf a → func_bounded_around yf a →
+        func_bounded_around (λ x, xf x + yf x) a.
+    intros A xf yf a [ε1 [M M_bound]] [ε2 [N N_bound]].
+    exists (min ε1 ε2), (M + N).
+    intros x x_neq x_in.
+    apply (trans (abs_tri _ _)).
+    apply le_lrplus.
+    -   apply M_bound; [>exact x_neq|].
+        apply (lt_le_trans x_in).
+        exact (lmin ε1 ε2).
+    -   apply N_bound; [>exact x_neq|].
+        apply (lt_le_trans x_in).
+        exact (rmin ε1 ε2).
+Qed.
 
 Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
         func_lim A xf c l → func_lim A (λ x, |xf x|) c (|l|).
@@ -194,15 +288,46 @@ Theorem func_lim_div : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
-        func_bounded af → func_lim A bf c 0 → func_lim A (λ x, af x * bf x) c 0.
-    intros A af bf c [M M_bound] bf_lim.
+        func_bounded_around af c → func_lim A bf c 0 →
+        func_lim A (λ x, af x * bf x) c 0.
+    intros A af bf c [[ε ε_pos] [M' M'_bound]] bf_lim.
+    assert (∃ M, ∀ x, open_ball c [ε|ε_pos] [x|] → |af x| <= M) as [M M_bound].
+    {
+        classic_case (A c) as [Ac|Anc].
+        -   exists (max M' (|af [c|Ac]|)).
+            intros [x Ax] x_in.
+            classic_case (c = x) as [eq|neq].
+            +   subst x.
+                rewrite (proof_irrelevance _ Ac).
+                apply rmax.
+            +   apply (trans2 (lmax _ _)).
+                apply M'_bound.
+                *   exact neq.
+                *   exact x_in.
+        -   exists M'.
+            intros x.
+            apply M'_bound.
+            intros contr.
+            subst c.
+            apply Anc.
+            exact [|x].
+    }
     pose proof (land bf_lim) as Ac.
     rewrite metric_func_seq_lim in * by exact Ac.
     intros xn xnc.
-    apply seq_lim_zero_mult; [>|apply bf_lim; exact xnc].
-    exists M.
-    intros n.
-    apply M_bound.
+    pose proof xnc as x_lt.
+    rewrite metric_seq_lim in xnc.
+    specialize (xnc ε ε_pos) as [N xnc].
+    rewrite (seq_lim_part _ N) in x_lt.
+    rewrite (seq_lim_part _ N).
+    apply seq_lim_zero_mult.
+    -   exists M.
+        intros n.
+        apply M_bound.
+        apply xnc.
+        apply nat_le_self_lplus.
+    -   apply bf_lim.
+        exact x_lt.
 Qed.
 
 Theorem func_lim_zero_mult2 : ∀ (A : U → Prop) (af bf : set_type A → V) c x,
