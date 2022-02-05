@@ -11,6 +11,7 @@ Require Import norm_function.
 Require Import analysis_func_order.
 Require Import analysis_subspace.
 Require Import analysis_continuous.
+Require Import analysis_scalar.
 
 (* begin hide *)
 Section AnalysisDerivative.
@@ -80,6 +81,8 @@ Definition frechet_differentiable_at
 Context (O : set_type (open (U := U))).
 Context (f : set_type [O|] → V).
 
+Existing Instance subspace_metric.
+
 Theorem frechet_derivative_unique : ∀ a A B,
         frechet_derivative_at O f a A → frechet_derivative_at O f a B →
         A = B.
@@ -102,145 +105,168 @@ Theorem frechet_derivative_unique : ∀ a A B,
     unfold frechet_derivative_at in *; cbn in *.
     clear A_bound B_bound.
     pose proof (land A_dif) as Oa.
-    rewrite metric_func_lim in A_dif, B_dif by exact Oa.
-    apply all_lt_eq.
-    intros ε ε_pos.
-    cbn.
-    assert (0 < ε / |x|) as ε'_pos.
+    assert (func_lim [O|] (λ x, | -f x + f a + linear_map_f B ([x|] - [a|])|
+        / |[x|] - [a|]|) [a|] 0) as B_dif'.
     {
-        apply lt_mult; [>exact ε_pos|].
-        apply div_pos.
-        split; [>apply abs_pos|exact x_nz'].
+        apply (func_lim_eq _ _ _ _ _ B_dif).
+        intros y y_neq.
+        rewrite <- abs_neg.
+        do 2 rewrite neg_plus.
+        do 2 rewrite neg_neg.
+        reflexivity.
     }
-    pose proof (half_pos _ ε'_pos) as ε2_pos.
-    specialize (A_dif _ ε2_pos) as [δ1 [δ1_pos A_dif]].
-    specialize (B_dif _ ε2_pos) as [δ2 [δ2_pos B_dif]].
+    pose proof (func_lim_plus _ _ _ _ _ _ A_dif B_dif') as lim1.
+    clear A_dif B_dif B_dif'.
+    cbn in lim1.
+    rewrite plus_rid in lim1.
+    assert (func_lim [O|] (λ x,
+        |linear_map_f B ([x|] - [a|]) - linear_map_f A ([x|] - [a|])|
+        / |[x|] - [a|]|) [a|] 0) as lim2.
+    {
+        pose proof (constant_func_lim [O|] [a|] (zero (U := real)) Oa) as lim2.
+        eapply (func_squeeze _ _ _ _ _ _ _ lim2 lim1).
+        Unshelve.
+        intros y y_neq; cbn.
+        assert (0 < |[y|] - [a|]|) as ya_pos.
+        {
+            split; [>apply abs_pos|].
+            intros contr.
+            rewrite abs_def in contr.
+            rewrite plus_0_anb_b_a in contr.
+            contradiction.
+        }
+        split.
+        -   apply le_mult.
+            +   apply abs_pos.
+            +   apply div_pos.
+                exact ya_pos.
+        -   rewrite <- rdist.
+            apply le_rmult_pos; [>apply div_pos; exact ya_pos|].
+            apply (trans2 (abs_tri _ _)).
+            rewrite <- (plus_assoc (f y)).
+            rewrite (plus_comm (f y)).
+            do 2 rewrite plus_assoc.
+            rewrite <- (plus_assoc _ (f y)).
+            rewrite plus_rinv, plus_rid.
+            rewrite (plus_comm (-f a)).
+            rewrite plus_rlinv.
+            rewrite plus_comm.
+            apply refl.
+    }
+    clear lim1.
     pose proof [|O] as O_open.
     rewrite open_all_balls in O_open.
-    specialize (O_open [a|] [|a]) as [[δ3 δ3_pos] sub].
-    pose (δ := min (min δ1 δ2) δ3).
-    assert (0 < δ) as δ_pos.
+    specialize (O_open [a|] [|a]) as [[ε ε_pos] sub].
+    pose (εS (t : real) := 0 ≠ t ∧ |t| < ε / |x|).
+    pose (g' (t : set_type εS) := [a|] + [t|] · x).
+    assert (∀ t, [O|] (g' t)) as g_in.
     {
-        unfold δ, min.
-        case_if; [>case_if|]; assumption.
-    }
-    pose (x' := (δ/2) / |x| · x).
-    pose (x'' := [a|] + x').
-    assert (d x'' [a|] < δ) as x_lt.
-    {
-        unfold x'', x'; cbn.
-        rewrite abs_minus.
+        intros [t [t_nz t_lt]].
+        apply sub.
+        unfold open_ball, g'; cbn.
         rewrite neg_plus.
         rewrite plus_lrinv.
         rewrite abs_neg.
         rewrite abs_scalar.
-        rewrite abs_mult.
-        rewrite <- abs_div by apply x_nz'.
-        rewrite abs_abs.
-        rewrite mult_rlinv by exact x_nz'.
-        rewrite abs_pos_eq by (apply half_pos; exact δ_pos).
-        rewrite <- lt_mult_rrmove_pos by apply two_pos.
-        rewrite ldist.
-        rewrite mult_rid.
-        rewrite <- lt_plus_0_a_b_ab.
-        exact δ_pos.
+        rewrite lt_mult_lrmove_pos.
+        -   exact t_lt.
+        -   split; [>apply abs_pos|exact x_nz'].
     }
-    assert ([O|] x'') as Ox.
+    pose (g t := [_|g_in t]).
+    assert (limit_point εS 0) as εS0.
     {
-        apply sub.
-        unfold open_ball.
-        rewrite d_sym.
-        apply (lt_le_trans x_lt); cbn.
-        apply rmin.
+        assert (0 < ε / |x|) as ε'_pos.
+        {
+            apply lt_mult.
+            -   exact ε_pos.
+            -   apply div_pos.
+                split; [>apply abs_pos|exact x_nz'].
+        }
+        assert (limit_point (open_ball (zero (U := real)) [_|ε'_pos]) 0)
+            as εS0.
+        {
+            apply norm_open_limit_point.
+            -   apply open_ball_open.
+            -   unfold open_ball; cbn.
+                rewrite neg_zero, plus_rid, <- abs_zero.
+                exact ε'_pos.
+        }
+        eapply (limit_point_sub _ _ _ _ εS0).
+        Unshelve.
+        intros y [y_lt y_nz].
+        split.
+        -   exact y_nz.
+        -   unfold open_ball in y_lt; cbn in y_lt.
+            rewrite plus_lid, abs_neg in y_lt.
+            exact y_lt.
     }
-    assert (x'' - [a|] = x') as xa_eq.
+    assert (func_lim _ g 0 a) as g_lim.
     {
-        unfold x''.
-        rewrite plus_comm.
-        apply plus_llinv.
+        unfold g, g'.
+        rewrite <- metric_subspace_topology.
+        apply func_lim_subset; cbn.
+        rewrite <- (plus_rid [a|]) at 1.
+        apply func_lim_plus.
+        -   apply constant_func_lim.
+            exact εS0.
+        -   rewrite <- (scalar_lanni x).
+            apply (func_lim_scalar2 εS (λ n, [n|])).
+            +   apply func_lim_id.
+                exact εS0.
+            +   apply constant_func_lim.
+                exact εS0.
     }
-    assert (x'' ≠ [a|]) as x_neq.
-    {
-        unfold x''.
-        intros contr.
-        symmetry in contr.
+    rewrite <- metric_subspace_topology in g_lim.
+    epose proof (func_lim_compose2 _ _ _ _ _ _ _ _ g_lim lim2) as lim3.
+    Unshelve.
+    2: {
+        intros [t [t_nz t_lt]] contr.
+        unfold g, g' in contr; cbn in contr.
+        apply eq_set_type in contr; cbn in contr.
         rewrite <- plus_0_a_b_ba in contr.
-        unfold x' in contr.
         rewrite <- (scalar_lanni x) in contr.
         apply scalar_rcancel in contr; [>|exact x_nz].
-        rewrite <- mult_lrmove in contr by exact x_nz'.
-        rewrite <- mult_lrmove in contr by apply two_pos.
-        do 2 rewrite mult_lanni in contr.
-        destruct δ_pos; contradiction.
-    }
-    assert (0 < |x'' - [a|]|) as x_neq'.
-    {
-        split; [>apply abs_pos|].
-        intros contr.
-        rewrite abs_def in contr.
-        rewrite plus_0_anb_a_b in contr.
         contradiction.
     }
-    assert (d x'' [a|] < δ1) as x_lt1.
+    clear lim2.
+    cbn in lim3.
+    unfold g' in lim3.
+    pose proof (constant_func_lim εS 0 (|x|) εS0) as lim4.
+    pose proof (func_lim_mult _ _ _ _ _ _ lim3 lim4) as lim5.
+    cbn in lim5.
+    clear lim3 lim4 g_lim.
+    rewrite mult_lanni in lim5.
+    assert (func_lim εS (λ _, |linear_map_f B x - linear_map_f A x|) 0 0)
+        as lim6.
     {
-        apply (lt_le_trans x_lt).
-        apply (trans (lmin _ _)).
-        apply lmin.
+        apply (func_lim_eq _ _ _ _ _ lim5).
+        intros y y_nz.
+        rewrite (plus_comm [a|]).
+        rewrite plus_rrinv.
+        do 2 rewrite linear_map_scalar.
+        rewrite <- scalar_rneg.
+        rewrite <- scalar_ldist.
+        do 2 rewrite abs_scalar.
+        assert (0 ≠ |[y|]|) as y_nz'.
+        {
+            intros contr.
+            rewrite abs_def in contr.
+            contradiction.
+        }
+        rewrite div_mult by assumption.
+        rewrite mult_assoc.
+        rewrite mult_rlinv by exact x_nz'.
+        rewrite (mult_comm (|[y|]|)).
+        apply mult_rrinv.
+        exact y_nz'.
     }
-    assert (d x'' [a|] < δ2) as x_lt2.
-    {
-        apply (lt_le_trans x_lt).
-        apply (trans (lmin _ _)).
-        apply rmin.
-    }
-    specialize (A_dif [x''|Ox] x_neq x_lt1).
-    specialize (B_dif [x''|Ox] x_neq x_lt2).
-    cbn in *.
-    rewrite neg_zero, plus_rid in A_dif, B_dif.
-    pose proof (lt_lrplus A_dif B_dif) as ltq.
-    rewrite plus_half in ltq.
-    rewrite <- (abs_neg (f [x'' | Ox] - _ - _)) in ltq.
-    do 2 rewrite abs_mult in ltq.
-    rewrite <- abs_div in ltq by apply x_neq'.
-    do 3 rewrite abs_abs in ltq.
-    rewrite <- rdist in ltq.
-    rewrite <- lt_mult_rrmove_pos in ltq by exact x_neq'.
-    apply (le_lt_trans (abs_tri _ _)) in ltq.
-    rewrite xa_eq in ltq.
-    do 2 rewrite neg_plus in ltq.
-    do 2 rewrite neg_neg in ltq.
-    rewrite <- (plus_assoc (-f [x'' | Ox])) in ltq.
-    rewrite (plus_comm (-f [x'' | Ox])) in ltq.
-    do 2 rewrite plus_assoc in ltq.
-    rewrite <- (plus_assoc _ (-f [x'' | Ox])) in ltq.
-    rewrite plus_linv in ltq.
-    rewrite plus_rid in ltq.
-    rewrite <- (plus_assoc (f a)) in ltq.
-    rewrite (plus_comm _ (-f a)) in ltq.
-    rewrite plus_lrinv in ltq.
-    unfold x' in ltq.
-    do 2 rewrite linear_map_scalar in ltq.
-    rewrite <- scalar_rneg in ltq.
-    rewrite <- scalar_ldist in ltq.
-    do 2 rewrite abs_scalar in ltq.
-    rewrite (mult_comm (ε / |x|)) in ltq.
-    rewrite <- (mult_assoc _ (|x|)) in ltq.
-    apply lt_mult_lcancel_pos in ltq.
-    2: {
-        split; [>apply abs_pos|].
-        intros contr.
-        rewrite abs_def in contr.
-        rewrite <- mult_lrmove in contr by exact x_nz'.
-        rewrite <- mult_lrmove in contr by apply two_pos.
-        do 2 rewrite mult_lanni in contr.
-        destruct δ_pos; contradiction.
-    }
-    rewrite mult_comm in ltq.
-    rewrite mult_rlinv in ltq by apply x_nz'.
-    exact ltq.
+    pose proof (constant_func_lim εS 0 (|linear_map_f B x - linear_map_f A x|)
+        εS0) as lim7.
+    pose proof (func_lim_unique _ _ _ _ _ lim6 lim7) as eq.
+    rewrite abs_def in eq.
+    rewrite plus_0_anb_b_a in eq.
+    exact eq.
 Qed.
-
-Existing Instance subspace_metric.
 
 Theorem frechet_differentiable_continuous : ∀ a,
         frechet_differentiable_at O f a → continuous_at f a.

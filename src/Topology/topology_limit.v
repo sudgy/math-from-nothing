@@ -105,7 +105,8 @@ Theorem limit_point_closure : ∀ A x, limit_point A x → closure A x.
     exact x_lim.
 Qed.
 
-Theorem limit_point_sub : ∀ A B x, A ⊆ B → limit_point A x → limit_point B x.
+Theorem limit_point_sub : ∀ A B x,
+        (A - singleton x) ⊆ B → limit_point A x → limit_point B x.
     intros A B x sub A_lim S S_open Sx.
     specialize (A_lim S S_open Sx).
     apply not_empty_ex in A_lim.
@@ -113,7 +114,7 @@ Theorem limit_point_sub : ∀ A B x, A ⊆ B → limit_point A x → limit_point
     apply ex_not_empty.
     exists y.
     repeat split.
-    -   exact (sub y Ay).
+    -   exact (sub y (make_and Ay yx)).
     -   exact yx.
     -   exact Sy.
 Qed.

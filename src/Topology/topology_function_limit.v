@@ -181,6 +181,23 @@ Theorem func_lim_continuous : ∀ (A : U → Prop) (f : set_type A → V) c,
             apply set_type_eq in contr.
             contradiction.
 Qed.
+
+Theorem func_lim_subset : ∀ (A : U → Prop) (B : V → Prop)
+        (f : set_type A → set_type B) c l,
+        func_lim A (λ x, [f x|]) c [l|] → func_lim A f c l.
+    intros A B f c l [Ac lim].
+    split; [>exact Ac|].
+    intros T' [[T [T_open T'_eq]] Tl]; subst T'.
+    specialize (lim T (make_and T_open Tl)) as [S [Sc S_sub]].
+    exists S.
+    split; [>exact Sc|].
+    intros y [[x Ax] [[Sx c_neq] y_eq]]; cbn in *.
+    unfold to_set_type; cbn.
+    apply S_sub.
+    exists [x|Ax]; cbn.
+    apply eq_set_type in y_eq.
+    repeat split; assumption.
+Qed.
 (* begin hide *)
 End TopologyFunction.
 
