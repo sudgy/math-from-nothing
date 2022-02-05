@@ -43,7 +43,7 @@ Theorem func_lim_le : ∀ (A : U → Prop) (xf yf : set_type A → real) c x y,
 Qed.
 
 Theorem func_squeeze : ∀ (A : U → Prop) (af bf cf : set_type A → real) c l,
-        (∀ x, af x <= bf x ∧ bf x <= cf x) →
+        (∀ x, c ≠ [x|] → af x <= bf x ∧ bf x <= cf x) →
         func_lim A af c l → func_lim A cf c l → func_lim A bf c l.
     intros A af bf cf c l leq al cl.
     pose proof (land al) as Ac.
@@ -55,6 +55,8 @@ Theorem func_squeeze : ∀ (A : U → Prop) (af bf cf : set_type A → real) c l
     Unshelve.
     intros n.
     apply leq.
+    cbn.
+    apply [|xn n].
 Qed.
 (* begin hide *)
 
