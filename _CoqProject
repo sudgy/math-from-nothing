@@ -13,6 +13,7 @@
 ./src/Init/ext_rewrite.v
 ./src/Init/logic.v
 ./src/Init/tactics.v
+./src/Init/tlc_tactics.v
 ./src/Init/types.v
 ./src/Init/init.v
 
