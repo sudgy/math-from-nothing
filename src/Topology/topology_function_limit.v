@@ -5,16 +5,22 @@ Require Import topology_axioms.
 Require Import topology_continuous.
 Require Import topology_subspace.
 
-Definition func_lim {U V} `{Topology U, Topology V}
-    (A : U → Prop)
+Definition func_lim_base {U V} `{Topology U, Topology V}
+    {A : U → Prop}
     (f : set_type A → V)
     (c : U)
     (l : V)
     :=
-    limit_point A c ∧
     ∀ T : V → Prop, neighborhood l T →
         ∃ S : U → Prop, neighborhood c S ∧
             image_under f (λ x, S [x|] ∧ c ≠ [x|]) ⊆ T.
+
+Definition func_lim {U V} `{Topology U, Topology V}
+    {A : U → Prop}
+    (f : set_type A → V)
+    (c : U)
+    (l : V)
+    := limit_point A c ∧ func_lim_base f c l.
 
 (* begin hide *)
 Section TopologyFunction.
@@ -23,10 +29,10 @@ Context {U V} `{Topology U, TV : Topology V, @HausdorffSpace V TV}.
 
 Local Open Scope set_scope.
 (* end hide *)
+
 Theorem func_lim_eq : ∀ (A : U → Prop) (f g : set_type A → V) c l,
-        func_lim A f c l → (∀ x, c ≠ [x|] → f x = g x) → func_lim A g c l.
-    intros A f g c l [Ac A_lim] eq.
-    split; [>exact Ac|].
+        func_lim_base f c l → (∀ x, c ≠ [x|] → f x = g x) → func_lim_base g c l.
+    intros A f g c l A_lim eq.
     intros T Tl.
     specialize (A_lim T Tl) as [S [Sc S_sub]].
     exists S.
@@ -38,9 +44,10 @@ Theorem func_lim_eq : ∀ (A : U → Prop) (f g : set_type A → V) c l,
     repeat split; assumption.
 Qed.
 
-Theorem func_lim_unique : ∀ (A : U → Prop) (f : set_type A → V) c l1 l2,
-        func_lim A f c l1 → func_lim A f c l2 → l1 = l2.
-    intros A f c l1 l2 [c_lim l1_lim] [c_lim' l2_lim]; clear c_lim'.
+Theorem func_lim_unique : ∀ {A : U → Prop} (f : set_type A → V) c l1 l2,
+        limit_point A c →
+        func_lim_base f c l1 → func_lim_base f c l2 → l1 = l2.
+    intros A f c l1 l2 c_lim l1_lim l2_lim.
     classic_contradiction contr.
     pose proof (hausdorff_space l1 l2 contr)
         as [T1 [T2 [T1_open [T2_open [Tl1 [Tl2 T12]]]]]].
@@ -75,11 +82,9 @@ Theorem func_lim_unique : ∀ (A : U → Prop) (f : set_type A → V) c l1 l2,
         +   exact xc.
 Qed.
 
-Theorem func_lim_id : ∀ (A : U → Prop) c, limit_point A c →
-        func_lim A (λ x, [x|]) c c.
-    intros A c Ac.
-    split; [>exact Ac|].
-    intros S Sc.
+Theorem func_lim_id : ∀ (A : U → Prop) c,
+        func_lim_base (λ x : set_type A, [x|]) c c.
+    intros A c S Sc.
     exists S.
     split; [>exact Sc|].
     intros y [x [[Sx c_neq] y_eq]].
@@ -87,11 +92,9 @@ Theorem func_lim_id : ∀ (A : U → Prop) c, limit_point A c →
     exact Sx.
 Qed.
 
-Theorem constant_func_lim : ∀ (A : U → Prop) c l, limit_point A c →
-        func_lim A (λ _, l) c l.
-    intros A c l Ac.
-    split; [>exact Ac|].
-    intros T Tl.
+Theorem constant_func_lim : ∀ (A : U → Prop) c l,
+        func_lim_base (λ _ : set_type A, l) c l.
+    intros A c l T Tl.
     exists all.
     split.
     -   split.
@@ -103,9 +106,9 @@ Theorem constant_func_lim : ∀ (A : U → Prop) c l, limit_point A c →
 Qed.
 
 Theorem func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        func_lim A f c l → ∀ xn : nat → set_type (A - singleton c),
+        func_lim_base f c l → ∀ xn : nat → set_type (A - singleton c),
         seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l.
-    intros A f c l [c_lim cl] xn xn_lim.
+    intros A f c l cl xn xn_lim.
     intros T T_open Tl.
     specialize (cl T (make_and T_open Tl)) as [S [[S_open Sc] S_sub]].
     specialize (xn_lim S S_open Sc) as [N xn_lim].
@@ -120,11 +123,9 @@ Theorem func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
 Qed.
 
 Theorem func_lim_restrict : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        func_lim A f c l → ∀ (B : U → Prop), limit_point (A ∩ B) c →
-        func_lim (A ∩ B) (λ x, f [[x|] | land [|x]]) c l.
-    intros A f c l [c_lim Af] B c_lim'.
-    split; [>exact c_lim'|].
-    intros T Tl.
+        func_lim_base f c l → ∀ (B : U → Prop),
+        func_lim_base (λ x : set_type (A ∩ B), f [[x|] | land [|x]]) c l.
+    intros A f c l Af B T Tl.
     specialize (Af T Tl) as [S [Sc S_sub]].
     exists S.
     split; [>exact Sc|].
@@ -141,13 +142,10 @@ Qed.
 Existing Instance subspace_topology.
 
 Theorem func_lim_continuous : ∀ (A : U → Prop) (f : set_type A → V) c,
-        limit_point A [c|] →
-        continuous_at f c ↔ func_lim A f [c|] (f c).
-    intros A f c c_lim.
+        continuous_at f c ↔ func_lim_base f [c|] (f c).
+    intros A f c.
     split.
-    -   intros f_cont.
-        split; [>exact c_lim|].
-        intros T T_neigh.
+    -   intros f_cont T T_neigh.
         specialize (f_cont T T_neigh) as [S [Sc S_sub]].
         destruct Sc as [S_open Sc].
         destruct S_open as [S' [S'_open S_eq]]; subst S.
@@ -159,7 +157,7 @@ Theorem func_lim_continuous : ∀ (A : U → Prop) (f : set_type A → V) c,
             apply S_sub.
             exists [x|Ax].
             split; assumption.
-    -   intros [C0 f_lim] T T_neigh; clear C0.
+    -   intros f_lim T T_neigh.
         specialize (f_lim T T_neigh) as [S [S_neigh S_sub]].
         destruct S_neigh as [S_open Sc].
         exists (to_set_type A S).
@@ -184,9 +182,8 @@ Qed.
 
 Theorem func_lim_subset : ∀ (A : U → Prop) (B : V → Prop)
         (f : set_type A → set_type B) c l,
-        func_lim A (λ x, [f x|]) c [l|] → func_lim A f c l.
-    intros A B f c l [Ac lim].
-    split; [>exact Ac|].
+        func_lim_base (λ x, [f x|]) c [l|] → func_lim_base f c l.
+    intros A B f c l lim.
     intros T' [[T [T_open T'_eq]] Tl]; subst T'.
     specialize (lim T (make_and T_open Tl)) as [S [Sc S_sub]].
     exists S.
@@ -210,10 +207,9 @@ Existing Instance subspace_topology.
 
 Theorem func_lim_compose : ∀ (A : U → Prop)
         (f : V → W) (g : set_type A → V) c d,
-        func_lim A g c d → continuous_at f d →
-        func_lim A (λ x, f (g x)) c (f d).
-    intros A f g c d [Ac A_lim] f_cont.
-    split; [>exact Ac|].
+        func_lim_base g c d → continuous_at f d →
+        func_lim_base (λ x, f (g x)) c (f d).
+    intros A f g c d A_lim f_cont.
     intros T Te.
     specialize (f_cont T Te) as [S [Sd S_sub]].
     specialize (A_lim S Sd) as [R [Rc R_sub]].
@@ -234,9 +230,9 @@ Qed.
 Theorem func_lim_compose2 : ∀ (A : U → Prop) (B : V → Prop)
         (f : set_type B → W) (g : set_type A → set_type B) c d e,
         (∀ x, d ≠ g x) →
-        func_lim A g c d → func_lim B f [d|] e → func_lim A (λ x, f (g x)) c e.
-    intros A B f g c d e neq [Ac A_lim] [Bd B_lim].
-    split; [>exact Ac|].
+        func_lim_base g c d → func_lim_base f [d|] e →
+        func_lim_base (λ x, f (g x)) c e.
+    intros A B f g c d e neq A_lim B_lim.
     intros T Te.
     specialize (B_lim T Te) as [S [Sd S_sub]].
     pose (S' := to_set_type B S).
@@ -274,12 +270,12 @@ Context {U V} `{TopologyBasis U, TopologyBasis V}.
 
 (* end hide *)
 Theorem basis_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        limit_point A c → func_lim A f c l ↔
+        func_lim_base f c l ↔
         (∀ T, top_basis T → T l → ∃ S, top_basis S ∧ S c ∧
             image_under f (λ x, S [x|] ∧ c ≠ [x|]) ⊆ T).
-    intros A f c l Ac.
+    intros A f c l.
     split.
-    -   intros [Ac' f_lim] T T_basis Tx; clear Ac'.
+    -   intros f_lim T T_basis Tx.
         apply basis_open in T_basis.
         specialize (f_lim T (make_and T_basis Tx)) as [S [[S_open Sc] S_sub]].
         specialize (S_open c Sc) as [B [B_basis [Bc B_sub]]].
@@ -294,7 +290,6 @@ Theorem basis_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
         +   exact c_neq.
         +   exact y_eq.
     -   intros all_T.
-        split; [>exact Ac|].
         intros T [T_open Tl].
         specialize (T_open l Tl) as [B [B_basis [Bl B_sub]]].
         specialize (all_T B B_basis Bl) as [S [S_basis [Sc S_sub]]].

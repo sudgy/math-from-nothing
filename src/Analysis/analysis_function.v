@@ -119,11 +119,11 @@ Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
 Qed.
 
 Theorem metric_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        limit_point A c → func_lim A f c l ↔
+        func_lim_base f c l ↔
             (∀ ε, 0 < ε →
                 ∃ δ, 0 < δ ∧ ∀ x, [x|] ≠ c → d [x|] c < δ → d (f x) l < ε).
-    intros A f c l Ac.
-    rewrite (basis_func_lim A f c l Ac).
+    intros A f c l.
+    rewrite (basis_func_lim A f c l).
     split.
     -   intros l_lim ε ε_pos.
         pose proof (open_ball_basis l [ε|ε_pos]) as l_basis.
@@ -168,13 +168,13 @@ Local Open Scope set_scope.
 
 (* end hide *)
 Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        limit_point A c → func_lim A f c l ↔
+        func_lim_base f c l ↔
         (∀ xn : nat → set_type (A - singleton c),
         seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l).
-    intros A f c l Ac.
+    intros A f c l.
     split; [>apply func_seq_lim|].
     intros all_seqs.
-    rewrite metric_func_lim by exact Ac.
+    rewrite metric_func_lim.
     intros ε ε_pos.
     classic_contradiction contr.
     rewrite not_ex in contr.

@@ -98,10 +98,9 @@ Definition func_bounded_around {A : U → Prop} (f : set_type A → V) a
     := ∃ ε M, ∀ x, a ≠ [x|] → open_ball a ε [x|] → |f x| <= M.
 
 Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        func_lim A f c l → func_bounded_around f c.
+        func_lim_base f c l → func_bounded_around f c.
     intros A f c l f_lim.
-    pose proof (land f_lim) as Ac.
-    rewrite metric_func_seq_lim in f_lim; [>|exact Ac].
+    rewrite metric_func_seq_lim in f_lim.
     unfold func_bounded_around.
     classic_contradiction contr.
     rewrite not_ex in contr.
@@ -188,11 +187,10 @@ Theorem func_bounded_around_plus : ∀ (A : U → Prop) (xf yf : set_type A → 
 Qed.
 
 Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
-        func_lim A xf c l → func_lim A (λ x, |xf x|) c (|l|).
+        func_lim_base xf c l → func_lim_base (λ x, |xf x|) c (|l|).
     intros A xf c l xf_lim.
-    pose proof (land xf_lim) as Ac.
-    rewrite metric_func_seq_lim in xf_lim by exact Ac.
-    rewrite metric_func_seq_lim by exact Ac.
+    rewrite metric_func_seq_lim in xf_lim.
+    rewrite metric_func_seq_lim.
     intros xn xnc.
     apply abs_seq_lim.
     apply xf_lim.
@@ -200,11 +198,10 @@ Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
 Qed.
 
 Theorem func_lim_zero : ∀ (A : U → Prop) (xf : set_type A → V) c,
-        func_lim A (λ x, |xf x|) c 0 → func_lim A xf c 0.
+        func_lim_base (λ x, |xf x|) c 0 → func_lim_base xf c 0.
     intros A xf c xf_lim.
-    pose proof (land xf_lim) as Ac.
-    rewrite metric_func_seq_lim in xf_lim by exact Ac.
-    rewrite metric_func_seq_lim by exact Ac.
+    rewrite metric_func_seq_lim in xf_lim.
+    rewrite metric_func_seq_lim.
     intros xn xnc.
     apply seq_lim_zero.
     apply xf_lim.
@@ -212,11 +209,10 @@ Theorem func_lim_zero : ∀ (A : U → Prop) (xf : set_type A → V) c,
 Qed.
 
 Theorem func_lim_plus : ∀ (A : U → Prop) (xf yf : set_type A → V)
-        (c : U) (x y : V), func_lim A xf c x → func_lim A yf c y →
-        func_lim A (λ n, xf n + yf n) c (x + y).
+        (c : U) (x y : V), func_lim_base xf c x → func_lim_base yf c y →
+        func_lim_base (λ n, xf n + yf n) c (x + y).
     intros A xf yf c x y cx cy.
-    pose proof (land cx) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply seq_lim_plus.
     -   apply cx.
@@ -226,11 +222,10 @@ Theorem func_lim_plus : ∀ (A : U → Prop) (xf yf : set_type A → V)
 Qed.
 
 Theorem func_lim_scalar : ∀ (A : U → Prop) (xf : set_type A → V)
-        (a : real) (c : U) (x : V), func_lim A xf c x →
-        func_lim A (λ n, a · xf n) c (a · x).
+        (a : real) (c : U) (x : V), func_lim_base xf c x →
+        func_lim_base (λ n, a · xf n) c (a · x).
     intros A xf a c x cx.
-    pose proof (land cx) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply seq_lim_scalar.
     apply cx.
@@ -238,11 +233,10 @@ Theorem func_lim_scalar : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_neg : ∀ (A : U → Prop) (xf : set_type A → V)
-        (c : U) (x : V), func_lim A xf c x →
-        func_lim A (λ n, -xf n) c (-x).
+        (c : U) (x : V), func_lim_base xf c x →
+        func_lim_base (λ n, -xf n) c (-x).
     intros A xf c x cx.
-    pose proof (land cx) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply seq_lim_neg.
     apply cx.
@@ -250,11 +244,10 @@ Theorem func_lim_neg : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_mult : ∀ (A : U → Prop) (xf yf : set_type A → V)
-        (c : U) (x y : V), func_lim A xf c x → func_lim A yf c y →
-        func_lim A (λ n, xf n * yf n) c (x * y).
+        (c : U) (x y : V), func_lim_base xf c x → func_lim_base yf c y →
+        func_lim_base (λ n, xf n * yf n) c (x * y).
     intros A xf yf c x y cx cy.
-    pose proof (land cx) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply seq_lim_mult.
     -   apply cx.
@@ -264,11 +257,10 @@ Theorem func_lim_mult : ∀ (A : U → Prop) (xf yf : set_type A → V)
 Qed.
 
 Theorem func_lim_constant : ∀ (A : U → Prop) (xf : set_type A → V)
-        (a : V) (c : U) (x : V), func_lim A xf c x →
-        func_lim A (λ n, a * xf n) c (a * x).
+        (a : V) (c : U) (x : V), func_lim_base xf c x →
+        func_lim_base (λ n, a * xf n) c (a * x).
     intros A xf a c x cx.
-    pose proof (land cx) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply seq_lim_constant.
     apply cx.
@@ -276,11 +268,10 @@ Theorem func_lim_constant : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_div : ∀ (A : U → Prop) (xf : set_type A → V)
-        (c : U) (x : V), 0 ≠ x → func_lim A xf c x →
-        func_lim A (λ n, /xf n) c (/x).
+        (c : U) (x : V), 0 ≠ x → func_lim_base xf c x →
+        func_lim_base (λ n, /xf n) c (/x).
     intros A xf c x x_nz cx.
-    pose proof (land cx) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply seq_lim_div; [>|exact x_nz].
     apply cx.
@@ -288,8 +279,8 @@ Theorem func_lim_div : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
-        func_bounded_around af c → func_lim A bf c 0 →
-        func_lim A (λ x, af x * bf x) c 0.
+        func_bounded_around af c → func_lim_base bf c 0 →
+        func_lim_base (λ x, af x * bf x) c 0.
     intros A af bf c [[ε ε_pos] [M' M'_bound]] bf_lim.
     assert (∃ M, ∀ x, open_ball c [ε|ε_pos] [x|] → |af x| <= M) as [M M_bound].
     {
@@ -312,8 +303,7 @@ Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
             apply Anc.
             exact [|x].
     }
-    pose proof (land bf_lim) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     pose proof xnc as x_lt.
     rewrite metric_seq_lim in xnc.
@@ -331,11 +321,10 @@ Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
 Qed.
 
 Theorem func_lim_zero_mult2 : ∀ (A : U → Prop) (af bf : set_type A → V) c x,
-        func_lim A af c x → func_lim A bf c 0 →
-        func_lim A (λ x, af x * bf x) c 0.
+        func_lim_base af c x → func_lim_base bf c 0 →
+        func_lim_base (λ x, af x * bf x) c 0.
     intros A af bf c x af_lim bf_lim.
-    pose proof (land af_lim) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
+    rewrite metric_func_seq_lim in *.
     intros xn xnc.
     apply (seq_lim_zero_mult2 _ _ x).
     -   apply af_lim.

@@ -108,12 +108,11 @@ Qed.
 
 Theorem func_lim_scalar2 : ∀ (A : U → Prop)
         (af : set_type A → real) (xf : set_type A → V)
-        (c : U) (a : real) (x : V), func_lim A af c a → func_lim A xf c x →
-        func_lim A (λ n, af n · xf n) c (a · x).
+        (c : U) (a : real) (x : V), func_lim_base af c a → func_lim_base xf c x →
+        func_lim_base (λ n, af n · xf n) c (a · x).
     intros A af xf c a x a_lim x_lim.
-    pose proof (land a_lim) as Ac.
-    rewrite metric_func_seq_lim in * by exact Ac.
-    rewrite metric_func_seq_lim in a_lim by exact Ac.
+    rewrite metric_func_seq_lim in *.
+    rewrite metric_func_seq_lim in a_lim.
     intros xn xnc.
     apply seq_lim_scalar2.
     -   apply a_lim.

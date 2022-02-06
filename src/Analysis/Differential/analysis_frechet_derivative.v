@@ -61,7 +61,6 @@ Definition frechet_derivative_at
     (a : set_type [O|])
     (A : set_type (bounded_linear_map (U := U) (V := V)))
     := func_lim
-        [O|]
         (λ x, |f x - f a - linear_map_f [A|] ([x|] - [a|])| / |[x|] - [a|]|)
         [a|]
         0.
@@ -81,7 +80,7 @@ Theorem frechet_derivative_unique : ∀ a A B,
         frechet_derivative_at O f a A → frechet_derivative_at O f a B →
         A = B.
     clear g.
-    intros a [A A_bound] [B B_bound] A_dif B_dif.
+    intros a [A A_bound] [B B_bound] [Oa A_dif] [Oa' B_dif]; clear Oa'.
     apply set_type_eq; cbn.
     apply linear_map_eq.
     intros x.
@@ -99,8 +98,7 @@ Theorem frechet_derivative_unique : ∀ a A B,
     }
     unfold frechet_derivative_at in *; cbn in *.
     clear A_bound B_bound.
-    pose proof (land A_dif) as Oa.
-    assert (func_lim [O|] (λ x, | -f x + f a + linear_map_f B ([x|] - [a|])|
+    assert (func_lim_base (λ x, | -f x + f a + linear_map_f B ([x|] - [a|])|
         / |[x|] - [a|]|) [a|] 0) as B_dif'.
     {
         apply (func_lim_eq _ _ _ _ _ B_dif).
@@ -114,11 +112,11 @@ Theorem frechet_derivative_unique : ∀ a A B,
     clear A_dif B_dif B_dif'.
     cbn in lim1.
     rewrite plus_rid in lim1.
-    assert (func_lim [O|] (λ x,
+    assert (func_lim_base (λ x : set_type [O|],
         |linear_map_f B ([x|] - [a|]) - linear_map_f A ([x|] - [a|])|
         / |[x|] - [a|]|) [a|] 0) as lim2.
     {
-        pose proof (constant_func_lim [O|] [a|] (zero (U := real)) Oa) as lim2.
+        pose proof (constant_func_lim [O|] [a|] (zero (U := real))) as lim2.
         eapply (func_squeeze _ _ _ _ _ _ _ lim2 lim1).
         Unshelve.
         intros y y_neq; cbn.
@@ -195,7 +193,7 @@ Theorem frechet_derivative_unique : ∀ a A B,
             rewrite plus_lid, abs_neg in y_lt.
             exact y_lt.
     }
-    assert (func_lim _ g 0 a) as g_lim.
+    assert (func_lim_base g 0 a) as g_lim.
     {
         unfold g, g'.
         rewrite <- metric_subspace_topology.
@@ -203,13 +201,10 @@ Theorem frechet_derivative_unique : ∀ a A B,
         rewrite <- (plus_rid [a|]) at 1.
         apply func_lim_plus.
         -   apply constant_func_lim.
-            exact εS0.
         -   rewrite <- (scalar_lanni x).
             apply (func_lim_scalar2 εS (λ n, [n|])).
             +   apply func_lim_id.
-                exact εS0.
             +   apply constant_func_lim.
-                exact εS0.
     }
     rewrite <- metric_subspace_topology in g_lim.
     epose proof (func_lim_compose2 _ _ _ _ _ _ _ _ g_lim lim2) as lim3.
@@ -226,13 +221,13 @@ Theorem frechet_derivative_unique : ∀ a A B,
     clear lim2.
     cbn in lim3.
     unfold g' in lim3.
-    pose proof (constant_func_lim εS 0 (|x|) εS0) as lim4.
+    pose proof (constant_func_lim εS 0 (|x|)) as lim4.
     pose proof (func_lim_mult _ _ _ _ _ _ lim3 lim4) as lim5.
     cbn in lim5.
     clear lim3 lim4 g_lim.
     rewrite mult_lanni in lim5.
-    assert (func_lim εS (λ _, |linear_map_f B x - linear_map_f A x|) 0 0)
-        as lim6.
+    assert (func_lim_base (λ _ : set_type εS,
+        |linear_map_f B x - linear_map_f A x|) 0 0) as lim6.
     {
         apply (func_lim_eq _ _ _ _ _ lim5).
         intros y y_nz.
@@ -255,9 +250,9 @@ Theorem frechet_derivative_unique : ∀ a A B,
         apply mult_rrinv.
         exact y_nz'.
     }
-    pose proof (constant_func_lim εS 0 (|linear_map_f B x - linear_map_f A x|)
-        εS0) as lim7.
-    pose proof (func_lim_unique _ _ _ _ _ lim6 lim7) as eq.
+    pose proof (constant_func_lim εS 0 (|linear_map_f B x - linear_map_f A x|))
+        as lim7.
+    pose proof (func_lim_unique _ _ _ _ εS0 lim6 lim7) as eq.
     rewrite abs_def in eq.
     rewrite plus_0_anb_b_a in eq.
     exact eq.
@@ -265,30 +260,25 @@ Qed.
 
 Theorem frechet_differentiable_continuous : ∀ a,
         frechet_differentiable_at O f a → continuous_at f a.
-    intros a [A A_lim].
-    unfold frechet_derivative_at in A_lim.
-    pose proof (land A_lim) as Aa.
+    intros a [A [Aa A_lim]].
     rewrite <- metric_subspace_topology.
     rewrite func_lim_continuous by exact Aa.
     pose (bf (x : set_type [O|]) := |[x|] - [a|]|).
-    assert (func_lim [O|] bf [a|] 0) as bf_lim.
+    assert (func_lim_base bf [a|] 0) as bf_lim.
     {
         unfold bf.
         rewrite (abs_zero (U := U)).
         apply abs_func_lim.
         rewrite <- (plus_rinv [a|]).
         apply (func_lim_plus [O|] (λ x, [x|])).
-        -   cbn.
-            apply func_lim_id.
-            exact Aa.
+        -   apply func_lim_id.
         -   apply constant_func_lim.
-            exact Aa.
     }
     pose proof (func_lim_mult _ _ _ _ _ _ A_lim bf_lim) as lim.
     unfold bf in lim; cbn in lim.
     rewrite mult_lanni in lim.
     destruct A as [A A_bounded]; cbn in *.
-    assert (func_lim [O|]
+    assert (func_lim_base
         (λ x, |f x - f a - linear_map_f A ([x|] - [a|])|) [a|] 0) as lim1.
     {
         apply (func_lim_eq _ _ _ _ _ lim).
@@ -301,8 +291,8 @@ Theorem frechet_differentiable_continuous : ∀ a,
     }
     clear A_lim lim.
     apply func_lim_zero in lim1.
-    assert (func_lim [O|]
-        (λ x, linear_map_f A [x|] - linear_map_f A [a|]) [a|] 0) as lim2.
+    assert (func_lim_base (λ x : set_type [O|],
+        linear_map_f A [x|] - linear_map_f A [a|]) [a|] 0) as lim2.
     {
         rewrite <- (plus_rinv (linear_map_f A [a|])).
         apply func_lim_plus.
@@ -321,12 +311,11 @@ Theorem frechet_differentiable_continuous : ∀ a,
             rewrite func_lim_continuous in A'_cont by exact Aa.
             exact A'_cont.
         -   apply constant_func_lim.
-            exact Aa.
     }
     pose proof (func_lim_plus _ _ _ _ _ _ lim1 lim2) as lim3; clear lim1 lim2.
     cbn in lim3.
     rewrite plus_rid in lim3.
-    pose proof (constant_func_lim [O|] [a|] (f a) Aa) as lim4.
+    pose proof (constant_func_lim [O|] [a|] (f a)) as lim4.
     pose proof (func_lim_plus _ _ _ _ _ _ lim3 lim4) as lim5; clear lim3 lim4.
     cbn in lim5.
     rewrite plus_lid in lim5.
@@ -352,7 +341,8 @@ Theorem frechet_derivative_linear : ∀ (F : set_type bounded_linear_map) a,
         -   apply all_open.
         -   exact true.
     }
-    pose proof (constant_func_lim all a (zero (U := real)) a_lim) as lim.
+    split; [>exact a_lim|].
+    pose proof (constant_func_lim all a (zero (U := real))) as lim.
     apply (func_lim_eq _ _ _ _ _ lim).
     intros [x x_in] x_neq; cbn in *.
     clear x_in.
@@ -380,7 +370,8 @@ Theorem frechet_derivative_constant : ∀ x a,
         -   apply all_open.
         -   exact true.
     }
-    pose proof (constant_func_lim all a (zero (U := real)) a_lim) as lim.
+    split; [>exact a_lim|].
+    pose proof (constant_func_lim all a (zero (U := real))) as lim.
     apply (func_lim_eq _ _ _ _ _ lim).
     intros [y y_in] y_neq; cbn in *.
     clear y_in.
@@ -395,14 +386,13 @@ Theorem frechet_derivative_plus : ∀ a A B,
         frechet_derivative_at O f a A → frechet_derivative_at O g a B →
         frechet_derivative_at O (λ x, f x + g x) a
             [plus_linear_map [A|] [B|] | plus_linear_bounded A B].
-    intros a A B f_lim g_lim.
-    unfold frechet_derivative_at in *; cbn.
-    pose proof (land f_lim) as Oa.
+    intros a A B [Oa f_lim] [Oa' g_lim]; clear Oa'.
     pose proof (func_lim_plus _ _ _ _ _ _ f_lim g_lim) as lim1.
     clear f_lim g_lim.
     cbn in lim1.
     rewrite plus_rid in lim1.
-    pose proof (constant_func_lim [O|] [a|] (zero (U := real)) Oa) as lim2.
+    pose proof (constant_func_lim [O|] [a|] (zero (U := real))) as lim2.
+    split; [>exact Oa|].
     eapply (func_squeeze _ _ _ _ _ _ _ lim2 lim1).
     Unshelve.
     intros x x_neq.
