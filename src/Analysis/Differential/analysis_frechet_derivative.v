@@ -197,7 +197,7 @@ Theorem frechet_derivative_unique : ∀ a A B,
     {
         unfold g, g'.
         rewrite <- metric_subspace_topology.
-        apply func_lim_subset; cbn.
+        apply func_lim_set; cbn.
         rewrite <- (plus_rid [a|]) at 1.
         apply func_lim_plus.
         -   apply constant_func_lim.
@@ -419,7 +419,310 @@ Theorem frechet_derivative_plus : ∀ a A B,
         rewrite (plus_comm (-linear_map_f _ _)).
         apply refl.
 Qed.
+
+(* begin hide *)
+End AnalysisDerivative.
+
+Section ChainRule.
+
+Context {U V W} `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    @PlusComm U UP,
+    @PlusAssoc U UP,
+    @PlusLid U UP UZ,
+    @PlusLinv U UP UZ UN,
+
+    USM : ScalarMult real U,
+    @ScalarId real U real_one USM,
+    @ScalarLdist real U UP USM,
+    @ScalarRdist real U real_plus_class UP USM,
+    @ScalarComp real U real_mult_class USM,
+
+    UA : AbsoluteValue U,
+    @AbsDefinite U UA UZ,
+    @AbsNeg U UA UN,
+    @AbsTriangle U UA UP,
+    @AbsPositive U UA,
+    @AbsScalar U UA USM,
+    NotTrivial U,
+
+    VP : Plus V,
+    VZ : Zero V,
+    VN : Neg V,
+    @PlusComm V VP,
+    @PlusAssoc V VP,
+    @PlusLid V VP VZ,
+    @PlusLinv V VP VZ VN,
+
+    VSM : ScalarMult real V,
+    @ScalarId real V real_one VSM,
+    @ScalarLdist real V VP VSM,
+    @ScalarRdist real V real_plus_class VP VSM,
+
+    VA : AbsoluteValue V,
+    @AbsDefinite V VA VZ,
+    @AbsNeg V VA VN,
+    @AbsTriangle V VA VP,
+    @AbsPositive V VA,
+    @AbsScalar V VA VSM,
+
+    WP : Plus W,
+    WZ : Zero W,
+    WN : Neg W,
+    @PlusComm W WP,
+    @PlusAssoc W WP,
+    @PlusLid W WP WZ,
+    @PlusLinv W WP WZ WN,
+
+    WSM : ScalarMult real W,
+    @ScalarId real W real_one WSM,
+    @ScalarLdist real W WP WSM,
+    @ScalarRdist real W real_plus_class WP WSM,
+
+    WA : AbsoluteValue W,
+    @AbsDefinite W WA WZ,
+    @AbsNeg W WA WN,
+    @AbsTriangle W WA WP,
+    @AbsPositive W WA,
+    @AbsScalar W WA WSM
+}.
+
+Existing Instance abs_metric.
+Existing Instance subspace_metric.
+
+(* end hide *)
+Theorem frechet_derivative_compose :
+        ∀ (O1 : set_type (open (U := U))) (O2 : set_type (open (U := V)))
+        (f : set_type [O2|] → W) (g : set_type [O1|] → set_type [O2|]) f' g' a,
+        frechet_derivative_at O2 f (g a) f' →
+        frechet_derivative_at O1 (λ x, [g x|]) a g' →
+        frechet_derivative_at O1 (λ x, f (g x)) a
+            [linear_map_compose [f'|] [g'|] |
+                linear_map_compose_bounded [f'|] [g'|] [|f'] [|g']].
+    intros O1 O2 f g [f' f'_bound] [g' g'_bound] a f'_lim g'_lim.
+    assert (continuous_at g a) as g_cont.
+    {
+        rewrite <- (metric_subspace_topology [O2|]).
+        apply continuous_subspace2.
+        apply frechet_differentiable_continuous.
+        exists [g'|g'_bound].
+        exact g'_lim.
+    }
+    destruct g'_lim as [O1a g'_lim].
+    destruct f'_lim as [O2ga f'_lim].
+    split; [>exact O1a|].
+    cbn in *.
+    assert (func_lim_base (λ x, |linear_map_f f'
+        ([g x|] - [g a|] - linear_map_f g' ([x|] - [a|]))| / |[x|] - [a|]|)
+        [a|] 0) as lim1.
+    {
+        destruct f'_bound as [M M_bound].
+        apply (func_lim_constant _ _ M) in g'_lim.
+        rewrite mult_ranni in g'_lim.
+        pose proof (constant_func_lim [O1|] [a|] (zero (U := real))) as lim1.
+        eapply (func_squeeze _ _ _ _ _ _ _ lim1 g'_lim).
+        Unshelve.
+        intros x x_neq; cbn.
+        assert (0 < |[x|] - [a|]|) as xa_pos.
+        {
+            split; [>apply abs_pos|].
+            intros contr.
+            rewrite abs_def in contr.
+            rewrite plus_0_anb_b_a in contr.
+            contradiction.
+        }
+        split.
+        -   apply le_mult.
+            +   apply abs_pos.
+            +   apply div_pos.
+                exact xa_pos.
+        -   rewrite mult_assoc.
+            apply le_rmult_pos; [>apply div_pos; exact xa_pos|].
+            apply M_bound.
+    }
+    assert (func_bounded_around (λ x, |[g x|] - [g a|]| / |[x|] - [a|]|) [a|])
+        as g_bound.
+    {
+        assert (func_bounded_around (λ x, (/ |[x|] - [a|]|) ·
+                ([g x|] - [g a|] - linear_map_f g' ([x|] - [a|]))) [a|])
+                as bound1.
+        {
+            apply (func_lim_bounded_around _ _ _ 0).
+            apply func_lim_zero.
+            apply (func_lim_eq _ _ _ _ _ g'_lim).
+            intros x x_neq.
+            assert (0 < |[x|] - [a|]|) as xa_pos.
+            {
+                split; [>apply abs_pos|].
+                intros contr.
+                rewrite abs_def in contr.
+                rewrite plus_0_anb_b_a in contr.
+                contradiction.
+            }
+            rewrite abs_scalar.
+            rewrite mult_comm.
+            apply rmult.
+            rewrite <- abs_div by apply xa_pos.
+            rewrite abs_abs.
+            reflexivity.
+        }
+        assert (func_bounded_around (λ x : set_type [O1|],
+            (/ |[x|] - [a|]|) · linear_map_f g' ([x|] - [a|])) [a|]) as bound2.
+        {
+            destruct g'_bound as [M M_bound].
+            exists [1|one_pos], M.
+            intros x x_neq x_lt.
+            assert (0 < |[x|] - [a|]|) as xa_pos.
+            {
+                split; [>apply abs_pos|].
+                intros contr.
+                rewrite abs_def in contr.
+                rewrite plus_0_anb_b_a in contr.
+                contradiction.
+            }
+            rewrite abs_scalar.
+            rewrite <- abs_div by apply xa_pos.
+            rewrite abs_abs.
+            rewrite <- le_mult_rlmove_pos by apply xa_pos.
+            rewrite mult_comm.
+            apply M_bound.
+        }
+        pose proof (func_bounded_around_plus _ _ _ _ bound1 bound2)
+            as [[ε ε_pos] [M M_bound]].
+        exists [ε|ε_pos], M.
+        intros x x_neq x_lt.
+        assert (0 < |[x|] - [a|]|) as xa_pos.
+        {
+            split; [>apply abs_pos|].
+            intros contr.
+            rewrite abs_def in contr.
+            rewrite plus_0_anb_b_a in contr.
+            contradiction.
+        }
+        specialize (M_bound x x_neq x_lt).
+        apply (trans2 M_bound).
+        rewrite <- scalar_ldist.
+        rewrite abs_mult.
+        rewrite abs_scalar.
+        rewrite mult_comm.
+        rewrite <- abs_div by apply xa_pos.
+        do 2 rewrite abs_abs.
+        apply le_lmult_pos; [>apply div_pos; exact xa_pos|].
+        rewrite plus_rlinv.
+        apply refl.
+    }
+    assert (func_lim_base (λ x,
+        |f (g x) - f (g a) - linear_map_f f' ([g x|] - [g a|])|
+        / |[x|] - [a|]|) [a|] 0) as lim2.
+    {
+        apply func_lim_forget.
+        cbn.
+        apply (func_lim_eq _ (λ x, let x' := [[x|] | land [|x]] in
+            (|[g x'|] - [g a|]| / |[x|] - [a|]|) *
+            (|f (g x') - f (g a) - linear_map_f f' ([g x'|] - [g a|])|
+                / |[g x'|] - [g a|]|))).
+        -   apply func_lim_zero_mult.
+            +   eapply (func_bounded_around_subset _ _ _ _ _ _ _ g_bound).
+                Unshelve.
+                Unshelve.
+                *   intros x [O1x x_nz].
+                    exact O1x.
+                *   cbn.
+                    intros [x [O1x x_nz]]; cbn.
+                    rewrite (proof_irrelevance _ O1x).
+                    reflexivity.
+            +   rewrite <- metric_subspace_topology in g_cont.
+                rewrite func_lim_continuous in g_cont.
+                rewrite <- metric_subspace_topology in g_cont.
+                assert (func_lim_base (λ x : set_type
+                    (λ x, [O1|] x ∧ (∀ H, |f (g [x|H]) - f (g a) -
+                        linear_map_f f' ([g [x|H]|] - [g a|])| /
+                        |x - [a|]| ≠ 0)),
+                    g [[x|] | land [|x]]) [a|] (g a)) as lim2.
+                {
+                    rewrite <- metric_subspace_topology.
+                    eapply (func_lim_subset _ _ _ _ _ _ _ _ g_cont).
+                    Unshelve.
+                    Unshelve.
+                    -   intros x [O1x C0].
+                        exact O1x.
+                    -   cbn.
+                        intros [x [O1x x_neq]]; cbn.
+                        apply f_equal.
+                        apply f_equal.
+                        apply proof_irrelevance.
+                }
+                rewrite <- metric_subspace_topology in lim2.
+                eapply (func_lim_compose2 _ _
+                    (λ x, |f x - f (g a) - linear_map_f f' ([x|] - [g a|])| /
+                        |[x|] - [g a|]|)_ _ _ _ _ lim2).
+                Unshelve.
+                *   exact f'_lim.
+                *   cbn.
+                    intros [x [O1x x_neq]]; cbn.
+                    rewrite (proof_irrelevance _ O1x).
+                    specialize (x_neq O1x).
+                    intros contr.
+                    rewrite <- contr in x_neq.
+                    do 2 rewrite plus_rinv in x_neq.
+                    rewrite linear_map_zero in x_neq.
+                    rewrite neg_zero, plus_rid in x_neq.
+                    rewrite <- abs_zero in x_neq.
+                    rewrite mult_lanni in x_neq.
+                    contradiction.
+        -   intros [x [O1x x_nz]] x_neq; cbn.
+            rewrite (proof_irrelevance _ O1x).
+            rewrite mult_comm.
+            rewrite <- mult_assoc.
+            apply lmult.
+            apply mult_llinv.
+            intros contr.
+            rewrite abs_def in contr.
+            cbn in x_neq.
+            specialize (x_nz O1x).
+            apply x_nz.
+            rewrite plus_0_anb_a_b in contr.
+            apply set_type_eq in contr.
+            rewrite contr.
+            do 2 rewrite plus_rinv.
+            rewrite linear_map_zero.
+            rewrite neg_zero, plus_rid.
+            rewrite <- abs_zero.
+            apply mult_lanni.
+    }
+    pose proof (func_lim_plus _ _ _ _ _ _ lim1 lim2) as lim3.
+    cbn in lim3.
+    rewrite plus_rid in lim3.
+    pose proof (constant_func_lim [O1|] [a|] (zero (U := real))) as lim4.
+    eapply (func_squeeze _ _ _ _ _ _ _ lim4 lim3).
+    Unshelve.
+    intros [x O1x] x_neq; cbn in *.
+    assert (0 < |x - [a|]|) as xa_pos.
+    {
+        split; [>apply abs_pos|].
+        intros contr.
+        rewrite abs_def in contr.
+        rewrite plus_0_anb_b_a in contr.
+        contradiction.
+    }
+    split.
+    -   apply le_mult.
+        +   apply abs_pos.
+        +   apply div_pos.
+            exact xa_pos.
+    -   rewrite <- rdist.
+        apply le_rmult_pos; [>apply div_pos; exact xa_pos|].
+        apply (trans2 (abs_tri _ _ )).
+        rewrite (linear_map_plus f').
+        rewrite (plus_comm (linear_map_f f' _ + _)).
+        rewrite plus_assoc.
+        rewrite plus_rlinv.
+        rewrite linear_map_neg.
+        apply refl.
+Qed.
 (* begin hide *)
 
-End AnalysisDerivative.
+End ChainRule.
 (* end hide *)

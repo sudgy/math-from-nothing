@@ -186,6 +186,19 @@ Theorem func_bounded_around_plus : ∀ (A : U → Prop) (xf yf : set_type A → 
         exact (rmin ε1 ε2).
 Qed.
 
+Theorem func_bounded_around_subset : ∀ (A B : U → Prop)
+        (f : set_type A → V) (g : set_type B → V) a (H : A ⊆ B),
+        (∀ x, f x = g [[x|] | H [x|] [|x]]) →
+        func_bounded_around g a → func_bounded_around f a.
+    intros A B f g a sub eq [ε [M M_bound]].
+    exists ε, M.
+    intros [x Ax]; cbn.
+    intros neq ltq.
+    specialize (M_bound [x|sub x Ax] neq ltq).
+    rewrite eq; cbn.
+    exact M_bound.
+Qed.
+
 Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
         func_lim_base xf c l → func_lim_base (λ x, |xf x|) c (|l|).
     intros A xf c l xf_lim.

@@ -403,6 +403,23 @@ Theorem continuous_subspace : ∀ (f : U → V) (S : U → Prop) x,
         split; assumption.
 Qed.
 
+Theorem continuous_subspace2 : ∀ (S : V → Prop) (f : U → set_type S) x,
+        continuous_at (λ x, [f x|]) x → continuous_at f x.
+    intros S f x f_cont T' [T_open Tx].
+    destruct T_open as [T [T_open T'_eq]]; subst T'.
+    specialize (f_cont T (make_and T_open Tx)) as [R [Rx R_sub]].
+    exists R.
+    split; [>split|].
+    -   apply Rx.
+    -   apply Rx.
+    -   intros z [y [Ry z_eq]].
+        apply R_sub.
+        exists y.
+        split; [>exact Ry|].
+        apply eq_set_type.
+        exact z_eq.
+Qed.
+
 (* begin hide *)
 End Continuous.
 

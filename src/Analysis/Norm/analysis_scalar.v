@@ -84,7 +84,13 @@ Theorem seq_lim_scalar2 : ∀ a x af xf, seq_lim af a → seq_lim xf x →
             -   exact afa.
             -   apply constant_seq_lim.
         }
-        apply (seq_lim_eq _ _ _ lim2).
+        applys_eq lim2.
+        {
+            apply topology_equal.
+            intros S.
+            reflexivity.
+        }
+        apply functional_ext.
         intros n.
         rewrite mult_comm.
         rewrite abs_scalar.
@@ -97,13 +103,15 @@ Theorem seq_lim_scalar2 : ∀ a x af xf, seq_lim af a → seq_lim xf x →
     pose proof (seq_lim_plus _ _ _ _ lim3 lim4) as lim5.
     cbn in lim5.
     rewrite plus_lid in lim5.
-    apply (seq_lim_eq _ _ _ lim5).
+    applys_eq lim5.
+    apply functional_ext.
     intros n.
     rewrite scalar_ldist, scalar_rdist.
     rewrite scalar_rneg, scalar_lneg.
     rewrite plus_assoc.
     rewrite plus_rlinv.
-    apply plus_rlinv.
+    rewrite plus_rlinv.
+    reflexivity.
 Qed.
 
 Theorem func_lim_scalar2 : ∀ (A : U → Prop)

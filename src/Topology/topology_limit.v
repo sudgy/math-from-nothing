@@ -143,18 +143,6 @@ Theorem subspace_limit_point : ∀ X A x, A ⊆ X →
         exact Ty.
 Qed.
 
-Theorem seq_lim_eq : ∀ (f g : sequence U) x,
-        seq_lim f x → (∀ n, f n = g n) → seq_lim g x.
-    intros f g x fx eq.
-    assert (f = g) as eq'.
-    {
-        apply functional_ext.
-        exact eq.
-    }
-    subst g.
-    exact fx.
-Qed.
-
 Theorem constant_seq_lim : ∀ x, seq_lim (λ _, x) x.
     intros x S S_open Sx.
     exists 0.

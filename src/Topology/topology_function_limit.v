@@ -180,7 +180,7 @@ Theorem func_lim_continuous : ∀ (A : U → Prop) (f : set_type A → V) c,
             contradiction.
 Qed.
 
-Theorem func_lim_subset : ∀ (A : U → Prop) (B : V → Prop)
+Theorem func_lim_set : ∀ (A : U → Prop) (B : V → Prop)
         (f : set_type A → set_type B) c l,
         func_lim_base (λ x, [f x|]) c [l|] → func_lim_base f c l.
     intros A B f c l lim.
@@ -194,6 +194,56 @@ Theorem func_lim_subset : ∀ (A : U → Prop) (B : V → Prop)
     exists [x|Ax]; cbn.
     apply eq_set_type in y_eq.
     repeat split; assumption.
+Qed.
+
+Theorem func_lim_subset : ∀ (A B : U → Prop)
+        (f : set_type A → V) (g : set_type B → V) c l (H : A ⊆ B),
+        (∀ x, f x = g [[x|] | H [x|] [|x]]) →
+        func_lim_base g c l → func_lim_base f c l.
+    intros A B f g c l sub eq g_lim T T_neigh.
+    specialize (g_lim T T_neigh) as [S [Sc S_sub]].
+    exists S.
+    split; [>exact Sc|].
+    intros y [[x Ax] [[Sx c_neq] y_eq]]; cbn in *.
+    apply S_sub.
+    exists [x|sub x Ax]; cbn.
+    repeat split.
+    -   exact Sx.
+    -   exact c_neq.
+    -   rewrite eq in y_eq.
+        exact y_eq.
+Qed.
+
+Theorem func_lim_forget : ∀ (A : U → Prop) (f : set_type A → V) c l,
+        func_lim_base (λ x : set_type (λ x, A x ∧ ∀ H, f [x|H] ≠ l),
+            f [[x|]|land [|x]]) c l →
+        func_lim_base f c l.
+    intros A f c l lim T T_neigh.
+    specialize (lim T T_neigh) as [S [Sc S_sub]].
+    exists S.
+    split; [>exact Sc|].
+    intros y [[x Ax] [[Sx c_neq] y_eq]]; cbn in *.
+    classic_case (y = l) as [eq|neq].
+    {
+        subst l.
+        apply T_neigh.
+    }
+    apply S_sub.
+    unfold image_under.
+    assert (A x ∧ (∀ H, f [x|H] ≠ l)) as x_in.
+    {
+        split; [>exact Ax|].
+        intros H1.
+        rewrite (proof_irrelevance _ Ax).
+        rewrite <- y_eq.
+        exact neq.
+    }
+    exists [x|x_in]; cbn.
+    repeat split.
+    -   exact Sx.
+    -   exact c_neq.
+    -   rewrite (proof_irrelevance _ Ax).
+        exact y_eq.
 Qed.
 (* begin hide *)
 End TopologyFunction.
