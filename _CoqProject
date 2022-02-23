@@ -137,6 +137,8 @@
 ./src/Algebra/Ring/Domain/factorization.v
 ./src/Algebra/Ring/Domain/nat_domain.v
 
+./src/Algebra/Ring/Fraction/fraction_base.v
+
 ./src/Algebra/Linear/linear_base.v
 ./src/Algebra/Linear/linear_transformation_space.v
 ./src/Algebra/Linear/linear_bilinear.v
