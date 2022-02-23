@@ -268,6 +268,23 @@ Theorem dif_squares : ∀ a b, a*a - b*b = (a + b) * (a - b).
     reflexivity.
 Qed.
 
+Theorem mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b.
+    intros a b eq.
+    classic_case (0 = a) as [a_z|a_nz].
+    -   left.
+        exact a_z.
+    -   right.
+        apply mult_lcancel with a; [>exact a_nz|].
+        rewrite mult_ranni.
+        exact eq.
+Qed.
+
+Theorem mult_nz : ∀ a b, 0 ≠ a → 0 ≠ b → 0 ≠ a * b.
+    intros a b neq1 neq2 contr.
+    apply mult_zero in contr.
+    destruct contr; contradiction.
+Qed.
+
 (* begin hide *)
 End MultRing.
 (* end hide *)

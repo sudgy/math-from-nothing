@@ -138,6 +138,7 @@
 ./src/Algebra/Ring/Domain/nat_domain.v
 
 ./src/Algebra/Ring/Fraction/fraction_base.v
+./src/Algebra/Ring/Fraction/fraction_plus.v
 
 ./src/Algebra/Linear/linear_base.v
 ./src/Algebra/Linear/linear_transformation_space.v
