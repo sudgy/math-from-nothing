@@ -159,6 +159,17 @@ Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
             exact leq.
         +   apply lt_mult; assumption.
 Qed.
+Theorem frac_lt : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
+        (to_equiv_type (frac_equiv U) (a1, a2) <
+         to_equiv_type (frac_equiv U) (b1, b2)) ↔
+        (a1 * [b2|] < b1 * [a2|]).
+    intros a1 a2 b1 b2 a2_pos b2_pos.
+    unfold lt, strict.
+    rewrite frac_le by assumption.
+    equiv_simpl.
+    unfold frac_eq; cbn.
+    reflexivity.
+Qed.
 
 Local Program Instance frac_le_connex : Connex le.
 Next Obligation.

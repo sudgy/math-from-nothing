@@ -114,10 +114,6 @@
 ./src/Number/Int/int_order.v
 ./src/Number/Int/int.v
 
-./src/Number/Rat/rat_base.v
-./src/Number/Rat/rat_plus.v
-./src/Number/Rat/rat_mult.v
-./src/Number/Rat/rat_order.v
 ./src/Number/Rat/rat.v
 
 ./src/Number/Real/real_base.v

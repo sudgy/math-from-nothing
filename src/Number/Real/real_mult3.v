@@ -482,7 +482,6 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 2: apply div_nz; apply mq_pos.
                 rewrite div_div by apply mq_pos.
                 rewrite neg_plus, neg_neg.
-                rewrite mult_comm.
                 rewrite plus_lrinv.
                 exact nam.
             *   exact am.
@@ -616,7 +615,9 @@ Lemma rat_to_real_mult1 : ∀ a b, 0 <= a → 0 <= b →
                 rewrite mult_lid.
                 apply lt_lplus.
                 exact x_lt.
-            *   repeat apply le_mult.
+            *   apply le_mult.
+                1: apply le_mult.
+                1: apply le_mult.
                 --  apply two_pos.
                 --  apply a_pos.
                 --  apply x_pos.

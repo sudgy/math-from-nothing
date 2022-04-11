@@ -139,9 +139,11 @@ Theorem rat_size : |rat| = |nat|.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
-        rewrite int_size.
-        rewrite nat_mult_nat.
-        apply refl.
+        pose proof (card_sub_le int (λ x, 0 ≠ x)) as leq.
+        apply card_le_lmult with (|int|) in leq.
+        rewrite int_size in leq at 2 3.
+        rewrite nat_mult_nat in leq.
+        exact leq.
     -   unfold le; equiv_simpl.
         exists nat_to_rat.
         intros a b eq.

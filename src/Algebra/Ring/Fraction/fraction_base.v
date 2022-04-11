@@ -76,6 +76,18 @@ Theorem to_frac_eq : ∀ a b, to_frac a = to_frac b → a = b.
     exact eq.
 Qed.
 
+Local Program Instance frac_not_trivial : NotTrivial (equiv_type frac_equiv) := {
+    not_trivial_a := to_frac 0;
+    not_trivial_b := to_frac 1;
+}.
+Next Obligation.
+    unfold to_frac; equiv_simpl.
+    intros contr.
+    unfold frac_eq in contr; cbn in contr.
+    do 2 rewrite mult_rid in contr.
+    exact (not_trivial_one contr).
+Qed.
+
 End FractionEquiv.
 
 Notation "'frac' U" := (equiv_type (frac_equiv U)) (at level 1).

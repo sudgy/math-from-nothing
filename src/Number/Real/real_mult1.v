@@ -274,6 +274,7 @@ Lemma real_mult_pos_pos : ∀ a b, 0 <= a → 0 <= b → [a * b|] = [a|] ⊗ [b|
         reflexivity.
     }
     unfold mult; cbn.
+    unfold rat, rat_le_connex.
     destruct (connex 0 a) as [a_pos'|a_neg]; try contradiction;
     destruct (connex 0 b) as [b_pos'|b_neg]; try contradiction.
     reflexivity.
