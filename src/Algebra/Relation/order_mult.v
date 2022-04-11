@@ -207,25 +207,6 @@ Theorem lt_mult_rcancel_pos : ∀ {a b} c, zero < c → a * c < b * c → a < b.
         destruct eq; contradiction.
 Qed.
 
-Theorem le_neg : ∀ a b, a <= b → -b <= -a.
-    intros a b eq.
-    apply le_lplus with (-a) in eq.
-    apply le_rplus with (-b) in eq.
-    rewrite <- (plus_assoc _ b) in eq.
-    rewrite plus_linv, plus_rinv in eq.
-    rewrite plus_lid, plus_rid in eq.
-    exact eq.
-Qed.
-Theorem lt_neg : ∀ a b, a < b → -b < -a.
-    intros a b eq.
-    apply lt_lplus with (-a) in eq.
-    apply lt_rplus with (-b) in eq.
-    rewrite <- (plus_assoc _ b) in eq.
-    rewrite plus_linv, plus_rinv in eq.
-    rewrite plus_lid, plus_rid in eq.
-    exact eq.
-Qed.
-
 Theorem le_lmult_neg : ∀ {a b} c, c <= zero → a <= b → c * b <= c * a.
     intros a b c c_neg eq.
     apply le_neg in c_neg.
@@ -320,7 +301,7 @@ Theorem one_pos : 0 < 1.
     split; [>|exact not_trivial_one].
     classic_contradiction contr.
     rewrite nle_lt in contr.
-    pose proof (lt_neg _ _ contr) as eq.
+    pose proof (land (lt_neg _ _) contr) as eq.
     rewrite neg_zero in eq.
     pose proof (lt_mult _ _ eq eq) as eq2.
     rewrite mult_rneg, mult_lneg in eq2.
@@ -459,7 +440,6 @@ Theorem le_div_neg : ∀ a b, b < 0 → a <= b → div b <= div a.
     rewrite neg_div in ab by exact a_nz.
     rewrite neg_div in ab by exact b_nz.
     apply le_neg in ab.
-    do 2 rewrite neg_neg in ab.
     exact ab.
 Qed.
 

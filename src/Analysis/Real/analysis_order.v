@@ -141,7 +141,7 @@ Theorem decreasing_seq_converges : ∀ f : nat → real,
             exact M_bound.
         -   intros n.
             unfold g.
-            apply le_neg.
+            rewrite <- le_neg.
             apply f_dec.
     }
     exists (-x).

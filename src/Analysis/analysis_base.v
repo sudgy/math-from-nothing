@@ -54,7 +54,7 @@ Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| <= d y z.
     -   apply le_plus_lcancel with (-d x y).
         rewrite plus_assoc, plus_linv, plus_lid.
         rewrite <- neg_plus.
-        apply le_neg.
+        rewrite <- le_neg.
         apply d_tri.
     -   apply le_plus_rcancel with (d x z).
         rewrite <- plus_assoc, plus_linv, plus_rid.

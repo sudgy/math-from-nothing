@@ -229,14 +229,14 @@ Next Obligation.
     repeat case_if.
     -   apply refl.
     -   rewrite nle_lt in n.
-        pose proof (lt_neg _ _ n) as b'_pos.
+        pose proof (land (lt_neg _ _) n) as b'_pos.
         rewrite neg_zero in b'_pos.
         apply lt_lplus with a in b'_pos.
         apply lt_lplus with a in n.
         rewrite plus_rid in n, b'_pos.
         apply (trans n b'_pos).
     -   rewrite nle_lt in n.
-        pose proof (lt_neg _ _ n) as a'_pos.
+        pose proof (land (lt_neg _ _) n) as a'_pos.
         rewrite neg_zero in a'_pos.
         apply lt_rplus with b in a'_pos.
         apply lt_rplus with b in n.
@@ -245,29 +245,29 @@ Next Obligation.
     -   rewrite nle_lt in n, n0.
         pose proof (lt_lrplus n n0) as ltq.
         rewrite plus_lid in ltq.
-        pose proof (lt_neg _ _ ltq) as ltq2.
+        pose proof (land (lt_neg _ _) ltq) as ltq2.
         rewrite neg_plus in ltq2.
         rewrite neg_zero in ltq2.
         apply (trans ltq ltq2).
     -   pose proof (le_lrplus l l0) as leq.
         rewrite plus_lid in leq.
-        pose proof (le_neg _ _ leq) as leq2.
+        pose proof (land (le_neg _ _) leq) as leq2.
         rewrite neg_zero in leq2.
         apply (trans leq2 leq).
     -   rewrite nle_lt in n, n0.
         rewrite <- (neg_neg a) at 2.
         rewrite <- neg_plus.
-        apply le_neg.
+        rewrite <- le_neg.
         apply le_rplus.
-        pose proof (le_neg _ _ l) as leq.
+        pose proof (land (le_neg _ _) l) as leq.
         rewrite neg_zero in leq.
         exact (trans leq l).
     -   rewrite nle_lt in n, n0.
         rewrite <- (neg_neg b) at 2.
         rewrite <- neg_plus.
-        apply le_neg.
+        rewrite <- le_neg.
         apply le_lplus.
-        pose proof (le_neg _ _ l) as leq.
+        pose proof (land (le_neg _ _) l) as leq.
         rewrite neg_zero in leq.
         exact (trans leq l).
     -   rewrite neg_plus.
@@ -280,7 +280,7 @@ Theorem abs_le_pos : ∀ a, a <= |a|.
     case_if.
     -   apply refl.
     -   rewrite nle_lt in n.
-        pose proof (lt_neg _ _ n) as ltq.
+        pose proof (land (lt_neg _ _) n) as ltq.
         rewrite neg_zero in ltq.
         apply (trans n ltq).
 Qed.
@@ -289,7 +289,7 @@ Theorem abs_le_neg : ∀ a, -a <= |a|.
     intros a.
     unfold abs; cbn.
     case_if.
-    -   pose proof (le_neg _ _ l) as leq.
+    -   pose proof (land (le_neg _ _) l) as leq.
         rewrite neg_zero in leq.
         apply (trans leq l).
     -   apply refl.
@@ -301,7 +301,7 @@ Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
     case_if; split.
     -   intros leq; split; try assumption.
         apply le_neg in leq.
-        pose proof (le_neg _ _ l) as leq2.
+        pose proof (land (le_neg _ _) l) as leq2.
         rewrite neg_zero in leq2.
         exact (trans leq (trans leq2 l)).
     -   intros [C0 C1]; assumption.
@@ -310,7 +310,7 @@ Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
             rewrite neg_neg in leq.
             exact leq.
         +   rewrite nle_lt in n.
-            pose proof (lt_neg _ _ n) as ltq.
+            pose proof (land (lt_neg _ _) n) as ltq.
             rewrite neg_zero in ltq.
             apply (lt_le_trans (trans n ltq) leq).
     -   intros [leq1 leq2].

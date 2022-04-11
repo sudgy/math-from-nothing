@@ -90,7 +90,6 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
                 intros ltq.
                 apply lt_plus_lcancel in ltq.
                 apply lt_neg in ltq.
-                do 2 rewrite neg_neg in ltq.
                 apply lt_rmult_pos with 2 in ltq.
                 2: exact two_pos.
                 rewrite mult_rlinv in ltq by apply two_pos.

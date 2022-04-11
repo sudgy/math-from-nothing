@@ -213,7 +213,6 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
         destruct (connex 0 a) as [a_pos|a_neg].
         +   rewrite <- eq in b_gt.
             apply lt_neg in b_gt.
-            do 2 rewrite neg_neg in b_gt.
             apply inv_lt_one in a_lt.
             2: split; assumption.
             destruct (trans a_lt b_gt); contradiction.

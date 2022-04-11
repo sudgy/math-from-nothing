@@ -174,7 +174,7 @@ Theorem int_pre_lt : ∀ a, int_pre a < a.
     rewrite <- (plus_rid a) at 2.
     apply lt_lplus.
     rewrite <- neg_zero.
-    apply lt_neg.
+    rewrite <- lt_neg.
     exact one_pos.
 Qed.
 Theorem int_pre_le : ∀ a, int_pre a <= a.

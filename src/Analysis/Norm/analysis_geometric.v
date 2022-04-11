@@ -161,7 +161,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
                 apply (trans2 (abs_le_pos _)).
                 unfold abs at 1; cbn; case_if.
                 *   apply le_lplus.
-                    apply le_neg.
+                    rewrite <- le_neg.
                     apply (trans (abs_cs _ _)).
                     destruct r_small as [r_small C0]; clear C0.
                     apply le_lmult_pos with (|r^N * r|) in r_small.
