@@ -64,14 +64,14 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
         destruct Aa as [n eq]; subst a.
         apply lt_plus_lrmove in nup.
         rewrite neg_neg in nup.
-        rewrite <- nat_to_abstract_mult in nup.
+        rewrite <- nat_to_abstract_mult_abstract in nup.
         rewrite nat_to_abstract_real in nup.
         rewrite <- (mult_lid y) in nup at 2.
         rewrite <- rdist in nup.
         assert (A ((nat_to_real n + 1) * y)) as n_in.
         {
             exists (n + 1).
-            rewrite <- nat_to_abstract_mult.
+            rewrite <- nat_to_abstract_mult_abstract.
             rewrite nat_to_abstract_real.
             rewrite nat_to_real_plus.
             reflexivity.

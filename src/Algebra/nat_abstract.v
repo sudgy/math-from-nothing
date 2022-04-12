@@ -81,7 +81,36 @@ Theorem nat_to_abstract_one : nat_to_abstract 1 = (one (U := U)).
     apply plus_rid.
 Qed.
 
-Theorem nat_to_abstract_mult : ∀ a b, nat_to_abstract a * b = a × b.
+Theorem nat_to_abstract_plus : ∀ a b,
+        nat_to_abstract (a + b) = nat_to_abstract a + nat_to_abstract b.
+    intros a b.
+    nat_induction a.
+    -   rewrite nat_to_abstract_zero.
+        do 2 rewrite plus_lid.
+        reflexivity.
+    -   rewrite nat_plus_lsuc.
+        cbn.
+        rewrite IHa.
+        apply plus_assoc.
+Qed.
+
+Theorem nat_to_abstract_mult : ∀ a b,
+        nat_to_abstract (a * b) = nat_to_abstract a * nat_to_abstract b.
+    intros a b.
+    nat_induction a.
+    -   do 2 rewrite nat_to_abstract_zero.
+        rewrite mult_lanni.
+        reflexivity.
+    -   rewrite nat_mult_lsuc.
+        cbn.
+        rewrite rdist.
+        rewrite mult_lid.
+        rewrite nat_to_abstract_plus.
+        rewrite IHa.
+        reflexivity.
+Qed.
+
+Theorem nat_to_abstract_mult_abstract : ∀ a b, nat_to_abstract a * b = a × b.
     intros a b.
     nat_induction a.
     -   unfold zero; cbn.
@@ -136,7 +165,7 @@ Theorem field_impl_arch1 : a1 → Archimedean U.
     rewrite <- mult_assoc in n_lt.
     rewrite mult_linv in n_lt by apply y_pos.
     rewrite mult_rid in n_lt.
-    rewrite nat_to_abstract_mult in n_lt.
+    rewrite nat_to_abstract_mult_abstract in n_lt.
     exists n.
     exact n_lt.
 Qed.
@@ -159,7 +188,7 @@ Theorem field_impl_arch2 : a2 → Archimedean U.
     rewrite div_div in eq by apply x_pos.
     apply lt_rmult_pos with y in eq; try exact y_pos.
     rewrite <- mult_assoc, mult_linv, mult_rid in eq by apply y_pos.
-    rewrite nat_to_abstract_mult in eq.
+    rewrite nat_to_abstract_mult_abstract in eq.
     exists (nat_suc n).
     exact eq.
 Qed.

@@ -335,7 +335,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                 destruct (le_lt_trans m_least (nat_lt_suc m)); contradiction.
             }
             clear m_least.
-            rewrite <- nat_to_abstract_mult in am.
+            rewrite <- nat_to_abstract_mult_abstract in am.
             rewrite nat_to_abstract_rat in am.
             rename m into m'; remember (nat_to_rat m') as m.
             assert (x < m / (m + 1)) as m_eq.
@@ -388,7 +388,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
                     rewrite mult_assoc, mult_rid in contr.
                     pose proof (lt_le_trans q_lt contr) as ltq.
                     pose proof (land (rand (rand a_cut)) _ _ au ltq).
-                    rewrite <- nat_to_abstract_mult in nam.
+                    rewrite <- nat_to_abstract_mult_abstract in nam.
                     rewrite nat_to_abstract_rat in nam.
                     change (nat_suc m') with (1 + m') in nam.
                     rewrite plus_comm in nam.
@@ -458,7 +458,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
             exists (x / (m * q)), (m * q).
             repeat split.
             *   right.
-                rewrite <- nat_to_abstract_mult in nam.
+                rewrite <- nat_to_abstract_mult_abstract in nam.
                 rewrite nat_to_abstract_rat in nam.
                 change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
                 rewrite nat_to_rat_plus in nam.

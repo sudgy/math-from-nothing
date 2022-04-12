@@ -68,6 +68,7 @@
 ./src/Algebra/Relation/preorder.v
 
 ./src/Algebra/nat_abstract.v
+./src/Algebra/int_abstract.v
 
 ./src/Number/Nat/nat_base.v
 ./src/Number/Nat/nat_plus.v
