@@ -65,6 +65,7 @@
 ./src/Algebra/Relation/order_minmax.v
 ./src/Algebra/Relation/order_abs.v
 ./src/Algebra/Relation/order_dict.v
+./src/Algebra/Relation/preorder.v
 
 ./src/Algebra/nat_abstract.v
 
