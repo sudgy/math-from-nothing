@@ -1,9 +1,10 @@
 Require Import init.
 
 Require Import nat_abstract.
+Require Import mult_characteristic.
 
 Require Export int.
-Require Export set.
+Require Import set.
 
 Section IntAbstract.
 
@@ -19,7 +20,8 @@ Context {U} `{
     UO : One U,
     @Ldist U UP UM,
     @Rdist U UP UM,
-    @MultLid U UM UO
+    @MultLid U UM UO,
+    @CharacteristicZero U UP UZ UO
 }.
 
 Definition int_to_abstract_base (x : nat * nat)
@@ -43,6 +45,24 @@ Theorem int_to_abstract_wd : ∀ a b, a ~ b →
 Qed.
 
 Definition int_to_abstract := unary_op int_to_abstract_wd.
+
+Theorem int_to_abstract_eq : ∀ a b,
+        int_to_abstract a = int_to_abstract b → a = b.
+    intros a b eq.
+    equiv_get_value a b.
+    unfold int_to_abstract in eq.
+    equiv_simpl in eq.
+    equiv_simpl.
+    unfold int_to_abstract_base in eq.
+    rewrite plus_comm in eq.
+    rewrite <- plus_lrmove in eq.
+    rewrite <- plus_assoc in eq.
+    rewrite <- plus_rlmove in eq.
+    do 2 rewrite <- nat_to_abstract_plus in eq.
+    apply nat_to_abstract_eq in eq.
+    rewrite eq.
+    apply plus_comm.
+Qed.
 
 Theorem int_to_abstract_zero : int_to_abstract 0 = 0.
     unfold zero at 1, int_to_abstract; equiv_simpl.

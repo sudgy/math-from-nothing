@@ -168,6 +168,15 @@ Theorem mult_0 : ∀ {a b}, 0 = a * b → {0 = a} + {0 = b}.
         exact eq.
 Qed.
 
+Theorem div_one : /1 = 1.
+    rewrite <- (mult_lid (/1)).
+    classic_case (0 = 1) as [triv|ntriv].
+    -   rewrite <- triv.
+        apply mult_lanni.
+    -   rewrite mult_rinv by exact ntriv.
+        reflexivity.
+Qed.
+
 Theorem mult_rrinv : ∀ a b, 0 ≠ b → a * b / b = a.
     intros a b b_nz.
     rewrite <- mult_assoc.
