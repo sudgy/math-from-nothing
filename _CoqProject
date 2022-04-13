@@ -108,6 +108,7 @@
 ./src/Set/Cardinal/card_infinite2.v
 ./src/Set/Cardinal/card_infinite3.v
 ./src/Set/Cardinal/card_types.v
+./src/Set/Cardinal/card_real_interval.v
 ./src/Set/Cardinal/card_real.v
 ./src/Set/Cardinal/card.v
 
