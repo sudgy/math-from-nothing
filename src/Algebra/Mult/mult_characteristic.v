@@ -70,3 +70,62 @@ Next Obligation.
 Qed.
 
 End Characteristic.
+Section Characteristic.
+
+Context {U} `{
+    UP : Plus U,
+    @PlusComm U UP,
+    @PlusAssoc U UP,
+    UZ : Zero U,
+    @PlusLid U UP UZ,
+    @PlusRid U UP UZ,
+    UN : Neg U,
+    @PlusLinv U UP UZ UN,
+    @PlusRinv U UP UZ UN,
+    UM : Mult U,
+    @MultComm U UM,
+    @MultAssoc U UM,
+    @Ldist U UP UM,
+    @Rdist U UP UM,
+    UE : One U,
+    @MultLid U UM UE,
+    @MultRid U UM UE,
+    @MultLcancel U UZ UM,
+    @MultRcancel U UZ UM,
+    UO : Order U,
+    @Antisymmetric U le,
+    @Transitive U le,
+    @Connex U le,
+    @OrderLplus U UP UO,
+    @OrderRplus U UP UO,
+    @OrderMult U UZ UM UO,
+    @OrderLmult U UZ UM UO,
+    @OrderRmult U UZ UM UO,
+    @OrderMultLcancel U UZ UM UO,
+    @OrderMultRcancel U UZ UM UO,
+    NotTrivial U,
+    UD : Div U,
+    @MultLinv U UZ UM UE UD,
+    @MultRinv U UZ UM UE UD
+}.
+
+Global Program Instance not_trivial_char : CharacteristicZero U.
+Next Obligation.
+    assert (0 < 1 + nat_to_abstract n) as ltq.
+    {
+        nat_induction n.
+        -   rewrite nat_to_abstract_zero.
+            rewrite plus_rid.
+            apply one_pos.
+        -   cbn.
+            rewrite (plus_comm _ (_ n)).
+            rewrite plus_assoc.
+            rewrite <- (plus_rid 0).
+            apply lt_lrplus.
+            +   exact IHn.
+            +   apply one_pos.
+    }
+    apply ltq.
+Qed.
+
+End Characteristic.

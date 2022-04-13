@@ -129,4 +129,21 @@ Theorem int_to_abstract_mult : ∀ a b,
     reflexivity.
 Qed.
 
+Theorem nat_to_int_to_abstract : ∀ n,
+        int_to_abstract (nat_to_int n) = nat_to_abstract n.
+    nat_induction n.
+    -   unfold int_to_abstract, nat_to_int; equiv_simpl.
+        unfold int_to_abstract_base; cbn.
+        rewrite nat_to_abstract_zero.
+        rewrite neg_zero.
+        apply plus_lid.
+    -   cbn.
+        change (nat_suc n) with (1 + n).
+        rewrite nat_to_int_plus.
+        rewrite int_to_abstract_plus.
+        rewrite IHn.
+        rewrite int_to_abstract_one.
+        reflexivity.
+Qed.
+
 End IntAbstract.

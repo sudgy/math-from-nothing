@@ -8,6 +8,9 @@ Require Import real_mult2.
 Require Import real_mult3.
 
 Require Export nat_abstract.
+Require Export int_abstract.
+Require Import rat_abstract.
+Require Import fraction_base.
 
 Require Import set.
 Require Import nat.
@@ -24,6 +27,54 @@ Theorem nat_to_abstract_real : ∀ n, nat_to_abstract n = nat_to_real n.
         change (nat_suc n) with (1 + n).
         rewrite nat_to_real_plus.
         reflexivity.
+Qed.
+
+Theorem int_to_abstract_real : ∀ n, int_to_abstract n = int_to_real n.
+    intros n.
+    equiv_get_value n.
+    unfold int_to_abstract.
+    rewrite equiv_unary_op.
+    unfold int_to_abstract_base.
+    do 2 rewrite nat_to_abstract_real.
+    unfold nat_to_real, nat_to_rat.
+    change (rat_to_real (int_to_rat (nat_to_int (fst n)))) with
+        (int_to_real (nat_to_int (fst n))).
+    change (rat_to_real (int_to_rat (nat_to_int (snd n)))) with
+        (int_to_real (nat_to_int (snd n))).
+    rewrite <- int_to_real_neg.
+    rewrite <- int_to_real_plus.
+    apply f_equal.
+    unfold plus, neg, nat_to_int; equiv_simpl.
+    rewrite plus_rid, plus_lid.
+    reflexivity.
+Qed.
+
+Theorem rat_to_abstract_real : ∀ n, rat_to_abstract n = rat_to_real n.
+    intros n.
+    equiv_get_value n.
+    unfold rat_to_abstract.
+    rewrite equiv_unary_op.
+    unfold rat_to_abstract_base.
+    do 2 rewrite int_to_abstract_real.
+    unfold int_to_real.
+    rewrite <- rat_to_real_div.
+    2: {
+        intros contr.
+        change (zero (U := rat)) with (int_to_rat 0) in contr.
+        apply int_to_rat_eq in contr.
+        apply [|snd n].
+        exact contr.
+    }
+    rewrite <- rat_to_real_mult.
+    apply f_equal.
+    unfold mult, div; equiv_simpl.
+    pose proof [|snd n].
+    destruct (strong_excluded_middle (0 = [snd n|])) as [contr|x_nz];
+        [>contradiction|]; cbn.
+    unfold rat; equiv_simpl.
+    unfold frac_eq; cbn.
+    rewrite mult_rid, mult_lid.
+    reflexivity.
 Qed.
 
 Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
@@ -180,91 +231,11 @@ Theorem real_nested_interval : ∀ I : nat → real → Prop,
         apply abn_leq.
 Qed.
 
-Lemma rat_dense_in_real_pos : ∀ a b : real, 0 <= a → a < b →
-        ∃ r : rat, a < rat_to_real r ∧ rat_to_real r < b.
-    intros a b a_pos ab.
-    apply lt_plus_0_anb_b_a in ab.
-    pose proof (archimedean2 _ ab) as [n ltq].
-    rewrite nat_to_abstract_real in ltq.
-    apply lt_rmult_pos with (nat_to_real (nat_suc n)) in ltq.
-    2: apply real_n_pos.
-    rewrite mult_linv in ltq by apply real_n_pos.
-    remember (nat_to_real (nat_suc n)) as n'.
-    rewrite rdist in ltq.
-    apply lt_plus_rrmove in ltq.
-    rewrite mult_lneg in ltq.
-    rewrite neg_neg in ltq.
-    pose proof (archimedean1 (a * n')) as [m' m'_ltq].
-    rewrite nat_to_abstract_real in m'_ltq.
-    assert (∃ m, a * n' < nat_to_real m) as S_ex
-        by (exists m'; exact m'_ltq).
-    pose proof (well_ordered _ S_ex) as [m [m_ltq m_least]].
-    clear m' m'_ltq S_ex.
-    remember (nat_to_real m) as m'.
-    exists (nat_to_rat m / nat_to_rat (nat_suc n)).
-    rewrite rat_to_real_mult.
-    rewrite rat_to_real_div.
-    2: {
-        change 0 with (nat_to_rat 0).
-        intros contr.
-        apply nat_to_rat_eq in contr.
-        inversion contr.
-    }
-    change (rat_to_real (nat_to_rat m)) with (nat_to_real m).
-    change (rat_to_real (nat_to_rat (nat_suc n)))
-        with (nat_to_real (nat_suc n)).
-    rewrite <- Heqn', <- Heqm'.
-    split.
-    -   apply lt_mult_lrmove_pos.
-        1: rewrite Heqn'; apply real_n_pos.
-        exact m_ltq.
-    -   apply lt_mult_rrmove_pos.
-        1: rewrite Heqn'; apply real_n_pos.
-        nat_destruct m.
-        {
-            rewrite lt_plus_0_anb_b_a in ab.
-            rewrite Heqm'.
-            change (nat_to_real 0) with 0.
-            apply lt_mult.
-            -   exact (le_lt_trans a_pos ab).
-            -   rewrite Heqn'.
-                apply real_n_pos.
-        }
-        assert (nat_to_real m <= a * n') as m_ltq2.
-        {
-            classic_contradiction contr.
-            rewrite nle_lt in contr.
-            specialize (m_least _ contr).
-            rewrite <- nlt_le in m_least.
-            contradiction (m_least (nat_lt_suc m)).
-        }
-        apply (le_lt_trans2 ltq).
-        rewrite Heqm'.
-        change (nat_suc m) with (1 + m).
-        rewrite nat_to_real_plus.
-        apply le_lplus.
-        exact m_ltq2.
-Qed.
 Theorem rat_dense_in_real : ∀ a b : real, a < b →
         ∃ r : rat, a < rat_to_real r ∧ rat_to_real r < b.
-    intros a b ab.
-    classic_case (0 <= a) as [a_pos|a_neg].
-    {
-        apply rat_dense_in_real_pos; assumption.
-    }
-    rewrite nle_lt in a_neg.
-    classic_case (0 < b) as [b_pos|b_neg].
-    {
-        exists 0.
-        split; assumption.
-    }
-    rewrite nlt_le in b_neg.
-    apply neg_pos in b_neg.
-    apply lt_neg in ab.
-    pose proof (rat_dense_in_real_pos (-b) (-a) b_neg ab) as [r [r_gt r_lt]].
-    exists (-r).
-    rewrite rat_to_real_neg.
-    apply lt_neg in r_gt, r_lt.
-    rewrite neg_neg in r_gt, r_lt.
-    split; assumption.
+    intros a b ltq.
+    pose proof (rat_dense_in_arch a b ltq) as [r r'].
+    exists r.
+    rewrite <- rat_to_abstract_real.
+    exact r'.
 Qed.
