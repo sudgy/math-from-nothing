@@ -27,6 +27,7 @@ Context {U} `{
     @MultLinv U UZ UM UO UD,
     @CharacteristicZero U UP UZ UO
 }.
+Local Existing Instance characteristic_zero_not_trivial.
 
 Definition rat_to_abstract_base (x : frac_base int)
     := int_to_abstract (fst x) / int_to_abstract [snd x|] : U.

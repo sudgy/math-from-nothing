@@ -129,6 +129,8 @@
 ./src/Number/Real/real_extra.v
 ./src/Number/Real/real.v
 
+./src/Number/Real/Zorn/zorn_real_base.v
+
 ./src/Algebra/Ring/ring_ideal.v
 ./src/Algebra/Ring/Domain/mult_div.v
 ./src/Algebra/Ring/Domain/euclidean_domain.v

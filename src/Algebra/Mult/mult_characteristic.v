@@ -60,7 +60,7 @@ Theorem nat_to_abstract_eq : ∀ a b,
             exact eq.
 Qed.
 
-Global Program Instance characteristinc_zero_not_trivial : NotTrivial U := {
+Local Program Instance characteristic_zero_not_trivial : NotTrivial U := {
     not_trivial_a := 0;
     not_trivial_b := 1;
 }.
