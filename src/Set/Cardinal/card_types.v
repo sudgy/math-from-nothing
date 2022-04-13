@@ -6,6 +6,7 @@ Require Import int.
 Require Import rat.
 Require Import real.
 Require Import real_sqrt.
+Require Import rat_abstract.
 
 (* begin hide *)
 Open Scope card_scope.
@@ -701,4 +702,73 @@ Theorem real_closed_interval_size : ∀ a b, a < b →
 Qed.
 (* begin hide *)
 Close Scope card_scope.
+
 (* end hide *)
+Section CardArch.
+
+Context {U} `{
+    UP : Plus U,
+    @PlusComm U UP,
+    @PlusAssoc U UP,
+    UZ : Zero U,
+    @PlusLid U UP UZ,
+    @PlusRid U UP UZ,
+    UN : Neg U,
+    @PlusLinv U UP UZ UN,
+    @PlusRinv U UP UZ UN,
+    UM : Mult U,
+    @MultComm U UM,
+    @MultAssoc U UM,
+    @Ldist U UP UM,
+    @Rdist U UP UM,
+    UE : One U,
+    @MultLid U UM UE,
+    @MultRid U UM UE,
+    @MultLcancel U UZ UM,
+    @MultRcancel U UZ UM,
+    UO : Order U,
+    @Antisymmetric U le,
+    @Transitive U le,
+    @Connex U le,
+    @OrderLplus U UP UO,
+    @OrderRplus U UP UO,
+    @OrderMult U UZ UM UO,
+    @OrderLmult U UZ UM UO,
+    @OrderRmult U UZ UM UO,
+    @OrderMultLcancel U UZ UM UO,
+    @OrderMultRcancel U UZ UM UO,
+    NotTrivial U,
+    UD : Div U,
+    @MultLinv U UZ UM UE UD,
+    @MultRinv U UZ UM UE UD,
+    @Archimedean U UP UZ UO
+}.
+
+Local Open Scope card_scope.
+
+Theorem arch_ordered_size : |U| <= 2 ^ |nat|.
+    rewrite <- rat_size.
+    rewrite <- power_set_size.
+    unfold le; equiv_simpl.
+    exists (λ x, (λ q, rat_to_abstract q < x)).
+    cut (∀ a b, a <= b →
+        ((λ q : rat, rat_to_abstract q < a) = (λ q : rat, rat_to_abstract q < b)
+        → a = b)).
+    {
+        intros wlog a b eq.
+        destruct (connex a b) as [leq|leq].
+        +   apply wlog; assumption.
+        +   symmetry in eq.
+            symmetry.
+            apply wlog; assumption.
+    }
+    intros a b leq eq.
+    classic_contradiction neq.
+    pose proof (rat_dense_in_arch a b (make_and leq neq)) as [r [r_gt r_lt]].
+    pose proof (func_eq _ _ eq r) as eq2.
+    cbn in eq2.
+    rewrite <- eq2 in r_lt.
+    destruct (trans r_gt r_lt); contradiction.
+Qed.
+
+End CardArch.
