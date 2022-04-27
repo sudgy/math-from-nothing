@@ -295,3 +295,5 @@ Definition aof_ex := make_arch_ordered
 End AOFEx.
 
 Arguments aof_ex U {UP H H0 UZ H1 UN H2 UM H3 H4 H5 UE H6 UO H7 H8 H9 H10 H11 H12 UD H13 H14}.
+
+Definition rat_aof := aof_ex rat.

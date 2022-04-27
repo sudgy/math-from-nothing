@@ -226,25 +226,40 @@ Theorem arch_ordered_homo_uni : ∀ f g,
     apply antisym; apply arch_ordered_homo_uni_wlog; assumption.
 Qed.
 
+Theorem arch_ordered_homo_eq : ∀ f g x,
+    arch_ordered_homo f → arch_ordered_homo g → f x = g x.
+Proof.
+    intros f g x f_homo g_homo.
+    rewrite (arch_ordered_homo_uni f g f_homo g_homo).
+    reflexivity.
+Qed.
+
 End ArchOrderedField.
 
-Global Instance arch_ordered_le : Order ArchOrderedField := {
-    le A B := ∃ f, arch_ordered_homo A B f
-}.
-Global Program Instance arch_ordered_le_refl : Reflexive le.
-Next Obligation.
-    unfold le; cbn.
-    exists identity.
-    unfold identity.
+Arguments arch_ordered_homo_eq {A B}.
+
+Theorem identity_arch_ordered_homo : ∀ A, arch_ordered_homo A A identity.
+Proof.
+    intros A.
     repeat split; intro; assumption.
 Qed.
-Global Program Instance arch_ordered_le_trans : Transitive le.
-Next Obligation.
-    rename x into A, y into B, z into C, H into AB, H0 into BC.
-    unfold le in *; cbn in *.
-    destruct AB as [f [f_zero [f_one [f_plus [f_mult f_le]]]]].
-    destruct BC as [g [g_zero [g_one [g_plus [g_mult g_le]]]]].
-    exists (λ x, g (f x)).
+
+Theorem arch_ordered_homo_identity :
+    ∀ A f, arch_ordered_homo A A f → f = identity.
+Proof.
+    intros A f f_homo.
+    apply arch_ordered_homo_uni.
+    -   exact f_homo.
+    -   apply identity_arch_ordered_homo.
+Qed.
+
+Theorem arch_ordered_homo_compose :
+    ∀ A B C f g, arch_ordered_homo A B f → arch_ordered_homo B C g →
+    arch_ordered_homo A C (λ x, g (f x)).
+Proof.
+    intros A B C f g f_homo g_homo.
+    destruct f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
+    destruct g_homo as [g_zero [g_one [g_plus [g_mult g_le]]]].
     split; [>|split; [>|split; [>|split]]].
     -   rewrite f_zero.
         exact g_zero.
@@ -259,4 +274,23 @@ Next Obligation.
     -   intros a b.
         rewrite <- g_le.
         apply f_le.
+Qed.
+
+Global Instance arch_ordered_le : Order ArchOrderedField := {
+    le A B := ∃ f, arch_ordered_homo A B f
+}.
+Global Program Instance arch_ordered_le_refl : Reflexive le.
+Next Obligation.
+    unfold le; cbn.
+    exists identity.
+    apply identity_arch_ordered_homo.
+Qed.
+Global Program Instance arch_ordered_le_trans : Transitive le.
+Next Obligation.
+    rename x into A, y into B, z into C, H into AB, H0 into BC.
+    unfold le in *; cbn in *.
+    destruct AB as [f f_homo].
+    destruct BC as [g g_homo].
+    exists (λ x, g (f x)).
+    apply arch_ordered_homo_compose; assumption.
 Qed.

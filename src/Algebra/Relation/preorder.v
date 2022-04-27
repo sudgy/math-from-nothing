@@ -93,8 +93,7 @@ Next Obligation.
     apply trans.
 Qed.
 
-Theorem preorder_zorn : (∀ F : U → Prop,
-            (∀ x y, F x → F y → x <= y ∨ y <= x) → has_upper_bound le F) →
+Theorem preorder_zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
         ∃ a : U, ∀ x : U, a <= x → x <= a.
     intros chain_ub.
     pose proof (zorn (U := equiv_type preorder_equiv) le) as a_ex.
