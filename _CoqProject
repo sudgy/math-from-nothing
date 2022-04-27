@@ -131,6 +131,7 @@
 
 ./src/Number/Real/Zorn/zorn_real_base.v
 ./src/Number/Real/Zorn/zorn_real_arch.v
+./src/Number/Real/Zorn/zorn_real_zorn.v
 
 ./src/Algebra/Ring/ring_ideal.v
 ./src/Algebra/Ring/Domain/mult_div.v
