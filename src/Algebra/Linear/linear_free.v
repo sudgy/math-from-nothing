@@ -5,6 +5,7 @@ Require Import linear_basis.
 Require Import linear_span.
 Require Import linear_grade_sum.
 Require Import linear_extend.
+Require Import linear_transformation_space.
 Require Import set.
 Require Import card.
 Require Import unordered_list.
@@ -55,6 +56,243 @@ Existing Instances free_plus_class free_zero free_neg free_plus_assoc_class
     free_scalar_comp_class free_grade.
 
 Definition to_free v := single_to_grade_sum V (λ _, cring_module F) (k := v) 1.
+
+Theorem to_free_ex : ∀ (v : V) (x : free_linear),
+    of_grade v x → ∃ α, x = α · to_free v.
+Proof.
+    intros v x [α x_eq].
+    exists α.
+    rewrite <- x_eq.
+    rewrite <- (mult_rid α) at 1.
+    pose (USM := module_scalar (cring_module F)).
+    change (α * 1) with (α · 1).
+    rewrite (single_to_grade_sum_scalar V (λ _, cring_module F) v α).
+    apply f_equal.
+    reflexivity.
+Qed.
+
+Section FreeExtend.
+
+Context {V2} `{
+    VP : Plus V2,
+    VZ : Zero V2,
+    VN : Neg V2,
+    @PlusComm V2 VP,
+    @PlusAssoc V2 VP,
+    @PlusLid V2 VP VZ,
+    @PlusLinv V2 VP VZ VN,
+
+    SM : ScalarMult U V2,
+    @ScalarId U V2 UO SM,
+    @ScalarLdist U V2 VP SM,
+    @ScalarRdist U V2 UP VP SM,
+    @ScalarComp U V2 UM SM
+}.
+
+Variable f_base : V → V2.
+Let f1 (i : V) (v : free_linear) (H : of_grade i v) := ex_val H · f_base i.
+
+Lemma free_extend_plus_base : linear_extend_plus_base f1.
+Proof.
+    intros u v i iu iv.
+    unfold f1.
+    rewrite_ex_val a a_eq.
+    rewrite_ex_val b b_eq.
+    rewrite_ex_val c c_eq.
+    rewrite <- scalar_rdist.
+    apply rscalar.
+    rewrite <- b_eq, <- c_eq in a_eq.
+    rewrite <- single_to_grade_sum_plus in a_eq.
+    apply single_to_grade_sum_eq in a_eq.
+    exact a_eq.
+Qed.
+Lemma free_extend_scalar_base : linear_extend_scalar_base f1.
+Proof.
+    intros a v i iv.
+    unfold f1.
+    rewrite_ex_val b b_eq.
+    rewrite_ex_val c c_eq.
+    rewrite scalar_comp.
+    apply rscalar.
+    rewrite <- c_eq in b_eq.
+    rewrite <- single_to_grade_sum_scalar in b_eq.
+    apply single_to_grade_sum_eq in b_eq.
+    exact b_eq.
+Qed.
+
+Definition free_extend := linear_extend f1 : free_linear → V2.
+Let f := free_extend.
+
+Theorem free_extend_plus : ∀ a b, f (a + b) = f a + f b.
+Proof.
+    apply linear_extend_plus.
+    -   exact free_extend_plus_base.
+    -   exact free_extend_scalar_base.
+Qed.
+
+Theorem free_extend_scalar : ∀ a v, f (a · v) = a · f v.
+Proof.
+    apply linear_extend_scalar.
+    -   exact free_extend_plus_base.
+    -   exact free_extend_scalar_base.
+Qed.
+
+Theorem free_extend_zero : f 0 = 0.
+Proof.
+    rewrite <- (scalar_lanni 0).
+    rewrite free_extend_scalar.
+    apply scalar_lanni.
+Qed.
+
+Theorem free_extend_free : ∀ v : V, f (to_free v) = f_base v.
+Proof.
+    intros v.
+    unfold f, free_extend.
+    assert (of_grade v (to_free v)) as v_grade.
+    {
+        exists 1.
+        unfold to_free.
+        reflexivity.
+    }
+    rewrite (linear_extend_homo (VG := free_grade)
+        f1 free_extend_scalar_base v (to_free v) v_grade).
+    unfold f1.
+    rewrite_ex_val a aH.
+    unfold to_free in aH.
+    apply single_to_grade_sum_eq in aH.
+    rewrite aH.
+    apply scalar_id.
+Qed.
+
+End FreeExtend.
+Section FreeBilinear.
+
+Context {V2} `{
+    VP : Plus V2,
+    VZ : Zero V2,
+    VN : Neg V2,
+    @PlusComm V2 VP,
+    @PlusAssoc V2 VP,
+    @PlusLid V2 VP VZ,
+    @PlusLinv V2 VP VZ VN,
+
+    SM : ScalarMult U V2,
+    @ScalarId U V2 UO SM,
+    @ScalarLdist U V2 VP SM,
+    @ScalarRdist U V2 UP VP SM,
+    @ScalarComp U V2 UM SM
+}.
+
+Variable op : V → V → V2.
+
+Let TP := linear_func_plus V V2.
+Let TZ := linear_func_zero V V2.
+Let TN := linear_func_neg V V2.
+Let TPC := linear_func_plus_comm V V2.
+Let TPA := linear_func_plus_assoc V V2.
+Let TPZ := linear_func_plus_lid V V2.
+Let TPN := linear_func_plus_linv V V2.
+Let TSM := linear_func_scalar V V2.
+Let TSMO := linear_func_scalar_id V V2.
+Let TSML := linear_func_scalar_ldist V V2.
+Let TSMR := linear_func_scalar_rdist V V2.
+Let TSMC := linear_func_scalar_comp V V2.
+Local Existing Instances TP TZ TN TPC TPA TPZ TPN TSM TSMO TSML TSMR TSMC.
+
+Let free_bilinear_base := free_extend op.
+Let free_bilinear (v : free_linear) := free_extend (free_bilinear_base v).
+Let f := free_bilinear.
+
+Theorem free_bilinear_ldist : ∀ a b c, f a (b + c) = f a b + f a c.
+Proof.
+    intros a b c.
+    unfold f.
+    unfold free_bilinear.
+    apply free_extend_plus.
+Qed.
+
+Theorem free_bilinear_rdist : ∀ a b c, f (a + b) c = f a c + f b c.
+Proof.
+    intros a b c.
+    unfold f.
+    unfold free_bilinear.
+    unfold free_bilinear_base.
+    rewrite free_extend_plus.
+    rewrite (grade_decomposition_eq c).
+    remember (grade_decomposition c) as l; clear Heql.
+    induction l as [|v l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 3 rewrite free_extend_zero.
+        rewrite plus_lid.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add.
+    do 3 rewrite free_extend_plus.
+    rewrite IHl; clear IHl.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    rewrite <- plus_assoc.
+    rewrite (plus_comm _ (free_extend (free_extend op b) _)).
+    rewrite plus_assoc.
+    apply rplus.
+    destruct v as [v [x vx]]; cbn.
+    apply to_free_ex in vx as [α v_eq]; subst v.
+    do 3 rewrite free_extend_scalar.
+    rewrite <- scalar_ldist.
+    apply f_equal.
+    do 3 rewrite free_extend_free.
+    unfold plus at 1; cbn.
+    reflexivity.
+Qed.
+
+Theorem free_bilinear_lscalar : ∀ a u v, f (a · u) v = a · f u v.
+Proof.
+    intros a u v.
+    unfold f, free_bilinear, free_bilinear_base.
+    rewrite free_extend_scalar.
+    rewrite (grade_decomposition_eq v).
+    remember (grade_decomposition v) as l; clear v Heql.
+    induction l as [|v l] using ulist_induction.
+    {
+        rewrite ulist_image_end, ulist_sum_end.
+        do 2 rewrite free_extend_zero.
+        rewrite scalar_ranni.
+        reflexivity.
+    }
+    rewrite ulist_image_add, ulist_sum_add.
+    do 2 rewrite free_extend_plus.
+    rewrite IHl; clear IHl.
+    rewrite scalar_ldist.
+    apply rplus.
+    destruct v as [v [x vx]]; cbn.
+    apply to_free_ex in vx as [α v_eq]; subst v.
+    do 2 rewrite free_extend_scalar.
+    rewrite scalar_comp.
+    rewrite mult_comm.
+    rewrite <- scalar_comp.
+    apply f_equal.
+    do 2 rewrite free_extend_free.
+    unfold scalar_mult at 1; cbn.
+    reflexivity.
+Qed.
+
+Theorem free_bilinear_rscalar : ∀ a u v, f u (a · v) = a · f u v.
+Proof.
+    intros a u v.
+    unfold f, free_bilinear, free_bilinear_base.
+    apply free_extend_scalar.
+Qed.
+
+Theorem free_bilinear_free : ∀ u v : V, f (to_free u) (to_free v) = op u v.
+Proof.
+    intros u v.
+    unfold f, free_bilinear, free_bilinear_base.
+    do 2 rewrite free_extend_free.
+    reflexivity.
+Qed.
+
+End FreeBilinear.
 
 Definition free_module := make_module
     F
@@ -129,6 +367,7 @@ Qed.
 Definition to_free_from := make_free_from free_module to_free.
 
 Theorem free_module_universal : initial to_free_from.
+Proof.
     intros [gM g].
     pose (gP := module_plus gM).
     pose (gZ := module_zero gM).
@@ -145,61 +384,10 @@ Theorem free_module_universal : initial to_free_from.
     cbn.
     apply card_unique_one.
     -   apply ex_set_type.
-        pose (f1 (i : V) (v : free_linear) (H : of_grade i v) := ex_val H · g i).
-        assert (linear_extend_plus_base f1) as f1_plus.
-        {
-            intros u v i iu iv.
-            unfold f1.
-            rewrite_ex_val a a_eq.
-            rewrite_ex_val b b_eq.
-            rewrite_ex_val c c_eq.
-            rewrite <- scalar_rdist.
-            apply rscalar.
-            rewrite <- b_eq, <- c_eq in a_eq.
-            rewrite <- single_to_grade_sum_plus in a_eq.
-            apply single_to_grade_sum_eq in a_eq.
-            exact a_eq.
-        }
-        assert (linear_extend_scalar_base f1) as f1_scalar.
-        {
-            intros a v i iv.
-            unfold f1.
-            rewrite_ex_val b b_eq.
-            rewrite_ex_val c c_eq.
-            rewrite scalar_comp.
-            apply rscalar.
-            rewrite <- c_eq in b_eq.
-            rewrite <- single_to_grade_sum_scalar in b_eq.
-            apply single_to_grade_sum_eq in b_eq.
-            exact b_eq.
-        }
-        pose (f := linear_extend f1 : free_linear → module_V gM).
-        assert (∀ u v, f (u + v) = f u + f v) as f_plus.
-        {
-            apply linear_extend_plus; assumption.
-        }
-        assert (∀ a v, f (a · v) = a · f v) as f_scalar.
-        {
-            apply linear_extend_scalar; assumption.
-        }
-        exists (make_module_homomorphism _ free_module _ f f_plus f_scalar).
+        exists (make_module_homomorphism _ free_module _
+            (free_extend g) (free_extend_plus g) (free_extend_scalar g)).
         unfold free_from_set; cbn.
-        intros x.
-        assert (of_grade x (to_free x)) as x_grade.
-        {
-            exists 1.
-            unfold to_free.
-            reflexivity.
-        }
-        unfold f.
-        rewrite (linear_extend_homo (VG := free_grade)
-            f1 f1_scalar x (to_free x) x_grade).
-        unfold f1.
-        rewrite_ex_val a aH.
-        unfold to_free in aH.
-        apply single_to_grade_sum_eq in aH.
-        rewrite aH.
-        apply scalar_id.
+        apply free_extend_free.
     -   intros [f1 f1_in] [f2 f2_in].
         pose (f1_plus := @module_homo_plus _ _ _ f1).
         pose (f1_scalar := @module_homo_scalar _ _ _ f1).
@@ -224,17 +412,10 @@ Theorem free_module_universal : initial to_free_from.
             rewrite IHl.
             apply rplus.
             clear v l IHl.
-            destruct a as [a [v [α eq]]]; cbn.
-            subst a.
-            rewrite <- (mult_rid α).
-            pose (USM := module_scalar (cring_module F)).
-            change (α * 1) with (α · 1).
-            rewrite (single_to_grade_sum_scalar V (λ _, cring_module F) v α).
+            destruct a as [a [v av]]; cbn.
+            apply to_free_ex in av as [α a_eq]; subst a.
             rewrite f1_scalar, f2_scalar.
             apply f_equal.
-            assert (single_to_grade_sum V (k := v) _ 1 = to_free v) as eq
-                by reflexivity.
-            rewrite eq.
             rewrite f1_in, f2_in.
             reflexivity.
 Qed.
