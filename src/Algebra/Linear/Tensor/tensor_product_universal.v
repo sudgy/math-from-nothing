@@ -236,7 +236,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
             unfold linear_list_in in l_in; cbn in l_in; clear l_comb.
             induction l using ulist_induction.
             -   rewrite ulist_image_end, ulist_sum_end.
-                rewrite <- (scalar_lanni (V := free_linear U (V1 * V2)) 0).
+                rewrite <- (scalar_lanni (V := free_linear F (V1 * V2)) 0).
                 rewrite h3_scalar.
                 rewrite scalar_lanni.
                 reflexivity.
@@ -269,7 +269,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
                     rewrite h3_plus.
                     rewrite h3_plus.
                     rewrite <- scalar_neg_one.
-                    rewrite <- (scalar_neg_one (V := free_linear U (V1 * V2))).
+                    rewrite <- (scalar_neg_one (V := free_linear F (V1 * V2))).
                     do 2 rewrite h3_scalar.
                     do 2 rewrite scalar_neg_one.
                     do 3 rewrite h3_free_from.
@@ -286,7 +286,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
                     rewrite h3_plus.
                     rewrite h3_plus.
                     rewrite <- scalar_neg_one.
-                    rewrite <- (scalar_neg_one (V := free_linear U (V1 * V2))).
+                    rewrite <- (scalar_neg_one (V := free_linear F (V1 * V2))).
                     do 2 rewrite h3_scalar.
                     do 2 rewrite scalar_neg_one.
                     do 3 rewrite h3_free_from.

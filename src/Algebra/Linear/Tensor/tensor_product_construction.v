@@ -4,6 +4,7 @@ Require Export linear_base.
 Require Import linear_free.
 Require Import linear_subspace.
 Require Import linear_span.
+Require Import linear_grade_sum.
 Require Import module_category.
 
 Require Import set.
@@ -64,7 +65,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     SM2 SMO2 SML2 SMR2 SMC2.
 
 (* end hide *)
-Let FR := free_linear U (V1 * V2).
+Let FR := free_linear F (V1 * V2).
 Let to_FR a b := to_free F (V1 * V2) (a, b).
 
 (* begin hide *)
@@ -189,38 +190,42 @@ Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
         T = ulist_sum (ulist_image l (λ x, [x|])).
     intros T.
     equiv_get_value T.
-    pose proof (free_fin T) as T_fin.
+    destruct T as [T T_fin'].
+    pose proof T_fin' as T_fin.
     apply fin_nat_ex in T_fin as [n n_eq].
-    revert T n_eq.
+    revert T T_fin' n_eq.
+    unfold grade_sum_finite.
     nat_induction n.
     {
-        intros T eq.
+        intros T T_fin' eq.
         exists ulist_end.
         rewrite ulist_image_end, ulist_sum_end.
         unfold zero; cbn.
         apply f_equal.
-        apply free_eq.
+        apply set_type_eq; cbn.
+        apply functional_ext.
         intros x.
         classic_contradiction contr.
         apply zero_is_empty in eq.
         assert (∅ x) as x_in.
         {
             rewrite <- eq.
+            rewrite neq_sym.
             exact contr.
         }
         contradiction x_in.
     }
-    intros T T_size.
+    intros T T_fin' T_size.
     change (nat_suc n) with (1 + n) in T_size.
     rewrite <- nat_to_card_plus in T_size.
     unfold plus, nat_to_card in T_size; equiv_simpl in T_size.
     destruct T_size as [f [f_inj f_sur]].
     pose (x := f (inl [0|nat_0_lt_1])).
-    pose (T' v := If v = [x|] then 0 else free_f T v).
-    assert (nat_to_card n = |set_type (λ x, T' x ≠ 0)|) as T'n.
+    pose (T' v := If v = [x|] then 0 else T v).
+    assert (nat_to_card n = |set_type (λ x, 0 ≠ T' x)|) as T'n.
     {
         unfold nat_to_card; equiv_simpl.
-        assert (∀ m : set_type (λ x, x < n), T' [f (inr m)|] ≠ 0) as T'_neq.
+        assert (∀ m : set_type (λ x, x < n), 0 ≠ T' [f (inr m)|]) as T'_neq.
         {
             intros m.
             unfold T'.
@@ -241,7 +246,7 @@ Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
             inversion eq.
             reflexivity.
         -   intros [b b_neq].
-            assert (free_f T b ≠ 0) as b_neq2.
+            assert (0 ≠ T b) as b_neq2.
             {
                 unfold T' in b_neq.
                 case_if.
@@ -271,16 +276,16 @@ Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
                 apply set_type_eq; cbn.
                 reflexivity.
     }
-    assert (finite (|set_type (λ x, T' x ≠ 0)|)) as T'_fin.
+    assert (finite (|set_type (λ x, 0 ≠ T' x)|)) as T'_fin.
     {
         rewrite <- T'n.
         apply nat_is_finite.
     }
-    specialize (IHn (make_free T' T'_fin) T'n) as [l l_eq].
-    pose (x' := free_f T [x|] · (fst [x|] ⊗ snd [x|])).
+    specialize (IHn T' T'_fin T'n) as [l l_eq].
+    pose (x' := T [x|] · (fst [x|] ⊗ snd [x|])).
     assert (simple_tensor_base x') as x'_simple.
     {
-        exists (free_f T [x|] · fst [x|]), (snd [x|]).
+        exists (T [x|] · fst [x|]), (snd [x|]).
         unfold x'.
         rewrite tensor_lscalar_base.
         reflexivity.
@@ -290,17 +295,24 @@ Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
     unfold x'; cbn.
     clear x' x'_simple.
     rewrite <- l_eq.
-    assert (T = free_f T [x|] · to_FR (fst [x|]) (snd [x|]) + (make_free T' T'_fin)) as eq.
+    assert (T = [T [x|] · to_FR (fst [x|]) (snd [x|]) + [T'|T'_fin]|]) as eq.
     {
-        apply free_eq.
+        apply functional_ext.
         intros v.
         unfold T'.
         unfold plus; cbn.
         unfold scalar_mult; cbn.
+        unfold scalar_mult; cbn.
         replace (fst [x|], snd [x|]) with [x|].
         2: destruct [x|]; reflexivity.
+        unfold single_to_grade_sum_base.
+        assert ((v = [x|]) = ([x|] = v)) as eq.
+        {
+            apply propositional_ext; split; intro; symmetry; assumption.
+        }
+        rewrite eq.
         case_if.
-        -   subst v.
+        -   subst v; cbn.
             rewrite plus_rid.
             rewrite mult_rid.
             reflexivity.
@@ -309,16 +321,12 @@ Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
             reflexivity.
     }
     unfold scalar_mult, plus, tensor_mult_base, to_quotient; cbn.
-    rewrite eq at 1.
     equiv_simpl.
-    rewrite neg_plus.
-    rewrite (plus_comm (_ · to_FR _ _)).
-    rewrite plus_assoc.
-    rewrite <- (plus_assoc _ (_ · to_FR _ _)).
-    rewrite plus_rinv.
-    rewrite plus_rid.
-    rewrite plus_rinv.
-    apply linear_span_zero.
+    applys_eq linear_span_zero.
+    symmetry.
+    apply plus_0_anb_a_b.
+    apply set_type_eq; cbn.
+    exact eq.
 Qed.
 (* begin hide *)
 
