@@ -1,13 +1,13 @@
 Require Import init.
 
 Require Export tensor_algebra_base.
-Require Import tensor_algebra_grade.
 Require Import tensor_algebra_mult.
 Require Import tensor_power_base.
 Require Import tensor_product_isomorphisms.
 Require Import module_category.
 Require Import algebra_category.
 Require Import linear_grade.
+Require Import linear_grade_sum.
 
 Require Import unordered_list.
 Require Import set.
@@ -97,7 +97,7 @@ Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros x.
-    unfold power_to_tensor_base.
+    unfold single_to_grade_sum_base.
     destruct (strong_excluded_middle (0 = x)) as [x_z|x_nz].
     -   subst.
         cbn.

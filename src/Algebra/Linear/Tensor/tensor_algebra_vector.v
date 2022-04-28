@@ -4,7 +4,6 @@ Require Import tensor_product_universal.
 Require Import tensor_product_isomorphisms.
 Require Import tensor_power_base.
 Require Export tensor_algebra_base.
-Require Import tensor_algebra_grade.
 Require Import tensor_algebra_mult.
 Require Import module_category.
 Require Import algebra_category.

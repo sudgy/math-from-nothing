@@ -2,11 +2,11 @@ Require Import init.
 
 Require Import linear_extend.
 Require Import linear_grade_isomorphism.
+Require Import linear_grade_sum.
 Require Import tensor_power_base.
 Require Import tensor_algebra_base.
 Require Import tensor_algebra_scalar.
 Require Import tensor_algebra_vector.
-Require Import tensor_algebra_grade.
 Require Import tensor_algebra_mult.
 Require Import tensor_algebra_universal.
 Require Import tensor_product_isomorphisms.
@@ -321,6 +321,8 @@ Theorem tensor_grade_sum : âˆ€ x (i : nat), of_grade (H10 := tensor_grade) i x â
     destruct xi as [x' x_eq]; subst x.
     rename x' into x.
     cbn.
+    change (single_to_grade_sum nat (tensor_power V) x)
+        with (power_to_tensor V x).
     pose proof (tensor_power_sum V x) as [l x_eq]; subst x.
     exists (ulist_image l (Î» x, (ex_val [|x], ex_val (ex_proof [|x])))).
     rewrite ulist_image_comp; cbn.
@@ -378,6 +380,7 @@ Theorem tensor_grade_sum : âˆ€ x (i : nat), of_grade (H10 := tensor_grade) i x â
                 reflexivity.
             }
             cbn.
+            unfold tensor_algebra_base.
             rewrite (tensor_mult_homo _ _ _ _ _ a_homo l_homo).
             unfold vector_to_tensor_base,
                 tensor_algebra_vector.vector_to_tensor.

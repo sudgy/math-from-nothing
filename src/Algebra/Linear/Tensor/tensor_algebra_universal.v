@@ -4,10 +4,10 @@ Require Import linear_extend.
 Require Import tensor_algebra_base.
 Require Import tensor_algebra_scalar.
 Require Import tensor_algebra_vector.
-Require Import tensor_algebra_grade.
 Require Import tensor_algebra_mult.
 Require Import tensor_product_universal.
 Require Import tensor_power_universal.
+Require Import linear_grade_sum.
 Require Import module_category.
 Require Import algebra_category.
 Require Import category_initterm.
@@ -298,14 +298,14 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             induction ul as [|u ul] using ulist_induction.
             {
                 rewrite ulist_image_end, ulist_sum_end.
-                rewrite power_to_tensor_zero.
+                rewrite single_to_grade_sum_zero.
                 unfold TAZ, tensor_algebra_base in *.
                 rewrite h_zero.
                 do 2 rewrite mult_lanni.
                 apply h_zero.
             }
             rewrite ulist_image_add, ulist_sum_add.
-            rewrite power_to_tensor_plus.
+            rewrite single_to_grade_sum_plus.
             rewrite rdist.
             do 2 rewrite h_plus.
             rewrite rdist.
@@ -315,14 +315,14 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             induction vl as [|v vl] using ulist_induction.
             {
                 rewrite ulist_image_end, ulist_sum_end.
-                rewrite power_to_tensor_zero.
+                rewrite single_to_grade_sum_zero.
                 unfold TAZ, tensor_algebra_base in *.
                 rewrite h_zero.
                 do 2 rewrite mult_ranni.
                 apply h_zero.
             }
             rewrite ulist_image_add, ulist_sum_add.
-            rewrite power_to_tensor_plus.
+            rewrite single_to_grade_sum_plus.
             rewrite ldist.
             do 2 rewrite h_plus.
             rewrite ldist.
@@ -464,7 +464,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
         induction l as [|v l] using ulist_induction.
         {
             rewrite ulist_image_end, ulist_sum_end.
-            rewrite power_to_tensor_zero.
+            rewrite single_to_grade_sum_zero.
             unfold TAZ.
             pose proof (algebra_homo_zero f1) as eq1.
             pose proof (algebra_homo_zero f2) as eq2.
@@ -474,12 +474,12 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             reflexivity.
         }
         rewrite ulist_image_add, ulist_sum_add.
-        rewrite power_to_tensor_plus.
+        rewrite single_to_grade_sum_plus.
         do 2 rewrite algebra_homo_plus.
         rewrite IHl; clear IHl.
         apply rplus; clear l.
         destruct v as [v [α [[l l_eq] v_eq]]]; cbn; subst v.
-        rewrite power_to_tensor_scalar.
+        rewrite single_to_grade_sum_scalar.
         do 2 rewrite algebra_homo_scalar.
         apply f_equal.
         cbn.
@@ -493,6 +493,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             cbn in *.
             unfold zero in eq; cbn in eq.
             unfold zero; cbn.
+            unfold power_to_tensor in eq.
             rewrite eq.
             do 2 rewrite algebra_homo_one.
             reflexivity.
@@ -526,6 +527,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
             cbn.
             reflexivity.
         }
+        unfold power_to_tensor in eq.
         rewrite eq; clear eq.
         do 2 rewrite algebra_homo_mult.
         apply f_equal2; [>clear IHl|exact IHl].
