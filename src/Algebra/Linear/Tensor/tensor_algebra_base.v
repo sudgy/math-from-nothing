@@ -5,10 +5,6 @@ Require Import module_category.
 Require Import linear_grade_sum.
 
 Require Import nat.
-Require Import unordered_list.
-Require Import plus_sum.
-Require Import set.
-Require Import card.
 
 (** This file contains the definition of the algebra and the proofs that it
 forms a vector space over the original field.

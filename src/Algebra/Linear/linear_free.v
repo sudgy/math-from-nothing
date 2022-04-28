@@ -1,17 +1,15 @@
 Require Import init.
 
 Require Export linear_base.
-Require Import linear_basis.
-Require Import linear_span.
 Require Import linear_grade_sum.
 Require Import linear_extend.
 Require Import linear_transformation_space.
+Require Import module_category.
+
 Require Import set.
 Require Import card.
 Require Import unordered_list.
 Require Import plus_sum.
-
-Require Import module_category.
 Require Import category_initterm.
 
 (* begin hide *)
