@@ -142,6 +142,13 @@ Proof.
     apply scalar_lanni.
 Qed.
 
+Theorem free_extend_neg : ∀ x, f (-x) = -f x.
+    intros x.
+    rewrite <- scalar_neg_one.
+    rewrite free_extend_scalar.
+    apply scalar_neg_one.
+Qed.
+
 Theorem free_extend_free : ∀ v : V, f (to_free v) = f_base v.
 Proof.
     intros v.
@@ -197,8 +204,8 @@ Let TSMR := linear_func_scalar_rdist V V2.
 Let TSMC := linear_func_scalar_comp V V2.
 Local Existing Instances TP TZ TN TPC TPA TPZ TPN TSM TSMO TSML TSMR TSMC.
 
-Let free_bilinear_base := free_extend op.
-Let free_bilinear (v : free_linear) := free_extend (free_bilinear_base v).
+Definition free_bilinear_base := free_extend op.
+Definition free_bilinear (v : free_linear) := free_extend (free_bilinear_base v).
 Let f := free_bilinear.
 
 Theorem free_bilinear_ldist : ∀ a b c, f a (b + c) = f a b + f a c.
@@ -280,6 +287,40 @@ Proof.
     intros a u v.
     unfold f, free_bilinear, free_bilinear_base.
     apply free_extend_scalar.
+Qed.
+
+Theorem free_bilinear_lanni : ∀ v, f 0 v = 0.
+Proof.
+    intros v.
+    apply plus_lcancel with (f 0 v).
+    rewrite <- free_bilinear_rdist.
+    do 2 rewrite plus_rid.
+    reflexivity.
+Qed.
+
+Theorem free_bilinear_ranni : ∀ v, f v 0 = 0.
+Proof.
+    intros v.
+    apply plus_lcancel with (f v 0).
+    rewrite <- free_bilinear_ldist.
+    do 2 rewrite plus_rid.
+    reflexivity.
+Qed.
+
+Theorem free_bilinear_lneg : ∀ u v, f (-u) v = -f u v.
+Proof.
+    intros u v.
+    rewrite <- scalar_neg_one.
+    rewrite free_bilinear_lscalar.
+    apply scalar_neg_one.
+Qed.
+
+Theorem free_bilinear_rneg : ∀ u v, f u (-v) = -f u v.
+Proof.
+    intros u v.
+    rewrite <- scalar_neg_one.
+    rewrite free_bilinear_rscalar.
+    apply scalar_neg_one.
 Qed.
 
 Theorem free_bilinear_free : ∀ u v : V, f (to_free u) (to_free v) = op u v.
