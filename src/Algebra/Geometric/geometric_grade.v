@@ -13,7 +13,7 @@ Require Import exterior_grade.
 Section GeometricGrade.
 
 (* end hide *)
-Context {F : CRing} {V : Module F}.
+Context {F : CRingObj} {V : ModuleObj F}.
 (* begin hide *)
 
 Let UP := cring_plus F.
@@ -146,7 +146,7 @@ Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
     cbn.
     split.
     -   change (nat_suc (list_size l)) with (1 + list_size l).
-        apply (grade_mult (GradedAlgebra := exterior_grade_mult V)).
+        apply (grade_mult (GradedAlgebraObj := exterior_grade_mult V)).
         +   apply vector_to_ext_grade.
         +   exact IHl1.
     -   cbn in IHl2.

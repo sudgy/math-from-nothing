@@ -12,13 +12,7 @@ Fixpoint list_prod {U} `{Mult U, One U} (l : list U) :=
 (* begin hide *)
 Section Product.
 
-Context {U} `{
-    UM : Mult U,
-    UO : One U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO
-}.
+Context {U} `{AllMult U}.
 
 (* end hide *)
 Theorem list_prod_mult :

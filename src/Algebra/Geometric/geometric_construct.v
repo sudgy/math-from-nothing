@@ -18,7 +18,7 @@ Delimit Scope geo_scope with geo.
 Section GeometricConstruct.
 
 (* end hide *)
-Context {F : CRing} {V : Module F}.
+Context {F : CRingObj} {V : ModuleObj F}.
 (* begin hide *)
 
 Let UP := cring_plus F.

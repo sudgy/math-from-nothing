@@ -19,10 +19,10 @@ scalars.
 *)
 
 (* begin hide *)
-Section TensorAlgebra.
+Section TensorAlgebraObj.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -226,10 +226,10 @@ Next Obligation.
     apply scalar_id.
 Qed.
 (* begin hide *)
-End TensorAlgebra.
+End TensorAlgebraObj.
 (* end hide *)
 
-Definition tensor_algebra_object {F : CRing} (V : Module F) := make_algebra F
+Definition tensor_algebra_object {F : CRingObj} (V : ModuleObj F) := make_algebra F
     (make_module F
         (tensor_algebra_base V)
         (tensor_algebra_plus V)

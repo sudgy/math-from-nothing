@@ -7,7 +7,7 @@ Require Export module_category.
 Section DirectSum.
 
 (* end hide *)
-Context {F : CRing} (V1 V2 : Module F).
+Context {F : CRingObj} (V1 V2 : ModuleObj F).
 
 (* begin hide *)
 Let UP := cring_plus F.

@@ -14,7 +14,7 @@ Require Import module_category.
 Section TensorProductIsomorphisms.
 
 (* end hide *)
-Context {F : CRing} (M N O : Module F).
+Context {F : CRingObj} (M N O : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.

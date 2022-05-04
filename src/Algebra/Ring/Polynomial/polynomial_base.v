@@ -11,25 +11,9 @@ Require Import linear_grade_sum.
 
 Section Polynomial.
 
-Context U `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UD : Div U,
-    UMA : @MultAssoc U UM,
-    UMC : @MultComm U UM,
-    UMO : @MultLid U UM UO,
-    UL : @Ldist U UP UM,
-    UMD : @MultLinv U UZ UM UO UD,
-    NotTrivial U
-}.
-Let F := make_cring U UP UZ UN UM UO UPA UPC UPZ UPN UMA UMC UMO UL.
+Context U `{Field U}.
+
+Let F := make_cring U UP UZ UN UM UE UPA UPC UPZ UPN UMA UMC UME UL.
 
 Definition polynomial := free_linear F nat.
 Definition polynomial_plus := free_plus_class F nat : Plus polynomial.

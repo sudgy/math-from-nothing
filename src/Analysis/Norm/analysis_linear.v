@@ -52,8 +52,8 @@ Context {U V} `{
 Existing Instance abs_metric.
 
 (* end hide *)
-(** Yes, I know [ModuleHomomorphism] is already just this, but that requires
-[Module]s whereas this just requires a few typeclasses.
+(** Yes, I know [ModuleObjHomomorphism] is already just this, but that requires
+[ModuleObj]s whereas this just requires a few typeclasses.
 *)
 Record linear_map := make_linear_map {
     linear_map_f : U → V;

@@ -5,7 +5,7 @@ Require Export category_base.
 (** This requires a commutative ring, not just any old ring.  If I ever need
 one-sided modules, I'll just make a different category for those.
 *)
-Record CRing := make_cring {
+Record CRingObj := make_cring {
     cring_U : Type;
     cring_plus : Plus cring_U;
     cring_zero : Zero cring_U;
@@ -21,7 +21,7 @@ Record CRing := make_cring {
     cring_mult_lid : @MultLid cring_U cring_mult cring_one;
     cring_ldist : @Ldist cring_U cring_plus cring_mult;
 }.
-Record Module (R : CRing) := make_module {
+Record ModuleObj (R : CRingObj) := make_module {
     module_V : Type;
     module_plus : Plus module_V;
     module_zero : Zero module_V;
@@ -51,7 +51,7 @@ Arguments module_scalar_ldist {R}.
 Arguments module_scalar_rdist {R}.
 Arguments module_scalar_comp {R}.
 
-Record ModuleHomomorphism {R : CRing} (M : Module R) (N : Module R) := make_module_homomorphism {
+Record ModuleObjHomomorphism {R : CRingObj} (M : ModuleObj R) (N : ModuleObj R) := make_module_homomorphism {
     module_homo_f : module_V M → module_V N;
     module_homo_plus : ∀ u v,
         module_homo_f (plus (Plus:=module_plus M) u v) =
@@ -62,8 +62,8 @@ Record ModuleHomomorphism {R : CRing} (M : Module R) (N : Module R) := make_modu
 }.
 Arguments module_homo_f {R M N}.
 
-Theorem module_homo_zero {R : CRing} {M N : Module R} :
-        ∀ f : ModuleHomomorphism M N,
+Theorem module_homo_zero {R : CRingObj} {M N : ModuleObj R} :
+        ∀ f : ModuleObjHomomorphism M N,
         module_homo_f f (@zero _ (module_zero M)) = (@zero _ (module_zero N)).
     intros f.
     pose (UP := cring_plus).
@@ -92,8 +92,8 @@ Theorem module_homo_zero {R : CRing} {M N : Module R} :
     apply scalar_lanni.
 Qed.
 
-Theorem module_homo_neg {R : CRing} {M N : Module R} :
-        ∀ f : ModuleHomomorphism M N,
+Theorem module_homo_neg {R : CRingObj} {M N : ModuleObj R} :
+        ∀ f : ModuleObjHomomorphism M N,
         ∀ v, module_homo_f f (@neg _ (module_neg M) v)
         = (@neg _ (module_neg N) (module_homo_f f v)).
     intros f v.
@@ -127,8 +127,8 @@ Theorem module_homo_neg {R : CRing} {M N : Module R} :
     apply scalar_neg_one.
 Qed.
 
-Theorem module_homomorphism_eq {R : CRing} {M N : Module R} :
-        ∀ f g : ModuleHomomorphism M N,
+Theorem module_homomorphism_eq {R : CRingObj} {M N : ModuleObj R} :
+        ∀ f g : ModuleObjHomomorphism M N,
         (∀ x, module_homo_f f x = module_homo_f g x) → f = g.
     intros [f1 plus1 scalar1] [f2 plus2 scalar2] f_eq.
     cbn in *.
@@ -143,14 +143,14 @@ Theorem module_homomorphism_eq {R : CRing} {M N : Module R} :
     reflexivity.
 Qed.
 
-Definition module_homo_id {R : CRing} (L : Module R)
-    : ModuleHomomorphism L L := make_module_homomorphism R L L
+Definition module_homo_id {R : CRingObj} (L : ModuleObj R)
+    : ModuleObjHomomorphism L L := make_module_homomorphism R L L
         (λ x, x)
         (λ u v, Logic.eq_refl _)
         (λ a v, Logic.eq_refl _).
 
-Lemma module_homo_compose_plus : ∀ {R : CRing} {L M N : Module R}
-        {f : ModuleHomomorphism M N} {g : ModuleHomomorphism L M},
+Lemma module_homo_compose_plus : ∀ {R : CRingObj} {L M N : ModuleObj R}
+        {f : ModuleObjHomomorphism M N} {g : ModuleObjHomomorphism L M},
         ∀ a b, module_homo_f f (module_homo_f g (@plus _ (module_plus L) a b)) =
         @plus _ (module_plus N) (module_homo_f f (module_homo_f g a))
         (module_homo_f f (module_homo_f g b)).
@@ -158,8 +158,8 @@ Lemma module_homo_compose_plus : ∀ {R : CRing} {L M N : Module R}
     rewrite module_homo_plus.
     apply module_homo_plus.
 Qed.
-Lemma module_homo_compose_scalar : ∀ {R : CRing} {L M N : Module R}
-        {f : ModuleHomomorphism M N} {g : ModuleHomomorphism L M},
+Lemma module_homo_compose_scalar : ∀ {R : CRingObj} {L M N : ModuleObj R}
+        {f : ModuleObjHomomorphism M N} {g : ModuleObjHomomorphism L M},
         ∀ a v, module_homo_f f (module_homo_f g
             (@scalar_mult _ _ (module_scalar L) a v)) =
         @scalar_mult _ _ (module_scalar N)
@@ -168,15 +168,15 @@ Lemma module_homo_compose_scalar : ∀ {R : CRing} {L M N : Module R}
     rewrite module_homo_scalar.
     apply module_homo_scalar.
 Qed.
-Definition module_homo_compose {R : CRing} {L M N : Module R}
-    (f : ModuleHomomorphism M N) (g : ModuleHomomorphism L M) 
-    : ModuleHomomorphism L N := make_module_homomorphism R L N
+Definition module_homo_compose {R : CRingObj} {L M N : ModuleObj R}
+    (f : ModuleObjHomomorphism M N) (g : ModuleObjHomomorphism L M) 
+    : ModuleObjHomomorphism L N := make_module_homomorphism R L N
         (λ x, module_homo_f f (module_homo_f g x))
         module_homo_compose_plus module_homo_compose_scalar.
 
-Global Program Instance MODULE (R : CRing) : Category := {
-    cat_U := Module R;
-    cat_morphism M N := ModuleHomomorphism M N;
+Global Program Instance MODULE (R : CRingObj) : Category := {
+    cat_U := ModuleObj R;
+    cat_morphism M N := ModuleObjHomomorphism M N;
     cat_compose {L M N} f g := module_homo_compose f g;
     cat_id M := module_homo_id M;
 }.
@@ -199,7 +199,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Section ModuleCategoryObjects.
+Section ModuleObjCategoryObjects.
 
 Context U `{
     UP : Plus U,
@@ -259,9 +259,9 @@ Context V `{
 
 Definition vector_module := make_module scalar_cring V VP VZ VN VPA VPC VPZ VPN SM SMO SML SMR SMC.
 
-End ModuleCategoryObjects.
+End ModuleObjCategoryObjects.
 
-Definition cring_module (C : CRing) := make_module C (cring_U C) (cring_plus C)
+Definition cring_module (C : CRingObj) := make_module C (cring_U C) (cring_plus C)
     (cring_zero C) (cring_neg C) (cring_plus_assoc C) (cring_plus_comm C)
     (cring_plus_lid C) (cring_plus_linv C)
     (@scalar_scalar_mult (cring_U C) (cring_mult C))

@@ -11,10 +11,10 @@ forms a vector space over the original field.
 *)
 
 (* begin hide *)
-Section TensorAlgebra.
+Section TensorAlgebraObj.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -97,5 +97,5 @@ Lemma power_to_tensor_zero : ∀ k, (power_to_tensor (k := k) 0) = 0.
 Qed.
 (* begin hide *)
 
-End TensorAlgebra.
+End TensorAlgebraObj.
 (* end hide *)

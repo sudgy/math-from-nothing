@@ -14,7 +14,7 @@ Require Import exterior_involutions.
 Section GeometricInvolutions.
 
 (* end hide *)
-Context {F : CRing} {V : Module F}.
+Context {F : CRingObj} {V : ModuleObj F}.
 (* begin hide *)
 
 Let UP := cring_plus F.
@@ -274,7 +274,7 @@ Theorem ext_inner_grade : ∀ v (A : ext V) i, of_grade (nat_suc i) A
     -   apply of_grade_neg.
         rewrite l_size'.
         change (nat_suc i) with (1 + i).
-        apply (grade_mult (GradedAlgebra := EGA)).
+        apply (grade_mult (GradedAlgebraObj := EGA)).
         +   apply vector_to_ext_grade.
         +   apply IHi.
             exact l_size'.

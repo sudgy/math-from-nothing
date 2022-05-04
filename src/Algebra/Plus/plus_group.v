@@ -51,19 +51,33 @@ Arguments neg : simpl never.
 
 Notation "0" := zero : algebra_scope.
 
+Class Group U `{
+    UP : Plus U,
+    UZ : Zero U,
+    UN : Neg U,
+    UPA : @PlusAssoc U UP,
+    UPZ : @PlusLid U UP UZ,
+    UPZR : @PlusRid U UP UZ,
+    UPN : @PlusLinv U UP UZ UN,
+    UPNR : @PlusRinv U UP UZ UN
+}.
+
+Class AbelianGroup U `{
+    AGG : Group U,
+    UPC : @PlusComm U UP
+}.
+
+Class AllPlus U `{
+    APG : AbelianGroup U,
+    UPL : @PlusLcancel U UP,
+    UPR : @PlusRcancel U UP
+}.
+
 
 (* begin hide *)
 Section PlusGroupImply.
 
-Context {U} `{
-    p : Plus U,
-    z : Zero U,
-    n : Neg U,
-    @PlusLid U p z,
-    @PlusLcancel U p,
-    @PlusComm U p,
-    @PlusLinv U p z n
-}.
+Context {U} `{AllPlus U}.
 
 Lemma plus_lid_rid_ : ∀ a, a + zero = a.
     intros a.
@@ -101,20 +115,7 @@ End PlusGroupImply.
 
 Section PlusGroup.
 
-Context {U} `{
-    p : Plus U,
-    @PlusAssoc U p,
-    @PlusComm U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    @PlusLcancel U p,
-    @PlusRcancel U p,
-    n : Neg U,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
-    NotTrivial U
-}.
+Context {U} `{AllPlus U, NotTrivial U}.
 
 Global Instance plus_op_assoc : Assoc plus := {assoc := plus_assoc}.
 Global Instance plus_op_comm : Comm plus := {comm := plus_comm}.
@@ -148,17 +149,7 @@ End PlusGroup.
 
 Section PlusGroup2.
 
-Context {U} `{
-    p : Plus U,
-    @PlusAssoc U p,
-    @PlusComm U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    n : Neg U,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n
-}.
+Context {U} `{AllPlus U}.
 
 Lemma plus_linv_lcancel : ∀ a b c, c + a = c + b → a = b.
     intros a b c eq.

@@ -66,15 +66,22 @@ Definition lt {U} `{Order U} := strict le.
 Infix "<" := lt.
 Arguments le: simpl never.
 
+Class PartialOrder U `{
+    UO : Order U,
+    UOR : Reflexive U le,
+    UOA : Antisymmetric U le,
+    UOT : Transitive U le
+}.
+
+Class TotalOrder U `{
+    TOP : PartialOrder U,
+    UOC : Connex U le
+}.
+
 (* begin hide *)
 Section TotalOrderImply.
 
-Context {U} `{
-    Order U,
-    Connex U le,
-    Antisymmetric U le,
-    Transitive U le
-}.
+Context {U} `{TotalOrder U}.
 
 Lemma total_order_refl_ : ∀ a, a <= a.
     intros a.
@@ -250,13 +257,7 @@ Ltac make_dual_op op' :=
 (* begin hide *)
 Section TotalOrder2.
 
-Context {U} `{
-    Order U,
-    Connex U le,
-    Antisymmetric U le,
-    Transitive U le,
-    Reflexive U le
-}.
+Context {U} `{TotalOrder U}.
 
 Lemma lt_irrefl_ : ∀ x, ¬x < x.
     apply op_lt_irrefl.

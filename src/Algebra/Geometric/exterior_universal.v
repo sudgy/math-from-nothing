@@ -15,11 +15,11 @@ Require Import tensor_algebra.
 Section ExteriorCategory.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 Record to_ext := make_to_ext {
-    to_ext_algebra : Algebra F;
-    to_ext_homo : ModuleHomomorphism V (algebra_module to_ext_algebra);
+    to_ext_algebra : AlgebraObj F;
+    to_ext_homo : ModuleObjHomomorphism V (algebra_module to_ext_algebra);
     to_ext_alternating : ∀ v, (@zero _ (algebra_zero to_ext_algebra)) =
         @mult _ (algebra_mult to_ext_algebra)
         (module_homo_f to_ext_homo v)

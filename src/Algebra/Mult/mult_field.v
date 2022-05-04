@@ -17,19 +17,24 @@ Class MultRinv U `{Zero U, Mult U, One U, Div U} := {
     mult_rinv : ∀ a, 0 ≠ a → a / a = 1
 }.
 
+Class FieldBase U `{
+    FM : AllMult U,
+    UD : Div U,
+    UMD : @MultLinv U UZ UM UE UD,
+    UMDR : @MultRinv U UZ UM UE UD
+}.
+
+Class Field U `{
+    FF : FieldBase U,
+    NotTrivial U
+}.
+
 (* begin hide *)
 Arguments div : simpl never.
 
 Section FieldImply1.
 
-Context {U} `{
-    z : Zero U,
-    m : Mult U,
-    o : One U,
-    d : Div U,
-    @MultComm U m,
-    @MultLinv U z m o d
-}.
+Context {U} `{Field U}.
 
 Lemma mult_linv_rinv : ∀ a, 0 ≠ a → a / a = 1.
     intros a a_nz.
@@ -45,18 +50,7 @@ End FieldImply1.
 
 Section FieldImply2.
 
-Context {U} `{
-    z : Zero U,
-    m : Mult U,
-    o : One U,
-    d : Div U,
-    @MultComm U m,
-    @MultAssoc U m,
-    @MultLid U m o,
-    @MultRid U m o,
-    @MultLinv U z m o d,
-    @MultRinv U z m o d
-}.
+Context {U} `{Field U}.
 
 Lemma mult_linv_lcancel : ∀ a b c, 0 ≠ c → c * a = c * b → a = b.
     intros a b c c_nz eq.
@@ -86,29 +80,8 @@ End FieldImply2.
 
 Section Field.
 
-Context {U} `{
-    p : Plus U,
-    z : Zero U,
-    n : Neg U,
-    m : Mult U,
-    o : One U,
-    d : Div U,
-    @PlusComm U p,
-    @PlusAssoc U p,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
-    @MultComm U m,
-    @MultAssoc U m,
-    @Ldist U p m,
-    @Rdist U p m,
-    @MultLid U m o,
-    @MultRid U m o,
-    @MultLinv U z m o d,
-    @MultRinv U z m o d,
-    NotTrivial U
-}.
+Context {U} `{Field U}.
+
 (* end hide *)
 Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
     intros a a_nz eq.

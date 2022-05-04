@@ -21,15 +21,8 @@ Fixpoint list_sum {U} `{Plus U, Zero U} (l : list U) :=
 (* begin hide *)
 Section Sum.
 
-Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN
-}.
+Context {U} `{AllPlus U}.
+
 (* end hide *)
 Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
         sum f m n = sum g m n.

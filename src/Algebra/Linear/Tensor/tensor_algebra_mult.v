@@ -20,10 +20,10 @@ and the proofs that it forms a rng.
 *)
 
 (* begin hide *)
-Section TensorAlgebra.
+Section TensorAlgebraObj.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -226,7 +226,7 @@ Lemma tensor_mult_base_grade : ∀ u v i j H1 H2,
     reflexivity.
 Qed.
 
-Program Instance tensor_grade_mult : GradedAlgebra U (tensor_algebra_base V).
+Program Instance tensor_grade_mult : GradedAlgebraObj U (tensor_algebra_base V).
 Next Obligation.
     rename H into ui, H0 into vj.
     rewrite (tensor_mult_homo i j u v ui vj).
@@ -320,5 +320,5 @@ Next Obligation.
     reflexivity.
 Qed.
 (* begin hide *)
-End TensorAlgebra.
+End TensorAlgebraObj.
 (* end hide *)

@@ -17,10 +17,10 @@ algebra and the basic facts about it.
 *)
 
 (* begin hide *)
-Section TensorAlgebra.
+Section TensorAlgebraObj.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -133,5 +133,5 @@ Theorem vector_to_tensor_homogeneous :
 Qed.
 (* begin hide *)
 
-End TensorAlgebra.
+End TensorAlgebraObj.
 (* end hide *)

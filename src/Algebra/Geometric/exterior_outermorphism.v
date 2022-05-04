@@ -12,7 +12,7 @@ Require Import algebra_category.
 Section ExteriorOutermorphism.
 
 (* end hide *)
-Context {F : CRing} (V1 V2 : Module F).
+Context {F : CRingObj} (V1 V2 : ModuleObj F).
 
 (* begin hide *)
 Let V1P := module_plus V1.
@@ -39,7 +39,7 @@ Let E2S := ext_scalar V2.
 Existing Instances E2P E2Z E2N E2M E2O E2S.
 
 (* end hide *)
-Variable f : ModuleHomomorphism V1 V2.
+Variable f : ModuleObjHomomorphism V1 V2.
 
 (* begin hide *)
 Definition outermorphism_base1 x := vector_to_ext V2 (module_homo_f f x) : ext V2.

@@ -20,7 +20,7 @@ Section ExteriorGrade.
 Local Arguments grade_subspace : simpl never.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 (* begin hide *)
 Let UP := cring_plus F.
@@ -455,7 +455,7 @@ Next Obligation.
     symmetry; apply lem.
 Qed.
 
-Program Instance exterior_grade_mult : GradedAlgebra (cring_U F) (ext V).
+Program Instance exterior_grade_mult : GradedAlgebraObj (cring_U F) (ext V).
 Next Obligation.
     destruct H as [u' [u_eq u'i]].
     destruct H0 as [v' [v_eq v'j]].
@@ -463,7 +463,7 @@ Next Obligation.
     exists (u' * v').
     split.
     -   apply tensor_to_ext_mult.
-    -   apply (grade_mult (GradedAlgebra := TAG)); assumption.
+    -   apply (grade_mult (GradedAlgebraObj := TAG)); assumption.
 Qed.
 
 Theorem scalar_to_ext_grade : ∀ a, of_grade 0 (scalar_to_ext V a).
@@ -520,7 +520,7 @@ Theorem ext_list_grade : ∀ l,
         apply scalar_to_ext_grade.
     -   cbn.
         change (nat_suc (list_size l)) with (1 + list_size l).
-        apply (grade_mult (GradedAlgebra := exterior_grade_mult)).
+        apply (grade_mult (GradedAlgebraObj := exterior_grade_mult)).
         +   apply vector_to_ext_grade.
         +   exact IHl.
 Qed.

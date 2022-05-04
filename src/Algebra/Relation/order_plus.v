@@ -16,24 +16,19 @@ Class OrderPlusRcancel U `{Plus U, Order U} := {
     le_plus_rcancel : ∀ {a b} c, a + c <= b + c → a <= b
 }.
 
+Class OrderPlus U `{
+    OPP : AllPlus U,
+    OPO : TotalOrder U,
+    UOP : @OrderLplus U UP UO,
+    UOPR : @OrderRplus U UP UO,
+    UOPC : @OrderPlusLcancel U UP UO,
+    UOPCR : @OrderPlusRcancel U UP UO
+}.
+
 (* begin hide *)
 Section OrderPlusImply.
 
-Context {U} `{
-    p : Plus U,
-    @PlusAssoc U p,
-    @PlusComm U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    n : Neg U,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
-    o : Order U,
-    @OrderLplus U p o,
-    @OrderRplus U p o,
-    @OrderPlusLcancel U p o
-}.
+Context {U} `{OrderPlus U}.
 
 Lemma le_lplus_rplus_ : ∀ a b c, a <= b → a + c <= b + c.
     intros a b c eq.
@@ -86,29 +81,8 @@ End OrderPlusImply.
 
 Section OrderPlus.
 
-Context {U} `{
-    p : Plus U,
-    @PlusAssoc U p,
-    @PlusComm U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    @PlusLcancel U p,
-    @PlusRcancel U p,
-    n : Neg U,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
+Context {U} `{OrderPlus U}.
 
-    o : Order U,
-    Connex U le,
-    Antisymmetric U le,
-    Transitive U le,
-    Reflexive U le,
-    @OrderLplus U p o,
-    @OrderRplus U p o,
-    @OrderPlusLcancel U p o,
-    @OrderPlusRcancel U p o
-}.
 (* end hide *)
 Theorem le_lrplus : ∀ {a b c d}, a <= b → c <= d → a + c <= b + d.
     intros a b c d ab cd.

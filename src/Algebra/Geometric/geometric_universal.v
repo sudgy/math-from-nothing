@@ -17,7 +17,7 @@ Require Export geometric_construct.
 Section GeometricCategory.
 
 (* end hide *)
-Context {F : CRing} {V : Module F}.
+Context {F : CRingObj} {V : ModuleObj F}.
 (* begin hide *)
 
 Let UP := cring_plus F.
@@ -32,8 +32,8 @@ Existing Instances UP UN UM VP VS.
 Context (B : set_type bilinear_form).
 
 Record to_geo := make_to_geo {
-    to_geo_algebra : Algebra F;
-    to_geo_homo : ModuleHomomorphism V (algebra_module to_geo_algebra);
+    to_geo_algebra : AlgebraObj F;
+    to_geo_homo : ModuleObjHomomorphism V (algebra_module to_geo_algebra);
     to_geo_contract : ∀ v,
         @mult _ (algebra_mult to_geo_algebra)
         (module_homo_f to_geo_homo v)

@@ -35,6 +35,50 @@ Class ScalarRMult U V `{Mult V, ScalarMult U V} := {
     scalar_rmult : ∀ a u v, u * (a · v) = a · (u * v)
 }.
 
+Class Module U V `{
+    MR : CRing U,
+    MG : AbelianGroup V,
+    SM : ScalarMult U V,
+    SMC : @ScalarComp U V UM SM,
+    SME : @ScalarId U V UE SM,
+    SML : @ScalarLdist U V UP0 SM,
+    SMR : @ScalarRdist U V UP UP0 SM
+}.
+
+Class VectorSpace U V `{
+    VF : Field U,
+    VG : AbelianGroup V,
+    SM : ScalarMult U V,
+    SMC : @ScalarComp U V UM SM,
+    SME : @ScalarId U V UE SM,
+    SML : @ScalarLdist U V UP0 SM,
+    SMR : @ScalarRdist U V UP UP0 SM
+}.
+
+Class Algebra U V `{
+    AR : CRing U,
+    AR : Ring V,
+    SM : ScalarMult U V,
+    SMC : @ScalarComp U V UM SM,
+    SME : @ScalarId U V UE SM,
+    SML : @ScalarLdist U V UP0 SM,
+    SMR : @ScalarRdist U V UP UP0 SM,
+    SMLM : @ScalarLMult U V UM0 SM,
+    SMRM : @ScalarRMult U V UM0 SM
+}.
+
+Class AlgebraField U V `{
+    AF : Field U,
+    AR : Ring V,
+    SM : ScalarMult U V,
+    SMC : @ScalarComp U V UM SM,
+    SME : @ScalarId U V UE SM,
+    SML : @ScalarLdist U V UP0 SM,
+    SMR : @ScalarRdist U V UP UP0 SM,
+    SMLM : @ScalarLMult U V UM0 SM,
+    SMRM : @ScalarRMult U V UM0 SM
+}.
+
 Definition linear_combination_set {U V : Type} (l : ulist (U * V))
     := ulist_unique (ulist_image l snd).
 Definition linear_combination {U V}
@@ -52,35 +96,8 @@ Definition linear_combination_of {U V}
 (* begin hide *)
 Section LinearBase.
 
-Context {U V} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UD : Div U,
-    @MultAssoc U UM,
-    @MultLid U UM UO,
-    @MultLinv U UZ UM UO UD,
+Context {U V} `{AlgebraField U V}.
 
-    VP : Plus V,
-    VZ : Zero V,
-    VN : Neg V,
-    @PlusComm V VP,
-    @PlusAssoc V VP,
-    @PlusLid V VP VZ,
-    @PlusLinv V VP VZ VN,
-
-    SM : ScalarMult U V,
-    @ScalarId U V UO SM,
-    @ScalarLdist U V VP SM,
-    @ScalarRdist U V UP VP SM,
-    @ScalarComp U V UM SM
-}.
 (* end hide *)
 Theorem lscalar : ∀ {u v} a, u = v → a · u = a · v.
     intros u v a eq.
@@ -367,7 +384,7 @@ Theorem linear_combination_of_plus : ∀ S u v,
         apply linear_combination_of_scalar.
         exact v_comb.
     }
-    pose (l := (1, u) ::: (1, v) ::: ulist_end).
+    pose (l := (1, u) ::: (1, v) ::: ulist_end : ulist (U * V)).
     assert (linear_combination_set l) as l_comb.
     {
         unfold linear_combination_set, l; cbn.

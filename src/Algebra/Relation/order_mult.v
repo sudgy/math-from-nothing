@@ -21,37 +21,24 @@ Class OrderMultRcancel U `{Zero U, Mult U, Order U} := {
     le_mult_rcancel_pos : ∀ {a b} c, zero < c → a * c <= b * c → a <= b
 }.
 
+Class OrderedField U `{
+    OFF : Field U,
+    OFO : TotalOrder U,
+    UOP : @OrderLplus U UP UO,
+    UOPR : @OrderRplus U UP UO,
+    UOPC : @OrderPlusLcancel U UP UO,
+    UOPCR : @OrderPlusRcancel U UP UO,
+    UOM : @OrderMult U UZ UM UO,
+    UOML : @OrderLmult U UZ UM UO,
+    UOMR : @OrderRmult U UZ UM UO,
+    UOMLC : @OrderMultLcancel U UZ UM UO,
+    UOMRC : @OrderMultRcancel U UZ UM UO
+}.
+
 (* begin hide *)
 Section OrderMultImply.
 
-Context {U} `{
-    p : Plus U,
-    @PlusAssoc U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    n : Neg U,
-    @PlusLcancel U p,
-    @PlusRcancel U p,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
-    m : Mult U,
-    @MultComm U m,
-    @MultAssoc U m,
-    @Ldist U p m,
-    on : One U,
-    @MultLid U m on,
-    d : Div U,
-    @MultLinv U z m on d,
-    o : Order U,
-    @Connex U le,
-    @Antisymmetric U le,
-    @Transitive U le,
-    @OrderLplus U p o,
-    @OrderMult U z m o,
-    @OrderLmult U z m o,
-    @OrderMultLcancel U z m o
-}.
+Context {U} `{OrderedField U}.
 
 Lemma le_lmult_rmult_ : ∀ a b c, zero <= c → a <= b → a * c <= b * c.
     intros a b c c_pos eq.
@@ -125,41 +112,8 @@ End OrderMultImply.
 
 Section OrderMult.
 
-Context {U} `{
-    p : Plus U,
-    @PlusComm U p,
-    @PlusAssoc U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    n : Neg U,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
-    m : Mult U,
-    @MultComm U m,
-    @MultAssoc U m,
-    @Ldist U p m,
-    @Rdist U p m,
-    e : One U,
-    @MultLid U m e,
-    @MultRid U m e,
-    @MultLcancel U z m,
-    @MultRcancel U z m,
-    o : Order U,
-    @Antisymmetric U le,
-    @Transitive U le,
-    @Connex U le,
-    @OrderLplus U p o,
-    @OrderRplus U p o,
-    @OrderMult U z m o,
-    @OrderLmult U z m o,
-    @OrderRmult U z m o,
-    @OrderMultLcancel U z m o,
-    @OrderMultRcancel U z m o,
-    NotTrivial U,
-    d : Div U,
-    @MultLinv U z m e d
-}.
+Context {U} `{OrderedField U}.
+
 (* end hide *)
 Theorem lt_lmult_pos : ∀ {a b} c, zero < c → a < b → c * a < c * b.
     intros a b c c_gt ab.

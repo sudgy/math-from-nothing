@@ -683,7 +683,7 @@ Context `{
     VM : Mult V,
     @Ldist V VP VM,
     @Rdist V VP VM,
-    @GradedAlgebra U V VP VPC VPA VZ SM VG IP VM
+    @GradedAlgebraObj U V VP VPC VPA VZ SM VG IP VM
 }.
 
 (* end hide *)

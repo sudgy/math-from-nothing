@@ -15,7 +15,7 @@ Require Import category_initterm.
 (* begin hide *)
 Section LinearFree.
 
-Context (F : CRing) (V : Type).
+Context (F : CRingObj) (V : Type).
 Let U := cring_U F.
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -351,7 +351,7 @@ Definition free_module := make_module
 .
 
 Record free_from := make_free_from {
-    free_from_module : Module F;
+    free_from_module : ModuleObj F;
     free_from_f : V → module_V free_from_module;
 }.
 

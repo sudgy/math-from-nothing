@@ -17,7 +17,7 @@ Require Export geometric_to_exterior.
 Section GeometricExteriorIso.
 
 (* end hide *)
-Context {F : CRing} {V : Module F}.
+Context {F : CRingObj} {V : ModuleObj F}.
 (* begin hide *)
 
 Let UP := cring_plus F.

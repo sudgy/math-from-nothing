@@ -27,38 +27,7 @@ Definition basis {U V} `{Zero U}
 (* begin hide *)
 Section Basis.
 
-Context {U V} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UM : Mult U,
-    UO : One U,
-    UD : Div U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    @MultAssoc U UM,
-    @MultLid U UM UO,
-    @MultLinv U UZ UM UO UD,
-    NotTrivial U,
-    @Ldist U UP UM,
-    @Rdist U UP UM,
-
-    VP : Plus V,
-    VZ : Zero V,
-    VN : Neg V,
-    @PlusComm V VP,
-    @PlusAssoc V VP,
-    @PlusLid V VP VZ,
-    @PlusLinv V VP VZ VN,
-
-    SM : ScalarMult U V,
-    @ScalarComp U V UM SM,
-    @ScalarId U V UO SM,
-    @ScalarLdist U V VP SM,
-    @ScalarRdist U V UP VP SM
-}.
+Context {U V} `{VectorSpace U V}.
 
 (* end hide *)
 Theorem empty_linearly_independent : linearly_independent ∅.

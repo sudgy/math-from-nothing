@@ -123,9 +123,9 @@ Qed.
 
 End LinearTransformationSpace.
 
-Section LinearTransformationModule.
+Section LinearTransformationModuleObj.
 
-Context {F : CRing} (V1 V2 : Module F).
+Context {F : CRingObj} (V1 V2 : ModuleObj F).
 
 Let UP := cring_plus F.
 Let UZ := cring_zero F.
@@ -168,7 +168,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2 VPN2
     SM2 SMO2 SML2 SMR2 SMC2.
 
-Definition linear_trans_plus_base (f g : ModuleHomomorphism V1 V2) :=
+Definition linear_trans_plus_base (f g : ModuleObjHomomorphism V1 V2) :=
     λ v, module_homo_f f v + module_homo_f g v.
 
 Lemma linear_trans_plus_plus : ∀ f g, ∀ u v,
@@ -194,7 +194,7 @@ Lemma linear_trans_plus_scalar : ∀ f g, ∀ a v,
     symmetry; apply scalar_ldist.
 Qed.
 
-Instance linear_trans_plus : Plus (ModuleHomomorphism V1 V2) := {
+Instance linear_trans_plus : Plus (ModuleObjHomomorphism V1 V2) := {
     plus f g := make_module_homomorphism F V1 V2
         (linear_trans_plus_base f g)
         (linear_trans_plus_plus f g)
@@ -220,14 +220,14 @@ Lemma linear_trans_zero_scalar : ∀ a v,
     reflexivity.
 Qed.
 
-Instance linear_trans_zero : Zero (ModuleHomomorphism V1 V2) := {
+Instance linear_trans_zero : Zero (ModuleObjHomomorphism V1 V2) := {
     zero := make_module_homomorphism F V1 V2
         linear_trans_zero_base
         linear_trans_zero_plus
         linear_trans_zero_scalar
 }.
 
-Definition linear_trans_neg_base (f : ModuleHomomorphism V1 V2) :=
+Definition linear_trans_neg_base (f : ModuleObjHomomorphism V1 V2) :=
     λ v, -module_homo_f f v.
 
 Lemma linear_trans_neg_plus : ∀ f, ∀ u v,
@@ -247,14 +247,14 @@ Lemma linear_trans_neg_scalar : ∀ f, ∀ a v,
     symmetry; apply scalar_rneg.
 Qed.
 
-Instance linear_trans_neg : Neg (ModuleHomomorphism V1 V2) := {
+Instance linear_trans_neg : Neg (ModuleObjHomomorphism V1 V2) := {
     neg f := make_module_homomorphism F V1 V2
         (linear_trans_neg_base f)
         (linear_trans_neg_plus f)
         (linear_trans_neg_scalar f)
 }.
 
-Program Instance linear_trans_plus_assoc : PlusAssoc (ModuleHomomorphism V1 V2).
+Program Instance linear_trans_plus_assoc : PlusAssoc (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -263,7 +263,7 @@ Next Obligation.
     apply plus_assoc.
 Qed.
 
-Program Instance linear_trans_plus_comm : PlusComm (ModuleHomomorphism V1 V2).
+Program Instance linear_trans_plus_comm : PlusComm (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -272,7 +272,7 @@ Next Obligation.
     apply plus_comm.
 Qed.
 
-Program Instance linear_trans_plus_lid : PlusLid (ModuleHomomorphism V1 V2).
+Program Instance linear_trans_plus_lid : PlusLid (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -281,7 +281,7 @@ Next Obligation.
     apply plus_lid.
 Qed.
 
-Program Instance linear_trans_plus_linv : PlusLinv (ModuleHomomorphism V1 V2).
+Program Instance linear_trans_plus_linv : PlusLinv (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -291,7 +291,7 @@ Next Obligation.
     apply plus_linv.
 Qed.
 
-Definition linear_trans_scalar_base a (f : ModuleHomomorphism V1 V2) :=
+Definition linear_trans_scalar_base a (f : ModuleObjHomomorphism V1 V2) :=
     λ v, a · module_homo_f f v.
 
 Lemma linear_trans_scalar_plus : ∀ a f, ∀ u v,
@@ -314,7 +314,7 @@ Lemma linear_trans_scalar_scalar : ∀ a f, ∀ b v,
     reflexivity.
 Qed.
 
-Instance linear_trans_scalar : ScalarMult (cring_U F) (ModuleHomomorphism V1 V2)
+Instance linear_trans_scalar : ScalarMult (cring_U F) (ModuleObjHomomorphism V1 V2)
 := {
     scalar_mult a f := make_module_homomorphism F V1 V2
         (linear_trans_scalar_base a f)
@@ -323,7 +323,7 @@ Instance linear_trans_scalar : ScalarMult (cring_U F) (ModuleHomomorphism V1 V2)
 }.
 
 Program Instance linear_trans_scalar_id
-    : ScalarId (cring_U F) (ModuleHomomorphism V1 V2).
+    : ScalarId (cring_U F) (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros u.
@@ -333,7 +333,7 @@ Next Obligation.
 Qed.
 
 Program Instance linear_trans_scalar_ldist
-    : ScalarLdist (cring_U F) (ModuleHomomorphism V1 V2).
+    : ScalarLdist (cring_U F) (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros w.
@@ -343,7 +343,7 @@ Next Obligation.
 Qed.
 
 Program Instance linear_trans_scalar_rdist
-    : ScalarRdist (cring_U F) (ModuleHomomorphism V1 V2).
+    : ScalarRdist (cring_U F) (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros u.
@@ -353,7 +353,7 @@ Next Obligation.
 Qed.
 
 Program Instance linear_trans_scalar_comp
-    : ScalarComp (cring_U F) (ModuleHomomorphism V1 V2).
+    : ScalarComp (cring_U F) (ModuleObjHomomorphism V1 V2).
 Next Obligation.
     apply module_homomorphism_eq.
     intros u.
@@ -364,7 +364,7 @@ Qed.
 
 Definition linear_trans_module := make_module
     F
-    (ModuleHomomorphism V1 V2)
+    (ModuleObjHomomorphism V1 V2)
     linear_trans_plus
     linear_trans_zero
     linear_trans_neg
@@ -379,11 +379,11 @@ Definition linear_trans_module := make_module
     linear_trans_scalar_comp
 .
 
-End LinearTransformationModule.
+End LinearTransformationModuleObj.
 
-Section LinearTransformationAlgebra.
+Section LinearTransformationAlgebraObj.
 
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 Let VP := module_plus V.
 Let VS := module_scalar V.
@@ -395,7 +395,7 @@ Let TS := linear_trans_scalar V V.
 
 Existing Instances TP TS.
 
-Definition linear_trans_mult_base (f g : ModuleHomomorphism V V) :=
+Definition linear_trans_mult_base (f g : ModuleObjHomomorphism V V) :=
     λ v, module_homo_f f (module_homo_f g v).
 
 Lemma linear_trans_mult_plus : ∀ f g, ∀ u v,
@@ -415,14 +415,14 @@ Lemma linear_trans_mult_scalar : ∀ f g, ∀ a v,
     apply module_homo_scalar.
 Qed.
 
-Instance linear_trans_mult : Mult (ModuleHomomorphism V V) := {
+Instance linear_trans_mult : Mult (ModuleObjHomomorphism V V) := {
     mult f g := make_module_homomorphism F V V
         (linear_trans_mult_base f g)
         (linear_trans_mult_plus f g)
         (linear_trans_mult_scalar f g)
 }.
 
-Program Instance linear_trans_ldist : Ldist (ModuleHomomorphism V V).
+Program Instance linear_trans_ldist : Ldist (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -431,7 +431,7 @@ Next Obligation.
     apply module_homo_plus.
 Qed.
 
-Program Instance linear_trans_rdist : Rdist (ModuleHomomorphism V V).
+Program Instance linear_trans_rdist : Rdist (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -440,7 +440,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Program Instance linear_trans_mult_assoc : MultAssoc (ModuleHomomorphism V V).
+Program Instance linear_trans_mult_assoc : MultAssoc (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -449,11 +449,11 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Instance linear_trans_one : One (ModuleHomomorphism V V) := {
+Instance linear_trans_one : One (ModuleObjHomomorphism V V) := {
     one := module_homo_id V
 }.
 
-Program Instance linear_trans_mult_lid : MultLid (ModuleHomomorphism V V).
+Program Instance linear_trans_mult_lid : MultLid (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -461,7 +461,7 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Program Instance linear_trans_mult_rid : MultRid (ModuleHomomorphism V V).
+Program Instance linear_trans_mult_rid : MultRid (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros v.
@@ -470,7 +470,7 @@ Next Obligation.
 Qed.
 
 Program Instance linear_trans_scalar_lmult
-    : ScalarLMult (cring_U F) (ModuleHomomorphism V V).
+    : ScalarLMult (cring_U F) (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros w.
@@ -480,7 +480,7 @@ Next Obligation.
 Qed.
 
 Program Instance linear_trans_scalar_rmult
-    : ScalarRMult (cring_U F) (ModuleHomomorphism V V).
+    : ScalarRMult (cring_U F) (ModuleObjHomomorphism V V).
 Next Obligation.
     apply module_homomorphism_eq.
     intros w.
@@ -504,4 +504,4 @@ Definition linear_trans_algebra := make_algebra
     linear_trans_scalar_rmult
 .
 
-End LinearTransformationAlgebra.
+End LinearTransformationAlgebraObj.

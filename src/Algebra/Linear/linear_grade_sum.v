@@ -11,9 +11,9 @@ Require Import unordered_list.
 
 Section LinearGradeSum.
 
-Context {R : CRing}.
+Context {R : CRingObj}.
 Variable (I : Type).
-Variable (V : I → Module R).
+Variable (V : I → ModuleObj R).
 
 Let U := cring_U R.
 Let UP := cring_plus R.

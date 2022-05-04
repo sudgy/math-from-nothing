@@ -18,14 +18,14 @@ Require Import list.
 Require Import unordered_list.
 
 (* begin hide *)
-Section TensorAlgebraCategory.
+Section TensorAlgebraObjCategory.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 Record to_algebra := make_to_algebra {
-    to_algebra_algebra : Algebra F;
-    to_algebra_homo : ModuleHomomorphism V (algebra_module to_algebra_algebra);
+    to_algebra_algebra : AlgebraObj F;
+    to_algebra_homo : ModuleObjHomomorphism V (algebra_module to_algebra_algebra);
 }.
 
 Definition to_algebra_set (f g : to_algebra)
@@ -550,7 +550,7 @@ Theorem tensor_algebra_universal : @initial TO_ALGEBRA to_tensor_algebra.
 Qed.
 
 (* begin hide *)
-End TensorAlgebraCategory.
+End TensorAlgebraObjCategory.
 
 (* end hide *)
 Arguments vector_to_tensor {F V}.

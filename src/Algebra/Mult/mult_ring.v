@@ -48,6 +48,38 @@ Class MultRcancel U `{Zero U, Mult U} := {
     mult_rcancel : ∀ {a b} c, zero ≠ c → a * c = b * c → a = b;
 }.
 
+Class Rng U `{
+    RP : AllPlus U,
+    UM : Mult U,
+    UL : @Ldist U UP UM,
+    UR : @Rdist U UP UM,
+    UMA : @MultAssoc U UM
+}.
+
+Class Ring U `{
+    RR : Rng U,
+    UE : @One U,
+    UME : @MultLid U UM UE,
+    UMER : @MultRid U UM UE
+}.
+
+Class CRing U `{
+    CRR : Ring U,
+    UMC : @MultComm U UM
+}.
+
+Class IntegralDomain U `{
+    IDR : CRing U,
+    UML : @MultLcancel U UZ UM,
+    UMR : @MultRcancel U UZ UM
+}.
+
+Class AllMult U `{
+    AMI : IntegralDomain U,
+    UZL : @MultLanni U UZ UM,
+    UZR : @MultRanni U UZ UM
+}.
+
 Arguments mult : simpl never.
 Arguments one : simpl never.
 
@@ -64,17 +96,7 @@ Notation "9" := (one + 8) : algebra_scope.
 (* begin hide *)
 Section MultRingImply.
 
-Context {U} `{
-    p : Plus U,
-    m : Mult U,
-    z : Zero U,
-    o : One U,
-    @MultLid U m o,
-    @MultLcancel U z m,
-    @MultComm U m,
-    @MultLanni U z m,
-    @Ldist U p m
-}.
+Context {U} `{AllMult U}.
 
 Lemma mult_lid_rid_ : ∀ a, a * one = a.
     intros a.
@@ -122,32 +144,7 @@ End MultRingImply.
 
 Section MultRing.
 
-Context {U} `{
-    p : Plus U,
-    @PlusAssoc U p,
-    @PlusComm U p,
-    z : Zero U,
-    @PlusLid U p z,
-    @PlusRid U p z,
-    @PlusLcancel U p,
-    @PlusRcancel U p,
-    n : Neg U,
-    @PlusLinv U p z n,
-    @PlusRinv U p z n,
-    m : Mult U,
-    @MultAssoc U m,
-    @MultComm U m,
-    o : One U,
-    @MultLid U m o,
-    @MultRid U m o,
-    @MultLcancel U z m,
-    @MultRcancel U z m,
-    @MultLanni U z m,
-    @MultRanni U z m,
-    @Ldist U p m,
-    @Rdist U p m,
-    NotTrivial U
-}.
+Context {U} `{AllMult U, NotTrivial U}.
 
 Global Instance mult_op_assoc : Assoc mult := {assoc := mult_assoc}.
 Global Instance mult_op_comm : Comm mult := {comm := mult_comm}.

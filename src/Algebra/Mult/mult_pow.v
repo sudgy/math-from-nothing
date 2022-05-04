@@ -12,31 +12,7 @@ Infix "^" := pow_nat : nat_scope.
 (* begin hide *)
 Section Pow.
 
-Context {U} `{Up : Plus U,
-                  @PlusAssoc U Up,
-                  @PlusComm U Up,
-              Uz : Zero U,
-                  @PlusLid U Up Uz,
-              Un : Neg U,
-                  @PlusLinv U Up Uz Un,
-              Um : Mult U,
-                  @MultAssoc U Um,
-                  @MultComm U Um,
-                  @Ldist U Up Um,
-                  @Rdist U Up Um,
-                  @MultLanni U Uz Um,
-                  @MultRanni U Uz Um,
-              Uo : One U,
-                  @MultLid U Um Uo,
-                  @MultRid U Um Uo,
-                  @MultLcancel U Uz Um,
-                  @MultRcancel U Uz Um,
-              Ul : Order U,
-                  @Connex U le,
-                  @Antisymmetric U le,
-                  @Transitive U le,
-                  NotTrivial U
-              }.
+Context {U} `{AllMult U, NotTrivial U}.
 
 Local Open Scope nat_scope.
 (* end hide *)

@@ -23,10 +23,10 @@ Require Import mult_product.
 (* begin hide *)
 Unset Keyed Unification.
 
-Section TensorAlgebra.
+Section TensorAlgebraObj.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 Let vector_to_tensor_base := tensor_algebra_vector.vector_to_tensor V.
 Let scalar_to_tensor_base := tensor_algebra_scalar.scalar_to_tensor V.
@@ -474,5 +474,5 @@ Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
 Qed.
 (* begin hide *)
 
-End TensorAlgebra.
+End TensorAlgebraObj.
 (* end hide *)

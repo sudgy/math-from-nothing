@@ -17,7 +17,7 @@ Require Import plus_sum.
 Section TensorPower.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 
 (* begin hide *)
 Local Arguments cat_compose : simpl never.

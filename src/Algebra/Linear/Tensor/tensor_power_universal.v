@@ -15,7 +15,7 @@ Require Import card.
 Section TensorPowerCategory.
 
 (* end hide *)
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 Variable n : nat.
 
 (* begin hide *)
@@ -28,7 +28,7 @@ Existing Instances VP VSM VnP VnSM.
 
 (* end hide *)
 Record multilinear_from := make_multilinear {
-    multilinear_from_module : Module F;
+    multilinear_from_module : ModuleObj F;
     multilinear_from_f : ∀ l : list (module_V V), list_size l = n →
         module_V multilinear_from_module;
     multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
@@ -178,7 +178,7 @@ End TensorPowerCategory.
 
 Section TensorPowerCategory.
 
-Context {F : CRing} (V : Module F).
+Context {F : CRingObj} (V : ModuleObj F).
 Variable n : nat.
 
 Let UM := cring_mult F.

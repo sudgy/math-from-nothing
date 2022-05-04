@@ -16,7 +16,7 @@ Unset Keyed Unification.
 Section TensorProductIsomorphisms.
 
 (* end hide *)
-Context {F : CRing} (M : Module F).
+Context {F : CRingObj} (M : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -157,7 +157,7 @@ Theorem tensor_product_lid_bij : bijective lf.
         exact gf'.
 Qed.
 
-Context (N : Module F).
+Context (N : ModuleObj F).
 (* begin hide *)
 Let V2 := module_V N.
 Let VP2 := module_plus N.
@@ -292,7 +292,7 @@ End TensorProductIsomorphisms.
 
 Section TensorProductIsomorphism.
 
-Context {F : CRing} (M : Module F).
+Context {F : CRingObj} (M : ModuleObj F).
 
 Let U := cring_U.
 Let UP := cring_plus.
@@ -398,7 +398,7 @@ End TensorProductIsomorphism.
 Section TensorProductIsomorphism.
 
 (* end hide *)
-Context {F : CRing} (M1 M2 N1 N2 : Module F).
+Context {F : CRingObj} (M1 M2 N1 N2 : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U.
@@ -629,7 +629,7 @@ End TensorProductIsomorphism.
 Section TensorProductIsomorphism.
 
 (* end hide *)
-Context {F : CRing} (M1 M2 N : Module F).
+Context {F : CRingObj} (M1 M2 N : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U.
@@ -758,7 +758,7 @@ End TensorProductIsomorphism.
 Section TensorProductIsomorphism.
 
 (* end hide *)
-Context {F : CRing} (M N1 N2 : Module F).
+Context {F : CRingObj} (M N1 N2 : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U.

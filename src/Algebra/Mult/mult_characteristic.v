@@ -20,14 +20,9 @@ Class CharacteristicZero U `{Plus U, Zero U, One U} := {
 Section Characteristic.
 
 Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLcancel U UP,
-    UO : One U,
-    @CharacteristicNot U 2 UP UZ UO,
-    @CharacteristicZero U UP UZ UO
+    Field U,
+    @CharacteristicNot U 2 UP UZ UE,
+    @CharacteristicZero U UP UZ UE
 }.
 
 Theorem two_nz : 0 ≠ 2.
@@ -72,42 +67,7 @@ Qed.
 End Characteristic.
 Section Characteristic.
 
-Context {U} `{
-    UP : Plus U,
-    @PlusComm U UP,
-    @PlusAssoc U UP,
-    UZ : Zero U,
-    @PlusLid U UP UZ,
-    @PlusRid U UP UZ,
-    UN : Neg U,
-    @PlusLinv U UP UZ UN,
-    @PlusRinv U UP UZ UN,
-    UM : Mult U,
-    @MultComm U UM,
-    @MultAssoc U UM,
-    @Ldist U UP UM,
-    @Rdist U UP UM,
-    UE : One U,
-    @MultLid U UM UE,
-    @MultRid U UM UE,
-    @MultLcancel U UZ UM,
-    @MultRcancel U UZ UM,
-    UO : Order U,
-    @Antisymmetric U le,
-    @Transitive U le,
-    @Connex U le,
-    @OrderLplus U UP UO,
-    @OrderRplus U UP UO,
-    @OrderMult U UZ UM UO,
-    @OrderLmult U UZ UM UO,
-    @OrderRmult U UZ UM UO,
-    @OrderMultLcancel U UZ UM UO,
-    @OrderMultRcancel U UZ UM UO,
-    NotTrivial U,
-    UD : Div U,
-    @MultLinv U UZ UM UE UD,
-    @MultRinv U UZ UM UE UD
-}.
+Context {U} `{OrderedField U}.
 
 Global Program Instance not_trivial_char : CharacteristicZero U.
 Next Obligation.

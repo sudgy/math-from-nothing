@@ -17,7 +17,7 @@ Require Import exterior_grade.
 Section GeometricOuter.
 
 (* end hide *)
-Context {F : CRing} {V : Module F}.
+Context {F : CRingObj} {V : ModuleObj F}.
 (* begin hide *)
 
 Let UP := cring_plus F.

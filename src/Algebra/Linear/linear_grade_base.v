@@ -38,7 +38,7 @@ Class GradedSpace U V `{P : Plus V, @PlusComm V P, @PlusAssoc V P, Zero V, Scala
         ulist_prop (λ S, 0 = sub_vector_v S) l;
 }.
 
-Class GradedAlgebra U V `{
+Class GradedAlgebraObj U V `{
     P : Plus V,
     PC : @PlusComm V P,
     PA : @PlusAssoc V P,

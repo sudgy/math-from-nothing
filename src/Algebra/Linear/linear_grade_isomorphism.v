@@ -10,7 +10,7 @@ Require Import unordered_list.
 (** This maybe doesn't belong here, but oh well *)
 Section SubspaceHomomorphism.
 
-Context {F : CRing} {M N : Module F}.
+Context {F : CRingObj} {M N : ModuleObj F}.
 
 Variable (f : cat_morphism (MODULE F) M N).
 
@@ -108,7 +108,7 @@ End SubspaceHomomorphism.
 Section Grade.
 
 (* end hide *)
-Context {F : CRing} {M N : Module F}.
+Context {F : CRingObj} {M N : ModuleObj F}.
 
 Variables (f : cat_morphism (MODULE F) M N) (f_iso : isomorphism f).
 
@@ -383,9 +383,9 @@ Qed.
 (* begin hide *)
 End Grade.
 
-Section GradeAlgebra.
+Section GradeAlgebraObj.
 
-Context {F : CRing} {M N : Algebra F}.
+Context {F : CRingObj} {M N : AlgebraObj F}.
 
 Variables (f : cat_morphism (ALGEBRA F) M N) (f_iso : isomorphism f).
 
@@ -437,14 +437,14 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
 (* end hide *)
 Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 Context `{IP : Plus grade_I}.
-Context `{GA : @GradedAlgebra U V1 VP1 VPC1 VPA1 VZ1 SM1 VG IP VM1}.
+Context `{GA : @GradedAlgebraObj U V1 VP1 VPC1 VPA1 VZ1 SM1 VG IP VM1}.
 (* begin hide *)
 Let VG2 := grade_isomorphism
     (algebra_to_module_homomorphism f)
     (algebra_to_module_iso f f_iso).
 Existing Instance VG2.
 (* end hide *)
-Program Instance graded_algebra_isomorphism : GradedAlgebra U V2.
+Program Instance graded_algebra_isomorphism : GradedAlgebraObj U V2.
 Next Obligation.
     destruct H as [a [a_in a_eq]].
     destruct H0 as [b [b_in b_eq]].
@@ -460,5 +460,5 @@ Next Obligation.
 Qed.
 (* begin hide *)
 
-End GradeAlgebra.
+End GradeAlgebraObj.
 (* end hide *)

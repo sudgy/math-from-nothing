@@ -17,7 +17,7 @@ Require Import plus_sum.
 Section TensorProduct.
 
 (* end hide *)
-Context {F : CRing} (M N : Module F).
+Context {F : CRingObj} (M N : ModuleObj F).
 
 (* begin hide *)
 Let U := cring_U F.
