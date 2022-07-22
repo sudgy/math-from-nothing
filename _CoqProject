@@ -147,6 +147,7 @@
 ./src/Algebra/Ring/Fraction/fraction_order.v
 
 ./src/Algebra/Ring/Polynomial/polynomial_base.v
+./src/Algebra/Ring/Polynomial/polynomial_degree.v
 
 ./src/Algebra/Linear/linear_base.v
 ./src/Algebra/Linear/linear_transformation_space.v
