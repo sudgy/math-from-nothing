@@ -261,6 +261,43 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem to_polynomial_scalar : ∀ a f, to_polynomial a * f = a · f.
+Proof.
+    intros a f.
+    unfold to_polynomial.
+    rewrite scalar_lmult.
+    rewrite mult_lid.
+    reflexivity.
+Qed.
+
+Theorem to_polynomial_comm : ∀ a f, to_polynomial a * f = f * to_polynomial a.
+Proof.
+    intros a f.
+    unfold to_polynomial.
+    rewrite scalar_lmult, scalar_rmult.
+    rewrite mult_lid, mult_rid.
+    reflexivity.
+Qed.
+
+Theorem polynomial_xn_grade : ∀ n : nat, of_grade n (polynomial_xn n).
+Proof.
+    intros n.
+    unfold polynomial_xn.
+    unfold to_free.
+    unfold of_grade; cbn.
+    unfold grade_sum_subspace_set.
+    exists 1.
+    reflexivity.
+Qed.
+
+Theorem to_polynomial_grade : ∀ a, of_grade 0 (to_polynomial a).
+    intros a.
+    unfold to_polynomial.
+    apply of_grade_scalar.
+    unfold one; cbn.
+    apply polynomial_xn_grade.
+Qed.
+
 Let USM := module_scalar (cring_module F).
 Let USML := module_scalar_ldist (cring_module F).
 Let USMR := module_scalar_rdist (cring_module F).
