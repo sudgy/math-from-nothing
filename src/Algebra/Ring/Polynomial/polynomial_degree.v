@@ -2,6 +2,8 @@ Require Import init.
 
 Require Export polynomial_base.
 
+Require Import euclidean_domain.
+
 Require Import linear_free.
 Require Import linear_grade.
 Require Import linear_grade_sum.
@@ -57,6 +59,16 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem polynomial_coefficient_neg : ∀ f n, co (-f) n = -(co f n).
+Proof.
+    intros f n.
+    rewrite <- scalar_neg_one.
+    rewrite polynomial_coefficient_scalar.
+    rewrite mult_lneg.
+    rewrite mult_lid.
+    reflexivity.
+Qed.
+
 Theorem polynomial_coefficient_zero : ∀ n, co 0 n = 0.
 Proof.
     intros n.
@@ -72,6 +84,44 @@ Proof.
     destruct (strong_excluded_middle (0 = 0)) as [eq|neq]; [>|contradiction].
     destruct eq; cbn.
     reflexivity.
+Qed.
+
+Theorem polynomial_coefficient_xn : ∀ (f : polynomial U) m n,
+    co (f * polynomial_xn U m) (m + n) = co f n.
+Proof.
+    intros f m n.
+    induction f as [|f f' i fi f'i IHf] using grade_induction.
+    {
+        rewrite mult_lanni.
+        do 2 rewrite polynomial_coefficient_zero.
+        reflexivity.
+    }
+    rewrite rdist.
+    do 2 rewrite polynomial_coefficient_plus.
+    rewrite IHf.
+    apply rplus.
+    clear f' f'i IHf.
+    apply polynomial_xn_ex in fi as [a f_eq].
+    subst f.
+    rewrite scalar_lmult.
+    do 2 rewrite polynomial_coefficient_scalar.
+    rewrite polynomial_xn_mult.
+    apply lmult.
+    rewrite (plus_comm m).
+    unfold co, polynomial_coefficient.
+    unfold polynomial_xn; cbn.
+    unfold single_to_grade_sum_base; cbn.
+    cbn in i.
+    destruct (strong_excluded_middle (i + m = n + m)) as [eq1|neq1]; cbn.
+    all: destruct (strong_excluded_middle (i = n)) as [eq2|neq2]; cbn.
+    -   destruct eq1, eq2; cbn.
+        reflexivity.
+    -   exfalso.
+        apply plus_rcancel in eq1.
+        contradiction.
+    -   destruct eq2.
+        contradiction.
+    -   reflexivity.
 Qed.
 
 Theorem to_polynomial_coefficient_zero : ∀ x, co (to_polynomial U x) 0 = x.
@@ -541,6 +591,122 @@ Proof.
     rewrite polynomial_degree_scalar by exact a_nz.
     rewrite lem2.
     rewrite Heqm, Heqn.
+    reflexivity.
+Qed.
+
+Local Program Instance polynomial_euclidean : EuclideanDomain (polynomial U) :={
+    euclidean_f := polynomial_degree
+}.
+Next Obligation.
+    rename H1 into b_nz.
+    remember (polynomial_degree a) as n.
+    pose (m := polynomial_degree b).
+    revert a Heqn.
+    induction n as [n IHn] using strong_induction.
+    intros a Heqn.
+    classic_case (n < m) as [nm|mn].
+    {
+        exists 0, a.
+        split.
+        -   rewrite mult_ranni.
+            rewrite plus_lid.
+            reflexivity.
+        -   right.
+            rewrite <- Heqn.
+            exact nm.
+    }
+    rewrite nlt_le in mn.
+    classic_case (0 = n) as [n_z|n_nz].
+    {
+        rewrite <- n_z in mn.
+        apply nat_le_zero_eq in mn.
+        unfold m in mn.
+        rewrite Heqn in n_z.
+        symmetry in mn, n_z.
+        apply polynomial_degree_zero_ex in mn, n_z.
+        destruct mn as [b' b_eq].
+        destruct n_z as [a' a_eq].
+        subst a b.
+        exists (to_polynomial U (a' / b')), 0.
+        split; [>|left; reflexivity].
+        rewrite plus_rid.
+        rewrite <- to_polynomial_mult.
+        rewrite mult_comm.
+        rewrite mult_rlinv; [>reflexivity|].
+        intros contr; subst b'.
+        rewrite to_polynomial_zero in b_nz.
+        contradiction.
+    }
+    apply nat_le_ex in mn as [c c_eq].
+    pose (a' := a - co a n / co b m · polynomial_xn U c * b).
+    specialize (IHn (polynomial_degree a')).
+    prove_parts IHn.
+    {
+        classic_case (0 = a') as [a'_z|a'_nz].
+        {
+            rewrite <- a'_z.
+            rewrite polynomial_degree_zero.
+            split; [>apply nat_le_zero|exact n_nz].
+        }
+        rewrite Heqn.
+        split.
+        -   apply polynomial_degree_leq.
+            intros z z_gt.
+            unfold a'.
+            rewrite polynomial_coefficient_plus.
+            rewrite polynomial_coefficient_neg.
+            rewrite scalar_lmult.
+            rewrite polynomial_coefficient_scalar.
+            rewrite <- (polynomial_degree_gt _ _ z_gt).
+            rewrite plus_lid.
+            apply nat_lt_ex in z_gt as [d [d_nz d_eq]].
+            rewrite <- d_eq.
+            rewrite <- Heqn.
+            rewrite <- c_eq at 2.
+            rewrite (mult_comm _ b).
+            rewrite (plus_comm m c).
+            rewrite <- plus_assoc.
+            rewrite polynomial_coefficient_xn.
+            assert (m < m + d) as d_gt.
+            {
+                rewrite <- (plus_rid m) at 1.
+                apply lt_lplus.
+                split; [>apply nat_le_zero|exact d_nz].
+            }
+            rewrite <- (polynomial_degree_gt _ _ d_gt).
+            rewrite mult_ranni.
+            rewrite neg_zero.
+            reflexivity.
+        -   intros contr.
+            apply (polynomial_degree_nz _ a'_nz).
+            rewrite contr.
+            rewrite <- Heqn.
+            unfold a'.
+            rewrite polynomial_coefficient_plus.
+            rewrite polynomial_coefficient_neg.
+            rewrite scalar_lmult.
+            rewrite polynomial_coefficient_scalar.
+            rewrite <- c_eq at 3.
+            rewrite (mult_comm _ b).
+            rewrite (plus_comm m c).
+            rewrite polynomial_coefficient_xn.
+            rewrite mult_rlinv.
+            +   rewrite plus_rinv.
+                reflexivity.
+            +   apply polynomial_degree_nz.
+                exact b_nz.
+    }
+    specialize (IHn a' (Logic.eq_refl _)) as [q' [r [a'_eq r_lt]]].
+    exists (q' + co a n / co b m · polynomial_xn U c), r.
+    split; [>|exact r_lt].
+    rewrite ldist.
+    rewrite <- plus_assoc.
+    rewrite (plus_comm _ r).
+    rewrite plus_assoc.
+    rewrite <- a'_eq.
+    unfold a'.
+    rewrite mult_comm.
+    rewrite plus_rlinv.
     reflexivity.
 Qed.
 

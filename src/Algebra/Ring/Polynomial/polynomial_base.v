@@ -50,6 +50,15 @@ Local Instance polynomial_mult : Mult polynomial := {
     mult := free_bilinear F nat (λ m n, polynomial_xn (m + n));
 }.
 
+Theorem polynomial_xn_mult : ∀ m n,
+    polynomial_xn m * polynomial_xn n = polynomial_xn (m + n).
+Proof.
+    intros m n.
+    unfold mult; cbn.
+    rewrite (free_bilinear_free F nat).
+    reflexivity.
+Qed.
+
 Local Program Instance polynomial_ldist : Ldist polynomial.
 Next Obligation.
     apply (free_bilinear_ldist F nat).
