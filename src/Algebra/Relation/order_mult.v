@@ -1040,6 +1040,34 @@ Theorem lt_square : ∀ a b, 0 <= a → 0 <= b → a < b ↔ a*a < b*b.
             subst.
             destruct ab; contradiction.
 Qed.
+
+Theorem le_lrmult_pos : ∀ a b c d, 0 <= a → 0 <= c → a <= b → c <= d →
+    a * c <= b * d.
+Proof.
+    intros a b c d a_pos c_pos ab cd.
+    pose proof (trans a_pos ab) as b_pos.
+    apply le_rmult_pos with c in ab; [>|exact c_pos].
+    apply le_lmult_pos with b in cd; [>|exact b_pos].
+    exact (trans ab cd).
+Qed.
+
+Theorem lt_lrmult_pos : ∀ a b c d, 0 <= a → 0 <= c → a < b → c < d →
+    a * c < b * d.
+Proof.
+    intros a b c d a_pos c_pos ab cd.
+    pose proof (le_lt_trans a_pos ab) as b_pos.
+    classic_case (0 = c) as [c_z|c_nz].
+    {
+        subst c.
+        rewrite mult_ranni.
+        apply lt_mult.
+        -   exact b_pos.
+        -   exact cd.
+    }
+    apply lt_rmult_pos with c in ab; [>|split; assumption].
+    apply lt_lmult_pos with b in cd; [>|exact b_pos].
+    exact (trans ab cd).
+Qed.
 (* begin hide *)
 End OrderMult.
 (* end hide *)

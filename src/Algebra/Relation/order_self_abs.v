@@ -80,6 +80,13 @@ Theorem abs_neg : ∀ a, | -a| = |a|.
         destruct (trans n n0); contradiction.
 Qed.
 
+Theorem abs_neg_eq : ∀ x, x <= 0 → |x| = -x.
+    intros x x_neg.
+    rewrite <- abs_neg.
+    apply neg_pos in x_neg.
+    exact (abs_pos_eq _ x_neg).
+Qed.
+
 Theorem abs_minus : ∀ a b, |a - b| = |b - a|.
     intros a b.
     rewrite <- abs_neg.

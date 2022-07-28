@@ -330,6 +330,12 @@ Proof.
     apply mult_rid.
 Qed.
 
+Theorem polynomial_eval_zero : ∀ x, polynomial_eval 0 x = 0.
+    intros x.
+    rewrite <- to_polynomial_zero.
+    apply polynomial_eval_constant.
+Qed.
+
 Theorem polynomial_eval_xn : ∀ x n,
     polynomial_eval (polynomial_xn n) x = (x^n)%nat.
 Proof.
