@@ -3,6 +3,7 @@ Require Import init.
 Require Import linear_free.
 Require Import linear_grade.
 Require Import module_category.
+Require Import algebra_category.
 Require Import nat.
 Require Import set.
 Require Import unordered_list.
@@ -11,32 +12,45 @@ Require Import linear_grade_sum.
 
 Section Polynomial.
 
-Context U `{Field U}.
+Context (F : CRingObj).
+Let U := cring_U F.
+Let UP := cring_plus F.
+Let UZ := cring_zero F.
+Let UN := cring_neg F.
+Let UPA := cring_plus_assoc F.
+Let UPC := cring_plus_comm F.
+Let UPZ := cring_plus_lid F.
+Let UPN := cring_plus_linv F.
+Let UM := cring_mult F.
+Let UO := cring_one F.
+Let UMA := cring_mult_assoc F.
+Let UMC := cring_mult_comm F.
+Let UMO := cring_mult_lid F.
+Let UMD := cring_ldist F.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD.
+Context `{
+    UML : @MultLcancel U UZ UM,
+    UMR : @MultRcancel U UZ UM,
+    UD : Div U,
+    UMDL : @MultLinv U UZ UM UO UD,
+    UMDR : @MultRinv U UZ UM UO UD,
+    @NotTrivial U
+}.
 
-Let F := make_cring
-    (make_ring
-        (make_rng
-            U UP UZ UN UM UPA UPC UPZ UPN UMA UL
-        )
-        UE
-        UME
-    )
-    UMC.
-
-Let polynomial_module := free_linear F nat.
-Definition polynomial := module_V polynomial_module.
-Definition polynomial_plus := module_plus polynomial_module.
-Definition polynomial_zero := module_zero polynomial_module.
-Definition polynomial_neg := module_neg polynomial_module.
-Definition polynomial_plus_comm := module_plus_comm polynomial_module.
-Definition polynomial_plus_assoc := module_plus_assoc polynomial_module.
-Definition polynomial_plus_lid := module_plus_lid polynomial_module.
-Definition polynomial_plus_linv := module_plus_linv polynomial_module.
-Definition polynomial_scalar := module_scalar polynomial_module.
-Definition polynomial_scalar_id := module_scalar_id polynomial_module.
-Definition polynomial_scalar_ldist := module_scalar_ldist polynomial_module.
-Definition polynomial_scalar_rdist := module_scalar_rdist polynomial_module.
-Definition polynomial_scalar_comp := module_scalar_comp polynomial_module.
+Definition polynomial_module := free_linear F nat.
+Definition polynomial := module_V polynomial_module : Type.
+Definition polynomial_plus := module_plus polynomial_module : Plus polynomial.
+Definition polynomial_zero := module_zero polynomial_module : Zero polynomial.
+Definition polynomial_neg := module_neg polynomial_module : Neg polynomial.
+Definition polynomial_plus_comm := module_plus_comm polynomial_module : PlusComm polynomial.
+Definition polynomial_plus_assoc := module_plus_assoc polynomial_module : PlusAssoc polynomial.
+Definition polynomial_plus_lid := module_plus_lid polynomial_module : PlusLid polynomial.
+Definition polynomial_plus_linv := module_plus_linv polynomial_module : PlusLinv polynomial.
+Definition polynomial_scalar := module_scalar polynomial_module : ScalarMult U polynomial.
+Definition polynomial_scalar_id := module_scalar_id polynomial_module : ScalarId U polynomial.
+Definition polynomial_scalar_ldist := module_scalar_ldist polynomial_module : ScalarLdist U polynomial.
+Definition polynomial_scalar_rdist := module_scalar_rdist polynomial_module : ScalarRdist U polynomial.
+Definition polynomial_scalar_comp := module_scalar_comp polynomial_module : ScalarComp U polynomial.
 Definition polynomial_grade := free_grade F nat : GradedSpace U polynomial.
 Local Existing Instances polynomial_plus polynomial_zero polynomial_neg
     polynomial_plus_comm polynomial_plus_assoc polynomial_plus_lid
@@ -439,4 +453,20 @@ Proof.
     reflexivity.
 Qed.
 
+Definition polynomial_rng := make_rng polynomial polynomial_plus polynomial_zero
+    polynomial_neg polynomial_mult polynomial_plus_assoc polynomial_plus_comm
+    polynomial_plus_lid
+    polynomial_plus_linv
+    polynomial_mult_assoc
+    polynomial_ldist.
+Definition polynomial_ring := make_ring polynomial_rng polynomial_one
+    polynomial_mult_lid.
+Definition polynomial_cring := make_cring polynomial_ring polynomial_mult_comm.
+Definition polynomial_algebra := make_algebra F polynomial_module
+    polynomial_mult polynomial_ldist ldist_rdist polynomial_mult_assoc
+    polynomial_one polynomial_mult_lid mult_lid_rid polynomial_scalar_lmult
+    polynomial_scalar_rmult.
+
 End Polynomial.
+
+Arguments polynomial_eval {F}.

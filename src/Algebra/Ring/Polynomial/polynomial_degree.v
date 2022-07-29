@@ -3,6 +3,7 @@ Require Import init.
 Require Export polynomial_base.
 
 Require Import euclidean_domain.
+Require Import ring_category.
 
 Require Import linear_free.
 Require Import linear_grade.
@@ -15,34 +16,57 @@ Require Import order_minmax.
 
 Section Polynomial.
 
-Context U `{Field U}.
+Context (F : CRingObj).
+Let U := cring_U F.
+Let UP := cring_plus F.
+Let UZ := cring_zero F.
+Let UN := cring_neg F.
+Let UPA := cring_plus_assoc F.
+Let UPC := cring_plus_comm F.
+Let UPZ := cring_plus_lid F.
+Let UPN := cring_plus_linv F.
+Let UM := cring_mult F.
+Let UO := cring_one F.
+Let UMA := cring_mult_assoc F.
+Let UMC := cring_mult_comm F.
+Let UMO := cring_mult_lid F.
+Let UMD := cring_ldist F.
+Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD.
+Context `{
+    UML : @MultLcancel U UZ UM,
+    UMR : @MultRcancel U UZ UM,
+    UD : Div U,
+    UMDL : @MultLinv U UZ UM UO UD,
+    UMDR : @MultRinv U UZ UM UO UD,
+    @NotTrivial U
+}.
 
-Let PP := polynomial_plus U.
-Let PZ := polynomial_zero U.
-Let PN := polynomial_neg U.
-Let PPC := polynomial_plus_comm U.
-Let PPA := polynomial_plus_assoc U.
-Let PPZ := polynomial_plus_lid U.
-Let PPN := polynomial_plus_linv U.
-Let PM := polynomial_mult U.
-Let PO := polynomial_one U.
-Let PL := polynomial_ldist U.
-Let PMA := polynomial_mult_assoc U.
-Let PMC := polynomial_mult_comm U.
-Let PMO := polynomial_mult_lid U.
-Let PSM := polynomial_scalar U.
-Let PSMO := polynomial_scalar_id U.
-Let PSML := polynomial_scalar_ldist U.
-Let PSMR := polynomial_scalar_rdist U.
-Let PSMC := polynomial_scalar_comp U.
-Let PML := polynomial_scalar_lmult U.
-Let PMR := polynomial_scalar_rmult U.
-Let PG := polynomial_grade U.
+Let PP := polynomial_plus F.
+Let PZ := polynomial_zero F.
+Let PN := polynomial_neg F.
+Let PPC := polynomial_plus_comm F.
+Let PPA := polynomial_plus_assoc F.
+Let PPZ := polynomial_plus_lid F.
+Let PPN := polynomial_plus_linv F.
+Let PM := polynomial_mult F.
+Let PO := polynomial_one F.
+Let PL := polynomial_ldist F.
+Let PMA := polynomial_mult_assoc F.
+Let PMC := polynomial_mult_comm F.
+Let PMO := polynomial_mult_lid F.
+Let PSM := polynomial_scalar F.
+Let PSMO := polynomial_scalar_id F.
+Let PSML := polynomial_scalar_ldist F.
+Let PSMR := polynomial_scalar_rdist F.
+Let PSMC := polynomial_scalar_comp F.
+Let PML := polynomial_scalar_lmult F.
+Let PMR := polynomial_scalar_rmult F.
+Let PG := polynomial_grade F.
 
 Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
     PSML PSMR PSMC PML PMR PG.
 
-Definition polynomial_coefficient (f : polynomial U) (n : nat) := [f|] n : U.
+Definition polynomial_coefficient (f : polynomial F) (n : nat) := [f|] n : U.
 Let co := polynomial_coefficient.
 
 Theorem polynomial_coefficient_plus : ∀ f g n, co (f + g) n = co f n + co g n.
@@ -86,8 +110,8 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem polynomial_coefficient_xn : ∀ (f : polynomial U) m n,
-    co (f * polynomial_xn U m) (m + n) = co f n.
+Theorem polynomial_coefficient_xn : ∀ (f : polynomial F) m n,
+    co (f * polynomial_xn F m) (m + n) = co f n.
 Proof.
     intros f m n.
     induction f as [|f f' i fi f'i IHf] using grade_induction.
@@ -124,7 +148,7 @@ Proof.
     -   reflexivity.
 Qed.
 
-Theorem to_polynomial_coefficient_zero : ∀ x, co (to_polynomial U x) 0 = x.
+Theorem to_polynomial_coefficient_zero : ∀ x, co (to_polynomial F x) 0 = x.
 Proof.
     intros x.
     unfold to_polynomial.
@@ -133,7 +157,7 @@ Proof.
     apply mult_rid.
 Qed.
 
-Theorem polynomial_coefficient_eval_zero : ∀ f, polynomial_eval U f 0 = co f 0.
+Theorem polynomial_coefficient_eval_zero : ∀ f, polynomial_eval f 0 = co f 0.
 Proof.
     intros f.
     induction f as [|f f' n fn f'n IHf] using grade_induction.
@@ -157,7 +181,7 @@ Proof.
     rewrite polynomial_eval_xn.
     nat_destruct n.
     -   rewrite pow_0_nat.
-        change (polynomial_xn U 0) with 1.
+        change (polynomial_xn F 0) with 1.
         rewrite <- to_polynomial_one.
         rewrite to_polynomial_coefficient_zero.
         reflexivity.
@@ -169,7 +193,7 @@ Proof.
         reflexivity.
 Qed.
 
-Lemma polynomial_degree_ex : ∀ f : polynomial U, ∃ n, ∀ m, n < m → 0 = co f m.
+Lemma polynomial_degree_ex : ∀ f : polynomial F, ∃ n, ∀ m, n < m → 0 = co f m.
 Proof.
     intros f.
     destruct f as [f f_fin]; cbn in *.
@@ -259,7 +283,7 @@ Theorem polynomial_degree_geq : ∀ f n, 0 ≠ co f n → n <= polynomial_degree
     exact contr.
 Qed.
 
-Theorem polynomial_degree_xn : ∀ n, polynomial_degree (polynomial_xn U n) = n.
+Theorem polynomial_degree_xn : ∀ n, polynomial_degree (polynomial_xn F n) = n.
     intros n.
     apply antisym.
     -   apply polynomial_degree_leq.
@@ -286,7 +310,7 @@ Theorem polynomial_degree_zero : polynomial_degree 0 = 0.
 Qed.
 
 Theorem polynomial_degree_zero_ex : ∀ f, polynomial_degree f = 0 →
-    ∃ a, f = to_polynomial U a.
+    ∃ a, f = to_polynomial F a.
 Proof.
     intros f f_zero.
     exists (polynomial_coefficient f 0).
@@ -402,7 +426,7 @@ Qed.
 
 Theorem polynomial_degree_split : ∀ f, 0 ≠ polynomial_degree f → ∃ a g,
     0 ≠ a ∧ polynomial_degree g < polynomial_degree f ∧
-    f = a · polynomial_xn U (polynomial_degree f) + g.
+    f = a · polynomial_xn F (polynomial_degree f) + g.
 Proof.
     intros f f_nz.
     assert (0 ≠ f) as f_nz'.
@@ -413,7 +437,7 @@ Proof.
         symmetry; exact polynomial_degree_zero.
     }
     exists (co f (polynomial_degree f)),
-       (f - co f (polynomial_degree f) · polynomial_xn U (polynomial_degree f)).
+       (f - co f (polynomial_degree f) · polynomial_xn F (polynomial_degree f)).
     split; [>|split].
     -   apply polynomial_degree_nz.
         exact f_nz'.
@@ -470,7 +494,7 @@ Theorem polynomial_degree_mult : ∀ f g, 0 ≠ f → 0 ≠ g →
 Proof.
     intros f g f_nz g_nz.
 
-    assert (∀ m n, polynomial_degree (polynomial_xn U m * polynomial_xn U n)
+    assert (∀ m n, polynomial_degree (polynomial_xn F m * polynomial_xn F n)
         = m + n) as lem1.
     {
         intros m n.
@@ -485,7 +509,7 @@ Proof.
     remember (polynomial_degree g) as n.
     revert n f g f_nz g_nz Heqm Heqn.
     induction m as [m IHm] using strong_induction; intros.
-    assert (∀ m, polynomial_degree (polynomial_xn U m * g)
+    assert (∀ m, polynomial_degree (polynomial_xn F m * g)
         = m + polynomial_degree g) as lem2.
     {
         clear f f_nz m IHm Heqm.
@@ -514,11 +538,11 @@ Proof.
         rewrite <- Heqn.
         rewrite g_eq.
         rewrite ldist.
-        assert (polynomial_degree (polynomial_xn U m *
-            (a · polynomial_xn U (polynomial_degree g)) + polynomial_xn U m * g')
+        assert (polynomial_degree (polynomial_xn F m *
+            (a · polynomial_xn F (polynomial_degree g)) + polynomial_xn F m * g')
             =
-            polynomial_degree (polynomial_xn U m *
-                (a · polynomial_xn U (polynomial_degree g)))) as deg_eq.
+            polynomial_degree (polynomial_xn F m *
+                (a · polynomial_xn F (polynomial_degree g)))) as deg_eq.
         {
             classic_case (0 = g') as [g'_z|g'_nz].
             -   rewrite <- g'_z.
@@ -563,9 +587,9 @@ Proof.
     apply polynomial_degree_split in f_nz' as [a [f' [a_nz [f_lt f_eq]]]].
     rewrite f_eq.
     rewrite rdist.
-    assert (polynomial_degree (a · polynomial_xn U (polynomial_degree f) * g
+    assert (polynomial_degree (a · polynomial_xn F (polynomial_degree f) * g
         + f' * g) =
-        polynomial_degree (a · polynomial_xn U (polynomial_degree f) * g))
+        polynomial_degree (a · polynomial_xn F (polynomial_degree f) * g))
         as deg_eq.
     {
         classic_case (0 = f') as [f'_z|f'_nz].
@@ -594,11 +618,11 @@ Proof.
     reflexivity.
 Qed.
 
-Local Program Instance polynomial_euclidean : EuclideanDomain (polynomial U) :={
+Local Program Instance polynomial_euclidean : EuclideanDomain (polynomial F) :={
     euclidean_f := polynomial_degree
 }.
 Next Obligation.
-    rename H1 into b_nz.
+    rename H0 into b_nz.
     remember (polynomial_degree a) as n.
     pose (m := polynomial_degree b).
     revert a Heqn.
@@ -627,7 +651,7 @@ Next Obligation.
         destruct mn as [b' b_eq].
         destruct n_z as [a' a_eq].
         subst a b.
-        exists (to_polynomial U (a' / b')), 0.
+        exists (to_polynomial F (a' / b')), 0.
         split; [>|left; reflexivity].
         rewrite plus_rid.
         rewrite <- to_polynomial_mult.
@@ -638,7 +662,7 @@ Next Obligation.
         contradiction.
     }
     apply nat_le_ex in mn as [c c_eq].
-    pose (a' := a - co a n / co b m · polynomial_xn U c * b).
+    pose (a' := a - co a n / co b m · polynomial_xn F c * b).
     specialize (IHn (polynomial_degree a')).
     prove_parts IHn.
     {
@@ -697,7 +721,7 @@ Next Obligation.
                 exact b_nz.
     }
     specialize (IHn a' (Logic.eq_refl _)) as [q' [r [a'_eq r_lt]]].
-    exists (q' + co a n / co b m · polynomial_xn U c), r.
+    exists (q' + co a n / co b m · polynomial_xn F c), r.
     split; [>|exact r_lt].
     rewrite ldist.
     rewrite <- plus_assoc.

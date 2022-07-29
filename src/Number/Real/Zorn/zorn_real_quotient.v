@@ -15,27 +15,27 @@ Require Import mult_pow.
 
 Section Quotient.
 
-Let PP := polynomial_plus real.
-Let PZ := polynomial_zero real.
-Let PN := polynomial_neg real.
-Let PPC := polynomial_plus_comm real.
-Let PPA := polynomial_plus_assoc real.
-Let PPZ := polynomial_plus_lid real.
-Let PPN := polynomial_plus_linv real.
-Let PM := polynomial_mult real.
-Let PO := polynomial_one real.
-Let PL := polynomial_ldist real.
-Let PMA := polynomial_mult_assoc real.
-Let PMC := polynomial_mult_comm real.
-Let PMO := polynomial_mult_lid real.
-Let PSM := polynomial_scalar real.
-Let PSMO := polynomial_scalar_id real.
-Let PSML := polynomial_scalar_ldist real.
-Let PSMR := polynomial_scalar_rdist real.
-Let PSMC := polynomial_scalar_comp real.
-Let PML := polynomial_scalar_lmult real.
-Let PMR := polynomial_scalar_rmult real.
-Let PG := polynomial_grade real.
+Let PP := polynomial_plus real_cring.
+Let PZ := polynomial_zero real_cring.
+Let PN := polynomial_neg real_cring.
+Let PPC := polynomial_plus_comm real_cring.
+Let PPA := polynomial_plus_assoc real_cring.
+Let PPZ := polynomial_plus_lid real_cring.
+Let PPN := polynomial_plus_linv real_cring.
+Let PM := polynomial_mult real_cring.
+Let PO := polynomial_one real_cring.
+Let PL := polynomial_ldist real_cring.
+Let PMA := polynomial_mult_assoc real_cring.
+Let PMC := polynomial_mult_comm real_cring.
+Let PMO := polynomial_mult_lid real_cring.
+Let PSM := polynomial_scalar real_cring.
+Let PSMO := polynomial_scalar_id real_cring.
+Let PSML := polynomial_scalar_ldist real_cring.
+Let PSMR := polynomial_scalar_rdist real_cring.
+Let PSMC := polynomial_scalar_comp real_cring.
+Let PML := polynomial_scalar_lmult real_cring.
+Let PMR := polynomial_scalar_rmult real_cring.
+Let PG := polynomial_grade real_cring.
 
 Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
     PSML PSMR PSMC PML PMR PG.
@@ -52,9 +52,9 @@ Definition top_of_cut_in := top_of_cut_in cut cut_lt.
 
 Notation "| a |" := (abs a) (at level 30).
 
-Definition zorn_real_ideal_set (c : polynomial real) :=
+Definition zorn_real_ideal_set (c : polynomial real_cring) :=
     ∀ ε, 0 < ε → ∃ δ, 0 < δ ∧
-        (∀ x, top_of_cut δ x → |polynomial_eval real c x| < ε).
+        (∀ x, top_of_cut δ x → |polynomial_eval c x| < ε).
 
 Theorem zorn_real_ideal_nempty : ∃ a, zorn_real_ideal_set a.
 Proof.
@@ -63,7 +63,7 @@ Proof.
     exists 1.
     split; [>apply one_pos|].
     intros x x_in.
-    rewrite polynomial_eval_zero; [>|apply mult_lid_rid].
+    rewrite polynomial_eval_zero.
     rewrite <- abs_zero.
     exact ε_pos.
 Qed.
@@ -109,7 +109,7 @@ Proof.
         apply (lt_le_trans2 (rmax M' 1)).
         apply one_pos.
     }
-    assert (∀ x, a - 1 <= x → x <= b → |polynomial_eval real f x| <= M) as M_max.
+    assert (∀ x, a - 1 <= x → x <= b → |polynomial_eval f x| <= M) as M_max.
     {
         intros x ax xb.
         apply (trans (M'_max x ax xb)).
@@ -145,13 +145,8 @@ Proof.
             split; assumption.
         }
         rewrite polynomial_eval_mult.
-        (* TODO: Figure out why in the world these things pop up *)
-        2: apply ldist_rdist.
-        2: apply mult_lid_rid.
-        2: apply rint_mult_lanni_class.
-        2: apply rint_mult_ranni_class.
         rewrite abs_mult.
-        apply (le_rmult_pos (|polynomial_eval real g x|)) in M_max.
+        apply (le_rmult_pos (|polynomial_eval g x|)) in M_max.
         2: apply abs_pos.
         apply (lt_lmult_pos M) in g_in.
         2: exact M_nz.
@@ -201,7 +196,7 @@ Existing Instances zorn_real_plus zorn_real_plus_assoc zorn_real_plus_comm
 
 Lemma zorn_real_polynomial_nz : ∀ f, ¬zorn_real_ideal_set f →
     ∃ ε δ, 0 < ε ∧ 0 < δ ∧
-    (∀ x, top_of_cut δ x → ε < |polynomial_eval real f x|).
+    (∀ x, top_of_cut δ x → ε < |polynomial_eval f x|).
 Proof.
     intros f f_nin.
     unfold zorn_real_ideal_set in f_nin.
@@ -231,8 +226,8 @@ Proof.
     destruct f_nin as [y_in y_ge].
     rewrite nlt_le in y_ge.
     specialize (f_cont x y x_in y_in).
-    remember (polynomial_eval real f x) as fx.
-    remember (polynomial_eval real f y) as fy.
+    remember (polynomial_eval f x) as fx.
+    remember (polynomial_eval f y) as fy.
     clear - f_cont x_lt y_ge.
 
     apply le_neg in x_lt.
@@ -281,13 +276,9 @@ Proof.
     specialize (a_gt _ x_in1).
     specialize (ab _ x_in2).
     rewrite polynomial_eval_mult in ab.
-    2: apply ldist_rdist.
-    2: apply mult_lid_rid.
-    2: apply rint_mult_lanni_class.
-    2: apply rint_mult_ranni_class.
     rewrite abs_mult in ab.
-    remember (polynomial_eval real a x) as ax.
-    remember (polynomial_eval real b x) as bx.
+    remember (polynomial_eval a x) as ax.
+    remember (polynomial_eval b x) as bx.
     clear - a_gt ab ε_pos ε'_pos.
     classic_case (0 = |bx|) as [bx_z|bx_nz].
     {
@@ -314,10 +305,10 @@ Next Obligation.
 Qed.
 
 
-Definition zorn_real_q_pos (a : polynomial real) :=
-    ∃ δ, 0 < δ ∧ ∀ x, top_of_cut δ x → 0 < polynomial_eval real a x.
+Definition zorn_real_q_pos (a : polynomial real_cring) :=
+    ∃ δ, 0 < δ ∧ ∀ x, top_of_cut δ x → 0 < polynomial_eval a x.
 
-Definition zorn_real_q_le (a b : polynomial real) :=
+Definition zorn_real_q_le (a b : polynomial real_cring) :=
     zorn_real_q_pos (b - a) ∨ I (b - a).
 
 Lemma zorn_real_q_le_trans_wlog : ∀ f g,
@@ -361,8 +352,8 @@ Proof.
     specialize (f_pos x x_in3).
     specialize (g_in x x_in4).
     rewrite polynomial_eval_plus.
-    remember (polynomial_eval real f x) as fx.
-    remember (polynomial_eval real g x) as gx.
+    remember (polynomial_eval f x) as fx.
+    remember (polynomial_eval g x) as gx.
     clear - f_in f_pos g_in.
     rewrite abs_lt in g_in.
     destruct g_in as [g_gt g_lt].
@@ -479,8 +470,8 @@ Next Obligation.
         rewrite not_impl, nlt_le in f_neg.
         destruct f_neg as [y_in y_neg].
         specialize (f_cont x y x_in y_in).
-        remember (polynomial_eval real f x) as fx.
-        remember (polynomial_eval real f y) as fy.
+        remember (polynomial_eval f x) as fx.
+        remember (polynomial_eval f y) as fy.
         clear - y_neg l f_cont.
         apply neg_pos in y_neg.
         pose proof (le_lrplus l y_neg) as pos.
@@ -495,8 +486,8 @@ Next Obligation.
         destruct f'_neg as [y_in y_neg].
         specialize (f_cont y x y_in x_in).
         rewrite polynomial_eval_neg in y_neg.
-        remember (polynomial_eval real f x) as fx.
-        remember (polynomial_eval real f y) as fy.
+        remember (polynomial_eval f x) as fx.
+        remember (polynomial_eval f y) as fy.
         clear - y_neg n f_cont.
         rewrite nle_lt in n.
         apply neg_pos in y_neg.
@@ -599,10 +590,6 @@ Next Obligation.
     intros x x_in.
     rewrite neg_zero, plus_rid.
     rewrite polynomial_eval_mult.
-    2: apply ldist_rdist.
-    2: apply mult_lid_rid.
-    2: apply rint_mult_lanni_class.
-    2: apply rint_mult_ranni_class.
     specialize (a_pos _ (top_of_cut_in _ _ _ (lmin _ _) x_in)).
     specialize (b_pos _ (top_of_cut_in _ _ _ (rmin _ _) x_in)).
     exact (lt_mult _ _ a_pos b_pos).
@@ -637,12 +624,8 @@ Next Obligation.
         specialize (c_pos _ (top_of_cut_in _ _ _ (lmin _ _) x_in)).
         specialize (cf_pos _ (top_of_cut_in _ _ _ (rmin _ _) x_in)).
         rewrite polynomial_eval_mult in cf_pos.
-        2: apply ldist_rdist.
-        2: apply mult_lid_rid.
-        2: apply rint_mult_lanni_class.
-        2: apply rint_mult_ranni_class.
-        remember (polynomial_eval real c x) as cx.
-        remember (polynomial_eval real f x) as fx.
+        remember (polynomial_eval c x) as cx.
+        remember (polynomial_eval f x) as fx.
         clear - c_pos cf_pos.
         rewrite <- (mult_ranni cx) in cf_pos.
         apply lt_mult_lcancel_pos in cf_pos; assumption.

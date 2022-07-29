@@ -12,27 +12,27 @@ Require Import set.
 
 Section Analysis.
 
-Let PP := polynomial_plus real.
-Let PZ := polynomial_zero real.
-Let PN := polynomial_neg real.
-Let PPC := polynomial_plus_comm real.
-Let PPA := polynomial_plus_assoc real.
-Let PPZ := polynomial_plus_lid real.
-Let PPN := polynomial_plus_linv real.
-Let PM := polynomial_mult real.
-Let PO := polynomial_one real.
-Let PL := polynomial_ldist real.
-Let PMA := polynomial_mult_assoc real.
-Let PMC := polynomial_mult_comm real.
-Let PMO := polynomial_mult_lid real.
-Let PSM := polynomial_scalar real.
-Let PSMO := polynomial_scalar_id real.
-Let PSML := polynomial_scalar_ldist real.
-Let PSMR := polynomial_scalar_rdist real.
-Let PSMC := polynomial_scalar_comp real.
-Let PML := polynomial_scalar_lmult real.
-Let PMR := polynomial_scalar_rmult real.
-Let PG := polynomial_grade real.
+Let PP := polynomial_plus real_cring.
+Let PZ := polynomial_zero real_cring.
+Let PN := polynomial_neg real_cring.
+Let PPC := polynomial_plus_comm real_cring.
+Let PPA := polynomial_plus_assoc real_cring.
+Let PPZ := polynomial_plus_lid real_cring.
+Let PPN := polynomial_plus_linv real_cring.
+Let PM := polynomial_mult real_cring.
+Let PO := polynomial_one real_cring.
+Let PL := polynomial_ldist real_cring.
+Let PMA := polynomial_mult_assoc real_cring.
+Let PMC := polynomial_mult_comm real_cring.
+Let PMO := polynomial_mult_lid real_cring.
+Let PSM := polynomial_scalar real_cring.
+Let PSMO := polynomial_scalar_id real_cring.
+Let PSML := polynomial_scalar_ldist real_cring.
+Let PSMR := polynomial_scalar_rdist real_cring.
+Let PSMC := polynomial_scalar_comp real_cring.
+Let PML := polynomial_scalar_lmult real_cring.
+Let PMR := polynomial_scalar_rmult real_cring.
+Let PG := polynomial_grade real_cring.
 
 Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
     PSML PSMR PSMC PML PMR PG.
@@ -72,7 +72,7 @@ Notation "| a |" := (abs a) (at level 30).
 
 Lemma polynomial_bounded_xn : ∀ n a b,
     ∃ M, ∀ x, a <= x → x <= b →
-    |polynomial_eval real (polynomial_xn real n) x| <= M.
+    |polynomial_eval (polynomial_xn real_cring n) x| <= M.
 Proof.
     intros n a b.
     classic_case (|a| <= |b|) as [leq|leq].
@@ -134,15 +134,15 @@ Proof.
                     apply abs_le_pos.
 Qed.
 
-Theorem polynomial_bounded : ∀ f a b,
-    ∃ M, ∀ x, a <= x → x <= b → |polynomial_eval real f x| <= M.
+Theorem polynomial_bounded : ∀ (f : polynomial real_cring) a b,
+    ∃ M, ∀ x, a <= x → x <= b → |polynomial_eval f x| <= M.
 Proof.
     intros f a b.
     induction f as [|f f' n fn fn' IHf] using grade_induction.
     {
         exists 0.
         intros x ax xb.
-        rewrite polynomial_eval_zero; [>|apply mult_lid_rid].
+        rewrite polynomial_eval_zero.
         rewrite <- abs_zero.
         apply refl.
     }
@@ -205,7 +205,7 @@ Proof.
     pose proof (half_pos ε ε_pos) as ε2_pos.
     pose proof (lt_mult _ _ ε2_pos m'_pos) as ε2m_pos.
     specialize (IHn _ ε2m_pos) as [δ1 [δ1_pos IHn]].
-    destruct (polynomial_bounded (polynomial_xn real n) (a-1) b) as [M' M'_max].
+    destruct (polynomial_bounded (polynomial_xn real_cring n) (a-1) b) as [M' M'_max].
     pose (M := M' + 1).
     assert (0 < M) as M_pos.
     {
@@ -334,9 +334,9 @@ Proof.
     exact ltq.
 Qed.
 
-Theorem polynomial_continuous : ∀ f,
+Theorem polynomial_continuous : ∀ (f : polynomial real_cring),
     ∀ ε, 0 < ε → ∃ δ, 0 < δ ∧ ∀ x y, top_of_cut δ x → top_of_cut δ y →
-    |polynomial_eval real f x - polynomial_eval real f y| < ε.
+    |polynomial_eval f x - polynomial_eval f y| < ε.
 Proof.
     intros f.
     induction f as [|f f' n fn fn' IHf] using grade_induction.
@@ -345,8 +345,8 @@ Proof.
         exists 1.
         split; [>exact one_pos|].
         intros x y x_in y_in.
-        rewrite polynomial_eval_zero; [>|apply mult_lid_rid].
-        rewrite polynomial_eval_zero; [>|apply mult_lid_rid].
+        rewrite polynomial_eval_zero.
+        rewrite polynomial_eval_zero.
         rewrite neg_zero, plus_rid.
         rewrite <- abs_zero.
         exact ε_pos.
@@ -396,7 +396,7 @@ Proof.
     rewrite <- (plus_assoc (a * (x^n)%nat)).
     rewrite (plus_comm _ (-(a * (y^n)%nat))).
     rewrite plus_assoc.
-    rewrite <- (plus_assoc _ (polynomial_eval _ _ _)).
+    rewrite <- (plus_assoc _ (polynomial_eval _ _)).
     apply abs_tri.
 Qed.
 

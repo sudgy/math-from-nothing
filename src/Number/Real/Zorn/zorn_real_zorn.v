@@ -7,6 +7,7 @@ Require Import preorder.
 Require Import order_def.
 Require Import set.
 Require Import nat_abstract.
+Require Import ring_category.
 
 Module AofZornUb.
 Section AofZornUb.
@@ -944,4 +945,23 @@ Proof.
     rewrite_ex_val R R_max.
     exact (R_max A f_ex).
 Qed.
-(* Proving completeness from this is going to be quite an effort *)
+
+Definition real_cring := make_cring
+    (make_ring
+        (make_rng
+            real
+            real_plus
+            real_zero
+            real_neg
+            real_mult
+            real_plus_assoc
+            real_plus_comm
+            real_plus_lid
+            real_plus_linv
+            real_mult_assoc
+            real_ldist
+        )
+        real_one
+        real_mult_lid
+    )
+    real_mult_comm.
