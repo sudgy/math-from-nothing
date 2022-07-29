@@ -930,6 +930,11 @@ Definition real_le_lplus := aof_le_lplus real_aof.
 Definition real_le_mult := aof_le_mult real_aof.
 Definition real_not_trivial := aof_not_trivial real_aof.
 Definition real_arch := aof_arch real_aof.
+Global Existing Instances real_plus real_zero real_neg real_plus_comm
+    real_plus_assoc real_plus_lid real_plus_linv real_mult real_one real_div
+    real_mult_comm real_mult_assoc real_ldist real_mult_lid real_mult_linv
+    real_le real_le_antisym real_le_trans real_le_connex real_le_lplus
+    real_le_mult real_not_trivial real_arch.
 
 Theorem real_maximal : ∀ A, (∃ f, arch_ordered_homo real_aof A f) →
     ∃ f, arch_ordered_homo A real_aof f.

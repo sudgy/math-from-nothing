@@ -133,6 +133,7 @@
 ./src/Number/Real/Zorn/zorn_real_base.v
 ./src/Number/Real/Zorn/zorn_real_arch.v
 ./src/Number/Real/Zorn/zorn_real_zorn.v
+./src/Number/Real/Zorn/zorn_real_analysis.v
 
 ./src/Number/Complex/complex_base.v
 ./src/Number/Complex/complex_plus.v
