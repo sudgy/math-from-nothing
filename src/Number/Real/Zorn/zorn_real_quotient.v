@@ -363,9 +363,10 @@ Proof.
     exact ltq.
 Qed.
 
-Local Program Instance zorn_real_q_le_trans : Transitive zorn_real_q_le.
-Next Obligation.
-    rename H into xy, H0 into yz.
+Theorem zorn_real_q_le_trans : ∀ {x y z},
+    zorn_real_q_le x y → zorn_real_q_le y z → zorn_real_q_le x z.
+Proof.
+    intros x y z xy yz.
     unfold zorn_real_q_le in *.
     remember (y - x) as f.
     remember (z - y) as g.
@@ -415,9 +416,9 @@ Proof.
     intros a b c d ab cd ac.
     apply ideal_eq_symmetric in ab.
     pose proof (real_zorn_quotient_eq_le b a ab) as ab2.
-    pose proof (trans ab2 ac) as bc.
+    pose proof (zorn_real_q_le_trans ab2 ac) as bc.
     pose proof (real_zorn_quotient_eq_le c d cd) as cd2.
-    exact (trans bc cd2).
+    exact (zorn_real_q_le_trans bc cd2).
 Qed.
 
 Lemma real_zorn_quotient_le_wd : ∀ a b c d, a ~ b → c ~ d →
@@ -543,7 +544,7 @@ Next Obligation.
     revert H H0.
     equiv_get_value x y z.
     unfold le; equiv_simpl.
-    apply trans.
+    apply zorn_real_q_le_trans.
 Qed.
 
 Local Program Instance zorn_real_order_le_lplus : OrderLplus zorn_real_quotient.
