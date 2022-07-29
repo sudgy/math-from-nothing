@@ -2,25 +2,10 @@ Require Import init.
 
 Require Export linear_base.
 Require Export category_base.
+Require Export ring_category.
 (** This requires a commutative ring, not just any old ring.  If I ever need
 one-sided modules, I'll just make a different category for those.
 *)
-Record CRingObj := make_cring {
-    cring_U : Type;
-    cring_plus : Plus cring_U;
-    cring_zero : Zero cring_U;
-    cring_neg : Neg cring_U;
-    cring_mult : Mult cring_U;
-    cring_one : One cring_U;
-    cring_plus_assoc : @PlusAssoc cring_U cring_plus;
-    cring_plus_comm : @PlusComm cring_U cring_plus;
-    cring_plus_lid : @PlusLid cring_U cring_plus cring_zero;
-    cring_plus_linv : @PlusLinv cring_U cring_plus cring_zero cring_neg;
-    cring_mult_assoc : @MultAssoc cring_U cring_mult;
-    cring_mult_comm : @MultComm cring_U cring_mult;
-    cring_mult_lid : @MultLid cring_U cring_mult cring_one;
-    cring_ldist : @Ldist cring_U cring_plus cring_mult;
-}.
 Record ModuleObj (R : CRingObj) := make_module {
     module_V : Type;
     module_plus : Plus module_V;
@@ -217,7 +202,15 @@ Context U `{
     UMD : @Ldist U UP UM
 }.
 
-Definition scalar_cring := make_cring U UP UZ UN UM UO UPA UPC UPZ UPN UMA UMC UMO UMD.
+Definition scalar_cring := make_cring
+    (make_ring
+        (make_rng
+            U UP UZ UN UM UPA UPC UPZ UPN UMA UMD
+        )
+        UO
+        UMO
+    )
+    UMC.
 
 Local Instance scalar_scalar_mult : ScalarMult U U := {
     scalar_mult a b := a * b

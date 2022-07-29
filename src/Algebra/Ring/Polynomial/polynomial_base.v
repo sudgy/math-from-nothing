@@ -13,7 +13,15 @@ Section Polynomial.
 
 Context U `{Field U}.
 
-Let F := make_cring U UP UZ UN UM UE UPA UPC UPZ UPN UMA UMC UME UL.
+Let F := make_cring
+    (make_ring
+        (make_rng
+            U UP UZ UN UM UPA UPC UPZ UPN UMA UL
+        )
+        UE
+        UME
+    )
+    UMC.
 
 Let polynomial_module := free_linear F nat.
 Definition polynomial := module_V polynomial_module.
