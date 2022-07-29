@@ -58,6 +58,7 @@ Context {U} `{
     @Ldist U UP UM,
     @Rdist U UP UM,
     @MultAssoc U UM,
+    @MultComm U UM,
     @MultLid U UM UO,
     @MultRid U UM UO
 }.
@@ -231,6 +232,14 @@ Next Obligation.
     equiv_get_value a b c.
     unfold mult; equiv_simpl.
     rewrite mult_assoc.
+    reflexivity.
+Qed.
+
+Program Instance quotient_ring_mult_comm : MultComm quotient_ring.
+Next Obligation.
+    equiv_get_value a b.
+    unfold mult; equiv_simpl.
+    rewrite mult_comm.
     reflexivity.
 Qed.
 
