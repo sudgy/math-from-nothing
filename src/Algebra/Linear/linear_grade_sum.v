@@ -42,7 +42,7 @@ Local Open Scope card_scope.
 Definition grade_sum_base := (∀ k, module_V (V k)).
 Definition grade_sum_finite (A : grade_sum_base) :=
     finite (|set_type (λ k, 0 ≠ A k)|).
-Definition grade_sum := set_type grade_sum_finite.
+Definition grade_sum_type := set_type grade_sum_finite.
 
 Definition single_to_grade_sum_base {k} (A : module_V (V k)) : grade_sum_base.
     intros n.
@@ -89,7 +89,7 @@ Theorem single_to_grade_sum_eq : ∀ k, ∀ (A B : module_V (V k)),
     exact eq2.
 Qed.
 
-Lemma grade_sum_plus_finite : ∀ A B : grade_sum,
+Lemma grade_sum_plus_finite : ∀ A B : grade_sum_type,
         grade_sum_finite (λ k, [A|] k + [B|] k).
     intros [A A_fin] [B B_fin]; cbn.
     apply fin_nat_ex in A_fin as [m m_eq].
@@ -124,11 +124,11 @@ Lemma grade_sum_plus_finite : ∀ A B : grade_sum,
     all: apply set_type_eq; exact eq2.
 Qed.
 
-Instance grade_sum_plus : Plus grade_sum := {
+Instance grade_sum_plus : Plus grade_sum_type := {
     plus A B := [_|grade_sum_plus_finite A B]
 }.
 
-Program Instance grade_sum_plus_comm : PlusComm grade_sum.
+Program Instance grade_sum_plus_comm : PlusComm grade_sum_type.
 Next Obligation.
     unfold plus; cbn.
     apply set_type_eq; cbn.
@@ -137,7 +137,7 @@ Next Obligation.
     apply plus_comm.
 Qed.
 
-Program Instance grade_sum_plus_assoc : PlusAssoc grade_sum.
+Program Instance grade_sum_plus_assoc : PlusAssoc grade_sum_type.
 Next Obligation.
     unfold plus; cbn.
     apply set_type_eq; cbn.
@@ -158,11 +158,11 @@ Lemma grade_sum_zero_finite : grade_sum_finite (λ k, 0).
     apply nat_is_finite.
 Qed.
 
-Instance grade_sum_zero : Zero grade_sum := {
+Instance grade_sum_zero : Zero grade_sum_type := {
     zero := [_|grade_sum_zero_finite]
 }.
 
-Program Instance grade_sum_plus_lid : PlusLid grade_sum.
+Program Instance grade_sum_plus_lid : PlusLid grade_sum_type.
 Next Obligation.
     unfold plus, zero; cbn.
     apply set_type_eq; cbn.
@@ -171,7 +171,7 @@ Next Obligation.
     apply plus_lid.
 Qed.
 
-Lemma grade_sum_neg_finite : ∀ A : grade_sum, grade_sum_finite (λ k, -[A|] k).
+Lemma grade_sum_neg_finite : ∀ A : grade_sum_type, grade_sum_finite (λ k, -[A|] k).
     intros [A A_fin]; cbn.
     apply fin_nat_ex in A_fin as [n n_eq].
     apply (le_lt_trans2 (nat_is_finite n)).
@@ -192,11 +192,11 @@ Lemma grade_sum_neg_finite : ∀ A : grade_sum, grade_sum_finite (λ k, -[A|] k)
     exact eq.
 Qed.
 
-Instance grade_sum_neg : Neg grade_sum := {
+Instance grade_sum_neg : Neg grade_sum_type := {
     neg A := [_|grade_sum_neg_finite A]
 }.
 
-Program Instance grade_sum_plus_linv : PlusLinv grade_sum.
+Program Instance grade_sum_plus_linv : PlusLinv grade_sum_type.
 Next Obligation.
     unfold plus, neg, zero; cbn.
     apply set_type_eq; cbn.
@@ -219,7 +219,7 @@ Theorem single_to_grade_sum_plus : ∀ k (A B : module_V (V k)),
     reflexivity.
 Qed.
 
-Lemma grade_sum_scalar_finite : ∀ α (A : grade_sum),
+Lemma grade_sum_scalar_finite : ∀ α (A : grade_sum_type),
         grade_sum_finite (λ k, α · [A|] k).
     intros α [A A_fin]; cbn.
     apply fin_nat_ex in A_fin as [n n_eq].
@@ -241,11 +241,11 @@ Lemma grade_sum_scalar_finite : ∀ α (A : grade_sum),
     exact eq.
 Qed.
 
-Instance grade_sum_scalar_mult : ScalarMult U grade_sum := {
+Instance grade_sum_scalar_mult : ScalarMult U grade_sum_type := {
     scalar_mult α A := [_|grade_sum_scalar_finite α A]
 }.
 
-Program Instance grade_sum_scalar_comp : ScalarComp U grade_sum.
+Program Instance grade_sum_scalar_comp : ScalarComp U grade_sum_type.
 Next Obligation.
     unfold scalar_mult; cbn.
     apply set_type_eq; cbn.
@@ -254,7 +254,7 @@ Next Obligation.
     apply scalar_comp.
 Qed.
 
-Program Instance grade_sum_scalar_id : ScalarId U grade_sum.
+Program Instance grade_sum_scalar_id : ScalarId U grade_sum_type.
 Next Obligation.
     unfold scalar_mult; cbn.
     apply set_type_eq; cbn.
@@ -263,7 +263,7 @@ Next Obligation.
     apply scalar_id.
 Qed.
 
-Program Instance grade_sum_scalar_ldist : ScalarLdist U grade_sum.
+Program Instance grade_sum_scalar_ldist : ScalarLdist U grade_sum_type.
 Next Obligation.
     unfold plus, scalar_mult; cbn.
     apply set_type_eq; cbn.
@@ -272,7 +272,7 @@ Next Obligation.
     apply scalar_ldist.
 Qed.
 
-Program Instance grade_sum_scalar_rdist : ScalarRdist U grade_sum.
+Program Instance grade_sum_scalar_rdist : ScalarRdist U grade_sum_type.
 Next Obligation.
     unfold plus at 2, scalar_mult; cbn.
     apply set_type_eq; cbn.
@@ -307,7 +307,7 @@ Lemma single_to_grade_sum_zero : ∀ k, (single_to_grade_sum (k := k) 0) = 0.
     -   reflexivity.
 Qed.
 
-Lemma grade_sum_list_sum_k : ∀ (al : ulist (grade_sum)) k,
+Lemma grade_sum_list_sum_k : ∀ (al : ulist (grade_sum_type)) k,
         [ulist_sum al|] k = ulist_sum (ulist_image al (λ a, [a|] k)).
     intros al k.
     induction al using ulist_induction.
@@ -321,7 +321,7 @@ Lemma grade_sum_list_sum_k : ∀ (al : ulist (grade_sum)) k,
         reflexivity.
 Qed.
 
-Definition grade_sum_subspace_set n (v : grade_sum)
+Definition grade_sum_subspace_set n (v : grade_sum_type)
     := ∃ v' : module_V (V n), single_to_grade_sum v' = v.
 
 Lemma grade_sum_subspace_zero : ∀ n, grade_sum_subspace_set n 0.
@@ -351,7 +351,7 @@ Definition grade_sum_subspace n := make_subspace
     (grade_sum_subspace_plus n)
     (grade_sum_subspace_scalar n).
 
-Program Instance grade_sum_grade : GradedSpace U grade_sum := {
+Program Instance grade_sum_grade : GradedSpace U grade_sum_type := {
     grade_I := I;
     grade_subspace n := grade_sum_subspace n;
 }.
@@ -462,7 +462,7 @@ Next Obligation.
                 rewrite IHn by exact (trans (nat_le_suc n) n_leq).
                 reflexivity.
         }
-        unfold grade_sum.
+        unfold grade_sum_type.
         rewrite eq; clear eq l l'.
         pose (h m0 :=
          @single_to_grade_sum_base (g' m0)
@@ -652,3 +652,19 @@ Qed.
 
 End LinearGradeSum.
 (* end hide *)
+
+Definition grade_sum {R} I (V : I → ModuleObj R) := make_module R
+    (grade_sum_type I V)
+    (grade_sum_plus I V)
+    (grade_sum_zero I V)
+    (grade_sum_neg I V)
+    (grade_sum_plus_assoc I V)
+    (grade_sum_plus_comm I V)
+    (grade_sum_plus_lid I V)
+    (grade_sum_plus_linv I V)
+    (grade_sum_scalar_mult I V)
+    (grade_sum_scalar_id I V)
+    (grade_sum_scalar_ldist I V)
+    (grade_sum_scalar_rdist I V)
+    (grade_sum_scalar_comp I V)
+.

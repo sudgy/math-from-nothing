@@ -531,6 +531,7 @@ Next Obligation.
     rewrite <- neg_neg in xy.
     rewrite neg_plus, neg_neg, plus_comm in xy.
     remember (x - y) as f.
+    rewrite <- Heqf.
     clear Heqf x y.
     intros ε ε_pos.
     unfold zorn_real_q_pos in xy, yx.

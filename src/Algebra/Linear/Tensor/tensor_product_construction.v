@@ -65,22 +65,23 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     SM2 SMO2 SML2 SMR2 SMC2.
 
 (* end hide *)
-Let FR := free_linear F (V1 * V2).
+Let FR_module := free_linear F (V1 * V2).
+Let FR := module_V FR_module.
 Let to_FR a b := to_free F (V1 * V2) (a, b).
 
 (* begin hide *)
-Let FR_plus := free_plus_class F (V1 * V2).
-Let FR_zero := free_zero F (V1 * V2).
-Let FR_neg := free_neg F (V1 * V2).
-Let FR_plus_comm := free_plus_comm_class F (V1 * V2).
-Let FR_plus_assoc := free_plus_assoc_class F (V1 * V2).
-Let FR_plus_lid := free_plus_lid_class F (V1 * V2).
-Let FR_plus_linv := free_plus_linv_class F (V1 * V2).
-Let FR_scalar := free_scalar F (V1 * V2).
-Let FR_scalar_id := free_scalar_id_class F (V1 * V2).
-Let FR_scalar_ldist := free_scalar_ldist_class F (V1 * V2).
-Let FR_scalar_rdist := free_scalar_rdist_class F (V1 * V2).
-Let FR_scalar_comp := free_scalar_comp_class F (V1 * V2).
+Let FR_plus := module_plus FR_module.
+Let FR_zero := module_zero FR_module.
+Let FR_neg := module_neg FR_module.
+Let FR_plus_comm := module_plus_comm FR_module.
+Let FR_plus_assoc := module_plus_assoc FR_module.
+Let FR_plus_lid := module_plus_lid FR_module.
+Let FR_plus_linv := module_plus_linv FR_module.
+Let FR_scalar := module_scalar FR_module.
+Let FR_scalar_id := module_scalar_id FR_module.
+Let FR_scalar_ldist := module_scalar_ldist FR_module.
+Let FR_scalar_rdist := module_scalar_rdist FR_module.
+Let FR_scalar_comp := module_scalar_comp FR_module.
 Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist
     FR_scalar_comp.

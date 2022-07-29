@@ -49,7 +49,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
 Local Open Scope card_scope.
 
 (* end hide *)
-Definition tensor_algebra_base := grade_sum nat (tensor_power V).
+Definition tensor_algebra_base := module_V (grade_sum nat (tensor_power V)).
 Definition tensor_algebra_plus := grade_sum_plus nat (tensor_power V).
 Definition tensor_algebra_zero := grade_sum_zero nat (tensor_power V).
 Definition tensor_algebra_neg := grade_sum_neg nat (tensor_power V).

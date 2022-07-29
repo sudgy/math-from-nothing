@@ -34,18 +34,19 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD.
 
 (* end hide *)
 Definition free_linear := grade_sum V (λ _, cring_module F).
-Definition free_plus_class := grade_sum_plus V (λ _, cring_module F).
-Definition free_zero := grade_sum_zero V (λ _, cring_module F).
-Definition free_neg := grade_sum_neg V (λ _, cring_module F).
-Definition free_plus_assoc_class := grade_sum_plus_assoc V (λ _, cring_module F).
-Definition free_plus_comm_class := grade_sum_plus_comm V (λ _, cring_module F).
-Definition free_plus_lid_class := grade_sum_plus_lid V (λ _, cring_module F).
-Definition free_plus_linv_class := grade_sum_plus_linv V (λ _, cring_module F).
-Definition free_scalar := grade_sum_scalar_mult V (λ _, cring_module F).
-Definition free_scalar_id_class := grade_sum_scalar_id V (λ _, cring_module F).
-Definition free_scalar_ldist_class := grade_sum_scalar_ldist V (λ _, cring_module F).
-Definition free_scalar_rdist_class := grade_sum_scalar_rdist V (λ _, cring_module F).
-Definition free_scalar_comp_class := grade_sum_scalar_comp V (λ _, cring_module F).
+Let FV := module_V free_linear.
+Let free_plus_class := module_plus free_linear.
+Let free_zero := module_zero free_linear.
+Let free_neg := module_neg free_linear.
+Let free_plus_assoc_class := module_plus_assoc free_linear.
+Let free_plus_comm_class := module_plus_comm free_linear.
+Let free_plus_lid_class := module_plus_lid free_linear.
+Let free_plus_linv_class := module_plus_linv free_linear.
+Let free_scalar := module_scalar free_linear.
+Let free_scalar_id_class := module_scalar_id free_linear.
+Let free_scalar_ldist_class := module_scalar_ldist free_linear.
+Let free_scalar_rdist_class := module_scalar_rdist free_linear.
+Let free_scalar_comp_class := module_scalar_comp free_linear.
 Definition free_grade := grade_sum_grade V (λ _, cring_module F).
 
 Existing Instances free_plus_class free_zero free_neg free_plus_assoc_class
@@ -55,7 +56,7 @@ Existing Instances free_plus_class free_zero free_neg free_plus_assoc_class
 
 Definition to_free v := single_to_grade_sum V (λ _, cring_module F) (k := v) 1.
 
-Theorem to_free_ex : ∀ (v : V) (x : free_linear),
+Theorem to_free_ex : ∀ (v : V) (x : FV),
     of_grade v x → ∃ α, x = α · to_free v.
 Proof.
     intros v x [α x_eq].
@@ -88,7 +89,7 @@ Context {V2} `{
 }.
 
 Variable f_base : V → V2.
-Let f1 (i : V) (v : free_linear) (H : of_grade i v) := ex_val H · f_base i.
+Let f1 (i : V) (v : FV) (H : of_grade i v) := ex_val H · f_base i.
 
 Lemma free_extend_plus_base : linear_extend_plus_base f1.
 Proof.
@@ -118,7 +119,7 @@ Proof.
     exact b_eq.
 Qed.
 
-Definition free_extend := linear_extend f1 : free_linear → V2.
+Definition free_extend := linear_extend f1 : FV → V2.
 Let f := free_extend.
 
 Theorem free_extend_plus : ∀ a b, f (a + b) = f a + f b.
@@ -205,7 +206,7 @@ Let TSMC := linear_func_scalar_comp V V2.
 Local Existing Instances TP TZ TN TPC TPA TPZ TPN TSM TSMO TSML TSMR TSMC.
 
 Definition free_bilinear_base := free_extend op.
-Definition free_bilinear (v : free_linear) := free_extend (free_bilinear_base v).
+Definition free_bilinear (v : FV) := free_extend (free_bilinear_base v).
 Let f := free_bilinear.
 
 Theorem free_bilinear_ldist : ∀ a b c, f a (b + c) = f a b + f a c.
@@ -335,7 +336,7 @@ End FreeBilinear.
 
 Definition free_module := make_module
     F
-    free_linear
+    FV
     free_plus_class
     free_zero
     free_neg

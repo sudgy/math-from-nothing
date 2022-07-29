@@ -142,18 +142,19 @@ Next Obligation.
 Qed.
 
 (* begin hide *)
-Let FR_plus := free_plus_class F (V1 * V2).
-Let FR_zero := free_zero F (V1 * V2).
-Let FR_neg := free_neg F (V1 * V2).
-Let FR_plus_comm := free_plus_comm_class F (V1 * V2).
-Let FR_plus_assoc := free_plus_assoc_class F (V1 * V2).
-Let FR_plus_lid := free_plus_lid_class F (V1 * V2).
-Let FR_plus_linv := free_plus_linv_class F (V1 * V2).
-Let FR_scalar := free_scalar F (V1 * V2).
-Let FR_scalar_id := free_scalar_id_class F (V1 * V2).
-Let FR_scalar_ldist := free_scalar_ldist_class F (V1 * V2).
-Let FR_scalar_rdist := free_scalar_rdist_class F (V1 * V2).
-Let FR_scalar_comp := free_scalar_comp_class F (V1 * V2).
+Let FR_module := free_linear F (V1 * V2).
+Let FR_plus := module_plus FR_module.
+Let FR_zero := module_zero FR_module.
+Let FR_neg := module_neg FR_module.
+Let FR_plus_comm := module_plus_comm FR_module.
+Let FR_plus_assoc := module_plus_assoc FR_module.
+Let FR_plus_lid := module_plus_lid FR_module.
+Let FR_plus_linv := module_plus_linv FR_module.
+Let FR_scalar := module_scalar FR_module.
+Let FR_scalar_id := module_scalar_id FR_module.
+Let FR_scalar_ldist := module_scalar_ldist FR_module.
+Let FR_scalar_rdist := module_scalar_rdist FR_module.
+Let FR_scalar_comp := module_scalar_comp FR_module.
 Let V3P := module_plus tensor_product_base.
 Let SM3 := module_scalar tensor_product_base.
 Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
@@ -236,7 +237,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
             unfold linear_list_in in l_in; cbn in l_in; clear l_comb.
             induction l using ulist_induction.
             -   rewrite ulist_image_end, ulist_sum_end.
-                rewrite <- (scalar_lanni (V := free_linear F (V1 * V2)) 0).
+                rewrite <- (scalar_lanni (V := module_V (free_linear F (V1 * V2))) 0).
                 rewrite h3_scalar.
                 rewrite scalar_lanni.
                 reflexivity.
@@ -269,7 +270,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
                     rewrite h3_plus.
                     rewrite h3_plus.
                     rewrite <- scalar_neg_one.
-                    rewrite <- (scalar_neg_one (V := free_linear F (V1 * V2))).
+                    rewrite <- (scalar_neg_one (V := module_V (free_linear F (V1 * V2)))).
                     do 2 rewrite h3_scalar.
                     do 2 rewrite scalar_neg_one.
                     do 3 rewrite h3_free_from.
@@ -286,7 +287,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
                     rewrite h3_plus.
                     rewrite h3_plus.
                     rewrite <- scalar_neg_one.
-                    rewrite <- (scalar_neg_one (V := free_linear F (V1 * V2))).
+                    rewrite <- (scalar_neg_one (V := module_V (free_linear F (V1 * V2)))).
                     do 2 rewrite h3_scalar.
                     do 2 rewrite scalar_neg_one.
                     do 3 rewrite h3_free_from.

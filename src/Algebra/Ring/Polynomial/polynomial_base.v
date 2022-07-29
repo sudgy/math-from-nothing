@@ -15,19 +15,20 @@ Context U `{Field U}.
 
 Let F := make_cring U UP UZ UN UM UE UPA UPC UPZ UPN UMA UMC UME UL.
 
-Definition polynomial := free_linear F nat.
-Definition polynomial_plus := free_plus_class F nat : Plus polynomial.
-Definition polynomial_zero := free_zero F nat : Zero polynomial.
-Definition polynomial_neg := free_neg F nat : Neg polynomial.
-Definition polynomial_plus_comm := free_plus_comm_class F nat : PlusComm polynomial.
-Definition polynomial_plus_assoc := free_plus_assoc_class F nat : PlusAssoc polynomial.
-Definition polynomial_plus_lid := free_plus_lid_class F nat : PlusLid polynomial.
-Definition polynomial_plus_linv := free_plus_linv_class F nat : PlusLinv polynomial.
-Definition polynomial_scalar := free_scalar F nat : ScalarMult U polynomial.
-Definition polynomial_scalar_id := free_scalar_id_class F nat : ScalarId U polynomial.
-Definition polynomial_scalar_ldist := free_scalar_ldist_class F nat : ScalarLdist U polynomial.
-Definition polynomial_scalar_rdist := free_scalar_rdist_class F nat : ScalarRdist U polynomial.
-Definition polynomial_scalar_comp := free_scalar_comp_class F nat : ScalarComp U polynomial.
+Let polynomial_module := free_linear F nat.
+Definition polynomial := module_V polynomial_module.
+Definition polynomial_plus := module_plus polynomial_module.
+Definition polynomial_zero := module_zero polynomial_module.
+Definition polynomial_neg := module_neg polynomial_module.
+Definition polynomial_plus_comm := module_plus_comm polynomial_module.
+Definition polynomial_plus_assoc := module_plus_assoc polynomial_module.
+Definition polynomial_plus_lid := module_plus_lid polynomial_module.
+Definition polynomial_plus_linv := module_plus_linv polynomial_module.
+Definition polynomial_scalar := module_scalar polynomial_module.
+Definition polynomial_scalar_id := module_scalar_id polynomial_module.
+Definition polynomial_scalar_ldist := module_scalar_ldist polynomial_module.
+Definition polynomial_scalar_rdist := module_scalar_rdist polynomial_module.
+Definition polynomial_scalar_comp := module_scalar_comp polynomial_module.
 Definition polynomial_grade := free_grade F nat : GradedSpace U polynomial.
 Local Existing Instances polynomial_plus polynomial_zero polynomial_neg
     polynomial_plus_comm polynomial_plus_assoc polynomial_plus_lid
