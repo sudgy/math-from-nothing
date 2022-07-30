@@ -7,6 +7,7 @@ Require Import int_mult.
 Require Import nat.
 Require Import set.
 Require Export order_mult.
+Require Import nat_abstract.
 
 Definition int_suc a := a + 1.
 Definition int_pre a := a + -(1).
@@ -342,4 +343,38 @@ Theorem nat1_to_int_pos1 : ∀ n, 1 <= nat_to_int (nat_suc n).
     unfold one; cbn.
     rewrite nat_sucs_le.
     apply nat_le_zero.
+Qed.
+
+Global Program Instance int_archimedean : Archimedean int.
+Next Obligation.
+    rename H into x_pos, H0 into y_pos.
+    pose proof (int_pos_nat1_ex _ x_pos) as [a x_eq].
+    exists (nat_suc (nat_suc a)).
+    change (nat_suc (nat_suc a) × y) with (y + nat_suc a × y).
+    replace (nat_suc a × y) with (nat_to_int (nat_suc a) * y).
+    2: {
+        clear x_eq.
+        rewrite <- nat_to_abstract_mult_abstract.
+        apply rmult.
+        (* TODO: Make this a separate theorem *)
+        remember (nat_suc a) as n; clear a Heqn.
+        nat_induction n.
+        -   reflexivity.
+        -   cbn.
+            change (nat_suc n) with (1 + n).
+            rewrite nat_to_int_plus.
+            rewrite IHn.
+            reflexivity.
+    }
+    rewrite <- x_eq.
+    clear x_eq a.
+    pose proof (lt_rplus (x * y) y_pos) as ltq.
+    rewrite plus_lid in ltq.
+    apply (le_lt_trans2 ltq).
+    rewrite <- (mult_rid x) at 1.
+    apply le_lmult_pos; [>apply x_pos|].
+    apply int_pre_lt_le.
+    applys_eq y_pos.
+    unfold int_pre.
+    apply plus_rinv.
 Qed.

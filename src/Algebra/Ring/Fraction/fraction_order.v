@@ -6,6 +6,7 @@ Require Export order_mult.
 Require Export fraction_base.
 Require Import fraction_plus.
 Require Import fraction_mult.
+Require Import nat_abstract.
 
 Section FractionOrder.
 
@@ -31,7 +32,8 @@ Context (U : Type) `{
     @Transitive U le,
     @OrderLplus U UP UL,
     @OrderMult U UZ UM UL,
-    @OrderMultLcancel U UZ UM UL
+    @OrderMultLcancel U UZ UM UL,
+    @Archimedean U UP UZ UL
 }.
 
 Local Infix "~" := (eq_equal (frac_equiv U)).
@@ -44,7 +46,14 @@ Existing Instance frac_plus_comm.
 Existing Instance frac_plus_lid.
 Existing Instance frac_plus_linv.
 Existing Instance frac_mult.
+Existing Instance frac_one.
 Existing Instance frac_div.
+Existing Instance frac_ldist.
+Existing Instance frac_mult_assoc.
+Existing Instance frac_mult_comm.
+Existing Instance frac_mult_lid.
+Existing Instance frac_mult_linv.
+Existing Instance frac_not_trivial.
 
 Theorem frac_pos_ex : ∀ (x : frac U), ∃ a b,
         0 < [b|] ∧ x = to_equiv_type (frac_equiv U) (a, b).
@@ -185,7 +194,7 @@ Qed.
 
 Local Program Instance frac_le_antisym : Antisymmetric le.
 Next Obligation.
-    revert H15 H16.
+    revert H16 H17.
     pose proof (frac_pos_ex x) as [a1 [a2 [a2_pos a_eq]]].
     pose proof (frac_pos_ex y) as [b1 [b2 [b2_pos b_eq]]].
     subst x y.
@@ -196,7 +205,7 @@ Qed.
 
 Local Program Instance frac_le_trans : Transitive le.
 Next Obligation.
-    revert H15 H16.
+    revert H16 H17.
     pose proof (frac_pos_ex x) as [a1 [a2 [a2_pos a_eq]]].
     pose proof (frac_pos_ex y) as [b1 [b2 [b2_pos b_eq]]].
     pose proof (frac_pos_ex z) as [c1 [c2 [c2_pos c_eq]]].
@@ -219,7 +228,7 @@ Qed.
 
 Local Program Instance frac_le_lplus : OrderLplus (frac U).
 Next Obligation.
-    revert H15.
+    revert H16.
     pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
     pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
     pose proof (frac_pos_ex c) as [c1 [c2 [c2_pos c_eq]]].
@@ -244,7 +253,7 @@ Qed.
 
 Local Program Instance frac_le_mult : OrderMult (frac U).
 Next Obligation.
-    revert H15 H16.
+    revert H16 H17.
     do 3 rewrite frac_pos_zero.
     equiv_get_value a b.
     destruct a as [a1 a2], b as [b1 b2].
@@ -282,5 +291,66 @@ Theorem to_frac_lt : ∀ a b, to_frac U a < to_frac U b ↔ a < b.
         +   intro contr.
             apply to_frac_eq in contr; contradiction.
 Qed.
+
+(* begin hide *)
+Theorem frac_archimedean : ∀ x : frac U, ∃ n, x < nat_to_abstract n.
+    intros x.
+    classic_case (0 < x) as [x_pos|x_neg].
+    -   pose proof (frac_pos_ex x) as [a [b [b_pos x_eq]]].
+        destruct x_pos as [x_pos x_neq].
+        rewrite (frac_pos_zero x) in x_pos.
+        subst x.
+        unfold frac_pos in x_pos; equiv_simpl in x_pos.
+        unfold frac_pos_base in x_pos; cbn in x_pos.
+        rewrite <- (mult_lanni [b|]) in x_pos at 1.
+        apply le_mult_rcancel_pos in x_pos; [>|exact b_pos].
+        unfold zero in x_neq; cbn in x_neq.
+        unfold to_frac in x_neq; equiv_simpl in x_neq.
+        unfold frac_eq in x_neq; cbn in x_neq.
+        rewrite mult_lanni, mult_rid in x_neq.
+        pose proof (archimedean a [b|] (make_and x_pos x_neq) b_pos)
+            as [n n_ltq].
+        exists n.
+        apply (lt_mult_rcancel_pos (to_frac U [b|])).
+        1: {
+            unfold zero; cbn.
+            rewrite to_frac_lt.
+            exact b_pos.
+        }
+        assert (to_equiv_type (frac_equiv U) (a, b) * to_frac U [b|] =
+            to_frac U a) as eq.
+        {
+            unfold to_frac, mult at 1; equiv_simpl.
+            unfold frac_eq; cbn.
+            do 2 rewrite mult_rid.
+            reflexivity.
+        }
+        rewrite eq; clear eq.
+        assert (nat_to_abstract n * to_frac U [b|] = to_frac U (n × [b|]))as eq.
+        {
+            clear n_ltq.
+            nat_induction n.
+            -   rewrite nat_to_abstract_zero.
+                unfold zero at 3; cbn.
+                rewrite mult_lanni.
+                reflexivity.
+            -   cbn.
+                rewrite rdist.
+                rewrite mult_lid.
+                rewrite to_frac_plus.
+                apply lplus.
+                exact IHn.
+        }
+        rewrite eq; clear eq.
+        rewrite to_frac_lt.
+        exact n_ltq.
+    -   exists 1.
+        rewrite nlt_le in x_neg.
+        apply (le_lt_trans x_neg).
+        rewrite nat_to_abstract_one.
+        exact one_pos.
+Qed.
+
+Definition frac_arch := field_impl_arch1 frac_archimedean.
 
 End FractionOrder.

@@ -37,11 +37,12 @@ Definition rat_le_antisym := frac_le_antisym int.
 Definition rat_le_trans := frac_le_trans int.
 Definition rat_le_lplus := frac_le_lplus int.
 Definition rat_le_mult := frac_le_mult int.
+Definition rat_arch := frac_arch int.
 Global Existing Instances rat_not_trivial rat_plus rat_plus_comm rat_plus_assoc
     rat_zero rat_plus_lid rat_neg rat_plus_linv rat_mult rat_mult_comm
     rat_mult_assoc rat_ldist rat_one rat_mult_lid rat_div rat_mult_linv
     rat_order rat_le_connex rat_le_antisym rat_le_trans rat_le_lplus
-    rat_le_mult.
+    rat_le_mult rat_arch.
 
 Theorem int_to_rat_eq : ∀ a b, int_to_rat a = int_to_rat b → a = b.
     apply to_frac_eq.
@@ -119,59 +120,3 @@ Theorem nat_to_abstract_rat : ∀ a, nat_to_abstract a = nat_to_rat a.
         rewrite nat_to_rat_plus.
         reflexivity.
 Qed.
-
-(* begin hide *)
-Theorem rat_archimedean : ∀ x : rat, ∃ n, x < nat_to_abstract n.
-    intros x.
-    classic_case (0 < x) as [x_pos|x_neg].
-    -   pose proof (frac_pos_ex int x) as [a [b [b_pos x_eq]]].
-        destruct x_pos as [x_pos x_neq].
-        unfold rat_zero, rat_order in x_pos.
-        rewrite (frac_pos_zero int x) in x_pos.
-        subst x.
-        unfold zero, frac_pos in x_pos; equiv_simpl in x_pos.
-        rewrite <- (mult_lanni [b|]) in x_pos at 1.
-        apply le_mult_rcancel_pos in x_pos; [>|exact b_pos].
-        unfold zero in x_neq; cbn in x_neq.
-        unfold to_frac, rat in x_neq; equiv_simpl in x_neq.
-        unfold frac_eq in x_neq; cbn in x_neq.
-        rewrite mult_lanni, mult_rid in x_neq.
-        pose proof (nat_to_int_ex _ x_pos) as [n n_eq].
-        exists (n + 1).
-        rewrite nat_to_abstract_rat.
-        assert (a < a * [b|] + [b|]) as ltq.
-        {
-            assert (a <= a * [b|]) as leq.
-            {
-                rewrite <- (mult_rid a) at 1.
-                apply le_lmult_pos; [>exact x_pos|].
-                rewrite <- (plus_rinv 1) in b_pos at 1.
-                apply int_pre_lt_le in b_pos.
-                exact b_pos.
-            }
-            apply (le_lt_trans leq).
-            rewrite <- (plus_rid (a * _)) at 1.
-            apply lt_lplus.
-            exact b_pos.
-        }
-        apply frac_lt; cbn; [>exact b_pos|exact one_pos|].
-        rewrite mult_rid.
-        rewrite nat_to_int_plus.
-        rewrite rdist.
-        change (nat_to_int 1) with (one (U := int)).
-        rewrite mult_lid.
-        rewrite n_eq.
-        apply ltq.
-    -   exists 1.
-        rewrite nlt_le in x_neg.
-        rewrite nat_to_abstract_rat.
-        change (nat_to_rat 1) with 1.
-        apply (le_lt_trans x_neg).
-        exact one_pos.
-Qed.
-
-Definition rat_arch := field_impl_arch1 rat_archimedean.
-(* end hide *)
-(* begin show *)
-Global Existing Instance rat_arch.
-(* end show *)
