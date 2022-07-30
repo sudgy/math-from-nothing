@@ -123,6 +123,7 @@ Definition ideal_equiv := make_equiv _ ideal_eq_reflexive_class
     ideal_eq_symmetric_class ideal_eq_transitive_class.
 
 Definition quotient_ring := equiv_type ideal_equiv.
+Definition to_qring a := to_equiv_type ideal_equiv a.
 
 (* begin show *)
 Local Infix "~" := (eq_equal ideal_equiv).
@@ -260,6 +261,35 @@ Next Obligation.
     equiv_get_value a.
     unfold one, mult; equiv_simpl.
     rewrite mult_rid.
+    reflexivity.
+Qed.
+
+Theorem to_qring_plus : ∀ a b, to_qring (a + b) = to_qring a + to_qring b.
+Proof.
+    intros a b.
+    unfold plus at 2, to_qring; equiv_simpl.
+    apply ideal_eq_reflexive.
+Qed.
+
+Theorem to_qring_zero : to_qring 0 = 0.
+    reflexivity.
+Qed.
+
+Theorem to_qring_neg : ∀ a, to_qring (-a) = -to_qring a.
+Proof.
+    intros a.
+    unfold neg at 2, to_qring; equiv_simpl.
+    apply ideal_eq_reflexive.
+Qed.
+
+Theorem to_qring_mult : ∀ a b, to_qring (a * b) = to_qring a * to_qring b.
+Proof.
+    intros a b.
+    unfold mult at 2, to_qring; equiv_simpl.
+    apply ideal_eq_reflexive.
+Qed.
+
+Theorem to_qring_one : to_qring 1 = 1.
     reflexivity.
 Qed.
 
