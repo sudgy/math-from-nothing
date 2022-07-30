@@ -12,6 +12,7 @@ Require Import order_self_abs.
 Require Import order_minmax.
 Require Import set.
 Require Import mult_pow.
+Require Import nat_abstract.
 
 Section Quotient.
 
@@ -40,6 +41,45 @@ Let PG := polynomial_grade real_cring.
 Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
     PSML PSMR PSMC PML PMR PG.
 
+Theorem top_of_cut_ex_wlog : ∀ (cut : real → Prop) b,
+    cut 0 → ¬cut b → (∀ l u, cut u → l <= u → cut l) →
+    ∀ δ, 0 < δ → ∃ x, cut x ∧ ¬cut (x + δ).
+Proof.
+    intros cut b z_in b_nin cut_lt δ δ_pos.
+    pose (S n := ¬cut (n × δ)).
+    assert (∃ n, S n) as S_ex.
+    {
+        assert (0 < b) as b_pos.
+        {
+            classic_contradiction b_neg.
+            rewrite nlt_le in b_neg.
+            pose proof (cut_lt _ _ z_in b_neg).
+            contradiction.
+        }
+        pose proof (archimedean _ _ b_pos δ_pos) as [n n_gt].
+        exists n.
+        intros contr.
+        pose proof (cut_lt _ _ contr (land n_gt)).
+        contradiction.
+    }
+    pose proof (well_ordered _ S_ex) as [n [Sn n_least]].
+    nat_destruct n.
+    {
+        unfold S in Sn.
+        unfold zero in Sn; cbn in Sn.
+        contradiction.
+    }
+    exists (n × δ).
+    split.
+    -   classic_contradiction contr.
+        specialize (n_least n contr).
+        rewrite <- nlt_le in n_least.
+        apply n_least.
+        apply nat_lt_suc.
+    -   rewrite plus_comm.
+        exact Sn.
+Qed.
+
 Variable cut : real → Prop.
 Hypothesis cut_in : ∃ a, cut a.
 Hypothesis cut_out : ∃ a, ¬cut a.
@@ -49,6 +89,38 @@ Definition cut_gt := cut_gt cut cut_lt.
 Definition cut_inout := cut_inout cut cut_lt.
 Let top_of_cut δ x := cut x ∧ ¬cut (x + δ).
 Definition top_of_cut_in := top_of_cut_in cut cut_lt.
+
+Theorem top_of_cut_ex : ∀ δ, 0 < δ → ∃ x, top_of_cut δ x.
+    classic_case (cut 0) as [z_in|z_nin].
+    -   destruct cut_out as [b b_nin].
+        apply (top_of_cut_ex_wlog _ b); try assumption.
+    -   pose (cut' x := ¬cut (-x)).
+        destruct cut_in as [b b_in].
+        pose proof (top_of_cut_ex_wlog cut' (-b)) as wlog.
+        prove_parts wlog.
+        +   unfold cut'.
+            rewrite neg_zero.
+            exact z_nin.
+        +   unfold cut'.
+            rewrite neg_neg, not_not.
+            exact b_in.
+        +   intros l u u_in lu.
+            unfold cut' in *.
+            intros l_in.
+            apply le_neg in lu.
+            pose proof (cut_lt _ _ l_in lu).
+            contradiction.
+        +   intros δ δ_pos.
+            specialize (wlog δ δ_pos) as [x [x_in x_nin]].
+            exists (-(x + δ)).
+            split.
+            *   unfold cut' in x_nin.
+                rewrite not_not in x_nin.
+                exact x_nin.
+            *   unfold cut' in x_in.
+                rewrite neg_plus, plus_rlinv.
+                exact x_in.
+Qed.
 
 Notation "| a |" := (abs a) (at level 30).
 
@@ -192,7 +264,7 @@ Definition zorn_real_mult_rid := quotient_ring_mult_rid zorn_real_ideal.
 Existing Instances zorn_real_plus zorn_real_plus_assoc zorn_real_plus_comm
     zorn_real_zero zorn_real_plus_lid zorn_real_neg zorn_real_plus_linv
     zorn_real_mult zorn_real_ldist zorn_real_rdist zorn_real_mult_assoc
-    zorn_real_one zorn_real_mult_lid zorn_real_mult_rid.
+    zorn_real_mult_comm zorn_real_one zorn_real_mult_lid zorn_real_mult_rid.
 
 Lemma zorn_real_polynomial_nz : ∀ f, ¬zorn_real_ideal_set f →
     ∃ ε δ, 0 < ε ∧ 0 < δ ∧
@@ -653,5 +725,137 @@ Next Obligation.
         all: assumption.
 Qed.
 
+Local Program Instance zorn_real_quotient_not_trivial
+    : NotTrivial zorn_real_quotient :=
+{
+    not_trivial_a := 0;
+    not_trivial_b := 1;
+}.
+Next Obligation.
+    unfold zero, one; cbn.
+    intros contr.
+    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
+    apply stupid in contr; clear stupid.
+    apply ideal_eq_symmetric in contr.
+    rewrite neg_zero, plus_rid in contr.
+    specialize (contr 1 one_pos) as [δ [δ_pos contr]].
+    pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
+    specialize (contr x x_in).
+    rewrite polynomial_eval_xn in contr.
+    rewrite pow_0_nat in contr.
+    rewrite abs_one in contr.
+    destruct contr; contradiction.
+Qed.
+
+Lemma real_zorn_quotient_arch1 : ∀ x y : zorn_real_quotient, 0 < x → 0 < y →
+    ∃ n, x <= n × y.
+Proof.
+    intros f g f_pos g_pos.
+    destruct f_pos as [f_pos f_nz].
+    destruct g_pos as [g_pos g_nz].
+    rewrite neq_sym in f_nz, g_nz.
+    equiv_get_value f g.
+    revert f_pos f_nz g_pos g_nz.
+    unfold zero, le; equiv_simpl.
+    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
+    do 2 rewrite stupid.
+    intros f_pos f_nz g_pos g_nz.
+    destruct f_pos as [f_pos|f_z]; [>|contradiction].
+    destruct g_pos as [g_pos|g_z]; [>|contradiction].
+    cbn in f_nz, g_nz.
+    rewrite neg_zero, plus_rid in f_pos, f_nz, g_pos, g_nz.
+    pose proof (zorn_real_polynomial_nz g g_nz)
+        as [ε [δ1 [ε_pos [δ1_pos g_gt]]]].
+    pose proof (polynomial_continuous cut cut_in cut_out cut_lt f 1 one_pos)
+        as [δ2 [δ2_pos f_cont]].
+    destruct g_pos as [δ3 [δ3_pos g_pos]].
+    destruct f_pos as [δ4 [δ4_pos f_pos]].
+    pose (δ := min (min δ1 δ2) (min δ3 δ4)).
+    assert (0 < δ) as δ_pos.
+    {
+        unfold δ, min; repeat case_if; assumption.
+    }
+    pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
+    pose proof (archimedean (polynomial_eval f x + 1) ε) as n_ex.
+    assert (δ <= δ1) as δ_le1 by (apply (trans (lmin _ _)); apply lmin).
+    assert (δ <= δ2) as δ_le2 by (apply (trans (lmin _ _)); apply rmin).
+    assert (δ <= δ3) as δ_le3 by (apply (trans (rmin _ _)); apply lmin).
+    assert (δ <= δ4) as δ_le4 by (apply (trans (rmin _ _)); apply rmin).
+    prove_parts n_ex.
+    {
+        rewrite <- (plus_lid 0).
+        apply lt_lrplus; [>|exact one_pos].
+        apply f_pos.
+        exact (top_of_cut_in _ _ _ δ_le4 x_in).
+    }
+    1: exact ε_pos.
+    destruct n_ex as [n n_ltq].
+    exists n.
+    assert (n × to_equiv_type (ideal_equiv zorn_real_ideal) g =
+        to_equiv_type (ideal_equiv zorn_real_ideal) (n × g)) as n_eq.
+    {
+        clear.
+        nat_induction n.
+        -   unfold zero; cbn.
+            reflexivity.
+        -   cbn.
+            rewrite IHn.
+            unfold plus at 1; equiv_simpl.
+            reflexivity.
+    }
+    rewrite n_eq; clear n_eq.
+    equiv_simpl.
+    left.
+    exists δ.
+    split; [>exact δ_pos|].
+    intros y y_in.
+    specialize (f_cont y x (top_of_cut_in _ _ _ δ_le2 y_in)
+                           (top_of_cut_in _ _ _ δ_le2 x_in)).
+    apply (le_lt_trans (abs_le_pos _)) in f_cont.
+    rewrite lt_plus_llmove in n_ltq.
+    apply (trans f_cont) in n_ltq.
+    rewrite plus_comm in n_ltq.
+    apply lt_plus_lcancel in n_ltq.
+    specialize (g_gt y (top_of_cut_in _ _ _ δ_le1 y_in)).
+    specialize (g_pos y (top_of_cut_in _ _ _ δ_le3 y_in)).
+    rewrite abs_pos_eq in g_gt by apply g_pos.
+    rewrite <- nat_to_abstract_mult_abstract in n_ltq.
+    destruct g_gt as [g_ge g_neq]; clear g_neq.
+    apply (le_lmult_pos (nat_to_abstract n)) in g_ge.
+    2: {
+        (* TODO: Make this a new theorem *)
+        nat_destruct n.
+        -   rewrite nat_to_abstract_zero.
+            apply refl.
+        -   apply nat_to_abstract_pos.
+    }
+    apply (lt_le_trans2 g_ge) in n_ltq.
+    rewrite polynomial_eval_plus, polynomial_eval_neg.
+    rewrite lt_plus_0_anb_b_a.
+    applys_eq n_ltq.
+    rewrite <- nat_to_abstract_mult_abstract.
+    rewrite polynomial_eval_mult.
+    apply rmult.
+    clear.
+    nat_induction n.
+    -   do 2 rewrite nat_to_abstract_zero.
+        apply polynomial_eval_zero.
+    -   cbn.
+        rewrite polynomial_eval_plus.
+        rewrite polynomial_eval_xn.
+        rewrite pow_0_nat.
+        rewrite IHn.
+        reflexivity.
+Qed.
+
+Local Program Instance zorn_real_quotient_arch : Archimedean zorn_real_quotient.
+Next Obligation.
+    pose proof (real_zorn_quotient_arch1 x y H H0) as [n n_ge].
+    exists (nat_suc n).
+    cbn.
+    apply (lt_rplus (n × y)) in H0.
+    rewrite plus_lid in H0.
+    exact (le_lt_trans n_ge H0).
+Qed.
 
 End Quotient.
