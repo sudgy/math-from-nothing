@@ -195,4 +195,8 @@ Theorem to_frac_mult : ∀ a b, to_frac U (a * b) = to_frac U a * to_frac U b.
     reflexivity.
 Qed.
 
+Theorem to_frac_one : to_frac U 1 = 1.
+    reflexivity.
+Qed.
+
 End FractionMult.

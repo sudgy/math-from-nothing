@@ -157,4 +157,8 @@ Theorem to_frac_neg : ∀ a, to_frac U (-a) = -to_frac U a.
     reflexivity.
 Qed.
 
+Theorem to_frac_zero : to_frac U 0 = 0.
+    reflexivity.
+Qed.
+
 End FractionPlus.
