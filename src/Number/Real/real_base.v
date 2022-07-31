@@ -1,6 +1,8 @@
 Require Import init.
 
-Require Import dedekind_real.
+(* Comment out different lines to use a different construction *)
+(*Require Import dedekind_real.*)
+Require Import zorn_real.
 
 Require Export order_plus.
 Require Export order_mult.
