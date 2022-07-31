@@ -3,10 +3,10 @@ Require Import init.
 Require Import rat.
 Require Import set.
 
-Require Export real_base.
-Require Import real_order.
-Require Import real_plus.
-Require Import real_mult1.
+Require Export dedekind_real_base.
+Require Import dedekind_real_order.
+Require Import dedekind_real_plus.
+Require Import dedekind_real_mult1.
 
 (** This file contains the proofs up to showing that the real numbers form a
 ring.

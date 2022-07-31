@@ -3,11 +3,11 @@ Require Import init.
 Require Import rat.
 Require Import set.
 
-Require Export real_base.
-Require Import real_order.
-Require Import real_plus.
-Require Import real_mult1.
-Require Import real_mult2.
+Require Export dedekind_real_base.
+Require Import dedekind_real_order.
+Require Import dedekind_real_plus.
+Require Import dedekind_real_mult1.
+Require Import dedekind_real_mult2.
 
 (** This file contains the definition of division, and the compatability
 theorems for multiplication between the reals and other number systems.

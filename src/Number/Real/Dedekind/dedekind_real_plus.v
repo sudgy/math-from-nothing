@@ -4,8 +4,8 @@ Require Import rat.
 Require Import set.
 Require Import order_minmax.
 
-Require Export real_base.
-Require Import real_order.
+Require Export dedekind_real_base.
+Require Import dedekind_real_order.
 
 (* begin hide *)
 Open Scope real_scope.

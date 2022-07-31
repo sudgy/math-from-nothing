@@ -3,7 +3,7 @@ Require Import init.
 Require Import rat.
 Require Import set.
 
-Require Export real_base.
+Require Export dedekind_real_base.
 
 Unset Keyed Unification.
 

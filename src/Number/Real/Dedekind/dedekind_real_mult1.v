@@ -3,9 +3,9 @@ Require Import init.
 Require Import rat.
 Require Import set.
 
-Require Export real_base.
-Require Import real_order.
-Require Import real_plus.
+Require Export dedekind_real_base.
+Require Import dedekind_real_order.
+Require Import dedekind_real_plus.
 
 (** This file contains the definition of multiplication and several theorems
 used to make the ridiculous number of cases involved more manageable

@@ -121,14 +121,13 @@
 
 ./src/Number/Rat/rat.v
 
-./src/Number/Real/real_base.v
-./src/Number/Real/real_order.v
-./src/Number/Real/real_plus.v
-./src/Number/Real/real_mult1.v
-./src/Number/Real/real_mult2.v
-./src/Number/Real/real_mult3.v
-./src/Number/Real/real_extra.v
-./src/Number/Real/real.v
+./src/Number/Real/Dedekind/dedekind_real_base.v
+./src/Number/Real/Dedekind/dedekind_real_order.v
+./src/Number/Real/Dedekind/dedekind_real_plus.v
+./src/Number/Real/Dedekind/dedekind_real_mult1.v
+./src/Number/Real/Dedekind/dedekind_real_mult2.v
+./src/Number/Real/Dedekind/dedekind_real_mult3.v
+./src/Number/Real/Dedekind/dedekind_real.v
 
 ./src/Number/Real/Zorn/zorn_real_base.v
 ./src/Number/Real/Zorn/zorn_real_arch.v
@@ -136,6 +135,8 @@
 ./src/Number/Real/Zorn/zorn_real_analysis.v
 ./src/Number/Real/Zorn/zorn_real_quotient.v
 ./src/Number/Real/Zorn/zorn_real_complete.v
+
+./src/Number/Real/real.v
 
 ./src/Number/Complex/complex_base.v
 ./src/Number/Complex/complex_plus.v
