@@ -137,6 +137,7 @@
 ./src/Number/Real/Zorn/zorn_real_complete.v
 ./src/Number/Real/Zorn/zorn_real.v
 
+./src/Number/Real/real_base.v
 ./src/Number/Real/real.v
 
 ./src/Number/Complex/complex_base.v

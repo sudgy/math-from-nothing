@@ -26,6 +26,7 @@ Theorem seq_lim_pos : ∀ xf x, (∀ n, 0 <= xf n) → seq_lim xf x → 0 <= x.
     cbn in x_lim.
     rewrite abs_minus in x_lim.
     apply (le_lt_trans (abs_le_pos _)) in x_lim.
+    unfold real_neg in x_lim.
     rewrite <- (plus_lid (-x)) in x_lim at 2.
     apply lt_plus_rcancel in x_lim.
     destruct (le_lt_trans (xf_pos N) x_lim); contradiction.

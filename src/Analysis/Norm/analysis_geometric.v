@@ -123,7 +123,8 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
         cbn in L_lim.
         rewrite abs_minus in L_lim.
         unfold abs in L_lim at 1; cbn in L_lim; case_if.
-        -   rewrite <- (plus_lid (-L)) in L_lim at 2.
+        -   unfold real_neg in L_lim.
+            rewrite <- (plus_lid (-L)) in L_lim at 2.
             apply lt_plus_rcancel in L_lim.
             rewrite <- nle_lt in L_lim.
             exfalso; apply L_lim.

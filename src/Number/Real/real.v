@@ -1,9 +1,6 @@
 Require Import init.
 
-Require Export dedekind_real.
-
-Require Export order_plus.
-Require Export order_mult.
+Require Export real_base.
 
 Require Export nat_abstract.
 Require Export int_abstract.

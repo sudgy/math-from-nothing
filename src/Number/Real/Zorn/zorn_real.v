@@ -26,7 +26,7 @@ Export zorn_real_zorn (real_mult_lid).
 Export zorn_real_zorn (real_mult_linv).
 Export zorn_real_zorn (real_not_trivial).
 
-Export zorn_real_zorn(real_order).
+Export zorn_real_zorn (real_order).
 Export zorn_real_zorn (real_le_connex).
 Export zorn_real_zorn (real_le_antisym).
 Export zorn_real_zorn (real_le_trans).
