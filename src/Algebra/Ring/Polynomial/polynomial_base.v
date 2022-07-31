@@ -458,9 +458,10 @@ Definition polynomial_rng := make_rng polynomial polynomial_plus polynomial_zero
     polynomial_plus_lid
     polynomial_plus_linv
     polynomial_mult_assoc
-    polynomial_ldist.
+    polynomial_ldist
+    ldist_rdist.
 Definition polynomial_ring := make_ring polynomial_rng polynomial_one
-    polynomial_mult_lid.
+    polynomial_mult_lid mult_lid_rid.
 Definition polynomial_cring := make_cring polynomial_ring polynomial_mult_comm.
 Definition polynomial_algebra := make_algebra F polynomial_module
     polynomial_mult polynomial_ldist ldist_rdist polynomial_mult_assoc

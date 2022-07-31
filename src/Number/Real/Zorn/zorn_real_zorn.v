@@ -960,8 +960,10 @@ Definition real_cring := make_cring
             real_plus_linv
             real_mult_assoc
             real_ldist
+            ldist_rdist
         )
         real_one
         real_mult_lid
+        mult_lid_rid
     )
     real_mult_comm.

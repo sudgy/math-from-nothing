@@ -205,10 +205,11 @@ Context U `{
 Definition scalar_cring := make_cring
     (make_ring
         (make_rng
-            U UP UZ UN UM UPA UPC UPZ UPN UMA UMD
+            U UP UZ UN UM UPA UPC UPZ UPN UMA UMD ldist_rdist
         )
         UO
         UMO
+        mult_lid_rid
     )
     UMC.
 
