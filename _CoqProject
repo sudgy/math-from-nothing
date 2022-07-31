@@ -135,6 +135,7 @@
 ./src/Number/Real/Zorn/zorn_real_zorn.v
 ./src/Number/Real/Zorn/zorn_real_analysis.v
 ./src/Number/Real/Zorn/zorn_real_quotient.v
+./src/Number/Real/Zorn/zorn_real_complete.v
 
 ./src/Number/Complex/complex_base.v
 ./src/Number/Complex/complex_plus.v
