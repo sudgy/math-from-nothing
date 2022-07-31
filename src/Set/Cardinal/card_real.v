@@ -20,9 +20,7 @@ Existing Instance abs_metric.
 Open Scope card_scope.
 
 Lemma real_size_leq1 : |real| <= 2 ^ |nat|.
-    rewrite <- rat_size.
-    rewrite <- power_set_size.
-    apply card_sub_le.
+    apply arch_ordered_size.
 Qed.
 
 Lemma real_size_leq2 : 2 ^ |nat| <= |real|.
