@@ -135,6 +135,7 @@
 ./src/Number/Real/Zorn/zorn_real_analysis.v
 ./src/Number/Real/Zorn/zorn_real_quotient.v
 ./src/Number/Real/Zorn/zorn_real_complete.v
+./src/Number/Real/Zorn/zorn_real.v
 
 ./src/Number/Real/real.v
 

@@ -14,7 +14,7 @@ Require Import set.
 Require Import polynomial_base.
 Require Import ring_ideal.
 
-Global Program Instance real_complete : SupremumComplete le (U := real).
+Global Program Instance real_sup_complete : SupremumComplete le (U := real).
 Next Obligation.
     rename H into a.
     rename H1 into Sa.
