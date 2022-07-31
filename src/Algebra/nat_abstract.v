@@ -64,7 +64,7 @@ Context {U} `{
     @MultRinv U z m1 e d
 }.
 (* end hide *)
-Theorem nat_to_abstract_eq : ∀ a, nat_to_abstract a = a.
+Theorem nat_to_abstract_eq_nat : ∀ a, nat_to_abstract a = a.
     nat_induction a.
     -   reflexivity.
     -   cbn.
@@ -139,6 +139,93 @@ Theorem nat_to_abstract_pos : ∀ a, 0 < nat_to_abstract (nat_suc a).
         rewrite <- (plus_lid 0).
         apply lt_lrplus; try exact IHa.
         exact one_pos.
+Qed.
+
+Theorem nat_to_abstract_pos2 : ∀ a, 0 <= nat_to_abstract a.
+    nat_induction a.
+    -   rewrite nat_to_abstract_zero.
+        apply refl.
+    -   apply (trans IHa).
+        cbn.
+        rewrite <- le_plus_0_a_b_ab.
+        apply one_pos.
+Qed.
+
+Theorem nat_to_abstract_eq : ∀ a b, nat_to_abstract a = nat_to_abstract b →
+    a = b.
+Proof.
+    nat_induction a.
+    -   intros b b_eq.
+        rewrite nat_to_abstract_zero in b_eq.
+        nat_destruct b.
+        +   reflexivity.
+        +   apply nat_to_abstract_pos in b_eq.
+            contradiction.
+    -   intros b eq.
+        nat_destruct b.
+        +   rewrite nat_to_abstract_zero in eq.
+            symmetry in eq.
+            apply nat_to_abstract_pos in eq.
+            contradiction.
+        +   apply f_equal.
+            apply IHa.
+            cbn in eq.
+            apply plus_lcancel in eq.
+            exact eq.
+Qed.
+
+Theorem nat_to_abstract_le : ∀ a b,
+    nat_to_abstract a <= nat_to_abstract b ↔ a <= b.
+Proof.
+    intros a b.
+    split.
+    -   revert b.
+        nat_induction a.
+        +   intros b b_ge.
+            apply nat_le_zero.
+        +   nat_destruct b.
+            *   intros contr.
+                rewrite nat_to_abstract_zero in contr.
+                pose proof (nat_to_abstract_pos a) as ltq.
+                destruct (lt_le_trans ltq contr); contradiction.
+            *   intros leq.
+                rewrite nat_sucs_le.
+                apply IHa.
+                cbn in leq.
+                apply le_plus_lcancel in leq.
+                exact leq.
+    -   revert b.
+        nat_induction a.
+        +   intros b b_ge.
+            rewrite nat_to_abstract_zero.
+            apply nat_to_abstract_pos2.
+        +   intros b b_ge.
+            nat_destruct b.
+            *   pose proof (nat_zero_lt_suc a) as a_pos.
+                destruct (lt_le_trans a_pos b_ge); contradiction.
+            *   cbn.
+                apply le_lplus.
+                apply IHa.
+                rewrite nat_sucs_le in b_ge.
+                exact b_ge.
+Qed.
+
+Theorem nat_to_abstract_lt : ∀ a b,
+    nat_to_abstract a < nat_to_abstract b ↔ a < b.
+Proof.
+    intros a b.
+    unfold lt, strict.
+    rewrite nat_to_abstract_le.
+    assert ((nat_to_abstract a ≠ nat_to_abstract b) ↔ a ≠ b) as eq.
+    {
+        split; intros neq eq.
+        -   subst.
+            contradiction.
+        -   apply nat_to_abstract_eq in eq.
+            contradiction.
+    }
+    rewrite eq.
+    reflexivity.
 Qed.
 
 Theorem abstract_mult_rneg : ∀ a b, -(a × b) = a × (-b).
