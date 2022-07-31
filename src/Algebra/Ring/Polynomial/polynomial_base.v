@@ -470,3 +470,25 @@ Definition polynomial_algebra := make_algebra F polynomial_module
 End Polynomial.
 
 Arguments polynomial_eval {F}.
+Arguments polynomial : simpl never.
+Arguments polynomial_plus : simpl never.
+Arguments polynomial_zero : simpl never.
+Arguments polynomial_neg : simpl never.
+Arguments polynomial_plus_comm : simpl never.
+Arguments polynomial_plus_assoc : simpl never.
+Arguments polynomial_plus_lid : simpl never.
+Arguments polynomial_plus_linv : simpl never.
+Arguments polynomial_scalar : simpl never.
+Arguments polynomial_scalar_id : simpl never.
+Arguments polynomial_scalar_ldist : simpl never.
+Arguments polynomial_scalar_rdist : simpl never.
+Arguments polynomial_scalar_comp : simpl never.
+Arguments polynomial_grade : simpl never.
+Arguments polynomial_mult : simpl never.
+Arguments polynomial_ldist : simpl never.
+Arguments polynomial_mult_assoc : simpl never.
+Arguments polynomial_mult_comm : simpl never.
+Arguments polynomial_one : simpl never.
+Arguments polynomial_mult_lid : simpl never.
+Arguments polynomial_scalar_lmult : simpl never.
+Arguments polynomial_scalar_rmult : simpl never.

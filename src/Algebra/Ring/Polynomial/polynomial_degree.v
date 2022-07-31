@@ -103,7 +103,7 @@ Qed.
 Theorem polynomial_coefficient_one_zero : co 1 0 = 1.
 Proof.
     unfold co, polynomial_coefficient.
-    unfold one at 1; cbn.
+    unfold one, PO, polynomial_one at 1; cbn.
     unfold single_to_grade_sum_base; cbn.
     destruct (strong_excluded_middle (0 = 0)) as [eq|neq]; [>|contradiction].
     destruct eq; cbn.
@@ -135,7 +135,7 @@ Proof.
     unfold co, polynomial_coefficient.
     unfold polynomial_xn; cbn.
     unfold single_to_grade_sum_base; cbn.
-    cbn in i.
+    unfold grade_I, PG, polynomial_grade in i; cbn in i.
     destruct (strong_excluded_middle (i + m = n + m)) as [eq1|neq1]; cbn.
     all: destruct (strong_excluded_middle (i = n)) as [eq2|neq2]; cbn.
     -   destruct eq1, eq2; cbn.
@@ -318,8 +318,8 @@ Proof.
     apply set_type_eq.
     apply functional_ext.
     intros n.
-    unfold scalar_mult; cbn.
-    unfold one; cbn.
+    unfold scalar_mult, polynomial_scalar; cbn.
+    unfold one, polynomial_one; cbn.
     unfold single_to_grade_sum_base; cbn.
     destruct (strong_excluded_middle (0 = n)) as [n_z|n_nz]; cbn.
     -   destruct n_z; cbn.
@@ -377,14 +377,14 @@ Proof.
         intros m m_gt.
         pose proof (trans fg m_gt) as m_gt2.
         apply polynomial_degree_gt in m_gt, m_gt2.
-        unfold plus; cbn.
+        unfold plus, PP, polynomial_plus; cbn.
         unfold co, polynomial_coefficient in m_gt, m_gt2.
         rewrite <- m_gt, <- m_gt2.
         rewrite plus_lid.
         reflexivity.
     -   apply polynomial_degree_geq.
         intros contr.
-        unfold plus in contr; cbn in contr.
+        unfold plus, PP, polynomial_plus in contr; cbn in contr.
         apply polynomial_degree_gt in fg.
         unfold co, polynomial_coefficient in fg.
         rewrite <- fg in contr.
@@ -501,7 +501,7 @@ Proof.
         applys_eq polynomial_degree_xn.
         apply f_equal.
         unfold polynomial_xn.
-        unfold mult; cbn.
+        unfold mult, PM, polynomial_mult; cbn.
         rewrite (free_bilinear_free _ _ _ m n).
         reflexivity.
     }

@@ -595,7 +595,6 @@ Next Obligation.
     rewrite <- neg_neg in xy.
     rewrite neg_plus, neg_neg, plus_comm in xy.
     remember (x - y) as f.
-    rewrite <- Heqf.
     clear Heqf x y.
     intros ε ε_pos.
     unfold zorn_real_q_pos in xy, yx.
@@ -800,7 +799,8 @@ Proof.
             reflexivity.
         -   cbn.
             rewrite IHn.
-            unfold plus at 1; equiv_simpl.
+            unfold plus at 1; cbn.
+            rewrite equiv_binary_self_op.
             reflexivity.
     }
     rewrite n_eq; clear n_eq.
