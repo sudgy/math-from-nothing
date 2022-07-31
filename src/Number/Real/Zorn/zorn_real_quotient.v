@@ -383,6 +383,128 @@ Definition zorn_real_q_pos (a : polynomial real_cring) :=
 Definition zorn_real_q_le (a b : polynomial real_cring) :=
     zorn_real_q_pos (b - a) ∨ I (b - a).
 
+Theorem zorn_real_q_le_to_poly : ∀ a b, a <= b ↔
+    zorn_real_q_le (to_polynomial real_cring a) (to_polynomial real_cring b).
+Proof.
+    intros a b.
+    split; intros leq.
+    -   classic_case (a = b) as [ab_eq|ab_neq].
+        +   rewrite ab_eq.
+            right.
+            rewrite plus_rinv.
+            apply ideal_zero.
+        +   left.
+            exists 1.
+            split; [>exact one_pos|].
+            intros x x_in.
+            rewrite polynomial_eval_plus, polynomial_eval_neg.
+            do 2 rewrite polynomial_eval_constant.
+            rewrite lt_plus_0_anb_b_a.
+            split; assumption.
+    -   destruct leq as [leq|eq].
+        +   destruct leq as [δ [δ_pos leq]].
+            pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
+            specialize (leq x x_in).
+            rewrite polynomial_eval_plus, polynomial_eval_neg in leq.
+            do 2 rewrite polynomial_eval_constant in leq.
+            rewrite lt_plus_0_anb_b_a in leq.
+            apply leq.
+        +   cbn in eq.
+            unfold zorn_real_ideal_set in eq.
+            classic_contradiction contr.
+            rewrite nle_lt in contr.
+            rewrite <- lt_plus_0_anb_b_a in contr.
+            specialize (eq _ contr) as [δ [δ_pos eq]].
+            pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
+            specialize (eq x x_in).
+            rewrite polynomial_eval_plus, polynomial_eval_neg in eq.
+            do 2 rewrite polynomial_eval_constant in eq.
+            rewrite abs_minus in eq.
+            apply (le_lt_trans (abs_le_pos _)) in eq.
+            destruct eq; contradiction.
+Qed.
+
+Theorem zorn_real_q_le_in : ∀ a, cut a →
+    zorn_real_q_le (to_polynomial real_cring a) (polynomial_x real_cring).
+Proof.
+    intros a a_cut.
+    classic_case (is_upper_bound le cut a) as [a_upper|a_nupper].
+    -   right.
+        intros ε ε_pos.
+        exists ε.
+        split; [>exact ε_pos|].
+        intros x [x_in x_nin].
+        rewrite polynomial_eval_plus, polynomial_eval_neg.
+        rewrite polynomial_eval_x, polynomial_eval_constant.
+        specialize (a_upper x x_in).
+        pose proof (cut_inout _ _ a_cut x_nin) as ltq.
+        clear - a_upper ltq.
+        rewrite <- le_plus_0_anb_b_a in a_upper.
+        rewrite abs_minus.
+        rewrite (abs_pos_eq _ a_upper).
+        rewrite lt_plus_rlmove in ltq.
+        rewrite plus_comm.
+        exact ltq.
+    -   left.
+        unfold is_upper_bound in a_nupper.
+        rewrite not_all in a_nupper.
+        destruct a_nupper as [b a_nupper].
+        rewrite not_impl in a_nupper.
+        rewrite nle_lt in a_nupper.
+        destruct a_nupper as [b_in ab].
+        rewrite <- lt_plus_0_anb_b_a in ab.
+        exists (b - a).
+        split; [>exact ab|].
+        intros x [x_in x_nin].
+        rewrite polynomial_eval_plus, polynomial_eval_neg.
+        rewrite polynomial_eval_x, polynomial_eval_constant.
+        pose proof (cut_inout _ _ b_in x_nin) as ltq.
+        rewrite plus_comm in ltq.
+        rewrite <- plus_assoc in ltq.
+        rewrite <- lt_plus_0_a_b_ba in ltq.
+        rewrite plus_comm.
+        exact ltq.
+Qed.
+
+Theorem zorn_real_q_le_out : ∀ a, ¬cut a →
+    zorn_real_q_le (polynomial_x real_cring) (to_polynomial real_cring a).
+Proof.
+    intros b b_cut.
+
+    classic_case (∃ a, ¬cut a ∧ a < b) as [a_ex|a_nex].
+    -   destruct a_ex as [a [a_nin ab]].
+        rewrite <- lt_plus_0_anb_b_a in ab.
+        left.
+        exists (b - a).
+        split; [>exact ab|].
+        intros x [x_in x_nin].
+        rewrite polynomial_eval_plus, polynomial_eval_neg.
+        rewrite polynomial_eval_x, polynomial_eval_constant.
+        rewrite lt_plus_0_anb_b_a.
+        exact (cut_inout _ _ x_in b_cut).
+    -   rewrite not_ex in a_nex.
+        right.
+        intros ε ε_pos.
+        exists (ε/2).
+        split; [>apply half_pos; exact ε_pos|].
+        intros x [x_in x_nin].
+        rewrite polynomial_eval_plus, polynomial_eval_neg.
+        rewrite polynomial_eval_x, polynomial_eval_constant.
+        pose proof (cut_inout _ _ x_in b_cut) as ltq.
+        specialize (a_nex (x + ε/2)).
+        rewrite not_and, not_not, nlt_le in a_nex.
+        destruct a_nex as [contr|leq]; [>contradiction|].
+        rewrite <- lt_plus_0_anb_b_a in ltq.
+        rewrite (abs_pos_eq _ (land ltq)).
+        rewrite le_plus_rlmove in leq.
+        rewrite plus_comm in leq.
+        apply (le_lt_trans leq).
+        rewrite <- (plus_half ε) at 2.
+        rewrite <- lt_plus_0_a_b_ba.
+        apply half_pos.
+        exact ε_pos.
+Qed.
+
 Lemma zorn_real_q_le_trans_wlog : ∀ f g,
     zorn_real_q_pos f → I g → zorn_real_q_pos (f + g) ∨ I (f + g).
 Proof.
@@ -507,6 +629,14 @@ Qed.
 Local Instance zorn_real_order : Order zorn_real_quotient := {
     le := binary_op real_zorn_quotient_le_wd;
 }.
+
+Theorem zorn_real_quotient_le : ∀ a b, zorn_real_q_le a b ↔
+    to_qring zorn_real_ideal a <= to_qring zorn_real_ideal b.
+Proof.
+    intros a b.
+    unfold le; equiv_simpl.
+    reflexivity.
+Qed.
 
 Local Program Instance zorn_real_order_le_connex : Connex le.
 Next Obligation.
