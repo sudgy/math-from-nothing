@@ -13,9 +13,9 @@ used to make the ridiculous number of cases involved more manageable
 (* begin hide *)
 Open Scope real_scope.
 (* end hide *)
-Definition real_mult a b :=
+Definition real_mult_base a b :=
     λ x, x < 0 ∨ ∃ r s, a r ∧ b s ∧ 0 <= r ∧ 0 <= s ∧ x = r * s.
-Infix "⊗":= real_mult : real_scope.
+Infix "⊗":= real_mult_base : real_scope.
 
 Theorem real_mult_dedekind : ∀ (a b : real), 0 <= a → 0 <= b →
         dedekind_cut ([a|] ⊗ [b|]).
@@ -156,7 +156,7 @@ Theorem real_mult_dedekind : ∀ (a b : real), 0 <= a → 0 <= b →
                     exact (trans r'_eq s'_eq).
 Qed.
 
-Global Instance real_mult_class : Mult real := {
+Global Instance real_mult : Mult real := {
     mult a b :=
     match (connex 0 a), (connex 0 b) with
         | strong_or_left a_pos, strong_or_left b_pos =>
@@ -186,7 +186,7 @@ Lemma real_mult_comm_pos : ∀ a b, 0 <= a → 0 <= b → [a|] ⊗ [b|] = [b|] �
             rewrite mult_comm in eq.
             repeat split; assumption.
 Qed.
-Lemma real_mult_comm : ∀ a b, a * b = b * a.
+Lemma real_mult_comm_ : ∀ a b, a * b = b * a.
     intros a b.
     unfold mult; cbn.
     destruct (connex 0 a) as [a_pos|a_neg];
@@ -206,8 +206,8 @@ Lemma real_mult_comm : ∀ a b, a * b = b * a.
     -   apply set_type_eq; cbn.
         apply real_mult_comm_pos; apply neg_pos; assumption.
 Qed.
-Global Instance real_mult_comm_class : MultComm real := {
-    mult_comm := real_mult_comm;
+Global Instance real_mult_comm : MultComm real := {
+    mult_comm := real_mult_comm_;
 }.
 
 Lemma real_mult_lanni_pos : ∀ a, 0 <= a → [0|] ⊗ [a|] = [0|].
@@ -404,7 +404,7 @@ Lemma real_mult_rneg : ∀ a b, a * -b = -(a * b).
     apply real_mult_lneg.
 Qed.
 
-Lemma real_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
+Lemma real_le_mult_ : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     intros a b a_pos b_pos.
     unfold le; cbn.
     rewrite real_mult_pos_pos by assumption.
@@ -413,8 +413,8 @@ Lemma real_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
     exact x_lt.
 Qed.
 
-Global Instance real_le_mult_class : OrderMult real := {
-    le_mult := real_le_mult;
+Global Instance real_le_mult : OrderMult real := {
+    le_mult := real_le_mult_;
 }.
 (* begin hide *)
 Close Scope real_scope.

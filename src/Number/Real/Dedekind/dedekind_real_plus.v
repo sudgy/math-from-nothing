@@ -10,8 +10,8 @@ Require Import dedekind_real_order.
 (* begin hide *)
 Open Scope real_scope.
 (* end hide *)
-Definition real_plus a b := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
-Infix "⊕" := real_plus : real_scope.
+Definition real_plus_base a b := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
+Infix "⊕" := real_plus_base : real_scope.
 
 Theorem real_plus_dedekind : ∀ (a b : real), dedekind_cut ([a|] ⊕ [b|]).
     intros [a a_cut] [b b_cut]; cbn.
@@ -71,11 +71,11 @@ Theorem real_plus_dedekind : ∀ (a b : real), dedekind_cut ([a|] ⊕ [b|]).
             apply lt_lrplus; assumption.
 Qed.
 
-Global Instance real_plus_class : Plus real := {
+Global Instance real_plus : Plus real := {
     plus a b := [_|real_plus_dedekind a b]
 }.
 
-Lemma real_plus_comm : ∀ a b, a + b = b + a.
+Lemma real_plus_comm_ : ∀ a b, a + b = b + a.
     intros [a a_cut] [b b_cut].
     unfold plus; cbn.
     apply set_type_eq; cbn.
@@ -90,11 +90,11 @@ Lemma real_plus_comm : ∀ a b, a + b = b + a.
         rewrite plus_comm.
         repeat split; assumption.
 Qed.
-Global Instance real_plus_comm_class : PlusComm real := {
-    plus_comm := real_plus_comm
+Global Instance real_plus_comm : PlusComm real := {
+    plus_comm := real_plus_comm_
 }.
 
-Lemma real_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
+Lemma real_plus_assoc_ : ∀ a b c, a + (b + c) = (a + b) + c.
     intros [a a_cut] [b b_cut] [c c_cut].
     unfold plus; cbn.
     apply set_type_eq; cbn.
@@ -120,15 +120,15 @@ Lemma real_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
             rewrite plus_assoc.
             reflexivity.
 Qed.
-Global Instance real_plus_assoc_class : PlusAssoc real := {
-    plus_assoc := real_plus_assoc
+Global Instance real_plus_assoc : PlusAssoc real := {
+    plus_assoc := real_plus_assoc_
 }.
 
 Global Instance real_zero : Zero real := {
     zero := rat_to_real 0
 }.
 
-Lemma real_plus_lid : ∀ a, 0 + a = a.
+Lemma real_plus_lid_ : ∀ a, 0 + a = a.
     intros [a a_cut].
     unfold plus, zero; cbn.
     unfold rat_to_real_base; cbn.
@@ -150,12 +150,12 @@ Lemma real_plus_lid : ∀ a, 0 + a = a.
             rewrite plus_rlinv.
             reflexivity.
 Qed.
-Global Instance real_plus_lid_class : PlusLid real := {
-    plus_lid := real_plus_lid;
+Global Instance real_plus_lid : PlusLid real := {
+    plus_lid := real_plus_lid_;
 }.
 
-Definition real_neg a := λ p, ∃ r, 0 < r ∧ ¬(a (-p + -r)).
-Notation "⊖ a" := (real_neg a) : real_scope.
+Definition real_neg_base a := λ p, ∃ r, 0 < r ∧ ¬(a (-p + -r)).
+Notation "⊖ a" := (real_neg_base a) : real_scope.
 
 Lemma real_neg_dedekind : ∀ a : real, dedekind_cut (⊖ [a|]).
     intros [a a_cut]; cbn.
@@ -217,7 +217,7 @@ Lemma real_neg_dedekind : ∀ a : real, dedekind_cut (⊖ [a|]).
             exact r2_pos.
 Qed.
 
-Global Instance real_neg_class : Neg real := {
+Global Instance real_neg : Neg real := {
     neg a := [_|real_neg_dedekind a]
 }.
 Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
@@ -345,7 +345,7 @@ Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
                     reflexivity.
 Qed.
 
-Lemma real_plus_linv : ∀ a, -a + a = 0.
+Lemma real_plus_linv_ : ∀ a, -a + a = 0.
     intros a.
     destruct (trichotomy 0 a) as [[a_pos|a_z]|a_neg].
     -   apply real_plus_linv_pos.
@@ -453,11 +453,11 @@ Lemma real_plus_linv : ∀ a, -a + a = 0.
         apply real_plus_linv_pos.
         exact a_pos.
 Qed.
-Global Instance real_plus_linv_class : PlusLinv real := {
-    plus_linv := real_plus_linv;
+Global Instance real_plus_linv : PlusLinv real := {
+    plus_linv := real_plus_linv_;
 }.
 
-Lemma real_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
+Lemma real_le_lplus_ : ∀ a b c, a <= b → c + a <= c + b.
     intros [a a_cut] [b b_cut] [c c_cut].
     unfold le, plus; cbn.
     intros ab x [r [s [cr [as_ eq]]]].
@@ -465,8 +465,8 @@ Lemma real_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
     apply ab in as_.
     repeat split; assumption.
 Qed.
-Global Instance real_le_lplus_class : OrderLplus real := {
-    le_lplus := real_le_lplus;
+Global Instance real_le_lplus : OrderLplus real := {
+    le_lplus := real_le_lplus_;
 }.
 (* begin hide *)
 Close Scope real_scope.

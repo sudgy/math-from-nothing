@@ -75,7 +75,7 @@ Lemma real_mult_assoc3 : ∀ a b c, 0 <= a → a * (b * c) = (a * b) * c.
         apply neg_pos in b_neg.
         apply real_mult_assoc2; assumption.
 Qed.
-Lemma real_mult_assoc : ∀ a b c, a * (b * c) = (a * b) * c.
+Lemma real_mult_assoc_ : ∀ a b c, a * (b * c) = (a * b) * c.
     intros a b c.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_mult_assoc3; assumption.
@@ -86,8 +86,8 @@ Lemma real_mult_assoc : ∀ a b c, a * (b * c) = (a * b) * c.
         apply neg_pos in a_neg.
         apply real_mult_assoc3; assumption.
 Qed.
-Global Instance real_mult_assoc_class : MultAssoc real := {
-    mult_assoc := real_mult_assoc;
+Global Instance real_mult_assoc : MultAssoc real := {
+    mult_assoc := real_mult_assoc_;
 }.
 
 Lemma real_ldist1 : ∀ a b c, 0 <= a → 0 <= b → 0 <= c →
@@ -423,7 +423,7 @@ Lemma real_ldist8 : ∀ a b c, 0 <= a → a * (b + c) = a * b + a * c.
     -   apply real_ldist6; assumption.
     -   apply real_ldist7; assumption.
 Qed.
-Lemma real_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
+Lemma real_ldist_ : ∀ a b c, a * (b + c) = a * b + a * c.
     intros a b c.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_ldist8; exact a_pos.
@@ -433,8 +433,8 @@ Lemma real_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
         apply neg_pos in a_neg.
         apply real_ldist8; exact a_neg.
 Qed.
-Global Instance real_ldist_class : Ldist real := {
-    ldist := real_ldist;
+Global Instance real_ldist : Ldist real := {
+    ldist := real_ldist_;
 }.
 
 Global Instance real_one : One real := {
@@ -491,7 +491,7 @@ Lemma real_mult_lid1 : ∀ a, 0 <= a → 1 * a = a.
             *   rewrite mult_rlinv by apply y_pos.
                 reflexivity.
 Qed.
-Theorem real_mult_lid : ∀ a, 1 * a = a.
+Theorem real_mult_lid_ : ∀ a, 1 * a = a.
     intros a.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_mult_lid1.
@@ -503,8 +503,8 @@ Theorem real_mult_lid : ∀ a, 1 * a = a.
         apply real_mult_lid1.
         exact a_neg.
 Qed.
-Global Instance real_mult_lid_class : MultLid real := {
-    mult_lid := real_mult_lid;
+Global Instance real_mult_lid : MultLid real := {
+    mult_lid := real_mult_lid_;
 }.
 (* begin hide *)
 Close Scope real_scope.

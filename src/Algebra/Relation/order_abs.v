@@ -346,7 +346,7 @@ Context {U : Type} `{
     @PlusRinv U UP UZ UN,
     SM : ScalarMult real U,
     @ScalarId real U real_one SM,
-    @ScalarRdist real U real_plus_class UP SM,
+    @ScalarRdist real U real_plus UP SM,
 
     UA : AbsoluteValue U,
     @AbsDefinite U UA UZ,

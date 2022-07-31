@@ -21,8 +21,8 @@ Context {U V} `{
     USM : ScalarMult real U,
     @ScalarId real U real_one USM,
     @ScalarLdist real U UP USM,
-    @ScalarRdist real U real_plus_class UP USM,
-    @ScalarComp real U real_mult_class USM,
+    @ScalarRdist real U real_plus UP USM,
+    @ScalarComp real U real_mult USM,
 
     UA : AbsoluteValue U,
     @AbsDefinite U UA UZ,
@@ -43,7 +43,7 @@ Context {U V} `{
     VSM : ScalarMult real V,
     @ScalarId real V real_one VSM,
     @ScalarLdist real V VP VSM,
-    @ScalarRdist real V real_plus_class VP VSM,
+    @ScalarRdist real V real_plus VP VSM,
 
     VA : AbsoluteValue V,
     @AbsDefinite V VA VZ,
@@ -437,8 +437,8 @@ Context {U V W} `{
     USM : ScalarMult real U,
     @ScalarId real U real_one USM,
     @ScalarLdist real U UP USM,
-    @ScalarRdist real U real_plus_class UP USM,
-    @ScalarComp real U real_mult_class USM,
+    @ScalarRdist real U real_plus UP USM,
+    @ScalarComp real U real_mult USM,
 
     UA : AbsoluteValue U,
     @AbsDefinite U UA UZ,
@@ -459,7 +459,7 @@ Context {U V W} `{
     VSM : ScalarMult real V,
     @ScalarId real V real_one VSM,
     @ScalarLdist real V VP VSM,
-    @ScalarRdist real V real_plus_class VP VSM,
+    @ScalarRdist real V real_plus VP VSM,
 
     VA : AbsoluteValue V,
     @AbsDefinite V VA VZ,
@@ -479,7 +479,7 @@ Context {U V W} `{
     WSM : ScalarMult real W,
     @ScalarId real W real_one WSM,
     @ScalarLdist real W WP WSM,
-    @ScalarRdist real W real_plus_class WP WSM,
+    @ScalarRdist real W real_plus WP WSM,
 
     WA : AbsoluteValue W,
     @AbsDefinite W WA WZ,

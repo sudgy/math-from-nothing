@@ -1,3 +1,5 @@
+Require Import init.
+
 Require Export analysis_base.
 Require Export analysis_compact.
 Require Export analysis_continuous.

@@ -22,8 +22,8 @@ Context {V} `{
     SM : ScalarMult real V,
     @ScalarId real V real_one SM,
     @ScalarLdist real V VP SM,
-    @ScalarRdist real V real_plus_class VP SM,
-    @ScalarComp real V real_mult_class SM,
+    @ScalarRdist real V real_plus VP SM,
+    @ScalarComp real V real_mult SM,
 
     VA : AbsoluteValue V,
     @AbsDefinite V VA VZ,

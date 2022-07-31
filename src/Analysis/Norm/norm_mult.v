@@ -32,10 +32,10 @@ Context {U} `{
     NotTrivial U,
 
     SM : ScalarMult real U,
-    @ScalarComp real U real_mult_class SM,
+    @ScalarComp real U real_mult SM,
     @ScalarId real U real_one SM,
     @ScalarLdist real U UP SM,
-    @ScalarRdist real U real_plus_class UP SM,
+    @ScalarRdist real U real_plus UP SM,
     @ScalarLMult real U UM SM,
     @ScalarRMult real U UM SM,
 

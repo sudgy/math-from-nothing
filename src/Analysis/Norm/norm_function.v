@@ -33,10 +33,10 @@ Context {U V} `{
     NotTrivial U,
 
     USM : ScalarMult real U,
-    @ScalarComp real U real_mult_class USM,
+    @ScalarComp real U real_mult USM,
     @ScalarId real U real_one USM,
     @ScalarLdist real U UP USM,
-    @ScalarRdist real U real_plus_class UP USM,
+    @ScalarRdist real U real_plus UP USM,
     @ScalarLMult real U UM USM,
     @ScalarRMult real U UM USM,
 
@@ -72,10 +72,10 @@ Context {U V} `{
     NotTrivial V,
 
     VSM : ScalarMult real V,
-    @ScalarComp real V real_mult_class VSM,
+    @ScalarComp real V real_mult VSM,
     @ScalarId real V real_one VSM,
     @ScalarLdist real V VP VSM,
-    @ScalarRdist real V real_plus_class VP VSM,
+    @ScalarRdist real V real_plus VP VSM,
     @ScalarLMult real V VM VSM,
     @ScalarRMult real V VM VSM,
 

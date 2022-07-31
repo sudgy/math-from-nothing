@@ -19,8 +19,8 @@ Context {U V} `{
     USM : ScalarMult real U,
     @ScalarId real U real_one USM,
     @ScalarLdist real U UP USM,
-    @ScalarRdist real U real_plus_class UP USM,
-    @ScalarComp real U real_mult_class USM,
+    @ScalarRdist real U real_plus UP USM,
+    @ScalarComp real U real_mult USM,
 
     UA : AbsoluteValue U,
     @AbsDefinite U UA UZ,
@@ -41,8 +41,8 @@ Context {U V} `{
     VSM : ScalarMult real V,
     @ScalarId real V real_one VSM,
     @ScalarLdist real V VP VSM,
-    @ScalarRdist real V real_plus_class VP VSM,
-    @ScalarComp real V real_mult_class VSM,
+    @ScalarRdist real V real_plus VP VSM,
+    @ScalarComp real V real_mult VSM,
 
     VA : AbsoluteValue V,
     @AbsDefinite V VA VZ,

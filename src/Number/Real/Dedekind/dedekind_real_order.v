@@ -15,7 +15,7 @@ Global Instance real_order : Order real := {
 }.
 
 (* begin hide *)
-Lemma real_le_connex : ∀ a b, {a <= b} + {b <= a}.
+Lemma real_le_connex_ : ∀ a b, {a <= b} + {b <= a}.
     intros [a a_cut] [b b_cut].
     unfold le; cbn.
     classic_case (a ⊆ b) as [ab|nab]; try (left; exact ab).
@@ -29,8 +29,8 @@ Lemma real_le_connex : ∀ a b, {a <= b} + {b <= a}.
     apply (land (rand (rand a_cut)) l u au).
     apply (dedekind_lt b b_cut l u bl nbu).
 Qed.
-Global Instance real_le_connex_class : Connex le := {
-    connex := real_le_connex
+Global Instance real_le_connex : Connex le := {
+    connex := real_le_connex_
 }.
 
 Lemma real_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
@@ -40,7 +40,7 @@ Lemma real_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
     apply set_type_eq; cbn.
     exact (antisym ab ba).
 Qed.
-Global Instance real_le_antisym_class : Antisymmetric le := {
+Global Instance real_le_antisym : Antisymmetric le := {
     antisym := real_le_antisymmetric
 }.
 
@@ -49,11 +49,11 @@ Lemma real_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
     unfold le; cbn.
     apply trans.
 Qed.
-Global Instance real_le_trans_class : Transitive le := {
+Global Instance real_le_trans : Transitive le := {
     trans := real_le_transitive;
 }.
 
-Lemma real_sup_complete : ∀ S : real → Prop, (∃ x, S x) →
+Lemma real_sup_complete_ : ∀ S : real → Prop, (∃ x, S x) →
         has_upper_bound le S → has_supremum le S.
     intros S [[l l_cut] Sl] [[u u_cut] u_upper].
     pose (α a := ∃ x, S x ∧ [x|] a).
@@ -100,8 +100,8 @@ Lemma real_sup_complete : ∀ S : real → Prop, (∃ x, S x) →
     -   intros [x x_cut] x_upper a [[y y_cut] [Sy ya]]; cbn in *.
         apply (x_upper [y|y_cut]); assumption.
 Qed.
-Global Instance real_sup_complete_class : SupremumComplete le := {
-    sup_complete := real_sup_complete
+Global Instance real_sup_complete : SupremumComplete le := {
+    sup_complete := real_sup_complete_
 }.
 (* end hide *)
 

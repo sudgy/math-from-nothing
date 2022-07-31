@@ -9,14 +9,12 @@ Require Import dedekind_real_plus.
 Require Import dedekind_real_mult1.
 Require Import dedekind_real_mult2.
 
-(** This file contains the definition of division, and the compatability
-theorems for multiplication between the reals and other number systems.
-*)
+(** This file contains the definition of division *)
 
 Open Scope real_scope.
 
-Definition real_div a := λ p, p <= 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
-Notation "⊘ a" := (real_div a) : real_scope.
+Definition real_div_base a := λ p, p <= 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
+Notation "⊘ a" := (real_div_base a) : real_scope.
 
 Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
     intros [a a_cut] a_pos; cbn.
@@ -28,7 +26,7 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
         pose proof (rand (rand (rand a_cut)) _ a0) as [u [au u_pos]].
         assert (all (div u)) as u_in by exact true.
         rewrite <- contr in u_in.
-        unfold real_div in u_in.
+        unfold real_div_base in u_in.
         destruct u_in as [u_neg|u_in].
         +   apply div_pos in u_pos.
             pose proof (lt_le_trans u_pos u_neg) as [C0 C1]; contradiction.
@@ -84,7 +82,7 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
         +   destruct al as [l_neg|al]; try contradiction.
             rewrite nle_lt in l_pos.
             destruct al as [r [r_pos na]].
-            unfold real_div.
+            unfold real_div_base.
             assert (¬(div l + -(r * div 2) < div l + -r)) as make_contr.
             {
                 intros ltq.
@@ -129,7 +127,7 @@ Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
                     exact r_pos.
 Qed.
 
-Global Instance real_div_class : Div real := {
+Global Instance real_div : Div real := {
     div a :=
     match (trichotomy 0 a) with
     | semi_or_left comps =>
@@ -495,7 +493,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
     -   rewrite <- a_z in a_pos; destruct a_pos; contradiction.
     -   pose proof (trans a_pos a_neg) as [C0 C1]; contradiction.
 Qed.
-Lemma real_mult_linv : ∀ a, 0 ≠ a → div a * a = 1.
+Lemma real_mult_linv_ : ∀ a, 0 ≠ a → div a * a = 1.
     intros a a_neq.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_mult_linv1.
@@ -510,18 +508,18 @@ Lemma real_mult_linv : ∀ a, 0 ≠ a → div a * a = 1.
         apply real_mult_linv1.
         exact a_neg'.
 Qed.
-Global Instance real_mult_linv_class : MultLinv real := {
-    mult_linv := real_mult_linv
+Global Instance real_mult_linv : MultLinv real := {
+    mult_linv := real_mult_linv_
 }.
 
-Lemma real_not_trivial : 0 ≠ 1.
+Lemma real_not_trivial_ : 0 ≠ 1.
     intro contr.
     assert ([(one (U := real))|] (zero (U := rat))) by exact one_pos.
     rewrite <- contr in H.
     destruct H; contradiction.
 Qed.
-Global Instance real_not_trivial_class : NotTrivial real := {
-    not_trivial := real_not_trivial;
+Global Instance real_not_trivial : NotTrivial real := {
+    not_trivial := real_not_trivial_;
 }.
 
 (* begin hide *)
