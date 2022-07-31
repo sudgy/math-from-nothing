@@ -4,6 +4,10 @@ Require Export complex_base.
 Require Import rat.
 Require Import real.
 
+Require Import nat_abstract.
+Require Import int_abstract.
+Require Import rat_abstract.
+
 Global Instance complex_plus : Plus complex := {
     plus a b := (fst a + fst b, snd a + snd b)
 }.
@@ -59,7 +63,7 @@ Theorem rat_to_complex_plus : ∀ a b,
 Proof.
     intros a b.
     unfold rat_to_complex.
-    rewrite rat_to_real_plus.
+    rewrite rat_to_abstract_plus.
     apply real_to_complex_plus.
 Qed.
 
@@ -68,7 +72,7 @@ Theorem int_to_complex_plus : ∀ a b,
 Proof.
     intros a b.
     unfold int_to_complex.
-    rewrite int_to_real_plus.
+    rewrite int_to_abstract_plus.
     apply real_to_complex_plus.
 Qed.
 
@@ -77,6 +81,6 @@ Theorem nat_to_complex_plus : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_complex.
-    rewrite nat_to_real_plus.
+    rewrite nat_to_abstract_plus.
     apply real_to_complex_plus.
 Qed.

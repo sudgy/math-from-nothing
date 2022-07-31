@@ -220,12 +220,10 @@ Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
     exact x_eq.
 Qed.
 
-Lemma n_pos : ∀ n, 0 < / nat_to_real (nat_suc n).
+Lemma n_pos : ∀ n, 0 < / nat_to_abstract (nat_suc n).
     intros n.
     apply div_pos.
-    change 0 with (nat_to_real 0).
-    rewrite nat_to_real_lt.
-    apply nat_zero_lt_suc.
+    apply nat_to_abstract_pos.
 Qed.
 
 Fixpoint g n := match n with
@@ -255,7 +253,6 @@ Lemma b_converges : seq_converges b.
     intros n n_geq.
     apply ε_sub.
 
-    rewrite nat_to_abstract_real in ltq.
     pose proof (n_pos N) as N_pos.
     assert ([_|N_pos] <= [_|ε_pos]) as leq.
     {
@@ -275,11 +272,12 @@ Lemma b_converges : seq_converges b.
     Unshelve.
     unfold le; cbn.
     apply le_div_pos.
-    -   change 0 with (nat_to_real 0).
-        rewrite nat_to_real_lt.
+    -   rewrite <- nat_to_abstract_zero.
+        change (1 + nat_to_abstract N) with (nat_to_abstract (U := real) (nat_suc N)).
+        rewrite nat_to_abstract_lt.
         apply nat_zero_lt_suc.
-    -   rewrite nat_to_real_le.
-        rewrite nat_sucs_le.
+    -   apply le_lplus.
+        rewrite nat_to_abstract_le.
         rewrite <- (plus_rid N) at 1.
         apply le_lplus.
         apply nat_le_zero.
@@ -347,7 +345,6 @@ Lemma lebesgue_number_lemma : ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ 
     pose proof (archimedean2 (ε / 2) ε2_pos) as [N1 ltq].
     rewrite metric_seq_lim in x'_lim.
     specialize (x'_lim (ε / 2) ε2_pos) as [N2 x'_lim].
-    rewrite nat_to_abstract_real in ltq.
     pose (N := max N1 N2).
     destruct x'_sub as [f [f_eq x'_eq]].
     specialize (x'_lim N (rmax _ _)).
@@ -358,12 +355,12 @@ Lemma lebesgue_number_lemma : ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ 
     apply (trans2 ε_sub).
     intros z z_lt.
     unfold open_ball in *; cbn in *.
-    assert (/nat_to_real (nat_suc (f N)) <= /nat_to_real (nat_suc N1))
+    assert (/nat_to_abstract (nat_suc (f N)) <= /nat_to_abstract (nat_suc N1))
         as N_ltq.
     {
         apply le_div_pos.
-        1:  apply real_n_pos.
-        rewrite nat_to_real_le.
+        1:  apply nat_to_abstract_pos.
+        rewrite nat_to_abstract_le.
         rewrite nat_sucs_le.
         apply (trans (lmax N1 N2)).
         apply subsequence_seq_leq.
@@ -812,7 +809,7 @@ Lemma S_sub2 : ∀ m n, m <= n → [S n|] ⊆ [S m|].
 Qed.
 
 Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
-        d x y <= 2 / nat_to_real (nat_suc n).
+        d x y <= 2 / nat_to_abstract (nat_suc n).
     intros n x y Snx Sny.
     pose (ε := [_|real_n_div_pos n]).
     pose (Sn :=
@@ -829,7 +826,7 @@ Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
         rewrite d_sym in x_in.
         pose proof (lt_lrplus x_in y_in) as ltq.
         apply (le_lt_trans (d_tri _ _ _)) in ltq.
-        rewrite <- (mult_lid (/nat_to_real 1)) in ltq.
+        rewrite <- (mult_lid (/nat_to_abstract 1)) in ltq.
         rewrite <- rdist in ltq.
         apply ltq.
     -   assert (open_ball (ex_val bex) ε x) as x_in by apply Snx.
@@ -838,7 +835,7 @@ Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
         rewrite d_sym in x_in.
         pose proof (lt_lrplus x_in y_in) as ltq.
         apply (le_lt_trans (d_tri _ _ _)) in ltq.
-        rewrite <- (mult_lid (/nat_to_real _)) in ltq.
+        rewrite <- (mult_lid (/nat_to_abstract (nat_suc (nat_suc n)))) in ltq.
         rewrite <- rdist in ltq.
         apply ltq.
 Qed.
@@ -872,7 +869,6 @@ Lemma xn_cauchy : cauchy_seq xn.
         2: exact two_pos.
         rewrite mult_rlinv in N_lt by apply two_pos.
         rewrite mult_comm.
-        rewrite nat_to_abstract_real in N_lt.
         exact N_lt.
     }
     intros i j i_ge j_ge.
@@ -932,7 +928,6 @@ Lemma x2_lim : seq_lim xn2 x.
     specialize (x_lim (ε / 2) ε2_pos) as [N1 x_lim].
     pose proof (half_pos (ε / 2) ε2_pos) as ε4_pos.
     pose proof (archimedean2 _ ε4_pos) as [N2 N2_eq].
-    rewrite nat_to_abstract_real in N2_eq.
     exists (max N1 N2).
     intros n n_ge.
     specialize (x_lim n (trans (lmax N1 N2) n_ge)).
@@ -950,9 +945,9 @@ Lemma x2_lim : seq_lim xn2 x.
     rewrite mult_rlinv in N2_eq by apply two_pos.
     pose proof (trans (rmax N1 N2) n_ge) as n_ge2.
     rewrite <- nat_sucs_le in n_ge2.
-    rewrite <- nat_to_real_le in n_ge2.
+    rewrite <- nat_to_abstract_le in n_ge2.
     apply le_div_pos in n_ge2.
-    2: apply real_n_pos.
+    2: apply nat_to_abstract_pos.
     apply le_lmult_pos with 2 in n_ge2.
     2: apply two_pos.
     pose proof (trans leq n_ge2) as leq2.

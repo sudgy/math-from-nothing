@@ -70,31 +70,3 @@ Lemma rat_to_real_cut : ∀ a, dedekind_cut (rat_to_real_base a).
 Qed.
 
 Definition rat_to_real a := [_|rat_to_real_cut a].
-Definition int_to_real a := rat_to_real (int_to_rat a).
-Definition nat_to_real a := rat_to_real (nat_to_rat a).
-
-Theorem rat_to_real_eq : ∀ a b, rat_to_real a = rat_to_real b → a = b.
-    intros a b eq.
-    inversion eq as [eq2].
-    unfold rat_to_real_base in eq2.
-    pose proof (func_eq _ _ eq2) as eq3; cbn in eq3.
-    destruct (trichotomy a b) as [[ab|ab]|ab]; try exact ab.
-    -   rewrite <- eq3 in ab.
-        destruct ab; contradiction.
-    -   rewrite eq3 in ab.
-        destruct ab; contradiction.
-Qed.
-
-Theorem int_to_real_eq : ∀ a b, int_to_real a = int_to_real b → a = b.
-    intros a b eq.
-    apply int_to_rat_eq.
-    apply rat_to_real_eq.
-    exact eq.
-Qed.
-
-Theorem nat_to_real_eq : ∀ a b, nat_to_real a = nat_to_real b → a = b.
-    intros a b eq.
-    apply nat_to_rat_eq.
-    apply rat_to_real_eq.
-    exact eq.
-Qed.

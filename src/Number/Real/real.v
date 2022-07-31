@@ -17,64 +17,6 @@ Require Import rat.
 
 Definition real_pos := set_type (λ x, 0 < x).
 
-Theorem nat_to_abstract_real : ∀ n, nat_to_abstract n = nat_to_real n.
-    nat_induction n.
-    -   reflexivity.
-    -   cbn.
-        rewrite IHn.
-        change (nat_suc n) with (1 + n).
-        rewrite nat_to_real_plus.
-        reflexivity.
-Qed.
-
-Theorem int_to_abstract_real : ∀ n, int_to_abstract n = int_to_real n.
-    intros n.
-    equiv_get_value n.
-    unfold int_to_abstract.
-    rewrite equiv_unary_op.
-    unfold int_to_abstract_base.
-    do 2 rewrite nat_to_abstract_real.
-    unfold nat_to_real, nat_to_rat.
-    change (rat_to_real (int_to_rat (nat_to_int (fst n)))) with
-        (int_to_real (nat_to_int (fst n))).
-    change (rat_to_real (int_to_rat (nat_to_int (snd n)))) with
-        (int_to_real (nat_to_int (snd n))).
-    rewrite <- int_to_real_neg.
-    rewrite <- int_to_real_plus.
-    apply f_equal.
-    unfold plus, neg, nat_to_int; equiv_simpl.
-    rewrite plus_rid, plus_lid.
-    reflexivity.
-Qed.
-
-Theorem rat_to_abstract_real : ∀ n, rat_to_abstract n = rat_to_real n.
-    intros n.
-    equiv_get_value n.
-    unfold rat_to_abstract.
-    rewrite equiv_unary_op.
-    unfold rat_to_abstract_base.
-    do 2 rewrite int_to_abstract_real.
-    unfold int_to_real.
-    rewrite <- rat_to_real_div.
-    2: {
-        intros contr.
-        change (zero (U := rat)) with (int_to_rat 0) in contr.
-        apply int_to_rat_eq in contr.
-        apply [|snd n].
-        exact contr.
-    }
-    rewrite <- rat_to_real_mult.
-    apply f_equal.
-    unfold mult, div; equiv_simpl.
-    pose proof [|snd n].
-    destruct (strong_excluded_middle (0 = [snd n|])) as [contr|x_nz];
-        [>contradiction|]; cbn.
-    unfold rat; equiv_simpl.
-    unfold frac_eq; cbn.
-    rewrite mult_rid, mult_lid.
-    reflexivity.
-Qed.
-
 Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
         ∃ n, x < n × y.
     intros x y x_pos y_pos.
@@ -114,15 +56,14 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
         apply lt_plus_lrmove in nup.
         rewrite neg_neg in nup.
         rewrite <- nat_to_abstract_mult_abstract in nup.
-        rewrite nat_to_abstract_real in nup.
         rewrite <- (mult_lid y) in nup at 2.
         rewrite <- rdist in nup.
-        assert (A ((nat_to_real n + 1) * y)) as n_in.
+        assert (A ((nat_to_abstract n + 1) * y)) as n_in.
         {
             exists (n + 1).
             rewrite <- nat_to_abstract_mult_abstract.
-            rewrite nat_to_abstract_real.
-            rewrite nat_to_real_plus.
+            rewrite nat_to_abstract_plus.
+            rewrite nat_to_abstract_one.
             reflexivity.
         }
         specialize (α_upper _ n_in).
@@ -133,16 +74,10 @@ Global Instance real_archimedean : Archimedean real := {
     archimedean := real_archimedean_base
 }.
 
-Lemma real_n_pos : ∀ n, 0 < nat_to_real (nat_suc n).
-    intros n.
-    change 0 with (nat_to_real 0).
-    rewrite nat_to_real_lt.
-    apply nat_zero_lt_suc.
-Qed.
-Lemma real_n_div_pos : ∀ n, 0 < / nat_to_real (nat_suc n).
+Lemma real_n_div_pos : ∀ n, 0 < / nat_to_abstract (nat_suc n).
     intros n.
     apply div_pos.
-    apply real_n_pos.
+    apply nat_to_abstract_pos.
 Qed.
 
 Theorem real_nested_interval : ∀ I : nat → real → Prop,
@@ -227,13 +162,4 @@ Theorem real_nested_interval : ∀ I : nat → real → Prop,
         intros am [m am_eq].
         subst am b.
         apply abn_leq.
-Qed.
-
-Theorem rat_dense_in_real : ∀ a b : real, a < b →
-        ∃ r : rat, a < rat_to_real r ∧ rat_to_real r < b.
-    intros a b ltq.
-    pose proof (rat_dense_in_arch a b ltq) as [r r'].
-    exists r.
-    rewrite <- rat_to_abstract_real.
-    exact r'.
 Qed.

@@ -5,6 +5,10 @@ Require Export complex_plus.
 Require Import rat.
 Require Import real.
 
+Require Import nat_abstract.
+Require Import int_abstract.
+Require Import rat_abstract.
+
 Global Instance complex_mult : Mult complex := {
     mult a b := (fst a * fst b - snd a * snd b, fst a * snd b + snd a * fst b)
 }.
@@ -167,7 +171,7 @@ Theorem rat_to_complex_mult : ∀ a b,
 Proof.
     intros a b.
     unfold rat_to_complex.
-    rewrite rat_to_real_mult.
+    rewrite rat_to_abstract_mult.
     apply real_to_complex_mult.
 Qed.
 
@@ -176,7 +180,7 @@ Theorem int_to_complex_mult : ∀ a b,
 Proof.
     intros a b.
     unfold int_to_complex.
-    rewrite int_to_real_mult.
+    rewrite int_to_abstract_mult.
     apply real_to_complex_mult.
 Qed.
 
@@ -185,6 +189,6 @@ Theorem nat_to_complex_mult : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_complex.
-    rewrite nat_to_real_mult.
+    rewrite nat_to_abstract_mult.
     apply real_to_complex_mult.
 Qed.

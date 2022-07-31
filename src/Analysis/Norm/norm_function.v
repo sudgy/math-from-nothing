@@ -147,10 +147,10 @@ Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c 
         cbn.
         apply (trans x_lt).
         apply (le_lt_trans2 N_ltq).
-        rewrite nat_to_abstract_real.
-        apply le_div_pos; [>apply real_n_pos|].
-        rewrite nat_to_real_le.
-        rewrite nat_sucs_le.
+        apply le_div_pos; [>apply nat_to_abstract_pos|].
+        cbn.
+        apply le_lplus.
+        rewrite nat_to_abstract_le.
         exact n_geq.
     }
     specialize (f_lim c_lim).

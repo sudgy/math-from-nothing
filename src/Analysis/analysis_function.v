@@ -194,7 +194,7 @@ Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
             apply x_eq.
     }
     pose (xn n := [_|xn_in n]).
-    assert (∀ n, d [xn n|] c < /nat_to_real (nat_suc n)) as xn_lt.
+    assert (∀ n, d [xn n|] c < /nat_to_abstract (nat_suc n)) as xn_lt.
     {
         intros n.
         unfold xn, xn'; cbn.
@@ -232,9 +232,8 @@ Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
         rewrite d_sym.
         apply (trans xn_lt).
         apply (le_lt_trans2 n_lt).
-        rewrite nat_to_abstract_real.
-        apply le_div_pos; [>apply real_n_pos|].
-        rewrite nat_to_real_le.
+        apply le_div_pos; [>apply nat_to_abstract_pos|].
+        rewrite nat_to_abstract_le.
         rewrite nat_sucs_le.
         exact m_leq.
     }

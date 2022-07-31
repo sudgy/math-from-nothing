@@ -104,6 +104,7 @@ Global Instance real_sup_complete_class : SupremumComplete le := {
     sup_complete := real_sup_complete
 }.
 (* end hide *)
+
 Theorem rat_to_real_le : ∀ a b, rat_to_real a <= rat_to_real b ↔ a <= b.
     intros a b; split; intro leq.
     -   unfold le in leq; cbn in leq.
@@ -115,42 +116,6 @@ Theorem rat_to_real_le : ∀ a b, rat_to_real a <= rat_to_real b ↔ a <= b.
     -   intros x ax.
         cbn in *; unfold rat_to_real_base in *.
         exact (lt_le_trans ax leq).
-Qed.
-Theorem int_to_real_le : ∀ a b, int_to_real a <= int_to_real b ↔ a <= b.
-    intros a b.
-    unfold int_to_real.
-    rewrite rat_to_real_le.
-    apply int_to_rat_le.
-Qed.
-Theorem nat_to_real_le : ∀ a b, nat_to_real a <= nat_to_real b ↔ a <= b.
-    intros a b.
-    unfold nat_to_real.
-    rewrite rat_to_real_le.
-    apply nat_to_rat_le.
-Qed.
-
-Theorem rat_to_real_lt : ∀ a b, rat_to_real a < rat_to_real b ↔ a < b.
-    intros a b; split; intros [leq neq]; split.
-    -   apply rat_to_real_le.
-        exact leq.
-    -   intro contr; subst; contradiction.
-    -   apply rat_to_real_le.
-        exact leq.
-    -   intro contr.
-        apply rat_to_real_eq in contr.
-        contradiction.
-Qed.
-Theorem int_to_real_lt : ∀ a b, int_to_real a < int_to_real b ↔ a < b.
-    intros a b.
-    unfold int_to_real.
-    rewrite rat_to_real_lt.
-    apply int_to_rat_lt.
-Qed.
-Theorem nat_to_real_lt : ∀ a b, nat_to_real a < nat_to_real b ↔ a < b.
-    intros a b.
-    unfold nat_to_real.
-    rewrite rat_to_real_lt.
-    apply nat_to_rat_lt.
 Qed.
 
 Theorem gt_rat_to_real_in : ∀ a b, rat_to_real a < b → [b|] a.

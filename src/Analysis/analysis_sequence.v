@@ -45,12 +45,12 @@ Theorem metric_seq_closure : ∀ (A : U → Prop) x,
     -   intros [f [Af lim]].
         exact (seq_closure A x f Af lim).
     -   intros Ax.
-        assert (∀ n, 0 < / nat_to_real (nat_suc n)) as n_pos.
+        assert (∀ n, 0 < / nat_to_abstract (nat_suc n)) as n_pos.
         {
             intros n.
             apply div_pos.
-            change 0 with (nat_to_real 0).
-            rewrite nat_to_real_lt.
+            rewrite <- nat_to_abstract_zero.
+            rewrite nat_to_abstract_lt.
             apply nat_zero_lt_suc.
         }
         pose (B n := open_ball x [_|n_pos n]).
@@ -78,7 +78,6 @@ Theorem metric_seq_closure : ∀ (A : U → Prop) x,
         +   rewrite metric_seq_lim.
             intros ε ε_pos.
             pose proof (archimedean2 _ ε_pos) as [N N_lt].
-            rewrite nat_to_abstract_real in N_lt.
             exists N.
             intros n n_gt.
             rewrite_ex_val a a_in.
@@ -86,15 +85,9 @@ Theorem metric_seq_closure : ∀ (A : U → Prop) x,
             unfold B in Bna.
             apply (trans2 N_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite <- nat_to_real_le in n_gt.
-            assert (0 < nat_to_real (nat_suc N)) as N_pos.
-            {
-                change 0 with (nat_to_real 0).
-                rewrite nat_to_real_lt.
-                apply nat_zero_lt_suc.
-            }
+            rewrite <- nat_to_abstract_le in n_gt.
             apply le_div_pos in n_gt.
-            2: exact N_pos.
+            2: apply nat_to_abstract_pos.
             apply (lt_le_trans2 n_gt).
             exact Bna.
 Qed.
@@ -153,7 +146,6 @@ Theorem limit_point_seq_ex :
     -   rewrite metric_seq_lim.
         intros ε ε_pos.
         pose proof (archimedean2 ε ε_pos) as [N N_lt].
-        rewrite nat_to_abstract_real in N_lt.
         exists N.
         intros m m_geq.
         rewrite_ex_val b b_H.
@@ -162,8 +154,9 @@ Theorem limit_point_seq_ex :
         apply (trans b_in).
         apply (le_lt_trans2 N_lt).
         apply le_div_pos.
-        1: apply real_n_pos.
-        rewrite nat_to_real_le.
+        1: apply nat_to_abstract_pos.
+        change (1 + nat_to_abstract m) with (nat_to_abstract (U := real) (nat_suc m)).
+        rewrite nat_to_abstract_le.
         rewrite nat_sucs_le.
         exact m_geq.
 Qed.
