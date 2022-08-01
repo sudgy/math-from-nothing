@@ -103,26 +103,58 @@ Definition arch_ordered_homo (f : set_type (aof_set A) → set_type (aof_set B))
         f 1 = 1 ∧
         (∀ a b, f (a + b) = f a + f b) ∧
         (∀ a b, f (a * b) = f a * f b) ∧
-        (∀ a b, a <= b ↔ f a <= f b).
+        (∀ a b, a <= b → f a <= f b).
+
+Theorem arch_ordered_homo_neg : ∀ f, arch_ordered_homo f → ∀ x, f (-x) = -f x.
+    intros f f_homo x.
+    pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
+    apply plus_lcancel with (f x).
+    rewrite <- f_plus.
+    do 2 rewrite plus_rinv.
+    exact f_zero.
+Qed.
 
 Theorem arch_ordered_homo_inj : ∀ f, arch_ordered_homo f → injective f.
-    intros f [f_zero [f_one [f_plus [f_mult f_le]]]].
+    intros f f_homo.
     intros a b eq.
-    apply antisym.
-    -   apply f_le.
-        rewrite eq.
-        apply refl.
-    -   apply f_le.
-        rewrite eq.
-        apply refl.
+    rewrite <- plus_0_anb_b_a.
+    rewrite <- plus_0_anb_b_a in eq.
+    rewrite <- (arch_ordered_homo_neg _ f_homo) in eq.
+    pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
+    rewrite <- f_plus in eq.
+    remember (b - a) as c.
+    clear a b Heqc.
+    classic_contradiction contr.
+    apply lmult with (f (/c)) in eq.
+    rewrite mult_ranni in eq.
+    rewrite <- f_mult in eq.
+    rewrite mult_linv in eq by exact contr.
+    rewrite f_one in eq.
+    apply not_trivial_one in eq.
+    exact eq.
+Qed.
+
+
+Theorem arch_ordered_homo_le : ∀ f, arch_ordered_homo f →
+        ∀ x y, x <= y ↔ f x <= f y.
+    intros f f_homo x y.
+    split; [>apply f_homo|].
+    intros leq.
+    classic_contradiction contr.
+    rewrite nle_lt in contr.
+    destruct contr as [yx neq].
+    apply f_homo in yx.
+    pose proof (antisym leq yx) as eq.
+    apply (arch_ordered_homo_inj _ f_homo) in eq.
+    symmetry in eq.
+    contradiction.
 Qed.
 
 Theorem arch_ordered_homo_lt : ∀ f, arch_ordered_homo f →
         ∀ x y, x < y ↔ f x < f y.
     intros f f_homo x y.
-    pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     unfold lt, strict.
-    rewrite f_le.
+    rewrite <- (arch_ordered_homo_le _ f_homo).
     split.
     -   intros [leq neq].
         split; [>exact leq|].
@@ -134,15 +166,6 @@ Theorem arch_ordered_homo_lt : ∀ f, arch_ordered_homo f →
         intros eq.
         subst y.
         contradiction.
-Qed.
-
-Theorem arch_ordered_homo_neg : ∀ f, arch_ordered_homo f → ∀ x, f (-x) = -f x.
-    intros f f_homo x.
-    pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
-    apply plus_lcancel with (f x).
-    rewrite <- f_plus.
-    do 2 rewrite plus_rinv.
-    exact f_zero.
 Qed.
 
 Theorem arch_ordered_homo_div : ∀ f, arch_ordered_homo f →
@@ -241,7 +264,8 @@ Arguments arch_ordered_homo_eq {A B}.
 Theorem identity_arch_ordered_homo : ∀ A, arch_ordered_homo A A identity.
 Proof.
     intros A.
-    repeat split; intro; assumption.
+    repeat split; intro; try assumption.
+    intros b ab; exact ab.
 Qed.
 
 Theorem arch_ordered_homo_identity :
@@ -271,9 +295,10 @@ Proof.
     -   intros a b.
         rewrite f_mult.
         apply g_mult.
-    -   intros a b.
-        rewrite <- g_le.
+    -   intros a b ab.
+        apply g_le.
         apply f_le.
+        exact ab.
 Qed.
 
 Global Instance arch_ordered_le : Order ArchOrderedField := {

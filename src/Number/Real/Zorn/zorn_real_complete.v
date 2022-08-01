@@ -136,19 +136,15 @@ Next Obligation.
             unfold mult at 2; cbn.
             do 2 rewrite aof_ex_f_eq1.
             reflexivity.
-        -   intros x y.
-            unfold le at 2; cbn.
+        -   intros x y xy.
+            unfold le; cbn.
             do 2 rewrite aof_ex_f_eq1.
-            unfold real_ext, real_ext_order.
-            rewrite to_frac_le.
-            2: exact ZOA.
-            2: exact ZOT.
-            unfold zrq, zorn_real_quotient.
-            unfold quotient_ring.
-            unfold ZO.
-            rewrite <- zorn_real_quotient_le.
-            rewrite <- zorn_real_q_le_to_poly.
-            reflexivity.
+            apply to_frac_le.
+            1: exact ZOA.
+            1: exact ZOT.
+            apply (land (zorn_real_quotient_le _ _ _ _ _ _)).
+            apply zorn_real_q_le_to_poly.
+            exact xy.
     }
     prove_parts f_ex.
     {
@@ -176,19 +172,13 @@ Next Obligation.
         f5 (f4 (f3 (f2 x))) <= f5 (f4 (f3 (f2 y)))) as f_le.
     {
         intros x y xy.
-        rewrite <- (rand (rand (rand (rand f5_homo)))).
+        rewrite <- (arch_ordered_homo_le _ _ _ f5_homo).
         unfold f4, le; cbn.
         do 2 rewrite aof_ex_f_eq1.
-        unfold f3.
-        unfold real_ext, real_ext_order.
-        rewrite to_frac_le.
-        2: exact ZOA.
-        2: exact ZOT.
-        unfold zrq, zorn_real_quotient.
-        unfold quotient_ring.
-        unfold ZO.
-        unfold f2.
-        rewrite <- zorn_real_quotient_le.
+        apply to_frac_le.
+        1: exact ZOA.
+        1: exact ZOT.
+        apply (land (zorn_real_quotient_le _ _ _ _ _ _)).
         exact xy.
     }
     assert (∀ x, ¬is_upper_bound le S x → x <= α) as α_ge.

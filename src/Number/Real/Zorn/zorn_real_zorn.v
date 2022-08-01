@@ -595,8 +595,8 @@ Proof.
         all: apply arch_ordered_homo_compose; assumption.
     }
     unfold EO in leq.
-    rewrite <- (rand (rand (rand (rand ef_homo)))) in leq.
-    rewrite <- (rand (rand (rand (rand abg_homo)))) in leq.
+    rewrite <- (arch_ordered_homo_le _ _ _ ef_homo) in leq.
+    rewrite <- (arch_ordered_homo_le _ _ _ abg_homo) in leq.
     exact leq.
 Qed.
 Lemma ub_le_wd : ∀ a b c d, a ~ b → c ~ d → (a ≦ c) = (b ≦ d).
@@ -636,7 +636,7 @@ Next Obligation.
     cbn in xy, yz.
     pose proof (aof_le_trans [B|]).
     pose proof (trans xy yz) as xz.
-    rewrite <- (rand (rand (rand (rand h_homo)))) in xz.
+    rewrite <- (arch_ordered_homo_le _ _ _ h_homo) in xz.
     exact xz.
 Qed.
 Local Program Instance ub_le_connex : Connex le.
@@ -655,8 +655,8 @@ Next Obligation.
     rewrite nle_lt in contr.
     destruct contr as [leq neq]; clear neq.
     pose proof (ub_base_max A B) as [C [Cf [Cg [Cf_homo Cg_homo]]]].
-    rewrite (rand (rand (rand (rand Cg_homo)))).
-    rewrite (rand (rand (rand (rand Cf_homo)))) in leq.
+    rewrite (arch_ordered_homo_le _ _ _ Cg_homo).
+    rewrite (arch_ordered_homo_le _ _ _ Cf_homo) in leq.
     applys_eq leq.
     -   apply (arch_ordered_homo_eq (λ x, Cg (Bf x)) (λ x, Cf (Ag x))).
         all: apply arch_ordered_homo_compose; assumption.
@@ -722,12 +722,12 @@ Next Obligation.
         cbn in x_pos.
         rewrite (land Cg_homo) in x_pos.
         rewrite <- (land Cf_homo) in x_pos.
-        rewrite <- (rand (rand (rand (rand Cf_homo)))) in x_pos.
+        rewrite <- (arch_ordered_homo_le _ _ _ Cf_homo) in x_pos.
         rewrite <- (land Bg_homo).
         unfold BO.
-        rewrite <- (rand (rand (rand (rand Bg_homo)))).
+        rewrite <- (arch_ordered_homo_le _ _ _ Bg_homo).
         rewrite <- (land f_homo).
-        rewrite <- (rand (rand (rand (rand f_homo)))).
+        rewrite <- (arch_ordered_homo_le _ _ _ f_homo).
         exact x_pos.
     }
     apply le_mult; apply lemma; assumption.
@@ -884,17 +884,10 @@ Proof.
             unfold le at 2; cbn.
             do 2 rewrite aof_ex_f_eq1.
             unfold le at 2; equiv_simpl.
-            split.
-            *   intros leq B f g f_homo g_homo; cbn in *.
-                rewrite (arch_ordered_homo_uni _ _ f g f_homo g_homo).
-                apply g_homo.
-                exact leq.
-            *   intros leq.
-                specialize (leq [A|FA] identity identity).
-                prove_parts leq.
-                1, 2: apply identity_arch_ordered_homo.
-                unfold identity in leq; cbn in leq.
-                exact leq.
+            intros leq B f g f_homo g_homo; cbn in *.
+            rewrite (arch_ordered_homo_uni _ _ f g f_homo g_homo).
+            apply g_homo.
+            exact leq.
     -   exists rat_aof.
         intros A FA.
         exfalso; apply F'_nex.
