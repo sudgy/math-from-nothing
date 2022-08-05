@@ -1,10 +1,10 @@
-(** This file was taken from TLC purely for applies_eq.  To cut down on compile
+(** This file was taken from TLC purely for applys_eq.  To cut down on compile
     times I removed all the other unneeded stuff that I could. *)
 
 (**************************************************************************
-* Useful General-Purpose Tactics for Coq                                  *
-* Arthur Chargueraud                                                      *
-* Distributed under the terms of the LGPL-v3 license                      *
+Useful General-Purpose Tactics for Coq                                    *
+Arthur Chargueraud                                                        *
+Distributed under the terms of the LGPL-v3 license                        *
 ***************************************************************************)
 
 (** This file contains a set of tactics that extends the set of builtin
@@ -53,7 +53,7 @@ Require Import Coq.Init.Prelude.
 Declare Scope ltac_scope.
 
 (* ********************************************************************** *)
-(** * Fixing Stdlib *)
+(** Fixing Stdlib *)
 
 (* Very important to remove hint trans_eq_bool from LibBool,
    otherwise eauto slows down dramatically:
@@ -64,7 +64,7 @@ Global Remove Hints Bool.trans_eq_bool : core.
 
 
 (* ---------------------------------------------------------------------- *)
-(** ** Untyped Arguments for Tactics *)
+(** Untyped Arguments for Tactics *)
 
 (** Any Coq value can be boxed into the type [Boxer]. This is
     useful to use Coq computations for implementing tactics. *)
@@ -73,7 +73,7 @@ Inductive Boxer : Type :=
   | boxer : forall (A:Type), A -> Boxer.
 
 (* ---------------------------------------------------------------------- *)
-(** ** Wildcard Arguments for Tactics  *)
+(** Wildcard Arguments for Tactics  *)
 
 (** [ltac_wild] is a constant that can be used to simulate
     wildcard arguments in tactic definitions. Notation is [__]. *)
@@ -97,7 +97,7 @@ Open Scope ltac_scope.
 
 
 (* ---------------------------------------------------------------------- *)
-(** ** List of Arguments for Tactics  *)
+(** List of Arguments for Tactics  *)
 
 (** A datatype of type [list Boxer] is used to manipulate list of
     Coq values in ltac. Notation is [>> v1 v2 ... vN] for building
@@ -202,7 +202,7 @@ Ltac list_boxer_of E :=
 
 
 (* ---------------------------------------------------------------------- *)
-(** ** On-the-Fly Removal of Hypotheses *)
+(** On-the-Fly Removal of Hypotheses *)
 
 (** In a list of arguments [>> H1 H2 .. HN] passed to a tactic
     such as [lets] or [applys] or [forwards] or [specializes],
@@ -253,10 +253,10 @@ Ltac fast_rm_inside E :=
   rm_inside E.
 
 (* ********************************************************************** *)
-(** * Backward and Forward Chaining *)
+(** Backward and Forward Chaining *)
 
 (* ---------------------------------------------------------------------- *)
-(** ** Application *)
+(** Application *)
 
 Ltac old_refine f :=
   refine f. (* ; shelve_unifiable. *)
@@ -290,7 +290,7 @@ Tactic Notation "rapply" constr(t) :=
 
 
 (* ---------------------------------------------------------------------- *)
-(** ** Instantiation and Forward-Chaining *)
+(** Instantiation and Forward-Chaining *)
 
 (** The instantiation tactics are used to instantiate a lemma [E]
     (whose type is a product) on some arguments. The type of [E] is
