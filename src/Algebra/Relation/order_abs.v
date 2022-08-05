@@ -58,6 +58,15 @@ Theorem abs_zero : 0 = |0|.
     reflexivity.
 Qed.
 
+Theorem abs_nz : ∀ x, 0 ≠ |x| ↔ 0 ≠ x.
+    intros x.
+    split; intros neq eq.
+    -   apply abs_def in eq.
+        contradiction.
+    -   apply abs_def in eq.
+        contradiction.
+Qed.
+
 Theorem abs_one : |1| = 1.
     pose proof (Logic.eq_refl (|1 * 1|)) as eq.
     rewrite mult_rid in eq at 2.
@@ -96,12 +105,7 @@ Qed.
 
 Theorem abs_div : ∀ a, 0 ≠ a → /|a| = |/a|.
     intros a a_nz.
-    assert (0 ≠ |a|) as a_nz2.
-    {
-        intros contr.
-        rewrite abs_def in contr.
-        contradiction.
-    }
+    pose proof (rand (abs_nz a) a_nz) as a_nz2.
     apply mult_rcancel with (|a|).
     1: exact a_nz2.
     rewrite mult_linv by exact a_nz2.
@@ -327,6 +331,14 @@ Theorem abs_pos_eq : ∀ a, 0 <= a → |a| = a.
     case_if.
     -   reflexivity.
     -   contradiction.
+Qed.
+
+Theorem abs_neg_eq : ∀ a, a <= 0 → |a| = -a.
+    intros a a_neg.
+    rewrite <- abs_neg.
+    apply abs_pos_eq.
+    apply neg_pos.
+    exact a_neg.
 Qed.
 
 (* begin hide *)
