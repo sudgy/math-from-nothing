@@ -318,22 +318,21 @@ Lemma zorn_real_quotient_domain : ∀ a b : zorn_real_quotient,
     0 = a * b → 0 = a ∨ 0 = b.
 Proof.
     intros a b.
-    assert (∀ c, (0 = c) ↔ (c = 0)) as stupid.
-    {
-        intros c.
-        split; intro; symmetry; assumption.
-    }
-    do 3 rewrite stupid; clear stupid.
     equiv_get_value a b.
-    unfold zero, mult; equiv_simpl.
-    pose (stupid a := equiv_eq (E := ideal_equiv zorn_real_ideal) a 0).
-    do 3 rewrite stupid; clear stupid.
-    cbn.
-    rewrite neg_zero.
-    do 3 rewrite plus_rid.
+    unfold zero, mult, zorn_real_quotient, quotient_ring; equiv_simpl.
     intros ab.
-    classic_case (zorn_real_ideal_set a) as [a_in|a_nin]; [>left; exact a_in|].
+    classic_case (zorn_real_ideal_set (0 - a)) as [a_in|a_nin']; [>left; exact a_in|].
     right.
+    assert (¬zorn_real_ideal_set (a - 0)) as a_nin.
+    {
+        intros contr.
+        apply (ideal_eq_symmetric zorn_real_ideal) in contr.
+        contradiction.
+    }
+    clear a_nin'.
+    apply (ideal_eq_symmetric zorn_real_ideal).
+    apply (ideal_eq_symmetric zorn_real_ideal) in ab.
+    rewrite neg_zero, plus_rid in *.
 
     intros ε ε_pos.
     pose proof (zorn_real_polynomial_nz a a_nin)
@@ -710,13 +709,11 @@ Local Program Instance zorn_real_order_le_antisym : Antisymmetric le.
 Next Obligation.
     revert H H0.
     equiv_get_value x y.
-    unfold le; equiv_simpl.
-    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
-    rewrite stupid; clear stupid.
+    unfold le, zorn_real_quotient, quotient_ring; equiv_simpl.
     intros xy yx.
     destruct xy as [xy|xy].
     2: {
-        apply ideal_eq_symmetric.
+        apply (ideal_eq_symmetric zorn_real_ideal).
         exact xy.
     }
     destruct yx as [yx|yx].
@@ -777,9 +774,7 @@ Next Obligation.
     }
     revert H H0 a_nz b_nz.
     equiv_get_value a b.
-    unfold zero, mult, le; equiv_simpl.
-    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
-    do 2 rewrite stupid; clear stupid.
+    unfold zero, mult, le, zorn_real_quotient, quotient_ring; equiv_simpl.
     intros a_pos b_pos a_nz b_nz.
     destruct a_pos as [a_pos|]; [>|contradiction].
     destruct b_pos as [b_pos|]; [>|contradiction].
@@ -803,9 +798,7 @@ Next Obligation.
     rewrite neq_sym in c_nz.
     revert c_pos c_nz H0.
     equiv_get_value a b c.
-    unfold zero, mult, le; equiv_simpl.
-    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
-    rewrite stupid; clear stupid.
+    unfold zero, mult, le, zorn_real_quotient, quotient_ring; equiv_simpl.
     intros c_pos c_nz.
     unfold zorn_real_q_le.
     rewrite <- mult_rneg.
@@ -861,11 +854,9 @@ Local Program Instance zorn_real_quotient_not_trivial
     not_trivial_b := 1;
 }.
 Next Obligation.
-    unfold zero, one; cbn.
+    unfold zero, one, zorn_real_quotient, quotient_ring; equiv_simpl.
     intros contr.
-    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
-    apply stupid in contr; clear stupid.
-    apply ideal_eq_symmetric in contr.
+    apply (ideal_eq_symmetric zorn_real_ideal) in contr.
     rewrite neg_zero, plus_rid in contr.
     specialize (contr 1 one_pos) as [δ [δ_pos contr]].
     pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
@@ -885,9 +876,7 @@ Proof.
     rewrite neq_sym in f_nz, g_nz.
     equiv_get_value f g.
     revert f_pos f_nz g_pos g_nz.
-    unfold zero, le; equiv_simpl.
-    pose (stupid := equiv_eq (E := ideal_equiv zorn_real_ideal)).
-    do 2 rewrite stupid.
+    unfold zero, le, zorn_real_quotient, quotient_ring; equiv_simpl.
     intros f_pos f_nz g_pos g_nz.
     destruct f_pos as [f_pos|f_z]; [>|contradiction].
     destruct g_pos as [g_pos|g_z]; [>|contradiction].
