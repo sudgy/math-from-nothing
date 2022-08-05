@@ -4,7 +4,6 @@
 *.vos
 *.aux
 *.v#
-/Makefile
 /Makefile.conf
 /.Makefile.d
 /html/
