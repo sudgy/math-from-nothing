@@ -434,7 +434,6 @@ Theorem open_inf_interval_open : ∀ a, open (open_inf_interval a).
         +   intros y y_in.
             apply y_in.
     -   rewrite not_ex in no_max.
-        setoid_rewrite not_all in no_max.
         pose (SS S := ∃ b, S = open_interval a b).
         assert (open_inf_interval a = ⋃ SS) as eq.
         {
@@ -442,7 +441,9 @@ Theorem open_inf_interval_open : ∀ a, open (open_inf_interval a).
             intros x.
             split.
             -   intros ax.
-                specialize (no_max x) as [b b_gt].
+                specialize (no_max x).
+                rewrite not_all in no_max.
+                destruct no_max as [b b_gt].
                 rewrite nle_lt in b_gt.
                 exists (open_interval a b).
                 split.
@@ -481,7 +482,6 @@ Theorem inf_open_interval_open : ∀ a, open (inf_open_interval a).
         +   intros y y_in.
             apply y_in.
     -   rewrite not_ex in no_min.
-        setoid_rewrite not_all in no_min.
         pose (SS S := ∃ a, S = open_interval a b).
         assert (inf_open_interval b = ⋃ SS) as eq.
         {
@@ -489,7 +489,9 @@ Theorem inf_open_interval_open : ∀ a, open (inf_open_interval a).
             intros x.
             split.
             -   intros bx.
-                specialize (no_min x) as [a a_lt].
+                specialize (no_min x).
+                rewrite not_all in no_min.
+                destruct no_min as [a a_lt].
                 rewrite nle_lt in a_lt.
                 exists (open_interval a b).
                 split.
@@ -575,8 +577,6 @@ Lemma order_hausdorff_wlog : ∀ a b, a < b →
             pose proof (trans cx xc) as contr.
             destruct contr; contradiction.
     -   rewrite not_ex in near.
-        setoid_rewrite not_and in near.
-        setoid_rewrite nlt_le in near.
         exists (inf_open_interval b), (open_inf_interval a).
         split. 2: split. 3: split. 4: split.
         +   apply inf_open_interval_open.
@@ -587,9 +587,10 @@ Lemma order_hausdorff_wlog : ∀ a b, a < b →
             intros x [bx ax].
             unfold inf_open_interval in bx.
             unfold open_inf_interval in ax.
-            specialize (near x) as [xa|xb].
-            *   pose proof (lt_le_trans ax xa) as [C0 C1]; contradiction.
-            *   pose proof (lt_le_trans bx xb) as [C0 C1]; contradiction.
+            specialize (near x).
+            rewrite not_and_impl in near.
+            specialize (near ax).
+            contradiction.
 Qed.
 (* end hide *)
 Program Instance order_hausdorff : HausdorffSpace U.

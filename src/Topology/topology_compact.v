@@ -216,19 +216,29 @@ Theorem compact_limit_point_compact : compact U → limit_point_compact U.
         contradiction (no_lim x x_lim).
     }
     unfold limit_point in no_lim.
-    setoid_rewrite not_all in no_lim.
-    pose (SS S := ∃ a, S = ex_val (no_lim a)).
+    assert (∀ a, ∃ S, open S ∧ S a ∧ ¬intersects (A - singleton a) S)
+        as no_lim'.
+    {
+        intros a.
+        specialize (no_lim a).
+        rewrite not_all in no_lim.
+        destruct no_lim as [S no_lim].
+        exists S.
+        do 2 rewrite not_impl in no_lim.
+        exact no_lim.
+    }
+    clear no_lim.
+    pose (SS S := ∃ a, S = ex_val (no_lim' a)).
     assert (open_covering SS) as SS_cover.
     {
         split.
         -   intros x C0; clear C0.
-            exists (ex_val (no_lim x)).
+            exists (ex_val (no_lim' x)).
             split.
             +   exists x.
                 reflexivity.
             +   rewrite_ex_val S S_H.
-                do 2 rewrite not_impl in S_H.
-                    apply S_H.
+                apply S_H.
         -   intros S [x S_eq].
             subst S.
             rewrite_ex_val S S_H.
@@ -252,7 +262,6 @@ Theorem compact_limit_point_compact : compact U → limit_point_compact U.
         destruct SS'_S1 as [z S2_eq].
         rewrite_ex_val S S_H.
         subst S2.
-        do 2 rewrite not_impl in S_H.
         destruct S_H as [S_open [Sz S_inter]].
         unfold intersects in S_inter.
         rewrite not_not in S_inter.

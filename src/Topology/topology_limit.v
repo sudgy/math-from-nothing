@@ -284,7 +284,7 @@ Theorem limit_point_inf : ∀ A x,
         destruct x_lim as [a [[Aa nax] Ya]].
         unfold Y, X in Ya.
         unfold complement, intersection, set_minus, singleton in Ya.
-        not_simpl in Ya.
+        rewrite not_and, not_and, not_not in Ya.
         destruct Ya as [Sa [[Aa'|ax]|Sa']]; contradiction.
     -   intros all_S S S_open Sx.
         apply ex_not_empty.

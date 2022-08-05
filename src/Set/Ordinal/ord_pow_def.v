@@ -48,9 +48,6 @@ Theorem ord_pow_max_ex : ∀ {A B : ord_type} (C : ord_pow_type A B),
     get_ord_wo B.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_and in contr.
-    setoid_rewrite not_not in contr.
-    setoid_rewrite not_all in contr.
     pose proof (ord_pow_fin C) as C_fin.
     unfold finite in C_fin.
     rewrite <- nle_lt in C_fin.
@@ -59,7 +56,11 @@ Theorem ord_pow_max_ex : ∀ {A B : ord_type} (C : ord_pow_type A B),
     -   exists x.
         exact x_eq.
     -   intros [a a_neq].
-        specialize (contr a) as [contr|[b contr]]; try contradiction.
+        specialize (contr a).
+        rewrite not_and_impl in contr.
+        specialize (contr a_neq).
+        rewrite not_all in contr.
+        destruct contr as [b contr].
         rewrite not_impl in contr.
         destruct contr as [b_lt b_neq].
         exists [b|b_neq].
@@ -79,10 +80,11 @@ Theorem ord_pow_max_dif_ex : ∀ {A B : ord_type} {C D : ord_pow_type A B},
         classic_contradiction contr.
         rewrite not_ex in contr.
         unfold S in contr.
-        setoid_rewrite not_not in contr.
         apply neq.
         apply ord_pow_eq.
-        exact contr.
+        intros x.
+        rewrite <- (not_not (ord_pow_f C x = ord_pow_f D x)).
+        apply contr.
     }
     assert (finite (|set_type S|)) as S_fin.
     {
@@ -170,10 +172,11 @@ Lemma ord_pow_wo_wo : ∀ A B,
                 {
                     classic_contradiction contr.
                     rewrite not_ex in contr.
-                    setoid_rewrite not_not in contr.
                     apply neq.
                     apply ord_pow_eq.
                     intros x.
+                    specialize (contr x).
+                    rewrite not_not in contr.
                     rewrite C_zero, contr.
                     apply ord_zero_eq.
                 }
@@ -196,8 +199,9 @@ Lemma ord_pow_wo_wo : ∀ A B,
     {
         intros [C SC]; cbn.
         rewrite not_ex in C_nex.
-        setoid_rewrite not_and in C_nex.
-        specialize (C_nex C) as [C_nex|C_nex]; try contradiction.
+        specialize (C_nex C).
+        rewrite not_and_impl in C_nex.
+        specialize (C_nex SC).
         rewrite not_all in C_nex.
         exact C_nex.
     }

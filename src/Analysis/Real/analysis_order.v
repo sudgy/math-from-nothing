@@ -269,15 +269,14 @@ Theorem real_complete : complete real.
         clear A_upper' A_least'.
         classic_contradiction contr.
         rewrite not_ex in contr.
-        setoid_rewrite not_and in contr.
-        setoid_rewrite nle_lt in contr.
-        setoid_rewrite nlt_le in contr.
         assert (A <= A - ε/2/2) as leq.
         {
             apply A_least.
             intros m.
             unfold fn.
-            specialize (contr (N + m)) as [contr|contr].
+            specialize (contr (N + m)).
+            rewrite not_and, nle_lt, nlt_le in contr.
+            destruct contr as [contr|contr].
             -   rewrite <- (plus_rid N) in contr at 2.
                 apply lt_plus_lcancel in contr.
                 contradiction (nat_lt_zero _ contr).

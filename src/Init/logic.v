@@ -2,7 +2,6 @@
 *)
 
 Require Export base_logic.
-Require Export ext_rewrite.
 
 Theorem not_not : ∀ P, (¬¬P) = P.
     intro P.
@@ -86,9 +85,11 @@ Theorem not_all : ∀ {U} (P : U → Prop), equal (¬(∀ a, P a)) (∃ a, ¬P a
     split.
     -   intro not_all.
         classic_contradiction_prop H.
+        apply not_all; intros a.
         rewrite not_ex in H.
-        setoid_rewrite not_not in H.
-        contradiction.
+        specialize (H a).
+        rewrite not_not in H.
+        exact H.
     -   intros [a a_not] all.
         specialize (all a).
         contradiction.

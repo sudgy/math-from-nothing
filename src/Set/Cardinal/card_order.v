@@ -193,8 +193,9 @@ Lemma card_le_antisymmetric : ∀ κ μ, κ <= μ → μ <= κ → κ = μ.
                 apply g_inj.
                 exact b'_eq.
             *   rewrite not_ex in b_eq.
-                setoid_rewrite not_and in b_eq.
-                specialize (b_eq bl) as [b_eq|b_eq]; try contradiction.
+                specialize (b_eq bl).
+                rewrite not_and_impl in b_eq.
+                specialize (b_eq bl_lonely).
                 unfold descendent_of in b_eq.
                 rewrite bl_descendent in b_eq.
                 rewrite not_ex in b_eq.

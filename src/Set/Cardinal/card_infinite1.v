@@ -195,12 +195,13 @@ Theorem fin_nat_ex : ∀ κ, finite κ → ∃ n, nat_to_card n = κ.
     {
         classic_contradiction contr.
         rewrite not_ex in contr.
-        setoid_rewrite nle_lt in contr.
         unfold finite in κ_fin.
         rewrite <- nle_lt in κ_fin.
         apply κ_fin; clear κ_fin.
         apply greater_all_nat_inf.
-        exact contr.
+        intros a.
+        rewrite <- nle_lt.
+        apply contr.
     }
     pose proof (nat_wo _ κ_le) as [m [κ_le_m m_min]]; clear κ_le.
     exists m.

@@ -569,13 +569,14 @@ Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f
     2: {
         exfalso.
         rewrite not_ex in M_nex.
-        setoid_rewrite not_all in M_nex.
         pose (SS S := ∃ a : set_type A, S = inf_open_interval [a|]).
         assert (open_covering_of SS A) as SS_cover.
         {
             split.
             -   intros x Ax.
-                specialize (M_nex [x|Ax]) as [[a Aa] a_lt].
+                specialize (M_nex [x|Ax]).
+                rewrite not_all in M_nex.
+                destruct M_nex as [[a Aa] a_lt].
                 unfold le in a_lt; cbn in a_lt.
                 rewrite nle_lt in a_lt.
                 exists (inf_open_interval a).
@@ -641,13 +642,14 @@ Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f
     2: {
         exfalso.
         rewrite not_ex in m_nex.
-        setoid_rewrite not_all in m_nex.
         pose (SS S := ∃ a : set_type A, S = open_inf_interval [a|]).
         assert (open_covering_of SS A) as SS_cover.
         {
             split.
             -   intros x Ax.
-                specialize (m_nex [x|Ax]) as [[a Aa] a_lt].
+                specialize (m_nex [x|Ax]).
+                rewrite not_all in m_nex.
+                destruct m_nex as [[a Aa] a_lt].
                 unfold le in a_lt; cbn in a_lt.
                 rewrite nle_lt in a_lt.
                 exists (open_inf_interval a).

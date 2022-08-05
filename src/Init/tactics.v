@@ -10,30 +10,6 @@ Ltac case_if :=
     | K: context [if ?P then _ else _] |- _ => go P
     end.
 
-(** Tries to use the theorems in logic.v to simplify expressions.  Doesn't work
-too well because it can't work past binders, so maybe I should just get rid of
-it. *)
-(* TODO: USE SETOID_REWRITE *)
-Ltac not_simpl :=
-    repeat (
-        try rewrite not_not;
-        try rewrite not_impl;
-        try rewrite not_and;
-        try rewrite not_or;
-        try rewrite not_ex;
-        try rewrite not_all
-    ).
-
-Tactic Notation "not_simpl" "in" ident(H) :=
-    repeat (
-        try rewrite not_not in H;
-        try rewrite not_impl in H;
-        try rewrite not_and in H;
-        try rewrite not_or in H;
-        try rewrite not_ex in H;
-        try rewrite not_all in H
-    ).
-
 Ltac exfalso := elimtype False.
 
 Tactic Notation "bring_left" constr(x) constr(comm) constr(assoc) :=

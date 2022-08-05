@@ -276,8 +276,6 @@ Proof.
     destruct f_nin as [ε f_nin].
     rewrite not_impl, not_ex in f_nin.
     destruct f_nin as [ε_pos f_nin].
-    setoid_rewrite not_and_impl in f_nin.
-    setoid_rewrite not_all in f_nin.
 
     pose proof (half_pos ε ε_pos) as ε2_pos.
     exists (ε / 2).
@@ -293,7 +291,9 @@ Proof.
     rewrite not_impl in contr.
     destruct contr as [x_in x_lt].
     rewrite nlt_le in x_lt.
-    specialize (f_nin δ2 δ2_pos) as [y f_nin].
+    specialize (f_nin δ2).
+    rewrite not_and_impl, not_all in f_nin.
+    specialize (f_nin δ2_pos) as [y f_nin].
     rewrite not_impl in f_nin.
     destruct f_nin as [y_in y_ge].
     rewrite nlt_le in y_ge.
@@ -659,10 +659,11 @@ Next Obligation.
     pose proof (polynomial_continuous cut cut_in cut_out cut_lt f ε ε_pos)
         as [δ [δ_pos f_cont]].
     rewrite not_ex in f_neg, f'_neg.
-    setoid_rewrite not_and_impl in f_neg.
-    setoid_rewrite not_and_impl in f'_neg.
-    specialize (f_neg δ δ_pos).
-    specialize (f'_neg δ δ_pos).
+    specialize (f_neg δ).
+    specialize (f'_neg δ).
+    rewrite not_and_impl in f_neg, f'_neg.
+    specialize (f_neg δ_pos).
+    specialize (f'_neg δ_pos).
     exists δ.
     split; [>exact δ_pos|].
     intros x x_in.

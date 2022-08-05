@@ -410,7 +410,6 @@ Qed.
 
 Theorem compl_compl : ∀ A : U → Prop, complement (complement A) = A.
     intros A.
-    (* TODO: MORE EXTENSIONAL REWRITING *)
     unfold complement.
     apply antisym.
     -   intros x x_in.
@@ -422,7 +421,6 @@ Theorem compl_compl : ∀ A : U → Prop, complement (complement A) = A.
 Qed.
 
 Theorem compl_empty : @complement U ∅ = all.
-    (* TODO: MORE EXTENSIONAL REWRITING *)
     apply antisym.
     -   intros x x_in.
         unfold all.
@@ -432,7 +430,6 @@ Theorem compl_empty : @complement U ∅ = all.
 Qed.
 
 Theorem compl_all : @complement U all = ∅.
-    (* TODO: MORE EXTENSIONAL REWRITING *)
     apply not_ex_empty.
     intros x x_in.
     contradiction x_in.
@@ -443,13 +440,12 @@ Theorem union_compl : ∀ A B : U → Prop,
         complement (A ∪ B) = complement A ∩ complement B.
     intros A B.
     unfold complement, union, intersection.
-    (* TODO: MORE EXTENSIONAL REWRITING *)
     apply antisym.
     -   intros x x_in.
-        not_simpl in x_in.
+        rewrite not_or in x_in.
         exact x_in.
     -   intros x x_in.
-        not_simpl.
+        rewrite not_or.
         exact x_in.
 Qed.
 
@@ -457,13 +453,12 @@ Theorem inter_compl : ∀ A B : U → Prop,
         complement (A ∩ B) = complement A ∪ complement B.
     intros A B.
     unfold complement, union, intersection.
-    (* TODO: MORE EXTENSIONAL REWRITING *)
     apply antisym.
     -   intros x x_in.
-        not_simpl in x_in.
+        rewrite not_and in x_in.
         exact x_in.
     -   intros x x_in.
-        not_simpl.
+        rewrite not_and.
         exact x_in.
 Qed.
 
@@ -574,7 +569,8 @@ Lemma symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
     destruct x_in as [[Rx nSTx]|[STx nRx]].
     -   unfold symmetric_difference, union in nSTx.
         unfold set_minus in nSTx.
-        not_simpl in nSTx.
+        rewrite not_or in nSTx.
+        do 2 rewrite not_and, not_not in nSTx.
         destruct nSTx as [[nSx|Tx] [nTx|Sx]]; try contradiction.
         +   left.
             split; try assumption.
@@ -583,7 +579,8 @@ Lemma symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
         +   right.
             split; try assumption.
             unfold symmetric_difference, union, set_minus.
-            not_simpl.
+            rewrite not_or.
+            do 2 rewrite not_and, not_not.
             split; right; assumption.
     -   destruct STx as [[Sx nTx]|[Tx nSx]].
         +   left.
@@ -593,7 +590,8 @@ Lemma symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
         +   right.
             split; try assumption.
             unfold symmetric_difference, union, set_minus.
-            not_simpl.
+            rewrite not_or.
+            do 2 rewrite not_and, not_not.
             split; left; assumption.
 Qed.
 

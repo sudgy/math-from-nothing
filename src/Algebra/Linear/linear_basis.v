@@ -322,9 +322,10 @@ Lemma basis_unique2_wlog : ∀ S, linearly_independent S →
                     apply Sbl'.
                 -   unfold singleton.
                     rewrite not_ex in n.
-                    setoid_rewrite in_ulist_add in n.
-                    setoid_rewrite not_or in n.
-                    specialize (n (fst a)) as [neq x_nin].
+                    specialize (n (fst a)).
+                    rewrite in_ulist_add in n.
+                    rewrite not_or in n.
+                    destruct n as [neq x_nin].
                     intros contr.
                     rewrite contr in neq.
                     apply neq.

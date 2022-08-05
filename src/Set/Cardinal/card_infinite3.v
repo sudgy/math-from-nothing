@@ -149,16 +149,16 @@ Theorem finite_well_founded_max :
     intros U_fin S S_ex.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    unfold is_minimal in contr.
-    setoid_rewrite not_and in contr.
-    setoid_rewrite not_all in contr.
+    unfold is_maximal in contr.
     pose proof (le_lt_trans (card_sub_le _ S) U_fin) as S_fin.
     unfold finite in S_fin.
     rewrite <- nle_lt in S_fin.
     apply S_fin.
     apply all_greater_inf_set; try exact S_ex.
     intros [a Sa].
-    specialize (contr a) as [contr|contr]; try contradiction.
+    specialize (contr a).
+    rewrite not_and_impl, not_all in contr.
+    specialize (contr Sa).
     destruct contr as [b contr].
     do 2 rewrite not_impl in contr.
     rewrite not_not in contr.

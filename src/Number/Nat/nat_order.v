@@ -377,15 +377,15 @@ Theorem nat_wo : ∀ S : nat → Prop, (∃ x, S x) → has_least le S.
     unfold has_least in no_least.
     rewrite not_ex in no_least.
     unfold is_least in no_least.
-    setoid_rewrite not_and in no_least.
-    setoid_rewrite not_all in no_least.
     assert (∀ x, ¬S x) as none.
     {
         clear x Sx.
         intros x.
         induction x using strong_induction.
         intros Sx.
-        specialize (no_least x) as [C0|[a a_eq]]; try contradiction.
+        specialize (no_least x).
+        rewrite not_and, not_all in no_least.
+        destruct no_least as [nSx|[a a_eq]]; [>contradiction|].
         rewrite not_impl in a_eq.
         destruct a_eq as [Sa a_eq].
         rewrite nle_lt in a_eq.

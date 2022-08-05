@@ -215,11 +215,12 @@ Lemma C_admissable : admissable C.
         {
             classic_contradiction contr.
             rewrite not_ex in contr.
-            setoid_rewrite not_and in contr.
             assert (is_upper_bound le F y) as y_upper.
             {
                 intros z Fz.
-                specialize (contr z) as [C|leq]; try contradiction.
+                specialize (contr z).
+                rewrite not_and in contr.
+                destruct contr as [C0|leq]; [>contradiction|].
                 pose proof (F_sub _ Fz) as [Mz Pz].
                 pose proof (z_P z Mz Pz y My) as [C|leq2];try contradiction.
                 exact (trans (f_ge _) leq2).
@@ -417,10 +418,10 @@ Theorem hausdorff : ∃ M : U → Prop,
     apply (HausdorffModule.hausdorff op).
     intros G G_chain.
     rewrite not_ex in contr.
-    setoid_rewrite not_and in contr.
-    specialize (contr G) as [C|contr]; try contradiction.
+    specialize (contr G).
+    rewrite not_and_impl in contr.
+    specialize (contr G_chain).
     rewrite not_all in contr.
-    (* TODO: MORE EXTENSIONAL REWRITING *)
     destruct contr as [F contr].
     exists F.
     rewrite not_impl in contr.

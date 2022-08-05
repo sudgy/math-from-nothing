@@ -104,12 +104,14 @@ Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c 
     unfold func_bounded_around.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_ex in contr.
-    setoid_rewrite not_all in contr.
     assert (∀ ε a, ∃ x, c ≠ [x|] ∧ open_ball c ε [x|] ∧ a < |l-f x|) as contr'.
     {
         intros ε a.
-        specialize (contr ε (a + |l|)) as [x contr].
+        specialize (contr ε).
+        rewrite not_ex in contr.
+        specialize (contr (a + |l|)).
+        rewrite not_all in contr.
+        destruct contr as [x contr].
         do 2 rewrite not_impl in contr.
         rewrite nle_lt in contr.
         destruct contr as [x_neq [x_lt ltq]].

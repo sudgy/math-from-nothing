@@ -71,21 +71,26 @@ Lemma S_order_trans : ∀ A B C, A <= B → B <= C → A <= C.
             clear AB2 BC BC2 c Ac Bc a C C_wo.
             classic_contradiction contr.
             rewrite not_ex in contr.
-            setoid_rewrite not_not in contr.
+            assert (∀ a : set_type (bin_domain B), bin_domain A [a|]) as contr'.
+            {
+                intros a.
+                rewrite <- (not_not (bin_domain A [a|])).
+                exact (contr a).
+            }
             apply BC_neq.
             apply antisym; try assumption.
             unfold bin_func_le.
             assert (bin_domain B ⊆ bin_domain A) as sub.
             {
                 intros b Bb.
-                exact (contr [_|Bb]).
+                exact (contr' [_|Bb]).
             }
             exists sub.
             intros a b.
             destruct AB as [C0 AB].
-            specialize (AB [_|contr a] [_|contr b]); cbn in *.
-            rewrite (proof_irrelevance _ (contr a)).
-            rewrite (proof_irrelevance _ (contr b)).
+            specialize (AB [_|contr' a] [_|contr' b]); cbn in *.
+            rewrite (proof_irrelevance _ (contr' a)).
+            rewrite (proof_irrelevance _ (contr' b)).
             rewrite AB.
             apply f_equal2; apply set_type_eq; reflexivity.
         }

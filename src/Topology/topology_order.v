@@ -203,7 +203,7 @@ Lemma convex_connected_wlog : ∀ S, top_convex S →
                     pose proof (α_upper x' A''x) as x_le.
                     destruct A''x as [x [x'_eq [Ax x_lt]]]; subst x'.
                     specialize (m_max' x).
-                    not_simpl in m_max'.
+                    do 2 rewrite not_and in m_max'.
                     destruct m_max' as [leq|[leq|nAx]].
                     -   rewrite nlt_le in leq.
                         exact leq.

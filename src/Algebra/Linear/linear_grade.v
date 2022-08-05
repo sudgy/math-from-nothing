@@ -394,7 +394,7 @@ Lemma grade_decomposition_plus_homo : ∀ (a b : set_type homogeneous) v,
             apply in_ulist_add in a_in as [a_eq|a_in]; [>|exact a_in].
             subst c.
             symmetry in c_eq; contradiction.
-    -   rewrite not_ex in c_nex; setoid_rewrite not_and in c_nex.
+    -   rewrite not_ex in c_nex.
         assert (grade_decomposition ([b|] + v) = b ::: grade_decomposition v)
             as l_eq.
         {
@@ -406,10 +406,11 @@ Lemma grade_decomposition_plus_homo : ∀ (a b : set_type homogeneous) v,
                 split; [>|apply grade_decomposition_uni].
                 intros contr.
                 apply image_in_ulist in contr as [a' [a'_eq a'_in]].
-                specialize (c_nex a') as [a'_neq|c_nin].
-                +   rewrite a'_eq in a'_neq.
-                    contradiction.
-                +   contradiction.
+                specialize (c_nex a').
+                rewrite and_comm, not_and_impl in c_nex.
+                specialize (c_nex a'_in).
+                rewrite a'_eq in c_nex.
+                contradiction.
             -   rewrite ulist_prop_add.
                 split; [>exact b_nz|apply grade_decomposition_nz].
         }
@@ -462,10 +463,11 @@ Lemma grade_project_plus_neq : ∀ a v i j, i ≠ j → of_grade i a →
             rewrite not_and in avj_nin.
             destruct avj_nin; contradiction.
     -   rewrite not_ex in vj_nin.
-        setoid_rewrite not_and in vj_nin.
         case_grade_project (a + v) j avj avj_eq avj_in avj_nin.
-        +   specialize (vj_nin avj) as [vj_nin|avj_nin]; [>contradiction|].
-            exfalso; apply avj_nin.
+        +   specialize (vj_nin avj).
+            rewrite not_and_impl in vj_nin.
+            specialize (vj_nin avj_eq).
+            exfalso; apply vj_nin.
             rewrite <- (plus_llinv v a).
             assert (homogeneous (-a)) as a_homo.
             {

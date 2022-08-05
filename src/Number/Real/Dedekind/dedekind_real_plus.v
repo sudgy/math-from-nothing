@@ -315,11 +315,9 @@ Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
                     rewrite plus_rrinv.
                     exact Sn.
                 --  rewrite not_ex in cusp.
-                    setoid_rewrite not_and in cusp.
-                    setoid_rewrite not_not in cusp.
-                    setoid_rewrite nlt_le in cusp.
-                    specialize (cusp (n × -x + -x * div 2)) as [cusp|cusp];
-                        try exact cusp.
+                    specialize (cusp (n × -x + -x * div 2)).
+                    rewrite not_and, not_not, nlt_le in cusp.
+                    destruct cusp as [cusp|cusp]; [>|exact cusp].
                     cbn in cusp.
                     rewrite plus_comm in cusp.
                     apply le_plus_lcancel in cusp.
@@ -417,10 +415,10 @@ Lemma real_plus_linv_ : ∀ a, -a + a = 0.
                     apply antisym; try exact leq.
                     intros y y_lt.
                     rewrite not_ex in contr.
-                    setoid_rewrite not_and in contr.
-                    setoid_rewrite not_not in contr.
-                    specialize (contr y) as [contr|contr]; try contradiction.
-                    exact contr.
+                    specialize (contr y).
+                    rewrite not_and_impl, not_not in contr.
+                    apply contr.
+                    exact y_lt.
                 }
                 pose proof (rand (rand (rand a_cut)) _ ax) as [x' [ax' lt]].
                 exists (x' + -x).

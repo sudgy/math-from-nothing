@@ -204,14 +204,14 @@ Theorem union_closed : ∀ S, S ⊆ closed → finite (|set_type S|) → closed 
         apply predicate_ext; intro x; split.
         -   intros not_A A [A' [SA' A'_eq]].
             rewrite not_ex in not_A.
-            setoid_rewrite not_and in not_A.
-            specialize (not_A A') as [H1|H2].
-            +   contradiction.
-            +   rewrite <- (compl_compl A') in H2.
-                rewrite <- A'_eq in H2.
-                unfold complement in H2.
-                rewrite not_not in H2.
-                exact H2.
+            specialize (not_A A').
+            rewrite not_and_impl in not_A.
+            specialize (not_A SA').
+            rewrite <- (compl_compl A') in not_A.
+            rewrite <- A'_eq in not_A.
+            unfold complement in not_A.
+            rewrite not_not in not_A.
+            exact not_A.
         -   intros all_A [A [SA Ax]].
             assert (S' (complement A)) as S'A'.
             {

@@ -136,7 +136,7 @@ Theorem real_lt_ex_between : ∀ a b, a < b → ∃ x, ¬[a|] x ∧ [b|] x.
     intros x bx.
     rewrite not_ex in contr.
     specialize (contr x).
-    not_simpl in contr.
+    rewrite not_and, not_not in contr.
     destruct contr as [ax|nbx].
     -   exact ax.
     -   contradiction.

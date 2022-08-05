@@ -263,11 +263,12 @@ Lemma pid_factor_ex : ∀ a, 0 ≠ a → ¬unit a → ∃ b, prime b ∧ b ∣ a
     intros a a_nz au.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_and in contr.
     assert (∀ p, p ∣ a → ¬prime p) as a_factors.
     {
         intros p p_div p_irr.
-        specialize (contr p) as [contr|contr]; contradiction.
+        specialize (contr p).
+        rewrite not_and in contr.
+        destruct contr; contradiction.
     }
     clear contr.
     assert (∀ a', ¬unit a' → a' ∣ a →

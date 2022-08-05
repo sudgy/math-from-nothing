@@ -2,6 +2,7 @@
 those axioms. *)
 
 Require Export coq_logic.
+Require Export Setoid.
 
 Set Implicit Arguments.
 
@@ -9,6 +10,12 @@ Axiom functional_ext : ∀ (A : Type) (B : A → Type) (f g : ∀ x, B x),
     (∀ x, f x = g x) → f = g.
 Axiom propositional_ext : ∀ (P Q : Prop), P ↔ Q → P = Q.
 Axiom indefinite_description : ∀ {A : Type}, inhabited A → A.
+
+Global Instance iff_rewrite : subrelation iff equal.
+    intros A B Hequiv.
+    apply propositional_ext.
+    exact Hequiv.
+Qed.
 
 Theorem ex_to_type : ∀ {A : Type} {P : A → Prop}, ex P → ex_type P.
     intros A P P_ex.

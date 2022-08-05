@@ -10,7 +10,6 @@
 ./src/Init/notations.v
 ./src/Init/coq_logic.v
 ./src/Init/base_logic.v
-./src/Init/ext_rewrite.v
 ./src/Init/logic.v
 ./src/Init/tactics.v
 ./src/Init/tlc_tactics.v

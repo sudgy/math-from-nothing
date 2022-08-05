@@ -19,7 +19,6 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
     intros x y x_pos y_pos.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite nlt_le in contr.
     pose (A a := ∃ n, a = n × y).
     assert (∃ a, A a) as A_ex.
     {
@@ -34,6 +33,7 @@ Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
         exists x.
         intros a [n n_eq].
         subst.
+        rewrite <- nlt_le.
         apply contr.
     }
     pose proof (sup_complete A A_ex A_upper) as [α [α_upper α_least]].

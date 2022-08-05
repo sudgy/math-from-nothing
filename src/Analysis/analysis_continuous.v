@@ -71,9 +71,8 @@ Theorem metric_continuous_seq : ∀ (f : U → V) x, continuous_at f x ↔
         {
             intros δ δ_pos.
             specialize (contr δ).
-            not_simpl in contr.
-            destruct contr as [contr|contr]; try contradiction.
-            destruct contr as [a contr].
+            rewrite not_and_impl, not_all in contr.
+            specialize (contr δ_pos) as [a contr].
             rewrite not_impl in contr.
             exists a.
             exact contr.

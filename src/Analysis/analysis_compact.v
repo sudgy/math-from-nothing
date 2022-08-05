@@ -126,7 +126,6 @@ Lemma n_gt : ∀ n : set_type X, ∃ n', n < n'.
     pose proof x_inf as x_inf.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite nlt_le in contr.
     assert (|set_type X| <= nat_to_card (nat_suc n)) as leq.
     {
         unfold nat_to_card, le; equiv_simpl.
@@ -134,6 +133,7 @@ Lemma n_gt : ∀ n : set_type X, ∃ n', n < n'.
         {
             intros x.
             specialize (contr x).
+            rewrite nlt_le in contr.
             rewrite nat_lt_suc_le.
             apply contr.
         }
@@ -191,8 +191,6 @@ Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
         as ε_inf.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_and in contr.
-    setoid_rewrite nlt_le in contr.
     unfold infinite in ε_inf.
     rewrite <- nlt_le in ε_inf.
     apply ε_inf.
@@ -203,7 +201,11 @@ Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
     {
         intros [x [Ax x_lt]]; cbn.
         destruct Ax as [n' x_eq].
-        specialize (contr n') as [contr|contr].
+        specialize (contr n').
+        unfold open_ball in contr.
+        rewrite not_and in contr.
+        do 2 rewrite nlt_le in contr.
+        destruct contr as [contr|contr].
         -   rewrite <- nat_lt_suc_le in contr.
             exists [n'|contr].
             symmetry; exact x_eq.
@@ -320,19 +322,19 @@ Hypothesis SS_cover : open_covering SS.
 Lemma lebesgue_number_lemma : ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ S.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_all in contr.
     assert (∀ n, ∃ x, ∀ S, SS S → ¬(open_ball x [_|real_n_div_pos n] ⊆ S))
         as x_ex.
     {
         intros n.
-        specialize (contr [_|real_n_div_pos n]) as [x contr].
+        specialize (contr [_|real_n_div_pos n]).
+        rewrite not_all in contr.
+        destruct contr as [x contr].
         exists x.
         intros S SS_S.
         rewrite not_ex in contr.
-        setoid_rewrite not_and in contr.
-        specialize (contr S) as [contr|contr].
-        -   contradiction.
-        -   exact contr.
+        specialize (contr S).
+        rewrite not_and_impl in contr.
+        exact (contr SS_S).
     }
     pose (x n := ex_val (x_ex n)).
     specialize (U_comp x) as [x' [x'_sub [a x'_lim]]].
@@ -383,19 +385,19 @@ Lemma compact_totally_bounded : totally_bounded all.
     intros ε.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_and in contr.
     assert (∀ A, finite (|set_type A|) → ∃ x, ¬((⋃ to_balls A ε) x)) as x_ex.
     {
         intros A A_fin.
-        specialize (contr A) as [contr|contr].
-        -   contradiction.
-        -   unfold subset in contr.
-            rewrite not_all in contr.
-            destruct contr as [x contr].
-            rewrite not_impl in contr.
-            destruct contr as [C0 contr]; clear C0.
-            exists x.
-            exact contr.
+        specialize (contr A).
+        rewrite not_and_impl in contr.
+        specialize (contr A_fin).
+        unfold subset in contr.
+        rewrite not_all in contr.
+        destruct contr as [x contr].
+        rewrite not_impl in contr.
+        destruct contr as [C0 contr]; clear C0.
+        exists x.
+        exact contr.
     }
     clear contr.
     assert U as c.

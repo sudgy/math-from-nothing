@@ -178,9 +178,21 @@ Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
     intros ε ε_pos.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    setoid_rewrite not_and_impl in contr.
-    setoid_rewrite not_all in contr.
-    pose (xn' n := ex_val (contr _ (real_n_div_pos n))).
+    assert (∀ a, 0 < a → ∃ x : set_type A,
+        [x|] ≠ c ∧ d [x|] c < a ∧ ε <= d (f x) l) as contr'.
+    {
+        intros a a_pos.
+        specialize (contr a).
+        rewrite not_and_impl in contr.
+        specialize (contr a_pos).
+        rewrite not_all in contr.
+        destruct contr as [x contr].
+        exists x.
+        do 2 rewrite not_impl in contr.
+        rewrite nlt_le in contr.
+        exact contr.
+    }
+    pose (xn' n := ex_val (contr' _ (real_n_div_pos n))).
     assert (∀ n, (A - singleton c) [xn' n|]) as xn_in.
     {
         intros n.
@@ -188,7 +200,6 @@ Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
         -   apply [|xn' n].
         -   unfold xn'.
             rewrite_ex_val x x_eq.
-            do 2 rewrite not_impl in x_eq.
             unfold singleton.
             rewrite neq_sym.
             apply x_eq.
@@ -199,7 +210,6 @@ Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
         intros n.
         unfold xn, xn'; cbn.
         rewrite_ex_val x x_eq.
-        do 2 rewrite not_impl in x_eq.
         apply x_eq.
     }
     assert (∀ n, ¬d (f [[xn n|] | land [|xn n]]) l < ε) as fxn_lt.
@@ -215,11 +225,11 @@ Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
             symmetry; exact x_eq.
         }
         clear x_eq.
-        do 2 rewrite not_impl in xH.
+        rewrite nlt_le.
         apply xH.
     }
     clearbody xn.
-    clear contr xn' xn_in.
+    clear contr contr' xn' xn_in.
     specialize (all_seqs xn).
     do 2 rewrite metric_seq_lim in all_seqs.
     prove_parts all_seqs.
