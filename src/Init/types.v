@@ -1,3 +1,6 @@
+(** Basic types, like sum and product types.  While these are in the Coq
+standard library, I prefer defining as much as I can on my own. *)
+
 Require Import base_logic.
 
 Set Implicit Arguments.
@@ -125,3 +128,7 @@ Theorem not_trivial2 {U} `{NotTrivial U} : ∀ a : U, ∃ b, a ≠ b.
     -   exists not_trivial_a.
         exact neq.
 Qed.
+
+Declare Scope algebra_scope.
+Delimit Scope algebra_scope with alg.
+Open Scope algebra_scope.

@@ -1,5 +1,8 @@
+(** This file contains a few tactics that can be useful at times. *)
+
 Require Export logic.
 
+(** Can be used to simplify expressions of the type [If H then a else b] *)
 Ltac case_if :=
     let go P := destruct P; try solve [elimtype False] in
     match goal with
@@ -7,6 +10,9 @@ Ltac case_if :=
     | K: context [if ?P then _ else _] |- _ => go P
     end.
 
+(** Tries to use the theorems in logic.v to simplify expressions.  Doesn't work
+too well because it can't work past binders, so maybe I should just get rid of
+it. *)
 (* TODO: USE SETOID_REWRITE *)
 Ltac not_simpl :=
     repeat (
@@ -66,6 +72,8 @@ constr(x) constr(comm) constr(assoc) constr(cancel) "in" constr(H) :=
     bring_right x comm assoc in H;
     apply cancel in H.
 
+(** Given a hypothesis [H : A → B → C], [prove_parts H] will add the goals [A]
+and [B] and will add the hypothesis [C] to the final goal. *)
 Ltac prove_parts_base H := let H' := fresh in
     match type of H with
     | ?A → ?B => assert A as H'

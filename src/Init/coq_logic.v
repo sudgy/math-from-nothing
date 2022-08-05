@@ -1,3 +1,8 @@
+(** This file contains all of Coq's default logical types and a few basic things
+related to them.  Because we pass -nois to the compiler, we need to explicitly
+export these things to be able to use them.  However, I don't like a lot of the
+names that Coq made for them, so I give a bunch of new names here. *)
+
 Require Coq.Init.Logic.
 Require Export Coq.Init.Ltac.
 Require Export Coq.Init.Notations.

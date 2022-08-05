@@ -1,3 +1,6 @@
+(** This file contains several basic logical theorems such as De Morgan's laws.
+*)
+
 Require Export base_logic.
 Require Export ext_rewrite.
 

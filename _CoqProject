@@ -8,7 +8,7 @@
 #-arg -debug
 
 ./src/Init/notations.v
-./src/Init/logic_types.v
+./src/Init/coq_logic.v
 ./src/Init/base_logic.v
 ./src/Init/ext_rewrite.v
 ./src/Init/logic.v

@@ -1,4 +1,7 @@
-Require Export logic_types.
+(** This file contains the three logical axioms and the direct consequences of
+those axioms. *)
+
+Require Export coq_logic.
 
 Set Implicit Arguments.
 
@@ -17,6 +20,7 @@ Theorem ex_to_type : ∀ {A : Type} {P : A → Prop}, ex P → ex_type P.
 Qed.
 
 (* begin hide *)
+(* This proof is not my own *)
 Module ProofIrrelevance.
     Lemma prop_eq_self_impl_when_true : ∀ {P : Prop}, P → P = (P → P).
         intros P H.
@@ -147,6 +151,7 @@ Tactic Notation "rewrite_ex_val" simple_intropattern(a) simple_intropattern(c)
     clear b.
 
 (* begin hide *)
+(* This proof is not my own *)
 Module ExcludedMiddle.
     Inductive bool : Set :=
         | true : bool
@@ -188,9 +193,17 @@ Theorem strong_excluded_middle : ∀ (P : Prop), {P} + {¬P}.
 Qed.
 
 Tactic Notation "classic_case" constr(P) := destruct (strong_excluded_middle P).
-Tactic Notation "classic_case" constr(P) "as" "[" ident(H1) "|" ident(H2) "]"
+Tactic Notation "classic_case" constr(P)
+    "as" "[" simple_intropattern(H1) "|" simple_intropattern(H2) "]"
     := destruct (strong_excluded_middle P) as [H1|H2].
 
 Notation "'If' P 'then' v1 'else' v2" :=
     (if (strong_excluded_middle P) then v1 else v2)
+    (at level 200, right associativity).
+
+Notation "'IfH' P 'then' v1 'else' v2" :=
+    match (strong_excluded_middle P) with
+    | strong_or_left H => v1 H
+    | strong_or_right H => v2 H
+    end
     (at level 200, right associativity).

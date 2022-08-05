@@ -1,3 +1,5 @@
+(** This file reserves a few basic notations. *)
+
 Reserved Notation "x ∧ y" (at level 80, right associativity).
 Reserved Notation "x ∨ y" (at level 85, right associativity).
 Reserved Notation "x ↔ y" (at level 95, no associativity).
@@ -19,7 +21,3 @@ Reserved Notation "A ∩ B" (at level 45, left associativity).
 Reserved Notation "A ∪ B" (at level 45, left associativity).
 
 Reserved Notation "A ∘ B" (at level 40, left associativity).
-
-Declare Scope algebra_scope.
-Delimit Scope algebra_scope with alg.
-Open Scope algebra_scope.

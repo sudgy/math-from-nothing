@@ -1,11 +1,12 @@
+(** This file shows my attempt at allowing for rewriting in binders.  It
+sometimes works, but I'm not good enough at this to figure out how to make it
+work more often.  I've noticed that this often is pretty slow so I'm starting to
+wonder if it was a good idea in the first place.
+*)
+
 Require Import base_logic.
 From Coq Require Import Morphisms.
 From Coq Require Export Setoid.
-
-(** This file shows my attempt at allowing for rewriting in binders.  It
-sometimes works, but I'm not good enough at this to figure out how to make it
-work more often.
-*)
 
 Global Instance ext_rewrite1 T :
         Proper (pointwise_relation T equal ==> equal) (all (A := T)).
