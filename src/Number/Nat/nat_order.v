@@ -24,38 +24,45 @@ Global Instance nat_order : Order nat := {
 }.
 (* end hide *)
 Theorem nat_le_zero_eq : ∀ a, a <= 0 → 0 = a.
+Proof.
     intros a eq.
     nat_destruct a; try reflexivity.
     contradiction eq.
 Qed.
 Lemma nat_le_zero : ∀ a, zero <= a.
+Proof.
     unfold zero, le; cbn.
     trivial.
 Qed.
 Lemma nat_lt_zero : ∀ a, ¬(a < zero).
+Proof.
     intros a [leq neq].
     apply nat_le_zero_eq in leq.
     symmetry in leq; contradiction.
 Qed.
 
 Theorem nat_zero_lt_suc : ∀ n, 0 < nat_suc n.
+Proof.
     intros n.
     split; try apply nat_le_zero.
     intro contr; inversion contr.
 Qed.
 
 Theorem nat_0_lt_1 : 0 < 1.
+Proof.
     split.
     -   apply nat_le_zero.
     -   intro contr; inversion contr.
 Qed.
 
 Theorem nat_sucs_le : ∀ a b, (nat_suc a <= nat_suc b) = (a <= b).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intro eq; apply eq.
 Qed.
 Theorem nat_sucs_lt : ∀ a b, (nat_suc a < nat_suc b) = (a < b).
+Proof.
     intros a b.
     apply propositional_ext.
     split.
@@ -74,6 +81,7 @@ Qed.
 
 (* begin hide *)
 Lemma nat_le_connex_ : ∀ a b, {a <= b} + {b <= a}.
+Proof.
     nat_induction a.
     -   intros.
         left.
@@ -96,6 +104,7 @@ Global Instance nat_le_connex : @Connex nat le := {
 }.
 
 Lemma nat_le_antisymmetric_ : ∀ a b, a <= b → b <= a → a = b.
+Proof.
     nat_induction a.
     -   intros b eq1 eq2.
         apply nat_le_zero_eq in eq2.
@@ -113,6 +122,7 @@ Global Instance nat_le_antisymmetric : @Antisymmetric nat le := {
 }.
 
 Lemma nat_le_transitive_ : ∀ a b c, a <= b → b <= c → a <= c.
+Proof.
     intros a b c; revert a b.
     nat_induction c; intros a b eq1 eq2.
     -   apply nat_le_zero_eq in eq2.
@@ -133,12 +143,14 @@ Global Instance nat_le_transitive : @Transitive nat le := {
 }.
 (* end hide *)
 Theorem nat_le_suc : ∀ a, a <= nat_suc a.
+Proof.
     nat_induction a.
     -   apply nat_le_zero.
     -   rewrite nat_sucs_le.
         exact IHa.
 Qed.
 Theorem nat_lt_suc : ∀ a, a < nat_suc a.
+Proof.
     split.
     -   apply nat_le_suc.
     -   intro contr.
@@ -149,6 +161,7 @@ Theorem nat_lt_suc : ∀ a, a < nat_suc a.
 Qed.
 
 Theorem nat_le_ex : ∀ a b, a <= b → ∃ c, a + c = b.
+Proof.
     nat_induction a; intros b ab.
     -   exists b.
         apply plus_lid.
@@ -164,6 +177,7 @@ Theorem nat_le_ex : ∀ a b, a <= b → ∃ c, a + c = b.
 Qed.
 
 Theorem nat_lt_ex : ∀ a b, a < b → ∃ c, 0 ≠ c ∧ a + c = b.
+Proof.
     intros a b [ab ab_neq].
     pose proof (nat_le_ex a b ab) as [c eq].
     exists c; split.
@@ -176,6 +190,7 @@ Qed.
 
 (* begin hide *)
 Lemma nat_le_lplus_ : ∀ a b c, a <= b → c + a <= c + b.
+Proof.
     intros a b c ab.
     nat_induction c.
     -   do 2 rewrite plus_lid.
@@ -190,6 +205,7 @@ Global Instance nat_le_lplus : OrderLplus nat := {
 }.
 
 Lemma nat_le_plus_lcancel_ : ∀ a b c, c + a <= c + b → a <= b.
+Proof.
     intros a b c eq.
     nat_induction c.
     -   do 2 rewrite plus_lid in eq.
@@ -205,6 +221,7 @@ Global Instance nat_le_plus_lcancel : OrderPlusLcancel nat := {
 }.
 
 Lemma nat_le_mult_ : ∀ a b, zero <= a → zero <= b → zero <= a * b.
+Proof.
     intros a b C0 C1; clear C0 C1.
     apply nat_le_zero.
 Qed.
@@ -214,6 +231,7 @@ Global Instance nat_le_mult : OrderMult nat := {
 }.
 (* end hide *)
 Theorem nat_le_lmult : ∀ {a b} c, a <= b → c * a <= c * b.
+Proof.
     intros a b c ab.
     nat_induction c.
     -   do 2 rewrite mult_lanni.
@@ -224,6 +242,7 @@ Qed.
 
 (* begin hide *)
 Lemma nat_le_lmult_ : ∀ a b c, zero <= c → a <= b → c * a <= c * b.
+Proof.
     intros a b c c_pos.
     apply nat_le_lmult.
 Qed.
@@ -233,12 +252,14 @@ Global Instance nat_le_lmult_class : OrderLmult nat := {
 }.
 (* end hide *)
 Theorem nat_le_rmult : ∀ {a b} c, a <= b → a * c <= b * c.
+Proof.
     intros a b c.
     apply le_rmult_pos.
     apply nat_le_zero.
 Qed.
 
 Theorem nat_le_mult_lcancel : ∀ {a b} c, zero ≠ c → c * a <= c * b → a <= b.
+Proof.
     intros a b c c_neq eq.
     nat_destruct c; try contradiction; clear c_neq.
     revert b eq.
@@ -259,6 +280,7 @@ Qed.
 
 (* begin hide *)
 Lemma nat_le_mult_lcancel_ : ∀ a b c, zero < c → c * a <= c * b → a <= b.
+Proof.
     intros a b c [C c_pos].
     apply nat_le_mult_lcancel.
     exact c_pos.
@@ -269,6 +291,7 @@ Global Instance nat_le_mult_lcancel_class : OrderMultLcancel nat := {
 }.
 (* end hide *)
 Theorem nat_le_mult_rcancel : ∀ {a b} c, zero ≠ c → a * c <= b * c → a <= b.
+Proof.
     intros a b c c_pos.
     apply le_mult_rcancel_pos.
     split; try assumption.
@@ -276,6 +299,7 @@ Theorem nat_le_mult_rcancel : ∀ {a b} c, zero ≠ c → a * c <= b * c → a <
 Qed.
 
 Theorem nat_lt_suc_le : ∀ {a b}, (a < nat_suc b) = (a <= b).
+Proof.
     intros a b.
     apply propositional_ext.
     split.
@@ -303,6 +327,7 @@ Theorem nat_lt_suc_le : ∀ {a b}, (a < nat_suc b) = (a <= b).
 Qed.
 
 Theorem nat_le_self_lplus : ∀ a b, a <= b + a.
+Proof.
     intros a b.
     nat_induction a.
     -   apply nat_le_zero.
@@ -311,11 +336,13 @@ Theorem nat_le_self_lplus : ∀ a b, a <= b + a.
         exact IHa.
 Qed.
 Theorem nat_le_self_rplus : ∀ a b, a <= a + b.
+Proof.
     intros a b.
     rewrite plus_comm.
     apply nat_le_self_lplus.
 Qed.
 Theorem nat_le_self_lmult : ∀ a b, 0 ≠ b → a <= b * a.
+Proof.
     intros a b b_nz.
     nat_induction a.
     -   rewrite mult_ranni.
@@ -334,12 +361,14 @@ Theorem nat_le_self_lmult : ∀ a b, 0 ≠ b → a <= b * a.
         exact eq.
 Qed.
 Theorem nat_le_self_rmult : ∀ a b, 0 ≠ b → a <= a * b.
+Proof.
     intros a b.
     rewrite mult_comm.
     apply nat_le_self_lmult; assumption.
 Qed.
 
 Theorem nat_lt_1 : ∀ n, n < 1 → 0 = n.
+Proof.
     intros n n_lt.
     unfold one in n_lt; cbn in n_lt.
     rewrite nat_lt_suc_le in n_lt.
@@ -348,7 +377,8 @@ Theorem nat_lt_1 : ∀ n, n < 1 → 0 = n.
 Qed.
 
 Theorem strong_induction : ∀ S : nat → Prop,
-        (∀ n, (∀ m, m < n → S m) → S n) → ∀ n, S n.
+    (∀ n, (∀ m, m < n → S m) → S n) → ∀ n, S n.
+Proof.
     intros S ind n.
     pose (T n := ∀ m, m < n → S m).
     assert (∀ n', T n') as all_T.
@@ -372,6 +402,7 @@ Theorem strong_induction : ∀ S : nat → Prop,
 Qed.
 
 Theorem nat_wo : ∀ S : nat → Prop, (∃ x, S x) → has_least le S.
+Proof.
     intros S [x Sx].
     classic_contradiction no_least.
     unfold has_least in no_least.
@@ -395,6 +426,7 @@ Theorem nat_wo : ∀ S : nat → Prop, (∃ x, S x) → has_least le S.
 Qed.
 (* begin hide *)
 Lemma nat_wf : ∀ S : nat → Prop, (∃ x, S x) → has_minimal le S.
+Proof.
     intros S S_ex.
     pose proof (nat_wo S S_ex) as [x [Sx x_least]].
     exists x.

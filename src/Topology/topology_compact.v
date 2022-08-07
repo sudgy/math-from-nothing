@@ -30,6 +30,7 @@ Existing Instance subspace_topology.
 Theorem compact_subspace : ∀ X, compact (set_type X) ↔
     ∀ SS, open_covering_of SS X →
         ∃ SS', SS' ⊆ SS ∧ finite (|set_type SS'|) ∧ X ⊆ ⋃ SS'.
+Proof.
     intros X.
     split.
     -   intros X_compact SS [X_sub SS_open].
@@ -158,7 +159,8 @@ Theorem compact_subspace : ∀ X, compact (set_type X) ↔
 Qed.
 
 Theorem compact_closed_compact :
-        ∀ X, compact U → closed X → compact (set_type X).
+    ∀ X, compact U → closed X → compact (set_type X).
+Proof.
     intros X U_compact X_closed.
     apply compact_subspace.
     intros XSS [XSS_sub XSS_open].
@@ -206,6 +208,7 @@ Theorem compact_closed_compact :
 Qed.
 
 Theorem compact_limit_point_compact : compact U → limit_point_compact U.
+Proof.
     intros U_comp A A_inf.
     classic_contradiction no_lim.
     rewrite not_ex in no_lim.
@@ -284,7 +287,8 @@ Theorem compact_limit_point_compact : compact U → limit_point_compact U.
 Qed.
 
 Theorem sequentially_limit_point_compact :
-        sequentially_compact U → limit_point_compact U.
+    sequentially_compact U → limit_point_compact U.
+Proof.
     intros U_comp S S_inf.
     apply infinite_seq_ex in S_inf as [Sf Sf_inj].
     remember (λ n, [Sf n|]) as f.
@@ -341,7 +345,8 @@ Context {U} `{HausdorffSpace U}.
 Existing Instance subspace_topology.
 
 Theorem hausdorff_compact_disjoint : ∀ Y, compact (set_type Y) → ∀ x, ¬Y x →
-        ∃ A B, open A ∧ open B ∧ A ∩ B = ∅ ∧ A x ∧ Y ⊆ B.
+    ∃ A B, open A ∧ open B ∧ A ∩ B = ∅ ∧ A x ∧ Y ⊆ B.
+Proof.
     intros Y Y_compact x nYx.
     assert (∀ y, Y y → ∃ AB,
         neighborhood x (fst AB) ∧ neighborhood y (snd AB) ∧ fst AB ∩ snd AB = ∅)
@@ -444,6 +449,7 @@ Theorem hausdorff_compact_disjoint : ∀ Y, compact (set_type Y) → ∀ x, ¬Y 
 Qed.
 
 Theorem hausdorff_compact_closed : ∀ X, compact (set_type X) → closed X.
+Proof.
     intros X X_compact.
     unfold closed.
     apply open_all_neigh.

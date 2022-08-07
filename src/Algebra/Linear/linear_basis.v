@@ -31,6 +31,7 @@ Context {U V} `{VectorSpace U V}.
 
 (* end hide *)
 Theorem empty_linearly_independent : linearly_independent ∅.
+Proof.
     intros l l_in eq.
     destruct l as [l l_comb].
     destruct l using ulist_destruct.
@@ -43,6 +44,7 @@ Theorem empty_linearly_independent : linearly_independent ∅.
 Qed.
 
 Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_dependent S.
+Proof.
     intros S S0 ind.
     pose (l := (1, 0) ::: ulist_end).
     assert (linear_combination_set l) as l_comb.
@@ -74,7 +76,8 @@ Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_depende
 Qed.
 
 Theorem singleton_linearly_independent :
-        ∀ v, 0 ≠ v → linearly_independent (singleton v).
+    ∀ v, 0 ≠ v → linearly_independent (singleton v).
+Proof.
     intros v v_neq [l uni] in_l eq.
 
     destruct l using ulist_destruct.
@@ -113,7 +116,8 @@ Theorem singleton_linearly_independent :
 Qed.
 
 Theorem basis_linear_combination : ∀ S, basis S →
-        ∀ v, linear_combination_of S v.
+    ∀ v, linear_combination_of S v.
+Proof.
     intros S S_basis v.
     rewrite <- (span_linear_combination U).
     destruct S_basis as [S_ind S_eq].
@@ -126,7 +130,8 @@ Definition basis_coefficients (S : V → Prop) (S_basis : basis S) (v : V)
 Arguments basis_coefficients : simpl never.
 
 Theorem basis_coefficients_combination : ∀ S S_basis v,
-        v = linear_combination (basis_coefficients S S_basis v).
+    v = linear_combination (basis_coefficients S S_basis v).
+Proof.
     intros S S_basis v.
     unfold basis_coefficients.
     rewrite_ex_val l [v_eq Sl].
@@ -135,7 +140,8 @@ Theorem basis_coefficients_combination : ∀ S S_basis v,
 Qed.
 
 Theorem basis_coefficients_in : ∀ S S_basis v,
-        linear_list_in S (basis_coefficients S S_basis v).
+    linear_list_in S (basis_coefficients S S_basis v).
+Proof.
     intros S S_basis v.
     unfold basis_coefficients.
     rewrite_ex_val l [v_eq Sl].
@@ -144,10 +150,11 @@ Theorem basis_coefficients_in : ∀ S S_basis v,
 Qed.
 
 Lemma basis_unique2_wlog : ∀ S, linearly_independent S →
-        ∀ v al bl, linear_list_in S al → linear_list_in S bl →
-        v = linear_combination al → v = linear_combination bl →
-        ∀ x, in_ulist [linear_remove_zeros al|] x →
-             in_ulist [linear_remove_zeros bl|] x.
+    ∀ v al bl, linear_list_in S al → linear_list_in S bl →
+    v = linear_combination al → v = linear_combination bl →
+    ∀ x, in_ulist [linear_remove_zeros al|] x →
+         in_ulist [linear_remove_zeros bl|] x.
+Proof.
     intros S S_ind v al bl Sal Sbl v_eq1 v_eq2 x al_x.
     remember (linear_remove_zeros al) as al'.
     remember (linear_remove_zeros bl) as bl'.
@@ -409,9 +416,10 @@ Lemma basis_unique2_wlog : ∀ S, linearly_independent S →
 Qed.
 
 Theorem basis_unique2 : ∀ S, linearly_independent S →
-        ∀ v al bl, linear_list_in S al → linear_list_in S bl →
-        v = linear_combination al → v = linear_combination bl →
-        [linear_remove_zeros al|] = [linear_remove_zeros bl|].
+    ∀ v al bl, linear_list_in S al → linear_list_in S bl →
+    v = linear_combination al → v = linear_combination bl →
+    [linear_remove_zeros al|] = [linear_remove_zeros bl|].
+Proof.
     intros S S_ind v al bl Sal Sbl v_eq1 v_eq2.
     apply ulist_in_unique_eq.
     1: {
@@ -434,8 +442,9 @@ Theorem basis_unique2 : ∀ S, linearly_independent S →
 Qed.
 
 Theorem basis_unique : ∀ S S_basis v,
-        ∀ l, linear_list_in S l → v = linear_combination l →
-        [linear_remove_zeros l|] = [basis_coefficients S S_basis v|].
+    ∀ l, linear_list_in S l → v = linear_combination l →
+    [linear_remove_zeros l|] = [basis_coefficients S S_basis v|].
+Proof.
     intros S S_basis v l Sl v_eq1.
     pose proof (basis_coefficients_combination S S_basis v) as v_eq2.
     pose proof (basis_coefficients_in S S_basis v) as Sv.
@@ -449,7 +458,8 @@ Theorem basis_unique : ∀ S S_basis v,
 Qed.
 
 Theorem basis_single : 0 ≠ 1 → ∀ (S : V → Prop) S_basis v, S v →
-        [basis_coefficients S S_basis v|] = (1, v) ::: ulist_end.
+    [basis_coefficients S S_basis v|] = (1, v) ::: ulist_end.
+Proof.
     intros not_trivial2 S S_basis v Sv.
     pose (l := (1, v) ::: ulist_end).
     assert (linear_combination_set l) as l_comb.
@@ -491,8 +501,9 @@ Theorem basis_single : 0 ≠ 1 → ∀ (S : V → Prop) S_basis v, S v →
 Qed.
 
 Theorem basis_coefficients_S_ex : ∀ S S_basis v, ∃ l : ulist (U * set_type S),
-        [basis_coefficients S S_basis v|] =
-        ulist_image l (λ x, (fst x, [snd x|])).
+    [basis_coefficients S S_basis v|] =
+    ulist_image l (λ x, (fst x, [snd x|])).
+Proof.
     intros S S_basis v.
     remember (basis_coefficients S S_basis v) as l.
     destruct l as [l l_comb]; cbn.
@@ -514,7 +525,8 @@ Theorem basis_coefficients_S_ex : ∀ S S_basis v, ∃ l : ulist (U * set_type S
 Qed.
 
 Theorem basis_coefficients_zero : ∀ S S_basis,
-        [basis_coefficients S S_basis 0|] = ulist_end.
+    [basis_coefficients S S_basis 0|] = ulist_end.
+Proof.
     intros S S_basis.
     assert (linear_combination_set (U := U) (V := V) ulist_end) as end_in.
     {
@@ -547,6 +559,7 @@ Local Open Scope card_scope.
 
 (* end hide *)
 Theorem basis_extend_ex : ∀ S, linearly_independent S → ∃ B, S ⊆ B ∧ basis B.
+Proof.
     intros S S_ind.
     pose (SS T := S ⊆ T ∧ linearly_independent T).
     assert (SS S) as SS_S.
@@ -788,6 +801,7 @@ Theorem basis_extend_ex : ∀ S, linearly_independent S → ∃ B, S ⊆ B ∧ b
 Qed.
 
 Theorem basis_ex : ∃ B, basis B.
+Proof.
     pose proof (basis_extend_ex ∅ empty_linearly_independent)
         as [B [B_sub B_basis]].
     exists B.

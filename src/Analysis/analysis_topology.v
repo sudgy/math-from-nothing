@@ -22,7 +22,8 @@ Definition totally_bounded X := ∀ ε,
     ∃ A, finite (|set_type A|) ∧ X ⊆ ⋃ (image_under (λ a, open_ball a ε) A).
 
 Theorem open_ball_ex : ∀ x y ε, open_ball x ε y →
-        ∃ δ, open_ball y δ ⊆ open_ball x ε.
+    ∃ δ, open_ball y δ ⊆ open_ball x ε.
+Proof.
     intros x y ε y_in.
     assert (0 < [ε|] - d x y) as δ_pos.
     {
@@ -42,12 +43,14 @@ Theorem open_ball_ex : ∀ x y ε, open_ball x ε y →
 Qed.
 
 Theorem open_ball_sub : ∀ x ε1 ε2, ε1 <= ε2 → open_ball x ε1 ⊆ open_ball x ε2.
+Proof.
     intros x ε1 ε2 leq a a1.
     unfold open_ball in *.
     exact (lt_le_trans a1 leq).
 Qed.
 
 Theorem open_ball_self : ∀ x ε, open_ball x ε x.
+Proof.
     intros x ε.
     unfold open_ball.
     rewrite d_zero.
@@ -55,18 +58,21 @@ Theorem open_ball_self : ∀ x ε, open_ball x ε x.
 Qed.
 
 Theorem open_closed_ball_sub : ∀ x ε, open_ball x ε ⊆ closed_ball x ε.
+Proof.
     intros x ε a a_lt.
     apply a_lt.
 Qed.
 
 Theorem closed_ball_sub : ∀ x ε1 ε2, ε1 <= ε2 →
-        closed_ball x ε1 ⊆ closed_ball x ε2.
+    closed_ball x ε1 ⊆ closed_ball x ε2.
+Proof.
     intros x ε1 ε2 leq a a1.
     unfold closed_ball in *.
     exact (trans a1 leq).
 Qed.
 
 Theorem closed_ball_self : ∀ x ε, closed_ball x ε x.
+Proof.
     intros x ε.
     unfold closed_ball.
     rewrite d_zero.
@@ -106,24 +112,28 @@ Next Obligation.
 Qed.
 
 Theorem open_ball_basis : ∀ x ε, top_basis (open_ball x ε).
+Proof.
     intros x ε.
     exists x, ε.
     reflexivity.
 Qed.
 
 Theorem open_ball_open : ∀ x ε, open (open_ball x ε).
+Proof.
     intros x ε.
     apply basis_open.
     apply open_ball_basis.
 Qed.
 
 Theorem open_ball_le_sub : ∀ x ε δ, δ <= ε → open_ball x δ ⊆ open_ball x ε.
+Proof.
     intros x ε δ leq y y_in.
     unfold open_ball in *.
     exact (lt_le_trans y_in leq).
 Qed.
 
 Theorem closed_ball_closed : ∀ x ε, closed (closed_ball x ε).
+Proof.
     intros x ε.
     rewrite closed_limit_points.
     intros a a_lim.
@@ -155,6 +165,7 @@ Theorem closed_ball_closed : ∀ x ε, closed (closed_ball x ε).
 Qed.
 
 Theorem open_all_balls : ∀ S, open S ↔ (∀ x, S x → ∃ δ, open_ball x δ ⊆ S).
+Proof.
     intros S.
     split.
     -   intros S_open x Sx.
@@ -181,6 +192,7 @@ Qed.
 (* begin hide *)
 Lemma metric_hausdorff_base : ∀ x1 x2, x1 ≠ x2 →
         ∃ S1 S2, open S1 ∧ open S2 ∧ S1 x1 ∧ S2 x2 ∧ disjoint S1 S2.
+Proof.
     intros x1 x2 neq.
     pose (ε := d x1 x2).
     assert (0 < ε / 2) as ε_pos.
@@ -220,6 +232,7 @@ Global Instance metric_hausdorff : HausdorffSpace U := {
 }.
 
 Theorem totally_bounded_bounded : ∀ X, totally_bounded X → bounded X.
+Proof.
     intros X X_bounded.
     specialize (X_bounded [1|one_pos]) as [A [A_fin sub_A]].
     apply fin_nat_ex in A_fin as [n n_eq].
@@ -332,8 +345,9 @@ Section RealMetricTopologyEq.
 Existing Instance abs_metric.
 (* end hide *)
 Theorem real_metric_topology_eq :
-        @basis_topology _ (@metric_topology _ real_metric) =
-        @basis_topology _ real_order_topology.
+    @basis_topology _ (@metric_topology _ real_metric) =
+    @basis_topology _ real_order_topology.
+Proof.
     apply topology_finer_antisym.
     -   apply topology_basis_finer.
         intros x B2.

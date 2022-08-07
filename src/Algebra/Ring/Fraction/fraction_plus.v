@@ -34,6 +34,7 @@ Let frac_plus_base (a b : frac_base U) :=
 Local Infix "⊕" := frac_plus_base.
 
 Lemma frac_plus_wd : ∀ a b c d, a ~ b → c ~ d → a ⊕ c ~ b ⊕ d.
+Proof.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd.
     destruct a2 as [a2 a2_nz], b2 as [b2 b2_nz], c2 as [c2 c2_nz],
              d2 as [d2 d2_nz].
@@ -116,6 +117,7 @@ Qed.
 Local Notation "⊖ a" := (-fst a, snd a) (at level 35, right associativity).
 
 Lemma frac_neg_wd : ∀ a b, a ~ b → ⊖a ~ ⊖b.
+Proof.
     intros [a1 a2] [b1 b2] eq.
     cbn in *.
     unfold frac_eq in *.
@@ -143,6 +145,7 @@ Next Obligation.
 Qed.
 
 Theorem to_frac_plus : ∀ a b, to_frac U (a + b) = to_frac U a + to_frac U b.
+Proof.
     intros a b.
     unfold to_frac, plus at 2; equiv_simpl.
     unfold frac_eq; cbn.
@@ -151,6 +154,7 @@ Theorem to_frac_plus : ∀ a b, to_frac U (a + b) = to_frac U a + to_frac U b.
 Qed.
 
 Theorem to_frac_neg : ∀ a, to_frac U (-a) = -to_frac U a.
+Proof.
     intros a.
     unfold to_frac, neg at 2; equiv_simpl.
     unfold frac_eq; cbn.
@@ -158,6 +162,7 @@ Theorem to_frac_neg : ∀ a, to_frac U (-a) = -to_frac U a.
 Qed.
 
 Theorem to_frac_zero : to_frac U 0 = 0.
+Proof.
     reflexivity.
 Qed.
 

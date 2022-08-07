@@ -15,6 +15,7 @@ Let ord_le A B := A ~ B ∨ ∃ x, A ~ (initial_segment B x).
 Local Infix "≦" := ord_le.
 
 Lemma ord_le_wd_one : ∀ A B C D, A ~ B → C ~ D → A ≦ C → B ≦ D.
+Proof.
     intros A B C D AB CD [AC|[x ACx]].
     -   left.
         apply eq_symmetric in AB.
@@ -77,6 +78,7 @@ Lemma ord_le_wd_one : ∀ A B C D, A ~ B → C ~ D → A ≦ C → B ≦ D.
                 exact ab.
 Qed.
 Lemma ord_le_wd : ∀ A B C D, A ~ B → C ~ D → (A ≦ C) = (B ≦ D).
+Proof.
     intros A B C D AB CD.
     apply propositional_ext.
     split.
@@ -94,6 +96,7 @@ Global Instance ord_order : Order ord := {
 Open Scope ord_scope.
 (* end hide *)
 Theorem ord_le_lt : ∀ α β, (α <= β) = (α = β ∨ α < β).
+Proof.
     intros α β.
     classic_case (α = β) as [eq|neq].
     {
@@ -120,8 +123,9 @@ Theorem ord_le_lt : ∀ α β, (α <= β) = (α = β ∨ α < β).
 Qed.
 
 Theorem ord_lt_initial : ∀ A B,
-        (to_equiv_type ord_equiv A < to_equiv_type ord_equiv B) =
-        (∃ x, A ~ (initial_segment B x)).
+    (to_equiv_type ord_equiv A < to_equiv_type ord_equiv B) =
+    (∃ x, A ~ (initial_segment B x)).
+Proof.
     intros A B.
     unfold lt, strict, le; equiv_simpl.
     apply propositional_ext; split.
@@ -184,6 +188,7 @@ Local Instance piece_le_class : Order _ := {
     le := piece_le
 }.
 Lemma piece_le_refl : ∀ f, f <= f.
+Proof.
     unfold le; cbn; unfold piece_le; cbn.
     intros f.
     apply refl.
@@ -192,6 +197,7 @@ Local Instance piece_le_reflexive : Reflexive le := {
     refl := piece_le_refl
 }.
 Lemma piece_le_antisym : ∀ f g, f <= g → g <= f → f = g.
+Proof.
     unfold le; cbn; unfold piece_le; cbn.
     intros f g fg gf.
     pose proof (antisym fg gf).
@@ -204,6 +210,7 @@ Local Instance piece_le_antisym_class : Antisymmetric le := {
     antisym := piece_le_antisym
 }.
 Lemma piece_le_trans : ∀ f g h, f <= g → g <= h → f <= h.
+Proof.
     unfold le; cbn; unfold piece_le; cbn.
     intros f g h fg gh.
     exact (trans fg gh).
@@ -222,6 +229,7 @@ Definition F_union_f (x : set_type (F_union_set)) :=
     piece_f (ex_val [|x])⟨[_|rand (ex_proof [|x])]⟩.
 
 Lemma F_union_inj : injective F_union_f.
+Proof.
     intros a b ab.
     unfold F_union_f in ab.
     unfold ex_val, ex_proof in ab.
@@ -244,6 +252,7 @@ Qed.
 
 Lemma F_union_iso : ∀ a b, (ord_le A) [a|] [b|] ↔
                 (ord_le B) (F_union_f a) (F_union_f b).
+Proof.
     intros a b.
     unfold F_union_f, ex_val, ex_proof.
     destruct (ex_to_type [|a]) as [f [Ff fa]]; cbn in *.
@@ -260,6 +269,7 @@ Lemma F_union_iso : ∀ a b, (ord_le A) [a|] [b|] ↔
 Qed.
 
 Lemma F_union_bot1 : ∀ a b, F_union_set a → ¬F_union_set b → ord_le A a b.
+Proof.
     intros a b [f [Ff fa]] nFb.
     apply (piece_bot1 f); try assumption.
     intros fb.
@@ -271,7 +281,8 @@ Lemma F_union_bot1 : ∀ a b, F_union_set a → ¬F_union_set b → ord_le A a b
 Qed.
 
 Lemma F_union_bot2 : ∀ a b, (∃ x, F_union_f x = a) → ¬(∃ x, F_union_f x = b)
-        → ord_le B a b.
+    → ord_le B a b.
+Proof.
     intros a b [x xa] nxb.
     unfold F_union_f, ex_val, ex_proof in *.
     destruct (ex_to_type [|x]) as [f [Ff fx]]; cbn in *.
@@ -306,6 +317,7 @@ Definition F_union_func := make_set_function F_union_set F_union_f.
 Local Open Scope set_scope.
 
 Lemma zorn_piece : has_upper_bound le F.
+Proof.
     exists (make_piece
         F_union_func F_union_inj F_union_iso F_union_bot1 F_union_bot2).
     intros f Ff.
@@ -337,6 +349,7 @@ End ZornPiece.
 Definition f := ex_val (zorn piece_le zorn_piece).
 
 Lemma f_max : ∀ g, ¬(f < g).
+Proof.
     intros g fg.
     unfold f, ex_val in fg.
     destruct (ex_to_type (zorn piece_le zorn_piece)) as [f f_max].
@@ -353,10 +366,12 @@ Local Open Scope set_scope.
 
 Definition Sa y := ¬domain (piece_f f) y.
 Lemma Sa_nempty : ∃ x, Sa x.
+Proof.
     exists a'.
     exact not_in'.
 Qed.
 Lemma a_ex : ∃ a, Sa a ∧ ∀ x, Sa x → ord_le A a x.
+Proof.
     pose proof (ord_wo A) as [[A_connex] [C1 [C2 [[A_wo]]]]]; clear C1 C2.
     specialize (A_wo Sa Sa_nempty) as [a [a_in a_min]].
     exists a.
@@ -371,12 +386,14 @@ Lemma a_ex : ∃ a, Sa a ∧ ∀ x, Sa x → ord_le A a x.
 Qed.
 Definition a := ex_val a_ex.
 Lemma not_in : ¬domain (piece_f f) a.
+Proof.
     unfold a.
     unfold ex_val.
     destruct (ex_to_type a_ex) as [a [Sa a_H]]; cbn.
     exact Sa.
 Qed.
 Lemma a_min : ∀ x, Sa x → ord_le A a x.
+Proof.
     unfold a.
     unfold ex_val.
     destruct (ex_to_type a_ex) as [a [Sa a_H]]; cbn.
@@ -384,6 +401,7 @@ Lemma a_min : ∀ x, Sa x → ord_le A a x.
 Qed.
 
 Lemma b_ex_base : ∃ b, ∀ a, piece_f f⟨a⟩ ≠ b.
+Proof.
     classic_contradiction contr.
     apply BA.
     rewrite ord_lt_initial.
@@ -438,6 +456,7 @@ Lemma b_ex_base : ∃ b, ∀ a, piece_f f⟨a⟩ ≠ b.
 Qed.
 Lemma b_ex : ∃ b, (∀ a, piece_f f⟨a⟩ ≠ b) ∧
            (∀ b', (∀ a, piece_f f⟨a⟩ ≠ b') → ord_le B b b').
+Proof.
     pose proof (ord_wo B) as [[B_connex] [C1 [C2 [[B_wo]]]]]; clear C1 C2.
     specialize (B_wo _ b_ex_base) as [b [Sb b_min]].
     exists b.
@@ -451,22 +470,26 @@ Lemma b_ex : ∃ b, (∀ a, piece_f f⟨a⟩ ≠ b) ∧
 Qed.
 Definition b := ex_val b_ex.
 Lemma b_not : ∀ a, piece_f f⟨a⟩ ≠ b.
+Proof.
     unfold b, ex_val.
     destruct (ex_to_type b_ex); cbn in *.
     apply a0.
 Qed.
 Lemma b_min : ∀ b', (∀ a, piece_f f⟨a⟩ ≠ b') → ord_le B b b'.
+Proof.
     unfold b, ex_val.
     destruct (ex_to_type b_ex); cbn in *.
     apply a0.
 Qed.
 
 Lemma a_gt : ∀ x : set_type (domain (piece_f f)), ord_le A [x|] a.
+Proof.
     intros [x x_in].
     apply (piece_bot1 f); try assumption.
     apply not_in.
 Qed.
 Lemma b_gt : ∀ x, ord_le B (piece_f f⟨x⟩) b.
+Proof.
     intros x.
     apply (piece_bot2 f).
     -   exists x; reflexivity.
@@ -475,6 +498,7 @@ Lemma b_gt : ∀ x, ord_le B (piece_f f⟨x⟩) b.
         contradiction.
 Qed.
 Lemma a_ngt : ∀ x : set_type (domain (piece_f f)), ¬ord_le A a [x|].
+Proof.
     intros x gt.
     pose proof (a_gt x).
     destruct (ord_wo A) as [C0 [[A_antisym] C1]]; clear C0 C1.
@@ -484,6 +508,7 @@ Lemma a_ngt : ∀ x : set_type (domain (piece_f f)), ¬ord_le A a [x|].
     destruct x; contradiction.
 Qed.
 Lemma b_ngt : ∀ x, ¬ord_le B b (piece_f f⟨x⟩).
+Proof.
     intros x gt.
     pose proof (b_gt x).
     destruct (ord_wo B) as [C0 [[B_antisym] C1]]; clear C0 C1.
@@ -502,6 +527,7 @@ Defined.
 Local Ltac or_case a := destruct (or_to_strong (domain (piece_f f) [a|])).
 
 Lemma Sf_inj : injective Sf.
+Proof.
     intros x y eq.
     unfold Sf in eq.
     or_case x; or_case y; cbn in *.
@@ -518,6 +544,7 @@ Lemma Sf_inj : injective Sf.
 Qed.
 
 Lemma Sf_iso : ∀ a b, (ord_le A) [a|] [b|] ↔ (ord_le B) (Sf a) (Sf b).
+Proof.
     intros x y.
     unfold Sf.
     or_case x; or_case y; cbn in *.
@@ -548,6 +575,7 @@ Lemma Sf_iso : ∀ a b, (ord_le A) [a|] [b|] ↔ (ord_le B) (Sf a) (Sf b).
 Qed.
 
 Lemma Sf_bot1 : ∀ a b, S a → ¬S b → ord_le A a b.
+Proof.
     intros x y Sx Sy.
     unfold S in Sy.
     rewrite not_or in Sy.
@@ -560,6 +588,7 @@ Lemma Sf_bot1 : ∀ a b, S a → ¬S b → ord_le A a b.
 Qed.
 
 Lemma Sf_bot2 : ∀ a b, (∃ x, Sf x = a) → ¬(∃ x, Sf x = b) → ord_le B a b.
+Proof.
     intros x y xx nyy.
 
 
@@ -603,6 +632,7 @@ Lemma Sf_bot2 : ∀ a b, (∃ x, Sf x = a) → ¬(∃ x, Sf x = b) → ord_le B 
 Qed.
 
 Lemma all_in_f_base : False.
+Proof.
     pose (f' := make_piece
         (make_set_function S Sf) Sf_inj Sf_iso Sf_bot1 Sf_bot2).
     apply (f_max f').
@@ -635,6 +665,7 @@ Qed.
 End AllInF.
 
 Lemma all_in_f : ∀ a, domain (piece_f f) a.
+Proof.
     intros a.
     classic_contradiction contr.
     exact (all_in_f_base a contr).
@@ -643,6 +674,7 @@ Qed.
 Definition f' x := (piece_f f) ⟨[_|all_in_f x]⟩.
 
 Lemma f'_sur : surjective f'.
+Proof.
     intros b.
     classic_contradiction no_a.
     apply AB.
@@ -754,7 +786,8 @@ Lemma f'_sur : surjective f'.
 Qed.
 
 Lemma ord_le_connex : ¬(to_ord A < to_ord B) → ¬(to_ord B < to_ord A) →
-        to_ord A = to_ord B.
+    to_ord A = to_ord B.
+Proof.
     equiv_simpl.
     exists f'.
     split.
@@ -774,6 +807,7 @@ End OrdConnex.
 End OrdConnex.
 
 Lemma ord_le_connex : ∀ α β, {α <= β} + {β <= α}.
+Proof.
     intros α β.
     classic_case (α = β) as [eq|neq].
     {
@@ -801,6 +835,7 @@ Global Instance ord_le_connex_class : Connex le := {
 }.
 
 Lemma ord_le_antisymmetric : ∀ α β, α <= β → β <= α → α = β.
+Proof.
     intros α β αβ βα.
     rewrite ord_le_lt in αβ.
     rewrite ord_le_lt in βα.
@@ -853,6 +888,7 @@ Global Instance ord_le_antisym_class : Antisymmetric le := {
 }.
 
 Lemma ord_le_transitive : ∀ α β γ, α <= β → β <= γ → α <= γ.
+Proof.
     intros α β γ.
     repeat rewrite ord_le_lt.
     intros [αβ|αβ] [βγ|βγ]; try subst.
@@ -939,6 +975,7 @@ Global Instance ord_le_trans_class : Transitive le := {
 (* end hide *)
 Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
 Theorem ord_lt_init : ∀ A x, to_ord (initial_segment A x) < to_ord A.
+Proof.
     intros A x.
     rewrite ord_lt_initial.
     exists x.
@@ -956,6 +993,7 @@ Variable A : ord_type.
 Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
 
 Lemma f'_range_in : ∀ x, ords_lt_set (to_ord A) (to_ord (initial_segment A x)).
+Proof.
     intros x.
     apply ord_lt_init.
 Qed.
@@ -963,6 +1001,7 @@ Qed.
 Definition f' (x : ord_U A) := [to_ord (initial_segment A x)|f'_range_in x].
 
 Lemma f'_inj : injective f'.
+Proof.
     intros a b eq.
     unfold f' in eq.
     apply eq_set_type in eq; cbn in eq.
@@ -972,6 +1011,7 @@ Lemma f'_inj : injective f'.
 Qed.
 
 Lemma f'_sur : surjective f'.
+Proof.
     intros [β β_lt].
     equiv_get_value β.
     unfold ords_lt_set in β_lt.
@@ -987,6 +1027,7 @@ Lemma f'_sur : surjective f'.
 Qed.
 
 Lemma f'_bij : bijective f'.
+Proof.
     split.
     -   exact f'_inj.
     -   exact f'_sur.
@@ -994,6 +1035,7 @@ Qed.
 Definition f := bij_inv f' f'_bij.
 
 Lemma f_ex : ∀ β, ∃ x, to_ord (initial_segment A x) = [β|] ∧ f β = x.
+Proof.
     intros β.
     assert (∃ x, f' x = β) as eq.
     {
@@ -1022,6 +1064,7 @@ Lemma f_ex : ∀ β, ∃ x, to_ord (initial_segment A x) = [β|] ∧ f β = x.
 Qed.
 
 Lemma f_iso : ∀ X Y, [X|] < [Y|] → ord_le A (f X) (f Y).
+Proof.
     intros X Y XY.
     pose proof (f_ex X) as [x [x_eq x_eq2]].
     pose proof (f_ex Y) as [y [y_eq y_eq2]].
@@ -1111,6 +1154,7 @@ Lemma f_iso : ∀ X Y, [X|] < [Y|] → ord_le A (f X) (f Y).
 Qed.
 
 Lemma ords_lt_wo_base : well_orders (ords_lt_le (to_ord A)).
+Proof.
     repeat split.
     -   intros [β β_in] [γ γ_in].
         unfold ords_lt_le; cbn.
@@ -1162,6 +1206,7 @@ Qed.
 End OrdsLtWo.
 
 Lemma ords_lt_wo : ∀ α, well_orders (ords_lt_le α).
+Proof.
     intros α.
     equiv_get_value α.
     apply ords_lt_wo_base.
@@ -1172,6 +1217,7 @@ End OrdsLtWo.
 Open Scope set_scope.
 
 Lemma ord_le_wf : ∀ S : ord → Prop, (∃ α, S α) → ∃ α, is_minimal le S α.
+Proof.
     intros S [α Sα].
     classic_case (is_least le S α) as [α_least|α_nleast].
     -   exists α.
@@ -1220,6 +1266,7 @@ Global Instance ord_le_wf_class : WellFounded le := {
 }.
 
 Lemma nat_to_ord_lt1 : ∀ a b, a < b → nat_to_ord a < nat_to_ord b.
+Proof.
     intros a b leq.
     unfold nat_to_ord.
     rewrite ord_lt_initial.
@@ -1262,6 +1309,7 @@ Lemma nat_to_ord_lt1 : ∀ a b, a < b → nat_to_ord a < nat_to_ord b.
 Qed.
 (* end hide *)
 Theorem nat_to_ord_lt : ∀ a b, (nat_to_ord a < nat_to_ord b) = (a < b).
+Proof.
     intros a b.
     apply propositional_ext; split; try apply nat_to_ord_lt1.
     intros eq.
@@ -1276,6 +1324,7 @@ Theorem nat_to_ord_lt : ∀ a b, (nat_to_ord a < nat_to_ord b) = (a < b).
 Qed.
 
 Theorem nat_to_ord_eq : ∀ a b, nat_to_ord a = nat_to_ord b → a = b.
+Proof.
     intros a b eq.
     destruct (trichotomy a b) as [[leq|req]|leq]; try exact req; exfalso.
     -   rewrite <- nat_to_ord_lt in leq.
@@ -1285,12 +1334,14 @@ Theorem nat_to_ord_eq : ∀ a b, nat_to_ord a = nat_to_ord b → a = b.
         destruct leq; contradiction.
 Qed.
 Theorem nat_to_ord_neq : ∀ a b, a ≠ b → nat_to_ord a ≠ nat_to_ord b.
+Proof.
     intros a b neq eq.
     apply nat_to_ord_eq in eq.
     contradiction.
 Qed.
 
 Theorem nat_to_ord_le : ∀ a b, (nat_to_ord a <= nat_to_ord b) = (a <= b).
+Proof.
     intros a b.
     classic_case (a = b) as [eq|neq].
     {

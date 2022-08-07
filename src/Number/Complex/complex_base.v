@@ -26,6 +26,7 @@ Proof.
 Qed.
 
 Theorem rat_to_complex_eq : ∀ a b, rat_to_complex a = rat_to_complex b → a = b.
+Proof.
     intros a b eq.
     apply rat_to_abstract_eq.
     apply real_to_complex_eq.
@@ -33,6 +34,7 @@ Theorem rat_to_complex_eq : ∀ a b, rat_to_complex a = rat_to_complex b → a =
 Qed.
 
 Theorem int_to_complex_eq : ∀ a b, int_to_complex a = int_to_complex b → a = b.
+Proof.
     intros a b eq.
     apply int_to_abstract_eq.
     apply real_to_complex_eq.
@@ -40,6 +42,7 @@ Theorem int_to_complex_eq : ∀ a b, int_to_complex a = int_to_complex b → a =
 Qed.
 
 Theorem nat_to_complex_eq : ∀ a b, nat_to_complex a = nat_to_complex b → a = b.
+Proof.
     intros a b eq.
     apply nat_to_abstract_eq.
     apply real_to_complex_eq.

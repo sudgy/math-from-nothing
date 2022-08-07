@@ -106,6 +106,7 @@ Definition arch_ordered_homo (f : set_type (aof_set A) → set_type (aof_set B))
         (∀ a b, a <= b → f a <= f b).
 
 Theorem arch_ordered_homo_neg : ∀ f, arch_ordered_homo f → ∀ x, f (-x) = -f x.
+Proof.
     intros f f_homo x.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     apply plus_lcancel with (f x).
@@ -115,6 +116,7 @@ Theorem arch_ordered_homo_neg : ∀ f, arch_ordered_homo f → ∀ x, f (-x) = -
 Qed.
 
 Theorem arch_ordered_homo_inj : ∀ f, arch_ordered_homo f → injective f.
+Proof.
     intros f f_homo.
     intros a b eq.
     rewrite <- plus_0_anb_b_a.
@@ -136,7 +138,8 @@ Qed.
 
 
 Theorem arch_ordered_homo_le : ∀ f, arch_ordered_homo f →
-        ∀ x y, x <= y ↔ f x <= f y.
+    ∀ x y, x <= y ↔ f x <= f y.
+Proof.
     intros f f_homo x y.
     split; [>apply f_homo|].
     intros leq.
@@ -151,7 +154,8 @@ Theorem arch_ordered_homo_le : ∀ f, arch_ordered_homo f →
 Qed.
 
 Theorem arch_ordered_homo_lt : ∀ f, arch_ordered_homo f →
-        ∀ x y, x < y ↔ f x < f y.
+    ∀ x y, x < y ↔ f x < f y.
+Proof.
     intros f f_homo x y.
     unfold lt, strict.
     rewrite <- (arch_ordered_homo_le _ f_homo).
@@ -169,7 +173,8 @@ Theorem arch_ordered_homo_lt : ∀ f, arch_ordered_homo f →
 Qed.
 
 Theorem arch_ordered_homo_div : ∀ f, arch_ordered_homo f →
-        ∀ x, 0 ≠ x → f (/x) = /f x.
+    ∀ x, 0 ≠ x → f (/x) = /f x.
+Proof.
     intros f f_homo x x_nz.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     assert (0 ≠ f x) as fx_nz.
@@ -187,7 +192,8 @@ Theorem arch_ordered_homo_div : ∀ f, arch_ordered_homo f →
 Qed.
 
 Theorem arch_ordered_homo_nat : ∀ f, arch_ordered_homo f →
-        ∀ n, f (nat_to_abstract n) = nat_to_abstract n.
+    ∀ n, f (nat_to_abstract n) = nat_to_abstract n.
+Proof.
     intros f f_homo n.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     nat_induction n.
@@ -200,7 +206,8 @@ Theorem arch_ordered_homo_nat : ∀ f, arch_ordered_homo f →
 Qed.
 
 Theorem arch_ordered_homo_int : ∀ f, arch_ordered_homo f →
-        ∀ n, f (int_to_abstract n) = int_to_abstract n.
+    ∀ n, f (int_to_abstract n) = int_to_abstract n.
+Proof.
     intros f f_homo n.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     equiv_get_value n.
@@ -214,7 +221,8 @@ Theorem arch_ordered_homo_int : ∀ f, arch_ordered_homo f →
 Qed.
 
 Theorem arch_ordered_homo_rat : ∀ f, arch_ordered_homo f →
-        ∀ q, f (rat_to_abstract q) = rat_to_abstract q.
+    ∀ q, f (rat_to_abstract q) = rat_to_abstract q.
+Proof.
     intros f f_homo q.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     equiv_get_value q.
@@ -229,8 +237,9 @@ Theorem arch_ordered_homo_rat : ∀ f, arch_ordered_homo f →
 Qed.
 
 Theorem arch_ordered_homo_uni_wlog : ∀ f g,
-        arch_ordered_homo f → arch_ordered_homo g →
-        ∀ x, f x <= g x.
+    arch_ordered_homo f → arch_ordered_homo g →
+    ∀ x, f x <= g x.
+Proof.
     intros f g f_homo g_homo x.
     classic_contradiction ltq.
     rewrite nle_lt in ltq.
@@ -242,7 +251,8 @@ Theorem arch_ordered_homo_uni_wlog : ∀ f g,
     destruct (trans r_gt r_lt); contradiction.
 Qed.
 Theorem arch_ordered_homo_uni : ∀ f g,
-        arch_ordered_homo f → arch_ordered_homo g → f = g.
+    arch_ordered_homo f → arch_ordered_homo g → f = g.
+Proof.
     intros f g f_homo g_homo.
     apply functional_ext.
     intros x.

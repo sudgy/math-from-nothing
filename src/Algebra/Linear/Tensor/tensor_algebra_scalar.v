@@ -77,7 +77,8 @@ Let k_tensor k := module_V (tensor_power V k).
 Definition scalar_to_tensor α := power_to_tensor V (k := 0) α.
 
 Theorem scalar_to_tensor_eq : ∀ α β,
-        scalar_to_tensor α = scalar_to_tensor β → α = β.
+    scalar_to_tensor α = scalar_to_tensor β → α = β.
+Proof.
     intros α β eq.
     unfold scalar_to_tensor in eq.
     apply power_to_tensor_eq in eq.
@@ -85,8 +86,9 @@ Theorem scalar_to_tensor_eq : ∀ α β,
 Qed.
 
 Theorem scalar_to_tensor_plus : ∀ α β,
-        scalar_to_tensor (α + β) =
-        scalar_to_tensor α + scalar_to_tensor β.
+    scalar_to_tensor (α + β) =
+    scalar_to_tensor α + scalar_to_tensor β.
+Proof.
     intros α β.
     unfold scalar_to_tensor.
     rewrite (power_to_tensor_plus V).
@@ -94,6 +96,7 @@ Theorem scalar_to_tensor_plus : ∀ α β,
 Qed.
 
 Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
+Proof.
     apply set_type_eq; cbn.
     apply functional_ext.
     intros x.
@@ -106,14 +109,16 @@ Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
 Qed.
 
 Theorem scalar_to_tensor_homogeneous : ∀ α, homogeneous (scalar_to_tensor α).
+Proof.
     intros α.
     exists 0, α.
     reflexivity.
 Qed.
 
 Theorem scalar_to_tensor_mult : ∀ α β,
-        scalar_to_tensor (α * β) =
-        scalar_to_tensor α * scalar_to_tensor β.
+    scalar_to_tensor (α * β) =
+    scalar_to_tensor α * scalar_to_tensor β.
+Proof.
     intros α β.
     assert (of_grade 0 (scalar_to_tensor α)) as α0.
     {
@@ -140,7 +145,8 @@ Theorem scalar_to_tensor_mult : ∀ α β,
 Qed.
 
 Theorem scalar_to_tensor_scalar : ∀ α (A : tensor_algebra_base V),
-        scalar_to_tensor α * A = α · A.
+    scalar_to_tensor α * A = α · A.
+Proof.
     intros α A.
     rewrite (grade_decomposition_eq A).
     remember (grade_decomposition A) as al.
@@ -173,7 +179,8 @@ Theorem scalar_to_tensor_scalar : ∀ α (A : tensor_algebra_base V),
 Qed.
 
 Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
-        scalar_to_tensor α * A = A * scalar_to_tensor α.
+    scalar_to_tensor α * A = A * scalar_to_tensor α.
+Proof.
     intros α A.
     rewrite (grade_decomposition_eq A).
     remember (grade_decomposition A) as al.

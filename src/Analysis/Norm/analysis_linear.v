@@ -63,7 +63,8 @@ Record linear_map := make_linear_map {
 }.
 
 Theorem linear_map_eq : ∀ f g : linear_map,
-        (∀ x, linear_map_f f x = linear_map_f g x) → f = g.
+    (∀ x, linear_map_f f x = linear_map_f g x) → f = g.
+Proof.
     intros [f f_scalar f_plus] [g g_scalar g_plus] eq.
     cbn in *.
     assert (f = g) as eq'.
@@ -78,6 +79,7 @@ Theorem linear_map_eq : ∀ f g : linear_map,
 Qed.
 
 Theorem linear_map_zero : ∀ f : linear_map, linear_map_f f 0 = 0.
+Proof.
     intros f.
     rewrite <- (scalar_lanni 0).
     rewrite linear_map_scalar.
@@ -85,7 +87,8 @@ Theorem linear_map_zero : ∀ f : linear_map, linear_map_f f 0 = 0.
 Qed.
 
 Theorem linear_map_neg : ∀ f : linear_map, ∀ x,
-        linear_map_f f (-x) = -linear_map_f f x.
+    linear_map_f f (-x) = -linear_map_f f x.
+Proof.
     intros f x.
     rewrite <- scalar_neg_one.
     rewrite linear_map_scalar.
@@ -93,11 +96,13 @@ Theorem linear_map_neg : ∀ f : linear_map, ∀ x,
 Qed.
 
 Lemma zero_linear_map_scalar : ∀ a (v : U), 0 = a · 0.
+Proof.
     intros a v.
     rewrite scalar_ranni.
     reflexivity.
 Qed.
 Lemma zero_linear_map_plus : ∀ (u v : U), 0 = 0 + 0.
+Proof.
     intros a v.
     rewrite plus_lid.
     reflexivity.
@@ -107,16 +112,18 @@ Definition zero_linear_map
     := make_linear_map (λ _, 0) zero_linear_map_scalar zero_linear_map_plus.
 
 Lemma plus_linear_map_scalar (f g : linear_map) : ∀ a v,
-        linear_map_f f (a · v) + linear_map_f g (a · v) =
-        a · (linear_map_f f v + linear_map_f g v).
+    linear_map_f f (a · v) + linear_map_f g (a · v) =
+    a · (linear_map_f f v + linear_map_f g v).
+Proof.
     intros a v.
     do 2 rewrite linear_map_scalar.
     rewrite scalar_ldist.
     reflexivity.
 Qed.
 Lemma plus_linear_map_plus (f g : linear_map) : ∀ u v,
-        linear_map_f f (u + v) + linear_map_f g (u + v) =
-        (linear_map_f f u + linear_map_f g u) + (linear_map_f f v + linear_map_f g v).
+    linear_map_f f (u + v) + linear_map_f g (u + v) =
+    (linear_map_f f u + linear_map_f g u) + (linear_map_f f v + linear_map_f g v).
+Proof.
     intros u v.
     do 2 rewrite linear_map_plus.
     do 2 rewrite <- plus_assoc.
@@ -134,6 +141,7 @@ Definition bounded_linear_map (f : linear_map)
     := ∃ M : real, ∀ x : U, |linear_map_f f x| <= M * |x|.
 
 Theorem zero_linear_bounded : bounded_linear_map zero_linear_map.
+Proof.
     exists 0.
     intros x.
     cbn.
@@ -143,7 +151,8 @@ Theorem zero_linear_bounded : bounded_linear_map zero_linear_map.
 Qed.
 
 Theorem plus_linear_bounded : ∀ f g : set_type bounded_linear_map,
-        bounded_linear_map (plus_linear_map [f|] [g|]).
+    bounded_linear_map (plus_linear_map [f|] [g|]).
+Proof.
     intros [f [M M_bound]] [g [N N_bound]]; cbn.
     unfold bounded_linear_map; cbn.
     exists (M + N).
@@ -159,7 +168,8 @@ Definition linear_map_bound_set (f : linear_map) (x : real)
     := x = 0 ∨ ∃ u, |linear_map_f f u| = x ∧ |u| = 1.
 
 Theorem operator_norm_ex :
-        ∀ f, bounded_linear_map f → has_supremum le (linear_map_bound_set f).
+    ∀ f, bounded_linear_map f → has_supremum le (linear_map_bound_set f).
+Proof.
     intros f [A fA].
     apply sup_complete.
     -   exists 0.
@@ -204,7 +214,8 @@ Definition operator_norm (f : linear_map) (H : bounded_linear_map f)
     := ex_val (operator_norm_ex f H).
 
 Theorem operator_norm_bound : ∀ f H, ∀ x,
-        |linear_map_f f x| <= operator_norm f H * |x|.
+    |linear_map_f f x| <= operator_norm f H * |x|.
+Proof.
     intros f f_bound x.
     unfold operator_norm.
     rewrite_ex_val A [A_bound A_least].
@@ -246,6 +257,7 @@ Theorem operator_norm_bound : ∀ f H, ∀ x,
 Qed.
 
 Theorem operator_norm_pos : ∀ f H, 0 <= operator_norm f H.
+Proof.
     intros f f_bound.
     unfold operator_norm.
     rewrite_ex_val A [A_bound A_least].
@@ -255,7 +267,8 @@ Theorem operator_norm_pos : ∀ f H, 0 <= operator_norm f H.
 Qed.
 
 Theorem operator_norm_zero : ∀ f H, 0 = operator_norm f H →
-        ∀ x, 0 = linear_map_f f x.
+    ∀ x, 0 = linear_map_f f x.
+Proof.
     intros f f_bound A_eq x.
     pose proof (operator_norm_bound f f_bound x) as leq.
     rewrite <- A_eq in leq.
@@ -266,7 +279,8 @@ Theorem operator_norm_zero : ∀ f H, 0 = operator_norm f H →
 Qed.
 
 Theorem bounded_uniformly_continuous : ∀ f, bounded_linear_map f →
-        uniformly_continuous (linear_map_f f).
+    uniformly_continuous (linear_map_f f).
+Proof.
     intros f f_bound ε ε_pos.
     classic_case (0 = operator_norm f f_bound) as [A_z|A_nz].
     {
@@ -294,7 +308,8 @@ Theorem bounded_uniformly_continuous : ∀ f, bounded_linear_map f →
 Qed.
 
 Theorem continuous_bounded : ∀ f,
-        continuous_at (linear_map_f f) 0 → bounded_linear_map f.
+    continuous_at (linear_map_f f) 0 → bounded_linear_map f.
+Proof.
     intros f f_cont.
     rewrite metric_continuous_at in f_cont.
     specialize (f_cont 1 one_pos) as [δ [δ_pos δ_geq]].
@@ -490,16 +505,18 @@ Context {U V W} `{
 
 (* end hide *)
 Lemma linear_map_compose_plus : ∀ (f : linear_map V W) (g : linear_map U V),
-        ∀ u v, linear_map_f f (linear_map_f g (u + v)) =
-        linear_map_f f (linear_map_f g u) + linear_map_f f (linear_map_f g v).
+    ∀ u v, linear_map_f f (linear_map_f g (u + v)) =
+    linear_map_f f (linear_map_f g u) + linear_map_f f (linear_map_f g v).
+Proof.
     intros f g u v.
     rewrite linear_map_plus.
     apply linear_map_plus.
 Qed.
 
 Lemma linear_map_compose_scalar : ∀ (f : linear_map V W) (g : linear_map U V),
-        ∀ a v, linear_map_f f (linear_map_f g (a · v)) =
-        a · linear_map_f f (linear_map_f g v).
+    ∀ a v, linear_map_f f (linear_map_f g (a · v)) =
+    a · linear_map_f f (linear_map_f g v).
+Proof.
     intros f g a v.
     rewrite linear_map_scalar.
     apply linear_map_scalar.
@@ -512,8 +529,9 @@ Definition linear_map_compose (f : linear_map V W) (g : linear_map U V)
         (linear_map_compose_plus f g).
 
 Theorem linear_map_compose_bounded : ∀ f g,
-        bounded_linear_map f → bounded_linear_map g →
-        bounded_linear_map (linear_map_compose f g).
+    bounded_linear_map f → bounded_linear_map g →
+    bounded_linear_map (linear_map_compose f g).
+Proof.
     intros f g f_bound g_bound.
     exists (operator_norm f f_bound * operator_norm g g_bound).
     intros x.

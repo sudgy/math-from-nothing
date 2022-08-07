@@ -55,8 +55,9 @@ Definition multilinear_from_compose {F G H : multilinear_from}
     := [f|] ∘ [g|].
 
 Lemma multilinear_from_set_compose_in {F' G H : multilinear_from} :
-        ∀ (f : set_type (multilinear_from_set G H)) g,
-        multilinear_from_set F' H (multilinear_from_compose f g).
+    ∀ (f : set_type (multilinear_from_set G H)) g,
+    multilinear_from_set F' H (multilinear_from_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold multilinear_from_set in *.
     unfold multilinear_from_compose; cbn.
@@ -66,7 +67,8 @@ Lemma multilinear_from_set_compose_in {F' G H : multilinear_from} :
 Qed.
 
 Lemma multilinear_from_set_id_in : ∀ f : multilinear_from,
-        multilinear_from_set f f 𝟙.
+    multilinear_from_set f f 𝟙.
+Proof.
     intros f.
     unfold multilinear_from_set.
     intros x eq.
@@ -97,9 +99,10 @@ Definition vectors_to_power_eq {m} (l : list (module_V V)) (eq : list_size l = m
     := module_homo_f (tensor_power_nat_eq V eq) (vectors_to_power V l).
 
 Lemma vectors_to_power_eq_generic {m} :
-        ∀ (l : list (module_V V)) (eq : list_size l = m),
-        to_generic_tensor V (vectors_to_power_eq l eq) =
-        to_generic_tensor V (vectors_to_power V l).
+    ∀ (l : list (module_V V)) (eq : list_size l = m),
+    to_generic_tensor V (vectors_to_power_eq l eq) =
+    to_generic_tensor V (vectors_to_power V l).
+Proof.
     intros l eq.
     unfold vectors_to_power_eq.
     rewrite generic_tensor_eq_generic.
@@ -107,9 +110,10 @@ Lemma vectors_to_power_eq_generic {m} :
 Qed.
 
 Lemma vectors_to_power_add :
-        ∀ a l (eq1 : list_size (a :: l) = nat_suc n) eq2,
-        vectors_to_power_eq (a :: l) eq1 =
-        tensor_mult V (tensor_power V _) a (vectors_to_power_eq l eq2).
+    ∀ a l (eq1 : list_size (a :: l) = nat_suc n) eq2,
+    vectors_to_power_eq (a :: l) eq1 =
+    tensor_mult V (tensor_power V _) a (vectors_to_power_eq l eq2).
+Proof.
     intros a l eq1 eq2.
     apply tensor_power_eq.
     rewrite vectors_to_power_eq_generic.
@@ -118,9 +122,10 @@ Lemma vectors_to_power_add :
 Qed.
 
 Lemma tensor_multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
-        vectors_to_power_eq (l1 ++ (a + b) :: l2) eq1 =
-        vectors_to_power_eq (l1 ++ a :: l2) eq2 +
-        vectors_to_power_eq (l1 ++ b :: l2) eq3.
+    vectors_to_power_eq (l1 ++ (a + b) :: l2) eq1 =
+    vectors_to_power_eq (l1 ++ a :: l2) eq2 +
+    vectors_to_power_eq (l1 ++ b :: l2) eq3.
+Proof.
     intros l1 a b l2 eq1 eq2 eq3.
     apply tensor_power_eq.
     rewrite vectors_to_power_eq_generic.
@@ -148,8 +153,9 @@ Lemma tensor_multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
 Qed.
 
 Lemma tensor_multilinear_from_scalar : ∀ l1 a v l2 eq1 eq2,
-        vectors_to_power_eq (l1 ++ (a · v) :: l2) eq1 =
-        a · vectors_to_power_eq (l1 ++ v :: l2) eq2.
+    vectors_to_power_eq (l1 ++ (a · v) :: l2) eq1 =
+    a · vectors_to_power_eq (l1 ++ v :: l2) eq2.
+Proof.
     intros l1 a v l2 eq1 eq2.
     apply tensor_power_eq.
     rewrite vectors_to_power_eq_generic.
@@ -188,7 +194,8 @@ Existing Instances UM UMC.
 
 (* end hide *)
 Theorem tensor_power_universal :
-        @initial (MULTILINEAR_FROM V n) (tensor_multilinear_from V n).
+    @initial (MULTILINEAR_FROM V n) (tensor_multilinear_from V n).
+Proof.
     unfold tensor_multilinear_from, initial; cbn.
     intros g.
     unfold multilinear_from_set; cbn.

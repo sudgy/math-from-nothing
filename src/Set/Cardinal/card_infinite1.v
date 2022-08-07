@@ -22,27 +22,32 @@ Definition infinite κ := |nat| <= κ.
 Definition uncountable κ := |nat| < κ.
 
 Theorem finite_is_countable : ∀ κ, finite κ → countable κ.
+Proof.
     intros κ H.
     apply H.
 Qed.
 Theorem denumerable_is_countable : ∀ κ, denumerable κ → countable κ.
+Proof.
     intros κ H.
     unfold denumerable, countable in *.
     rewrite H.
     apply refl.
 Qed.
 Theorem denumerable_is_infinite : ∀ κ, denumerable κ → infinite κ.
+Proof.
     intros κ H.
     unfold denumerable, infinite in *.
     rewrite H.
     apply refl.
 Qed.
 Theorem uncountable_is_infinite : ∀ κ, uncountable κ → infinite κ.
+Proof.
     intros κ H.
     apply H.
 Qed.
 
 Theorem nat_is_finite : ∀ n, finite (nat_to_card n).
+Proof.
     assert (∀ n, nat_to_card n <= |nat|) as n_countable.
     {
         intros n.
@@ -121,6 +126,7 @@ Theorem nat_is_finite : ∀ n, finite (nat_to_card n).
 Qed.
 
 Theorem greater_all_nat_inf : ∀ κ, (∀ a, nat_to_card a < κ) → infinite κ.
+Proof.
     intros A A_gt.
     equiv_get_value A.
     assert A as c.
@@ -190,6 +196,7 @@ Theorem greater_all_nat_inf : ∀ κ, (∀ a, nat_to_card a < κ) → infinite �
 Qed.
 
 Theorem fin_nat_ex : ∀ κ, finite κ → ∃ n, nat_to_card n = κ.
+Proof.
     intros κ κ_fin.
     assert (∃ n, κ <= nat_to_card n) as κ_le.
     {
@@ -282,6 +289,7 @@ Theorem fin_nat_ex : ∀ κ, finite κ → ∃ n, nat_to_card n = κ.
 Qed.
 
 Theorem inf_not_nat : ∀ κ, infinite κ → ∀ n, nat_to_card n ≠ κ.
+Proof.
     intros κ κ_inf n eq.
     subst.
     pose proof (nat_is_finite n) as fin.
@@ -290,6 +298,7 @@ Theorem inf_not_nat : ∀ κ, infinite κ → ∀ n, nat_to_card n ≠ κ.
 Qed.
 
 Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
+Proof.
     intros A B A_inf B_fin.
     pose proof (fin_nat_ex B B_fin) as [n n_eq].
     subst; clear B_fin.
@@ -379,6 +388,7 @@ Theorem inf_plus_fin : ∀ κ μ, infinite κ → finite μ → κ + μ = κ.
 Qed.
 
 Theorem nat_mult_nat : |nat| * |nat| = |nat|.
+Proof.
     assert (|nat| = |set_type (λ n, 0 ≠ n)|) as eq.
     {
         assert (∀ n, 0 ≠ nat_suc n) as suc_neq by (intros n c; inversion c).

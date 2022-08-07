@@ -38,6 +38,7 @@ Existing Instance abs_metric.
 Definition seq_norm_bounded (f : nat → V) := ∃ M, ∀ n, |f n| <= M.
 
 Theorem abs_reverse_tri : ∀ u v, | |u| - |v| | <= |u - v|.
+Proof.
     intros u v.
     pose proof (d_reverse_tri 0 u v) as eq.
     unfold d in eq; cbn in eq.
@@ -47,6 +48,7 @@ Theorem abs_reverse_tri : ∀ u v, | |u| - |v| | <= |u - v|.
 Qed.
 
 Theorem seq_bounded_norm_bounded : ∀ f, seq_bounded f ↔ seq_norm_bounded f.
+Proof.
     intros f.
     split.
     -   intros [M M_bound].
@@ -73,6 +75,7 @@ Theorem seq_bounded_norm_bounded : ∀ f, seq_bounded f ↔ seq_norm_bounded f.
 Qed.
 
 Theorem converges_bounded : ∀ f, seq_converges f → seq_norm_bounded f.
+Proof.
     intros f f_conv.
     apply seq_bounded_norm_bounded.
     apply cauchy_bounded.
@@ -81,6 +84,7 @@ Theorem converges_bounded : ∀ f, seq_converges f → seq_norm_bounded f.
 Qed.
 
 Theorem norm_open_limit_point : ∀ S x, open S → S x → limit_point S x.
+Proof.
     intros S x S_open Sx T T_open Tx.
     assert (∀ ε x, 0 < ε → 0 ≠ x → |ε / 2 / |x| · x| < ε) as lem.
     {
@@ -173,6 +177,7 @@ Theorem norm_open_limit_point : ∀ S x, open S → S x → limit_point S x.
 Qed.
 
 Theorem abs_seq_lim : ∀ xf x, seq_lim xf x → seq_lim (λ n, |xf n|) (|x|).
+Proof.
     intros xf x x_lim'.
     pose proof (land (metric_seq_lim xf x) x_lim') as x_lim; clear x_lim'.
     apply metric_seq_lim.
@@ -187,6 +192,7 @@ Theorem abs_seq_lim : ∀ xf x, seq_lim xf x → seq_lim (λ n, |xf n|) (|x|).
 Qed.
 
 Theorem seq_lim_zero : ∀ xf, seq_lim (λ n, |xf n|) 0 → seq_lim xf 0.
+Proof.
     intros xf x_lim.
     rewrite metric_seq_lim.
     rewrite metric_seq_lim in x_lim.
@@ -203,7 +209,8 @@ Theorem seq_lim_zero : ∀ xf, seq_lim (λ n, |xf n|) 0 → seq_lim xf 0.
 Qed.
 
 Theorem seq_lim_plus : ∀ xf yf (x y : V), seq_lim xf x → seq_lim yf y →
-        seq_lim (λ n, xf n + yf n) (x + y).
+    seq_lim (λ n, xf n + yf n) (x + y).
+Proof.
     intros xf yf x y x_lim y_lim.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
@@ -226,7 +233,8 @@ Theorem seq_lim_plus : ∀ xf yf (x y : V), seq_lim xf x → seq_lim yf y →
 Qed.
 
 Theorem seq_lim_scalar : ∀ a x xf, seq_lim xf x →
-        seq_lim (λ n, a · xf n) (a · x).
+    seq_lim (λ n, a · xf n) (a · x).
+Proof.
     intros a x xf x_lim.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
@@ -271,6 +279,7 @@ Theorem seq_lim_scalar : ∀ a x xf, seq_lim xf x →
 Qed.
 
 Theorem seq_lim_neg : ∀ xf x, seq_lim xf x → seq_lim (λ n, -xf n) (-x).
+Proof.
     intros xf x x_lim.
     rewrite <- scalar_neg_one.
     assert ((λ n, -xf n) = (λ n, -(1) · xf n)) as f_eq.
@@ -288,8 +297,9 @@ Qed.
 (* TODO: Figure out if the cauchy_schwarz inequality is really needed, or if
  * some weaker condition will suffice *)
 Theorem seq_lim_bilinear : ∀ f xf yf (x y : V),
-        bilinear f → cauchy_schwarz f →
-        seq_lim xf x → seq_lim yf y → seq_lim (λ n, f (xf n) (yf n)) (f x y).
+    bilinear f → cauchy_schwarz f →
+    seq_lim xf x → seq_lim yf y → seq_lim (λ n, f (xf n) (yf n)) (f x y).
+Proof.
     intros f xf yf x y f_bil f_cs x_lim y_lim.
     pose proof (converges_bounded yf (ex_intro _ y y_lim))
         as [M M_bound].

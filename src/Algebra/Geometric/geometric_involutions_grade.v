@@ -105,7 +105,8 @@ Local Open Scope nat_scope.
 
 (* end hide *)
 Theorem geo_mult_inner_involute : ∀ a (X : geo B),
-        (geo_mult_inner B a X)∗ = -geo_mult_inner B a (X∗).
+    (geo_mult_inner B a X)∗ = -geo_mult_inner B a (X∗).
+Proof.
     intros a X.
     pose proof (geo_sum B X) as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.
@@ -156,6 +157,7 @@ Theorem geo_mult_inner_involute : ∀ a (X : geo B),
 Qed.
 
 Theorem ext_to_geo_involute : ∀ X, (G X)∗ = G (ext_involute X).
+Proof.
     intros X.
     pose proof (ext_sum V X) as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.
@@ -202,6 +204,7 @@ Theorem ext_to_geo_involute : ∀ X, (G X)∗ = G (ext_involute X).
 Qed.
 
 Theorem geo_to_ext_involute : ∀ X : geo B, ext_involute (E X) = E (X∗).
+Proof.
     intros X.
     rewrite <- (geo_to_ext_to_geo B (ext_involute (E X))).
     rewrite <- ext_to_geo_involute.
@@ -210,6 +213,7 @@ Theorem geo_to_ext_involute : ∀ X : geo B, ext_involute (E X) = E (X∗).
 Qed.
 
 Theorem vector_bilinear_eq : ∀ a b, φ a * φ b + φ b * φ a = [B|] a b · 2.
+Proof.
     intros a b.
     apply plus_lcancel with (φ a * φ a).
     apply plus_rcancel with (φ b * φ b).
@@ -230,7 +234,8 @@ Theorem vector_bilinear_eq : ∀ a b, φ a * φ b + φ b * φ a = [B|] a b · 2.
 Qed.
 
 Theorem ext_inner_grade : ∀ v (A : ext V) i, of_grade (nat_suc i) A
-        → of_grade i (ext_inner B v A).
+    → of_grade i (ext_inner B v A).
+Proof.
     intros v A i Ai.
     apply ext_grade_sum in Ai as [l A_eq]; subst A.
     induction l as [|[α x] l] using ulist_induction.
@@ -281,7 +286,8 @@ Theorem ext_inner_grade : ∀ v (A : ext V) i, of_grade (nat_suc i) A
 Qed.
 
 Theorem geo_mult_inner_swap : ∀ a (X : geo B),
-        2 · geo_mult_inner B a X = φ a * X - X∗ * φ a.
+    2 · geo_mult_inner B a X = φ a * X - X∗ * φ a.
+Proof.
     intros a X.
     pose proof (geo_sum B X) as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.
@@ -362,6 +368,7 @@ Theorem geo_mult_inner_swap : ∀ a (X : geo B),
 Qed.
 
 Theorem ext_to_geo_reverse : ∀ X : ext V, (G X)† = G (ext_reverse X).
+Proof.
     intros X.
     induction X as [|X X' n Xn X'n IHX] using grade_induction.
     {
@@ -486,6 +493,7 @@ Theorem ext_to_geo_reverse : ∀ X : ext V, (G X)† = G (ext_reverse X).
 Qed.
 
 Theorem geo_to_ext_reverse : ∀ X : geo B, ext_reverse (E X) = E (X†).
+Proof.
     intros X.
     rewrite <- (geo_to_ext_to_geo B (ext_reverse (E X))).
     rewrite <- ext_to_geo_reverse.
@@ -494,7 +502,8 @@ Theorem geo_to_ext_reverse : ∀ X : geo B, ext_reverse (E X) = E (X†).
 Qed.
 
 Theorem geo_involute_grade : ∀ (X : geo B) (n : nat), of_grade (H10 := GG) n X →
-        X∗ = (-(1))^n · X.
+    X∗ = (-(1))^n · X.
+Proof.
     intros X' n [X [Xn X_eq]]; subst X'.
     cbn.
     rewrite ext_to_geo_involute.
@@ -503,7 +512,8 @@ Theorem geo_involute_grade : ∀ (X : geo B) (n : nat), of_grade (H10 := GG) n X
 Qed.
 
 Theorem geo_reverse_grade : ∀ (X : geo B) (n : nat), of_grade (H10 := GG) n X →
-        X† = (-(1))^(binom n 2) · X.
+    X† = (-(1))^(binom n 2) · X.
+Proof.
     intros X' n [X [Xn X_eq]]; subst X'.
     cbn.
     rewrite ext_to_geo_reverse.
@@ -512,6 +522,7 @@ Theorem geo_reverse_grade : ∀ (X : geo B) (n : nat), of_grade (H10 := GG) n X 
 Qed.
 
 Theorem of_grade_involute : ∀ (X : geo B) n, of_grade n X → of_grade n (X∗).
+Proof.
     intros X n Xn.
     rewrite (geo_involute_grade _ _ Xn).
     apply of_grade_scalar.
@@ -519,6 +530,7 @@ Theorem of_grade_involute : ∀ (X : geo B) n, of_grade n X → of_grade n (X∗
 Qed.
 
 Theorem of_grade_reverse : ∀ (X : geo B) n, of_grade n X → of_grade n (X†).
+Proof.
     intros X n Xn.
     rewrite (geo_reverse_grade _ _ Xn).
     apply of_grade_scalar.
@@ -526,7 +538,8 @@ Theorem of_grade_reverse : ∀ (X : geo B) n, of_grade n X → of_grade n (X†)
 Qed.
 
 Theorem geo_involute_project : ∀ (X : geo B) n,
-        (grade_project X n)∗ = grade_project (X∗) n.
+    (grade_project X n)∗ = grade_project (X∗) n.
+Proof.
     intros X n.
     induction X as [|X X' i Xi X'i IHX] using grade_induction.
     {
@@ -554,7 +567,8 @@ Theorem geo_involute_project : ∀ (X : geo B) n,
 Qed.
 
 Theorem geo_reverse_project : ∀ (X : geo B) n,
-        (grade_project X n)† = grade_project (X†) n.
+    (grade_project X n)† = grade_project (X†) n.
+Proof.
     intros X n.
     induction X as [|X X' i Xi X'i IHX] using grade_induction.
     {
@@ -582,6 +596,7 @@ Theorem geo_reverse_project : ∀ (X : geo B) n,
 Qed.
 
 Theorem geo_reverse_involute : ∀ X : geo B, X†∗ = X∗†.
+Proof.
     intros X.
     induction X as [|X X' n Xn X'n IHX] using grade_induction.
     {

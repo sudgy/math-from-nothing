@@ -17,6 +17,7 @@ Definition interior {U} `{Topology U} A := ⋃ (λ S, open S ∧ S ⊆ A).
 Context {U} `{Topology U}.
 (* end hide *)
 Theorem closure_closed : ∀ A, closed (closure A).
+Proof.
     intros A.
     apply inter_closed.
     intros S [S_closed sub].
@@ -24,6 +25,7 @@ Theorem closure_closed : ∀ A, closed (closure A).
 Qed.
 
 Theorem interior_open : ∀ A, open (interior A).
+Proof.
     intros A.
     apply union_open.
     intros S [S_open sub].
@@ -31,19 +33,22 @@ Theorem interior_open : ∀ A, open (interior A).
 Qed.
 
 Theorem closure_sub : ∀ A, A ⊆ closure A.
+Proof.
     intros A x Ax S [S_closed sub].
     apply sub.
     exact Ax.
 Qed.
 
 Theorem interior_sub : ∀ A, interior A ⊆ A.
+Proof.
     intros A x [S [[S_open sub] Sx]].
     apply sub.
     exact Sx.
 Qed.
 
 Theorem in_closure : ∀ x A,
-        (closure A) x ↔ (∀ S, open S → S x → intersects A S).
+    (closure A) x ↔ (∀ S, open S → S x → intersects A S).
+Proof.
     intros x A.
     split.
     -   intros A'x S S_open Sx eq.
@@ -77,6 +82,7 @@ Theorem in_closure : ∀ x A,
 Qed.
 
 Theorem closed_if_closure : ∀ A, closed A ↔ A = closure A.
+Proof.
     intros A.
     split.
     -   intros A_closed.
@@ -92,6 +98,7 @@ Theorem closed_if_closure : ∀ A, closed A ↔ A = closure A.
 Qed.
 
 Theorem open_if_interior : ∀ A, open A ↔ A = interior A.
+Proof.
     intros A.
     split.
     -   intros A_open.
@@ -110,11 +117,13 @@ Theorem open_if_interior : ∀ A, open A ↔ A = interior A.
 Qed.
 
 Theorem closure_eq_if_closed : ∀ A, closed A → A = closure A.
+Proof.
     intros A.
     apply closed_if_closure.
 Qed.
 
 Theorem closure_sub_closure : ∀ A B, A ⊆ B → closure A ⊆ closure B.
+Proof.
     intros A B AB x Ax.
     intros C [C_closed BC].
     exact (Ax C (make_and C_closed (trans AB BC))).
@@ -130,7 +139,8 @@ Context {U} `{Topology U}.
 Existing Instance subspace_topology.
 (* end hide *)
 Theorem subspace_closure : ∀ X A, A ⊆ X →
-        closure (to_set_type X A) = to_set_type X (closure A).
+    closure (to_set_type X A) = to_set_type X (closure A).
+Proof.
     intros X A sub.
     apply antisym.
     -   assert (closed (to_set_type X (closure A))) as AX_closed.
@@ -191,7 +201,8 @@ Section ClosureBasis.
 Context {U} `{TopologyBasis U}.
 (* end hide *)
 Theorem basis_in_closure : ∀ x A,
-        (closure A) x ↔ ∀ B, top_basis B → B x → intersects A B.
+    (closure A) x ↔ ∀ B, top_basis B → B x → intersects A B.
+Proof.
     intros x A.
     split.
     -   intros Ax B B_basis Bx.
@@ -227,6 +238,7 @@ Local Open Scope set_scope.
 Context {U} `{HausdorffSpace U}.
 
 Theorem point_closed : ∀ x, closed (singleton x).
+Proof.
     intros x.
     rewrite closed_if_closure.
     apply (antisym (op := subset)).
@@ -252,6 +264,7 @@ Theorem point_closed : ∀ x, closed (singleton x).
 Qed.
 
 Theorem finite_point_closed : ∀ A, finite (|set_type A|) → closed A.
+Proof.
     intros A A_fin.
     apply fin_nat_ex in A_fin as [n A_fin].
     revert A A_fin.

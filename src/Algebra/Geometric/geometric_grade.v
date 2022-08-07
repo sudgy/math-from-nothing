@@ -91,6 +91,7 @@ Definition geo_grade := grade_isomorphism (ext_to_geo_homo B) (ext_to_geo_iso B)
 Existing Instance geo_grade.
 
 Theorem scalar_to_geo_grade : ∀ a, of_grade 0 (σ a).
+Proof.
     intros a.
     exists (scalar_to_ext V a).
     cbn.
@@ -100,6 +101,7 @@ Theorem scalar_to_geo_grade : ∀ a, of_grade 0 (σ a).
 Qed.
 
 Theorem geo_grade_zero_scalar : ∀ v : geo B, of_grade 0 v → (∃ a, v = σ a).
+Proof.
     intros v.
     intros [v' [v0 v_eq]].
     subst v.
@@ -110,6 +112,7 @@ Theorem geo_grade_zero_scalar : ∀ v : geo B, of_grade 0 v → (∃ a, v = σ a
 Qed.
 
 Theorem vector_to_geo_grade : ∀ a, of_grade 1 (φ a).
+Proof.
     intros a.
     exists (vector_to_ext V a).
     cbn.
@@ -119,6 +122,7 @@ Theorem vector_to_geo_grade : ∀ a, of_grade 1 (φ a).
 Qed.
 
 Theorem geo_grade_one_vector : ∀ v : geo B, of_grade 1 v → (∃ a, v = φ a).
+Proof.
     intros v.
     intros [v' [v0 v_eq]].
     subst v.
@@ -129,8 +133,9 @@ Theorem geo_grade_one_vector : ∀ v : geo B, of_grade 1 v → (∃ a, v = φ a)
 Qed.
 
 Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
-        list_prop2 (λ a b, [B|] a b = 0) l →
-        of_grade (H10 := geo_grade) (list_size l) (list_prod (list_image l φ)).
+    list_prop2 (λ a b, [B|] a b = 0) l →
+    of_grade (H10 := geo_grade) (list_size l) (list_prod (list_image l φ)).
+Proof.
     intros l l_orth.
     exists (list_prod (list_image l (vector_to_ext V))).
     induction l as [|v l].
@@ -173,7 +178,8 @@ Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
 Qed.
 
 Theorem ext_to_geo_project : ∀ (a : ext V) (n : nat),
-        grade_project (G a) n = G (grade_project (VG := EG) a n).
+    grade_project (G a) n = G (grade_project (VG := EG) a n).
+Proof.
     intros a n.
     induction a as [|a a' i ai a'i IHa] using grade_induction.
     {
@@ -202,7 +208,8 @@ Theorem ext_to_geo_project : ∀ (a : ext V) (n : nat),
 Qed.
 
 Theorem geo_to_ext_project : ∀ (a : geo B) (n : nat),
-        grade_project (VG := EG) (E a) n = E (grade_project a n).
+    grade_project (VG := EG) (E a) n = E (grade_project a n).
+Proof.
     intros a n.
     rewrite <- (geo_to_ext_to_geo B (grade_project (VG := EG) (E a) n)).
     rewrite <- ext_to_geo_project.

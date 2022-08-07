@@ -39,7 +39,8 @@ Context {U} `{Up : Plus U,
 
 (* end hide *)
 Theorem gcd_associates :
-        ∀ a b d1 d2, is_gcd a b d1 → is_gcd a b d2 → associates d1 d2.
+    ∀ a b d1 d2, is_gcd a b d1 → is_gcd a b d2 → associates d1 d2.
+Proof.
     intros a b d1 d2 [d1_cd d1_gcd] [d2_cd d2_gcd].
     specialize (d1_gcd d2 d2_cd).
     specialize (d2_gcd d1 d1_cd).
@@ -51,6 +52,7 @@ Context `{@GCDDomain U Um Uz}.
 
 (* end hide *)
 Theorem gcd_gcd : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → is_gcd a b (gcd a b).
+Proof.
     intros a b nz.
     split.
     -   apply gcd_cd.
@@ -59,6 +61,7 @@ Theorem gcd_gcd : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → is_gcd a b (gcd a b).
 Qed.
 
 Lemma gcd_comm_wlog : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → gcd a b ∣ gcd b a.
+Proof.
     intros a b nz.
     apply gcd_greatest.
     -   rewrite or_comm.
@@ -68,6 +71,7 @@ Lemma gcd_comm_wlog : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → gcd a b ∣ gcd b a.
         apply gcd_cd.
 Qed.
 Theorem gcd_comm : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → associates (gcd a b) (gcd b a).
+Proof.
     intros a b nz.
     split; apply gcd_comm_wlog.
     2: rewrite or_comm.
@@ -75,6 +79,7 @@ Theorem gcd_comm : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → associates (gcd a b) (gcd 
 Qed.
 
 Theorem irreducible_prime : ∀ p, irreducible p → prime p.
+Proof.
     intros p [p_nz [p_nu p_irr]].
     repeat split; [>exact p_nz|exact p_nu|].
     intros a b p_div.

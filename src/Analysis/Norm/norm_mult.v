@@ -52,6 +52,7 @@ Context {U} `{
 Existing Instance abs_metric.
 (* end hide *)
 Theorem mult_bilinear : bilinear mult.
+Proof.
     repeat split.
     -   apply scalar_lmult.
     -   apply scalar_rmult.
@@ -60,7 +61,8 @@ Theorem mult_bilinear : bilinear mult.
 Qed.
 
 Theorem seq_lim_mult : ∀ xf yf (x y : U), seq_lim xf x → seq_lim yf y →
-        seq_lim (λ n, xf n * yf n) (x * y).
+    seq_lim (λ n, xf n * yf n) (x * y).
+Proof.
     intros xf yf x y.
     apply seq_lim_bilinear.
     -   exact mult_bilinear.
@@ -69,8 +71,8 @@ Theorem seq_lim_mult : ∀ xf yf (x y : U), seq_lim xf x → seq_lim yf y →
 Qed.
 
 Theorem continuous_mult : ∀ x (f g : U → U),
-        continuous_at f x → continuous_at g x →
-        continuous_at (λ a, f a * g a) x.
+    continuous_at f x → continuous_at g x → continuous_at (λ a, f a * g a) x.
+Proof.
     intros x f g.
     apply continuous_bilinear.
     -   exact mult_bilinear.
@@ -79,7 +81,8 @@ Theorem continuous_mult : ∀ x (f g : U → U),
 Qed.
 
 Theorem seq_lim_constant : ∀ a x xf, seq_lim xf x →
-        seq_lim (λ n, a * xf n) (a * x).
+    seq_lim (λ n, a * xf n) (a * x).
+Proof.
     intros a x xf xf_x.
     pose (af (n : nat) := a).
     assert ((λ n, a * xf n) = (λ n, af n * xf n)) as f_eq by reflexivity.
@@ -90,7 +93,8 @@ Theorem seq_lim_constant : ∀ a x xf, seq_lim xf x →
 Qed.
 
 Theorem seq_lim_div : ∀ a af, seq_lim af a →
-        0 ≠ a → seq_lim (λ n, /(af n)) (/a).
+    0 ≠ a → seq_lim (λ n, /(af n)) (/a).
+Proof.
     intros a af a_lim a_neq.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
@@ -165,7 +169,8 @@ Theorem seq_lim_div : ∀ a af, seq_lim af a →
 Qed.
 
 Theorem seq_lim_zero_mult : ∀ an bn, seq_norm_bounded an → seq_lim bn 0 →
-        seq_lim (λ n, an n * bn n) 0.
+    seq_lim (λ n, an n * bn n) 0.
+Proof.
     intros an bn [M M_bound] bn_zero.
     classic_case (0 = M) as [M_z|M_nz].
     {
@@ -210,7 +215,8 @@ Theorem seq_lim_zero_mult : ∀ an bn, seq_norm_bounded an → seq_lim bn 0 →
 Qed.
 
 Theorem seq_lim_zero_mult2 : ∀ an bn x, seq_lim an x → seq_lim bn 0 →
-        seq_lim (λ n, an n * bn n) 0.
+    seq_lim (λ n, an n * bn n) 0.
+Proof.
     intros an bn x anx bn0.
     apply seq_lim_zero_mult; [>|exact bn0].
     apply converges_bounded.

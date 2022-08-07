@@ -16,6 +16,7 @@ Global Instance real_order : Order real := {
 
 (* begin hide *)
 Lemma real_le_connex_ : ∀ a b, {a <= b} + {b <= a}.
+Proof.
     intros [a a_cut] [b b_cut].
     unfold le; cbn.
     classic_case (a ⊆ b) as [ab|nab]; try (left; exact ab).
@@ -34,6 +35,7 @@ Global Instance real_le_connex : Connex le := {
 }.
 
 Lemma real_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
+Proof.
     intros [a a_cut] [b b_cut].
     unfold le; cbn.
     intros ab ba.
@@ -45,6 +47,7 @@ Global Instance real_le_antisym : Antisymmetric le := {
 }.
 
 Lemma real_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
+Proof.
     intros a b c.
     unfold le; cbn.
     apply trans.
@@ -54,7 +57,8 @@ Global Instance real_le_trans : Transitive le := {
 }.
 
 Lemma real_sup_complete_ : ∀ S : real → Prop, (∃ x, S x) →
-        has_upper_bound le S → has_supremum le S.
+    has_upper_bound le S → has_supremum le S.
+Proof.
     intros S [[l l_cut] Sl] [[u u_cut] u_upper].
     pose (α a := ∃ x, S x ∧ [x|] a).
     assert (dedekind_cut α) as α_cut.
@@ -106,6 +110,7 @@ Global Instance real_sup_complete : SupremumComplete le := {
 (* end hide *)
 
 Theorem rat_to_real_le : ∀ a b, rat_to_real a <= rat_to_real b ↔ a <= b.
+Proof.
     intros a b; split; intro leq.
     -   unfold le in leq; cbn in leq.
         unfold rat_to_real_base in leq.
@@ -119,6 +124,7 @@ Theorem rat_to_real_le : ∀ a b, rat_to_real a <= rat_to_real b ↔ a <= b.
 Qed.
 
 Theorem gt_rat_to_real_in : ∀ a b, rat_to_real a < b → [b|] a.
+Proof.
     intros a [b b_cut] [leq neq]; cbn.
     classic_contradiction contr.
     apply neq.
@@ -128,6 +134,7 @@ Theorem gt_rat_to_real_in : ∀ a b, rat_to_real a < b → [b|] a.
 Qed.
 
 Theorem real_lt_ex_between : ∀ a b, a < b → ∃ x, ¬[a|] x ∧ [b|] x.
+Proof.
     intros a b ab.
     destruct ab as [leq neq].
     classic_contradiction contr.

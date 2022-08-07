@@ -6,6 +6,7 @@ Require Export relation.
 Require Import nat.
 
 Theorem func_eq {A B} : ∀ f1 f2 : A → B, f1 = f2 → ∀ x, f1 x = f2 x.
+Proof.
     intros f1 f2 eq x.
     rewrite eq; reflexivity.
 Qed.
@@ -17,14 +18,16 @@ Definition inverse_image {U V} (f : U → V) (T : V → Prop)
     := λ x, T (f x).
 
 Theorem image_inverse_sub {U V} : ∀ (f : U → V) S,
-        subset (image_under f (inverse_image f S)) S.
+    subset (image_under f (inverse_image f S)) S.
+Proof.
     intros f S y [x [x_in eq]].
     subst y.
     exact x_in.
 Qed.
 
 Theorem image_sub {U V} :
-        ∀ (f : U → V) S T, (S ⊆ T → image_under f S ⊆ image_under f T)%set.
+    ∀ (f : U → V) S T, (S ⊆ T → image_under f S ⊆ image_under f T)%set.
+Proof.
     intros f S T sub y [x [Sx y_eq]].
     subst y.
     apply sub in Sx.
@@ -33,7 +36,8 @@ Theorem image_sub {U V} :
 Qed.
 
 Theorem inverse_complement {U V} : ∀ (f : U → V) S,
-        inverse_image f (complement S) = complement (inverse_image f S).
+    inverse_image f (complement S) = complement (inverse_image f S).
+Proof.
     intros f S.
     reflexivity.
 Qed.
@@ -50,15 +54,18 @@ Fixpoint iterate_func {U} (f : U → U) n :=
     end.
 
 Theorem identity_injective {U} : injective (@identity U).
+Proof.
     intros a b eq.
     exact eq.
 Qed.
 Theorem identity_surjective {U} : surjective (@identity U).
+Proof.
     intros x.
     exists x.
     reflexivity.
 Qed.
 Theorem identity_bijective {U} : bijective (@identity U).
+Proof.
     split.
     -   exact identity_injective.
     -   exact identity_surjective.
@@ -66,25 +73,29 @@ Qed.
 
 Definition is_inverse {U V} (f : U → V) (g : V → U) := ∀ x y, f x = y ↔ g y = x.
 Theorem inverse_symmetric {U V} : ∀ (f : U → V) (g : V → U),
-        is_inverse f g → is_inverse g f.
+    is_inverse f g → is_inverse g f.
+Proof.
     intros f g f_inv.
     split; apply f_inv.
 Qed.
 Theorem inverse_eq1 {U V} : ∀ (f : U → V) (g : V → U), is_inverse f g →
-        ∀ x, g (f x) = x.
+    ∀ x, g (f x) = x.
+Proof.
     intros f g inv x.
     apply (inv x (f x)).
     reflexivity.
 Qed.
 Theorem inverse_eq2 {U V} : ∀ (f : U → V) (g : V → U), is_inverse f g →
-        ∀ x, f (g x) = x.
+    ∀ x, f (g x) = x.
+Proof.
     intros f g inv x.
     apply (inv (g x) x).
     reflexivity.
 Qed.
 
 Theorem bijective_inverse_ex {U V} : ∀ f : U → V, bijective f →
-        ∃ g, is_inverse f g.
+    ∃ g, is_inverse f g.
+Proof.
     intros f [f_inj f_sur].
     exists (λ y, ex_val (f_sur y)).
     split.
@@ -101,12 +112,14 @@ Qed.
 Definition bij_inv {U V} (f : U → V) (f_bij : bijective f) :=
     ex_val (bijective_inverse_ex f f_bij).
 Theorem bij_inv_inv {U V} : ∀ (f : U → V) f_bij, is_inverse f (bij_inv f f_bij).
+Proof.
     intros f f_bij.
     unfold bij_inv.
     unpack_ex_val g g_ex g_inv; rewrite g_ex.
     exact g_inv.
 Qed.
 Theorem bij_inv_bij {U V} : ∀ (f : U → V) f_bij, bijective (bij_inv f f_bij).
+Proof.
     intros f [f_inv f_sur].
     unfold bij_inv.
     unpack_ex_val g g_ex g_inv; rewrite g_ex.
@@ -127,14 +140,16 @@ Theorem bij_inv_bij {U V} : ∀ (f : U → V) f_bij, bijective (bij_inv f f_bij)
 Qed.
 
 Theorem inj_comp {U V W} : ∀ (f : U → V) (g : V → W),
-        injective f → injective g → injective (λ x, g (f x)).
+    injective f → injective g → injective (λ x, g (f x)).
+Proof.
     intros f g f_inj g_inj a b eq.
     apply g_inj in eq.
     apply f_inj in eq.
     exact eq.
 Qed.
 Theorem sur_comp {U V W} : ∀ (f : U → V) (g : V → W),
-        surjective f → surjective g → surjective (λ x, g (f x)).
+    surjective f → surjective g → surjective (λ x, g (f x)).
+Proof.
     intros f g f_sur g_sur z.
     destruct (g_sur z) as [y y_eq].
     destruct (f_sur y) as [x x_eq].
@@ -143,7 +158,8 @@ Theorem sur_comp {U V W} : ∀ (f : U → V) (g : V → W),
     exact y_eq.
 Qed.
 Theorem bij_comp {U V W} : ∀ (f : U → V) (g : V → W),
-        bijective f → bijective g → bijective (λ x, g (f x)).
+    bijective f → bijective g → bijective (λ x, g (f x)).
+Proof.
     intros f g [f_inj f_sur] [g_inj g_sur].
     split.
     -   apply inj_comp; assumption.
@@ -151,7 +167,8 @@ Theorem bij_comp {U V W} : ∀ (f : U → V) (g : V → W),
 Qed.
 
 Theorem inverse_image_bij_inv {U V} : ∀ S (f : U → V) f_bij,
-        (inverse_image (bij_inv f f_bij) S) = image_under f S.
+    (inverse_image (bij_inv f f_bij) S) = image_under f S.
+Proof.
     intros S f f_bij.
     apply antisym.
     -   intros y y_in.
@@ -167,7 +184,8 @@ Theorem inverse_image_bij_inv {U V} : ∀ S (f : U → V) f_bij,
 Qed.
 
 Theorem bij_inverse_image {U V} : ∀ S (f : U → V),
-        bijective f → image_under f (inverse_image f S) = S.
+    bijective f → image_under f (inverse_image f S) = S.
+Proof.
     intros S f f_bij.
     apply antisym.
     -   intros y [x [Sfx y_eq]]; subst y.
@@ -180,7 +198,8 @@ Theorem bij_inverse_image {U V} : ∀ S (f : U → V),
 Qed.
 
 Theorem inverse_image_bij {U V} : ∀ S (f : U → V),
-        injective f → inverse_image f (image_under f S) = S.
+    injective f → inverse_image f (image_under f S) = S.
+Proof.
     intros S f f_bij.
     apply antisym.
     -   intros x [y [Sy eq]].
@@ -195,10 +214,12 @@ Qed.
 Definition empty_function A B (H : A → False) := λ x : A, False_rect B (H x).
 
 Theorem empty_inj {A B H} : injective (empty_function A B H).
+Proof.
     intros a.
     contradiction (H a).
 Qed.
 Theorem empty_bij {A B H} : (B → False) → bijective (empty_function A B H).
+Proof.
     intros BH.
     split; try apply empty_inj.
     intros b.
@@ -206,7 +227,8 @@ Theorem empty_bij {A B H} : (B → False) → bijective (empty_function A B H).
 Qed.
 
 Theorem partition_principle {A B} :
-        (∃ f : A → B, surjective f) → ∃ f : B → A, injective f.
+    (∃ f : A → B, surjective f) → ∃ f : B → A, injective f.
+Proof.
     intros [f f_sur].
     unfold surjective in f_sur.
     exists (λ b, ex_val (f_sur b)).
@@ -219,7 +241,8 @@ Theorem partition_principle {A B} :
 Qed.
 
 Theorem inverse_ex_bijective {A B} : ∀ (f : A → B) (g : B → A),
-        (∀ x, f (g x) = x) → (∀ x, g (f x) = x) → bijective f.
+    (∀ x, f (g x) = x) → (∀ x, g (f x) = x) → bijective f.
+Proof.
     intros f g fg gf.
     split.
     -   intros a b eq.
@@ -266,6 +289,7 @@ Definition func_le (f g : set_function_type U V) :=
             f⟨x⟩ = g⟨[[x|]|sub [x|] [|x]]⟩.
 
 Lemma func_le_refl : ∀ f, func_le f f.
+Proof.
     intros f.
     exists (@refl (U → Prop) subset _ (domain f)).
     intros [x x_in].
@@ -278,6 +302,7 @@ Global Instance func_le_refl_class : Reflexive func_le := {
 }.
 
 Lemma func_le_antisym : ∀ f g, func_le f g → func_le g f → f = g.
+Proof.
     intros f g [f_sub_g fg] [g_sub_f gf]; cbn in *.
     assert (domain f = domain g) as sets_eq.
     {
@@ -298,6 +323,7 @@ Global Instance func_le_antisym_class : Antisymmetric func_le := {
 }.
 
 Lemma func_le_trans : ∀ f g h, func_le f g → func_le g h → func_le f h.
+Proof.
     intros f g h [f_sub_g fg] [g_sub_h gh]; cbn in *.
     exists (trans f_sub_g g_sub_h); cbn.
     intros x.
@@ -318,6 +344,7 @@ Definition bin_func_le (f g : bin_set_function_type U V) :=
             f⟨x, y⟩ = g⟨[[x|]|sub [x|] [|x]], [[y|]|sub [y|] [|y]]⟩.
 
 Lemma bin_func_le_refl : ∀ f, bin_func_le f f.
+Proof.
     intros f.
     exists (refl _).
     intros x y.
@@ -328,6 +355,7 @@ Global Instance bin_func_le_refl_class : Reflexive bin_func_le := {
 }.
 
 Lemma bin_func_le_antisym : ∀ f g, bin_func_le f g → bin_func_le g f → f = g.
+Proof.
     intros f g [f_sub_g fg] [g_sub_f gf]; cbn in *.
     assert (bin_domain f = bin_domain g) as sets_eq.
     {
@@ -347,8 +375,9 @@ Global Instance bin_func_le_antisym_class : Antisymmetric bin_func_le := {
     antisym := bin_func_le_antisym
 }.
 
-Lemma bin_func_le_trans
-        : ∀ f g h, bin_func_le f g → bin_func_le g h → bin_func_le f h.
+Lemma bin_func_le_trans :
+    ∀ f g h, bin_func_le f g → bin_func_le g h → bin_func_le f h.
+Proof.
     intros g f h [f_sub_g fg] [g_sub_h gh]; cbn in *.
     exists (trans f_sub_g g_sub_h); cbn.
     intros x y.

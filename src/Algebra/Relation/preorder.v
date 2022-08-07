@@ -44,6 +44,7 @@ Definition preorder_equiv := make_equiv _
     preorder_eq_reflexive preorder_eq_symmetric preorder_eq_transitive.
 
 Lemma preorder_le_wd_1 : ∀ a b c d : U, a ~ b → c ~ d → a <= c → b <= d.
+Proof.
     intros a b c d ab cd ac.
     unfold preorder_eq in *.
     destruct ab as [ab ba].
@@ -54,6 +55,7 @@ Lemma preorder_le_wd_1 : ∀ a b c d : U, a ~ b → c ~ d → a <= c → b <= d.
 Qed.
 
 Lemma preorder_le_wd : ∀ a b c d : U, a ~ b → c ~ d → (a <= c) = (b <= d).
+Proof.
     intros a b c d ab cd.
     apply propositional_ext.
     split; apply preorder_le_wd_1.
@@ -94,7 +96,8 @@ Next Obligation.
 Qed.
 
 Theorem preorder_zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
-        ∃ a : U, ∀ x : U, a <= x → x <= a.
+    ∃ a : U, ∀ x : U, a <= x → x <= a.
+Proof.
     intros chain_ub.
     pose proof (zorn (U := equiv_type preorder_equiv) le) as a_ex.
     prove_parts a_ex.

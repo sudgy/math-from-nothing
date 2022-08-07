@@ -68,8 +68,9 @@ Definition tensor_power_nat_eq {m n : nat} (eq : m = n)
 Defined.
 
 Theorem tensor_power_eq_generic : ∀ m n (eq : m = n) A B,
-        to_generic_tensor A = to_generic_tensor B →
-        module_homo_f (tensor_power_nat_eq eq) A = B.
+    to_generic_tensor A = to_generic_tensor B →
+    module_homo_f (tensor_power_nat_eq eq) A = B.
+Proof.
     intros m n eq A B AB.
     (* I honestly don't know what I'm doing in this proof *)
     inversion AB.
@@ -82,7 +83,8 @@ Theorem tensor_power_eq_generic : ∀ m n (eq : m = n) A B,
 Qed.
 
 Theorem tensor_power_eq : ∀ n (A B : module_V (tensor_power n)),
-        to_generic_tensor A = to_generic_tensor B → A = B.
+    to_generic_tensor A = to_generic_tensor B → A = B.
+Proof.
     intros n A B eq.
     assert (n = n) as eq' by reflexivity.
     assert (module_homo_f (tensor_power_nat_eq eq') A = A) as eq2.
@@ -96,8 +98,9 @@ Theorem tensor_power_eq : ∀ n (A B : module_V (tensor_power n)),
 Qed.
 
 Lemma generic_tensor_eq_generic : ∀ m n (eq : m = n) A,
-        to_generic_tensor (module_homo_f (tensor_power_nat_eq eq) A) =
-        to_generic_tensor A.
+    to_generic_tensor (module_homo_f (tensor_power_nat_eq eq) A) =
+    to_generic_tensor A.
+Proof.
     intros m n eq A.
     destruct eq.
     cbn.
@@ -106,11 +109,12 @@ Lemma generic_tensor_eq_generic : ∀ m n (eq : m = n) A,
 Qed.
 
 Lemma to_generic_tensor_plus : ∀ {m n}
-        {A C : module_V (tensor_power m)}
-        {B D : module_V (tensor_power n)},
-        to_generic_tensor C = to_generic_tensor D →
-        to_generic_tensor A = to_generic_tensor B →
-        to_generic_tensor (A + C) = to_generic_tensor (B + D).
+    {A C : module_V (tensor_power m)}
+    {B D : module_V (tensor_power n)},
+    to_generic_tensor C = to_generic_tensor D →
+    to_generic_tensor A = to_generic_tensor B →
+    to_generic_tensor (A + C) = to_generic_tensor (B + D).
+Proof.
     intros m n A C B D CD AB.
     inversion AB.
     inversion CD.
@@ -158,7 +162,8 @@ Fixpoint tensor_power_mult (m n : nat)
     end.
 
 Theorem tensor_power_mult1_iso :
-        ∀ n, isomorphism (C0 := MODULE F) (tensor_power_mult1 n).
+    ∀ n, isomorphism (C0 := MODULE F) (tensor_power_mult1 n).
+Proof.
     intros n.
     induction n.
     -   cbn.
@@ -171,7 +176,8 @@ Theorem tensor_power_mult1_iso :
 Qed.
 
 Theorem tensor_power_mult_iso :
-        ∀ m n, isomorphism (C0 := MODULE F) (tensor_power_mult m n).
+    ∀ m n, isomorphism (C0 := MODULE F) (tensor_power_mult m n).
+Proof.
     intros m n.
     revert m.
     induction n; intros.
@@ -205,19 +211,22 @@ Local Infix "⊗'" := tensor_mult' (at level 40, no associativity).
 Let f {a b} A := module_homo_f (tensor_power_mult a b) A.
 
 Lemma f_plus : ∀ a b (A B : module_V (tensor_power a ⊗ tensor_power b)),
-        f (A + B) = f A + f B.
+    f (A + B) = f A + f B.
+Proof.
     intros a b A B.
     unfold f.
     apply (@module_homo_plus _ _ _ (tensor_power_mult a b)).
 Qed.
 Lemma f_scalar : ∀ a b A (B : module_V (tensor_power a ⊗ tensor_power b)),
-        f (A · B) = A · f B.
+    f (A · B) = A · f B.
+Proof.
     intros a b A B.
     unfold f.
     apply (@module_homo_scalar _ _ _ (tensor_power_mult a b)).
 Qed.
 Lemma f_zero : ∀ a b,
-        f (zero (U := module_V (tensor_power a ⊗ tensor_power b))) = 0.
+    f (zero (U := module_V (tensor_power a ⊗ tensor_power b))) = 0.
+Proof.
     intros a b.
     apply module_homo_zero.
 Qed.
@@ -225,12 +234,14 @@ Qed.
 Lemma tensor_ldist' :
     ∀ a b (A : module_V (tensor_power a)) (B C : module_V (tensor_power b)),
         A ⊗' (B + C) = A ⊗' B + A ⊗' C.
+Proof.
     intros a b A B C.
     apply tensor_ldist.
 Qed.
 Lemma tensor_rdist' :
     ∀ a b (A B : module_V (tensor_power a)) (C : module_V (tensor_power b)),
         (A + B) ⊗' C = A ⊗' C + B ⊗' C.
+Proof.
     intros a b A B C.
     apply tensor_rdist.
 Qed.
@@ -238,6 +249,7 @@ Lemma tensor_lanni' :
     ∀ a b (A : module_V (tensor_power b)),
         (@zero _ (module_zero (tensor_power a))) ⊗' A =
         (@zero _ (module_zero (tensor_power a ⊗ tensor_power b))).
+Proof.
     intros a b A.
     apply tensor_product_lanni.
 Qed.
@@ -245,18 +257,21 @@ Lemma tensor_ranni' :
     ∀ a b (A : module_V (tensor_power a)),
         A ⊗' (@zero _ (module_zero (tensor_power b))) =
         (@zero _ (module_zero (tensor_power a ⊗ tensor_power b))).
+Proof.
     intros a b A.
     apply tensor_product_ranni.
 Qed.
 Lemma tensor_lscalar' :
-        ∀ α a b (A : module_V (tensor_power a)) (B : module_V (tensor_power b)),
-        (α · A) ⊗' B = α · (A ⊗' B).
+    ∀ α a b (A : module_V (tensor_power a)) (B : module_V (tensor_power b)),
+    (α · A) ⊗' B = α · (A ⊗' B).
+Proof.
     intros α a b A B.
     apply tensor_lscalar.
 Qed.
 Lemma tensor_rscalar' :
-        ∀ α a b (A : module_V (tensor_power a)) (B : module_V (tensor_power b)),
-        A ⊗' (α · B) = α · (A ⊗' B).
+    ∀ α a b (A : module_V (tensor_power a)) (B : module_V (tensor_power b)),
+    A ⊗' (α · B) = α · (A ⊗' B).
+Proof.
     intros α a b A B.
     apply tensor_rscalar.
 Qed.
@@ -266,11 +281,12 @@ Definition generic_tensor_mult (A B : generic_tensor_power) :=
     (tensor_mult _ _ (generic_tensor_power_t A) (generic_tensor_power_t B))).
 
 Theorem generic_tensor_mult_eq : ∀ {m n}
-        {v1 v2 : module_V V} {B1 : module_V (tensor_power m)}
-        {B2 : module_V (tensor_power n)},
-        v1 = v2 → to_generic_tensor B1 = to_generic_tensor B2 →
-        @to_generic_tensor (nat_suc m) (tensor_mult _ _ v1 B1) =
-        @to_generic_tensor (nat_suc n) (tensor_mult _ _ v2 B2).
+    {v1 v2 : module_V V} {B1 : module_V (tensor_power m)}
+    {B2 : module_V (tensor_power n)},
+    v1 = v2 → to_generic_tensor B1 = to_generic_tensor B2 →
+    @to_generic_tensor (nat_suc m) (tensor_mult _ _ v1 B1) =
+    @to_generic_tensor (nat_suc n) (tensor_mult _ _ v2 B2).
+Proof.
     intros m n v1 v2 B1 B2 eq1 eq2.
     subst v2.
     inversion eq2.
@@ -278,19 +294,21 @@ Theorem generic_tensor_mult_eq : ∀ {m n}
 Qed.
 
 Theorem generic_tensor_scalar_eq : ∀ {m n}
-        {A : module_V (tensor_power m)} {B : module_V (tensor_power n)} α,
-        to_generic_tensor A = to_generic_tensor B →
-        to_generic_tensor (α · A) = to_generic_tensor (α · B).
+    {A : module_V (tensor_power m)} {B : module_V (tensor_power n)} α,
+    to_generic_tensor A = to_generic_tensor B →
+    to_generic_tensor (α · A) = to_generic_tensor (α · B).
+Proof.
     intros m n A B α eq.
     inversion eq.
     reflexivity.
 Qed.
 
 Lemma to_generic_tensor_f_eq : ∀ {a1 a2 b1 b2 A1 A2 B1 B2},
-        to_generic_tensor A1 = to_generic_tensor A2 →
-        to_generic_tensor B1 = to_generic_tensor B2 →
-        to_generic_tensor (@f a1 b1 (A1 ⊗' B1)) =
-        to_generic_tensor (@f a2 b2 (A2 ⊗' B2)).
+    to_generic_tensor A1 = to_generic_tensor A2 →
+    to_generic_tensor B1 = to_generic_tensor B2 →
+    to_generic_tensor (@f a1 b1 (A1 ⊗' B1)) =
+    to_generic_tensor (@f a2 b2 (A2 ⊗' B2)).
+Proof.
     intros a1 a2 b1 b2 A1 A2 B1 B2 eq1 eq2.
     inversion eq1.
     inversion eq2.
@@ -298,9 +316,10 @@ Lemma to_generic_tensor_f_eq : ∀ {a1 a2 b1 b2 A1 A2 B1 B2},
 Qed.
 
 Theorem vectors_to_power_mult : ∀ l1 l2,
-        f (vectors_to_power l1 ⊗' vectors_to_power l2)
-        = module_homo_f (tensor_power_nat_eq (list_size_plus l1 l2))
-            (vectors_to_power (l1 ++ l2)).
+    f (vectors_to_power l1 ⊗' vectors_to_power l2)
+    = module_homo_f (tensor_power_nat_eq (list_size_plus l1 l2))
+        (vectors_to_power (l1 ++ l2)).
+Proof.
     intros l1 l2.
     symmetry; apply tensor_power_eq_generic.
     revert l1.
@@ -401,8 +420,9 @@ Definition simple_tensor_power n (A : module_V (tensor_power n)) :=
     A = α · module_homo_f (tensor_power_nat_eq [|l]) (vectors_to_power [l|]).
 
 Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
-        ∃ l : ulist (set_type (simple_tensor_power n)),
-        A = ulist_sum (ulist_image l (λ x, [x|])).
+    ∃ l : ulist (set_type (simple_tensor_power n)),
+    A = ulist_sum (ulist_image l (λ x, [x|])).
+Proof.
     intros n A.
     nat_induction n.
     -   assert (simple_tensor_power 0 A) as A_in.
@@ -480,8 +500,9 @@ Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
 Qed.
 
 Lemma tensor_power_rscalar : ∀ n
-        (A : module_V (tensor_power n)) (B : module_V (tensor_power 0)),
-        module_homo_f (tensor_power_nat_eq (plus_rid n)) (f (A ⊗' B)) = B · A.
+    (A : module_V (tensor_power n)) (B : module_V (tensor_power 0)),
+    module_homo_f (tensor_power_nat_eq (plus_rid n)) (f (A ⊗' B)) = B · A.
+Proof.
     intros n A B.
     apply tensor_power_eq_generic.
     unfold f; cbn.
@@ -495,8 +516,9 @@ Lemma tensor_power_rscalar : ∀ n
 Qed.
 
 Lemma tensor_power_lscalar : ∀ n
-        (A : module_V (tensor_power 0)) (B : module_V (tensor_power n)),
-        f (A ⊗' B) = A · B.
+    (A : module_V (tensor_power 0)) (B : module_V (tensor_power n)),
+    f (A ⊗' B) = A · B.
+Proof.
     intros n A B.
     pose proof (tensor_power_sum A) as [lA A_eq].
     pose proof (tensor_power_sum B) as [lB B_eq].
@@ -577,6 +599,7 @@ Theorem tensor_power_mult_assoc : ∀ a b c A B C,
             (module_homo_f (tensor_power_mult a b)
                 (tensor_mult (tensor_power a) (tensor_power b) A B))
             C).
+Proof.
     intros a b c A B C.
     apply tensor_power_eq_generic.
     cbn.

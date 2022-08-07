@@ -74,10 +74,12 @@ Context {U : Type} {op : U → U → Prop} `{
 }.
 
 Theorem wo_wo : well_orders op.
+Proof.
     repeat (split; try assumption).
 Qed.
 
 Theorem well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x.
+Proof.
     intros S S_ex.
     destruct (well_founded S S_ex) as [x [Sx x_min]].
     exists x.
@@ -113,7 +115,8 @@ Context {U} `{
 }.
 (* end hide *)
 Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
-        has_lower_bound le S → has_infimum le S.
+    has_lower_bound le S → has_infimum le S.
+Proof.
     intros S S_ex S_lower.
     pose (S' x := S (-x)).
     assert (∃ x, S' x) as S'_ex.

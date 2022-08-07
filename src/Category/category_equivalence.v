@@ -16,6 +16,7 @@ Definition cat_equivalent `(C1 : Category, C2 : Category)
 Notation "A ⋍ B" := (cat_equivalent A B) (at level 70, no associativity).
 
 Theorem cat_equiv_refl : ∀ `(C0 : Category), C0 ⋍ C0.
+Proof.
     intros C0.
     exists 𝟏, 𝟏.
     unfold cat_equivalence.
@@ -32,6 +33,7 @@ Theorem cat_equiv_refl : ∀ `(C0 : Category), C0 ⋍ C0.
 Qed.
 
 Theorem cat_equiv_trans : ∀ (C1 C2 C3 : Category), C1 ⋍ C2 → C2 ⋍ C3 → C1 ⋍ C3.
+Proof.
     intros C1 C2 C3 C12 C23.
     destruct C12 as [F1 [G1 [η1 [ε1 [η1_iso ε1_iso]]]]].
     destruct C23 as [F2 [G2 [η2 [ε2 [η2_iso ε2_iso]]]]].
@@ -77,6 +79,7 @@ Context `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
+Proof.
     destruct equiv as [η_iso ε_iso].
     rewrite nat_isomorphism_A in η_iso.
     rewrite nat_isomorphism_A in ε_iso.
@@ -143,6 +146,7 @@ Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
 Qed.
 
 Theorem functor_equiv_faithful1 : faithful_functor F.
+Proof.
     intros A B f g eq.
     apply (f_equal (functor_morphism G)) in eq.
     pose proof (nat_trans_commute η f) as eq2.
@@ -163,6 +167,7 @@ Theorem functor_equiv_faithful1 : faithful_functor F.
 Qed.
 
 Theorem functor_equiv_sur1 : essentially_surjective F.
+Proof.
     intros B.
     exists (G ⌈B⌉).
     exists (ε • B).
@@ -176,6 +181,7 @@ End FunctorEquivalence1.
 
 (* end hide *)
 Theorem cat_equiv_sym : ∀ C1 C2, cat_equivalent C1 C2 → cat_equivalent C2 C1.
+Proof.
     intros C1 C2 [F [G [η [ε equiv]]]].
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
     exists G, F, η', ε'.
@@ -193,16 +199,19 @@ Hypothesis equiv : cat_equivalence F G η ε.
 
 (* end hide *)
 Theorem functor_equiv_faithful2 : faithful_functor G.
+Proof.
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
     apply (functor_equiv_faithful1 G F η' ε' equiv').
 Qed.
 
 Theorem functor_equiv_sur2 : essentially_surjective G.
+Proof.
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
     apply (functor_equiv_sur1 G F η' ε' equiv').
 Qed.
 
 Theorem functor_equiv_full1 : full_functor F.
+Proof.
     intros A B f.
     destruct equiv as [η_iso ε_iso].
     rewrite nat_isomorphism_A in η_iso.
@@ -250,6 +259,7 @@ Hypothesis equiv : cat_equivalence F G η ε.
 
 (* end hide *)
 Theorem functor_equiv_full2 : full_functor G.
+Proof.
     pose proof (cat_equiv_sym_base F G η ε equiv) as [η' [ε' equiv']].
     apply (functor_equiv_full1 G F η' ε' equiv').
 Qed.
@@ -259,9 +269,10 @@ End FunctorEquivalence3.
 
 (* end hide *)
 Theorem functor_equivalence `{C1 : Category, C2 : Category} :
-        ∀ `(F : @Functor C1 C2),
-        full_functor F → faithful_functor F → essentially_surjective F →
-        cat_equivalent C1 C2.
+    ∀ `(F : @Functor C1 C2),
+    full_functor F → faithful_functor F → essentially_surjective F →
+    cat_equivalent C1 C2.
+Proof.
     intros F F_full F_faith F_sur.
     exists F.
     pose (G_f B := ex_val (F_sur B)).

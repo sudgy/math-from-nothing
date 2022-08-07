@@ -65,6 +65,7 @@ Context {U} `{
 }.
 (* end hide *)
 Theorem nat_to_abstract_eq_nat : ∀ a, nat_to_abstract a = a.
+Proof.
     nat_induction a.
     -   reflexivity.
     -   cbn.
@@ -73,16 +74,19 @@ Theorem nat_to_abstract_eq_nat : ∀ a, nat_to_abstract a = a.
 Qed.
 
 Theorem nat_to_abstract_zero : nat_to_abstract 0 = (zero (U := U)).
+Proof.
     reflexivity.
 Qed.
 
 Theorem nat_to_abstract_one : nat_to_abstract 1 = (one (U := U)).
+Proof.
     unfold one at 1; cbn.
     apply plus_rid.
 Qed.
 
 Theorem nat_to_abstract_plus : ∀ a b,
-        nat_to_abstract (a + b) = nat_to_abstract a + nat_to_abstract b.
+    nat_to_abstract (a + b) = nat_to_abstract a + nat_to_abstract b.
+Proof.
     intros a b.
     nat_induction a.
     -   rewrite nat_to_abstract_zero.
@@ -95,7 +99,8 @@ Theorem nat_to_abstract_plus : ∀ a b,
 Qed.
 
 Theorem nat_to_abstract_mult : ∀ a b,
-        nat_to_abstract (a * b) = nat_to_abstract a * nat_to_abstract b.
+    nat_to_abstract (a * b) = nat_to_abstract a * nat_to_abstract b.
+Proof.
     intros a b.
     nat_induction a.
     -   do 2 rewrite nat_to_abstract_zero.
@@ -111,6 +116,7 @@ Theorem nat_to_abstract_mult : ∀ a b,
 Qed.
 
 Theorem nat_to_abstract_mult_abstract : ∀ a b, nat_to_abstract a * b = a × b.
+Proof.
     intros a b.
     nat_induction a.
     -   unfold zero; cbn.
@@ -121,7 +127,8 @@ Theorem nat_to_abstract_mult_abstract : ∀ a b, nat_to_abstract a * b = a × b.
         reflexivity.
 Qed.
 
-Theorem nat_to_abstract_mult_one: ∀ a, a × (one (U := U)) = nat_to_abstract a.
+Theorem nat_to_abstract_mult_one : ∀ a, a × (one (U := U)) = nat_to_abstract a.
+Proof.
     nat_induction a.
     -   unfold zero, one; cbn.
         reflexivity.
@@ -131,6 +138,7 @@ Theorem nat_to_abstract_mult_one: ∀ a, a × (one (U := U)) = nat_to_abstract a
 Qed.
 
 Theorem nat_to_abstract_pos : ∀ a, 0 < nat_to_abstract (nat_suc a).
+Proof.
     nat_induction a.
     -   unfold one; cbn.
         rewrite plus_rid.
@@ -142,6 +150,7 @@ Theorem nat_to_abstract_pos : ∀ a, 0 < nat_to_abstract (nat_suc a).
 Qed.
 
 Theorem nat_to_abstract_pos2 : ∀ a, 0 <= nat_to_abstract a.
+Proof.
     nat_induction a.
     -   rewrite nat_to_abstract_zero.
         apply refl.
@@ -229,6 +238,7 @@ Proof.
 Qed.
 
 Theorem abstract_mult_rneg : ∀ a b, -(a × b) = a × (-b).
+Proof.
     intros a b.
     nat_induction a.
     -   unfold zero; cbn.
@@ -243,6 +253,7 @@ Let a1 := ∀ x : U, ∃ n, x < nat_to_abstract n.
 Let a2 := ∀ ε, 0 < ε → ∃ n, div (nat_to_abstract (nat_suc n)) < ε.
 
 Theorem field_impl_arch1 : a1 → Archimedean U.
+Proof.
     intros arch.
     split.
     unfold a1 in arch; clear a1 a2.
@@ -258,6 +269,7 @@ Theorem field_impl_arch1 : a1 → Archimedean U.
 Qed.
 
 Theorem field_impl_arch2 : a2 → Archimedean U.
+Proof.
     intros arch.
     split.
     unfold a2 in arch; clear a1 a2.
@@ -283,6 +295,7 @@ Qed.
 Context `{@Archimedean U p z o}.
 
 Theorem archimedean1 : a1.
+Proof.
     unfold a1; clear a1 a2.
     intros x.
     classic_case (0 < x) as [x_pos|x_neg].
@@ -298,6 +311,7 @@ Theorem archimedean1 : a1.
 Qed.
 
 Theorem archimedean2 : a2.
+Proof.
     pose proof (archimedean1) as arch.
     unfold a1, a2 in *; clear a1 a2.
     intros ε ε_pos.

@@ -71,6 +71,7 @@ Context {U U2 : Type} {E : equivalence U}.
 Local Notation "a ~ b" := (eq_equal E a b).
 
 Theorem equiv_eq_class : ∀ a b, equiv_class E a = equiv_class E b → a ~ b.
+Proof.
     intros a b eq.
     assert (equiv_class E b b) as bb by apply E.
     rewrite <- eq in bb.
@@ -78,6 +79,7 @@ Theorem equiv_eq_class : ∀ a b, equiv_class E a = equiv_class E b → a ~ b.
 Qed.
 
 Theorem equiv_eq : ∀ a b, (to_equiv_type E a = to_equiv_type E b) ↔ (a ~ b).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -98,14 +100,16 @@ Theorem equiv_eq : ∀ a b, (to_equiv_type E a = to_equiv_type E b) ↔ (a ~ b).
 Qed.
 
 Theorem equiv_type_eq : ∀ (A : set_type (equiv_set E)) a,
-        [A|] = equiv_class E a → A = to_equiv_type E a.
+    [A|] = equiv_class E a → A = to_equiv_type E a.
+Proof.
     intros A a eq.
     apply set_type_eq.
     exact eq.
 Qed.
 
 Theorem unary_self_op_wd : ∀ (f : U → U), (∀ a b : U, a ~ b → f a ~ f b) →
-        ∀ a, equiv_set E (unary_self_op_base E f a).
+    ∀ a, equiv_set E (unary_self_op_base E f a).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -126,8 +130,9 @@ Theorem unary_self_op_wd : ∀ (f : U → U), (∀ a b : U, a ~ b → f a ~ f b)
         +   exact eq.
 Qed.
 Theorem binary_self_op_wd : ∀ (f : U → U → U),
-        (∀ a b c d : U, a ~ b → c ~ d → f a c ~ f b d) →
-        ∀ a b, equiv_set E (binary_self_op_base E f a b).
+    (∀ a b c d : U, a ~ b → c ~ d → f a c ~ f b d) →
+    ∀ a b, equiv_set E (binary_self_op_base E f a b).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -148,8 +153,9 @@ Theorem binary_self_op_wd : ∀ (f : U → U → U),
         exact eq.
 Qed.
 Theorem binary_rself_op_wd : ∀ (f : U2 → U → U),
-        (∀ a b c, a ~ b → f c a ~ f c b) →
-        ∀ a b, equiv_set E (binary_rself_op_base E f a b).
+    (∀ a b c, a ~ b → f c a ~ f c b) →
+    ∀ a b, equiv_set E (binary_rself_op_base E f a b).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -226,6 +232,7 @@ Local Notation "'Bin'" := (binary_op bin_wd).
 Local Notation "'rBin'" := (binary_rop rbin_wd).
 
 Theorem equiv_unary_op : ∀ a, Un (to_equiv_type E a) = un a.
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -239,7 +246,8 @@ Theorem equiv_unary_op : ∀ a, Un (to_equiv_type E a) = un a.
     exact b_eq.
 Qed.
 Theorem equiv_binary_op : ∀ a b,
-        Bin (to_equiv_type E a) (to_equiv_type E b) = bin a b.
+    Bin (to_equiv_type E a) (to_equiv_type E b) = bin a b.
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -256,6 +264,7 @@ Theorem equiv_binary_op : ∀ a b,
         exact c_eq.
 Qed.
 Theorem equiv_binary_rop : ∀ a b, rBin (to_equiv_type E a) b = rbin a b.
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -268,7 +277,8 @@ Theorem equiv_binary_rop : ∀ a b, rBin (to_equiv_type E a) b = rbin a b.
     exact c_eq.
 Qed.
 Theorem equiv_unary_self_op : ∀ a,
-        sUn (to_equiv_type E a) = to_equiv_type E (sun a).
+    sUn (to_equiv_type E a) = to_equiv_type E (sun a).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -288,8 +298,9 @@ Theorem equiv_unary_self_op : ∀ a,
         +   exact eq.
 Qed.
 Theorem equiv_binary_self_op : ∀ a b,
-        sBin (to_equiv_type E a) (to_equiv_type E b) =
-        to_equiv_type E (sbin a b).
+    sBin (to_equiv_type E a) (to_equiv_type E b) =
+    to_equiv_type E (sbin a b).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).
@@ -308,8 +319,9 @@ Theorem equiv_binary_self_op : ∀ a b,
         exact eq.
 Qed.
 Theorem equiv_binary_rself_op : ∀ (a : V) (b : U),
-        rsBin a (to_equiv_type E b) =
-        to_equiv_type E (rsbin a b).
+    rsBin a (to_equiv_type E b) =
+    to_equiv_type E (rsbin a b).
+Proof.
     pose proof (eq_reflexive E).
     pose proof (eq_symmetric E).
     pose proof (eq_transitive E).

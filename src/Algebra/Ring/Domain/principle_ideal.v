@@ -38,6 +38,7 @@ Definition principle_ideal (I : Ideal U)
     := ∃ x, I = principle_ideal_by x.
 
 Theorem principle_ideal_div : ∀ a b, ideal_set (principle_ideal_by a) b ↔ a ∣ b.
+Proof.
     intros a b.
     split.
     -   intros [l eq].
@@ -63,7 +64,8 @@ Theorem principle_ideal_div : ∀ a b, ideal_set (principle_ideal_by a) b ↔ a 
 Qed.
 
 Theorem principle_ideal_associates : ∀ a b,
-        principle_ideal_by a = principle_ideal_by b ↔ associates a b.
+    principle_ideal_by a = principle_ideal_by b ↔ associates a b.
+Proof.
     intros a b.
     split.
     -   intros eq.
@@ -120,8 +122,9 @@ Context {U} `{
 
 (* end hide *)
 Theorem pid_noetherian : ∀ I : nat → Ideal U,
-        (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) →
-        ∃ n0, ∀ n, n0 <= n → I n0 = I n.
+    (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) →
+    ∃ n0, ∀ n, n0 <= n → I n0 = I n.
+Proof.
     intros In I_sub.
     assert (∀ m n, m <= n → ideal_set (In m) ⊆ ideal_set (In n)) as I_sub2.
     {
@@ -260,6 +263,7 @@ Next Obligation.
 Qed.
 
 Lemma pid_factor_ex : ∀ a, 0 ≠ a → ¬unit a → ∃ b, prime b ∧ b ∣ a.
+Proof.
     intros a a_nz au.
     classic_contradiction contr.
     rewrite not_ex in contr.

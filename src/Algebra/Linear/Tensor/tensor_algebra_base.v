@@ -72,24 +72,28 @@ Local Existing Instances tensor_algebra_plus tensor_algebra_zero
     tensor_algebra_scalar_mult.
 
 Theorem power_to_tensor_k_eq : ∀ k n (eq : k = n) (A : k_tensor k),
-        power_to_tensor A =
-        power_to_tensor (module_homo_f (tensor_power_nat_eq V eq) A).
+    power_to_tensor A =
+    power_to_tensor (module_homo_f (tensor_power_nat_eq V eq) A).
+Proof.
     intros k n eq A.
     destruct eq.
     cbn.
     reflexivity.
 Qed.
 Theorem power_to_tensor_eq : ∀ k, ∀ (A B : k_tensor k),
-        power_to_tensor A = power_to_tensor B → A = B.
+    power_to_tensor A = power_to_tensor B → A = B.
+Proof.
     apply single_to_grade_sum_eq.
 Qed.
 Theorem power_to_tensor_plus : ∀ k (A B : k_tensor k),
-        power_to_tensor (A + B) =
-        power_to_tensor A + power_to_tensor B.
+    power_to_tensor (A + B) =
+    power_to_tensor A + power_to_tensor B.
+Proof.
     apply single_to_grade_sum_plus.
 Qed.
 Theorem power_to_tensor_scalar : ∀ k α (A : k_tensor k),
-        power_to_tensor (α · A) = α · power_to_tensor A.
+    power_to_tensor (α · A) = α · power_to_tensor A.
+Proof.
     apply single_to_grade_sum_scalar.
 Qed.
 Lemma power_to_tensor_zero : ∀ k, (power_to_tensor (k := k) 0) = 0.

@@ -72,12 +72,14 @@ Local Infix "·" := op.
 (* end hide *)
 
 Lemma lid_rid_ : ∀ a, a · id = a.
+Proof.
     intros a.
     rewrite comm.
     apply lid.
 Qed.
 
 Lemma lcancel_rcancel_ : ∀ a b c, a · c = b · c → a = b.
+Proof.
     intros a b c eq.
     do 2 rewrite (comm _ c) in eq.
     apply lcancel with c.
@@ -85,12 +87,14 @@ Lemma lcancel_rcancel_ : ∀ a b c, a · c = b · c → a = b.
 Qed.
 
 Lemma lanni_ranni_ : ∀ a, a · anni = anni.
+Proof.
     intros a.
     rewrite comm.
     apply lanni.
 Qed.
 
 Lemma linv_rinv : ∀ a, a · inv a = id.
+Proof.
     intros a.
     rewrite comm.
     apply linv.
@@ -138,18 +142,21 @@ Context {U} (op : U → U → U) `{
 Infix "·" := op.
 
 Theorem lop : ∀ {a b} c, a = b → c · a = c · b.
+Proof.
     intros a b c eq.
     rewrite eq.
     reflexivity.
 Qed.
 
 Theorem rop : ∀ {a b} c, a = b → a · c = b · c.
+Proof.
     intros a b c eq.
     rewrite eq.
     reflexivity.
 Qed.
 
 Theorem lrop : ∀ {a b c d}, a = b → c = d → a · c = b · d.
+Proof.
     intros a b c d ab cd.
     apply rop with c in ab.
     apply lop with b in cd.
@@ -158,6 +165,7 @@ Theorem lrop : ∀ {a b c d}, a = b → c = d → a · c = b · d.
 Qed.
 
 Lemma op_lcancel : ∀ a b c, c · a = c · b → a = b.
+Proof.
     intros a b c eq.
     apply lop with (inv c) in eq.
     do 2 rewrite assoc in eq.
@@ -166,6 +174,7 @@ Lemma op_lcancel : ∀ a b c, c · a = c · b → a = b.
     exact eq.
 Qed.
 Lemma op_rcancel : ∀ a b c, a · c = b · c → a = b.
+Proof.
     intros a b c eq.
     apply rop with (inv c) in eq.
     do 2 rewrite <- assoc in eq.
@@ -182,6 +191,7 @@ Global Instance op_rcancel_class : Rcancel op := {
 }.
 
 Theorem inv_op : ∀ a b, inv (a · b) = inv b · inv a.
+Proof.
     intros a b.
     apply lcancel with (a · b).
     rewrite rinv.
@@ -192,6 +202,7 @@ Theorem inv_op : ∀ a b, inv (a · b) = inv b · inv a.
 Qed.
 
 Theorem inv_inv : ∀ a, inv (inv a) = a.
+Proof.
     intros a.
     apply lcancel with (inv a).
     rewrite linv, rinv.

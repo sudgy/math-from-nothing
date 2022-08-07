@@ -11,6 +11,7 @@ Require Import nat.
 Open Scope card_scope.
 (* end hide *)
 Lemma card_plus_wd : ∀ A B C D, A ~ B → C ~ D → sum A C ~ sum B D.
+Proof.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, match x with
                  | inl a => inl (f a)
@@ -41,6 +42,7 @@ Global Instance card_plus_class : Plus card := {
 
 (* begin hide *)
 Lemma card_plus_assoc : ∀ κ μ ν, κ + (μ + ν) = (κ + μ) + ν.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold plus; equiv_simpl.
@@ -69,6 +71,7 @@ Global Instance card_plus_assoc_class : PlusAssoc card := {
 }.
 
 Lemma card_plus_comm : ∀ κ μ, κ + μ = μ + κ.
+Proof.
     intros A B.
     equiv_get_value A B.
     unfold plus; equiv_simpl.
@@ -95,6 +98,7 @@ Global Instance card_zero : Zero card := {
 }.
 
 Lemma card_plus_lid : ∀ κ, 0 + κ = κ.
+Proof.
     intros A.
     equiv_get_value A.
     unfold zero; cbn.
@@ -122,6 +126,7 @@ Global Instance card_plus_lid_class : PlusLid card := {
 }.
 
 Theorem card_le_lplus : ∀ κ μ ν, κ <= μ → ν + κ <= ν + μ.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold le, plus; equiv_simpl.
@@ -141,6 +146,7 @@ Global Instance card_le_lplus_class : OrderLplus card := {
 }.
 (* end hide *)
 Theorem card_le_zero : ∀ κ, 0 <= κ.
+Proof.
     intros A.
     equiv_get_value A.
     unfold zero; cbn.
@@ -155,7 +161,8 @@ Theorem card_le_zero : ∀ κ, 0 <= κ.
 Qed.
 
 Theorem card_union_left {U} : ∀ S T : U → Prop,
-        |set_type S| <= |set_type (S ∪ T)%set|.
+    |set_type S| <= |set_type (S ∪ T)%set|.
+Proof.
     intros S T.
     unfold le; equiv_simpl.
     exists (λ (x : set_type S), [[x|] | make_lor [|x]]).
@@ -166,14 +173,16 @@ Theorem card_union_left {U} : ∀ S T : U → Prop,
 Qed.
 
 Theorem card_union_right {U} : ∀ S T : U → Prop,
-        |set_type T| <= |set_type (S ∪ T)%set|.
+    |set_type T| <= |set_type (S ∪ T)%set|.
+Proof.
     intros S T.
     rewrite comm.
     apply card_union_left.
 Qed.
 
 Theorem card_plus_union {U} : ∀ S T : U → Prop,
-        |set_type (S ∪ T)%set| <= |set_type S| + |set_type T|.
+    |set_type (S ∪ T)%set| <= |set_type S| + |set_type T|.
+Proof.
     intros S T.
     unfold plus, le; equiv_simpl.
     exists (λ (x : set_type (S ∪ T)%set),
@@ -190,6 +199,7 @@ Theorem card_plus_union {U} : ∀ S T : U → Prop,
 Qed.
 
 Theorem card_false_0 : ∀ A, (A → False) → |A| = 0.
+Proof.
     intros A A_false.
     unfold zero; cbn.
     unfold nat_to_card; equiv_simpl.
@@ -202,8 +212,9 @@ Theorem card_false_0 : ∀ A, (A → False) → |A| = 0.
 Qed.
 
 Theorem card_plus_one_nat {U} : ∀ (S : U → Prop) n (a : set_type S),
-        |set_type S| = nat_to_card (nat_suc n) →
-        |set_type (S - singleton [a|])%set| = nat_to_card n.
+    |set_type S| = nat_to_card (nat_suc n) →
+    |set_type (S - singleton [a|])%set| = nat_to_card n.
+Proof.
     intros S n a S_eq.
     unfold nat_to_card; equiv_simpl.
     unfold nat_to_card in S_eq; equiv_simpl in S_eq.
@@ -359,6 +370,7 @@ Theorem card_plus_one_nat {U} : ∀ (S : U → Prop) n (a : set_type S),
 Qed.
 
 Theorem zero_is_empty {U} : ∀ S : U → Prop, 0 = |set_type S| → S = empty.
+Proof.
     intros S S_0.
     symmetry in S_0.
     apply not_ex_empty.
@@ -370,13 +382,15 @@ Theorem zero_is_empty {U} : ∀ S : U → Prop, 0 = |set_type S| → S = empty.
 Qed.
 
 Theorem empty_set_size {U} : 0 = |set_type (U := U) ∅|.
+Proof.
     symmetry; apply card_false_0.
     intros [x C].
     exact C.
 Qed.
 
 Theorem disjoint_union_plus {U} : ∀ (A B : U → Prop), A ∩ B = ∅ →
-        |set_type A| + |set_type B| = |set_type (A ∪ B)|.
+    |set_type A| + |set_type B| = |set_type (A ∪ B)|.
+Proof.
     intros A B dis.
     unfold plus; equiv_simpl.
     exists (λ x, match x with
@@ -404,6 +418,7 @@ Theorem disjoint_union_plus {U} : ∀ (A B : U → Prop), A ∩ B = ∅ →
 Qed.
 
 Theorem card_nz_ex {U} : 0 ≠ |U| → U.
+Proof.
     intros neq.
     classic_contradiction contr.
     apply card_false_0 in contr.

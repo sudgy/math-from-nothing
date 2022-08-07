@@ -35,6 +35,7 @@ Definition admissable (A : U → Prop) :=
 Definition M (x : U) := ∀ A : U → Prop, admissable A → A x.
 
 Lemma M_admissable : admissable M.
+Proof.
     repeat split.
     -   intros A [A_a C].
         apply A_a.
@@ -54,6 +55,7 @@ Lemma M_admissable : admissable M.
 Qed.
 
 Lemma M_sub_admissable : ∀ M0, M0 ⊆ M → admissable M0 → M0 = M.
+Proof.
     intros M0 M0_sub M0_admissable.
     apply antisym; try assumption.
     intros x x_in.
@@ -62,6 +64,7 @@ Lemma M_sub_admissable : ∀ M0, M0 ⊆ M → admissable M0 → M0 = M.
 Qed.
 
 Lemma MfM : ∀ x, M x → M (f x).
+Proof.
     intros x Mx.
     apply M_admissable.
     exists x.
@@ -72,10 +75,12 @@ Qed.
 
 Definition A x := M x ∧ a <= x.
 Lemma A_sub : A ⊆ M.
+Proof.
     intros x x_in.
     apply x_in.
 Qed.
 Lemma A_admissable : admissable A.
+Proof.
     split.
     2: split.
     -   split; try apply refl.
@@ -102,6 +107,7 @@ Lemma A_admissable : admissable A.
             exact x_in.
 Qed.
 Lemma a_first : is_least le M a.
+Proof.
     pose proof (M_sub_admissable _ A_sub A_admissable) as AM.
     rewrite <- AM.
     split.
@@ -114,10 +120,12 @@ Definition P x := ∀ y, M y → y < x → f y <= x.
 
 Definition B x z := M z ∧ (z <= x ∨ f x <= z).
 Lemma B_sub : ∀ x, B x ⊆ M.
+Proof.
     intros x y y_in.
     apply y_in.
 Qed.
 Lemma B_admissable : ∀ x, M x → P x → admissable (B x).
+Proof.
     change op with le in *.
     intros x Mx Px.
     split.
@@ -163,12 +171,14 @@ Lemma B_admissable : ∀ x, M x → P x → admissable (B x).
                 exact Fz.
 Qed.
 Lemma BM : ∀ x, M x → P x → B x = M.
+Proof.
     intros x Mx Px.
     apply M_sub_admissable.
     -   apply B_sub.
     -   apply B_admissable; assumption.
 Qed.
 Lemma z_P : ∀ x, M x → P x → ∀ z, M z → z <= x ∨ f x <= z.
+Proof.
     intros x Mx Px z Mz.
     rewrite <- (BM x) in Mz; try assumption.
     apply Mz.
@@ -176,10 +186,12 @@ Qed.
 
 Definition C x := M x ∧ P x.
 Lemma C_sub : C ⊆ M.
+Proof.
     intros x x_in.
     apply x_in.
 Qed.
 Lemma C_admissable : admissable C.
+Proof.
     change op with le in *.
     split.
     2: split.
@@ -242,12 +254,14 @@ Lemma C_admissable : admissable C.
             exact Fz.
 Qed.
 Lemma all_P : M ⊆ P.
+Proof.
     pose proof (M_sub_admissable _ C_sub C_admissable) as CM.
     rewrite <- CM.
     apply inter_rsub.
 Qed.
 
 Lemma M_chain : is_chain le M.
+Proof.
     change op with le in *.
     intros x y Mx My.
     classic_case (y <= x).
@@ -262,6 +276,7 @@ Lemma M_chain : is_chain le M.
 Qed.
 
 Theorem bourbaki : ∃ x, f x = x.
+Proof.
     change op with le in *.
     assert (M ≠ ∅) as M_nempty.
     {
@@ -296,7 +311,8 @@ Context `{
 }.
 (* end hide *)
 Theorem bourbaki : U → (∀ S, is_chain op S → has_supremum op S) →
-        ∀ f, (∀ x, op x (f x)) → ∃ x, f x = x.
+    ∀ f, (∀ x, op x (f x)) → ∃ x, f x = x.
+Proof.
     apply BourbakiModule.bourbaki; assumption.
 Qed.
 
@@ -332,6 +348,7 @@ Local Instance sub_le : Order (U → Prop) := {
 
 Definition g := make_set_function A (λ X, ex_val (not_hausdorff [X|] [|X])).
 Lemma g_in_A : ∀ X, A (g⟨X⟩).
+Proof.
     intros X.
     unfold g; cbn.
     unpack_ex_val Y Y_ex HY; rewrite Y_ex.
@@ -340,6 +357,7 @@ Qed.
 Definition g2 X := [_|g_in_A X].
 
 Lemma g_in : ∀ X, X < g2 X.
+Proof.
     intros X.
     unfold g2, g; cbn.
     split.
@@ -358,7 +376,8 @@ Lemma g_in : ∀ X, X < g2 X.
 Qed.
 
 Lemma chain_supremum : ∀ S : set_type A → Prop,
-        is_chain le S → has_supremum le S.
+    is_chain le S → has_supremum le S.
+Proof.
     intros S S_chain.
     pose (W x := ∃ X, S X ∧ [X|] x).
     assert (is_chain le W) as W_chain.
@@ -385,6 +404,7 @@ Lemma chain_supremum : ∀ S : set_type A → Prop,
 Qed.
 
 Theorem hausdorff : False.
+Proof.
     assert (A ∅) as empty_in.
     {
         intros a b a_in b_in.
@@ -413,7 +433,8 @@ Context `{
 Local Open Scope set_scope.
 (* end hide *)
 Theorem hausdorff : ∃ M : U → Prop,
-        is_chain op M ∧ (∀ F : U → Prop, is_chain op F → ¬(M ⊂ F)).
+    is_chain op M ∧ (∀ F : U → Prop, is_chain op F → ¬(M ⊂ F)).
+Proof.
     classic_contradiction contr.
     apply (HausdorffModule.hausdorff op).
     intros G G_chain.
@@ -452,6 +473,7 @@ Local Instance op_le : Order U := {
 Hypothesis all_upper : ∀ F : U → Prop, is_chain le F → has_upper_bound le F.
 
 Theorem zorn : ∃ a, ∀ x, ¬(a < x).
+Proof.
     pose proof (hausdorff le) as [A [A_chain A_max]].
     pose proof (all_upper A A_chain) as [a a_upper].
     exists a.
@@ -507,7 +529,8 @@ Context `{
 Local Instance zorn_order : Order U := {le := op}.
 (* end hide *)
 Theorem zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
-        ∃ a : U, ∀ x : U, ¬ a < x.
+    ∃ a : U, ∀ x : U, ¬ a < x.
+Proof.
     apply ZornModule.zorn; assumption.
 Qed.
 

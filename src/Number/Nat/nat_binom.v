@@ -18,16 +18,19 @@ Fixpoint factorial n :=
     end.
 
 Theorem binom_suc : ∀ n k,
-        binom (nat_suc n) (nat_suc k) = binom n k + binom n (nat_suc k).
+    binom (nat_suc n) (nat_suc k) = binom n k + binom n (nat_suc k).
+Proof.
     reflexivity.
 Qed.
 
 Theorem binom_zero : ∀ n, binom n 0 = 1.
+Proof.
     intros n.
     destruct n; reflexivity.
 Qed.
 
 Theorem binom_one : ∀ n, binom n 1 = n.
+Proof.
     intros n.
     nat_induction n.
     -   reflexivity.
@@ -39,6 +42,7 @@ Theorem binom_one : ∀ n, binom n 1 = n.
 Qed.
 
 Theorem binom_greater : ∀ n k, n < k → binom n k = 0.
+Proof.
     intros n.
     nat_induction n.
     -   intros k ltq.
@@ -59,6 +63,7 @@ Theorem binom_greater : ∀ n k, n < k → binom n k = 0.
 Qed.
 
 Theorem binom_eq : ∀ n, binom n n = 1.
+Proof.
     intros n.
     nat_induction n.
     -   apply binom_zero.
@@ -69,14 +74,17 @@ Theorem binom_eq : ∀ n, binom n n = 1.
 Qed.
 
 Theorem factorial_zero : factorial 0 = 1.
+Proof.
     reflexivity.
 Qed.
 
 Theorem factorial_suc : ∀ n, factorial (nat_suc n) = nat_suc n * factorial n.
+Proof.
     reflexivity.
 Qed.
 
 Theorem factorial_nz : ∀ n, 0 ≠ factorial n.
+Proof.
     intros n.
     nat_induction n.
     -   intros contr; inversion contr.
@@ -89,7 +97,8 @@ Theorem factorial_nz : ∀ n, 0 ≠ factorial n.
 Qed.
 
 Theorem binom_fact : ∀ m n,
-        binom (n + m) n * factorial n * factorial m = factorial (n + m).
+    binom (n + m) n * factorial n * factorial m = factorial (n + m).
+Proof.
     intros m.
     nat_induction m.
     -   intros n.
@@ -128,6 +137,7 @@ Theorem binom_fact : ∀ m n,
 Qed.
 
 Theorem binom_opposite : ∀ m n, binom (m + n) m = binom (m + n) n.
+Proof.
     intros m n.
     apply mult_rcancel with (factorial m); [>apply factorial_nz|].
     apply mult_rcancel with (factorial n); [>apply factorial_nz|].

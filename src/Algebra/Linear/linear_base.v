@@ -100,16 +100,19 @@ Context {U V} `{AlgebraField U V}.
 
 (* end hide *)
 Theorem lscalar : ∀ {u v} a, u = v → a · u = a · v.
+Proof.
     intros u v a eq.
     rewrite eq.
     reflexivity.
 Qed.
 Theorem rscalar : ∀ {a b} v, a = b → a · v = b · v.
+Proof.
     intros u v a eq.
     rewrite eq.
     reflexivity.
 Qed.
 Theorem lrscalar : ∀ {a b u v}, a = b → u = v → a · u = b · v.
+Proof.
     intros a b u v eq1 eq2.
     apply lscalar with b in eq2.
     apply rscalar with u in eq1.
@@ -118,6 +121,7 @@ Theorem lrscalar : ∀ {a b u v}, a = b → u = v → a · u = b · v.
 Qed.
 
 Theorem scalar_lanni : ∀ v, 0 · v = 0.
+Proof.
     intros v.
     assert (0 · v = 0 · v) as eq by reflexivity.
     rewrite <- (plus_lid 0) in eq at 1.
@@ -127,6 +131,7 @@ Theorem scalar_lanni : ∀ v, 0 · v = 0.
 Qed.
 
 Theorem scalar_ranni : ∀ a, a · 0 = 0.
+Proof.
     intros a.
     assert (a · 0 = a · 0) as eq by reflexivity.
     rewrite <- (plus_lid 0) in eq at 1.
@@ -136,6 +141,7 @@ Theorem scalar_ranni : ∀ a, a · 0 = 0.
 Qed.
 
 Theorem scalar_lneg : ∀ a b, -a · b = -(a · b).
+Proof.
     intros a b.
     apply plus_lcancel with (a · b).
     rewrite <- scalar_rdist.
@@ -144,6 +150,7 @@ Theorem scalar_lneg : ∀ a b, -a · b = -(a · b).
 Qed.
 
 Theorem scalar_rneg : ∀ a b, a · -b = -(a · b).
+Proof.
     intros a b.
     apply plus_lcancel with (a · b).
     rewrite <- scalar_ldist.
@@ -152,6 +159,7 @@ Theorem scalar_rneg : ∀ a b, a · -b = -(a · b).
 Qed.
 
 Theorem scalar_neg_one : ∀ a, (-(1)) · a = -a.
+Proof.
     intros a.
     rewrite scalar_lneg.
     rewrite scalar_id.
@@ -159,6 +167,7 @@ Theorem scalar_neg_one : ∀ a, (-(1)) · a = -a.
 Qed.
 
 Theorem scalar_lcancel : ∀ {a b} c, 0 ≠ c → c · a = c · b → a = b.
+Proof.
     intros a b c c_nz eq.
     apply lscalar with (/c) in eq.
     do 2 rewrite scalar_comp in eq.
@@ -168,6 +177,7 @@ Theorem scalar_lcancel : ∀ {a b} c, 0 ≠ c → c · a = c · b → a = b.
 Qed.
 
 Theorem scalar_rcancel : ∀ {a b} c, 0 ≠ c → a · c = b · c → a = b.
+Proof.
     intros a b c c_nz eq.
     rewrite <- plus_0_anb_a_b in eq.
     rewrite <- scalar_lneg in eq.
@@ -181,8 +191,9 @@ Theorem scalar_rcancel : ∀ {a b} c, 0 ≠ c → a · c = b · c → a = b.
 Qed.
 
 Theorem linear_combination_add : ∀ x l H1 H2,
-        linear_combination [x ::: l | H1] =
-        fst x · snd x + linear_combination [l | H2].
+    linear_combination [x ::: l | H1] =
+    fst x · snd x + linear_combination [l | H2].
+Proof.
     intros x l HH1 HH2.
     unfold linear_combination; cbn.
     rewrite ulist_image_add, ulist_sum_add.
@@ -190,6 +201,7 @@ Theorem linear_combination_add : ∀ x l H1 H2,
 Qed.
 
 Theorem linear_combination_of_zero : ∀ S, linear_combination_of S 0.
+Proof.
     intros S.
     assert (@linear_combination_set U V ulist_end) as end_in.
     {
@@ -207,8 +219,9 @@ Theorem linear_combination_of_zero : ∀ S, linear_combination_of S 0.
 Qed.
 
 Theorem linear_combination_of_combination : ∀ S l,
-        (∀ v, (∃ α, in_ulist [l|] (α, v)) → linear_combination_of S v) →
-        linear_combination_of S (linear_combination l).
+    (∀ v, (∃ α, in_ulist [l|] (α, v)) → linear_combination_of S v) →
+    linear_combination_of S (linear_combination l).
+Proof.
     intros S [l l_comb] v_combs.
     induction l using ulist_induction.
     {
@@ -347,7 +360,8 @@ Theorem linear_combination_of_combination : ∀ S l,
 Qed.
 
 Theorem linear_combination_of_scalar : ∀ S a v,
-        linear_combination_of S v → linear_combination_of S (a · v).
+    linear_combination_of S v → linear_combination_of S (a · v).
+Proof.
     intros S a v v_comb.
     pose (l := (a, v) ::: ulist_end).
     assert (linear_combination_set l) as l_comb.
@@ -373,8 +387,9 @@ Theorem linear_combination_of_scalar : ∀ S a v,
 Qed.
 
 Theorem linear_combination_of_plus : ∀ S u v,
-        linear_combination_of S u → linear_combination_of S v →
-        linear_combination_of S (u + v).
+    linear_combination_of S u → linear_combination_of S v →
+    linear_combination_of S (u + v).
+Proof.
     intros S u v u_comb v_comb.
     classic_case (u = v) as [eq|neq].
     {
@@ -419,7 +434,8 @@ Definition linear_remove_zeros_base (l : set_type (@linear_combination_set U V))
     := ulist_filter (λ x, 0 ≠ fst x) [l|].
 
 Lemma linear_remove_zeros_comb :
-        ∀ l, linear_combination_set (linear_remove_zeros_base l).
+    ∀ l, linear_combination_set (linear_remove_zeros_base l).
+Proof.
     intros l.
     apply ulist_filter_image_unique.
     exact [|l].
@@ -429,7 +445,8 @@ Definition linear_remove_zeros l :=
     [linear_remove_zeros_base l|linear_remove_zeros_comb l].
 
 Theorem linear_combination_remove_zeros : ∀ l,
-        linear_combination l = linear_combination (linear_remove_zeros l).
+    linear_combination l = linear_combination (linear_remove_zeros l).
+Proof.
     intros [l l_uni].
     unfold linear_combination, linear_remove_zeros, linear_remove_zeros_base.
     cbn.
@@ -452,7 +469,8 @@ Theorem linear_combination_remove_zeros : ∀ l,
 Qed.
 
 Theorem linear_list_in_remove_zeros : ∀ l S,
-        linear_list_in S l → linear_list_in S (linear_remove_zeros l).
+    linear_list_in S l → linear_list_in S (linear_remove_zeros l).
+Proof.
     intros l S Sl.
     apply ulist_prop_filter.
     exact Sl.

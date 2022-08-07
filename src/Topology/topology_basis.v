@@ -126,6 +126,7 @@ Section Basis.
 Context {U} `{TopologyBasis U}.
 (* end hide *)
 Theorem basis_open : ∀ B, top_basis B → open B.
+Proof.
     intros B B_basis x Bx.
     exists B.
     repeat split; try assumption.
@@ -135,6 +136,7 @@ Qed.
 Let open' S := ∃ (SS : (U → Prop) → Prop), (∀ T, SS T → top_basis T) ∧ ⋃ SS = S.
 
 Theorem basis_open_unions : open = open'.
+Proof.
     apply predicate_ext.
     intros S.
     unfold open, open'; cbn.
@@ -179,7 +181,8 @@ Theorem basis_open_unions : open = open'.
 Qed.
 
 Theorem open_all_basis :
-        ∀ A : U → Prop, (∀ x, A x → ∃ S, top_basis S ∧ S x ∧ S ⊆ A) ↔ open A.
+    ∀ A : U → Prop, (∀ x, A x → ∃ S, top_basis S ∧ S x ∧ S ⊆ A) ↔ open A.
+Proof.
     clear open'.
     intros A.
     split.
@@ -230,6 +233,7 @@ Next Obligation.
 Qed.
 
 Theorem make_basis_equal : basis_topology = top.
+Proof.
     apply topology_equal.
     intros S.
     split.
@@ -252,7 +256,8 @@ Qed.
 End MakeBasis.
 (* end hide *)
 Theorem topology_basis_equal : ∀U (T1 : TopologyBasis U) (T2 : TopologyBasis U),
-        (∀ S, @top_basis U T1 S ↔ @top_basis U T2 S) → T1 = T2.
+    (∀ S, @top_basis U T1 S ↔ @top_basis U T2 S) → T1 = T2.
+Proof.
     intros U [T1 T1_in T1_int] [T2 T2_in T2_int] S.
     apply predicate_ext in S.
     unfold top_basis in S; cbn in S.
@@ -263,9 +268,10 @@ Theorem topology_basis_equal : ∀U (T1 : TopologyBasis U) (T2 : TopologyBasis U
 Qed.
 
 Theorem topology_basis_finer {U} : ∀ (T1 T2 : TopologyBasis U),
-        topology_finer (@basis_topology U T1) (@basis_topology U T2) ↔
-        ∀ x B2, @top_basis U T2 B2 → B2 x →
-        ∃ B1, @top_basis U T1 B1 ∧ B1 x ∧ B1 ⊆ B2.
+    topology_finer (@basis_topology U T1) (@basis_topology U T2) ↔
+    ∀ x B2, @top_basis U T2 B2 → B2 x →
+    ∃ B1, @top_basis U T1 B1 ∧ B1 x ∧ B1 ⊆ B2.
+Proof.
     intros T1 T2.
     unfold topology_finer; cbn.
     split.

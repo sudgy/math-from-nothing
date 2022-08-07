@@ -77,7 +77,8 @@ Local Open Scope nat_scope.
 Definition ext_involute_base1 (v : module_V V) := -φ v.
 
 Lemma ext_involute_base_plus : ∀ u v, ext_involute_base1 (u + v) =
-        ext_involute_base1 u + ext_involute_base1 v.
+    ext_involute_base1 u + ext_involute_base1 v.
+Proof.
     intros u v.
     unfold ext_involute_base1.
     rewrite vector_to_ext_plus.
@@ -85,7 +86,8 @@ Lemma ext_involute_base_plus : ∀ u v, ext_involute_base1 (u + v) =
 Qed.
 
 Lemma ext_involute_base_scalar : ∀ a v,
-        ext_involute_base1 (a · v) = a · ext_involute_base1 v.
+    ext_involute_base1 (a · v) = a · ext_involute_base1 v.
+Proof.
     intros a v.
     unfold ext_involute_base1.
     rewrite vector_to_ext_scalar.
@@ -101,7 +103,8 @@ Definition ext_involute_base2 := make_module_homomorphism
     ext_involute_base_scalar.
 
 Lemma ext_involute_base_alternating : ∀ v,
-        0 = ext_involute_base1 v * ext_involute_base1 v.
+    0 = ext_involute_base1 v * ext_involute_base1 v.
+Proof.
     intros v.
     unfold ext_involute_base1.
     rewrite mult_lneg, mult_rneg.
@@ -125,30 +128,37 @@ Local Notation "a '∗'" := (ext_involute a) (at level 10).
 
 (* end hide *)
 Theorem ext_involute_plus : ∀ u v, (u + v)∗ = u∗ + v∗.
+Proof.
     apply (algebra_homo_plus _ _ ext_involute_homo).
 Qed.
 
 Theorem ext_involute_scalar : ∀ a v, (a · v)∗ = a · v∗.
+Proof.
     apply (algebra_homo_scalar _ _ ext_involute_homo).
 Qed.
 
 Theorem ext_involute_mult : ∀ u v, (u * v)∗ = u∗ * v∗.
+Proof.
     apply (algebra_homo_mult _ _ ext_involute_homo).
 Qed.
 
 Theorem ext_involute_one : 1∗ = 1.
+Proof.
     apply (algebra_homo_one _ _ ext_involute_homo).
 Qed.
 
 Theorem ext_involute_neg : ∀ v, (-v)∗ = -v∗.
+Proof.
     apply (algebra_homo_neg ext_involute_homo).
 Qed.
 
 Theorem ext_involute_zero : 0∗ = 0.
+Proof.
     apply (algebra_homo_zero ext_involute_homo).
 Qed.
 
 Theorem ext_involute_of_scalar : ∀ a, (σ a)∗ = σ a.
+Proof.
     intros a.
     rewrite scalar_to_ext_one_scalar.
     rewrite ext_involute_scalar.
@@ -157,10 +167,12 @@ Theorem ext_involute_of_scalar : ∀ a, (σ a)∗ = σ a.
 Qed.
 
 Theorem ext_involute_vector : ∀ v, (φ v)∗ = -φ v.
+Proof.
     apply [|ext_involute_base].
 Qed.
 
 Theorem ext_involute_involute : ∀ v, v∗∗ = v.
+Proof.
     intros v.
     pose proof (ext_sum V v) as [l l_eq]; subst v.
     induction l as [|[a x] l] using ulist_induction.
@@ -257,14 +269,16 @@ Remove Hints ext_op_mult ext_op_ldist ext_op_rdist ext_op_mult_assoc
 Definition ext_reverse_base1 (v : module_V V) := φ v : ext_op.
 
 Lemma ext_reverse_base_plus : ∀ u v, ext_reverse_base1 (u + v) =
-        ext_reverse_base1 u + ext_reverse_base1 v.
+    ext_reverse_base1 u + ext_reverse_base1 v.
+Proof.
     intros u v.
     unfold ext_reverse_base1.
     apply vector_to_ext_plus.
 Qed.
 
 Lemma ext_reverse_base_scalar : ∀ a v,
-        ext_reverse_base1 (a · v) = a · ext_reverse_base1 v.
+    ext_reverse_base1 (a · v) = a · ext_reverse_base1 v.
+Proof.
     intros a v.
     unfold ext_reverse_base1.
     apply vector_to_ext_scalar.
@@ -279,7 +293,8 @@ Definition ext_reverse_base2 := make_module_homomorphism
     ext_reverse_base_scalar.
 
 Lemma ext_reverse_base_alternating : ∀ v,
-        0 = ext_reverse_base1 v * ext_reverse_base1 v.
+    0 = ext_reverse_base1 v * ext_reverse_base1 v.
+Proof.
     intros v.
     unfold ext_reverse_base1.
     unfold mult; cbn.
@@ -302,31 +317,38 @@ Local Notation "a '†'" := (ext_reverse a) (at level 10).
 
 (* end hide *)
 Theorem ext_reverse_plus : ∀ u v, (u + v)† = u† + v†.
+Proof.
     apply (algebra_homo_plus _ _ ext_reverse_homo).
 Qed.
 
 Theorem ext_reverse_scalar : ∀ a v, (a · v)† = a · v†.
+Proof.
     apply (algebra_homo_scalar _ _ ext_reverse_homo).
 Qed.
 
 Theorem ext_reverse_mult : ∀ u v,
-        (@mult _ (ext_mult V) u v)† = @mult _ (ext_mult V) (v†) (u†).
+    (@mult _ (ext_mult V) u v)† = @mult _ (ext_mult V) (v†) (u†).
+Proof.
     apply (algebra_homo_mult _ _ ext_reverse_homo).
 Qed.
 
 Theorem ext_reverse_one : (@one _ (ext_one V))† = (@one _ (ext_one V)) .
+Proof.
     apply (algebra_homo_one _ _ ext_reverse_homo).
 Qed.
 
 Theorem ext_reverse_neg : ∀ v, (-v)† = -v†.
+Proof.
     apply (algebra_homo_neg ext_reverse_homo).
 Qed.
 
 Theorem ext_reverse_zero : 0† = 0.
+Proof.
     apply (algebra_homo_zero ext_reverse_homo).
 Qed.
 
 Theorem ext_reverse_of_scalar : ∀ a, (σ a)† = σ a.
+Proof.
     intros a.
     rewrite scalar_to_ext_one_scalar.
     rewrite ext_reverse_scalar.
@@ -335,10 +357,12 @@ Theorem ext_reverse_of_scalar : ∀ a, (σ a)† = σ a.
 Qed.
 
 Theorem ext_reverse_vector : ∀ v, (φ v)† = φ v.
+Proof.
     apply [|ext_reverse_base].
 Qed.
 
 Theorem ext_reverse_reverse : ∀ v, v†† = v.
+Proof.
     intros v.
     pose proof (ext_sum V v) as [l l_eq]; subst v.
     induction l as [|[a x] l] using ulist_induction.
@@ -369,7 +393,8 @@ Theorem ext_reverse_reverse : ∀ v, v†† = v.
 Qed.
 
 Theorem ext_involute_grade : ∀ (X : ext V) (n : nat), of_grade n X →
-        X∗ = (-(1))^n · X.
+    X∗ = (-(1))^n · X.
+Proof.
     intros X n Xn.
     apply ext_grade_sum in Xn as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.
@@ -407,6 +432,7 @@ Theorem ext_involute_grade : ∀ (X : ext V) (n : nat), of_grade n X →
 Qed.
 
 Theorem ext_involute_swap : ∀ v (X : ext V), φ v * X = X∗ * φ v.
+Proof.
     intros v X.
     pose proof (ext_sum V X) as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.
@@ -441,7 +467,8 @@ Theorem ext_involute_swap : ∀ v (X : ext V), φ v * X = X∗ * φ v.
 Qed.
 
 Theorem ext_reverse_grade : ∀ (X : ext V) (n : nat), of_grade n X →
-        X† = (-(1))^(binom n 2) · X.
+    X† = (-(1))^(binom n 2) · X.
+Proof.
     intros X n Xn.
     apply ext_grade_sum in Xn as [l l_eq]; subst X.
     induction l as [|[α x] l] using ulist_induction.

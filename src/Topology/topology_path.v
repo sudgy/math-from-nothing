@@ -26,6 +26,7 @@ Definition path_connected U `{Topology U} := ∀ x y, ∃ f, path x y f.
 Context {U} `{Topology U}.
 (* end hide *)
 Theorem path_connected_connected : path_connected U → connected U.
+Proof.
     intros U_path A B AB_sep.
     pose proof (land AB_sep) as A_empty.
     pose proof (land (rand AB_sep)) as B_empty.

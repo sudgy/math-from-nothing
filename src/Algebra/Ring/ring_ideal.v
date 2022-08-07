@@ -22,7 +22,8 @@ Arguments ideal_lmult {U H H0}.
 Arguments ideal_rmult {U H H0}.
 
 Theorem ideal_eq_set {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
-        ideal_set I = ideal_set J → I = J.
+    ideal_set I = ideal_set J → I = J.
+Proof.
     intros [I_set I_nempty I_plus I_lmult I_rmult]
            [J_set J_nempty J_plus J_lmult J_rmult] eq.
     cbn in eq.
@@ -35,7 +36,8 @@ Theorem ideal_eq_set {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
 Qed.
 
 Theorem ideal_eq {U} `{Plus U, Mult U} : ∀ I J : Ideal U,
-        (∀ x, ideal_set I x ↔ ideal_set J x) → I = J.
+    (∀ x, ideal_set I x ↔ ideal_set J x) → I = J.
+Proof.
     intros I J eq.
     apply ideal_eq_set.
     apply predicate_ext.
@@ -67,6 +69,7 @@ Context {U} `{
 Variable I : Ideal U.
 
 Theorem ideal_neg : ∀ a, ideal_set I a → ideal_set I (-a).
+Proof.
     intros a a_in.
     rewrite <- mult_neg_one.
     apply ideal_lmult.
@@ -74,6 +77,7 @@ Theorem ideal_neg : ∀ a, ideal_set I a → ideal_set I (-a).
 Qed.
 
 Theorem ideal_zero : ideal_set I 0.
+Proof.
     pose proof (ideal_nempty I) as [a a_in].
     rewrite <- (plus_linv a).
     apply ideal_plus.
@@ -85,6 +89,7 @@ Let ideal_eq a b := ideal_set I (a - b).
 Local Infix "~" := ideal_eq : algebra_scope.
 
 Lemma ideal_eq_reflexive : ∀ a, a ~ a.
+Proof.
     intros a.
     unfold ideal_eq.
     rewrite plus_rinv.
@@ -95,6 +100,7 @@ Instance ideal_eq_reflexive_class : Reflexive _ := {
 }.
 
 Lemma ideal_eq_symmetric : ∀ a b, a ~ b → b ~ a.
+Proof.
     unfold ideal_eq.
     intros a b ab.
     apply ideal_neg in ab.
@@ -108,6 +114,7 @@ Instance ideal_eq_symmetric_class : Symmetric _ := {
 }.
 
 Lemma ideal_eq_transitive : ∀ a b c, a ~ b → b ~ c → a ~ c.
+Proof.
     unfold ideal_eq.
     intros a b c ab bc.
     pose proof (ideal_plus I _ _ ab bc) as eq.
@@ -130,6 +137,7 @@ Local Infix "~" := (eq_equal ideal_equiv).
 (* end show *)
 
 Lemma qring_plus_wd : ∀ a b c d, a ~ b → c ~ d → a + c ~ b + d.
+Proof.
     cbn; unfold ideal_eq.
     intros a b c d ab cd.
     rewrite neg_plus.
@@ -174,6 +182,7 @@ Next Obligation.
 Qed.
 
 Lemma qring_neg_wd : ∀ a b, a ~ b → -a ~ -b.
+Proof.
     cbn; unfold ideal_eq.
     intros a b eq.
     rewrite <- neg_plus.
@@ -193,6 +202,7 @@ Next Obligation.
 Qed.
 
 Lemma qring_mult_wd : ∀ a b c d, a ~ b → c ~ d → a * c ~ b * d.
+Proof.
     cbn; unfold ideal_eq.
     intros a b c d ab cd.
     rewrite <- (plus_llinv (-(b * d)) (b * c)).
@@ -272,6 +282,7 @@ Proof.
 Qed.
 
 Theorem to_qring_zero : to_qring 0 = 0.
+Proof.
     reflexivity.
 Qed.
 
@@ -290,6 +301,7 @@ Proof.
 Qed.
 
 Theorem to_qring_one : to_qring 1 = 1.
+Proof.
     reflexivity.
 Qed.
 
@@ -322,6 +334,7 @@ Definition ideal_generated_by_set x := ∃ l : ulist ((U * U) * set_type S),
     x = ulist_sum (ulist_image l (λ p, fst (fst p) * [snd p|] * snd (fst p))).
 
 Lemma ideal_generated_by_nempty : ∃ x, ideal_generated_by_set x.
+Proof.
     exists 0.
     exists ulist_end.
     rewrite ulist_image_end, ulist_sum_end.
@@ -329,8 +342,9 @@ Lemma ideal_generated_by_nempty : ∃ x, ideal_generated_by_set x.
 Qed.
 
 Lemma ideal_generated_by_plus : ∀ a b,
-        ideal_generated_by_set a → ideal_generated_by_set b →
-        ideal_generated_by_set (a + b).
+    ideal_generated_by_set a → ideal_generated_by_set b →
+    ideal_generated_by_set (a + b).
+Proof.
     intros a b [al al_eq] [bl bl_eq]; subst a b.
     exists (al +++ bl).
     rewrite ulist_image_conc, ulist_sum_plus.
@@ -338,7 +352,8 @@ Lemma ideal_generated_by_plus : ∀ a b,
 Qed.
 
 Lemma ideal_generated_by_lmult : ∀ a b,
-        ideal_generated_by_set b → ideal_generated_by_set (a * b).
+    ideal_generated_by_set b → ideal_generated_by_set (a * b).
+Proof.
     intros a b [l l_eq]; subst b.
     exists (ulist_image l (λ p, ((a * fst (fst p), snd (fst p)), snd p))).
     rewrite ulist_image_comp.
@@ -355,7 +370,8 @@ Lemma ideal_generated_by_lmult : ∀ a b,
 Qed.
 
 Lemma ideal_generated_by_rmult : ∀ a b,
-        ideal_generated_by_set a → ideal_generated_by_set (a * b).
+    ideal_generated_by_set a → ideal_generated_by_set (a * b).
+Proof.
     intros a b [l l_eq]; subst a.
     exists (ulist_image l (λ p, ((fst (fst p), snd (fst p) * b), snd p))).
     rewrite ulist_image_comp.

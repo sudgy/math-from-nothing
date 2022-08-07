@@ -14,6 +14,7 @@ Notation "a ⊗ b" :=
 Open Scope int_scope.
 
 Lemma int_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
+Proof.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd.
     simpl in *.
     pose proof (rmult c1 ab) as eq1.
@@ -43,6 +44,7 @@ Global Instance int_mult : Mult int := {
 }.
 
 Lemma int_mult_comm : ∀ a b, a * b = b * a.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold mult; simpl; equiv_simpl.
@@ -59,6 +61,7 @@ Global Instance int_mult_comm_class : MultComm int := {
 }.
 
 Lemma int_mult_assoc : ∀ a b c, a * (b * c) = (a * b) * c.
+Proof.
     intros a b c.
     equiv_get_value a b c.
     unfold mult; simpl; equiv_simpl.
@@ -79,6 +82,7 @@ Global Instance int_mult_assoc_class : MultAssoc int := {
 }.
 
 Lemma int_ldist : ∀ a b c, a * (b + c) = a * b + a * c.
+Proof.
     intros a b c.
     equiv_get_value a b c.
     unfold plus, mult; simpl; equiv_simpl.
@@ -102,6 +106,7 @@ Global Instance int_one : One int := {
 }.
 
 Lemma int_mult_lid : ∀ a, 1 * a = a.
+Proof.
     intros a.
     equiv_get_value a.
     unfold mult, one; simpl; equiv_simpl.
@@ -117,6 +122,7 @@ Global Instance int_mult_lid_class : MultLid int := {
 }.
 (* end hide *)
 Theorem int_mult_0 : ∀ {a b}, 0 = a * b → 0 = a ∨ 0 = b.
+Proof.
     intros a b eq.
     equiv_get_value a b.
     unfold mult, zero in *; simpl in *.
@@ -155,6 +161,7 @@ Qed.
 
 (* begin hide *)
 Lemma int_mult_lcancel : ∀ a b c, 0 ≠ c → c * a = c * b → a = b.
+Proof.
     intros a b c c_neq_0 eq.
     apply plus_0_anb_a_b in eq.
     rewrite <- mult_rneg in eq.
@@ -169,6 +176,7 @@ Global Instance int_mult_lcancel_class : MultLcancel int := {
 }.
 
 Lemma int_not_trivial : 0 ≠ 1.
+Proof.
     unfold zero, one; simpl.
     equiv_simpl.
     intro eq.
@@ -183,6 +191,7 @@ Close Scope int_scope.
 (* end hide *)
 Theorem nat_to_int_mult : ∀ a b,
         nat_to_int (a * b) = nat_to_int a * nat_to_int b.
+Proof.
     intros a b.
     unfold mult at 2, nat_to_int; simpl; equiv_simpl; simpl.
     do 2 rewrite mult_lanni.

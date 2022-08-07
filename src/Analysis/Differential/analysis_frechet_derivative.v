@@ -77,8 +77,8 @@ Context (f g : set_type [O|] → V).
 Existing Instance subspace_metric.
 
 Theorem frechet_derivative_unique : ∀ a A B,
-        frechet_derivative_at O f a A → frechet_derivative_at O f a B →
-        A = B.
+    frechet_derivative_at O f a A → frechet_derivative_at O f a B → A = B.
+Proof.
     clear g.
     intros a [A A_bound] [B B_bound] [Oa A_dif] [Oa' B_dif]; clear Oa'.
     apply set_type_eq; cbn.
@@ -259,7 +259,8 @@ Theorem frechet_derivative_unique : ∀ a A B,
 Qed.
 
 Theorem frechet_differentiable_continuous : ∀ a,
-        frechet_differentiable_at O f a → continuous_at f a.
+    frechet_differentiable_at O f a → continuous_at f a.
+Proof.
     intros a [A [Aa A_lim]].
     rewrite <- metric_subspace_topology.
     rewrite func_lim_continuous by exact Aa.
@@ -331,7 +332,8 @@ Theorem frechet_differentiable_continuous : ∀ a,
 Qed.
 
 Theorem frechet_derivative_linear : ∀ (F : set_type bounded_linear_map) a,
-        frechet_derivative_at [_|all_open] (λ x, linear_map_f [F|] [x|]) a F.
+    frechet_derivative_at [_|all_open] (λ x, linear_map_f [F|] [x|]) a F.
+Proof.
     intros [F F_bound] [a a_in].
     unfold frechet_derivative_at; cbn.
     clear F_bound a_in.
@@ -359,8 +361,9 @@ Theorem frechet_derivative_linear : ∀ (F : set_type bounded_linear_map) a,
 Qed.
 
 Theorem frechet_derivative_constant : ∀ x a,
-        frechet_derivative_at [_|all_open] (λ _, x) a
-            [zero_linear_map|zero_linear_bounded].
+    frechet_derivative_at [_|all_open] (λ _, x) a
+        [zero_linear_map|zero_linear_bounded].
+Proof.
     intros x [a a_in].
     unfold frechet_derivative_at; cbn.
     clear a_in.
@@ -383,9 +386,10 @@ Theorem frechet_derivative_constant : ∀ x a,
 Qed.
 
 Theorem frechet_derivative_plus : ∀ a A B,
-        frechet_derivative_at O f a A → frechet_derivative_at O g a B →
-        frechet_derivative_at O (λ x, f x + g x) a
-            [plus_linear_map [A|] [B|] | plus_linear_bounded A B].
+    frechet_derivative_at O f a A → frechet_derivative_at O g a B →
+    frechet_derivative_at O (λ x, f x + g x) a
+        [plus_linear_map [A|] [B|] | plus_linear_bounded A B].
+Proof.
     intros a A B [Oa f_lim] [Oa' g_lim]; clear Oa'.
     pose proof (func_lim_plus _ _ _ _ _ _ f_lim g_lim) as lim1.
     clear f_lim g_lim.
@@ -494,13 +498,14 @@ Existing Instance subspace_metric.
 
 (* end hide *)
 Theorem frechet_derivative_compose :
-        ∀ (O1 : set_type (open (U := U))) (O2 : set_type (open (U := V)))
-        (f : set_type [O2|] → W) (g : set_type [O1|] → set_type [O2|]) f' g' a,
-        frechet_derivative_at O2 f (g a) f' →
-        frechet_derivative_at O1 (λ x, [g x|]) a g' →
-        frechet_derivative_at O1 (λ x, f (g x)) a
-            [linear_map_compose [f'|] [g'|] |
-                linear_map_compose_bounded [f'|] [g'|] [|f'] [|g']].
+    ∀ (O1 : set_type (open (U := U))) (O2 : set_type (open (U := V)))
+    (f : set_type [O2|] → W) (g : set_type [O1|] → set_type [O2|]) f' g' a,
+    frechet_derivative_at O2 f (g a) f' →
+    frechet_derivative_at O1 (λ x, [g x|]) a g' →
+    frechet_derivative_at O1 (λ x, f (g x)) a
+        [linear_map_compose [f'|] [g'|] |
+            linear_map_compose_bounded [f'|] [g'|] [|f'] [|g']].
+Proof.
     intros O1 O2 f g [f' f'_bound] [g' g'_bound] a f'_lim g'_lim.
     assert (continuous_at g a) as g_cont.
     {

@@ -82,6 +82,7 @@ Definition geo_rcontr_base i j a b (ai : of_grade i a) (bj : of_grade j b)
        end.
 
 Lemma geo_inner_ldist_base : bilinear_extend_ldist_base geo_inner_base.
+Proof.
     intros u v w i j ui vj wj.
     unfold geo_inner_base.
     rewrite ldist.
@@ -89,6 +90,7 @@ Lemma geo_inner_ldist_base : bilinear_extend_ldist_base geo_inner_base.
 Qed.
 
 Lemma geo_inner_rdist_base : bilinear_extend_rdist_base geo_inner_base.
+Proof.
     intros u v w i j ui vi wj.
     unfold geo_inner_base.
     rewrite rdist.
@@ -96,6 +98,7 @@ Lemma geo_inner_rdist_base : bilinear_extend_rdist_base geo_inner_base.
 Qed.
 
 Lemma geo_inner_lscalar_base : bilinear_extend_lscalar_base geo_inner_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_inner_base.
     rewrite scalar_lmult.
@@ -103,6 +106,7 @@ Lemma geo_inner_lscalar_base : bilinear_extend_lscalar_base geo_inner_base.
 Qed.
 
 Lemma geo_inner_rscalar_base : bilinear_extend_rscalar_base geo_inner_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_inner_base.
     rewrite scalar_rmult.
@@ -110,6 +114,7 @@ Lemma geo_inner_rscalar_base : bilinear_extend_rscalar_base geo_inner_base.
 Qed.
 
 Lemma geo_lcontr_ldist_base : bilinear_extend_ldist_base geo_lcontr_base.
+Proof.
     intros u v w i j ui vj wj.
     unfold geo_lcontr_base.
     rewrite ldist.
@@ -119,6 +124,7 @@ Lemma geo_lcontr_ldist_base : bilinear_extend_ldist_base geo_lcontr_base.
 Qed.
 
 Lemma geo_lcontr_rdist_base : bilinear_extend_rdist_base geo_lcontr_base.
+Proof.
     intros u v w i j ui vi wj.
     unfold geo_lcontr_base.
     rewrite rdist.
@@ -128,6 +134,7 @@ Lemma geo_lcontr_rdist_base : bilinear_extend_rdist_base geo_lcontr_base.
 Qed.
 
 Lemma geo_lcontr_lscalar_base : bilinear_extend_lscalar_base geo_lcontr_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_lcontr_base.
     rewrite scalar_lmult.
@@ -137,6 +144,7 @@ Lemma geo_lcontr_lscalar_base : bilinear_extend_lscalar_base geo_lcontr_base.
 Qed.
 
 Lemma geo_lcontr_rscalar_base : bilinear_extend_rscalar_base geo_lcontr_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_lcontr_base.
     rewrite scalar_rmult.
@@ -146,6 +154,7 @@ Lemma geo_lcontr_rscalar_base : bilinear_extend_rscalar_base geo_lcontr_base.
 Qed.
 
 Lemma geo_rcontr_ldist_base : bilinear_extend_ldist_base geo_rcontr_base.
+Proof.
     intros u v w i j ui vj wj.
     unfold geo_rcontr_base.
     rewrite ldist.
@@ -155,6 +164,7 @@ Lemma geo_rcontr_ldist_base : bilinear_extend_ldist_base geo_rcontr_base.
 Qed.
 
 Lemma geo_rcontr_rdist_base : bilinear_extend_rdist_base geo_rcontr_base.
+Proof.
     intros u v w i j ui vi wj.
     unfold geo_rcontr_base.
     rewrite rdist.
@@ -164,6 +174,7 @@ Lemma geo_rcontr_rdist_base : bilinear_extend_rdist_base geo_rcontr_base.
 Qed.
 
 Lemma geo_rcontr_lscalar_base : bilinear_extend_lscalar_base geo_rcontr_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_rcontr_base.
     rewrite scalar_lmult.
@@ -173,6 +184,7 @@ Lemma geo_rcontr_lscalar_base : bilinear_extend_lscalar_base geo_rcontr_base.
 Qed.
 
 Lemma geo_rcontr_rscalar_base : bilinear_extend_rscalar_base geo_rcontr_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_rcontr_base.
     rewrite scalar_rmult.
@@ -192,30 +204,35 @@ Local Infix "⌊" := geo_rcontr (at level 34, left associativity).
 (* end show *)
 
 Theorem inner_ldist : ∀ a b c, a • (b + c) = a • b + a • c.
+Proof.
     apply bilinear_extend_ldist.
     -   exact geo_inner_ldist_base.
     -   exact geo_inner_rscalar_base.
 Qed.
 
 Theorem inner_rdist : ∀ a b c, (a + b) • c = a • c + b • c.
+Proof.
     apply bilinear_extend_rdist.
     -   exact geo_inner_rdist_base.
     -   exact geo_inner_lscalar_base.
 Qed.
 
 Theorem inner_lscalar : ∀ a u v, (a · u) • v = a · (u • v).
+Proof.
     apply bilinear_extend_lscalar.
     -   apply geo_inner_rdist_base.
     -   apply geo_inner_lscalar_base.
 Qed.
 
 Theorem inner_rscalar : ∀ a u v, u • (a · v) = a · (u • v).
+Proof.
     apply bilinear_extend_rscalar.
     -   apply geo_inner_ldist_base.
     -   apply geo_inner_rscalar_base.
 Qed.
 
 Theorem inner_lanni : ∀ a, 0 • a = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite inner_lscalar.
@@ -223,6 +240,7 @@ Theorem inner_lanni : ∀ a, 0 • a = 0.
 Qed.
 
 Theorem inner_ranni : ∀ a, a • 0 = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite inner_rscalar.
@@ -230,30 +248,35 @@ Theorem inner_ranni : ∀ a, a • 0 = 0.
 Qed.
 
 Theorem lcontr_ldist : ∀ a b c, a ⌋ (b + c) = a ⌋ b + a ⌋ c.
+Proof.
     apply bilinear_extend_ldist.
     -   exact geo_lcontr_ldist_base.
     -   exact geo_lcontr_rscalar_base.
 Qed.
 
 Theorem lcontr_rdist : ∀ a b c, (a + b) ⌋ c = a ⌋ c + b ⌋ c.
+Proof.
     apply bilinear_extend_rdist.
     -   exact geo_lcontr_rdist_base.
     -   exact geo_lcontr_lscalar_base.
 Qed.
 
 Theorem lcontr_lscalar : ∀ a u v, (a · u) ⌋ v = a · (u ⌋ v).
+Proof.
     apply bilinear_extend_lscalar.
     -   apply geo_lcontr_rdist_base.
     -   apply geo_lcontr_lscalar_base.
 Qed.
 
 Theorem lcontr_rscalar : ∀ a u v, u ⌋ (a · v) = a · (u ⌋ v).
+Proof.
     apply bilinear_extend_rscalar.
     -   apply geo_lcontr_ldist_base.
     -   apply geo_lcontr_rscalar_base.
 Qed.
 
 Theorem lcontr_lanni : ∀ a, 0 ⌋ a = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite lcontr_lscalar.
@@ -261,6 +284,7 @@ Theorem lcontr_lanni : ∀ a, 0 ⌋ a = 0.
 Qed.
 
 Theorem lcontr_ranni : ∀ a, a ⌋ 0 = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite lcontr_rscalar.
@@ -268,30 +292,35 @@ Theorem lcontr_ranni : ∀ a, a ⌋ 0 = 0.
 Qed.
 
 Theorem rcontr_ldist : ∀ a b c, a ⌊ (b + c) = a ⌊ b + a ⌊ c.
+Proof.
     apply bilinear_extend_ldist.
     -   exact geo_rcontr_ldist_base.
     -   exact geo_rcontr_rscalar_base.
 Qed.
 
 Theorem rcontr_rdist : ∀ a b c, (a + b) ⌊ c = a ⌊ c + b ⌊ c.
+Proof.
     apply bilinear_extend_rdist.
     -   exact geo_rcontr_rdist_base.
     -   exact geo_rcontr_lscalar_base.
 Qed.
 
 Theorem rcontr_lscalar : ∀ a u v, (a · u) ⌊ v = a · (u ⌊ v).
+Proof.
     apply bilinear_extend_lscalar.
     -   apply geo_rcontr_rdist_base.
     -   apply geo_rcontr_lscalar_base.
 Qed.
 
 Theorem rcontr_rscalar : ∀ a u v, u ⌊ (a · v) = a · (u ⌊ v).
+Proof.
     apply bilinear_extend_rscalar.
     -   apply geo_rcontr_ldist_base.
     -   apply geo_rcontr_rscalar_base.
 Qed.
 
 Theorem rcontr_lanni : ∀ a, 0 ⌊ a = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite rcontr_lscalar.
@@ -299,6 +328,7 @@ Theorem rcontr_lanni : ∀ a, 0 ⌊ a = 0.
 Qed.
 
 Theorem rcontr_ranni : ∀ a, a ⌊ 0 = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite rcontr_rscalar.
@@ -306,7 +336,8 @@ Theorem rcontr_ranni : ∀ a, a ⌊ 0 = 0.
 Qed.
 
 Lemma inner_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u • v = geo_inner_base i j u v ui vj.
+    u • v = geo_inner_base i j u v ui vj.
+Proof.
     intros i j u v ui vj.
     unfold geo_inner.
     apply bilinear_extend_homo.
@@ -317,7 +348,8 @@ Lemma inner_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
 Qed.
 
 Lemma lcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u ⌋ v = geo_lcontr_base i j u v ui vj.
+    u ⌋ v = geo_lcontr_base i j u v ui vj.
+Proof.
     intros i j u v ui vj.
     unfold geo_lcontr.
     apply bilinear_extend_homo.
@@ -328,7 +360,8 @@ Lemma lcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
 Qed.
 
 Lemma rcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u ⌊ v = geo_rcontr_base i j u v ui vj.
+    u ⌊ v = geo_rcontr_base i j u v ui vj.
+Proof.
     intros i j u v ui vj.
     unfold geo_rcontr.
     apply bilinear_extend_homo.
@@ -339,6 +372,7 @@ Lemma rcontr_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
 Qed.
 
 Theorem lrcontr_reverse : ∀ a b, (a ⌋ b)† = b† ⌊ a†.
+Proof.
     intros a b.
     induction a as [|a a' m am a'm IHa] using grade_induction.
     {
@@ -377,6 +411,7 @@ Theorem lrcontr_reverse : ∀ a b, (a ⌋ b)† = b† ⌊ a†.
 Qed.
 
 Theorem rlcontr_reverse : ∀ a b, (a ⌊ b)† = b† ⌋ a†.
+Proof.
     intros a b.
     rewrite <- (geo_reverse_reverse B (b † ⌋ a †)).
     rewrite lrcontr_reverse.
@@ -385,6 +420,7 @@ Theorem rlcontr_reverse : ∀ a b, (a ⌊ b)† = b† ⌋ a†.
 Qed.
 
 Theorem inner_reverse : ∀ a b, (a • b)† = b† • a†.
+Proof.
     intros a b.
     induction a as [|a a' m am a'm IHa] using grade_induction.
     {
@@ -422,7 +458,8 @@ Theorem inner_reverse : ∀ a b, (a • b)† = b† • a†.
 Qed.
 
 Theorem lcontr_inner : ∀ a b (m n : nat), m <= n → of_grade m a → of_grade n b →
-        a ⌋ b = a • b.
+    a ⌋ b = a • b.
+Proof.
     intros a b m n leq an bn.
     rewrite (lcontr_homo _ _ _ _ an bn).
     rewrite (inner_homo _ _ _ _ an bn).
@@ -435,7 +472,8 @@ Theorem lcontr_inner : ∀ a b (m n : nat), m <= n → of_grade m a → of_grade
 Qed.
 
 Theorem rcontr_inner : ∀ a b (m n : nat), n <= m → of_grade m a → of_grade n b →
-        a ⌊ b = a • b.
+    a ⌊ b = a • b.
+Proof.
     intros a b m n leq an bn.
     rewrite (rcontr_homo _ _ _ _ an bn).
     rewrite (inner_homo _ _ _ _ an bn).
@@ -447,6 +485,7 @@ Theorem rcontr_inner : ∀ a b (m n : nat), n <= m → of_grade m a → of_grade
 Qed.
 
 Theorem inner_involute : ∀ a b, (a • b)∗ = a∗ • b∗.
+Proof.
     intros a b.
     induction a as [|a a' m am a'm IHa] using grade_induction.
     {
@@ -483,6 +522,7 @@ Theorem inner_involute : ∀ a b, (a • b)∗ = a∗ • b∗.
 Qed.
 
 Theorem lcontr_involute : ∀ a b, (a ⌋ b)∗ = a∗ ⌋ b∗.
+Proof.
     intros a b.
     induction a as [|a a' m am a'm IHa] using grade_induction.
     {
@@ -521,6 +561,7 @@ Theorem lcontr_involute : ∀ a b, (a ⌋ b)∗ = a∗ ⌋ b∗.
 Qed.
 
 Theorem rcontr_involute : ∀ a b, (a ⌊ b)∗ = a∗ ⌊ b∗.
+Proof.
     intros a b.
     rewrite <- (geo_reverse_reverse B ((a ⌊ b)∗)).
     rewrite <- geo_reverse_involute.

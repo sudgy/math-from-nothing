@@ -54,11 +54,13 @@ Context {U : Type} `{
 }.
 (* end hide *)
 Theorem abs_zero : 0 = |0|.
+Proof.
     apply abs_def.
     reflexivity.
 Qed.
 
 Theorem abs_nz : ∀ x, 0 ≠ |x| ↔ 0 ≠ x.
+Proof.
     intros x.
     split; intros neq eq.
     -   apply abs_def in eq.
@@ -68,6 +70,7 @@ Theorem abs_nz : ∀ x, 0 ≠ |x| ↔ 0 ≠ x.
 Qed.
 
 Theorem abs_one : |1| = 1.
+Proof.
     pose proof (Logic.eq_refl (|1 * 1|)) as eq.
     rewrite mult_rid in eq at 2.
     rewrite abs_mult in eq.
@@ -81,6 +84,7 @@ Theorem abs_one : |1| = 1.
 Qed.
 
 Theorem abs_minus_one : | -(1)| = 1.
+Proof.
     pose proof (Logic.eq_refl (| -(1) * -(1)|)) as eq.
     rewrite abs_mult in eq at 1.
     rewrite mult_lneg, mult_rneg, neg_neg in eq.
@@ -96,6 +100,7 @@ Theorem abs_minus_one : | -(1)| = 1.
 Qed.
 
 Theorem abs_minus : ∀ a b, |a - b| = |b - a|.
+Proof.
     intros a b.
     rewrite <- abs_neg.
     rewrite neg_plus, neg_neg.
@@ -104,6 +109,7 @@ Theorem abs_minus : ∀ a b, |a - b| = |b - a|.
 Qed.
 
 Theorem abs_div : ∀ a, 0 ≠ a → /|a| = |/a|.
+Proof.
     intros a a_nz.
     pose proof (rand (abs_nz a) a_nz) as a_nz2.
     apply mult_rcancel with (|a|).
@@ -250,6 +256,7 @@ Next Obligation.
 Qed.
 (* end hide *)
 Theorem abs_le_pos : ∀ a, a <= |a|.
+Proof.
     intros a.
     unfold abs; cbn.
     case_if.
@@ -261,6 +268,7 @@ Theorem abs_le_pos : ∀ a, a <= |a|.
 Qed.
 
 Theorem abs_le_neg : ∀ a, -a <= |a|.
+Proof.
     intros a.
     unfold abs; cbn.
     case_if.
@@ -271,6 +279,7 @@ Theorem abs_le_neg : ∀ a, -a <= |a|.
 Qed.
 
 Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
+Proof.
     intros a b.
     unfold abs; cbn.
     case_if; split.
@@ -295,6 +304,7 @@ Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
 Qed.
 
 Theorem abs_lt : ∀ a b, |a| < b ↔ -b < a ∧ a < b.
+Proof.
     intros a b.
     split.
     -   intros [leq neq].
@@ -326,6 +336,7 @@ Theorem abs_lt : ∀ a b, |a| < b ↔ -b < a ∧ a < b.
 Qed.
 
 Theorem abs_pos_eq : ∀ a, 0 <= a → |a| = a.
+Proof.
     intros a a_pos.
     unfold abs; cbn.
     case_if.
@@ -334,6 +345,7 @@ Theorem abs_pos_eq : ∀ a, 0 <= a → |a| = a.
 Qed.
 
 Theorem abs_neg_eq : ∀ a, a <= 0 → |a| = -a.
+Proof.
     intros a a_neg.
     rewrite <- abs_neg.
     apply abs_pos_eq.
@@ -369,6 +381,7 @@ Context {U : Type} `{
 
 (* end hide *)
 Theorem abs_abs : ∀ x, | |x| | = |x|.
+Proof.
     intros x.
     unfold abs at 1; cbn.
     case_if.

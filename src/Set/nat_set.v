@@ -14,11 +14,13 @@ Definition subsequence {U} (a b : sequence U) :=
         (∀ n, a (f n) = b n).
 
 Theorem nat_lt_0_false : nat_to_set_type 0 → False.
+Proof.
     intros [x x_lt].
     contradiction (nat_lt_zero x x_lt).
 Qed.
 
 Theorem subsequence_seq_leq : ∀ f, subsequence_seq f → ∀ n, n <= f n.
+Proof.
     intros f f_sub.
     unfold subsequence_seq in f_sub.
     intros n.
@@ -44,11 +46,13 @@ Variable c : B.
 Variable h : nat_strong_recursion_domain B → B.
 
 Lemma nat_sucs_lt_impl : ∀ {a b}, a < b → nat_suc a < nat_suc b.
+Proof.
     intros a b eq.
     rewrite nat_sucs_lt.
     exact eq.
 Qed.
 Lemma nat_lt_suc_trans : ∀ {a b c}, a < nat_suc b → b < c → a < nat_suc c.
+Proof.
     clear.
     intros a b c eq1 eq2.
     rewrite nat_lt_suc_le in eq1.
@@ -65,7 +69,8 @@ Definition K (j : nat_strong_recursion_domain B) :=
             nat_sr_f B j [[x|] | nat_lt_suc_trans [|x] [|m]])).
 
 Theorem ks_eq : ∀ k1 k2, K k1 → K k2 → ∀ x1 x2, [x1|] = [x2|] →
-        nat_sr_f B k1 x1 = nat_sr_f B k2 x2.
+    nat_sr_f B k1 x1 = nat_sr_f B k2 x2.
+Proof.
     intros k1 k2 Kk1 Kk2 [x x_lt1] [x' x_lt2] eq; cbn in *.
     subst x'.
     unfold nat_to_set in *.
@@ -99,12 +104,14 @@ Theorem ks_eq : ∀ k1 k2, K k1 → K k2 → ∀ x1 x2, [x1|] = [x2|] →
 Qed.
 
 Lemma nat_lt_suc_le_impl : ∀ {a b}, a < nat_suc b → a ≠ b → a < b.
+Proof.
     intros a b ltq neq.
     rewrite nat_lt_suc_le in ltq.
     split; assumption.
 Qed.
 
 Lemma nat_k_ex : ∀ n : nat, ∃ k, K k ∧ n < nat_suc (nat_sr_p B k).
+Proof.
     intros n.
     nat_induction n.
     -   exists (make_nat_srd B 0 (λ x, c)).
@@ -191,13 +198,14 @@ End StrongRecursion.
 Import StrongRecursion.
 (* end hide *)
 Theorem strong_recursion : ∀ B c (h : nat_strong_recursion_domain B → B),
-        ∃ k : nat → B,
-        k 0 = c ∧
-        ∀ n, k (nat_suc n) = h (
-            make_nat_srd B
-                n
-                (λ (x : nat_to_set_type (nat_suc n)), k [x|])
-        ).
+    ∃ k : nat → B,
+    k 0 = c ∧
+    ∀ n, k (nat_suc n) = h (
+        make_nat_srd B
+            n
+            (λ (x : nat_to_set_type (nat_suc n)), k [x|])
+    ).
+Proof.
     intros B c h.
     exists (k B c h).
     unfold k, ex_val, ex_proof.

@@ -9,6 +9,7 @@ Inductive nat : Set :=
 Bind Scope nat_scope with nat.
 
 Theorem nat_neq_suc : ∀ n, n ≠ nat_suc n.
+Proof.
     induction n.
     -   intro contr; inversion contr.
     -   intro contr.

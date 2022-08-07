@@ -7,6 +7,7 @@ Require Export euclidean_domain.
 
 (* begin hide *)
 Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
+Proof.
     intros a b b_nz.
     pose (S n := a < b * n).
     assert (∃ n, S n) as S_ex.
@@ -64,6 +65,7 @@ Global Instance nat_euclidean_class : EuclideanDomain nat := {
 
 Theorem nat_plus_changes_divides : ∀ p a b,
                                     p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
+Proof.
     intros p a b [c c_eq] not [d d_eq].
     rewrite <- c_eq in d_eq.
     destruct (trichotomy d c) as [[ltq|eq]|ltq].
@@ -96,6 +98,7 @@ Theorem nat_plus_changes_divides : ∀ p a b,
 Qed.
 
 Theorem nat_even_neq_odd : ∀ m n, m * 2 ≠ n * 2 + 1.
+Proof.
     intros m n eq.
     assert (even (m * 2)) as m_even by (exists m; reflexivity).
     assert (even (n * 2)) as n_even by (exists n; reflexivity).
@@ -127,6 +130,7 @@ Theorem nat_even_neq_odd : ∀ m n, m * 2 ≠ n * 2 + 1.
 Qed.
 
 Theorem nat_odd_plus_one : ∀ a, odd a → ∃ b, a = 2 * b + 1.
+Proof.
     intros a a_odd.
     assert (0 ≠ 2) as two_nz by (intro contr; inversion contr).
     pose proof (euclidean_division a 2 two_nz) as [q [r [eq ltq]]].
@@ -159,6 +163,7 @@ Theorem nat_odd_plus_one : ∀ a, odd a → ∃ b, a = 2 * b + 1.
 Qed.
 
 Theorem nat_div_le : ∀ a b, 0 ≠ b → a ∣ b → a <= b.
+Proof.
     intros a b b_nz [c c_eq].
     rewrite <- c_eq.
     nat_destruct a.

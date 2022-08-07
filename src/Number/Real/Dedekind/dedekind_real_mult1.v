@@ -18,7 +18,8 @@ Definition real_mult_base a b :=
 Infix "⊗":= real_mult_base : real_scope.
 
 Theorem real_mult_dedekind : ∀ (a b : real), 0 <= a → 0 <= b →
-        dedekind_cut ([a|] ⊗ [b|]).
+    dedekind_cut ([a|] ⊗ [b|]).
+Proof.
     intros [a a_cut] [b b_cut] a_pos b_pos; cbn.
     unfold zero, le in a_pos, b_pos; cbn in *.
     unfold rat_to_real_base in *.
@@ -170,6 +171,7 @@ Global Instance real_mult : Mult real := {
     end
 }.
 Lemma real_mult_comm_pos : ∀ a b, 0 <= a → 0 <= b → [a|] ⊗ [b|] = [b|] ⊗ [a|].
+Proof.
     intros [a a_cut] [b b_cut] a_pos b_pos.
     cbn.
     apply predicate_ext; intros x; split.
@@ -187,6 +189,7 @@ Lemma real_mult_comm_pos : ∀ a b, 0 <= a → 0 <= b → [a|] ⊗ [b|] = [b|] �
             repeat split; assumption.
 Qed.
 Lemma real_mult_comm_ : ∀ a b, a * b = b * a.
+Proof.
     intros a b.
     unfold mult; cbn.
     destruct (connex 0 a) as [a_pos|a_neg];
@@ -211,6 +214,7 @@ Global Instance real_mult_comm : MultComm real := {
 }.
 
 Lemma real_mult_lanni_pos : ∀ a, 0 <= a → [0|] ⊗ [a|] = [0|].
+Proof.
     intros [a a_cut] a_pos.
     cbn.
     unfold zero; cbn.
@@ -224,6 +228,7 @@ Lemma real_mult_lanni_pos : ∀ a, 0 <= a → [0|] ⊗ [a|] = [0|].
         exact x_neg.
 Qed.
 Lemma real_mult_lanni : ∀ a, 0 * a = 0.
+Proof.
     intros a.
     unfold mult; cbn.
     destruct (connex 0 0) as [zleq|zleq];
@@ -249,12 +254,14 @@ Lemma real_mult_lanni : ∀ a, 0 * a = 0.
         exact a_neg.
 Qed.
 Lemma real_mult_ranni : ∀ a, a * 0 = 0.
+Proof.
     intros a.
     rewrite mult_comm.
     apply real_mult_lanni.
 Qed.
 
 Lemma real_mult_pos_pos : ∀ a b, 0 <= a → 0 <= b → [a * b|] = [a|] ⊗ [b|].
+Proof.
     intros a b a_pos b_pos.
     classic_case (a <= 0) as [a_neg|a_nneg].
     {
@@ -281,6 +288,7 @@ Lemma real_mult_pos_pos : ∀ a b, 0 <= a → 0 <= b → [a * b|] = [a|] ⊗ [b|
 Qed.
 
 Lemma real_mult_pos_neg : ∀ a b, 0 <= a → b <= 0 → a * b = -(a * -b).
+Proof.
     intros a b a_pos b_neg.
     classic_case (a <= 0) as [a_neg|a_nneg].
     {
@@ -310,6 +318,7 @@ Lemma real_mult_pos_neg : ∀ a b, 0 <= a → b <= 0 → a * b = -(a * -b).
 Qed.
 
 Lemma real_mult_neg_pos : ∀ a b, a <= 0 → 0 <= b → a * b = -(-a * b).
+Proof.
     intros a b a_neg b_pos.
     classic_case (0 <= a) as [a_pos|a_npos].
     {
@@ -339,6 +348,7 @@ Lemma real_mult_neg_pos : ∀ a b, a <= 0 → 0 <= b → a * b = -(-a * b).
 Qed.
 
 Lemma real_mult_neg_neg : ∀ a b, a <= 0 → b <= 0 → a * b = -a * -b.
+Proof.
     intros a b a_neg b_neg.
     classic_case (0 <= a) as [a_pos|a_npos].
     {
@@ -367,6 +377,7 @@ Lemma real_mult_neg_neg : ∀ a b, a <= 0 → b <= 0 → a * b = -a * -b.
 Qed.
 
 Lemma real_mult_neg_any : ∀ a b, a <= 0 → a * b = -(-a * b).
+Proof.
     intros a b a_neg.
     destruct (connex 0 b) as [b_pos|b_neg].
     -   apply real_mult_neg_pos; assumption.
@@ -377,6 +388,7 @@ Lemma real_mult_neg_any : ∀ a b, a <= 0 → a * b = -(-a * b).
 Qed.
 
 Lemma real_mult_any_neg : ∀ a b, b <= 0 → a * b = -(a * -b).
+Proof.
     intros a b b_neg.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_mult_pos_neg; assumption.
@@ -387,6 +399,7 @@ Lemma real_mult_any_neg : ∀ a b, b <= 0 → a * b = -(a * -b).
 Qed.
 
 Lemma real_mult_lneg : ∀ a b, -a * b = -(a * b).
+Proof.
     intros a b.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply pos_neg in a_pos.
@@ -399,12 +412,14 @@ Lemma real_mult_lneg : ∀ a b, -a * b = -(a * b).
 Qed.
 
 Lemma real_mult_rneg : ∀ a b, a * -b = -(a * b).
+Proof.
     intros a b.
     do 2 rewrite (mult_comm a).
     apply real_mult_lneg.
 Qed.
 
 Lemma real_le_mult_ : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
+Proof.
     intros a b a_pos b_pos.
     unfold le; cbn.
     rewrite real_mult_pos_pos by assumption.

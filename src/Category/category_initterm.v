@@ -22,7 +22,8 @@ Context `{C0 : Category}.
 
 (* end hide *)
 Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
-        ∀ f : cat_morphism C0 I1 I2, isomorphism f.
+    ∀ f : cat_morphism C0 I1 I2, isomorphism f.
+Proof.
     intros I1 I2 I1_init I2_init f.
     pose proof (I1_init I1) as I1_self.
     pose proof (I2_init I2) as I2_self.
@@ -35,6 +36,7 @@ Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
 Qed.
 
 Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
+Proof.
     intros I1 I2 I1_init I2_init.
     pose proof (I1_init I2) as I1_init'.
     apply card_one_ex in I1_init' as f.
@@ -43,20 +45,23 @@ Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
 Qed.
 
 Theorem initial_iso_unique : ∀ I1 I2, initial I1 → initial I2 →
-        ∀ f g : cat_morphism C0 I1 I2, f = g.
+    ∀ f g : cat_morphism C0 I1 I2, f = g.
+Proof.
     intros I1 I2 I1_init I2_init f g.
     apply card_one_eq.
     exact (I1_init I2).
 Qed.
 
 Theorem initial_dual_terminal :
-        ∀ I : cat_U C0, initial I → terminal (C0:=dual_category C0) I.
+    ∀ I : cat_U C0, initial I → terminal (C0:=dual_category C0) I.
+Proof.
     intros I I_init.
     exact I_init.
 Qed.
 
 Theorem terminal_dual_initial :
-        ∀ I : cat_U C0, terminal I → initial (C0:=dual_category C0) I.
+    ∀ I : cat_U C0, terminal I → initial (C0:=dual_category C0) I.
+Proof.
     intros I I_term.
     exact I_term.
 Qed.
@@ -69,7 +74,8 @@ Context `{C0 : Category}.
 
 (* end hide *)
 Theorem terminal_all_iso : ∀ T1 T2, terminal T1 → terminal T2 →
-        ∀ f : cat_morphism C0 T1 T2, isomorphism f.
+    ∀ f : cat_morphism C0 T1 T2, isomorphism f.
+Proof.
     intros T1 T2 T1_term T2_term f.
     apply terminal_dual_initial in T1_term, T2_term.
     rewrite dual_isomorphism.
@@ -77,6 +83,7 @@ Theorem terminal_all_iso : ∀ T1 T2, terminal T1 → terminal T2 →
 Qed.
 
 Theorem terminal_unique : ∀ T1 T2, terminal T1 → terminal T2 → T1 ≅ T2.
+Proof.
     intros T1 T2 T1_term T2_term.
     apply terminal_dual_initial in T1_term, T2_term.
     pose proof (initial_unique _ _ T2_term T1_term) as [f f_iso].
@@ -86,7 +93,8 @@ Theorem terminal_unique : ∀ T1 T2, terminal T1 → terminal T2 → T1 ≅ T2.
 Qed.
 
 Theorem terminal_iso_unique : ∀ T1 T2, terminal T1 → terminal T2 →
-        ∀ f g : cat_morphism C0 T1 T2, f = g.
+    ∀ f g : cat_morphism C0 T1 T2, f = g.
+Proof.
     intros T1 T2 T1_term T2_term f g.
     apply card_one_eq.
     exact (T2_term T1).

@@ -14,6 +14,7 @@ Definition real_plus_base a b := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
 Infix "⊕" := real_plus_base : real_scope.
 
 Theorem real_plus_dedekind : ∀ (a b : real), dedekind_cut ([a|] ⊕ [b|]).
+Proof.
     intros [a a_cut] [b b_cut]; cbn.
     split.
     2: split.
@@ -76,6 +77,7 @@ Global Instance real_plus : Plus real := {
 }.
 
 Lemma real_plus_comm_ : ∀ a b, a + b = b + a.
+Proof.
     intros [a a_cut] [b b_cut].
     unfold plus; cbn.
     apply set_type_eq; cbn.
@@ -95,6 +97,7 @@ Global Instance real_plus_comm : PlusComm real := {
 }.
 
 Lemma real_plus_assoc_ : ∀ a b c, a + (b + c) = (a + b) + c.
+Proof.
     intros [a a_cut] [b b_cut] [c c_cut].
     unfold plus; cbn.
     apply set_type_eq; cbn.
@@ -129,6 +132,7 @@ Global Instance real_zero : Zero real := {
 }.
 
 Lemma real_plus_lid_ : ∀ a, 0 + a = a.
+Proof.
     intros [a a_cut].
     unfold plus, zero; cbn.
     unfold rat_to_real_base; cbn.
@@ -158,6 +162,7 @@ Definition real_neg_base a := λ p, ∃ r, 0 < r ∧ ¬(a (-p + -r)).
 Notation "⊖ a" := (real_neg_base a) : real_scope.
 
 Lemma real_neg_dedekind : ∀ a : real, dedekind_cut (⊖ [a|]).
+Proof.
     intros [a a_cut]; cbn.
     split.
     2: split.
@@ -221,6 +226,7 @@ Global Instance real_neg : Neg real := {
     neg a := [_|real_neg_dedekind a]
 }.
 Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
+Proof.
     intros [a a_cut] a_pos'.
     assert (∀ x, x <= 0 → a x) as a_pos.
     {
@@ -344,6 +350,7 @@ Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
 Qed.
 
 Lemma real_plus_linv_ : ∀ a, -a + a = 0.
+Proof.
     intros a.
     destruct (trichotomy 0 a) as [[a_pos|a_z]|a_neg].
     -   apply real_plus_linv_pos.
@@ -456,6 +463,7 @@ Global Instance real_plus_linv : PlusLinv real := {
 }.
 
 Lemma real_le_lplus_ : ∀ a b c, a <= b → c + a <= c + b.
+Proof.
     intros [a a_cut] [b b_cut] [c c_cut].
     unfold le, plus; cbn.
     intros ab x [r [s [cr [as_ eq]]]].

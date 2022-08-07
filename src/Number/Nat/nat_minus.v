@@ -17,6 +17,7 @@ Infix "¯" := nat_minus (at level 50) : nat_scope.
 Open Scope nat_scope.
 
 Theorem nat_minus_eq : ∀ a, a ¯ a = opt_val 0.
+Proof.
     intros a.
     nat_induction a.
     -   unfold zero; cbn.
@@ -26,6 +27,7 @@ Theorem nat_minus_eq : ∀ a, a ¯ a = opt_val 0.
 Qed.
 
 Theorem nat_minus_zero : ∀ a, a ¯ 0 = opt_val a.
+Proof.
     intros a.
     nat_destruct a.
     -   apply nat_minus_eq.
@@ -34,6 +36,7 @@ Theorem nat_minus_zero : ∀ a, a ¯ 0 = opt_val a.
 Qed.
 
 Theorem nat_minus_lt : ∀ a b, a < b → a ¯ b = opt_nil nat.
+Proof.
     intros a b ltq.
     apply nat_lt_ex in ltq as [c [c_nz eq]].
     subst b.
@@ -49,6 +52,7 @@ Theorem nat_minus_lt : ∀ a b, a < b → a ¯ b = opt_nil nat.
 Qed.
 
 Theorem nat_minus_plus : ∀ a b, (a + b) ¯ a = opt_val b.
+Proof.
     intros a b.
     nat_induction a.
     -   rewrite plus_lid.
@@ -67,6 +71,7 @@ Fixpoint nat_abs_minus a b := match a, b with
 Infix "⊖" := (nat_abs_minus) (at level 50) : nat_scope.
 
 Theorem nat_abs_minus_eq : ∀ a, a ⊖ a = 0.
+Proof.
     intros a.
     nat_induction a.
     -   unfold zero; cbn.
@@ -76,16 +81,19 @@ Theorem nat_abs_minus_eq : ∀ a, a ⊖ a = 0.
 Qed.
 
 Theorem nat_abs_minus_lid : ∀ a, 0 ⊖ a = a.
+Proof.
     intros a.
     destruct a; reflexivity.
 Qed.
 
 Theorem nat_abs_minus_rid : ∀ a, a ⊖ 0 = a.
+Proof.
     intros a.
     destruct a; reflexivity.
 Qed.
 
 Theorem nat_abs_minus_comm : ∀ a b, a ⊖ b = b ⊖ a.
+Proof.
     intros a.
     nat_induction a; intros b.
     -   rewrite nat_abs_minus_lid, nat_abs_minus_rid.
@@ -98,6 +106,7 @@ Theorem nat_abs_minus_comm : ∀ a b, a ⊖ b = b ⊖ a.
 Qed.
 
 Theorem nat_abs_minus_plus : ∀ a b, (a + b) ⊖ a = b.
+Proof.
     intros a b.
     nat_induction a.
     -   rewrite plus_lid.
@@ -108,6 +117,7 @@ Theorem nat_abs_minus_plus : ∀ a b, (a + b) ⊖ a = b.
 Qed.
 
 Theorem nat_abs_minus_min : ∀ a b, a ⊖ b + min a b = max a b.
+Proof.
     intros a b.
     unfold min, max; case_if.
     -   apply nat_le_ex in l as [c eq]; subst.
@@ -122,6 +132,7 @@ Theorem nat_abs_minus_min : ∀ a b, a ⊖ b + min a b = max a b.
 Qed.
 
 Theorem nat_abs_minus_eq_zero : ∀ a b, 0 = a ⊖ b → a = b.
+Proof.
     intros a.
     nat_induction a; intros b eq.
     -   rewrite nat_abs_minus_lid in eq.

@@ -15,6 +15,7 @@ Section RealOrderTopology.
 Existing Instance real_order_topology.
 (* end hide *)
 Theorem real_open_interval : ∀ B, top_basis B → ∃ a b, B = open_interval a b.
+Proof.
     intros B B_basis.
     destruct B_basis as [B_basis|[B_basis|B_basis]].
     -   exact B_basis.
@@ -33,6 +34,7 @@ Theorem real_open_interval : ∀ B, top_basis B → ∃ a b, B = open_interval a
 Qed.
 
 Theorem real_open_interval_eq : ∀ B, top_basis B ↔ ∃ a b, B = open_interval a b.
+Proof.
     intros B.
     split.
     -   apply real_open_interval.
@@ -42,6 +44,7 @@ Theorem real_open_interval_eq : ∀ B, top_basis B ↔ ∃ a b, B = open_interva
 Qed.
 
 Theorem real_connected : connected real.
+Proof.
     apply complete_connected.
 Qed.
 
@@ -189,8 +192,9 @@ Qed.
 End KTop.
 (* end hide *)
 Theorem real_lower_limit_finer : topology_strictly_finer
-        (@basis_topology _ real_lower_limit_topology)
-        (@basis_topology _ real_order_topology).
+    (@basis_topology _ real_lower_limit_topology)
+    (@basis_topology _ real_order_topology).
+Proof.
     apply topology_not_finer_strict.
     -   apply topology_basis_finer.
         intros x B2 B2_basis B2x.
@@ -251,8 +255,9 @@ Theorem real_lower_limit_finer : topology_strictly_finer
 Qed.
 
 Theorem real_k_finer : topology_strictly_finer
-        (@basis_topology _ real_k_topology)
-        (@basis_topology _ real_order_topology).
+    (@basis_topology _ real_k_topology)
+    (@basis_topology _ real_order_topology).
+Proof.
     apply topology_not_finer_strict.
     -   apply topology_basis_finer.
         intros x B2 B2_basis B2x.
@@ -308,8 +313,9 @@ Theorem real_k_finer : topology_strictly_finer
 Qed.
 
 Theorem real_lower_limit_k_incomparable : ¬topology_comparable
-        (@basis_topology _ real_lower_limit_topology)
-        (@basis_topology _ real_k_topology).
+    (@basis_topology _ real_lower_limit_topology)
+    (@basis_topology _ real_k_topology).
+Proof.
     intros [finer|finer].
     -   rewrite topology_basis_finer in finer.
         pose (B2 := (open_interval (-(1)) 1 - real_K)%set).

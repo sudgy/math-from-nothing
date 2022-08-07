@@ -17,22 +17,26 @@ Context {U} `{AllMult U, NotTrivial U}.
 Local Open Scope nat_scope.
 (* end hide *)
 Theorem pow_simpl : ∀ a n, a ^ (nat_suc n) = a^n * a.
+Proof.
     intros; reflexivity.
 Qed.
 
 Theorem pow_0_nat : ∀ a, a ^ 0 = 1.
+Proof.
     intros a.
     unfold zero; cbn.
     reflexivity.
 Qed.
 
 Theorem pow_1_nat : ∀ a, a ^ 1 = a.
+Proof.
     intros a.
     unfold one; cbn.
     apply mult_lid.
 Qed.
 
 Theorem one_pow_nat : ∀ n, 1 ^ n = 1.
+Proof.
     nat_induction n.
     -   apply pow_0_nat.
     -   cbn.
@@ -41,6 +45,7 @@ Theorem one_pow_nat : ∀ n, 1 ^ n = 1.
 Qed.
 
 Theorem pow_mult_nat : ∀ a m n, a ^ m * a ^ n = a ^ (m + n).
+Proof.
     intros a m n.
     nat_induction n.
     -   rewrite pow_0_nat, mult_rid.
@@ -54,6 +59,7 @@ Theorem pow_mult_nat : ∀ a m n, a ^ m * a ^ n = a ^ (m + n).
 Qed.
 
 Theorem pow_mult_mult_nat : ∀ a m n, (a ^ m) ^ n = a ^ (m * n).
+Proof.
     intros a m n.
     nat_induction n.
     -   rewrite mult_ranni.
@@ -68,6 +74,7 @@ Theorem pow_mult_mult_nat : ∀ a m n, (a ^ m) ^ n = a ^ (m * n).
 Qed.
 
 Theorem pow_not_zero_nat : ∀ a n, 0 ≠ a → 0 ≠ a ^ n.
+Proof.
     intros a n a_nz eq.
     nat_induction n.
     -   rewrite pow_0_nat in eq.
@@ -80,6 +87,7 @@ Theorem pow_not_zero_nat : ∀ a n, 0 ≠ a → 0 ≠ a ^ n.
 Qed.
 
 Theorem pow_neg_one_even : ∀ n, (-(1)) ^ (2*n) = 1.
+Proof.
     intros n.
     nat_induction n.
     -   rewrite mult_ranni.
@@ -95,6 +103,7 @@ Theorem pow_neg_one_even : ∀ n, (-(1)) ^ (2*n) = 1.
 Qed.
 
 Theorem pow_neg_one_odd : ∀ n, (-(1)) ^ (2*n + 1) = -(1).
+Proof.
     intros n.
     rewrite <- pow_mult_nat.
     rewrite pow_neg_one_even.
@@ -104,6 +113,7 @@ Qed.
 
 Theorem pow_neg_one_binom2 : ∀ n,
         (-(1)) ^ binom (nat_suc (nat_suc n)) 2 = -(-(1)) ^ binom n 2.
+Proof.
     intros n.
     change 2 with (nat_suc (nat_suc 0)) at 1.
     do 3 rewrite binom_suc.

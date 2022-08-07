@@ -61,14 +61,17 @@ Existing Instances UP UZ UN UPC UPZ UPN UM UO VP VZ VSM VSO TAP TAZ TAN TAPC TAP
 
 (* end hide *)
 Theorem vector_to_tensor_plus : ∀ u v, vector_to_tensor (u + v) =
-        vector_to_tensor u + vector_to_tensor v.
+    vector_to_tensor u + vector_to_tensor v.
+Proof.
     apply module_homo_plus.
 Qed.
 Theorem vector_to_tensor_scalar : ∀ a v, vector_to_tensor (a · v) =
-        a · vector_to_tensor v.
+    a · vector_to_tensor v.
+Proof.
     apply module_homo_scalar.
 Qed.
 Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
+Proof.
     apply module_homo_zero.
 Qed.
 
@@ -77,6 +80,7 @@ Lemma tensor_algebra_iso_ex :
         isomorphism f ∧
         ∀ x, algebra_homo_f f (vector_to_tensor_base x) =
             module_homo_f (vector_to_tensor_homo V) x.
+Proof.
     pose proof (initial_unique _ _
         (tensor_algebra_ex_base V) (ex_proof (tensor_algebra_ex V)))
         as [[f f_eq] [[g g_eq] [fg gf]]].
@@ -101,16 +105,19 @@ Let f := ex_val tensor_algebra_iso_ex.
 Let f_iso := land (ex_proof tensor_algebra_iso_ex).
 Let g := ex_val f_iso.
 Lemma tensor_algebra_iso_eq : ∀ x, algebra_homo_f f (vector_to_tensor_base x)
-        = vector_to_tensor x.
+    = vector_to_tensor x.
+Proof.
     apply (ex_proof tensor_algebra_iso_ex).
 Qed.
 Lemma tensor_algebra_iso_fg : ∀ x, algebra_homo_f f (algebra_homo_f g x) = x.
+Proof.
     intros x.
     pose proof (ex_proof f_iso) as [eq1 eq2]; clear eq2.
     inversion eq1 as [eq1'].
     apply (func_eq _ _ eq1').
 Qed.
 Lemma tensor_algebra_iso_gf : ∀ x, algebra_homo_f g (algebra_homo_f f x) = x.
+Proof.
     intros x.
     pose proof (ex_proof f_iso) as [eq1 eq2]; clear eq1.
     inversion eq2 as [eq2'].
@@ -118,7 +125,8 @@ Lemma tensor_algebra_iso_gf : ∀ x, algebra_homo_f g (algebra_homo_f f x) = x.
 Qed.
 
 Theorem vector_to_tensor_eq : ∀ u v : module_V V,
-        vector_to_tensor u = vector_to_tensor v → u = v.
+    vector_to_tensor u = vector_to_tensor v → u = v.
+Proof.
     intros u v eq.
     do 2 rewrite <- tensor_algebra_iso_eq in eq.
     apply (f_equal (algebra_homo_f g)) in eq.
@@ -131,7 +139,8 @@ Definition scalar_to_tensor (a : cring_U F)
     := algebra_homo_f f (scalar_to_tensor_base a).
 
 Theorem scalar_to_tensor_eq : ∀ a b,
-        scalar_to_tensor a = scalar_to_tensor b → a = b.
+    scalar_to_tensor a = scalar_to_tensor b → a = b.
+Proof.
     intros a b eq.
     unfold scalar_to_tensor in eq.
     apply (f_equal (algebra_homo_f g)) in eq.
@@ -141,7 +150,8 @@ Theorem scalar_to_tensor_eq : ∀ a b,
 Qed.
 
 Theorem scalar_to_tensor_plus : ∀ a b,
-        scalar_to_tensor (a + b) = scalar_to_tensor a + scalar_to_tensor b.
+    scalar_to_tensor (a + b) = scalar_to_tensor a + scalar_to_tensor b.
+Proof.
     intros a b.
     unfold scalar_to_tensor.
     rewrite (scalar_to_tensor_plus V).
@@ -149,6 +159,7 @@ Theorem scalar_to_tensor_plus : ∀ a b,
 Qed.
 
 Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
+Proof.
     unfold scalar_to_tensor.
     unfold scalar_to_tensor_base.
     pose proof (scalar_to_tensor_zero V) as eq.
@@ -159,15 +170,16 @@ Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
 Qed.
 
 Theorem scalar_to_tensor_mult : ∀ a b,
-        scalar_to_tensor (a * b) = scalar_to_tensor a * scalar_to_tensor b.
+    scalar_to_tensor (a * b) = scalar_to_tensor a * scalar_to_tensor b.
+Proof.
     intros a b.
     unfold scalar_to_tensor.
     rewrite (scalar_to_tensor_mult V).
     apply algebra_homo_mult.
 Qed.
 
-Theorem scalar_to_tensor_scalar : ∀ a A,
-        scalar_to_tensor a * A = a · A.
+Theorem scalar_to_tensor_scalar : ∀ a A, scalar_to_tensor a * A = a · A.
+Proof.
     intros a A.
     unfold scalar_to_tensor.
     rewrite <- (tensor_algebra_iso_fg A) at 1.
@@ -179,6 +191,7 @@ Theorem scalar_to_tensor_scalar : ∀ a A,
 Qed.
 
 Theorem scalar_to_tensor_one : scalar_to_tensor 1 = 1.
+Proof.
     rewrite <- scalar_id.
     rewrite <- scalar_to_tensor_scalar.
     rewrite mult_rid.
@@ -186,7 +199,8 @@ Theorem scalar_to_tensor_one : scalar_to_tensor 1 = 1.
 Qed.
 
 Theorem scalar_to_tensor_comm : ∀ a A,
-        scalar_to_tensor a * A = A * scalar_to_tensor a.
+    scalar_to_tensor a * A = A * scalar_to_tensor a.
+Proof.
     intros a A.
     unfold scalar_to_tensor.
     rewrite <- (tensor_algebra_iso_fg A) at 1.
@@ -211,7 +225,8 @@ Definition tensor_grade_mult := graded_algebra_isomorphism f f_iso.
 Existing Instances tensor_grade tensor_grade_mult.
 
 Theorem scalar_to_tensor_grade : ∀ a,
-        of_grade (H10 := tensor_grade) 0 (scalar_to_tensor a).
+    of_grade (H10 := tensor_grade) 0 (scalar_to_tensor a).
+Proof.
     intros a.
     unfold of_grade; cbn.
     exists (scalar_to_tensor_base a).
@@ -223,7 +238,8 @@ Theorem scalar_to_tensor_grade : ∀ a,
 Qed.
 
 Theorem tensor_grade_zero_scalar : ∀ v,
-        of_grade 0 v ↔ (∃ a, v = scalar_to_tensor a).
+    of_grade 0 v ↔ (∃ a, v = scalar_to_tensor a).
+Proof.
     intros v.
     split.
     -   intros [v' [v_in v_eq]].
@@ -237,7 +253,8 @@ Theorem tensor_grade_zero_scalar : ∀ v,
 Qed.
 
 Theorem vector_to_tensor_grade : ∀ v,
-        of_grade (H10 := tensor_grade) 1 (vector_to_tensor v).
+    of_grade (H10 := tensor_grade) 1 (vector_to_tensor v).
+Proof.
     intros v.
     unfold of_grade; cbn.
     exists (vector_to_tensor_base v).
@@ -249,7 +266,8 @@ Theorem vector_to_tensor_grade : ∀ v,
 Qed.
 
 Theorem tensor_grade_one_vector : ∀ v,
-        of_grade 1 v ↔ (∃ a, v = vector_to_tensor a).
+    of_grade 1 v ↔ (∃ a, v = vector_to_tensor a).
+Proof.
     intros v.
     split.
     -   intros [v' [v_in v_eq]].
@@ -289,12 +307,14 @@ Definition vectors_to_tensor (l : list (module_V V))
     := rfold mult 1 (list_image l vector_to_tensor).
 
 Theorem vectors_to_tensor_end : vectors_to_tensor list_end = 1.
+Proof.
     cbn.
     reflexivity.
 Qed.
 
 Theorem vectors_to_tensor_grade : ∀ l,
-        of_grade (H10 := tensor_grade) (list_size l) (vectors_to_tensor l).
+    of_grade (H10 := tensor_grade) (list_size l) (vectors_to_tensor l).
+Proof.
     intros l.
     induction l.
     -   rewrite vectors_to_tensor_end.
@@ -313,10 +333,10 @@ Qed.
 Definition simple_tensor x := ∃ α l, x = α · vectors_to_tensor l.
 
 Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H10 := tensor_grade) i x →
-        ∃ l : ulist (cring_U F *
-            set_type (λ l : list (module_V V), list_size l = i)),
-        ulist_sum (ulist_image l (λ x, fst x · vectors_to_tensor [snd x|]))
-        = x.
+    ∃ l : ulist (cring_U F *
+        set_type (λ l : list (module_V V), list_size l = i)),
+    ulist_sum (ulist_image l (λ x, fst x · vectors_to_tensor [snd x|])) = x.
+Proof.
     intros x' i [x [xi x'_eq]]; subst x'.
     destruct xi as [x' x_eq]; subst x.
     rename x' into x.
@@ -395,7 +415,8 @@ Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H10 := tensor_grade) i x �
 Qed.
 
 Theorem tensor_simple_sum : ∀ x, ∃ l : ulist (set_type simple_tensor),
-        x = ulist_sum (ulist_image l (λ x, [x|])).
+    x = ulist_sum (ulist_image l (λ x, [x|])).
+Proof.
     intros x.
     rewrite (grade_decomposition_eq (H10 := tensor_grade) x).
     pose (l := grade_decomposition x).
@@ -443,8 +464,9 @@ Theorem tensor_simple_sum : ∀ x, ∃ l : ulist (set_type simple_tensor),
 Qed.
 
 Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
-        x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-            (list_image (snd p) (λ v, vector_to_tensor v)))).
+    x = ulist_sum (ulist_image l (λ p, fst p · list_prod
+        (list_image (snd p) (λ v, vector_to_tensor v)))).
+Proof.
     intros x.
     pose proof (tensor_simple_sum x) as [l l_eq]; subst x.
     exists (ulist_image l (λ x, (ex_val [|x], ex_val (ex_proof [|x])))).

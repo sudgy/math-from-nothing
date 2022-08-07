@@ -26,6 +26,7 @@ Local Instance S_order : Order (set_type S) := {
             ¬bin_domain [A|] [b|] → [B|]⟨[_|ex_val sub [a|] [|a]], b⟩
 }.
 Lemma S_order_refl : ∀ A, A <= A.
+Proof.
     intros [A [[A_con] [[A_antisym] [[A_trans] [[A_well]]]]]].
     exists (refl A).
     intros a b Ab.
@@ -37,6 +38,7 @@ Local Instance S_order_refl_class : Reflexive le := {
     refl := S_order_refl
 }.
 Lemma S_order_antisym : ∀ A B, A <= B → B <= A → A = B.
+Proof.
     intros [A A_wo] [B B_wo] [AB AB2] [BA BA2].
     apply set_type_eq; cbn in *.
     apply antisym; assumption.
@@ -45,6 +47,7 @@ Local Instance S_order_antisym_class : Antisymmetric le := {
     antisym := S_order_antisym
 }.
 Lemma S_order_trans : ∀ A B C, A <= B → B <= C → A <= C.
+Proof.
     intros [A A_wo] [B B_wo] [C C_wo] [AB AB2] [BC BC2].
     unfold le in *; cbn in *.
     exists (trans AB BC).
@@ -117,9 +120,10 @@ Variable C : set_type S → Prop.
 Hypothesis C_chain : is_chain le C.
 
 Lemma S_all_equal : ∀ F G : set_type S, C F → C G → ∀ a b
-        (Fa : bin_domain [F|] a) (Fb : bin_domain [F|] b)
-        (Ga : bin_domain [G|] a) (Gb : bin_domain [G|] b),
-        [F|]⟨[a|Fa], [b|Fb]⟩ = [G|]⟨[a|Ga], [b|Gb]⟩.
+    (Fa : bin_domain [F|] a) (Fb : bin_domain [F|] b)
+    (Ga : bin_domain [G|] a) (Gb : bin_domain [G|] b),
+    [F|]⟨[a|Fa], [b|Fb]⟩ = [G|]⟨[a|Ga], [b|Gb]⟩.
+Proof.
     intros F G CF CG a b Fa Fb Ga Gb.
     destruct (C_chain F G CF CG) as [FG|GF].
     -   destruct FG as [FG C0]; clear C0.
@@ -139,7 +143,8 @@ Qed.
 Definition S_union_set x := ∃ X, C X ∧ bin_domain [X|] x.
 
 Lemma S_union_func_ex : ∀ a b : set_type S_union_set,
-        ∃ X, C X ∧ bin_domain [X|] [a|] ∧ bin_domain [X|] [b|].
+    ∃ X, C X ∧ bin_domain [X|] [a|] ∧ bin_domain [X|] [b|].
+Proof.
     intros [a [X [CX Xa]]] [b [Y [CY Yb]]]; cbn.
     destruct (C_chain X Y CX CY) as [sub|sub].
     -   destruct sub as [sub f_sub].
@@ -172,6 +177,7 @@ Ltac make_definitions a b PF F CF Fa Fb :=
     destruct FX' as [CF [Fa Fb]].
 
 Lemma S_union_le_connex : ∀ a b, {a <= b} + {b <= a}.
+Proof.
     intros a b.
     apply or_to_strong.
     unfold le; cbn; unfold S_union_le; cbn.
@@ -191,6 +197,7 @@ Lemma S_union_le_connex : ∀ a b, {a <= b} + {b <= a}.
 Qed.
 
 Lemma S_union_le_antisym : ∀ a b, a <= b → b <= a → a = b.
+Proof.
     intros a b ab ba.
     unfold le in ab, ba; cbn in ab, ba; unfold S_union_le in *; cbn in ab, ba.
     make_definitions a b PF F CF Fa Fb.
@@ -209,6 +216,7 @@ Lemma S_union_le_antisym : ∀ a b, a <= b → b <= a → a = b.
 Qed.
 
 Lemma S_union_le_trans : ∀ a b c, a <= b → b <= c → a <= c.
+Proof.
     intros a b c ab bc.
     unfold le; unfold le in ab, bc; cbn in *.
     unfold S_union_le in *; cbn in *.
@@ -237,8 +245,9 @@ Lemma S_union_le_trans : ∀ a b c, a <= b → b <= c → a <= c.
 Qed.
 
 Lemma S_union_le_wo : ∀ A : set_type (S_union_set) → Prop,
-        (∃ M : set_type (S_union_set), A M)
-        → ∃ M : set_type (S_union_set), is_minimal le A M.
+    (∃ M : set_type (S_union_set), A M)
+    → ∃ M : set_type (S_union_set), is_minimal le A M.
+Proof.
     intros A [b Ab].
     destruct [|b] as [F [CF Fb]].
     destruct [|F] as [[F_connex] [C1 [C2 [[F_wo]]]]]; clear C1 C2.
@@ -306,6 +315,7 @@ Qed.
 Definition S_union_le_func := make_bin_set_function S_union_set S_union_le.
 
 Lemma S_union_le_func_wo : S S_union_le_func.
+Proof.
     repeat split.
     -   apply S_union_le_connex.
     -   apply S_union_le_antisym.
@@ -314,6 +324,7 @@ Lemma S_union_le_func_wo : S S_union_le_func.
 Qed.
 
 Lemma S_all_upper : has_upper_bound le C.
+Proof.
     exists [_|S_union_le_func_wo].
     intros F CF.
     assert ([F|] <= S_union_le_func) as sub.
@@ -386,6 +397,7 @@ Local Instance A'_order : Order (set_type A'_set) := {
 }.
 
 Lemma A'_connex : ∀ a b, {a <= b} + {b <= a}.
+Proof.
     intros a b.
     unfold le; cbn; unfold A'_func; cbn.
     apply or_to_strong.
@@ -400,6 +412,7 @@ Lemma A'_connex : ∀ a b, {a <= b} + {b <= a}.
 Qed.
 
 Lemma A'_antisym : ∀ a b, a <= b → b <= a → a = b.
+Proof.
     intros a b ab ba.
     unfold le in *; cbn in *; unfold A'_func in *; cbn in *.
     destruct (A'_set_proof a) as [Aa|xa]; destruct (A'_set_proof b) as [Ab|xb].
@@ -420,6 +433,7 @@ Local Instance A'_antisym_class : Antisymmetric le := {
 }.
 
 Lemma A'_trans : ∀ a b c, a <= b → b <= c → a <= c.
+Proof.
     intros a b c ab bc.
     unfold le in *; cbn in *; unfold A'_func in *; cbn in *.
     destruct (A'_set_proof c) as [Ac|xc].
@@ -433,14 +447,16 @@ Lemma A'_trans : ∀ a b c, a <= b → b <= c → a <= c.
 Qed.
 
 Lemma A'_sub : bin_domain [A|] ⊆ A'_set.
+Proof.
     intros a Aa.
     left.
     exact Aa.
 Qed.
 
 Lemma A'_wo : ∀ A : set_type (A'_set) → Prop,
-        (∃ M : set_type (A'_set), A M)
-        → ∃ M : set_type (A'_set), is_minimal le A M.
+    (∃ M : set_type (A'_set), A M)
+    → ∃ M : set_type (A'_set), is_minimal le A M.
+Proof.
     intros S [a Sa].
     destruct [|A] as [C0 [C1 [C2 [[A_wo]]]]]; clear C0 C1 C2.
     pose (S' x := S [_|A'_sub [x|] [|x]]).
@@ -497,6 +513,7 @@ Qed.
 Definition A' := make_bin_set_function A'_set A'_func.
 
 Lemma A'_S : S A'.
+Proof.
     repeat split.
     -   apply A'_connex.
     -   apply A'_antisym.
@@ -505,6 +522,7 @@ Lemma A'_S : S A'.
 Qed.
 
 Lemma A_all_base : False.
+Proof.
     assert (∀ X, ¬A < X) as A_max by apply (ex_proof (zorn le S_all_upper)).
     apply (A_max [A'|A'_S]).
     split.
@@ -553,6 +571,7 @@ Qed.
 End All.
 
 Lemma A_all : ∀ x, bin_domain [A|] x.
+Proof.
     intros x.
     classic_contradiction Ax.
     exact (A_all_base x Ax).
@@ -561,6 +580,7 @@ Qed.
 Definition wo_le a b := [A|]⟨[_|A_all a], [_|A_all b]⟩.
 
 Lemma wo_connex : ∀ a b, {wo_le a b} + {wo_le b a}.
+Proof.
     intros a b.
     classic_case (wo_le a b).
     -   left; assumption.
@@ -570,6 +590,7 @@ Lemma wo_connex : ∀ a b, {wo_le a b} + {wo_le b a}.
         exact b0.
 Qed.
 Lemma wo_antisym : ∀ a b, wo_le a b → wo_le b a → a = b.
+Proof.
     destruct [|A] as [A_connex [[A_antisym]]].
     intros a b ab ba.
     unfold wo_le in *.
@@ -578,12 +599,14 @@ Lemma wo_antisym : ∀ a b, wo_le a b → wo_le b a → a = b.
     reflexivity.
 Qed.
 Lemma wo_trans : ∀ a b c, wo_le a b → wo_le b c → wo_le a c.
+Proof.
     unfold wo_le.
     destruct [|A] as [A_connex [A_antisym [[A_trans]]]].
     intros a b c ab bc.
     exact (trans ab bc).
 Qed.
 Lemma wo_well_founded : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal wo_le S x.
+Proof.
     intros S [x Sx].
     destruct [|A] as [A_connex [A_antisym [A_trans [[A_wo]]]]].
     pose (S' (y : set_type (bin_domain [A|])) := S [y|]).
@@ -629,6 +652,7 @@ Instance wo_well_founded_class : WellFounded wo_le := {
 }.
 
 Theorem wo_le_wo : well_orders wo_le.
+Proof.
     split; split.
     2: split.
     3: split; split.

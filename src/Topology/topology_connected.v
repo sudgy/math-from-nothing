@@ -19,6 +19,7 @@ Section Connected.
 Context {U} `{Topology U}.
 (* end hide *)
 Theorem separation_comm : ∀ A B, separation A B ↔ separation B A.
+Proof.
     intros A B.
     split.
     -   intros [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
@@ -34,6 +35,7 @@ Theorem separation_comm : ∀ A B, separation A B ↔ separation B A.
 Qed.
 
 Theorem connected_clopen : connected U ↔ (∀ S, clopen S → S = all ∨ S = ∅).
+Proof.
     split.
     -   intros connect S [S_open S_closed].
         classic_contradiction contr.
@@ -99,7 +101,8 @@ Qed.
 Existing Instance subspace_topology.
 
 Theorem sub_connected1 : ∀ (X : U → Prop) (A B : U → Prop),
-        sub_separation X A B → separation (to_set_type X A) (to_set_type X B).
+    sub_separation X A B → separation (to_set_type X A) (to_set_type X B).
+Proof.
     -   intros X A B [A_empty [B_empty [AB_dis [AB_X [A_lim B_lim]]]]].
         assert (closure A ∩ B = ∅) as cAB_empty.
         {
@@ -207,7 +210,8 @@ Theorem sub_connected1 : ∀ (X : U → Prop) (A B : U → Prop),
 Qed.
 
 Theorem sub_connected2 : ∀ (X : U → Prop) (A B : set_type X → Prop),
-        separation A B → sub_separation X (from_set_type A) (from_set_type B).
+    separation A B → sub_separation X (from_set_type A) (from_set_type B).
+Proof.
     intros X A B [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
     assert (A = complement B) as A_eq.
     {
@@ -317,7 +321,8 @@ Theorem sub_connected2 : ∀ (X : U → Prop) (A B : set_type X → Prop),
 Qed.
 
 Theorem sub_connected :
-        ∀ X, connected (set_type X) ↔ (∀ A B, ¬sub_separation X A B).
+    ∀ X, connected (set_type X) ↔ (∀ A B, ¬sub_separation X A B).
+Proof.
     intros X.
     split.
     -   intros con A B AB_sep.
@@ -329,7 +334,8 @@ Theorem sub_connected :
 Qed.
 
 Theorem connected_sub_separation :
-        ∀ A B X, separation A B → connected (set_type X) → X ⊆ A ∨ X ⊆ B.
+    ∀ A B X, separation A B → connected (set_type X) → X ⊆ A ∨ X ⊆ B.
+Proof.
     intros A B X [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]] X_con.
     specialize (X_con (to_set_type X A) (to_set_type X B)).
     unfold separation in X_con.
@@ -376,7 +382,8 @@ Theorem connected_sub_separation :
 Qed.
 
 Theorem to_set_type_connected : ∀ A B, A ⊆ B →
-        connected (set_type A) → connected (set_type (to_set_type B A)).
+    connected (set_type A) → connected (set_type (to_set_type B A)).
+Proof.
     intros A B sub A_con C D
         [C_empty [D_empty [C_open [D_open [CD_dis CD_all]]]]].
     apply (A_con (to_set_type A (from_set_type (from_set_type C)))
@@ -494,6 +501,7 @@ Context {U} `{Topology U}.
 Existing Instance subspace_topology.
 (* end hide *)
 Theorem empty_connected : connected (set_type ∅).
+Proof.
     intros A B [A_empty AB].
     apply not_empty_ex in A_empty.
     destruct A_empty as [[x x_in]].
@@ -501,7 +509,8 @@ Theorem empty_connected : connected (set_type ∅).
 Qed.
 
 Theorem connected_union_connected : ∀ (SS : (U → Prop) → Prop) x,
-       (∀ S, SS S → connected (set_type S) ∧ S x) → connected (set_type (⋃ SS)).
+   (∀ S, SS S → connected (set_type S) ∧ S x) → connected (set_type (⋃ SS)).
+Proof.
     intros SS x all_SS.
     classic_case (⋃ SS = ∅) as [SS_empty|SS_nempty].
     {
@@ -570,8 +579,9 @@ Theorem connected_union_connected : ∀ (SS : (U → Prop) → Prop) x,
 Qed.
 
 Theorem connected_union_connected2 : ∀ (A B : U → Prop) x,
-        A x → B x → connected (set_type A) → connected (set_type B) →
-        connected (set_type (A ∪ B)).
+    A x → B x → connected (set_type A) → connected (set_type B) →
+    connected (set_type (A ∪ B)).
+Proof.
     intros A B x Ax Bx a_con B_con.
     rewrite collection2_union.
     apply (connected_union_connected _ x).
@@ -579,7 +589,8 @@ Theorem connected_union_connected2 : ∀ (A B : U → Prop) x,
 Qed.
 
 Theorem sub_separation_closure_disjoint : ∀ X A B, sub_separation X A B →
-        disjoint (closure A) B.
+    disjoint (closure A) B.
+Proof.
     intros X A B [A_empty [B_empty [AB_dis [AB_X [A_lim B_lim]]]]].
     unfold disjoint.
     rewrite closure_limit_points.
@@ -593,7 +604,8 @@ Theorem sub_separation_closure_disjoint : ∀ X A B, sub_separation X A B →
 Qed.
 
 Theorem connected_in_closure : ∀ A B, connected (set_type A) →
-        A ⊆ B → B ⊆ closure A → connected (set_type B).
+    A ⊆ B → B ⊆ closure A → connected (set_type B).
+Proof.
     intros A B A_con AB BA.
     assert (∀ C D, to_set_type B A ⊆ C → ¬separation C D) as wlog.
     {

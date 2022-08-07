@@ -14,6 +14,7 @@ Definition ord_mult_le (A B : ord_type) (a b : ord_U A * ord_U B) :=
     end.
 
 Lemma ord_mult_wo : ∀ A B, well_orders (ord_mult_le A B).
+Proof.
     intros A B.
     destruct (ord_wo A) as [[A_connex] [[A_antisym] [[A_trans] [A_wo]]]].
     destruct (ord_wo B) as [[B_connex] [[B_antisym] [[B_trans] [B_wo]]]].
@@ -99,6 +100,7 @@ Section OrdMult.
 Local Open Scope ord_scope.
 
 Lemma ord_mult_wd : ∀ A B C D, A ~ B → C ~ D → A ⊗ C ~ B ⊗ D.
+Proof.
     intros A B C D [f [f_bij f_iso]] [g [g_bij g_iso]].
     exists (λ x, (f (fst x), g (snd x))).
     split.
@@ -151,6 +153,7 @@ Global Instance ord_mult_class : Mult ord := {
 }.
 
 Lemma ord_ldist : ∀ α β γ, α * (β + γ) = α * β + α * γ.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold plus, mult; equiv_simpl.
@@ -189,6 +192,7 @@ Global Instance ord_ldist_class : Ldist ord := {
 }.
 
 Lemma ord_mult_assoc : ∀ α β γ, α * (β * γ) = (α * β) * γ.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold mult; equiv_simpl.
@@ -235,6 +239,7 @@ Global Instance ord_mult_assoc_class : MultAssoc ord := {
 }.
 
 Lemma ord_mult_lanni : ∀ α, 0 * α = 0.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -265,6 +270,7 @@ Global Instance ord_mult_lanni_class : MultLanni ord := {
 }.
 
 Lemma ord_mult_ranni : ∀ α, α * 0 = 0.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -299,6 +305,7 @@ Global Instance ord_one : One ord := {
 }.
 
 Lemma ord_mult_lid : ∀ α, 1 * α = α.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -344,6 +351,7 @@ Global Instance ord_mult_lid_class : MultLid ord := {
 }.
 
 Lemma ord_mult_rid : ∀ α, α * 1 = α.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -386,6 +394,7 @@ Global Instance ord_mult_rid_class : MultRid ord := {
 }.
 
 Lemma ord_le_mult : ∀ α β, 0 <= α → 0 <= β → 0 <= α * β.
+Proof.
     intros α β a b.
     apply ord_le_zero.
 Qed.
@@ -395,6 +404,7 @@ Global Instance ord_le_mult_class : OrderMult ord := {
 (* end hide *)
 
 Theorem ord_lt_lmult : ∀ {α β} γ, zero ≠ γ → α < β → γ * α < γ * β.
+Proof.
     intros A B C C_neq lt.
     equiv_get_value A B C.
     get_ord_wo B.
@@ -499,6 +509,7 @@ Theorem ord_lt_lmult : ∀ {α β} γ, zero ≠ γ → α < β → γ * α < γ 
 Qed.
 
 Theorem ord_le_lmult : ∀ {α β} γ, α <= β → γ * α <= γ * β.
+Proof.
     intros α β γ leq.
     classic_case (0 = γ) as [γ_eq|γ_neq].
     -   rewrite <- γ_eq.
@@ -510,6 +521,7 @@ Theorem ord_le_lmult : ∀ {α β} γ, α <= β → γ * α <= γ * β.
         +   apply ord_lt_lmult; try split; assumption.
 Qed.
 Lemma ord_le_lmult_pos : ∀ α β γ, 0 <= γ → α <= β → γ * α <= γ * β.
+Proof.
     intros α β γ z leq.
     apply ord_le_lmult.
     exact leq.
@@ -521,6 +533,7 @@ Global Instance ord_le_lmult_class : OrderLmult ord := {
 (* end hide *)
 
 Theorem ord_lt_rmult : ∀ {α β} γ, α < β → α * γ <= β * γ.
+Proof.
     intros A B C eq.
     classic_contradiction contr.
     rewrite nle_lt in contr.
@@ -582,6 +595,7 @@ Theorem ord_lt_rmult : ∀ {α β} γ, α < β → α * γ <= β * γ.
 Qed.
 
 Theorem ord_le_rmult : ∀ {α β} γ, α <= β → α * γ <= β * γ.
+Proof.
     intros α β γ leq.
     classic_case (0 = γ) as [γ_eq|γ_neq].
     -   rewrite <- γ_eq.
@@ -593,6 +607,7 @@ Theorem ord_le_rmult : ∀ {α β} γ, α <= β → α * γ <= β * γ.
         +   apply ord_lt_rmult; try split; assumption.
 Qed.
 Lemma ord_le_rmult_pos : ∀ α β γ, 0 <= γ → α <= β → α * γ <= β * γ.
+Proof.
     intros α β γ z leq.
     apply ord_le_rmult.
     exact leq.
@@ -604,6 +619,7 @@ Global Instance ord_le_rmult_class : OrderRmult ord := {
 (* end hide *)
 
 Lemma ord_mult_lcancel : ∀ α β γ, 0 ≠ γ → γ * α = γ * β → α = β.
+Proof.
     intros α β γ γ_nz eq.
     destruct (trichotomy α β) as [[leq|H]|leq]; try assumption.
     -   apply ord_lt_lmult with γ in leq; try exact γ_nz.
@@ -619,6 +635,7 @@ Global Instance ord_mult_lcancel_class : MultLcancel ord := {
 (* end hide *)
 
 Theorem ord_lt_mult_lcancel : ∀ {α β} γ, γ * α < γ * β → α < β.
+Proof.
     intros α β γ eq.
     classic_contradiction contr.
     rewrite nlt_le in contr.
@@ -628,6 +645,7 @@ Theorem ord_lt_mult_lcancel : ∀ {α β} γ, γ * α < γ * β → α < β.
 Qed.
 
 Theorem ord_le_mult_lcancel : ∀ {α β} γ, 0 ≠ γ → γ * α <= γ * β → α <= β.
+Proof.
     intros α β γ γ_nz leq.
     classic_case (α = β) as [eq|neq].
     -   rewrite <- eq.
@@ -639,6 +657,7 @@ Theorem ord_le_mult_lcancel : ∀ {α β} γ, 0 ≠ γ → γ * α <= γ * β �
         contradiction.
 Qed.
 Lemma ord_le_mult_lcancel_pos : ∀ α β γ, 0 < γ → γ * α <= γ * β → α <= β.
+Proof.
     intros α β γ [γ_leq γ_nz] leq.
     apply ord_le_mult_lcancel with γ; assumption.
 Qed.
@@ -649,6 +668,7 @@ Global Instance ord_le_mult_lcancel_pos_class : OrderMultLcancel ord := {
 (* end hide *)
 
 Theorem ord_lt_mult_rcancel : ∀ {α β} γ, α * γ < β * γ → α < β.
+Proof.
     intros α β γ eq.
     classic_contradiction contr.
     rewrite nlt_le in contr.
@@ -658,6 +678,7 @@ Theorem ord_lt_mult_rcancel : ∀ {α β} γ, α * γ < β * γ → α < β.
 Qed.
 
 Theorem ord_mult_zero_is_zero : ∀ α β, 0 = α * β → {0 = α} + {0 = β}.
+Proof.
     intros α β eq.
     classic_case (0 = α) as [α_z|α_nz].
     -   left; exact α_z.
@@ -717,6 +738,7 @@ Theorem ord_mult_zero_is_zero : ∀ α β, 0 = α * β → {0 = α} + {0 = β}.
 Qed.
 
 Theorem ord_le_one : ∀ α, α < 1 → 0 = α.
+Proof.
     intros A eq.
     equiv_get_value A.
     unfold zero, one in *; cbn in *.
@@ -762,6 +784,7 @@ Theorem ord_le_one : ∀ α, α < 1 → 0 = α.
 Qed.
 
 Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α <= β * α.
+Proof.
     intros α β β_nz.
     rewrite <- (mult_lid α) at 1.
     apply ord_le_rmult.
@@ -772,6 +795,7 @@ Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α <= β * α.
 Qed.
 
 Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α <= α * β.
+Proof.
     intros α β β_nz.
     rewrite <- (mult_rid α) at 1.
     apply ord_le_lmult.
@@ -782,7 +806,8 @@ Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α <= α * β.
 Qed.
 
 Theorem nat_to_ord_mult : ∀ a b,
-        nat_to_ord a * nat_to_ord b = nat_to_ord (a * b).
+    nat_to_ord a * nat_to_ord b = nat_to_ord (a * b).
+Proof.
     intros a b.
     unfold nat_to_ord, mult at 1; equiv_simpl.
     pose (dom := prod (set_type (λ m, m < a)) (set_type (λ m, m < b))).
@@ -844,6 +869,7 @@ Theorem nat_to_ord_mult : ∀ a b,
 Abort.
 
 Theorem ord_not_trivial : 0 ≠ 1.
+Proof.
     intros contr.
     symmetry in contr.
     unfold one, zero in contr; cbn in contr.
@@ -854,6 +880,7 @@ Theorem ord_not_trivial : 0 ≠ 1.
 Qed.
 
 Theorem ord_lt_1 : ∀ α, α < 1 → 0 = α.
+Proof.
     intros A A_lt.
     equiv_get_value A.
     unfold one, zero in *; cbn in *.

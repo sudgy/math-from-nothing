@@ -25,7 +25,8 @@ Context {U} `{AllPlus U}.
 
 (* end hide *)
 Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
-        sum f m n = sum g m n.
+    sum f m n = sum g m n.
+Proof.
     intros f g m n all_eq.
     revert all_eq.
     nat_induction n.
@@ -45,6 +46,7 @@ Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
 Qed.
 
 Theorem sum_minus : ∀ f a b c, sum f a (b + c) - sum f a b = sum f (a + b) c.
+Proof.
     intros f a b c.
     nat_induction c.
     -   rewrite plus_rid.
@@ -62,6 +64,7 @@ Theorem sum_minus : ∀ f a b c, sum f a (b + c) - sum f a b = sum f (a + b) c.
 Qed.
 
 Theorem sum_zero : ∀ f a b, (∀ n, a <= n → n < a + b → f n = 0) → sum f a b = 0.
+Proof.
     intros f a b n_zero.
     nat_induction b.
     -   unfold zero at 1; cbn.
@@ -83,6 +86,7 @@ Theorem sum_zero : ∀ f a b, (∀ n, a <= n → n < a + b → f n = 0) → sum 
 Qed.
 
 Theorem sum_argument_plus : ∀ f a b c, sum (λ n, f (n + c)) a b = sum f (a + c) b.
+Proof.
     intros f a b c.
     nat_induction b.
     -   unfold zero; cbn.
@@ -96,6 +100,7 @@ Theorem sum_argument_plus : ∀ f a b c, sum (λ n, f (n + c)) a b = sum f (a + 
 Qed.
 
 Theorem sum_plus : ∀ f a b c, sum f a b + sum f (a + b) c = sum f a (b + c).
+Proof.
     intros f a b c.
     nat_induction c.
     -   rewrite plus_rid.
@@ -110,7 +115,8 @@ Theorem sum_plus : ∀ f a b c, sum f a b + sum f (a + b) c = sum f a (b + c).
 Qed.
 
 Theorem list_sum_plus :
-        ∀ l1 l2, list_sum (l1 ++ l2) = list_sum l1 + list_sum l2.
+    ∀ l1 l2, list_sum (l1 ++ l2) = list_sum l1 + list_sum l2.
+Proof.
     intros l1 l2.
     induction l1.
     -   cbn.
@@ -122,6 +128,7 @@ Theorem list_sum_plus :
 Qed.
 
 Theorem list_sum_sum_eq : ∀ f n, list_sum (func_to_list f n) = sum f 0 n.
+Proof.
     intros f n.
     nat_induction n.
     -   unfold zero; cbn.
@@ -136,7 +143,8 @@ Theorem list_sum_sum_eq : ∀ f n, list_sum (func_to_list f n) = sum f 0 n.
 Qed.
 
 Theorem list_sum_perm : ∀ l1 l2, list_permutation l1 l2 →
-        list_sum l1 = list_sum l2.
+    list_sum l1 = list_sum l2.
+Proof.
     intros l1 l2 perm.
     induction perm.
     -   reflexivity.
@@ -152,6 +160,7 @@ Theorem list_sum_perm : ∀ l1 l2, list_permutation l1 l2 →
 Qed.
 
 Theorem list_sum_neg : ∀ l, -list_sum l = list_sum (list_image l neg).
+Proof.
     induction l.
     -   cbn.
         apply neg_zero.
@@ -162,7 +171,8 @@ Theorem list_sum_neg : ∀ l, -list_sum l = list_sum (list_image l neg).
 Qed.
 
 Theorem list_sum_minus : ∀ al bl,
-        list_sum al - list_sum bl = list_sum (al ++ (list_image bl neg)).
+    list_sum al - list_sum bl = list_sum (al ++ (list_image bl neg)).
+Proof.
     intros al bl.
     rewrite list_sum_neg.
     rewrite list_sum_plus.
@@ -195,8 +205,9 @@ Context {V} `{
 }.
 (* end hide *)
 Theorem list_prod2_lconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
-        list_sum (list_prod2 op (a :: l1) l2) =
-        list_sum (list_prod2 op l1 l2) + list_sum (list_image l2 (λ x, op a x)).
+    list_sum (list_prod2 op (a :: l1) l2) =
+    list_sum (list_prod2 op l1 l2) + list_sum (list_image l2 (λ x, op a x)).
+Proof.
     intros l1 l2 a.
     induction l2.
     -   cbn.
@@ -210,9 +221,10 @@ Theorem list_prod2_lconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
 Qed.
 
 Theorem list_prod2_lconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
-        list_sum (list_prod2 op (a :: l1) l2) =
-        list_sum (list_prod2 op l1 l2) +
-        list_sum (list_prod2 op (a :: list_end) l2).
+    list_sum (list_prod2 op (a :: l1) l2) =
+    list_sum (list_prod2 op l1 l2) +
+    list_sum (list_prod2 op (a :: list_end) l2).
+Proof.
     intros l1 l2 a.
     rewrite list_prod2_lconc.
     rewrite list_prod2_lconc.
@@ -223,8 +235,9 @@ Theorem list_prod2_lconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
 Qed.
 
 Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
-        list_sum (list_prod2 op l1 (a :: l2)) =
-        list_sum (list_prod2 op l1 l2) + list_sum (list_image l1 (λ x, op x a)).
+    list_sum (list_prod2 op l1 (a :: l2)) =
+    list_sum (list_prod2 op l1 l2) + list_sum (list_image l1 (λ x, op x a)).
+Proof.
     intros l1 l2 a.
     cbn.
     rewrite list_sum_plus.
@@ -239,9 +252,10 @@ Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
 Qed.
 
 Theorem list_prod2_rconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
-        list_sum (list_prod2 op l1 (a :: l2)) =
-        list_sum (list_prod2 op l1 l2) +
-        list_sum (list_prod2 op l1 (a :: list_end)).
+    list_sum (list_prod2 op l1 (a :: l2)) =
+    list_sum (list_prod2 op l1 l2) +
+    list_sum (list_prod2 op l1 (a :: list_end)).
+Proof.
     intros l1 l2 a.
     rewrite list_prod2_rconc.
     rewrite list_prod2_rconc.
@@ -252,7 +266,8 @@ Theorem list_prod2_rconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
 Qed.
 
 Lemma list_sum_func_single_zero : ∀ a n,
-        list_sum (func_to_list (λ x, If x = n then a else 0) n) = 0.
+    list_sum (func_to_list (λ x, If x = n then a else 0) n) = 0.
+Proof.
     intros a n.
     remember n as m.
     rewrite Heqm at 1.
@@ -280,7 +295,8 @@ Lemma list_sum_func_single_zero : ∀ a n,
 Qed.
 
 Theorem list_sum_func_single : ∀ a m n, m < n →
-        list_sum (func_to_list (λ x, If x = m then a else 0) n) = a.
+    list_sum (func_to_list (λ x, If x = m then a else 0) n) = a.
+Proof.
     intros a m n ltq.
     rewrite func_to_list2_eq.
     apply nat_lt_ex in ltq as [c [c_nz n_eq]].

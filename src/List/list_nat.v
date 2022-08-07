@@ -24,7 +24,8 @@ Definition func_to_list {A : Type} (f : nat → A) n :=
     list_reverse (func_to_list_base f n).
 
 Theorem func_to_list_eq {A : Type} (f g : nat → A) n :
-        (∀ m, m < n → f m = g m) → func_to_list f n = func_to_list g n.
+    (∀ m, m < n → f m = g m) → func_to_list f n = func_to_list g n.
+Proof.
     intros all_eq.
     unfold func_to_list.
     rewrite <- list_reverse_eq.
@@ -58,8 +59,9 @@ Fixpoint func_to_list2_base {A : Type} (f : nat → A) m n :=
 Definition func_to_list2 {A : Type} (f : nat → A) n := func_to_list2_base f 0 n.
 
 Lemma func_to_list2_base_eq {A} : ∀ (f : nat → A) m n,
-        func_to_list2_base f (nat_suc m) n =
-        func_to_list2_base (λ x, f (nat_suc x)) m n.
+    func_to_list2_base f (nat_suc m) n =
+    func_to_list2_base (λ x, f (nat_suc x)) m n.
+Proof.
     intros f m n.
     revert m.
     nat_induction n.
@@ -72,7 +74,8 @@ Lemma func_to_list2_base_eq {A} : ∀ (f : nat → A) m n,
 Qed.
 
 Theorem func_to_list2_eq {A : Type} : ∀ (f : nat → A) n,
-        func_to_list f n = func_to_list2 f n.
+    func_to_list f n = func_to_list2 f n.
+Proof.
     intros f n.
     unfold func_to_list, func_to_list2.
     nat_induction n.
@@ -104,7 +107,8 @@ Fixpoint list_nth {A} (l : list A) (n : nat) (default : A) :=
     end.
 
 Theorem list_nth_eq {U} : ∀ l n (a b : U), n < list_size l →
-        list_nth l n a = list_nth l n b.
+    list_nth l n a = list_nth l n b.
+Proof.
     intros l n a b n_lt.
     revert n n_lt.
     induction l.
@@ -122,7 +126,8 @@ Theorem list_nth_eq {U} : ∀ l n (a b : U), n < list_size l →
 Qed.
 
 Theorem in_list_nth {U} : ∀ l (x : U), in_list l x →
-        ∃ n, n < list_size l ∧ x = list_nth l n x.
+    ∃ n, n < list_size l ∧ x = list_nth l n x.
+Proof.
     intros l x x_in.
     induction l.
     -   contradiction x_in.
@@ -145,7 +150,8 @@ Theorem in_list_nth {U} : ∀ l (x : U), in_list l x →
 Qed.
 
 Theorem func_to_list_nth_lt {A} : ∀ f m n (a : A), m < n →
-        list_nth (func_to_list f n) m a = f m.
+    list_nth (func_to_list f n) m a = f m.
+Proof.
     intros f m n a ltq.
     rewrite func_to_list2_eq.
     apply nat_lt_ex in ltq as [c [c_nz c_eq]].
@@ -171,7 +177,8 @@ Theorem func_to_list_nth_lt {A} : ∀ f m n (a : A), m < n →
 Qed.
 
 Theorem func_to_list_nth_ge {A} : ∀ f m n (a : A), n <= m →
-        list_nth (func_to_list f n) m a = a.
+    list_nth (func_to_list f n) m a = a.
+Proof.
     intros f m n a leq.
     rewrite func_to_list2_eq.
     apply nat_le_ex in leq as [c c_eq].
@@ -192,7 +199,8 @@ Theorem func_to_list_nth_ge {A} : ∀ f m n (a : A), n <= m →
 Qed.
 
 Theorem func_to_list_image {A B} : ∀ (f : nat → A) (g : A → B) n,
-        list_image (func_to_list f n) g = func_to_list (λ m, g (f m)) n.
+    list_image (func_to_list f n) g = func_to_list (λ m, g (f m)) n.
+Proof.
     intros f g n.
     do 2 rewrite func_to_list2_eq.
     revert f.
@@ -210,8 +218,9 @@ Theorem func_to_list_image {A B} : ∀ (f : nat → A) (g : A → B) n,
 Qed.
 
 Theorem func_to_list2_base_conc {A} : ∀ (f : nat → A) a b c,
-        func_to_list2_base f a (b + c) =
-        func_to_list2_base f a c ++ func_to_list2_base f (a + c) b.
+    func_to_list2_base f a (b + c) =
+    func_to_list2_base f a c ++ func_to_list2_base f (a + c) b.
+Proof.
     intros f a b c.
     revert a b f.
     nat_induction c.
@@ -229,7 +238,8 @@ Theorem func_to_list2_base_conc {A} : ∀ (f : nat → A) a b c,
 Qed.
 
 Theorem list_size_conc {U} : ∀ l1 l2 : list U,
-        list_size (l1 ++ l2) = list_size (l2 ++ l1).
+    list_size (l1 ++ l2) = list_size (l2 ++ l1).
+Proof.
     induction l1; intros l2.
     -   cbn.
         rewrite list_conc_end.
@@ -245,7 +255,8 @@ Theorem list_size_conc {U} : ∀ l1 l2 : list U,
 Qed.
 
 Theorem list_size_plus {U} : ∀ l1 l2 : list U,
-        list_size (l1 ++ l2) = list_size l1 + list_size l2.
+    list_size (l1 ++ l2) = list_size l1 + list_size l2.
+Proof.
     intros l1 l2.
     induction l1.
     -   cbn.
@@ -258,7 +269,8 @@ Theorem list_size_plus {U} : ∀ l1 l2 : list U,
 Qed.
 
 Theorem func_to_list_size {U} : ∀ (f : nat → U) n,
-        list_size (func_to_list f n) = n.
+    list_size (func_to_list f n) = n.
+Proof.
     intros f n.
     nat_induction n.
     -   unfold zero at 1; cbn.
@@ -272,8 +284,9 @@ Theorem func_to_list_size {U} : ∀ (f : nat → U) n,
 Qed.
 
 Theorem func_to_list_unique {U} : ∀ (f : nat → U) n,
-        (∀ m1 m2, m1 < n → m2 < n → f m1 = f m2 → m1 = m2) →
-        list_unique (func_to_list f n).
+    (∀ m1 m2, m1 < n → m2 < n → f m1 = f m2 → m1 = m2) →
+    list_unique (func_to_list f n).
+Proof.
     intros f n f_inj.
     nat_induction n.
     -   unfold zero; cbn.
@@ -302,14 +315,16 @@ Theorem func_to_list_unique {U} : ∀ (f : nat → U) n,
 Qed.
 
 Theorem list_size_neq {U} : ∀ l1 l2 : list U, list_size l1 ≠ list_size l2 →
-        l1 ≠ l2.
+    l1 ≠ l2.
+Proof.
     intros l1 l2 eq contr.
     subst.
     contradiction.
 Qed.
 
 Theorem list_image_size {A B} : ∀ l (f : A → B),
-        list_size (list_image l f) = list_size l.
+    list_size (list_image l f) = list_size l.
+Proof.
     intros l f.
     induction l.
     -   cbn.

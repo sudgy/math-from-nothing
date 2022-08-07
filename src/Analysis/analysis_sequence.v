@@ -19,7 +19,8 @@ Context {U} `{Metric U}.
 (* end hide *)
 
 Theorem metric_seq_lim : ∀ f x, seq_lim f x ↔
-        ∀ ε, 0 < ε → ∃ N, ∀ n, N <= n → d x (f n) < ε.
+    ∀ ε, 0 < ε → ∃ N, ∀ n, N <= n → d x (f n) < ε.
+Proof.
     intros f x.
     rewrite basis_seq_lim.
     split.
@@ -39,7 +40,8 @@ Theorem metric_seq_lim : ∀ f x, seq_lim f x ↔
 Qed.
 
 Theorem metric_seq_closure : ∀ (A : U → Prop) x,
-        (∃ f, (∀ n, A (f n)) ∧ seq_lim f x) ↔ closure A x.
+    (∃ f, (∀ n, A (f n)) ∧ seq_lim f x) ↔ closure A x.
+Proof.
     intros A x.
     split.
     -   intros [f [Af lim]].
@@ -93,7 +95,8 @@ Theorem metric_seq_closure : ∀ (A : U → Prop) x,
 Qed.
 
 Theorem metric_seq_closed :
-        ∀ A, closed A ↔ (∀ f x, (∀ n, A (f n)) → seq_lim f x → A x).
+    ∀ A, closed A ↔ (∀ f x, (∀ n, A (f n)) → seq_lim f x → A x).
+Proof.
     intros A.
     split.
     -   intros A_closed f x Af fx.
@@ -110,6 +113,7 @@ Theorem metric_seq_closed :
 Qed.
 
 Theorem converges_cauchy : ∀ f, seq_converges f → cauchy_seq f.
+Proof.
     intros f [x fx] ε ε_pos.
     pose proof (half_pos _ ε_pos) as ε2_pos.
     rewrite metric_seq_lim in fx.
@@ -124,7 +128,8 @@ Theorem converges_cauchy : ∀ f, seq_converges f → cauchy_seq f.
 Qed.
 
 Theorem limit_point_seq_ex :
-        ∀ X x, limit_point X x → ∃ f, (∀ n, X (f n) ∧ x ≠ f n) ∧ seq_lim f x.
+    ∀ X x, limit_point X x → ∃ f, (∀ n, X (f n) ∧ x ≠ f n) ∧ seq_lim f x.
+Proof.
     intros X x x_lim.
     assert (∀ n, ∃ a, open_ball x [_|real_n_div_pos n] a ∧ X a ∧ x ≠ a) as f_ex.
     {
@@ -162,7 +167,8 @@ Theorem limit_point_seq_ex :
 Qed.
 
 Theorem cauchy_subseq_converge :
-        ∀ a b x, cauchy_seq a → subsequence a b → seq_lim b x → seq_lim a x.
+    ∀ a b x, cauchy_seq a → subsequence a b → seq_lim b x → seq_lim a x.
+Proof.
     intros a b x a_cauchy [f [f_sub ab_eq]] b_lim.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
@@ -187,6 +193,7 @@ Qed.
 Open Scope card_scope.
 (* end hide *)
 Theorem cauchy_bounded : ∀ a, cauchy_seq a → seq_bounded a.
+Proof.
     intros a a_cauchy.
     specialize (a_cauchy 1 one_pos) as [N a_cauchy].
     classic_case (0 = N) as [N_z|N_nz].

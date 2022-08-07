@@ -30,7 +30,8 @@ Definition int_to_abstract_base (x : nat * nat)
 Local Open Scope int_scope.
 
 Theorem int_to_abstract_wd : ∀ a b, a ~ b →
-        int_to_abstract_base a = int_to_abstract_base b.
+    int_to_abstract_base a = int_to_abstract_base b.
+Proof.
     intros [a1 a2] [b1 b2] eq.
     cbn in eq.
     unfold int_to_abstract_base; cbn.
@@ -47,7 +48,8 @@ Qed.
 Definition int_to_abstract := unary_op int_to_abstract_wd.
 
 Theorem int_to_abstract_eq : ∀ a b,
-        int_to_abstract a = int_to_abstract b → a = b.
+    int_to_abstract a = int_to_abstract b → a = b.
+Proof.
     intros a b eq.
     equiv_get_value a b.
     unfold int_to_abstract in eq.
@@ -65,6 +67,7 @@ Theorem int_to_abstract_eq : ∀ a b,
 Qed.
 
 Theorem int_to_abstract_zero : int_to_abstract 0 = 0.
+Proof.
     unfold zero at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
     rewrite nat_to_abstract_zero.
@@ -73,6 +76,7 @@ Theorem int_to_abstract_zero : int_to_abstract 0 = 0.
 Qed.
 
 Theorem int_to_abstract_one : int_to_abstract 1 = 1.
+Proof.
     unfold one at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
     rewrite nat_to_abstract_zero, nat_to_abstract_one.
@@ -81,7 +85,8 @@ Theorem int_to_abstract_one : int_to_abstract 1 = 1.
 Qed.
 
 Theorem int_to_abstract_plus : ∀ a b,
-        int_to_abstract (a + b) = int_to_abstract a + int_to_abstract b.
+    int_to_abstract (a + b) = int_to_abstract a + int_to_abstract b.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold plus at 1, int_to_abstract; equiv_simpl.
@@ -96,6 +101,7 @@ Theorem int_to_abstract_plus : ∀ a b,
 Qed.
 
 Theorem int_to_abstract_neg : ∀ a, int_to_abstract (-a) = -int_to_abstract a.
+Proof.
     intros a.
     equiv_get_value a.
     unfold neg at 1, int_to_abstract; equiv_simpl.
@@ -107,7 +113,8 @@ Theorem int_to_abstract_neg : ∀ a, int_to_abstract (-a) = -int_to_abstract a.
 Qed.
 
 Theorem int_to_abstract_mult : ∀ a b,
-        int_to_abstract (a * b) = int_to_abstract a * int_to_abstract b.
+    int_to_abstract (a * b) = int_to_abstract a * int_to_abstract b.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold mult at 1, int_to_abstract; equiv_simpl.
@@ -130,7 +137,8 @@ Theorem int_to_abstract_mult : ∀ a b,
 Qed.
 
 Theorem nat_to_int_to_abstract : ∀ n,
-        int_to_abstract (nat_to_int n) = nat_to_abstract n.
+    int_to_abstract (nat_to_int n) = nat_to_abstract n.
+Proof.
     nat_induction n.
     -   unfold int_to_abstract, nat_to_int; equiv_simpl.
         unfold int_to_abstract_base; cbn.

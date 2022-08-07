@@ -64,7 +64,8 @@ Local Notation "'σ'" := (scalar_to_geo B).
 Definition geo_involute_base1 (v : module_V V) := -φ v.
 
 Lemma geo_involute_base_plus : ∀ u v, geo_involute_base1 (u + v) =
-        geo_involute_base1 u + geo_involute_base1 v.
+    geo_involute_base1 u + geo_involute_base1 v.
+Proof.
     intros u v.
     unfold geo_involute_base1.
     rewrite vector_to_geo_plus.
@@ -72,7 +73,8 @@ Lemma geo_involute_base_plus : ∀ u v, geo_involute_base1 (u + v) =
 Qed.
 
 Lemma geo_involute_base_scalar : ∀ a v,
-        geo_involute_base1 (a · v) = a · geo_involute_base1 v.
+    geo_involute_base1 (a · v) = a · geo_involute_base1 v.
+Proof.
     intros a v.
     unfold geo_involute_base1.
     rewrite vector_to_geo_scalar.
@@ -88,7 +90,8 @@ Definition geo_involute_base2 := make_module_homomorphism
     geo_involute_base_scalar.
 
 Lemma geo_involute_base_contract : ∀ v,
-        geo_involute_base1 v * geo_involute_base1 v = [B|] v v · 1.
+    geo_involute_base1 v * geo_involute_base1 v = [B|] v v · 1.
+Proof.
     intros v.
     unfold geo_involute_base1.
     rewrite mult_lneg, mult_rneg.
@@ -112,30 +115,37 @@ Local Notation "a '∗'" := (geo_involute a) (at level 10).
 
 (* end hide *)
 Theorem geo_involute_plus : ∀ u v, (u + v)∗ = u∗ + v∗.
+Proof.
     apply (algebra_homo_plus _ _ geo_involute_homo).
 Qed.
 
 Theorem geo_involute_scalar : ∀ a v, (a · v)∗ = a · v∗.
+Proof.
     apply (algebra_homo_scalar _ _ geo_involute_homo).
 Qed.
 
 Theorem geo_involute_mult : ∀ u v, (u * v)∗ = u∗ * v∗.
+Proof.
     apply (algebra_homo_mult _ _ geo_involute_homo).
 Qed.
 
 Theorem geo_involute_one : 1∗ = 1.
+Proof.
     apply (algebra_homo_one _ _ geo_involute_homo).
 Qed.
 
 Theorem geo_involute_neg : ∀ v, (-v)∗ = -v∗.
+Proof.
     apply (algebra_homo_neg geo_involute_homo).
 Qed.
 
 Theorem geo_involute_zero : 0∗ = 0.
+Proof.
     apply (algebra_homo_zero geo_involute_homo).
 Qed.
 
 Theorem geo_involute_of_scalar : ∀ a, (σ a)∗ = σ a.
+Proof.
     intros a.
     rewrite scalar_to_geo_one_scalar.
     rewrite geo_involute_scalar.
@@ -144,10 +154,12 @@ Theorem geo_involute_of_scalar : ∀ a, (σ a)∗ = σ a.
 Qed.
 
 Theorem geo_involute_vector : ∀ v, (φ v)∗ = -φ v.
+Proof.
     apply [|geo_involute_base].
 Qed.
 
 Theorem geo_involute_involute : ∀ v, v∗∗ = v.
+Proof.
     intros v.
     pose proof (geo_sum B v) as [l l_eq]; subst v.
     induction l as [|[a x] l] using ulist_induction.
@@ -244,14 +256,16 @@ Remove Hints geo_op_mult geo_op_ldist geo_op_rdist geo_op_mult_assoc
 Definition geo_reverse_base1 (v : module_V V) := φ v : geo_op.
 
 Lemma geo_reverse_base_plus : ∀ u v, geo_reverse_base1 (u + v) =
-        geo_reverse_base1 u + geo_reverse_base1 v.
+    geo_reverse_base1 u + geo_reverse_base1 v.
+Proof.
     intros u v.
     unfold geo_reverse_base1.
     apply vector_to_geo_plus.
 Qed.
 
 Lemma geo_reverse_base_scalar : ∀ a v,
-        geo_reverse_base1 (a · v) = a · geo_reverse_base1 v.
+    geo_reverse_base1 (a · v) = a · geo_reverse_base1 v.
+Proof.
     intros a v.
     unfold geo_reverse_base1.
     apply vector_to_geo_scalar.
@@ -266,7 +280,8 @@ Definition geo_reverse_base2 := make_module_homomorphism
     geo_reverse_base_scalar.
 
 Lemma geo_reverse_base_contract : ∀ v,
-        geo_reverse_base1 v * geo_reverse_base1 v = [B|] v v · 1.
+    geo_reverse_base1 v * geo_reverse_base1 v = [B|] v v · 1.
+Proof.
     intros v.
     unfold geo_reverse_base1.
     unfold mult; cbn.
@@ -289,30 +304,37 @@ Local Notation "a '†'" := (geo_reverse a) (at level 10).
 
 (* end hide *)
 Theorem geo_reverse_plus : ∀ u v, (u + v)† = u† + v†.
+Proof.
     apply (algebra_homo_plus _ _ geo_reverse_homo).
 Qed.
 
 Theorem geo_reverse_scalar : ∀ a v, (a · v)† = a · v†.
+Proof.
     apply (algebra_homo_scalar _ _ geo_reverse_homo).
 Qed.
 
 Theorem geo_reverse_mult : ∀ u v, (u * v)† = (v†) * (u†).
+Proof.
     apply (algebra_homo_mult _ _ geo_reverse_homo).
 Qed.
 
 Theorem geo_reverse_one : 1† = 1.
+Proof.
     apply (algebra_homo_one _ _ geo_reverse_homo).
 Qed.
 
 Theorem geo_reverse_neg : ∀ v, (-v)† = -v†.
+Proof.
     apply (algebra_homo_neg geo_reverse_homo).
 Qed.
 
 Theorem geo_reverse_zero : 0† = 0.
+Proof.
     apply (algebra_homo_zero geo_reverse_homo).
 Qed.
 
 Theorem geo_reverse_of_scalar : ∀ a, (σ a)† = σ a.
+Proof.
     intros a.
     rewrite scalar_to_geo_one_scalar.
     rewrite geo_reverse_scalar.
@@ -321,10 +343,12 @@ Theorem geo_reverse_of_scalar : ∀ a, (σ a)† = σ a.
 Qed.
 
 Theorem geo_reverse_vector : ∀ v, (φ v)† = φ v.
+Proof.
     apply [|geo_reverse_base].
 Qed.
 
 Theorem geo_reverse_reverse : ∀ v, v†† = v.
+Proof.
     intros v.
     pose proof (geo_sum B v) as [l l_eq]; subst v.
     induction l as [|[a x] l] using ulist_induction.

@@ -47,7 +47,8 @@ Context {U V} `{
 
 (* end hide *)
 Theorem subspace_eq : ∀ S1 S2 : Subspace U V, subspace_set S1 = subspace_set S2
-        → S1 = S2.
+    → S1 = S2.
+Proof.
     intros [S1 S1_zero S1_plus S1_scalar] [S2 S2_zero S2_plus S2_scalar] eq.
     cbn in eq.
     subst S2.
@@ -60,6 +61,7 @@ Qed.
 Variable S : Subspace U V.
 
 Theorem subspace_neg : ∀ v, subspace_set S v → subspace_set S (-v).
+Proof.
     intros v v_in.
     rewrite <- scalar_neg_one.
     apply subspace_scalar.
@@ -152,8 +154,9 @@ Context {U V} `{
 Variable S : Subspace U V.
 
 Theorem subspace_linear_combination :
-        ∀ l, linear_list_in (subspace_set S) l →
-        subspace_set S (linear_combination l).
+    ∀ l, linear_list_in (subspace_set S) l →
+    subspace_set S (linear_combination l).
+Proof.
     intros [l l_unique] Sl.
     unfold linear_list_in in Sl.
     unfold linear_combination; cbn in *.
@@ -180,6 +183,7 @@ Local Infix "~" := subspace_eq : algebra_scope.
 (* end show *)
 
 Lemma subspace_eq_reflexive : ∀ a, a ~ a.
+Proof.
     intros a.
     unfold subspace_eq.
     rewrite plus_rinv.
@@ -190,6 +194,7 @@ Instance subspace_eq_reflexive_class : Reflexive _ := {
 }.
 
 Lemma subspace_eq_symmetric : ∀ a b, a ~ b → b ~ a.
+Proof.
     unfold subspace_eq.
     intros a b ab.
     apply subspace_neg in ab.
@@ -203,6 +208,7 @@ Instance subspace_eq_symmetric_class : Symmetric _ := {
 }.
 
 Lemma subspace_eq_transitive : ∀ a b c, a ~ b → b ~ c → a ~ c.
+Proof.
     unfold subspace_eq.
     intros a b c ab bc.
     pose proof (subspace_plus S _ _ ab bc) as eq.
@@ -224,6 +230,7 @@ Local Infix "~" := (eq_equal subspace_equiv).
 (* end show *)
 
 Lemma qspace_plus_wd : ∀ a b c d, a ~ b → c ~ d → a + c ~ b + d.
+Proof.
     unfold eq_equal; cbn.
     unfold subspace_eq.
     intros a b c d ab cd.
@@ -242,6 +249,7 @@ Instance quotient_space_plus : Plus quotient_space := {
 }.
 
 Lemma qspace_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
+Proof.
     intros a b c.
     equiv_get_value a b c.
     unfold plus; equiv_simpl.
@@ -253,6 +261,7 @@ Instance quotient_space_plus_assoc : PlusAssoc quotient_space := {
 }.
 
 Lemma qspace_plus_comm : ∀ a b, a + b = b + a.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold plus; equiv_simpl.
@@ -268,6 +277,7 @@ Instance quotient_space_zero : Zero quotient_space := {
 }.
 
 Lemma qspace_plus_lid : ∀ a, 0 + a = a.
+Proof.
     intros a.
     equiv_get_value a.
     unfold zero, plus; equiv_simpl.
@@ -279,6 +289,7 @@ Instance quotient_space_plus_lid : PlusLid quotient_space := {
 }.
 
 Lemma qspace_neg_wd : ∀ a b, a ~ b → -a ~ -b.
+Proof.
     unfold eq_equal; cbn.
     unfold subspace_eq.
     intros a b eq.
@@ -291,6 +302,7 @@ Instance quotient_space_neg : Neg quotient_space := {
 }.
 
 Lemma qspace_plus_linv : ∀ a, -a + a = 0.
+Proof.
     intros a.
     equiv_get_value a.
     unfold neg, plus, zero; equiv_simpl.
@@ -302,6 +314,7 @@ Instance quotient_space_plus_linv : PlusLinv quotient_space := {
 }.
 
 Lemma qspace_scalar_wd : ∀ u v c, u ~ v → c · u ~ c · v.
+Proof.
     unfold eq_equal; cbn.
     unfold subspace_eq.
     intros u v c eq.
@@ -315,6 +328,7 @@ Instance quotient_space_scalar_mult : ScalarMult U quotient_space := {
 }.
 
 Lemma qspace_scalar_comp : ∀ a b v, a · (b · v) = (a * b) · v.
+Proof.
     intros a b v.
     equiv_get_value v.
     unfold scalar_mult; equiv_simpl.
@@ -326,6 +340,7 @@ Instance quotient_space_scalar_comp : ScalarComp _ _ := {
 }.
 
 Lemma qspace_scalar_id : ∀ v, 1 · v = v.
+Proof.
     intros v.
     equiv_get_value v.
     unfold scalar_mult; equiv_simpl.
@@ -337,6 +352,7 @@ Instance quotient_space_scalar_id : ScalarId _ _ := {
 }.
 
 Lemma qspace_scalar_ldist : ∀ a u v, a · (u + v) = a · u + a · v.
+Proof.
     intros a u v.
     equiv_get_value u v.
     unfold scalar_mult, plus; equiv_simpl.
@@ -348,6 +364,7 @@ Instance quotient_space_scalar_ldist : ScalarLdist _ _ := {
 }.
 
 Lemma qspace_scalar_rdist : ∀ a b v, (a + b) · v = a · v + b · v.
+Proof.
     intros a b v.
     equiv_get_value v.
     unfold scalar_mult, plus at 2; equiv_simpl.

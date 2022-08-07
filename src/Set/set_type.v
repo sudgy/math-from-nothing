@@ -19,7 +19,8 @@ Notation "[ a | ]" := (set_value a).
 Notation "[ | a ]" := (set_proof a).
 
 Theorem set_type_eq {U} {S : U → Prop} : ∀ (a b : set_type S),
-        [a|] = [b|] → a = b.
+    [a|] = [b|] → a = b.
+Proof.
     intros a b eq.
     destruct a as [a a_in], b as [b b_in].
     cbn in *.
@@ -29,18 +30,21 @@ Theorem set_type_eq {U} {S : U → Prop} : ∀ (a b : set_type S),
 Qed.
 
 Theorem eq_set_type {U} {S : U → Prop} : ∀ (a b : set_type S),
-        a = b → [a|] = [b|].
+    a = b → [a|] = [b|].
+Proof.
     intros a b eq.
     subst.
     reflexivity.
 Qed.
 
 Theorem set_type_simpl {U} {S : U → Prop} : ∀ a (P : S a), [[a|P]|] = a.
+Proof.
     intros a P.
     reflexivity.
 Qed.
 
 Theorem ex_set_type {U} {S : U → Prop} : (∃ x, S x) → set_type S.
+Proof.
     intros x_ex.
     apply indefinite_description.
     destruct x_ex as [x Sx].
@@ -54,20 +58,23 @@ Definition from_set_type {U} {X : U → Prop} (S : set_type X → Prop) :=
     λ x, ∃ x', x = [x'|] ∧ S x'.
 
 Theorem to_set_type_in {U} : ∀ (X A : U → Prop) (sub : A ⊆ X),
-        ∀ x (Ax : A x), to_set_type X A [x|sub x Ax].
+    ∀ x (Ax : A x), to_set_type X A [x|sub x Ax].
+Proof.
     intros X A sub x Ax.
     exact Ax.
 Qed.
 
 Theorem from_set_type_in {U} {X : U → Prop} : ∀ (A : set_type X → Prop),
-        ∀ x, A x → from_set_type A [x|].
+    ∀ x, A x → from_set_type A [x|].
+Proof.
     intros A x Ax.
     exists x.
     split; trivial.
 Qed.
 
 Theorem to_from_set_type {U} (X : U → Prop) : ∀ A : set_type X → Prop,
-        to_set_type X (from_set_type A) = A.
+    to_set_type X (from_set_type A) = A.
+Proof.
     intros A.
     apply antisym.
     -   intros x [x' [eq Ax']].
@@ -80,7 +87,8 @@ Theorem to_from_set_type {U} (X : U → Prop) : ∀ A : set_type X → Prop,
 Qed.
 
 Theorem from_to_set_type {U} : ∀ X A : U → Prop, A ⊆ X →
-        from_set_type (to_set_type X A) = A.
+    from_set_type (to_set_type X A) = A.
+Proof.
     intros X A sub.
     apply antisym.
     -   intros x [x' [eq x_in]].
@@ -92,7 +100,8 @@ Theorem from_to_set_type {U} : ∀ X A : U → Prop, A ⊆ X →
 Qed.
 
 Theorem to_set_type_inter {U} : ∀ (X A : U → Prop),
-        to_set_type X A = to_set_type X (A ∩ X).
+    to_set_type X A = to_set_type X (A ∩ X).
+Proof.
     intros X A.
     apply antisym.
     -   intros x Ax.
@@ -104,14 +113,16 @@ Theorem to_set_type_inter {U} : ∀ (X A : U → Prop),
 Qed.
 
 Theorem to_set_type_sub {U} : ∀ (X A B : U → Prop),
-        A ⊆ B → to_set_type X A ⊆ to_set_type X B.
+    A ⊆ B → to_set_type X A ⊆ to_set_type X B.
+Proof.
     intros X A B sub x Ax.
     apply sub.
     exact Ax.
 Qed.
 
 Theorem to_from_set_type_sub {U} : ∀ (X A : U → Prop) (B : set_type X → Prop),
-        A ⊆ X → to_set_type X A ⊆ B → A ⊆ from_set_type B.
+    A ⊆ X → to_set_type X A ⊆ B → A ⊆ from_set_type B.
+Proof.
     intros X A B sub sub2 x Ax.
     exists [x|sub x Ax].
     split.
@@ -121,14 +132,16 @@ Theorem to_from_set_type_sub {U} : ∀ (X A : U → Prop) (B : set_type X → Pr
 Qed.
 
 Theorem from_set_type_sub_X {U} : ∀ (X : U → Prop) (A : set_type X → Prop),
-        from_set_type A ⊆ X.
+    from_set_type A ⊆ X.
+Proof.
     intros X A x [[x' Xx'] [x_eq Ax]].
     rewrite x_eq.
     exact Xx'.
 Qed.
 
 Theorem from_set_type_union {U} : ∀ (X : U → Prop) (A B : set_type X → Prop),
-        A ∪ B = all → from_set_type A ∪ from_set_type B = X.
+    A ∪ B = all → from_set_type A ∪ from_set_type B = X.
+Proof.
     intros X A B eq.
     apply antisym.
     -   intros x [Cx|Dx].
@@ -166,6 +179,7 @@ Global Instance set_type_order : Order (set_type S) := {
 }.
 
 Lemma set_type_le_connex : ∀ a b : set_type S, {a <= b} + {b <= a}.
+Proof.
     intros a b.
     unfold le; cbn.
     apply connex.
@@ -175,6 +189,7 @@ Global Instance set_type_le_connex_class : Connex le := {
 }.
 
 Lemma set_type_le_antisym : ∀ a b : set_type S, a <= b → b <= a → a = b.
+Proof.
     intros a b ab ba.
     apply set_type_eq.
     apply antisym; assumption.
@@ -184,6 +199,7 @@ Global Instance set_type_le_antisym_class : Antisymmetric le := {
 }.
 
 Lemma set_type_le_trans : ∀ a b c : set_type S, a <= b → b <= c → a <= c.
+Proof.
     intros a b c.
     unfold le; cbn.
     apply trans.
@@ -193,6 +209,7 @@ Global Instance set_type_le_trans_class : Transitive le := {
 }.
 
 Lemma set_type_le_refl : ∀ a : set_type S, a <= a.
+Proof.
     intros a.
     unfold le; cbn.
     apply refl.
@@ -202,6 +219,7 @@ Global Instance set_type_le_refl_class : Reflexive le := {
 }.
 
 Lemma set_type_le_wf : ∀ S' : set_type S → Prop, (∃x, S' x) → has_minimal le S'.
+Proof.
     intros S' [[x Sx] S'x].
     pose (S'' x := ∃ y, [y|] = x ∧ S' y).
     assert (∃ x, S'' x) as S''_nempty.

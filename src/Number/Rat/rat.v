@@ -45,10 +45,12 @@ Global Existing Instances rat_not_trivial rat_plus rat_plus_comm rat_plus_assoc
     rat_le_mult rat_arch.
 
 Theorem int_to_rat_eq : ∀ a b, int_to_rat a = int_to_rat b → a = b.
+Proof.
     apply to_frac_eq.
 Qed.
 
 Theorem nat_to_rat_eq : ∀ a b, nat_to_rat a = nat_to_rat b → a = b.
+Proof.
     intros a b eq.
     apply nat_to_int_eq.
     apply int_to_rat_eq.
@@ -56,12 +58,14 @@ Theorem nat_to_rat_eq : ∀ a b, nat_to_rat a = nat_to_rat b → a = b.
 Qed.
 
 Theorem int_to_rat_plus : ∀ a b,
-        int_to_rat (a + b) = int_to_rat a + int_to_rat b.
+    int_to_rat (a + b) = int_to_rat a + int_to_rat b.
+Proof.
     apply to_frac_plus.
 Qed.
 
 Theorem nat_to_rat_plus : ∀ a b,
-        nat_to_rat (a + b) = nat_to_rat a + nat_to_rat b.
+    nat_to_rat (a + b) = nat_to_rat a + nat_to_rat b.
+Proof.
     intros a b.
     unfold nat_to_rat.
     rewrite nat_to_int_plus.
@@ -70,16 +74,19 @@ Theorem nat_to_rat_plus : ∀ a b,
 Qed.
 
 Theorem int_to_rat_neg : ∀ a, int_to_rat (-a) = -int_to_rat a.
+Proof.
     apply to_frac_neg.
 Qed.
 
 Theorem int_to_rat_mult : ∀ a b,
-        int_to_rat (a * b) = int_to_rat a * int_to_rat b.
+    int_to_rat (a * b) = int_to_rat a * int_to_rat b.
+Proof.
     apply to_frac_mult.
 Qed.
 
 Theorem nat_to_rat_mult : ∀ a b,
-        nat_to_rat (a * b) = nat_to_rat a * nat_to_rat b.
+    nat_to_rat (a * b) = nat_to_rat a * nat_to_rat b.
+Proof.
     intros a b.
     unfold nat_to_rat.
     rewrite nat_to_int_mult.
@@ -88,22 +95,26 @@ Theorem nat_to_rat_mult : ∀ a b,
 Qed.
 
 Theorem int_to_rat_le : ∀ a b, int_to_rat a <= int_to_rat b ↔ a <= b.
+Proof.
     apply to_frac_le.
     exact int_le_antisym_class.
     exact int_le_trans_class.
 Qed.
 Theorem nat_to_rat_le : ∀ a b, nat_to_rat a <= nat_to_rat b ↔ a <= b.
+Proof.
     intros a b.
     unfold nat_to_rat.
     rewrite int_to_rat_le.
     apply nat_to_int_le.
 Qed.
 Theorem int_to_rat_lt : ∀ a b, int_to_rat a < int_to_rat b ↔ a < b.
+Proof.
     apply to_frac_lt.
     exact int_le_antisym_class.
     exact int_le_trans_class.
 Qed.
 Theorem nat_to_rat_lt : ∀ a b, nat_to_rat a < nat_to_rat b ↔ a < b.
+Proof.
     intros a b.
     unfold nat_to_rat.
     rewrite int_to_rat_lt.
@@ -111,6 +122,7 @@ Theorem nat_to_rat_lt : ∀ a b, nat_to_rat a < nat_to_rat b ↔ a < b.
 Qed.
 
 Theorem nat_to_abstract_rat : ∀ a, nat_to_abstract a = nat_to_rat a.
+Proof.
     nat_induction a.
     -   rewrite nat_to_abstract_zero.
         reflexivity.

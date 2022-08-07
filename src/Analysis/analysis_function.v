@@ -31,6 +31,7 @@ Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
             end)
         0
     ).
+Proof.
     intros Ux fn f.
     split.
     -   intros f_uni.
@@ -119,9 +120,10 @@ Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
 Qed.
 
 Theorem metric_func_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        func_lim_base f c l ↔
-            (∀ ε, 0 < ε →
-                ∃ δ, 0 < δ ∧ ∀ x, [x|] ≠ c → d [x|] c < δ → d (f x) l < ε).
+    func_lim_base f c l ↔
+        (∀ ε, 0 < ε →
+            ∃ δ, 0 < δ ∧ ∀ x, [x|] ≠ c → d [x|] c < δ → d (f x) l < ε).
+Proof.
     intros A f c l.
     rewrite (basis_func_lim A f c l).
     split.
@@ -168,9 +170,10 @@ Local Open Scope set_scope.
 
 (* end hide *)
 Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        func_lim_base f c l ↔
-        (∀ xn : nat → set_type (A - singleton c),
-        seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l).
+    func_lim_base f c l ↔
+    (∀ xn : nat → set_type (A - singleton c),
+    seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l).
+Proof.
     intros A f c l.
     split; [>apply func_seq_lim|].
     intros all_seqs.

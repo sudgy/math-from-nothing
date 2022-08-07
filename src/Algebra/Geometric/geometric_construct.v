@@ -104,7 +104,8 @@ Existing Instances geo_plus geo_plus_assoc geo_plus_comm geo_zero geo_plus_lid
 
 (* end hide *)
 Lemma geo_scalar_wd : ∀ u v c, eq_equal (ideal_equiv geo_ideal) u v →
-        eq_equal (ideal_equiv geo_ideal) (c · u) (c · v).
+    eq_equal (ideal_equiv geo_ideal) (c · u) (c · v).
+Proof.
     cbn.
     change (ideal_generated_by_set geo_ideal_base) with (ideal_set geo_ideal).
     intros u v c eq.
@@ -196,6 +197,7 @@ Definition geometric_algebra := make_algebra F
 Definition tensor_to_geo v := to_equiv_type (ideal_equiv geo_ideal) v : geo.
 
 Theorem tensor_to_geo_plus : ∀ u v, tensor_to_geo (u + v) = tensor_to_geo u + tensor_to_geo v.
+Proof.
     intros u v.
     unfold tensor_to_geo, plus at 2; equiv_simpl.
     apply equiv_eq; cbn.
@@ -204,6 +206,7 @@ Theorem tensor_to_geo_plus : ∀ u v, tensor_to_geo (u + v) = tensor_to_geo u + 
 Qed.
 
 Theorem tensor_to_geo_mult : ∀ u v, tensor_to_geo (u * v) = tensor_to_geo u * tensor_to_geo v.
+Proof.
     intros u v.
     unfold tensor_to_geo, mult at 2; equiv_simpl.
     apply equiv_eq; cbn.
@@ -212,6 +215,7 @@ Theorem tensor_to_geo_mult : ∀ u v, tensor_to_geo (u * v) = tensor_to_geo u * 
 Qed.
 
 Theorem tensor_to_geo_scalar : ∀ a v, tensor_to_geo (a · v) = a · tensor_to_geo v.
+Proof.
     intros a v.
     unfold tensor_to_geo, scalar_mult at 2; equiv_simpl.
     apply equiv_eq; cbn.
@@ -220,6 +224,7 @@ Theorem tensor_to_geo_scalar : ∀ a v, tensor_to_geo (a · v) = a · tensor_to_
 Qed.
 
 Theorem tensor_to_geo_zero : tensor_to_geo 0 = 0.
+Proof.
     reflexivity.
 Qed.
 
@@ -227,6 +232,7 @@ Definition vector_to_geo v := tensor_to_geo (vector_to_tensor v).
 Local Notation "'φ'" := vector_to_geo.
 
 Theorem vector_to_geo_plus : ∀ u v, φ (u + v) = φ u + φ v.
+Proof.
     intros u v.
     unfold vector_to_geo.
     rewrite (vector_to_tensor_plus V).
@@ -234,6 +240,7 @@ Theorem vector_to_geo_plus : ∀ u v, φ (u + v) = φ u + φ v.
 Qed.
 
 Theorem vector_to_geo_scalar : ∀ a v, φ (a · v) = a · φ v.
+Proof.
     intros a v.
     unfold vector_to_geo.
     rewrite (vector_to_tensor_scalar V).
@@ -241,12 +248,14 @@ Theorem vector_to_geo_scalar : ∀ a v, φ (a · v) = a · φ v.
 Qed.
 
 Theorem vector_to_geo_zero : φ 0 = 0.
+Proof.
     unfold vector_to_geo.
     rewrite vector_to_tensor_zero.
     apply tensor_to_geo_zero.
 Qed.
 
 Theorem vector_to_geo_neg : ∀ v, φ (-v) = -φ v.
+Proof.
     intros v.
     rewrite <- scalar_neg_one.
     rewrite vector_to_geo_scalar.
@@ -257,6 +266,7 @@ Definition scalar_to_geo a := tensor_to_geo (scalar_to_tensor V a).
 Local Notation "'σ'" := scalar_to_geo.
 
 Theorem scalar_to_geo_plus : ∀ a b, σ (a + b) = σ a + σ b.
+Proof.
     intros a b.
     unfold scalar_to_geo.
     rewrite (scalar_to_tensor_plus V).
@@ -264,12 +274,14 @@ Theorem scalar_to_geo_plus : ∀ a b, σ (a + b) = σ a + σ b.
 Qed.
 
 Theorem scalar_to_geo_zero : σ 0 = 0.
+Proof.
     unfold scalar_to_geo.
     rewrite scalar_to_tensor_zero.
     apply tensor_to_geo_zero.
 Qed.
 
 Theorem scalar_to_geo_mult : ∀ a b, σ (a * b) = σ a * σ b.
+Proof.
     intros a b.
     unfold scalar_to_geo.
     rewrite scalar_to_tensor_mult.
@@ -277,6 +289,7 @@ Theorem scalar_to_geo_mult : ∀ a b, σ (a * b) = σ a * σ b.
 Qed.
 
 Theorem scalar_to_geo_scalar : ∀ a A, σ a * A = a · A.
+Proof.
     intros a A.
     equiv_get_value A.
     unfold scalar_to_geo, tensor_to_geo, mult, scalar_mult; equiv_simpl.
@@ -287,6 +300,7 @@ Theorem scalar_to_geo_scalar : ∀ a A, σ a * A = a · A.
 Qed.
 
 Theorem scalar_to_geo_neg : ∀ a, σ (-a) = -σ a.
+Proof.
     intros a.
     rewrite <- mult_neg_one.
     rewrite scalar_to_geo_mult.
@@ -295,12 +309,14 @@ Theorem scalar_to_geo_neg : ∀ a, σ (-a) = -σ a.
 Qed.
 
 Theorem scalar_to_geo_one : σ 1 = 1.
+Proof.
     unfold scalar_to_geo.
     rewrite scalar_to_tensor_one.
     reflexivity.
 Qed.
 
 Theorem scalar_to_geo_comm : ∀ a A, σ a * A = A * σ a.
+Proof.
     intros a A.
     equiv_get_value A.
     unfold scalar_to_geo, tensor_to_geo, mult; equiv_simpl.
@@ -311,12 +327,14 @@ Theorem scalar_to_geo_comm : ∀ a A, σ a * A = A * σ a.
 Qed.
 
 Theorem scalar_to_geo_one_scalar : ∀ a, σ a = a · 1.
+Proof.
     intros a.
     rewrite <- (mult_rid (σ a)).
     apply scalar_to_geo_scalar.
 Qed.
 
 Theorem geo_contract : ∀ v, φ v * φ v = [B|] v v · 1.
+Proof.
     intros v.
     rewrite <- scalar_to_geo_one_scalar.
     unfold vector_to_geo, scalar_to_geo, tensor_to_geo, mult, scalar_mult, one;
@@ -338,8 +356,9 @@ Theorem geo_contract : ∀ v, φ v * φ v = [B|] v v · 1.
 Qed.
 
 Theorem geo_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
-        x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-            (list_image (snd p) (λ v, φ v)))).
+    x = ulist_sum (ulist_image l (λ p, fst p · list_prod
+        (list_image (snd p) (λ v, φ v)))).
+Proof.
     intros x.
     equiv_get_value x.
     change (to_equiv_type _ x) with (tensor_to_geo x).

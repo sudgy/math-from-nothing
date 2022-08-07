@@ -8,8 +8,9 @@ Require Import equivalence.
 Unset Keyed Unification.
 
 Lemma ulist_image_wd A B : ∀ a b (f : A → B), list_permutation a b →
-        to_equiv_type (ulist_equiv B) (list_image a f) =
-        to_equiv_type (ulist_equiv B) (list_image b f).
+    to_equiv_type (ulist_equiv B) (list_image a f) =
+    to_equiv_type (ulist_equiv B) (list_image b f).
+Proof.
     intros a b f ab.
     equiv_simpl.
     apply list_image_perm.
@@ -19,14 +20,16 @@ Definition ulist_image {A B} :=
     binary_rop (E := ulist_equiv A) (ulist_image_wd A B).
 
 Theorem ulist_image_end {A B : Type} : ∀ f : A → B,
-        ulist_image ulist_end f = ulist_end.
+    ulist_image ulist_end f = ulist_end.
+Proof.
     intros f.
     unfold ulist_end, ulist_image; equiv_simpl.
     apply list_perm_refl.
 Qed.
 
 Theorem ulist_image_add {A B : Type} : ∀ a l (f : A → B),
-        ulist_image (a ::: l) f = f a ::: ulist_image l f.
+    ulist_image (a ::: l) f = f a ::: ulist_image l f.
+Proof.
     intros a l f.
     equiv_get_value l.
     unfold ulist_image, ulist_add; equiv_simpl.
@@ -34,7 +37,8 @@ Theorem ulist_image_add {A B : Type} : ∀ a l (f : A → B),
 Qed.
 
 Theorem ulist_image_conc {A B : Type} : ∀ a b (f : A → B),
-        ulist_image (a +++ b) f = ulist_image a f +++ ulist_image b f.
+    ulist_image (a +++ b) f = ulist_image a f +++ ulist_image b f.
+Proof.
     intros a b f.
     equiv_get_value a b.
     unfold ulist_image, ulist_conc; equiv_simpl.
@@ -43,8 +47,9 @@ Theorem ulist_image_conc {A B : Type} : ∀ a b (f : A → B),
 Qed.
 
 Theorem ulist_image_comp {A B C : Type} :
-        ∀ (l : ulist A) (f : A → B) (g : B → C),
-        ulist_image (ulist_image l f) g = ulist_image l (λ x, g (f x)).
+    ∀ (l : ulist A) (f : A → B) (g : B → C),
+    ulist_image (ulist_image l f) g = ulist_image l (λ x, g (f x)).
+Proof.
     intros l f g.
     equiv_get_value l.
     unfold ulist_image; equiv_simpl.
@@ -53,8 +58,9 @@ Theorem ulist_image_comp {A B C : Type} :
 Qed.
 
 Lemma ulist_prod2_base_wd {A B} (op : A → A → B) : ∀ (l1 l2 : list A) a,
-        list_permutation l1 l2 →
-        list_permutation (list_prod2_base op l1 a) (list_prod2_base op l2 a).
+    list_permutation l1 l2 →
+    list_permutation (list_prod2_base op l1 a) (list_prod2_base op l2 a).
+Proof.
     intros l1 l2 a eq.
     induction eq.
     -   cbn.
@@ -67,8 +73,9 @@ Lemma ulist_prod2_base_wd {A B} (op : A → A → B) : ∀ (l1 l2 : list A) a,
     -   exact (list_perm_trans IHeq1 IHeq2).
 Qed.
 Theorem ulist_prod2_wd' {A B} (op : A → A → B) : ∀ l1 l2 l : list A,
-        list_permutation l1 l2 →
-        list_permutation (list_prod2 op l1 l) (list_prod2 op l2 l).
+    list_permutation l1 l2 →
+    list_permutation (list_prod2 op l1 l) (list_prod2 op l2 l).
+Proof.
     intros l1 l2 l eq.
     induction l.
     -   cbn.
@@ -80,9 +87,10 @@ Theorem ulist_prod2_wd' {A B} (op : A → A → B) : ∀ l1 l2 l : list A,
         +   exact IHl.
 Qed.
 Lemma ulist_prod2_wd A B (op : A → A → B) : ∀ al1 al2 bl1 bl2 : list A,
-        list_permutation al1 al2 → list_permutation bl1 bl2 →
-        to_equiv_type (ulist_equiv B) (list_prod2 op al1 bl1) =
-        to_equiv_type (ulist_equiv B) (list_prod2 op al2 bl2).
+    list_permutation al1 al2 → list_permutation bl1 bl2 →
+    to_equiv_type (ulist_equiv B) (list_prod2 op al1 bl1) =
+    to_equiv_type (ulist_equiv B) (list_prod2 op al2 bl2).
+Proof.
     intros al1 al2 bl1 bl2 a_eq b_eq.
     equiv_simpl.
     induction b_eq.
@@ -128,7 +136,8 @@ Definition ulist_prod2 {A B} (op : A → A → B) :=
     binary_op (E := ulist_equiv A) (ulist_prod2_wd A B op).
 
 Theorem ulist_prod2_lend {A B} : ∀ (op : A → A → B) l,
-        ulist_prod2 op ulist_end l = ulist_end.
+    ulist_prod2 op ulist_end l = ulist_end.
+Proof.
     intros op l.
     equiv_get_value l.
     unfold ulist_end, ulist_prod2; equiv_simpl.
@@ -137,7 +146,8 @@ Theorem ulist_prod2_lend {A B} : ∀ (op : A → A → B) l,
 Qed.
 
 Theorem ulist_prod2_rend {A B} : ∀ (op : A → A → B) l,
-        ulist_prod2 op l ulist_end = ulist_end.
+    ulist_prod2 op l ulist_end = ulist_end.
+Proof.
     intros op l.
     equiv_get_value l.
     unfold ulist_end, ulist_prod2; equiv_simpl.
@@ -145,8 +155,9 @@ Theorem ulist_prod2_rend {A B} : ∀ (op : A → A → B) l,
 Qed.
 
 Theorem ulist_prod2_ladd {A B} : ∀ (op : A → A → B) l1 l2 a,
-        ulist_prod2 op (a ::: l1) l2 =
-        ulist_image l2 (λ x, op a x) +++ ulist_prod2 op l1 l2.
+    ulist_prod2 op (a ::: l1) l2 =
+    ulist_image l2 (λ x, op a x) +++ ulist_prod2 op l1 l2.
+Proof.
     intros op l1 l2 a.
     equiv_get_value l1 l2.
     unfold ulist_conc, ulist_prod2, ulist_add, ulist_image; equiv_simpl.
@@ -166,8 +177,9 @@ Theorem ulist_prod2_ladd {A B} : ∀ (op : A → A → B) l1 l2 a,
 Qed.
 
 Theorem ulist_prod2_radd {A B} : ∀ (op : A → A → B) l1 l2 a,
-        ulist_prod2 op l1 (a ::: l2) =
-        ulist_image l1 (λ x, op x a) +++ ulist_prod2 op l1 l2.
+    ulist_prod2 op l1 (a ::: l2) =
+    ulist_image l1 (λ x, op x a) +++ ulist_prod2 op l1 l2.
+Proof.
     intros op l1 l2 a.
     equiv_get_value l1 l2.
     unfold ulist_conc, ulist_prod2, ulist_add, ulist_image; equiv_simpl.
@@ -176,8 +188,9 @@ Theorem ulist_prod2_radd {A B} : ∀ (op : A → A → B) l1 l2 a,
 Qed.
 
 Theorem ulist_prod2_lsingle {A B} : ∀ (op : A → A → B) l a,
-        ulist_prod2 op (a ::: ulist_end) l =
-        ulist_image l (λ x, op a x).
+    ulist_prod2 op (a ::: ulist_end) l =
+    ulist_image l (λ x, op a x).
+Proof.
     intros op l a.
     rewrite ulist_prod2_ladd.
     rewrite ulist_prod2_lend.
@@ -185,8 +198,9 @@ Theorem ulist_prod2_lsingle {A B} : ∀ (op : A → A → B) l a,
 Qed.
 
 Theorem ulist_prod2_rsingle {A B} : ∀ (op : A → A → B) l a,
-        ulist_prod2 op l (a ::: ulist_end) =
-        ulist_image l (λ x, op x a).
+    ulist_prod2 op l (a ::: ulist_end) =
+    ulist_image l (λ x, op x a).
+Proof.
     intros op l a.
     rewrite ulist_prod2_radd.
     rewrite ulist_prod2_rend.

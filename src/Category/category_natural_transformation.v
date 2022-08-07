@@ -81,17 +81,19 @@ Notation "α ⊡ β" := (hcompose_nat_transformation α β) (at level 20, left a
 Global Remove Hints id_nat_transformation vcompose_nat_transformation hcompose_nat_transformation : typeclass_instances.
 
 Theorem nat_trans_compose_eq `{C1 : Category, C2 : Category}
-        `{F : @Functor C1 C2, G : @Functor C1 C2, H : @Functor C1 C2} :
-        ∀ (α : NatTransformation G H) (β : NatTransformation F G),
-        ∀ A, (α □ β) • A = α • A ∘ β • A.
+    `{F : @Functor C1 C2, G : @Functor C1 C2, H : @Functor C1 C2} :
+    ∀ (α : NatTransformation G H) (β : NatTransformation F G),
+    ∀ A, (α □ β) • A = α • A ∘ β • A.
+Proof.
     intros α β A.
     cbn.
     reflexivity.
 Qed.
 
 Theorem nat_trans_eq `{C1 : Category, C2 : Category}
-        `{F : @Functor C1 C2, G : @Functor C1 C2} :
-        ∀ (α β : NatTransformation F G), (∀ A, α • A = β • A) → α = β.
+    `{F : @Functor C1 C2, G : @Functor C1 C2} :
+    ∀ (α β : NatTransformation F G), (∀ A, α • A = β • A) → α = β.
+Proof.
     intros [f1 commute1] [f2 commute2] H.
     cbn in *.
     assert (f1 = f2) as eq.
@@ -105,11 +107,12 @@ Theorem nat_trans_eq `{C1 : Category, C2 : Category}
 Qed.
 
 Theorem nat_trans_interchange `{C1 : Category, C2 : Category, C3 : Category}
-        `{F  : @Functor C1 C2, G  : @Functor C1 C2, H  : @Functor C1 C2}
-        `{F' : @Functor C2 C3, G' : @Functor C2 C3, H' : @Functor C2 C3} :
-        ∀ (α  : NatTransformation F  G ) (β  : NatTransformation G  H)
-          (α' : NatTransformation F' G') (β' : NatTransformation G' H'),
-        (β' □ α') ⊡ (β □ α) = (β' ⊡ β) □ (α' ⊡ α).
+    `{F  : @Functor C1 C2, G  : @Functor C1 C2, H  : @Functor C1 C2}
+    `{F' : @Functor C2 C3, G' : @Functor C2 C3, H' : @Functor C2 C3} :
+    ∀ (α  : NatTransformation F  G ) (β  : NatTransformation G  H)
+      (α' : NatTransformation F' G') (β' : NatTransformation G' H'),
+    (β' □ α') ⊡ (β □ α) = (β' ⊡ β) □ (α' ⊡ α).
+Proof.
     intros α β α' β'.
     apply nat_trans_eq.
     intros A.
@@ -123,9 +126,10 @@ Theorem nat_trans_interchange `{C1 : Category, C2 : Category, C3 : Category}
 Qed.
 
 Theorem nat_trans_id_interchange `{C1 : Category, C2 : Category, C3 : Category}
-        `{F : @Functor C2 C3, G : @Functor C1 C2} :
-        (id_nat_transformation F) ⊡ (id_nat_transformation G) =
-        id_nat_transformation (F ○ G).
+    `{F : @Functor C2 C3, G : @Functor C1 C2} :
+    (id_nat_transformation F) ⊡ (id_nat_transformation G) =
+    id_nat_transformation (F ○ G).
+Proof.
     apply nat_trans_eq.
     intros A.
     cbn.
@@ -134,8 +138,9 @@ Theorem nat_trans_id_interchange `{C1 : Category, C2 : Category, C3 : Category}
 Qed.
 
 Theorem nat_trans_lid `{C1 : Category, C2 : Category}
-        `{F : @Functor C1 C2, G : @Functor C1 C2} :
-        ∀ (α : NatTransformation F G), 𝕀 □ α = α.
+    `{F : @Functor C1 C2, G : @Functor C1 C2} :
+    ∀ (α : NatTransformation F G), 𝕀 □ α = α.
+Proof.
     intros α.
     apply nat_trans_eq.
     intros A.
@@ -143,8 +148,9 @@ Theorem nat_trans_lid `{C1 : Category, C2 : Category}
     apply cat_lid.
 Qed.
 Theorem nat_trans_rid `{C1 : Category, C2 : Category}
-        `{F : @Functor C1 C2, G : @Functor C1 C2} :
-        ∀ (α : NatTransformation F G), α □ 𝕀 = α.
+    `{F : @Functor C1 C2, G : @Functor C1 C2} :
+    ∀ (α : NatTransformation F G), α □ 𝕀 = α.
+Proof.
     intros α.
     apply nat_trans_eq.
     intros A.
@@ -152,12 +158,13 @@ Theorem nat_trans_rid `{C1 : Category, C2 : Category}
     apply cat_rid.
 Qed.
 Theorem nat_trans_assoc `{C1 : Category, C2 : Category}
-        `{F : @Functor C1 C2, G : @Functor C1 C2,
-          H : @Functor C1 C2, I : @Functor C1 C2} :
-        ∀ (α : NatTransformation H I)
-          (β : NatTransformation G H)
-          (γ : NatTransformation F G),
-          α □ (β □ γ) = (α □ β) □ γ.
+    `{F : @Functor C1 C2, G : @Functor C1 C2,
+      H : @Functor C1 C2, I : @Functor C1 C2} :
+    ∀ (α : NatTransformation H I)
+      (β : NatTransformation G H)
+      (γ : NatTransformation F G),
+      α □ (β □ γ) = (α □ β) □ γ.
+Proof.
     intros α β γ.
     apply nat_trans_eq.
     intros A.
@@ -189,8 +196,9 @@ Definition nat_isomorphism `{C1 : Category, C2 : Category}
     := isomorphism (C0 := FUNCTOR C1 C2) α.
 
 Theorem nat_isomorphism_A `{C1 : Category, C2 : Category}
-        `{F : @Functor C1 C2, G : @Functor C1 C2} : ∀ α : NatTransformation F G,
-        nat_isomorphism α ↔ (∀ A, isomorphism (α • A)).
+    `{F : @Functor C1 C2, G : @Functor C1 C2} : ∀ α : NatTransformation F G,
+    nat_isomorphism α ↔ (∀ A, isomorphism (α • A)).
+Proof.
     intros α.
     split.
     -   intros α_iso A.
@@ -243,9 +251,10 @@ Definition nat_isomorphic `{C1 : Category, C2 : Category}
     := isomorphic (C0 := FUNCTOR C1 C2) F G.
 
 Theorem nat_isomorphic_wd `{C1 : Category, C2 : Category, C3 : Category} :
-        ∀ (F G : Functor C2 C3) (H I : Functor C1 C2),
-        nat_isomorphic F G → nat_isomorphic H I →
-        nat_isomorphic (F ○ H) (G ○ I).
+    ∀ (F G : Functor C2 C3) (H I : Functor C1 C2),
+    nat_isomorphic F G → nat_isomorphic H I →
+    nat_isomorphic (F ○ H) (G ○ I).
+Proof.
     intros F G H I [α [α' [α_eq1 α_eq2]]] [β [β' [β_eq1 β_eq2]]].
     cbn in *.
     exists (α ⊡ β).
@@ -261,17 +270,19 @@ Theorem nat_isomorphic_wd `{C1 : Category, C2 : Category, C3 : Category} :
 Qed.
 
 Theorem lnat_iso `{C1 : Category, C2 : Category, C3 : Category} :
-        ∀ {F G : Functor C1 C2} (H : Functor C2 C3),
-        isomorphic (C0 := FUNCTOR C1 C2) F G →
-        isomorphic (C0 := FUNCTOR C1 C3) (H ○ F) (H ○ G).
+    ∀ {F G : Functor C1 C2} (H : Functor C2 C3),
+    isomorphic (C0 := FUNCTOR C1 C2) F G →
+    isomorphic (C0 := FUNCTOR C1 C3) (H ○ F) (H ○ G).
+Proof.
     intros F G H eq.
     pose proof (isomorphic_refl (C0:= FUNCTOR C2 C3) H) as eq2.
     exact (nat_isomorphic_wd _ _ _ _ eq2 eq).
 Qed.
 Theorem rnat_iso `{C1 : Category, C2 : Category, C3 : Category} :
-        ∀ {F G : Functor C2 C3} (H : Functor C1 C2),
-        isomorphic (C0 := FUNCTOR C2 C3) F G →
-        isomorphic (C0 := FUNCTOR C1 C3) (F ○ H) (G ○ H).
+    ∀ {F G : Functor C2 C3} (H : Functor C1 C2),
+    isomorphic (C0 := FUNCTOR C2 C3) F G →
+    isomorphic (C0 := FUNCTOR C1 C3) (F ○ H) (G ○ H).
+Proof.
     intros F G H eq.
     pose proof (isomorphic_refl (C0:= FUNCTOR C1 C2) H) as eq2.
     exact (nat_isomorphic_wd _ _ _ _ eq eq2).

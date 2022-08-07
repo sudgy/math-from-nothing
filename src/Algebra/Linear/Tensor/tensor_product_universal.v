@@ -103,8 +103,9 @@ Definition bilinear_from_compose {F G H : bilinear_from}
     := [f|] ∘ [g|].
 
 Lemma bilinear_from_set_compose_in
-        {F' G H : bilinear_from} : ∀ (f : set_type (bilinear_from_set G H)) g,
-        bilinear_from_set F' H (bilinear_from_compose f g).
+    {F' G H : bilinear_from} : ∀ (f : set_type (bilinear_from_set G H)) g,
+    bilinear_from_set F' H (bilinear_from_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold bilinear_from_set in *.
     unfold bilinear_from_compose; cbn.
@@ -113,8 +114,8 @@ Lemma bilinear_from_set_compose_in
     apply f_eq.
 Qed.
 
-Lemma bilinear_from_set_id_in
-        : ∀ f : bilinear_from, bilinear_from_set f f 𝟙.
+Lemma bilinear_from_set_id_in : ∀ f : bilinear_from, bilinear_from_set f f 𝟙.
+Proof.
     intros f.
     unfold bilinear_from_set.
     intros x y.
@@ -165,6 +166,7 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
 Let f x y := tensor_mult_base M N x y.
 
 Lemma tensor_product_bilinear_base : bilinear f.
+Proof.
     repeat split.
     -   apply tensor_lscalar_base.
     -   apply tensor_rscalar_base.
@@ -176,6 +178,7 @@ Let f_bilinear_from :=
     make_bilinear tensor_product_base f tensor_product_bilinear_base.
 
 Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
+Proof.
     unfold f_bilinear_from, initial; cbn.
     intros g.
     pose (tp := module_plus (tensor_product_base)).
@@ -387,6 +390,7 @@ Lemma tensor_product_ex_base : @initial BILINEAR_FROM f_bilinear_from.
 Qed.
 
 Theorem tensor_product_ex : ∃ T, @initial BILINEAR_FROM T.
+Proof.
     exists f_bilinear_from.
     exact tensor_product_ex_base.
 Qed.
@@ -397,6 +401,7 @@ Definition tensor_mult := bilinear_from_f tensor_bilinear_from.
 Definition tensor_bilinear := bilinear_from_bi tensor_bilinear_from.
 
 Theorem tensor_product_universal : initial tensor_bilinear_from.
+Proof.
     exact (ex_proof tensor_product_ex).
 Qed.
 
@@ -420,28 +425,34 @@ Existing Instances tensor_plus tensor_zero tensor_neg tensor_plus_comm
 
 (* end hide *)
 Theorem tensor_ldist : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
+Proof.
     apply tensor_bilinear.
 Qed.
 
 Theorem tensor_rdist : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
+Proof.
     apply tensor_bilinear.
 Qed.
 
 Theorem tensor_lscalar : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
+Proof.
     apply tensor_bilinear.
 Qed.
 
 Theorem tensor_rscalar : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
+Proof.
     apply tensor_bilinear.
 Qed.
 
 Theorem tensor_mult_lneg : ∀ u v, (-u) ⊗ v = -(u ⊗ v).
+Proof.
     intros u v.
     rewrite <- scalar_neg_one.
     rewrite tensor_lscalar.
     apply scalar_neg_one.
 Qed.
 Theorem tensor_mult_rneg : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
+Proof.
     intros u v.
     rewrite <- scalar_neg_one.
     rewrite tensor_rscalar.
@@ -451,7 +462,8 @@ Qed.
 Definition simple_tensor T := ∃ a b, T = a ⊗ b.
 
 Theorem tensor_sum : ∀ T, ∃ l : ulist (set_type simple_tensor),
-        T = ulist_sum (ulist_image l (λ x, [x|])).
+    T = ulist_sum (ulist_image l (λ x, [x|])).
+Proof.
     pose (tp := module_plus (tensor_product_base)).
     pose (tz := module_zero (tensor_product_base)).
     pose (tn := module_neg (tensor_product_base)).
@@ -521,6 +533,7 @@ Theorem tensor_sum : ∀ T, ∃ l : ulist (set_type simple_tensor),
 Qed.
 
 Theorem tensor_product_lanni : ∀ v, 0 ⊗ v = 0.
+Proof.
     intros v.
     apply (plus_rcancel (0 ⊗ v)).
     rewrite <- tensor_rdist.
@@ -528,6 +541,7 @@ Theorem tensor_product_lanni : ∀ v, 0 ⊗ v = 0.
     reflexivity.
 Qed.
 Theorem tensor_product_ranni : ∀ v, v ⊗ 0 = 0.
+Proof.
     intros v.
     apply (plus_rcancel (v ⊗ 0)).
     rewrite <- tensor_ldist.
@@ -535,6 +549,7 @@ Theorem tensor_product_ranni : ∀ v, v ⊗ 0 = 0.
     reflexivity.
 Qed.
 Theorem tensor_product_zero : 0 ⊗ 0 = 0.
+Proof.
     apply tensor_product_lanni.
 Qed.
 (* begin hide *)

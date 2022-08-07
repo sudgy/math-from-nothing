@@ -77,6 +77,7 @@ Definition scalar_part (A : geo B) := ex_val
     (geo_grade_zero_scalar B (grade_project A 0) (grade_project_grade A 0)).
 
 Theorem scalar_part_eq : ∀ A, σ (scalar_part A) = grade_project A 0.
+Proof.
     intros A.
     unfold scalar_part.
     rewrite_ex_val a a_eq.
@@ -84,7 +85,8 @@ Theorem scalar_part_eq : ∀ A, σ (scalar_part A) = grade_project A 0.
 Qed.
 
 Theorem scalar_part_plus : ∀ A B,
-        scalar_part (A + B) = scalar_part A + scalar_part B.
+    scalar_part (A + B) = scalar_part A + scalar_part B.
+Proof.
     intros a b.
     apply (scalar_to_geo_eq B).
     rewrite scalar_to_geo_plus.
@@ -93,6 +95,7 @@ Theorem scalar_part_plus : ∀ A B,
 Qed.
 
 Theorem scalar_part_scalar : ∀ α A, scalar_part (α · A) = α * scalar_part A.
+Proof.
     intros α A.
     apply (scalar_to_geo_eq B).
     rewrite scalar_to_geo_mult.
@@ -102,6 +105,7 @@ Theorem scalar_part_scalar : ∀ α A, scalar_part (α · A) = α * scalar_part 
 Qed.
 
 Theorem scalar_part_reverse : ∀ A, scalar_part (A†) = scalar_part A.
+Proof.
     intros A.
     apply (scalar_to_geo_eq B).
     do 2 rewrite scalar_part_eq.
@@ -114,6 +118,7 @@ Theorem scalar_part_reverse : ∀ A, scalar_part (A†) = scalar_part A.
 Qed.
 
 Theorem scalar_part_comm : ∀ A B, scalar_part (A * B) = scalar_part (B * A).
+Proof.
     intros a b.
     induction a as [|a a' m am a'm IHa] using grade_induction.
     {

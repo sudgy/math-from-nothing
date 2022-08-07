@@ -40,8 +40,9 @@ Definition to_algebra_compose {F G H : to_algebra}
     := [f|] ∘ [g|].
 
 Lemma to_algebra_set_compose_in {F' G H : to_algebra} :
-        ∀ (f : set_type (to_algebra_set G H)) g,
-        to_algebra_set F' H (to_algebra_compose f g).
+    ∀ (f : set_type (to_algebra_set G H)) g,
+    to_algebra_set F' H (to_algebra_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold to_algebra_set in *.
     unfold to_algebra_compose; cbn.
@@ -51,6 +52,7 @@ Lemma to_algebra_set_compose_in {F' G H : to_algebra} :
 Qed.
 
 Lemma to_algebra_set_id_in : ∀ f : to_algebra, to_algebra_set f f 𝟙.
+Proof.
     intros f.
     unfold to_algebra_set.
     intros x.
@@ -85,6 +87,7 @@ Let f := make_module_homomorphism F V (algebra_module (tensor_algebra_object V))
 Definition tensor_to_algebra_base := make_to_algebra _ f.
 
 Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
+Proof.
     pose (UP := cring_plus F).
     pose (UZ := cring_zero F).
     pose (UN := cring_neg F).
@@ -536,6 +539,7 @@ Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
 Qed.
 
 Theorem tensor_algebra_ex : ∃ T, @initial TO_ALGEBRA T.
+Proof.
     exists tensor_to_algebra_base.
     exact tensor_algebra_ex_base.
 Qed.
@@ -546,6 +550,7 @@ Definition vector_to_tensor_homo := to_algebra_homo to_tensor_algebra.
 Definition vector_to_tensor := module_homo_f vector_to_tensor_homo.
 
 Theorem tensor_algebra_universal : @initial TO_ALGEBRA to_tensor_algebra.
+Proof.
     apply (ex_proof tensor_algebra_ex).
 Qed.
 

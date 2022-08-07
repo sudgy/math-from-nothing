@@ -220,6 +220,7 @@ Definition polynomial_degree f
     := ex_val (well_ordered _ (polynomial_degree_ex f)).
 
 Theorem polynomial_degree_gt : ∀ f n, polynomial_degree f < n → 0 = co f n.
+Proof.
     intros f n n_gt.
     unfold polynomial_degree in n_gt.
     rewrite_ex_val m [m_deg m_least].
@@ -228,6 +229,7 @@ Theorem polynomial_degree_gt : ∀ f n, polynomial_degree f < n → 0 = co f n.
 Qed.
 
 Theorem polynomial_degree_nz : ∀ f, 0 ≠ f → 0 ≠ co f (polynomial_degree f).
+Proof.
     intros f f_nz f_z.
     unfold polynomial_degree in f_z.
     rewrite_ex_val n [n_deg n_least].
@@ -275,6 +277,7 @@ Proof.
 Qed.
 
 Theorem polynomial_degree_geq : ∀ f n, 0 ≠ co f n → n <= polynomial_degree f.
+Proof.
     intros f n fn_nz.
     classic_contradiction contr.
     apply fn_nz.
@@ -284,6 +287,7 @@ Theorem polynomial_degree_geq : ∀ f n, 0 ≠ co f n → n <= polynomial_degree
 Qed.
 
 Theorem polynomial_degree_xn : ∀ n, polynomial_degree (polynomial_xn F n) = n.
+Proof.
     intros n.
     apply antisym.
     -   apply polynomial_degree_leq.
@@ -303,6 +307,7 @@ Theorem polynomial_degree_xn : ∀ n, polynomial_degree (polynomial_xn F n) = n.
 Qed.
 
 Theorem polynomial_degree_zero : polynomial_degree 0 = 0.
+Proof.
     apply antisym; [>|apply nat_le_zero].
     apply polynomial_degree_leq.
     intros m m_gt.

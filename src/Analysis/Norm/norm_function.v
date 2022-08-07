@@ -98,7 +98,8 @@ Definition func_bounded_around {A : U → Prop} (f : set_type A → V) a
     := ∃ ε M, ∀ x, a ≠ [x|] → open_ball a ε [x|] → |f x| <= M.
 
 Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c l,
-        func_lim_base f c l → func_bounded_around f c.
+    func_lim_base f c l → func_bounded_around f c.
+Proof.
     intros A f c l f_lim.
     rewrite metric_func_seq_lim in f_lim.
     unfold func_bounded_around.
@@ -173,8 +174,9 @@ Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c 
 Qed.
 
 Theorem func_bounded_around_plus : ∀ (A : U → Prop) (xf yf : set_type A → V) a,
-        func_bounded_around xf a → func_bounded_around yf a →
-        func_bounded_around (λ x, xf x + yf x) a.
+    func_bounded_around xf a → func_bounded_around yf a →
+    func_bounded_around (λ x, xf x + yf x) a.
+Proof.
     intros A xf yf a [ε1 [M M_bound]] [ε2 [N N_bound]].
     exists (min ε1 ε2), (M + N).
     intros x x_neq x_in.
@@ -189,9 +191,10 @@ Theorem func_bounded_around_plus : ∀ (A : U → Prop) (xf yf : set_type A → 
 Qed.
 
 Theorem func_bounded_around_subset : ∀ (A B : U → Prop)
-        (f : set_type A → V) (g : set_type B → V) a (H : A ⊆ B),
-        (∀ x, f x = g [[x|] | H [x|] [|x]]) →
-        func_bounded_around g a → func_bounded_around f a.
+    (f : set_type A → V) (g : set_type B → V) a (H : A ⊆ B),
+    (∀ x, f x = g [[x|] | H [x|] [|x]]) →
+    func_bounded_around g a → func_bounded_around f a.
+Proof.
     intros A B f g a sub eq [ε [M M_bound]].
     exists ε, M.
     intros [x Ax]; cbn.
@@ -202,7 +205,8 @@ Theorem func_bounded_around_subset : ∀ (A B : U → Prop)
 Qed.
 
 Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
-        func_lim_base xf c l → func_lim_base (λ x, |xf x|) c (|l|).
+    func_lim_base xf c l → func_lim_base (λ x, |xf x|) c (|l|).
+Proof.
     intros A xf c l xf_lim.
     rewrite metric_func_seq_lim in xf_lim.
     rewrite metric_func_seq_lim.
@@ -213,7 +217,8 @@ Theorem abs_func_lim : ∀ (A : U → Prop) (xf : set_type A → V) c l,
 Qed.
 
 Theorem func_lim_zero : ∀ (A : U → Prop) (xf : set_type A → V) c,
-        func_lim_base (λ x, |xf x|) c 0 → func_lim_base xf c 0.
+    func_lim_base (λ x, |xf x|) c 0 → func_lim_base xf c 0.
+Proof.
     intros A xf c xf_lim.
     rewrite metric_func_seq_lim in xf_lim.
     rewrite metric_func_seq_lim.
@@ -224,8 +229,9 @@ Theorem func_lim_zero : ∀ (A : U → Prop) (xf : set_type A → V) c,
 Qed.
 
 Theorem func_lim_plus : ∀ (A : U → Prop) (xf yf : set_type A → V)
-        (c : U) (x y : V), func_lim_base xf c x → func_lim_base yf c y →
-        func_lim_base (λ n, xf n + yf n) c (x + y).
+    (c : U) (x y : V), func_lim_base xf c x → func_lim_base yf c y →
+    func_lim_base (λ n, xf n + yf n) c (x + y).
+Proof.
     intros A xf yf c x y cx cy.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.
@@ -237,8 +243,9 @@ Theorem func_lim_plus : ∀ (A : U → Prop) (xf yf : set_type A → V)
 Qed.
 
 Theorem func_lim_scalar : ∀ (A : U → Prop) (xf : set_type A → V)
-        (a : real) (c : U) (x : V), func_lim_base xf c x →
-        func_lim_base (λ n, a · xf n) c (a · x).
+    (a : real) (c : U) (x : V), func_lim_base xf c x →
+    func_lim_base (λ n, a · xf n) c (a · x).
+Proof.
     intros A xf a c x cx.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.
@@ -248,8 +255,9 @@ Theorem func_lim_scalar : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_neg : ∀ (A : U → Prop) (xf : set_type A → V)
-        (c : U) (x : V), func_lim_base xf c x →
-        func_lim_base (λ n, -xf n) c (-x).
+    (c : U) (x : V), func_lim_base xf c x →
+    func_lim_base (λ n, -xf n) c (-x).
+Proof.
     intros A xf c x cx.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.
@@ -259,8 +267,9 @@ Theorem func_lim_neg : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_mult : ∀ (A : U → Prop) (xf yf : set_type A → V)
-        (c : U) (x y : V), func_lim_base xf c x → func_lim_base yf c y →
-        func_lim_base (λ n, xf n * yf n) c (x * y).
+    (c : U) (x y : V), func_lim_base xf c x → func_lim_base yf c y →
+    func_lim_base (λ n, xf n * yf n) c (x * y).
+Proof.
     intros A xf yf c x y cx cy.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.
@@ -272,8 +281,9 @@ Theorem func_lim_mult : ∀ (A : U → Prop) (xf yf : set_type A → V)
 Qed.
 
 Theorem func_lim_constant : ∀ (A : U → Prop) (xf : set_type A → V)
-        (a : V) (c : U) (x : V), func_lim_base xf c x →
-        func_lim_base (λ n, a * xf n) c (a * x).
+    (a : V) (c : U) (x : V), func_lim_base xf c x →
+    func_lim_base (λ n, a * xf n) c (a * x).
+Proof.
     intros A xf a c x cx.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.
@@ -283,8 +293,9 @@ Theorem func_lim_constant : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_div : ∀ (A : U → Prop) (xf : set_type A → V)
-        (c : U) (x : V), 0 ≠ x → func_lim_base xf c x →
-        func_lim_base (λ n, /xf n) c (/x).
+    (c : U) (x : V), 0 ≠ x → func_lim_base xf c x →
+    func_lim_base (λ n, /xf n) c (/x).
+Proof.
     intros A xf c x x_nz cx.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.
@@ -294,8 +305,9 @@ Theorem func_lim_div : ∀ (A : U → Prop) (xf : set_type A → V)
 Qed.
 
 Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
-        func_bounded_around af c → func_lim_base bf c 0 →
-        func_lim_base (λ x, af x * bf x) c 0.
+    func_bounded_around af c → func_lim_base bf c 0 →
+    func_lim_base (λ x, af x * bf x) c 0.
+Proof.
     intros A af bf c [[ε ε_pos] [M' M'_bound]] bf_lim.
     assert (∃ M, ∀ x, open_ball c [ε|ε_pos] [x|] → |af x| <= M) as [M M_bound].
     {
@@ -336,8 +348,9 @@ Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
 Qed.
 
 Theorem func_lim_zero_mult2 : ∀ (A : U → Prop) (af bf : set_type A → V) c x,
-        func_lim_base af c x → func_lim_base bf c 0 →
-        func_lim_base (λ x, af x * bf x) c 0.
+    func_lim_base af c x → func_lim_base bf c 0 →
+    func_lim_base (λ x, af x * bf x) c 0.
+Proof.
     intros A af bf c x af_lim bf_lim.
     rewrite metric_func_seq_lim in *.
     intros xn xnc.

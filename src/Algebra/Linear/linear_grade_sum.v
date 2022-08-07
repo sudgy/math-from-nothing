@@ -72,7 +72,8 @@ Definition single_to_grade_sum {k} (A : module_V (V k))
     := [_|single_to_grade_sum_finite A].
 
 Theorem single_to_grade_sum_eq : ∀ k, ∀ (A B : module_V (V k)),
-        single_to_grade_sum A = single_to_grade_sum B → A = B.
+    single_to_grade_sum A = single_to_grade_sum B → A = B.
+Proof.
     intros k A B eq.
     apply eq_set_type in eq.
     assert (∀ x, [single_to_grade_sum A|] x = [single_to_grade_sum B|] x) as eq2.
@@ -90,7 +91,8 @@ Theorem single_to_grade_sum_eq : ∀ k, ∀ (A B : module_V (V k)),
 Qed.
 
 Lemma grade_sum_plus_finite : ∀ A B : grade_sum_type,
-        grade_sum_finite (λ k, [A|] k + [B|] k).
+    grade_sum_finite (λ k, [A|] k + [B|] k).
+Proof.
     intros [A A_fin] [B B_fin]; cbn.
     apply fin_nat_ex in A_fin as [m m_eq].
     apply fin_nat_ex in B_fin as [n n_eq].
@@ -147,6 +149,7 @@ Next Obligation.
 Qed.
 
 Lemma grade_sum_zero_finite : grade_sum_finite (λ k, 0).
+Proof.
     unfold grade_sum_finite.
     assert (|set_type (λ k : I, (zero (U := module_V (V k))) ≠ 0)| = 0) as eq.
     {
@@ -172,6 +175,7 @@ Next Obligation.
 Qed.
 
 Lemma grade_sum_neg_finite : ∀ A : grade_sum_type, grade_sum_finite (λ k, -[A|] k).
+Proof.
     intros [A A_fin]; cbn.
     apply fin_nat_ex in A_fin as [n n_eq].
     apply (le_lt_trans2 (nat_is_finite n)).
@@ -206,8 +210,9 @@ Next Obligation.
 Qed.
 
 Theorem single_to_grade_sum_plus : ∀ k (A B : module_V (V k)),
-        single_to_grade_sum (A + B) =
-        single_to_grade_sum A + single_to_grade_sum B.
+    single_to_grade_sum (A + B) =
+    single_to_grade_sum A + single_to_grade_sum B.
+Proof.
     intros k A B.
     apply set_type_eq; cbn.
     apply functional_ext; intros x.
@@ -220,7 +225,8 @@ Theorem single_to_grade_sum_plus : ∀ k (A B : module_V (V k)),
 Qed.
 
 Lemma grade_sum_scalar_finite : ∀ α (A : grade_sum_type),
-        grade_sum_finite (λ k, α · [A|] k).
+    grade_sum_finite (λ k, α · [A|] k).
+Proof.
     intros α [A A_fin]; cbn.
     apply fin_nat_ex in A_fin as [n n_eq].
     apply (le_lt_trans2 (nat_is_finite n)).
@@ -282,7 +288,8 @@ Next Obligation.
 Qed.
 
 Theorem single_to_grade_sum_scalar : ∀ k α (A : module_V (V k)),
-        single_to_grade_sum (α · A) = α · single_to_grade_sum A.
+    single_to_grade_sum (α · A) = α · single_to_grade_sum A.
+Proof.
     intros k A B.
     apply set_type_eq; cbn.
     apply functional_ext; intros x.
@@ -296,6 +303,7 @@ Theorem single_to_grade_sum_scalar : ∀ k α (A : module_V (V k)),
 Qed.
 
 Lemma single_to_grade_sum_zero : ∀ k, (single_to_grade_sum (k := k) 0) = 0.
+Proof.
     intros k.
     apply set_type_eq; cbn.
     unfold single_to_grade_sum_base.
@@ -308,7 +316,8 @@ Lemma single_to_grade_sum_zero : ∀ k, (single_to_grade_sum (k := k) 0) = 0.
 Qed.
 
 Lemma grade_sum_list_sum_k : ∀ (al : ulist (grade_sum_type)) k,
-        [ulist_sum al|] k = ulist_sum (ulist_image al (λ a, [a|] k)).
+    [ulist_sum al|] k = ulist_sum (ulist_image al (λ a, [a|] k)).
+Proof.
     intros al k.
     induction al using ulist_induction.
     -   rewrite ulist_image_end.
@@ -325,21 +334,24 @@ Definition grade_sum_subspace_set n (v : grade_sum_type)
     := ∃ v' : module_V (V n), single_to_grade_sum v' = v.
 
 Lemma grade_sum_subspace_zero : ∀ n, grade_sum_subspace_set n 0.
+Proof.
     intros n.
     exists 0.
     apply single_to_grade_sum_zero.
 Qed.
 
 Lemma grade_sum_subspace_plus : ∀ n u v,
-        grade_sum_subspace_set n u → grade_sum_subspace_set n v →
-        grade_sum_subspace_set n (u + v).
+    grade_sum_subspace_set n u → grade_sum_subspace_set n v →
+    grade_sum_subspace_set n (u + v).
+Proof.
     intros n u' v' [u u_eq] [v v_eq]; subst u' v'.
     exists (u + v).
     apply single_to_grade_sum_plus.
 Qed.
 
 Lemma grade_sum_subspace_scalar : ∀ n a v,
-        grade_sum_subspace_set n v → grade_sum_subspace_set n (a · v).
+    grade_sum_subspace_set n v → grade_sum_subspace_set n (a · v).
+Proof.
     intros n a v' [v v_eq]; subst v'.
     exists (a · v).
     apply single_to_grade_sum_scalar.

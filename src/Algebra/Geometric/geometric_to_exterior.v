@@ -82,7 +82,8 @@ Definition ext_inner_base1 (a : module_V V) (v : module_V V) (p : module_V E12)
     ) : module_V E12.
 
 Lemma ext_inner_base_plus : ∀ a v p1 p2, ext_inner_base1 a v (p1 + p2) =
-        ext_inner_base1 a v p1 + ext_inner_base1 a v p2.
+    ext_inner_base1 a v p1 + ext_inner_base1 a v p2.
+Proof.
     intros a v [p11 p12] [p21 p22]; cbn.
     unfold ext_inner_base1; cbn.
     unfold plus at 1 3 4 5; cbn.
@@ -98,7 +99,8 @@ Lemma ext_inner_base_plus : ∀ a v p1 p2, ext_inner_base1 a v (p1 + p2) =
 Qed.
 
 Lemma ext_inner_base_scalar : ∀ a v b p, ext_inner_base1 a v (b · p) =
-        b · ext_inner_base1 a v p.
+    b · ext_inner_base1 a v p.
+Proof.
     intros a v b [p1 p2].
     unfold ext_inner_base1; cbn.
     unfold scalar_mult at 1 2 4 5; cbn.
@@ -127,7 +129,8 @@ Let E3M := algebra_mult E3.
 Existing Instances E3P E3Z E3S E3M.
 
 Lemma ext_inner_base2_plus : ∀ a v1 v2, ext_inner_base2 a (v1 + v2) =
-        ext_inner_base2 a v1 + ext_inner_base2 a v2.
+    ext_inner_base2 a v1 + ext_inner_base2 a v2.
+Proof.
     intros a v1 v2.
     apply module_homomorphism_eq.
     intros [x1 x2].
@@ -151,7 +154,8 @@ Lemma ext_inner_base2_plus : ∀ a v1 v2, ext_inner_base2 a (v1 + v2) =
 Qed.
 
 Lemma ext_inner_base2_scalar : ∀ a b v,
-        ext_inner_base2 a (b · v) = b · ext_inner_base2 a v.
+    ext_inner_base2 a (b · v) = b · ext_inner_base2 a v.
+Proof.
     intros a b v.
     apply module_homomorphism_eq.
     intros [x1 x2].
@@ -173,7 +177,8 @@ Lemma ext_inner_base2_scalar : ∀ a b v,
 Qed.
 
 Lemma ext_inner_base_alternating : ∀ a v,
-        0 = ext_inner_base2 a v * ext_inner_base2 a v.
+    0 = ext_inner_base2 a v * ext_inner_base2 a v.
+Proof.
     intros a v.
     apply module_homomorphism_eq.
     intros [x1 x2].
@@ -218,13 +223,15 @@ Definition ext_inner_f_homo a := [ext_inner_base a|].
 Definition ext_inner_f a := algebra_homo_f (ext_inner_f_homo a).
 
 Theorem ext_inner_f_eq : ∀ a v,
-        ext_inner_f a (vector_to_ext V v) = ext_inner_base2 a v.
+    ext_inner_f a (vector_to_ext V v) = ext_inner_base2 a v.
+Proof.
     intros a.
     apply [|ext_inner_base a].
 Qed.
 
 Theorem ext_inner_f_mult : ∀ a u v,
-        ext_inner_f a (u * v) = ext_inner_f a u * ext_inner_f a v.
+    ext_inner_f a (u * v) = ext_inner_f a u * ext_inner_f a v.
+Proof.
     intros a u v.
     apply algebra_homo_mult.
 Qed.
@@ -233,7 +240,8 @@ Definition ext_inner a v := snd (module_homo_f (ext_inner_f a v) (1, 0)).
 
 (* end hide *)
 Theorem ext_inner_rplus :
-        ∀ a u v, ext_inner a (u + v) = ext_inner a u + ext_inner a v.
+    ∀ a u v, ext_inner a (u + v) = ext_inner a u + ext_inner a v.
+Proof.
     intros a u v.
     unfold ext_inner.
     unfold ext_inner_f.
@@ -245,6 +253,7 @@ Theorem ext_inner_rplus :
 Qed.
 
 Theorem ext_inner_rscalar : ∀ a α v, ext_inner a (α · v) = α · ext_inner a v.
+Proof.
     intros a α v.
     unfold ext_inner.
     unfold ext_inner_f.
@@ -256,6 +265,7 @@ Theorem ext_inner_rscalar : ∀ a α v, ext_inner a (α · v) = α · ext_inner 
 Qed.
 
 Theorem ext_inner_rzero : ∀ a, ext_inner a 0 = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0).
     rewrite ext_inner_rscalar.
@@ -263,6 +273,7 @@ Theorem ext_inner_rzero : ∀ a, ext_inner a 0 = 0.
 Qed.
 
 Theorem ext_inner_rneg : ∀ a v, ext_inner a (-v) = -ext_inner a v.
+Proof.
     intros a v.
     rewrite <- scalar_neg_one.
     rewrite ext_inner_rscalar.
@@ -270,8 +281,9 @@ Theorem ext_inner_rneg : ∀ a v, ext_inner a (-v) = -ext_inner a v.
 Qed.
 
 Theorem ext_inner_add : ∀ a v x,
-        ext_inner a (vector_to_ext V v * x) =
-        [B|] a v · x - vector_to_ext V v * ext_inner a x.
+    ext_inner a (vector_to_ext V v * x) =
+    [B|] a v · x - vector_to_ext V v * ext_inner a x.
+Proof.
     intros a v x.
     pose proof (ext_sum V x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -336,6 +348,7 @@ Theorem ext_inner_add : ∀ a v x,
 Qed.
 
 Theorem ext_inner_scalar : ∀ a α, ext_inner a (scalar_to_ext V α) = 0.
+Proof.
     intros a α.
     unfold ext_inner.
     unfold ext_inner_f.
@@ -351,7 +364,8 @@ Theorem ext_inner_scalar : ∀ a α, ext_inner a (scalar_to_ext V α) = 0.
 Qed.
 
 Theorem ext_inner_vector : ∀ a v,
-        ext_inner a (vector_to_ext V v) = [B|] a v · 1.
+    ext_inner a (vector_to_ext V v) = [B|] a v · 1.
+Proof.
     intros a v.
     rewrite <- (mult_rid (vector_to_ext V v)).
     rewrite ext_inner_add.
@@ -364,9 +378,10 @@ Theorem ext_inner_vector : ∀ a v,
 Qed.
 
 Theorem ext_inner_bivector : ∀ a u v,
-        ext_inner a (vector_to_ext V u * vector_to_ext V v) =
-        [B|] a u · vector_to_ext V v -
-        [B|] a v · vector_to_ext V u.
+    ext_inner a (vector_to_ext V u * vector_to_ext V v) =
+    [B|] a u · vector_to_ext V v -
+    [B|] a v · vector_to_ext V u.
+Proof.
     intros a u v.
     rewrite ext_inner_add.
     rewrite ext_inner_vector.
@@ -376,7 +391,8 @@ Theorem ext_inner_bivector : ∀ a u v,
 Qed.
 
 Theorem ext_inner_lplus :
-        ∀ a b v, ext_inner (a + b) v = ext_inner a v + ext_inner b v.
+    ∀ a b v, ext_inner (a + b) v = ext_inner a v + ext_inner b v.
+Proof.
     intros a b v.
     pose proof (ext_sum V v) as [l l_eq]; subst v.
     induction l as [|[α v] l] using ulist_induction.
@@ -421,6 +437,7 @@ Theorem ext_inner_lplus :
 Qed.
 
 Theorem ext_inner_lscalar : ∀ α a v, ext_inner (α · a) v = α · ext_inner a v.
+Proof.
     intros α a v.
     pose proof (ext_sum V v) as [l l_eq]; subst v.
     induction l as [|[β v] l] using ulist_induction.
@@ -491,6 +508,7 @@ Let EESL := algebra_scalar_ldist EE.
 Existing Instances EEP EEZ EEPC EEPZ EEM EEO EEL EER EES EESL.
 
 Theorem ext_inner_alternating : ∀ a, ext_inner_homo a * ext_inner_homo a = 0.
+Proof.
     intros a.
     apply module_homomorphism_eq.
     intros x.
@@ -532,6 +550,7 @@ Theorem ext_inner_alternating : ∀ a, ext_inner_homo a * ext_inner_homo a = 0.
 Qed.
 
 Theorem ext_outer_alternating : ∀ a, ext_outer_homo a * ext_outer_homo a = 0.
+Proof.
     intros a.
     apply module_homomorphism_eq.
     intros x.
@@ -546,7 +565,8 @@ Qed.
 Definition geo_to_ext_base1 a := ext_inner_homo a + ext_outer_homo a.
 
 Lemma geo_to_ext_base1_plus : ∀ u v,
-        geo_to_ext_base1 (u + v) = geo_to_ext_base1 u + geo_to_ext_base1 v.
+    geo_to_ext_base1 (u + v) = geo_to_ext_base1 u + geo_to_ext_base1 v.
+Proof.
     intros u v.
     unfold geo_to_ext_base1.
     apply module_homomorphism_eq.
@@ -564,7 +584,8 @@ Lemma geo_to_ext_base1_plus : ∀ u v,
 Qed.
 
 Lemma geo_to_ext_base1_scalar : ∀ a v,
-        geo_to_ext_base1 (a · v) = a · geo_to_ext_base1 v.
+    geo_to_ext_base1 (a · v) = a · geo_to_ext_base1 v.
+Proof.
     intros a v.
     unfold geo_to_ext_base1.
     apply module_homomorphism_eq.
@@ -579,7 +600,8 @@ Lemma geo_to_ext_base1_scalar : ∀ a v,
 Qed.
 
 Lemma geo_to_ext_base_contract : ∀ v,
-        geo_to_ext_base1 v * geo_to_ext_base1 v = [B|] v v · 1.
+    geo_to_ext_base1 v * geo_to_ext_base1 v = [B|] v v · 1.
+Proof.
     intros v.
     unfold geo_to_ext_base1.
     rewrite ldist.
@@ -631,12 +653,14 @@ Let GSR := geo_scalar_rdist B.
 Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GMR GS GSO GSR.
 
 Theorem geo_to_ext_f_eq :
-        ∀ v, geo_to_ext_f (vector_to_geo B v) = geo_to_ext_base1 v.
+    ∀ v, geo_to_ext_f (vector_to_geo B v) = geo_to_ext_base1 v.
+Proof.
     apply [|geo_to_ext_base].
 Qed.
 
 Theorem geo_to_ext_f_mult :
-        ∀ u v, geo_to_ext_f (u * v) = geo_to_ext_f u * geo_to_ext_f v.
+    ∀ u v, geo_to_ext_f (u * v) = geo_to_ext_f u * geo_to_ext_f v.
+Proof.
     apply algebra_homo_mult.
 Qed.
 
@@ -644,7 +668,8 @@ Definition geo_to_ext (v : geo B) := module_homo_f (geo_to_ext_f v) 1 : ext V.
 
 (* end hide *)
 Theorem geo_to_ext_plus : ∀ u v,
-        geo_to_ext (u + v) = geo_to_ext u + geo_to_ext v.
+    geo_to_ext (u + v) = geo_to_ext u + geo_to_ext v.
+Proof.
     intros u v.
     unfold geo_to_ext.
     unfold geo_to_ext_f.
@@ -655,6 +680,7 @@ Theorem geo_to_ext_plus : ∀ u v,
 Qed.
 
 Theorem geo_to_ext_scalar : ∀ a v, geo_to_ext (a · v) = a · geo_to_ext v.
+Proof.
     intros a v.
     unfold geo_to_ext.
     unfold geo_to_ext_f.
@@ -665,7 +691,8 @@ Theorem geo_to_ext_scalar : ∀ a v, geo_to_ext (a · v) = a · geo_to_ext v.
 Qed.
 
 Theorem geo_to_ext_add : ∀ v x, geo_to_ext (vector_to_geo B v * x) =
-        ext_inner v (geo_to_ext x) + vector_to_ext V v * geo_to_ext x.
+    ext_inner v (geo_to_ext x) + vector_to_ext V v * geo_to_ext x.
+Proof.
     intros v x.
     unfold geo_to_ext.
     rewrite geo_to_ext_f_mult.
@@ -679,6 +706,7 @@ Theorem geo_to_ext_add : ∀ v x, geo_to_ext (vector_to_geo B v * x) =
 Qed.
 
 Theorem geo_to_ext_neg : ∀ x, geo_to_ext (-x) = -geo_to_ext x.
+Proof.
     intros x.
     rewrite <- scalar_neg_one.
     rewrite geo_to_ext_scalar.
@@ -686,12 +714,14 @@ Theorem geo_to_ext_neg : ∀ x, geo_to_ext (-x) = -geo_to_ext x.
 Qed.
 
 Theorem geo_to_ext_zero : geo_to_ext 0 = 0.
+Proof.
     rewrite <- (scalar_lanni 0).
     rewrite geo_to_ext_scalar.
     apply scalar_lanni.
 Qed.
 
 Theorem geo_to_ext_one : geo_to_ext 1 = 1.
+Proof.
     unfold geo_to_ext.
     unfold geo_to_ext_f.
     rewrite algebra_homo_one.
@@ -700,7 +730,8 @@ Theorem geo_to_ext_one : geo_to_ext 1 = 1.
 Qed.
 
 Theorem geo_to_ext_of_scalar : ∀ α,
-        geo_to_ext (scalar_to_geo B α) = scalar_to_ext V α.
+    geo_to_ext (scalar_to_geo B α) = scalar_to_ext V α.
+Proof.
     intros α.
     rewrite scalar_to_geo_one_scalar.
     rewrite geo_to_ext_scalar.
@@ -710,7 +741,8 @@ Theorem geo_to_ext_of_scalar : ∀ α,
 Qed.
 
 Theorem geo_to_ext_vector : ∀ v,
-        geo_to_ext (vector_to_geo B v) = vector_to_ext V v.
+    geo_to_ext (vector_to_geo B v) = vector_to_ext V v.
+Proof.
     intros v.
     rewrite <- (mult_rid (vector_to_geo B v)).
     rewrite geo_to_ext_add.
@@ -723,8 +755,9 @@ Theorem geo_to_ext_vector : ∀ v,
 Qed.
 
 Theorem geo_to_ext_vector2 : ∀ u v,
-        geo_to_ext (vector_to_geo B u * vector_to_geo B v) =
-        [B|] u v · 1 + vector_to_ext V u * vector_to_ext V v.
+    geo_to_ext (vector_to_geo B u * vector_to_geo B v) =
+    [B|] u v · 1 + vector_to_ext V u * vector_to_ext V v.
+Proof.
     intros u v.
     rewrite geo_to_ext_add.
     rewrite geo_to_ext_vector.

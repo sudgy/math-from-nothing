@@ -17,6 +17,7 @@ Let card_eq A B := ∃ f : A → B, bijective f.
 Local Infix "~" := card_eq.
 
 Lemma card_eq_reflexive : ∀ A, A ~ A.
+Proof.
     intros A.
     exists identity.
     exact identity_bijective.
@@ -26,6 +27,7 @@ Instance card_eq_reflexive_class : Reflexive _ := {
 }.
 
 Lemma card_eq_symmetric : ∀ A B, A ~ B → B ~ A.
+Proof.
     intros A B [f f_bij].
     exists (bij_inv f f_bij).
     apply bij_inv_bij.
@@ -35,6 +37,7 @@ Instance card_eq_symmetric_class : Symmetric _ := {
 }.
 
 Lemma card_eq_transitive : ∀ A B C, A ~ B → B ~ C → A ~ C.
+Proof.
     intros A B C [f f_bij] [g g_bij].
     exists (λ x, g (f x)).
     split.
@@ -68,7 +71,8 @@ Notation "| A |" := (to_equiv_type card_equiv A) (at level 30) : card_scope.
 Open Scope card_scope.
 
 Lemma ord_to_card_wd : ∀ A B : ord_type,
-        (eq_equal ord_equiv A B) → |ord_U A| = |ord_U B|.
+    (eq_equal ord_equiv A B) → |ord_U A| = |ord_U B|.
+Proof.
     intros A B [f [f_bij f_iso]].
     equiv_simpl.
     exists f.
@@ -80,7 +84,8 @@ Definition ord_to_card := unary_op ord_to_card_wd.
 
 (* begin hide *)
 Lemma card_to_initial_ord_ex :
-        ∀ κ, ∃ α, ord_to_card α = κ ∧ ∀ β, ord_to_card β = κ → α <= β.
+    ∀ κ, ∃ α, ord_to_card α = κ ∧ ∀ β, ord_to_card β = κ → α <= β.
+Proof.
     intros κ.
     assert (∃ δ, ord_to_card δ = κ) as α_ex.
     {
@@ -104,7 +109,8 @@ Qed.
 Definition card_to_initial_ord κ := ex_val (card_to_initial_ord_ex κ).
 
 Theorem card_to_initial_ord_to_card_eq :
-        ∀ κ, ord_to_card (card_to_initial_ord κ) = κ.
+    ∀ κ, ord_to_card (card_to_initial_ord κ) = κ.
+Proof.
     intros κ.
     unfold card_to_initial_ord.
     rewrite_ex_val α α_eq.
@@ -112,7 +118,8 @@ Theorem card_to_initial_ord_to_card_eq :
 Qed.
 
 Theorem card_to_initial_ord_le :
-        ∀ κ α, ord_to_card α = κ → card_to_initial_ord κ <= α.
+    ∀ κ α, ord_to_card α = κ → card_to_initial_ord κ <= α.
+Proof.
     intros κ α eq.
     unfold card_to_initial_ord.
     rewrite_ex_val β β_eq.
@@ -121,7 +128,8 @@ Theorem card_to_initial_ord_le :
 Qed.
 
 Theorem card_to_initial_ord_eq :
-        ∀ κ μ, card_to_initial_ord κ = card_to_initial_ord μ → κ = μ.
+    ∀ κ μ, card_to_initial_ord κ = card_to_initial_ord μ → κ = μ.
+Proof.
     intros κ μ eq.
     apply (f_equal ord_to_card) in eq.
     do 2 rewrite card_to_initial_ord_to_card_eq in eq.
@@ -129,14 +137,16 @@ Theorem card_to_initial_ord_eq :
 Qed.
 
 Theorem ord_to_card_to_initial_ord_le :
-        ∀ α, card_to_initial_ord (ord_to_card α) <= α.
+    ∀ α, card_to_initial_ord (ord_to_card α) <= α.
+Proof.
     intros α.
     apply card_to_initial_ord_le.
     reflexivity.
 Qed.
 
 Theorem card_from_set_type_eq {U} : ∀ (X : U → Prop) (B : set_type X → Prop),
-        |set_type (from_set_type B)| = |set_type B|.
+    |set_type (from_set_type B)| = |set_type B|.
+Proof.
     intros X B.
     equiv_simpl.
     exists (λ x, [ex_val [|x] | rand (ex_proof [|x])]).

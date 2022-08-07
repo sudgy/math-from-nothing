@@ -18,6 +18,7 @@ Context {U} `{Metric U}.
 (* end hide *)
 
 Theorem d_zero : ∀ x, d x x = 0.
+Proof.
     intros x.
     symmetry.
     rewrite d_ind.
@@ -25,6 +26,7 @@ Theorem d_zero : ∀ x, d x x = 0.
 Qed.
 
 Theorem d_pos : ∀ x y, 0 <= d x y.
+Proof.
     intros x y.
     pose proof (d_tri x y x) as eq.
     rewrite d_zero in eq.
@@ -39,6 +41,7 @@ Theorem d_pos : ∀ x y, 0 <= d x y.
 Qed.
 
 Theorem d_neq_pos : ∀ x y, x ≠ y → 0 < d x y.
+Proof.
     intros x y neq.
     split.
     -   apply d_pos.
@@ -48,6 +51,7 @@ Theorem d_neq_pos : ∀ x y, x ≠ y → 0 < d x y.
 Qed.
 
 Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| <= d y z.
+Proof.
     intros x y z.
     apply abs_le.
     split.
@@ -64,6 +68,7 @@ Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| <= d y z.
 Qed.
 
 Theorem all_lt_eq : ∀ x y, (∀ ε, 0 < ε → d x y < ε) → x = y.
+Proof.
     intros x y xy_lim.
     classic_contradiction contr.
     specialize (xy_lim _ (d_neq_pos _ _ contr)).
@@ -126,7 +131,8 @@ End AbsMetric.
 Definition real_metric := (abs_metric (U := real)).
 
 Theorem metric_eq {U} : ∀ M1 M2 : Metric U,
-        (∀ a b, @d U M1 a b = @d U M2 a b) → M1 = M2.
+    (∀ a b, @d U M1 a b = @d U M2 a b) → M1 = M2.
+Proof.
     intros [d1 d1_ind d1_sym d1_tri] [d2 d2_ind d2_sym d2_tri] d_eq.
     assert (d1 = d2) as eq.
     {

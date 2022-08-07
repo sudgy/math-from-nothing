@@ -37,6 +37,7 @@ Section FieldImply1.
 Context {U} `{Field U}.
 
 Lemma mult_linv_rinv : ∀ a, 0 ≠ a → a / a = 1.
+Proof.
     intros a a_nz.
     rewrite mult_comm.
     apply mult_linv.
@@ -53,6 +54,7 @@ Section FieldImply2.
 Context {U} `{Field U}.
 
 Lemma mult_linv_lcancel : ∀ a b c, 0 ≠ c → c * a = c * b → a = b.
+Proof.
     intros a b c c_nz eq.
     apply lmult with (/c) in eq.
     do 2 rewrite mult_assoc in eq.
@@ -65,6 +67,7 @@ Global Instance mult_linv_lcancel_class : MultLcancel U := {
 }.
 
 Lemma mult_rinv_rcancel : ∀ a b c, 0 ≠ c → a * c = b * c → a = b.
+Proof.
     intros a b c c_nz eq.
     apply rmult with (/c) in eq.
     do 2 rewrite <- mult_assoc in eq.
@@ -84,6 +87,7 @@ Context {U} `{Field U}.
 
 (* end hide *)
 Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
+Proof.
     intros a a_nz eq.
     apply rmult with a in eq.
     rewrite mult_lanni in eq.
@@ -92,6 +96,7 @@ Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
 Qed.
 
 Theorem div_div : ∀ a, 0 ≠ a → /(/a) = a.
+Proof.
     intros a a_nz.
     apply mult_lcancel with (/a).
     1: apply div_nz; exact a_nz.
@@ -102,6 +107,7 @@ Theorem div_div : ∀ a, 0 ≠ a → /(/a) = a.
 Qed.
 
 Theorem neg_div : ∀ a, 0 ≠ a → /(-a) = -/a.
+Proof.
     intros a a_nz.
     pose proof (neg_nz _ a_nz) as na_nz.
     apply mult_rcancel with (-a); try exact na_nz.
@@ -112,6 +118,7 @@ Theorem neg_div : ∀ a, 0 ≠ a → /(-a) = -/a.
 Qed.
 
 Theorem div_mult : ∀ a b, 0 ≠ a → 0 ≠ b → /(a * b) = /a * /b.
+Proof.
     intros a b a_nz b_nz.
     apply mult_lcancel with a; try exact a_nz.
     rewrite mult_assoc.
@@ -131,6 +138,7 @@ Theorem div_mult : ∀ a b, 0 ≠ a → 0 ≠ b → /(a * b) = /a * /b.
 Qed.
 
 Theorem mult_0 : ∀ {a b}, 0 = a * b → {0 = a} + {0 = b}.
+Proof.
     intros a b eq.
     classic_case (0 = a) as [a_z|a_nz].
     -   left; exact a_z.
@@ -142,6 +150,7 @@ Theorem mult_0 : ∀ {a b}, 0 = a * b → {0 = a} + {0 = b}.
 Qed.
 
 Theorem div_one : /1 = 1.
+Proof.
     rewrite <- (mult_lid (/1)).
     classic_case (0 = 1) as [triv|ntriv].
     -   rewrite <- triv.
@@ -151,24 +160,28 @@ Theorem div_one : /1 = 1.
 Qed.
 
 Theorem mult_rrinv : ∀ a b, 0 ≠ b → a * b / b = a.
+Proof.
     intros a b b_nz.
     rewrite <- mult_assoc.
     rewrite mult_rinv by exact b_nz.
     apply mult_rid.
 Qed.
 Theorem mult_rlinv : ∀ a b, 0 ≠ b → a / b * b = a.
+Proof.
     intros a b b_nz.
     rewrite <- mult_assoc.
     rewrite mult_linv by exact b_nz.
     apply mult_rid.
 Qed.
 Theorem mult_lrinv : ∀ a b, 0 ≠ b → b * (/b * a) = a.
+Proof.
     intros a b b_nz.
     rewrite mult_assoc.
     rewrite mult_rinv by exact b_nz.
     apply mult_lid.
 Qed.
 Theorem mult_llinv : ∀ a b, 0 ≠ b → /b * (b * a) = a.
+Proof.
     intros a b b_nz.
     rewrite mult_assoc.
     rewrite mult_linv by exact b_nz.
@@ -176,6 +189,7 @@ Theorem mult_llinv : ∀ a b, 0 ≠ b → /b * (b * a) = a.
 Qed.
 
 Theorem mult_llmove : ∀ a b c, 0 ≠ a → a * b = c ↔ b = /a * c.
+Proof.
     intros a b c a_nz.
     split; intros eq.
     -   apply lmult with (/a) in eq.
@@ -186,6 +200,7 @@ Theorem mult_llmove : ∀ a b c, 0 ≠ a → a * b = c ↔ b = /a * c.
         exact eq.
 Qed.
 Theorem mult_lrmove : ∀ a b c, 0 ≠ b → a * b = c ↔ a = c / b.
+Proof.
     intros a b c b_nz.
     split; intros eq.
     -   apply rmult with (/b) in eq.
@@ -196,6 +211,7 @@ Theorem mult_lrmove : ∀ a b c, 0 ≠ b → a * b = c ↔ a = c / b.
         exact eq.
 Qed.
 Theorem mult_rlmove : ∀ a b c, 0 ≠ b → a = b * c ↔ /b * a = c.
+Proof.
     intros a b c b_nz.
     split; intros eq.
     -   apply lmult with (/b) in eq.
@@ -206,6 +222,7 @@ Theorem mult_rlmove : ∀ a b c, 0 ≠ b → a = b * c ↔ /b * a = c.
         exact eq.
 Qed.
 Theorem mult_rrmove : ∀ a b c, 0 ≠ c → a = b * c ↔ a / c = b.
+Proof.
     intros a b c c_nz.
     split; intros eq.
     -   apply rmult with (/c) in eq.
@@ -217,24 +234,28 @@ Theorem mult_rrmove : ∀ a b c, 0 ≠ c → a = b * c ↔ a / c = b.
 Qed.
 
 Theorem mult_1_ab_da_b : ∀ a b, 0 ≠ a → 1 = a * b ↔ /a = b.
+Proof.
     intros a b a_nz.
     rewrite mult_rlmove by exact a_nz.
     rewrite mult_rid.
     reflexivity.
 Qed.
 Theorem mult_1_ab_db_a : ∀ a b, 0 ≠ b → 1 = a * b ↔ /b = a.
+Proof.
     intros a b b_nz.
     rewrite mult_rrmove by exact b_nz.
     rewrite mult_lid.
     reflexivity.
 Qed.
 Theorem mult_1_ab_a_db : ∀ a b, 0 ≠ b → 1 = a * b ↔ a = /b.
+Proof.
     intros a b b_nz.
     rewrite mult_rrmove by exact b_nz.
     rewrite mult_lid.
     split; intro eq; symmetry; exact eq.
 Qed.
 Theorem mult_1_ab_b_da : ∀ a b, 0 ≠ a → 1 = a * b ↔ b = /a.
+Proof.
     intros a b a_nz.
     rewrite mult_rlmove by exact a_nz.
     rewrite mult_rid.
@@ -242,24 +263,28 @@ Theorem mult_1_ab_b_da : ∀ a b, 0 ≠ a → 1 = a * b ↔ b = /a.
 Qed.
 
 Theorem mult_1_a_ab_b : ∀ a b, 0 ≠ b → 1 = a ↔ a * b = b.
+Proof.
     intros a b b_nz.
     rewrite mult_lrmove by exact b_nz.
     rewrite mult_rinv by exact b_nz.
     split; intro eq; symmetry; exact eq.
 Qed.
 Theorem mult_1_a_ba_b : ∀ a b, 0 ≠ b → 1 = a ↔ b * a = b.
+Proof.
     intros a b b_nz.
     rewrite mult_llmove by exact b_nz.
     rewrite mult_linv by exact b_nz.
     split; intro eq; symmetry; exact eq.
 Qed.
 Theorem mult_1_a_b_ab : ∀ a b, 0 ≠ b → 1 = a ↔ b = a * b.
+Proof.
     intros a b b_nz.
     rewrite mult_rrmove by exact b_nz.
     rewrite mult_rinv by exact b_nz.
     reflexivity.
 Qed.
 Theorem mult_1_a_b_ba : ∀ a b, 0 ≠ b → 1 = a ↔ b = b * a.
+Proof.
     intros a b b_nz.
     rewrite mult_rlmove by exact b_nz.
     rewrite mult_linv by exact b_nz.
@@ -267,24 +292,28 @@ Theorem mult_1_a_b_ba : ∀ a b, 0 ≠ b → 1 = a ↔ b = b * a.
 Qed.
 
 Theorem mult_1_dab_a_b : ∀ a b, 0 ≠ a → 1 = /a * b ↔ a = b.
+Proof.
     intros a b a_nz.
     rewrite mult_1_ab_da_b by (apply div_nz; exact a_nz).
     rewrite div_div by exact a_nz.
     reflexivity.
 Qed.
 Theorem mult_1_adb_a_b : ∀ a b, 0 ≠ b → 1 = a / b ↔ a = b.
+Proof.
     intros a b b_nz.
     rewrite mult_1_ab_a_db by (apply div_nz; exact b_nz).
     rewrite div_div by exact b_nz.
     reflexivity.
 Qed.
 Theorem mult_1_dab_b_a : ∀ a b, 0 ≠ a → 1 = /a * b ↔ b = a.
+Proof.
     intros a b a_nz.
     rewrite mult_1_ab_b_da by (apply div_nz; exact a_nz).
     rewrite div_div by exact a_nz.
     reflexivity.
 Qed.
 Theorem mult_1_adb_b_a : ∀ a b, 0 ≠ b → 1 = a / b ↔ b = a.
+Proof.
     intros a b b_nz.
     rewrite mult_1_ab_db_a by (apply div_nz; exact b_nz).
     rewrite div_div by exact b_nz.

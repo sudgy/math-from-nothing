@@ -14,6 +14,7 @@ Section EquivCard.
 Context {U : Type}.
 (* end hide *)
 Theorem equiv_card_le : ∀ E : equivalence U, |equiv_type E| <= |U|.
+Proof.
     intros E.
     unfold le; equiv_simpl.
     exists (λ (x : equiv_type E), ex_val [|x]).
@@ -44,7 +45,8 @@ Context {U} `{
 Hypothesis distinct : ∃ a b : U, a ≠ b.
 
 Theorem dense_open_infinite :
-        ∀ a b, a < b → infinite (|set_type (open_interval a b)|).
+    ∀ a b, a < b → infinite (|set_type (open_interval a b)|).
+Proof.
     intros a b ab.
     classic_contradiction contr.
     unfold infinite in contr.
@@ -99,7 +101,8 @@ Theorem dense_open_infinite :
 Qed.
 
 Theorem dense_closed_infinite :
-        ∀ a b, a < b → infinite (|set_type (closed_interval a b)|).
+    ∀ a b, a < b → infinite (|set_type (closed_interval a b)|).
+Proof.
     intros a b ab.
     apply (trans (dense_open_infinite a b ab)).
     unfold le; equiv_simpl.
@@ -122,6 +125,7 @@ Qed.
 End DenseInfinite.
 (* end hide *)
 Theorem int_size : |int| = |nat|.
+Proof.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
@@ -135,6 +139,7 @@ Theorem int_size : |int| = |nat|.
 Qed.
 
 Theorem rat_size : |rat| = |nat|.
+Proof.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
@@ -197,6 +202,7 @@ Context {U} `{
 Local Open Scope card_scope.
 
 Theorem arch_ordered_size : |U| <= 2 ^ |nat|.
+Proof.
     rewrite <- rat_size.
     rewrite <- power_set_size.
     unfold le; equiv_simpl.

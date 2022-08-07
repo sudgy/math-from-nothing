@@ -29,12 +29,14 @@ Fixpoint list_reverse (A : Type) (l : list A) : list A :=
     end.
 
 Theorem list_add_conc {U} : ∀ (a : U) l, a :: l = (a :: list_end) ++ l.
+Proof.
     intros a l.
     cbn.
     reflexivity.
 Qed.
 
 Theorem list_conc_end {U} : ∀ l : list U, l ++ list_end = l.
+Proof.
     intros l.
     induction l.
     -   cbn.
@@ -45,7 +47,8 @@ Theorem list_conc_end {U} : ∀ l : list U, l ++ list_end = l.
 Qed.
 
 Theorem list_conc_assoc {U} :
-        ∀ l1 l2 l3 : list U, l1 ++ (l2 ++ l3) = (l1 ++ l2) ++ l3.
+    ∀ l1 l2 l3 : list U, l1 ++ (l2 ++ l3) = (l1 ++ l2) ++ l3.
+Proof.
     intros l1 l2 l3.
     induction l1.
     -   cbn.
@@ -56,7 +59,8 @@ Theorem list_conc_assoc {U} :
 Qed.
 
 Theorem list_conc_add_assoc {U} :
-        ∀ (a : U) l1 l2, a :: (l1 ++ l2) = (a :: l1) ++ l2.
+    ∀ (a : U) l1 l2, a :: (l1 ++ l2) = (a :: l1) ++ l2.
+Proof.
     intros a l1 l2.
     rewrite list_add_conc.
     rewrite (list_add_conc a l1).
@@ -64,7 +68,8 @@ Theorem list_conc_add_assoc {U} :
 Qed.
 
 Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
-        list_reverse (l1 ++ l2) = list_reverse l2 ++ list_reverse l1.
+    list_reverse (l1 ++ l2) = list_reverse l2 ++ list_reverse l1.
+Proof.
     intros l1 l2.
     induction l1.
     -   cbn.
@@ -77,7 +82,8 @@ Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
 Qed.
 
 Theorem list_reverse_end {U : Type} : ∀ l : list U,
-        list_end = list_reverse l → list_end = l.
+    list_end = list_reverse l → list_end = l.
+Proof.
     intros l eq.
     destruct l.
     1: reflexivity.
@@ -88,7 +94,8 @@ Theorem list_reverse_end {U : Type} : ∀ l : list U,
 Qed.
 
 Theorem list_reverse_reverse {U : Type} : ∀ l : list U,
-        list_reverse (list_reverse l) = l.
+    list_reverse (list_reverse l) = l.
+Proof.
     intros l.
     induction l.
     -   cbn.
@@ -101,7 +108,8 @@ Theorem list_reverse_reverse {U : Type} : ∀ l : list U,
 Qed.
 
 Theorem list_reverse_eq {U : Type} : ∀ l1 l2 : list U,
-        l1 = l2 ↔ list_reverse l1 = list_reverse l2.
+    l1 = l2 ↔ list_reverse l1 = list_reverse l2.
+Proof.
     intros l1 l2.
     split.
     1: intros; subst; reflexivity.

@@ -25,7 +25,8 @@ Context {U} `{
 
 (* end hide *)
 Lemma ulist_sum_wd : ∀ l1 l2 : list U, list_permutation l1 l2 →
-        list_sum l1 = list_sum l2.
+    list_sum l1 = list_sum l2.
+Proof.
     intros l1 l2 eq.
     induction eq.
     -   reflexivity.
@@ -42,11 +43,13 @@ Qed.
 Definition ulist_sum := unary_op (E := ulist_equiv U) ulist_sum_wd.
 
 Theorem ulist_sum_end : ulist_sum ulist_end = 0.
+Proof.
     unfold ulist_sum, ulist_end; equiv_simpl.
     reflexivity.
 Qed.
 
 Theorem ulist_sum_add : ∀ a l, ulist_sum (a ::: l) = a + ulist_sum l.
+Proof.
     intros a l.
     equiv_get_value l.
     unfold ulist_sum, ulist_add; equiv_simpl.
@@ -54,6 +57,7 @@ Theorem ulist_sum_add : ∀ a l, ulist_sum (a ::: l) = a + ulist_sum l.
 Qed.
 
 Theorem ulist_sum_plus : ∀ a b, ulist_sum (a +++ b) = ulist_sum a + ulist_sum b.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold ulist_sum, ulist_conc; equiv_simpl.
@@ -61,6 +65,7 @@ Theorem ulist_sum_plus : ∀ a b, ulist_sum (a +++ b) = ulist_sum a + ulist_sum 
 Qed.
 
 Theorem ulist_sum_neg : ∀ l, -ulist_sum l = ulist_sum (ulist_image l neg).
+Proof.
     intros l.
     equiv_get_value l.
     unfold ulist_sum, ulist_image; equiv_simpl.
@@ -68,7 +73,8 @@ Theorem ulist_sum_neg : ∀ l, -ulist_sum l = ulist_sum (ulist_image l neg).
 Qed.
 
 Theorem ulist_sum_minus : ∀ a b,
-        ulist_sum a - ulist_sum b = ulist_sum (a +++ (ulist_image b neg)).
+    ulist_sum a - ulist_sum b = ulist_sum (a +++ (ulist_image b neg)).
+Proof.
     intros a b.
     rewrite ulist_sum_plus.
     rewrite ulist_sum_neg.
@@ -76,6 +82,7 @@ Theorem ulist_sum_minus : ∀ a b,
 Qed.
 
 Theorem ulist_sum_sum_eq : ∀ f n, ulist_sum (func_to_ulist f n) = sum f 0 n.
+Proof.
     intros f n.
     rewrite func_to_list_ulist.
     unfold ulist_sum; equiv_simpl.
@@ -83,7 +90,8 @@ Theorem ulist_sum_sum_eq : ∀ f n, ulist_sum (func_to_ulist f n) = sum f 0 n.
 Qed.
 
 Theorem ulist_sum_func_single : ∀ a m n, m < n →
-        ulist_sum (func_to_ulist (λ x, If x = m then a else 0) n) = a.
+    ulist_sum (func_to_ulist (λ x, If x = m then a else 0) n) = a.
+Proof.
     intros a m n ltq.
     rewrite func_to_list_ulist.
     unfold ulist_sum; equiv_simpl.

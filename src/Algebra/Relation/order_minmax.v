@@ -44,6 +44,7 @@ Context {U} `{P : Plus U,
              }.
 (* end hide *)
 Theorem min_comm : ∀ a b, min a b = min b a.
+Proof.
     intros a b.
     unfold min; do 2 case_if; try reflexivity.
     -   apply antisym; auto.
@@ -55,6 +56,7 @@ Theorem min_comm : ∀ a b, min a b = min b a.
 Qed.
 
 Theorem max_comm : ∀ a b, max a b = max b a.
+Proof.
     intros a b.
     unfold max; do 2 case_if; try reflexivity.
     -   apply antisym; auto.
@@ -66,6 +68,7 @@ Theorem max_comm : ∀ a b, max a b = max b a.
 Qed.
 
 Theorem lmin : ∀ a b, min a b <= a.
+Proof.
     intros a b.
     unfold min; case_if.
     -   apply refl.
@@ -73,23 +76,27 @@ Theorem lmin : ∀ a b, min a b <= a.
         apply n.
 Qed.
 Theorem rmin : ∀ a b, min a b <= b.
+Proof.
     intros a b.
     rewrite min_comm.
     apply lmin.
 Qed.
 
 Theorem lmax : ∀ a b, a <= max a b.
+Proof.
     intros a b.
     unfold max; case_if; auto.
     apply refl.
 Qed.
 Theorem rmax : ∀ a b, b <= max a b.
+Proof.
     intros a b.
     rewrite max_comm.
     apply lmax.
 Qed.
 
 Theorem min_max_plus : ∀ a b, min a b + max a b = a + b.
+Proof.
     intros a b.
     unfold min, max; case_if.
     -   reflexivity.

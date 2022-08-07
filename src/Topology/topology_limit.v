@@ -34,6 +34,7 @@ Section LimitPoint.
 Context {U} `{Topology U}.
 (* end hide *)
 Theorem closure_limit_points : ∀ A, closure A = A ∪ limit_point A.
+Proof.
     intros A.
     apply predicate_ext; intros x; split.
     -   intros CAx.
@@ -68,6 +69,7 @@ Theorem closure_limit_points : ∀ A, closure A = A ∪ limit_point A.
 Qed.
 
 Theorem closed_limit_points : ∀ A, closed A ↔ (∀ x, limit_point A x → A x).
+Proof.
     intros A.
     rewrite closed_if_closure.
     rewrite closure_limit_points.
@@ -85,7 +87,8 @@ Theorem closed_limit_points : ∀ A, closed A ↔ (∀ x, limit_point A x → A 
 Qed.
 
 Theorem seq_closure :
-        ∀ (A : U → Prop) x f, (∀ n, A (f n)) → seq_lim f x → closure A x.
+    ∀ (A : U → Prop) x f, (∀ n, A (f n)) → seq_lim f x → closure A x.
+Proof.
     intros A x f Af lim.
     rewrite in_closure.
     intros S S_open Sx.
@@ -99,6 +102,7 @@ Theorem seq_closure :
 Qed.
 
 Theorem limit_point_closure : ∀ A x, limit_point A x → closure A x.
+Proof.
     intros A x x_lim.
     rewrite closure_limit_points.
     right.
@@ -106,7 +110,8 @@ Theorem limit_point_closure : ∀ A x, limit_point A x → closure A x.
 Qed.
 
 Theorem limit_point_sub : ∀ A B x,
-        (A - singleton x) ⊆ B → limit_point A x → limit_point B x.
+    (A - singleton x) ⊆ B → limit_point A x → limit_point B x.
+Proof.
     intros A B x sub A_lim S S_open Sx.
     specialize (A_lim S S_open Sx).
     apply not_empty_ex in A_lim.
@@ -122,7 +127,8 @@ Qed.
 Existing Instance subspace_topology.
 
 Theorem subspace_limit_point : ∀ X A x, A ⊆ X →
-        limit_point A [x|] → limit_point (to_set_type X A) x.
+    limit_point A [x|] → limit_point (to_set_type X A) x.
+Proof.
     intros X A x sub lim S S_open Sx.
     unfold limit_point in lim.
     destruct S_open as [T [T_open S_eq]].
@@ -144,6 +150,7 @@ Theorem subspace_limit_point : ∀ X A x, A ⊆ X →
 Qed.
 
 Theorem constant_seq_lim : ∀ x, seq_lim (λ _, x) x.
+Proof.
     intros x S S_open Sx.
     exists 0.
     intros n n_ge.
@@ -151,13 +158,15 @@ Theorem constant_seq_lim : ∀ x, seq_lim (λ _, x) x.
 Qed.
 
 Theorem constant_seq_converges : ∀ x, seq_converges (λ _, x).
+Proof.
     intros x.
     exists x.
     apply constant_seq_lim.
 Qed.
 
 Theorem subsequence_lim_eq :
-        ∀ a b x, seq_lim a x → subsequence a b → seq_lim b x.
+    ∀ a b x, seq_lim a x → subsequence a b → seq_lim b x.
+Proof.
     intros a b x a_lim [f [f_sub ab_eq]].
     intros S S_open Sx.
     specialize (a_lim S S_open Sx) as [N a_lim].
@@ -172,7 +181,8 @@ Qed.
 Close Scope set_scope.
 (* end hide *)
 Theorem seq_lim_even_odd : ∀ a x,
-        seq_lim (λ n, a (2*n)) x → seq_lim (λ n, a (2*n + 1)) x → seq_lim a x.
+    seq_lim (λ n, a (2*n)) x → seq_lim (λ n, a (2*n + 1)) x → seq_lim a x.
+Proof.
     intros a x x1 x2 S S_open Sx.
     specialize (x1 S S_open Sx) as [N1 x1].
     specialize (x2 S S_open Sx) as [N2 x2].
@@ -195,6 +205,7 @@ Theorem seq_lim_even_odd : ∀ a x,
 Qed.
 
 Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
+Proof.
     intros a n x.
     split.
     -   intros x_lim S S_open Sx.
@@ -215,7 +226,8 @@ Theorem seq_lim_part : ∀ a n x, seq_lim a x ↔ seq_lim (λ m, a (m + n)) x.
 Qed.
 
 Theorem seq_converges_part : ∀ a n,
-        seq_converges a ↔ seq_converges (λ m, a (m + n)).
+    seq_converges a ↔ seq_converges (λ m, a (m + n)).
+Proof.
     intros a n.
     split.
     -   intros [x a_lim].
@@ -241,7 +253,8 @@ Context {U} `{HausdorffSpace U}.
 Local Open Scope card_scope.
 (* end hide *)
 Theorem limit_point_inf : ∀ A x,
-        limit_point A x ↔ ∀ S, open S → S x → infinite (|set_type (A ∩ S)|).
+    limit_point A x ↔ ∀ S, open S → S x → infinite (|set_type (A ∩ S)|).
+Proof.
     intros A x.
     split.
     -   intros x_lim S S_open Sx.
@@ -321,6 +334,7 @@ Theorem limit_point_inf : ∀ A x,
 Qed.
 
 Theorem seq_lim_unique : ∀ f x y, seq_lim f x → seq_lim f y → x = y.
+Proof.
     intros f x y x_lim y_lim.
     classic_contradiction neq.
     pose proof (hausdorff_space x y neq)
@@ -341,7 +355,8 @@ Section BasisLimit.
 Context {U} `{TopologyBasis U}.
 (* end hide *)
 Theorem basis_seq_lim : ∀ f x, seq_lim f x ↔
-        ∀ S, top_basis S → S x → ∃ N, ∀ n, N <= n → S (f n).
+    ∀ S, top_basis S → S x → ∃ N, ∀ n, N <= n → S (f n).
+Proof.
     intros f x.
     split.
     -   intros f_lim S S_basis Sx.

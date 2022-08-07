@@ -14,7 +14,8 @@ Definition inverse_image_collection {U V} (f : U → V) (T : (V → Prop) → Pr
 Definition collection2 {U} (A B : U → Prop) := λ S, S = A ∨ S = B.
 
 Theorem inverse_union {U V} : ∀ (f : U → V) S,
-        inverse_image f (⋃ S) = ⋃ (inverse_image_collection f S).
+    inverse_image f (⋃ S) = ⋃ (inverse_image_collection f S).
+Proof.
     intros f S.
     apply antisym.
     -   intros x [A [SA Afx]].
@@ -30,6 +31,7 @@ Theorem inverse_union {U V} : ∀ (f : U → V) S,
 Qed.
 
 Theorem collection2_union {U} : ∀ A B : U → Prop, A ∪ B = ⋃ (collection2 A B).
+Proof.
     intros A B.
     apply antisym.
     -   intros x [Ax|Bx].
@@ -49,6 +51,7 @@ Theorem collection2_union {U} : ∀ A B : U → Prop, A ∪ B = ⋃ (collection2
 Qed.
 
 Theorem collection2_inter {U} : ∀ A B : U → Prop, A ∩ B = ⋂ (collection2 A B).
+Proof.
     intros A B.
     apply antisym.
     -   intros x [Ax Bx].
@@ -64,12 +67,14 @@ Theorem collection2_inter {U} : ∀ A B : U → Prop, A ∩ B = ⋂ (collection2
 Qed.
 
 Theorem union_empty {U} : ⋃ (empty (U := U → Prop)) = ∅.
+Proof.
     apply not_ex_empty.
     intros x [A [C Ax]].
     exact C.
 Qed.
 
 Theorem union_singleton {U} : ∀ S : U → Prop, S = ⋃ singleton S.
+Proof.
     intros S.
     apply predicate_ext.
     intros x; split.
@@ -84,6 +89,7 @@ Theorem union_singleton {U} : ∀ S : U → Prop, S = ⋃ singleton S.
 Qed.
 
 Theorem inter_singleton {U} : ∀ S : U → Prop, S = ⋂ singleton S.
+Proof.
     intros S.
     apply antisym.
     -   intros x Sx A AS.
@@ -95,7 +101,8 @@ Theorem inter_singleton {U} : ∀ S : U → Prop, S = ⋂ singleton S.
 Qed.
 
 Theorem big_union_compl {U} : ∀ SS : (U → Prop) → Prop,
-        complement (⋃ SS) = ⋂ (λ S, SS (complement S)).
+    complement (⋃ SS) = ⋂ (λ S, SS (complement S)).
+Proof.
     intros SS.
     apply predicate_ext.
     intros x; split; intros x_in.
@@ -112,7 +119,8 @@ Theorem big_union_compl {U} : ∀ SS : (U → Prop) → Prop,
 Qed.
 
 Theorem big_inter_compl {U} : ∀ SS : (U → Prop) → Prop,
-        complement (⋂ SS) = ⋃ (λ S, SS (complement S)).
+    complement (⋂ SS) = ⋃ (λ S, SS (complement S)).
+Proof.
     intros SS.
     apply predicate_ext.
     intros x; split; intros x_in.
@@ -131,6 +139,7 @@ Theorem big_inter_compl {U} : ∀ SS : (U → Prop) → Prop,
 Qed.
 
 Theorem empty_union {U} : ⋃ ∅ = (empty (U := U)).
+Proof.
     apply antisym.
     -   intros x [A [A_in x_in]].
         contradiction A_in.

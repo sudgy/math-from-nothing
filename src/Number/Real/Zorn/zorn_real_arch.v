@@ -37,6 +37,7 @@ Context {U} `{
 }.
 
 Lemma aof_ex_ex : ∃ f : U → (nat → Prop), injective f.
+Proof.
     pose proof arch_ordered_size as f_ex.
     rewrite <- power_set_size in f_ex.
     unfold le in f_ex; equiv_simpl in f_ex.
@@ -48,6 +49,7 @@ Definition aof_ex_f_base := ex_val aof_ex_ex.
 Definition aof_ex_set := image aof_ex_f_base.
 
 Theorem aof_ex_f_in : ∀ x, aof_ex_set (aof_ex_f_base x).
+Proof.
     intros x.
     exists x.
     reflexivity.
@@ -57,6 +59,7 @@ Definition aof_ex_f (x : U)
     := [aof_ex_f_base x|aof_ex_f_in x] : set_type aof_ex_set.
 
 Theorem aof_ex_f_inj : injective aof_ex_f.
+Proof.
     intros a b eq.
     apply eq_set_type in eq; cbn in eq.
     apply (ex_proof aof_ex_ex) in eq.
@@ -64,6 +67,7 @@ Theorem aof_ex_f_inj : injective aof_ex_f.
 Qed.
 
 Theorem aof_ex_f_sur : surjective aof_ex_f.
+Proof.
     intros [y [x eq]].
     exists x.
     apply set_type_eq; cbn.
@@ -71,16 +75,19 @@ Theorem aof_ex_f_sur : surjective aof_ex_f.
 Qed.
 
 Theorem aof_ex_f_bij : bijective aof_ex_f.
+Proof.
     split; [>exact aof_ex_f_inj|exact aof_ex_f_sur].
 Qed.
 
 Definition aof_ex_f_inv := bij_inv aof_ex_f aof_ex_f_bij.
 
 Theorem aof_ex_f_eq1 : ∀ x, aof_ex_f_inv (aof_ex_f x) = x.
+Proof.
     apply inverse_eq1.
     apply bij_inv_inv.
 Qed.
 Theorem aof_ex_f_eq2 : ∀ x, aof_ex_f (aof_ex_f_inv x) = x.
+Proof.
     apply inverse_eq2.
     apply bij_inv_inv.
 Qed.
@@ -224,6 +231,7 @@ Next Obligation.
     exact (not_trivial_one contr).
 Qed.
 Lemma aof_ex_lt : ∀ a b, a < b ↔ aof_ex_f_inv a < aof_ex_f_inv b.
+Proof.
     intros a b.
     split.
     -   intros [leq neq].

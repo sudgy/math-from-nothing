@@ -10,6 +10,7 @@ Section Sqrt.
 Existing Instance real_order_topology.
 (* end hide *)
 Theorem sqrt_ex : ∀ a : real, 0 <= a → ∃ b, b * b = a ∧ 0 <= b.
+Proof.
     intros a a_pos.
     classic_case (0 = a) as [a_z|a_nz].
     1: {
@@ -71,12 +72,14 @@ Definition sqrt (x : set_type (λ a : real, 0 <= a))
     := ex_val (sqrt_ex [x|] [|x]).
 
 Theorem sqrt_squares : ∀ x, sqrt(x) * sqrt(x) = [x|].
+Proof.
     intros [x x_pos]; cbn.
     unfold sqrt.
     rewrite_ex_val a a_eq.
     apply a_eq.
 Qed.
 Theorem sqrt_pos : ∀ x, 0 <= sqrt(x).
+Proof.
     intros [x x_pos]; cbn.
     unfold sqrt.
     rewrite_ex_val a a_eq.

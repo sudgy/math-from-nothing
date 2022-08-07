@@ -40,17 +40,20 @@ Local Notation "a ^ b" := (op_pow_nat op a b).
 (* end show *)
 
 Theorem op_pow_nat_zero : ∀ a, a^0 = id.
+Proof.
     intros a.
     reflexivity.
 Qed.
 
 Theorem op_pow_nat_one : ∀ a, a^1 = a.
+Proof.
     intros a.
     unfold one; cbn.
     apply rid.
 Qed.
 
 Theorem op_pow_nat_mult : ∀ a m n, a^m · a^n = a^(m + n).
+Proof.
     intros a m n.
     nat_induction m.
     -   rewrite op_pow_nat_zero.
@@ -64,6 +67,7 @@ Theorem op_pow_nat_mult : ∀ a m n, a^m · a^n = a^(m + n).
 Qed.
 
 Theorem op_pow_nat_pow : ∀ a m n, (a^m)^n = a^(m * n).
+Proof.
     intros a m n.
     nat_induction n.
     -   rewrite mult_ranni.
@@ -77,6 +81,7 @@ Theorem op_pow_nat_pow : ∀ a m n, (a^m)^n = a^(m * n).
 Qed.
 
 Theorem op_pow_nat_comm_any : ∀ a b n, a · b = b · a → a · b^n = b^n · a.
+Proof.
     intros a b n com.
     nat_induction n.
     -   rewrite op_pow_nat_zero.
@@ -91,12 +96,14 @@ Theorem op_pow_nat_comm_any : ∀ a b n, a · b = b · a → a · b^n = b^n · a
 Qed.
 
 Theorem op_pow_nat_comm : ∀ a n, a · a^n = a^n · a.
+Proof.
     intros a n.
     apply op_pow_nat_comm_any.
     reflexivity.
 Qed.
 
 Theorem op_pow_nat_inv : ∀ a n, inv a^n = inv (a^n).
+Proof.
     intros a n.
     nat_induction n.
     -   do 2 rewrite op_pow_nat_zero.
@@ -122,6 +129,7 @@ Local Notation "a ^ b" := (op_pow_int op a b).
 (* end show *)
 
 Theorem op_pow_int_pos : ∀ a n, a^(nat_to_int n) = a^^n.
+Proof.
     intros a n.
     unfold op_pow_int.
     destruct (connex 0 (nat_to_int n)) as [n_pos|n_neg].
@@ -144,6 +152,7 @@ Theorem op_pow_int_pos : ∀ a n, a^(nat_to_int n) = a^^n.
 Qed.
 
 Theorem op_pow_int_neg : ∀ a n, a^(-nat_to_int n) = inv a^^n.
+Proof.
     intros a n.
     unfold op_pow_int.
     destruct (connex 0 (-nat_to_int n)) as [n_neg|n_pos].
@@ -169,6 +178,7 @@ Theorem op_pow_int_neg : ∀ a n, a^(-nat_to_int n) = inv a^^n.
 Qed.
 
 Theorem op_pow_int_zero : ∀ a, a^0 = id.
+Proof.
     intros a.
     change 0 with (nat_to_int 0).
     rewrite op_pow_int_pos.
@@ -176,6 +186,7 @@ Theorem op_pow_int_zero : ∀ a, a^0 = id.
 Qed.
 
 Theorem op_pow_int_one : ∀ a, a^1 = a.
+Proof.
     intros a.
     change 1 with (nat_to_int 1).
     rewrite op_pow_int_pos.
@@ -183,6 +194,7 @@ Theorem op_pow_int_one : ∀ a, a^1 = a.
 Qed.
 
 Theorem op_pow_int_comm_any : ∀ a b n, a · b = b · a → a · b^n = b^n · a.
+Proof.
     intros a b n com.
     unfold op_pow_int.
     destruct (connex 0 n) as [n_pos|n_neg];
@@ -199,12 +211,14 @@ Theorem op_pow_int_comm_any : ∀ a b n, a · b = b · a → a · b^n = b^n · a
 Qed.
 
 Theorem op_pow_int_comm : ∀ a n, a · a^n = a^n · a.
+Proof.
     intros a n.
     apply op_pow_int_comm_any.
     reflexivity.
 Qed.
 
 Theorem op_pow_int_inv : ∀ a n, inv a^n = inv (a^n).
+Proof.
     intros a n.
     unfold op_pow_int.
     destruct (connex 0 n) as [n_pos|n_neg];
@@ -214,6 +228,7 @@ Theorem op_pow_int_inv : ∀ a n, inv a^n = inv (a^n).
 Qed.
 
 Theorem op_pow_int_neg_inv : ∀ a n, a^(-n) = inv a^n.
+Proof.
     intros a n.
     unfold op_pow_int at 2.
     destruct (connex 0 n) as [n_pos|n_neg];
@@ -231,6 +246,7 @@ Theorem op_pow_int_neg_inv : ∀ a n, a^(-n) = inv a^n.
 Qed.
 
 Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
+Proof.
     intros a m n.
     unfold op_pow_int.
     destruct (connex 0 m) as [m_pos|m_neg];
@@ -333,7 +349,8 @@ Theorem op_pow_int_mult : ∀ a m n, a^m · a^n = a^(m + n).
 Qed.
 
 Theorem op_pow_int_pow1 :
-        ∀ a m n, (a^m)^(nat_to_int n) = a^(m * (nat_to_int n)).
+    ∀ a m n, (a^m)^(nat_to_int n) = a^(m * (nat_to_int n)).
+Proof.
     intros a m n.
     unfold op_pow_int at 2.
     destruct (connex 0 m) as [m_pos|m_neg];
@@ -352,6 +369,7 @@ Theorem op_pow_int_pow1 :
         apply op_pow_nat_pow.
 Qed.
 Theorem op_pow_int_pow : ∀ a m n, (a^m)^n = a^(m * n).
+Proof.
     intros a m n.
     unfold op_pow_int at 1.
     destruct (connex 0 n) as [n_pos|n_neg];

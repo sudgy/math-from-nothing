@@ -33,6 +33,7 @@ Local Instance fs_le_class : Order fs := {
     le := fs_le
 }.
 Lemma fs_le_refl : ∀ f, f <= f.
+Proof.
     intros f.
     unfold le; cbn.
     unfold fs_le.
@@ -42,6 +43,7 @@ Local Instance fs_le_refl_class : Reflexive le := {
     refl := fs_le_refl
 }.
 Lemma fs_le_antisym : ∀ f g, f <= g → g <= f → f = g.
+Proof.
     intros f g.
     unfold le; cbn.
     unfold fs_le.
@@ -60,6 +62,7 @@ Local Instance fs_le_antisym_class : Antisymmetric le := {
     antisym := fs_le_antisym
 }.
 Lemma fs_le_trans : ∀ f g h, f <= g → g <= h → f <= h.
+Proof.
     intros f g h.
     unfold le; cbn.
     unfold fs_le.
@@ -79,7 +82,8 @@ Hypothesis C_chain : is_chain le C.
 Definition C_union_set x := ∃ f, C f ∧ bin_domain (fs_f f) x.
 
 Lemma combining_f_ex : ∀ x y : set_type (C_union_set),
-        ∃ f, C f ∧ bin_domain (fs_f f) [x|] ∧ bin_domain (fs_f f) [y|].
+    ∃ f, C f ∧ bin_domain (fs_f f) [x|] ∧ bin_domain (fs_f f) [y|].
+Proof.
     intros [x [f1 [Cf1 f1x]]] [y [f2 [Cf2 f2y]]]; cbn.
     specialize (C_chain f1 f2 Cf1 Cf2) as [leq|leq].
     -   exists f2.
@@ -99,9 +103,10 @@ Definition C_union_f (x y : set_type (C_union_set)) :=
     ⟩.
 
 Lemma all_equal : ∀ F G, C F → C G → ∀ a b
-        (Fa : bin_domain (fs_f F) a) (Fb : bin_domain (fs_f F) b)
-        (Ga : bin_domain (fs_f G) a) (Gb : bin_domain (fs_f G) b),
-        (fs_f F)⟨[a|Fa], [b|Fb]⟩ = (fs_f G)⟨[a|Ga], [b|Gb]⟩.
+    (Fa : bin_domain (fs_f F) a) (Fb : bin_domain (fs_f F) b)
+    (Ga : bin_domain (fs_f G) a) (Gb : bin_domain (fs_f G) b),
+    (fs_f F)⟨[a|Fa], [b|Fb]⟩ = (fs_f G)⟨[a|Ga], [b|Gb]⟩.
+Proof.
     intros F G CF CG a b Fa Fb Ga Gb.
     destruct (C_chain F G CF CG) as [[sub FG]|[sub GF]].
     -   specialize (FG [a|Fa] [b|Fb]); cbn in FG.
@@ -115,6 +120,7 @@ Lemma all_equal : ∀ F G, C F → C G → ∀ a b
 Qed.
 
 Lemma C_union_f_range : ∀ a b, C_union_set (C_union_f a b).
+Proof.
     intros [x [f1 [Cf1 f1x]]] [y [f2 [Cf2 f2y]]]; cbn.
     unfold C_union_set, C_union_f; cbn.
     destruct (C_chain f1 f2 Cf1 Cf2) as [[sub leq]|[sub leq]];
@@ -140,6 +146,7 @@ Lemma C_union_f_range : ∀ a b, C_union_set (C_union_f a b).
 Qed.
 
 Lemma C_union_f_inj : ∀ a b c d, C_union_f a b = C_union_f c d → a = c ∧ b = d.
+Proof.
     intros [a Ca] [b Cb] [c Cc] [d Cd] eq.
     unfold C_union_f, ex_val, ex_proof in eq.
     destruct (ex_to_type _) as [f1 [Cf1 [f1a f1b]]].
@@ -167,6 +174,7 @@ Lemma C_union_f_inj : ∀ a b c d, C_union_f a b = C_union_f c d → a = c ∧ b
 Qed.
 
 Lemma C_union_f_sur : ∀ c, C_union_set c → ∃ a b, C_union_f a b = c.
+Proof.
     intros c [f [Cf fc]].
     pose proof (fs_sur f c fc) as [[a fa] [[b fb] eq]].
     assert (C_union_set a) as Ca by (exists f; split; assumption).
@@ -179,6 +187,7 @@ Lemma C_union_f_sur : ∀ c, C_union_set c → ∃ a b, C_union_f a b = c.
 Qed.
 
 Lemma zorn_piece : has_upper_bound le C.
+Proof.
     exists (make_fs
         (make_bin_set_function C_union_set C_union_f)
         C_union_f_range
@@ -217,6 +226,7 @@ End UpperBound.
 
 Definition f := ex_val (zorn le zorn_piece).
 Lemma f_max : ∀ g, ¬(f < g).
+Proof.
     intros g.
     unfold f.
     rewrite_ex_val C0 H0. (* For some reason using H breaks it? *)
@@ -226,6 +236,7 @@ Qed.
 Definition X := bin_domain (fs_f f).
 
 Lemma X_mult_idemp : |set_type X| * |set_type X| = |set_type X|.
+Proof.
     unfold mult; equiv_simpl.
     exists (λ x, [fs_f f⟨fst x, snd x⟩ | fs_range f (fst x) (snd x)]).
     split.
@@ -242,6 +253,7 @@ Lemma X_mult_idemp : |set_type X| * |set_type X| = |set_type X|.
 Qed.
 
 Lemma X_not_0 : |set_type X| ≠ 0.
+Proof.
     intro contr.
     pose proof (card_le_sub _ _ A_inf) as [A' A'_eq].
     pose proof nat_mult_nat as eq.
@@ -314,6 +326,7 @@ Lemma X_not_0 : |set_type X| ≠ 0.
 Qed.
 
 Lemma X_not_1 : |set_type X| ≠ 1.
+Proof.
     intro contr.
     pose proof (card_le_sub _ _ A_inf) as [A' A'_eq].
     assert (|set_type (A' ∪ X)%set| = |set_type A'|) as A'X_eq.
@@ -556,6 +569,7 @@ Section XInf.
 Hypothesis contr : finite (|set_type X|).
 
 Lemma X_fin_false : False.
+Proof.
     apply fin_nat_ex in contr as [n eq1].
     assert (0 ≠ n) as n_neq_0.
     {
@@ -587,6 +601,7 @@ Qed.
 End XInf.
 
 Lemma X_inf : infinite (|set_type X|).
+Proof.
     classic_contradiction contr.
     apply X_fin_false.
     unfold infinite in contr.
@@ -595,6 +610,7 @@ Lemma X_inf : infinite (|set_type X|).
 Qed.
 
 Lemma X_ex : ∃ a, X a.
+Proof.
     pose proof X_inf as inf.
     unfold infinite, le in inf; equiv_simpl in inf.
     destruct inf as [f f_inj].
@@ -603,6 +619,7 @@ Lemma X_ex : ∃ a, X a.
 Qed.
 
 Lemma X_le : |set_type X| <= |A|.
+Proof.
     unfold le; equiv_simpl.
     exists (λ x, [x|]).
     intros a b eq.
@@ -617,6 +634,7 @@ Hypothesis contr : |set_type X| ≠ |A|.
 Definition X' x := ¬X x.
 
 Lemma XX'_eq : |set_type X| + |set_type X'| = |A|.
+Proof.
     unfold plus; equiv_simpl.
     exists (λ x, match x with | inl x' => [x'|] | inr x' => [x'|] end).
     split.
@@ -634,6 +652,7 @@ Lemma XX'_eq : |set_type X| + |set_type X'| = |A|.
 Qed.
 
 Lemma X'_ge : |set_type X| <= |set_type X'|.
+Proof.
     classic_contradiction ltq.
     rewrite nle_lt in ltq.
     apply contr.
@@ -651,6 +670,7 @@ Lemma X'_ge : |set_type X| <= |set_type X'|.
     apply (trans (land (nat_is_finite 2)) X_inf).
 Qed.
 Lemma f0_ex : ∃ f : set_type X → set_type X', injective f.
+Proof.
     pose proof X'_ge.
     unfold le in H; equiv_simpl in H.
     exact H.
@@ -660,6 +680,7 @@ Definition f0 := ex_val f0_ex.
 Definition Y y := ∃ x, [f0 x|] = y.
 
 Lemma Y_eq : |set_type X| = |set_type Y|.
+Proof.
     equiv_simpl.
     assert (∀ x, Y [f0 x|]) as f_in by (intro x; exists x; reflexivity).
     exists (λ x, [_|f_in x]).
@@ -676,9 +697,10 @@ Lemma Y_eq : |set_type X| = |set_type Y|.
 Qed.
 
 Lemma Y_eq2 :
-        |set_type X| * |set_type Y| +
-        |set_type Y| * |set_type X| +
-        |set_type Y| * |set_type Y| = |set_type Y|.
+    |set_type X| * |set_type Y| +
+    |set_type Y| * |set_type X| +
+    |set_type Y| * |set_type Y| = |set_type Y|.
+Proof.
     rewrite <- Y_eq.
     rewrite X_mult_idemp.
     rewrite <- (mult_lid (|set_type X|)) at 1 2 3.
@@ -708,10 +730,11 @@ Lemma Y_eq2 :
 Qed.
 
 Lemma f1_ex : ∃ f :
-        set_type X * set_type Y +
-        set_type Y * set_type X +
-        set_type Y * set_type Y →
-        set_type Y, bijective f.
+    set_type X * set_type Y +
+    set_type Y * set_type X +
+    set_type Y * set_type Y →
+    set_type Y, bijective f.
+Proof.
     pose proof Y_eq2 as H.
     unfold plus, mult in H; equiv_simpl in H.
     exact H.
@@ -719,6 +742,7 @@ Qed.
 
 Definition f1 := ex_val f1_ex.
 Lemma f1_bij : bijective f1.
+Proof.
     apply (ex_proof f1_ex).
 Qed.
 
@@ -735,6 +759,7 @@ Definition f' (a b : set_type f_domain) :=
     end.
 
 Lemma XY_not : ∀ a, X a → ¬ Y a.
+Proof.
     intros a Xa Ya.
     destruct Ya as [c c_eq].
     pose proof [|f0 c] as H.
@@ -743,6 +768,7 @@ Lemma XY_not : ∀ a, X a → ¬ Y a.
 Qed.
 
 Lemma f'_range : ∀ a b, f_domain (f' a b).
+Proof.
     intros [a [Xa|Ya]] [b [Xb|Yb]].
     -   left.
         unfold f'; cbn.
@@ -774,6 +800,7 @@ Lemma f'_range : ∀ a b, f_domain (f' a b).
         +   apply [|f1 (inr ([a|Ya'], [b|Yb']))].
 Qed.
 Lemma f'_inj : ∀ a b c d, f' a b = f' c d → a = c ∧ b = d.
+Proof.
     intros [a a_in] [b b_in] [c c_in] [d d_in] eq.
     unfold f' in eq; cbn in eq.
     destruct (or_to_strong _ _ _) as [Xa|Ya].
@@ -840,6 +867,7 @@ Lemma f'_inj : ∀ a b c d, f' a b = f' c d → a = c ∧ b = d.
         split; apply set_type_eq; reflexivity.
 Qed.
 Lemma f'_sur : ∀ c, f_domain c → ∃ a b, f' a b = c.
+Proof.
     intros c [Xc|Yc].
     -   pose proof (fs_sur f c Xc) as [[a Xa] [[b Xb] eq]].
         exists [a|make_lor Xa], [b|make_lor Xb].
@@ -892,6 +920,7 @@ Lemma f'_sur : ∀ c, f_domain c → ∃ a b, f' a b = c.
 Qed.
 
 Lemma con : False.
+Proof.
     pose (g := make_fs
         (make_bin_set_function f_domain f')
         f'_range
@@ -947,12 +976,14 @@ Qed.
 End Contr.
 
 Lemma X_card : |set_type X| = |A|.
+Proof.
     classic_contradiction contr.
     apply con.
     exact contr.
 Qed.
 
 Theorem card_mult_idemp : |A| * |A| = |A|.
+Proof.
     rewrite <- X_card.
     apply X_mult_idemp.
 Qed.
@@ -961,6 +992,7 @@ End CardMultIdemp.
 End CardMultIdemp.
 (* end hide *)
 Theorem card_mult_idemp : ∀ κ, infinite κ → κ * κ = κ.
+Proof.
     intros A A_inf.
     equiv_get_value A.
     apply CardMultIdemp.card_mult_idemp.
@@ -968,6 +1000,7 @@ Theorem card_mult_idemp : ∀ κ, infinite κ → κ * κ = κ.
 Qed.
 
 Theorem card_plus_lmax : ∀ κ μ, infinite κ → μ <= κ → κ + μ = κ.
+Proof.
     intros κ μ κ_inf leq.
     apply antisym.
     -   apply le_lplus with κ in leq.
@@ -987,12 +1020,14 @@ Theorem card_plus_lmax : ∀ κ μ, infinite κ → μ <= κ → κ + μ = κ.
 Qed.
 
 Theorem card_plus_idemp : ∀ κ, infinite κ → κ + κ = κ.
+Proof.
     intros κ κ_inf.
     apply (card_plus_lmax _ _ κ_inf).
     apply refl.
 Qed.
 
 Theorem card_mult_lmax : ∀ κ μ, infinite κ → 0 ≠ μ → μ <= κ → κ * μ = κ.
+Proof.
     intros κ μ κ_inf μ_nz leq.
     apply antisym.
     -   rewrite <- (card_mult_idemp _ κ_inf) at 2.
@@ -1026,6 +1061,7 @@ Theorem card_mult_lmax : ∀ κ μ, infinite κ → 0 ≠ μ → μ <= κ → κ
 Qed.
 
 Theorem card_plus_max : ∀ κ μ, infinite κ → infinite μ → κ + μ = max κ μ.
+Proof.
     intros κ μ κ_inf μ_inf.
     unfold max; case_if.
     -   rewrite plus_comm.
@@ -1036,6 +1072,7 @@ Theorem card_plus_max : ∀ κ μ, infinite κ → infinite μ → κ + μ = max
 Qed.
 
 Theorem card_mult_max : ∀ κ μ, infinite κ → infinite μ → κ * μ = max κ μ.
+Proof.
     intros κ μ κ_inf μ_inf.
     unfold max; case_if.
     -   rewrite mult_comm.
@@ -1054,6 +1091,7 @@ Theorem card_mult_max : ∀ κ μ, infinite κ → infinite μ → κ * μ = max
 Qed.
 
 Theorem card_inf_plus_mult : ∀ κ μ, infinite κ → infinite μ → κ + μ = κ * μ.
+Proof.
     intros κ μ κ_inf μ_inf.
     rewrite card_plus_max by assumption.
     rewrite card_mult_max by assumption.

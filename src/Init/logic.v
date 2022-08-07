@@ -4,6 +4,7 @@
 Require Export base_logic.
 
 Theorem not_not : ∀ P, (¬¬P) = P.
+Proof.
     intro P.
     apply propositional_ext.
     split; intro PH.
@@ -14,11 +15,13 @@ Theorem not_not : ∀ P, (¬¬P) = P.
         contradiction (PH' PH).
 Qed.
 Theorem not_not_impl : ∀ P, ¬¬P → P.
+Proof.
     intros P.
     rewrite not_not.
     trivial.
 Qed.
 Theorem not_not_impl2 : ∀ P : Prop, P → ¬¬P.
+Proof.
     intros P.
     rewrite not_not.
     trivial.
@@ -26,6 +29,7 @@ Qed.
 Ltac classic_contradiction_prop H := apply not_not_impl; intros H.
 
 Theorem not_impl : ∀ A B : Prop, (¬(A → B)) = (A ∧ ¬B).
+Proof.
     intros A B.
     apply propositional_ext.
     split.
@@ -42,6 +46,7 @@ Theorem not_impl : ∀ A B : Prop, (¬(A → B)) = (A ∧ ¬B).
         contradiction.
 Qed.
 Theorem not_and : ∀ A B, (¬(A ∧ B)) = (¬A ∨ ¬B).
+Proof.
     intros A B.
     apply propositional_ext.
     split.
@@ -55,6 +60,7 @@ Theorem not_and : ∀ A B, (¬(A ∧ B)) = (¬A ∨ ¬B).
     -   intros [na|nb] [a b]; contradiction.
 Qed.
 Theorem not_or : ∀ A B, (¬(A ∨ B)) = (¬A ∧ ¬B).
+Proof.
     intros A B.
     apply propositional_ext.
     split.
@@ -67,6 +73,7 @@ Theorem not_or : ∀ A B, (¬(A ∨ B)) = (¬A ∧ ¬B).
     -   intros [na nb] [a|b]; contradiction.
 Qed.
 Theorem not_ex : ∀ {U} (P : U → Prop), (¬(∃ a, P a)) = (∀ a, ¬P a).
+Proof.
     intros U P.
     apply propositional_ext.
     split.
@@ -80,6 +87,7 @@ Theorem not_ex : ∀ {U} (P : U → Prop), (¬(∃ a, P a)) = (∀ a, ¬P a).
 Qed.
 
 Theorem not_all : ∀ {U} (P : U → Prop), equal (¬(∀ a, P a)) (∃ a, ¬P a).
+Proof.
     intros U P.
     apply propositional_ext.
     split.
@@ -96,6 +104,7 @@ Theorem not_all : ∀ {U} (P : U → Prop), equal (¬(∀ a, P a)) (∃ a, ¬P a
 Qed.
 
 Theorem not_and_impl : ∀ A B, (¬(A ∧ B)) = (A → ¬B).
+Proof.
     intros A B.
     rewrite <- (not_not (A → ¬B)).
     rewrite not_impl.
@@ -104,6 +113,7 @@ Theorem not_and_impl : ∀ A B, (¬(A ∧ B)) = (A → ¬B).
 Qed.
 
 Theorem and_comm : ∀ A B, (A ∧ B) = (B ∧ A).
+Proof.
     intros A B.
     apply propositional_ext; split.
     all: intros [P1 P2].
@@ -111,6 +121,7 @@ Theorem and_comm : ∀ A B, (A ∧ B) = (B ∧ A).
 Qed.
 
 Theorem or_comm : ∀ A B, (A ∨ B) = (B ∨ A).
+Proof.
     intros A B.
     apply propositional_ext; split.
     all: intros [P1|P2].
@@ -121,6 +132,7 @@ Theorem or_comm : ∀ A B, (A ∨ B) = (B ∨ A).
 Qed.
 
 Theorem and_or_ldist : ∀ A B C, (A ∧ (B ∨ C)) = ((A ∧ B) ∨ (A ∧ C)).
+Proof.
     intros A B C.
     apply propositional_ext; split.
     -   intros [PA [PB|PC]].
@@ -132,12 +144,14 @@ Theorem and_or_ldist : ∀ A B C, (A ∧ (B ∨ C)) = ((A ∧ B) ∨ (A ∧ C)).
         +   right; exact PC.
 Qed.
 Theorem and_or_rdist : ∀ A B C, ((A ∨ B) ∧ C) = ((A ∧ C) ∨ (B ∧ C)).
+Proof.
     intros A B C.
     do 3 rewrite (and_comm _ C).
     apply and_or_ldist.
 Qed.
 
 Theorem or_and_ldist : ∀ A B C, (A ∨ (B ∧ C)) = ((A ∨ B) ∧ (A ∨ C)).
+Proof.
     intros A B C.
     apply propositional_ext; split.
     -   intros [PA|[PB PC]].
@@ -148,12 +162,14 @@ Theorem or_and_ldist : ∀ A B C, (A ∨ (B ∧ C)) = ((A ∨ B) ∧ (A ∨ C)).
         right; split; assumption.
 Qed.
 Theorem or_and_rdist : ∀ A B C, ((A ∧ B) ∨ C) = ((A ∨ C) ∧ (B ∨ C)).
+Proof.
     intros A B C.
     do 3 rewrite (or_comm _ C).
     apply or_and_ldist.
 Qed.
 
 Theorem or_to_strong : ∀ P Q, P ∨ Q → {P} + {Q}.
+Proof.
     intros P Q PQ.
     apply indefinite_description.
     destruct PQ as [PQ|PQ].
@@ -164,18 +180,21 @@ Theorem or_to_strong : ∀ P Q, P ∨ Q → {P} + {Q}.
 Qed.
 
 Theorem not_true : (¬True) = False.
+Proof.
     apply propositional_ext; split.
     -   intro H; apply H; exact true.
     -   contradiction.
 Qed.
 
 Theorem not_false : (¬False) = True.
+Proof.
     apply propositional_ext; split.
     -   intro H; exact true.
     -   intros H H2; contradiction.
 Qed.
 
 Theorem not_not_type : ∀ P : Type, ((P → False) → False) → P.
+Proof.
     intros P Ps.
     assert (∃ p : P, True).
     {
@@ -193,6 +212,7 @@ Ltac classic_contradiction H :=
     (apply not_not_type; intros H).
 
 Theorem prop_eq_true : ∀ P : Prop, P = (P = True).
+Proof.
     intros P.
     apply propositional_ext; split.
     -   intro p.
@@ -202,6 +222,7 @@ Theorem prop_eq_true : ∀ P : Prop, P = (P = True).
         exact true.
 Qed.
 Theorem prop_eq_false : ∀ P, (¬P) = (P = False).
+Proof.
     intros P.
     apply propositional_ext; split.
     -   intros nP.
@@ -213,12 +234,14 @@ Theorem prop_eq_false : ∀ P, (¬P) = (P = False).
 Qed.
 
 Theorem neq_true_false : ∀ P, (P ≠ True) = (P = False).
+Proof.
     intros P.
     rewrite <- prop_eq_true.
     rewrite prop_eq_false.
     reflexivity.
 Qed.
 Theorem neq_false_true : ∀ P, (P ≠ False) = (P = True).
+Proof.
     intros P.
     rewrite <- prop_eq_false.
     rewrite not_not.
@@ -226,6 +249,7 @@ Theorem neq_false_true : ∀ P, (P ≠ False) = (P = True).
 Qed.
 
 Theorem prop_split : ∀ P, {P = True} + {P = False}.
+Proof.
     intros P.
     classic_case (P = True) as [eq|neq]; try (left; exact eq).
     right.
@@ -234,12 +258,14 @@ Theorem prop_split : ∀ P, {P = True} + {P = False}.
 Qed.
 
 Theorem prop_neq : True ≠ False.
+Proof.
     intros eq.
     rewrite <- eq.
     exact true.
 Qed.
 
 Theorem any_prop_neq : ∀ P, P ≠ (¬P).
+Proof.
     intros P eq.
     destruct (prop_split P); subst.
     -   rewrite not_true in eq.
@@ -251,6 +277,7 @@ Theorem any_prop_neq : ∀ P, P ≠ (¬P).
 Qed.
 
 Theorem not_eq_eq : ∀ A B, (¬A) = (¬B) → A = B.
+Proof.
     intros A B eq.
     apply (f_equal not) in eq.
     do 2 rewrite not_not in eq.

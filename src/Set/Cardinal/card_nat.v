@@ -12,7 +12,8 @@ Require Import ord_basic.
 Require Import nat_domain.
 
 Theorem nat_to_card_plus :
-        ∀ a b, nat_to_card a + nat_to_card b = nat_to_card (a + b).
+    ∀ a b, nat_to_card a + nat_to_card b = nat_to_card (a + b).
+Proof.
     intros a b.
     unfold plus at 1, nat_to_card; equiv_simpl.
     pose (dom := sum (set_type (λ x, x < a)) (set_type (λ x, x < b))).
@@ -65,15 +66,17 @@ Theorem nat_to_card_plus :
             exact c_eq.
 Qed.
 Corollary nat_suc_to_card :
-        ∀ n, nat_to_card (nat_suc n) = nat_to_card n + 1.
+    ∀ n, nat_to_card (nat_suc n) = nat_to_card n + 1.
+Proof.
     intros n.
     change (nat_suc n) with (1 + n).
     rewrite <- nat_to_card_plus.
     apply comm.
 Qed.
 Theorem nat_to_card_sucs_le :
-        ∀ a b, nat_to_card (nat_suc a) <= nat_to_card (nat_suc b) →
-        nat_to_card a <= nat_to_card b.
+    ∀ a b, nat_to_card (nat_suc a) <= nat_to_card (nat_suc b) →
+    nat_to_card a <= nat_to_card b.
+Proof.
     intros a b leq.
     unfold nat_to_card, le in *; equiv_simpl; equiv_simpl in leq.
     destruct leq as [f f_inj].
@@ -129,6 +132,7 @@ Theorem nat_to_card_sucs_le :
         reflexivity.
 Qed.
 Theorem nat_to_card_eq : ∀ a b, nat_to_card a = nat_to_card b → a = b.
+Proof.
     nat_induction a.
     -   intros b eq.
         nat_destruct b; try reflexivity.
@@ -154,8 +158,9 @@ Theorem nat_to_card_eq : ∀ a b, nat_to_card a = nat_to_card b → a = b.
 Qed.
 
 Theorem nat_to_card_plus_lcancel : ∀ {a b} c,
-        nat_to_card c + nat_to_card a = nat_to_card c + nat_to_card b →
-        nat_to_card a = nat_to_card b.
+    nat_to_card c + nat_to_card a = nat_to_card c + nat_to_card b →
+    nat_to_card a = nat_to_card b.
+Proof.
     intros a b c eq.
     do 2 rewrite nat_to_card_plus in eq.
     apply nat_to_card_eq in eq.
@@ -163,15 +168,17 @@ Theorem nat_to_card_plus_lcancel : ∀ {a b} c,
     rewrite eq; reflexivity.
 Qed.
 Theorem nat_to_card_plus_rcancel : ∀ {a b} c,
-        nat_to_card a + nat_to_card c = nat_to_card b + nat_to_card c →
-        nat_to_card a = nat_to_card b.
+    nat_to_card a + nat_to_card c = nat_to_card b + nat_to_card c →
+    nat_to_card a = nat_to_card b.
+Proof.
     intros a b c eq.
     do 2 rewrite (plus_comm _ (nat_to_card c)) in eq.
     apply (nat_to_card_plus_lcancel _ eq).
 Qed.
 Theorem nat_to_card_lt_lplus : ∀ {a b} c,
-        nat_to_card a < nat_to_card b →
-        nat_to_card c + nat_to_card a < nat_to_card c + nat_to_card b.
+    nat_to_card a < nat_to_card b →
+    nat_to_card c + nat_to_card a < nat_to_card c + nat_to_card b.
+Proof.
     intros a b c [leq neq].
     split.
     -   apply le_lplus.
@@ -181,16 +188,18 @@ Theorem nat_to_card_lt_lplus : ∀ {a b} c,
         contradiction.
 Qed.
 Theorem nat_to_card_lt_rplus : ∀ {a b} c,
-        nat_to_card a < nat_to_card b →
-        nat_to_card a + nat_to_card c < nat_to_card b + nat_to_card c.
+    nat_to_card a < nat_to_card b →
+    nat_to_card a + nat_to_card c < nat_to_card b + nat_to_card c.
+Proof.
     intros a b c ltq.
     do 2 rewrite (plus_comm _ (nat_to_card c)).
     apply nat_to_card_lt_lplus.
     exact ltq.
 Qed.
 Theorem nat_to_card_le_plus_lcancel : ∀ {a b} c,
-        nat_to_card c + nat_to_card a <= nat_to_card c + nat_to_card b →
-        nat_to_card a <= nat_to_card b.
+    nat_to_card c + nat_to_card a <= nat_to_card c + nat_to_card b →
+    nat_to_card a <= nat_to_card b.
+Proof.
     intros a b c leq.
     nat_induction c.
     -   change (nat_to_card 0) with 0 in leq.
@@ -203,14 +212,16 @@ Theorem nat_to_card_le_plus_lcancel : ∀ {a b} c,
         exact leq.
 Qed.
 Theorem nat_to_card_le_plus_rcancel : ∀ {a b} c,
-        nat_to_card a + nat_to_card c <= nat_to_card b + nat_to_card c →
-        nat_to_card a <= nat_to_card b.
+    nat_to_card a + nat_to_card c <= nat_to_card b + nat_to_card c →
+    nat_to_card a <= nat_to_card b.
+Proof.
     intros a b c leq.
     do 2 rewrite (plus_comm _ (nat_to_card c)) in leq.
     exact (nat_to_card_le_plus_lcancel _ leq).
 Qed.
 
 Theorem nat_to_card_le : ∀ a b, (a <= b) = (nat_to_card a <= nat_to_card b).
+Proof.
     intros a b.
     apply propositional_ext; split.
     -   revert b; nat_induction a.
@@ -241,6 +252,7 @@ Theorem nat_to_card_le : ∀ a b, (a <= b) = (nat_to_card a <= nat_to_card b).
 Qed.
 
 Theorem nat_to_card_lt : ∀ a b, (a < b) = (nat_to_card a < nat_to_card b).
+Proof.
     intros a b.
     apply propositional_ext; split; intro leq; split.
     -   rewrite <- nat_to_card_le.
@@ -256,7 +268,8 @@ Theorem nat_to_card_lt : ∀ a b, (a < b) = (nat_to_card a < nat_to_card b).
 Qed.
 
 Theorem nat_to_card_ord_lt : ∀ a b,
-        (nat_to_card a < nat_to_card b) = (nat_to_ord a < nat_to_ord b).
+    (nat_to_card a < nat_to_card b) = (nat_to_ord a < nat_to_ord b).
+Proof.
     intros a b.
     rewrite <- nat_to_card_lt.
     rewrite nat_to_ord_lt.
@@ -264,6 +277,7 @@ Theorem nat_to_card_ord_lt : ∀ a b,
 Qed.
 
 Theorem nat_to_ord_to_card : ∀ n, ord_to_card (nat_to_ord n) = nat_to_card n.
+Proof.
     intros n.
     unfold ord_to_card, nat_to_ord, nat_to_card; equiv_simpl.
     exists (λ x, x).
@@ -271,7 +285,8 @@ Theorem nat_to_ord_to_card : ∀ n, ord_to_card (nat_to_ord n) = nat_to_card n.
 Qed.
 
 Theorem nat_to_card_mult :
-        ∀ a b, nat_to_card a * nat_to_card b = nat_to_card (a * b).
+    ∀ a b, nat_to_card a * nat_to_card b = nat_to_card (a * b).
+Proof.
     intros a b.
     unfold mult at 1, nat_to_card; equiv_simpl.
     pose (dom := prod (set_type (λ m, m < a)) (set_type (λ m, m < b))).

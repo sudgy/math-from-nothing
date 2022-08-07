@@ -108,11 +108,13 @@ Section Topology.
 Context {U} `{Top : Topology U}.
 (* end hide *)
 Theorem discrete_finer : topology_finer discrete_topology Top.
+Proof.
     intros S S_open.
     exact true.
 Qed.
 
 Theorem inter_open2 : ∀ A B, open A → open B → open (A ∩ B).
+Proof.
     intros A B A_open B_open.
     pose (S := singleton A ∪ singleton B).
     assert (⋂ S = A ∩ B) as eq.
@@ -151,6 +153,7 @@ Theorem inter_open2 : ∀ A B, open A → open B → open (A ∩ B).
 Qed.
 
 Theorem union_open2 : ∀ A B, open A → open B → open (A ∪ B).
+Proof.
     intros A B A_open B_open.
     pose (S := singleton A ∪ singleton B).
     assert (⋃ S = A ∪ B) as eq.
@@ -184,18 +187,21 @@ Theorem union_open2 : ∀ A B, open A → open B → open (A ∪ B).
 Qed.
 
 Theorem empty_closed : closed ∅.
+Proof.
     unfold closed, complement, empty; cbn.
     rewrite not_false.
     exact all_open.
 Qed.
 
 Theorem all_closed : closed all.
+Proof.
     unfold closed, complement, all; cbn.
     rewrite not_true.
     exact empty_open.
 Qed.
 
 Theorem union_closed : ∀ S, S ⊆ closed → finite (|set_type S|) → closed (⋃ S).
+Proof.
     intros S sub S_fin.
     unfold closed, complement.
     pose (S' s := ∃ t, S t ∧ s = complement t).
@@ -246,6 +252,7 @@ Theorem union_closed : ∀ S, S ⊆ closed → finite (|set_type S|) → closed 
 Qed.
 
 Theorem inter_closed : ∀ S, S ⊆ closed → closed (⋂ S).
+Proof.
     intros S sub.
     unfold closed, complement.
     pose (S' s := ∃ t, S t ∧ s = complement t).
@@ -276,6 +283,7 @@ Theorem inter_closed : ∀ S, S ⊆ closed → closed (⋂ S).
 Qed.
 
 Theorem union_closed2 : ∀ A B, closed A → closed B → closed (A ∪ B).
+Proof.
     intros A B A_closed B_closed.
     unfold closed.
     rewrite union_compl.
@@ -283,6 +291,7 @@ Theorem union_closed2 : ∀ A B, closed A → closed B → closed (A ∪ B).
 Qed.
 
 Theorem inter_closed2 : ∀ A B, closed A → closed B → closed (A ∩ B).
+Proof.
     intros A B A_closed B_closed.
     unfold closed.
     rewrite inter_compl.
@@ -290,6 +299,7 @@ Theorem inter_closed2 : ∀ A B, closed A → closed B → closed (A ∩ B).
 Qed.
 
 Theorem open_complement_closed : ∀ A, open A → closed (complement A).
+Proof.
     intros A A_open.
     unfold closed.
     rewrite compl_compl.
@@ -297,7 +307,8 @@ Theorem open_complement_closed : ∀ A, open A → closed (complement A).
 Qed.
 
 Theorem open_all_neigh :
-        ∀ A : U → Prop, (∀ x, A x → ∃ S, neighborhood x S ∧ S ⊆ A) → open A.
+    ∀ A : U → Prop, (∀ x, A x → ∃ S, neighborhood x S ∧ S ⊆ A) → open A.
+Proof.
     intros A all_neighs.
     pose (SS S := ∃ x, S = ex_val (all_neighs [x|] [|x])).
     assert (A = ⋃ SS) as eq.
@@ -327,7 +338,8 @@ Qed.
 End Topology.
 (* end hide *)
 Theorem topology_equal : ∀ U (T1 : Topology U) (T2 : Topology U),
-        (∀ S, @open U T1 S ↔ @open U T2 S) → T1 = T2.
+    (∀ S, @open U T1 S ↔ @open U T2 S) → T1 = T2.
+Proof.
     intros U [open1 empty1 all1 union1 inter1]
              [open2 empty2 all2 union2 inter2] all_open.
     apply predicate_ext in all_open.
@@ -341,7 +353,8 @@ Theorem topology_equal : ∀ U (T1 : Topology U) (T2 : Topology U),
 Qed.
 
 Theorem topology_finer_antisym {U} : ∀ (T1 T2 : Topology U),
-        topology_finer T1 T2 → topology_finer T2 T1 → T1 = T2.
+    topology_finer T1 T2 → topology_finer T2 T1 → T1 = T2.
+Proof.
     intros T1 T2 T12 T21.
     apply topology_equal.
     intros S.
@@ -353,8 +366,9 @@ Theorem topology_finer_antisym {U} : ∀ (T1 T2 : Topology U),
 Qed.
 
 Theorem topology_not_finer_strict {U} : ∀ (T1 T2 : Topology U),
-        topology_finer T1 T2 → ¬topology_finer T2 T1
-        → topology_strictly_finer T1 T2.
+    topology_finer T1 T2 → ¬topology_finer T2 T1
+    → topology_strictly_finer T1 T2.
+Proof.
     intros T1 T2 T12 T21.
     split.
     -   exact T12.
@@ -375,7 +389,8 @@ Section SingleOpenDiscrete.
 Context {U} `{T : Topology U}.
 (* end hide *)
 Theorem single_open_discrete :
-        (∀ x, open (singleton x)) → T = discrete_topology.
+    (∀ x, open (singleton x)) → T = discrete_topology.
+Proof.
     intros single_open.
     apply topology_equal.
     intros S.

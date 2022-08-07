@@ -68,6 +68,7 @@ Definition to_frac (a : U)
     := to_equiv_type frac_equiv (a, [1|not_trivial_one]).
 
 Theorem to_frac_eq : ∀ a b, to_frac a = to_frac b → a = b.
+Proof.
     intros a b eq.
     unfold to_frac in eq.
     equiv_simpl in eq.

@@ -95,7 +95,8 @@ Existing Instances ext_plus ext_plus_assoc ext_plus_comm ext_zero ext_plus_lid
     ext_mult_lid ext_mult_rid.
 
 Lemma ext_scalar_wd : ∀ u v c, eq_equal (ideal_equiv ext_ideal) u v →
-        eq_equal (ideal_equiv ext_ideal) (c · u) (c · v).
+    eq_equal (ideal_equiv ext_ideal) (c · u) (c · v).
+Proof.
     cbn.
     change (ideal_generated_by_set ext_ideal_base) with (ideal_set ext_ideal).
     intros u v c eq.
@@ -187,6 +188,7 @@ Definition exterior_algebra := make_algebra F
 Definition tensor_to_ext v := to_equiv_type (ideal_equiv ext_ideal) v : ext.
 
 Theorem tensor_to_ext_plus : ∀ u v, tensor_to_ext (u + v) = tensor_to_ext u + tensor_to_ext v.
+Proof.
     intros u v.
     unfold tensor_to_ext, plus at 2; equiv_simpl.
     apply equiv_eq; cbn.
@@ -195,6 +197,7 @@ Theorem tensor_to_ext_plus : ∀ u v, tensor_to_ext (u + v) = tensor_to_ext u + 
 Qed.
 
 Theorem tensor_to_ext_mult : ∀ u v, tensor_to_ext (u * v) = tensor_to_ext u * tensor_to_ext v.
+Proof.
     intros u v.
     unfold tensor_to_ext, mult at 2; equiv_simpl.
     apply equiv_eq; cbn.
@@ -203,6 +206,7 @@ Theorem tensor_to_ext_mult : ∀ u v, tensor_to_ext (u * v) = tensor_to_ext u * 
 Qed.
 
 Theorem tensor_to_ext_scalar : ∀ a v, tensor_to_ext (a · v) = a · tensor_to_ext v.
+Proof.
     intros a v.
     unfold tensor_to_ext, scalar_mult at 2; equiv_simpl.
     apply equiv_eq; cbn.
@@ -211,6 +215,7 @@ Theorem tensor_to_ext_scalar : ∀ a v, tensor_to_ext (a · v) = a · tensor_to_
 Qed.
 
 Theorem tensor_to_ext_neg : ∀ v, tensor_to_ext (-v) = -tensor_to_ext v.
+Proof.
     intros v.
     rewrite <- scalar_neg_one.
     rewrite tensor_to_ext_scalar.
@@ -218,13 +223,15 @@ Theorem tensor_to_ext_neg : ∀ v, tensor_to_ext (-v) = -tensor_to_ext v.
 Qed.
 
 Theorem tensor_to_ext_zero : tensor_to_ext 0 = 0.
+Proof.
     reflexivity.
 Qed.
 
 Definition vector_to_ext v := tensor_to_ext (vector_to_tensor v).
 
 Theorem vector_to_ext_plus :
-        ∀ u v, vector_to_ext (u + v) = vector_to_ext u + vector_to_ext v.
+    ∀ u v, vector_to_ext (u + v) = vector_to_ext u + vector_to_ext v.
+Proof.
     intros u v.
     unfold vector_to_ext.
     rewrite (vector_to_tensor_plus V).
@@ -232,6 +239,7 @@ Theorem vector_to_ext_plus :
 Qed.
 
 Theorem vector_to_ext_scalar : ∀ a v, vector_to_ext (a · v) = a · vector_to_ext v.
+Proof.
     intros a v.
     unfold vector_to_ext.
     rewrite (vector_to_tensor_scalar V).
@@ -239,6 +247,7 @@ Theorem vector_to_ext_scalar : ∀ a v, vector_to_ext (a · v) = a · vector_to_
 Qed.
 
 Theorem vector_to_ext_zero : vector_to_ext 0 = 0.
+Proof.
     unfold vector_to_ext.
     unfold VZ.
     rewrite (vector_to_tensor_zero V).
@@ -246,6 +255,7 @@ Theorem vector_to_ext_zero : vector_to_ext 0 = 0.
 Qed.
 
 Theorem vector_to_ext_neg : ∀ v, vector_to_ext (-v) = -vector_to_ext v.
+Proof.
     intros v.
     rewrite <- scalar_neg_one.
     rewrite vector_to_ext_scalar.
@@ -255,7 +265,8 @@ Qed.
 Definition scalar_to_ext a := tensor_to_ext (scalar_to_tensor V a).
 
 Theorem scalar_to_ext_plus : ∀ a b,
-        scalar_to_ext (a + b) = scalar_to_ext a + scalar_to_ext b.
+    scalar_to_ext (a + b) = scalar_to_ext a + scalar_to_ext b.
+Proof.
     intros a b.
     unfold scalar_to_ext.
     rewrite (scalar_to_tensor_plus V).
@@ -263,6 +274,7 @@ Theorem scalar_to_ext_plus : ∀ a b,
 Qed.
 
 Theorem scalar_to_ext_zero : scalar_to_ext 0 = 0.
+Proof.
     unfold scalar_to_ext.
     unfold UZ.
     rewrite (scalar_to_tensor_zero V).
@@ -270,7 +282,8 @@ Theorem scalar_to_ext_zero : scalar_to_ext 0 = 0.
 Qed.
 
 Theorem scalar_to_ext_mult : ∀ a b,
-        scalar_to_ext (a * b) = scalar_to_ext a * scalar_to_ext b.
+    scalar_to_ext (a * b) = scalar_to_ext a * scalar_to_ext b.
+Proof.
     intros a b.
     unfold scalar_to_ext.
     rewrite (scalar_to_tensor_mult V).
@@ -278,6 +291,7 @@ Theorem scalar_to_ext_mult : ∀ a b,
 Qed.
 
 Theorem scalar_to_ext_scalar : ∀ a A, scalar_to_ext a * A = a · A.
+Proof.
     intros a A.
     equiv_get_value A.
     unfold scalar_to_ext, tensor_to_ext, mult, scalar_mult; equiv_simpl.
@@ -288,6 +302,7 @@ Theorem scalar_to_ext_scalar : ∀ a A, scalar_to_ext a * A = a · A.
 Qed.
 
 Theorem scalar_to_ext_neg : ∀ a, scalar_to_ext (-a) = -scalar_to_ext a.
+Proof.
     intros a.
     rewrite <- mult_neg_one.
     rewrite scalar_to_ext_mult.
@@ -296,6 +311,7 @@ Theorem scalar_to_ext_neg : ∀ a, scalar_to_ext (-a) = -scalar_to_ext a.
 Qed.
 
 Theorem scalar_to_ext_one : scalar_to_ext 1 = 1.
+Proof.
     unfold scalar_to_ext.
     unfold UO.
     rewrite (scalar_to_tensor_one V).
@@ -303,6 +319,7 @@ Theorem scalar_to_ext_one : scalar_to_ext 1 = 1.
 Qed.
 
 Theorem scalar_to_ext_comm : ∀ a A, scalar_to_ext a * A = A * scalar_to_ext a.
+Proof.
     intros a A.
     equiv_get_value A.
     unfold scalar_to_ext, tensor_to_ext, mult; equiv_simpl.
@@ -313,12 +330,14 @@ Theorem scalar_to_ext_comm : ∀ a A, scalar_to_ext a * A = A * scalar_to_ext a.
 Qed.
 
 Theorem scalar_to_ext_one_scalar : ∀ a, scalar_to_ext a = a · 1.
+Proof.
     intros a.
     rewrite <- (mult_rid (scalar_to_ext a)).
     apply scalar_to_ext_scalar.
 Qed.
 
 Theorem ext_alternating : ∀ v, 0 = vector_to_ext v * vector_to_ext v.
+Proof.
     intros v.
     unfold mult, zero, vector_to_ext, tensor_to_ext; equiv_simpl.
     apply equiv_eq; cbn.
@@ -340,8 +359,8 @@ Theorem ext_alternating : ∀ v, 0 = vector_to_ext v * vector_to_ext v.
 Qed.
 
 Theorem ext_anticomm : ∀ u v,
-        vector_to_ext u * vector_to_ext v =
-        -(vector_to_ext v * vector_to_ext u).
+    vector_to_ext u * vector_to_ext v = -(vector_to_ext v * vector_to_ext u).
+Proof.
     intros u v.
     pose proof (ext_alternating (v + u)) as eq.
     rewrite vector_to_ext_plus in eq.
@@ -354,6 +373,7 @@ Theorem ext_anticomm : ∀ u v,
 Qed.
 
 Theorem scalar_to_ext_eq : ∀ a b, scalar_to_ext a = scalar_to_ext b → a = b.
+Proof.
     intros a b eq.
     rewrite <- plus_0_nab_a_b.
     rewrite <- plus_0_nab_a_b in eq.
@@ -416,6 +436,7 @@ Theorem scalar_to_ext_eq : ∀ a b, scalar_to_ext a = scalar_to_ext b → a = b.
 Qed.
 
 Theorem vector_to_ext_eq : ∀ a b, vector_to_ext a = vector_to_ext b → a = b.
+Proof.
     intros a b eq.
     rewrite <- plus_0_nab_a_b.
     rewrite <- plus_0_nab_a_b in eq.
@@ -478,8 +499,9 @@ Theorem vector_to_ext_eq : ∀ a b, vector_to_ext a = vector_to_ext b → a = b.
 Qed.
 
 Theorem ext_sum : ∀ x : ext, ∃ l : ulist (cring_U F * list (module_V V)),
-        x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-            (list_image (snd p) (λ v, vector_to_ext v)))).
+    x = ulist_sum (ulist_image l (λ p, fst p · list_prod
+        (list_image (snd p) (λ v, vector_to_ext v)))).
+Proof.
     intros x.
     equiv_get_value x.
     change (to_equiv_type _ x) with (tensor_to_ext x).

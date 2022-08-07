@@ -12,6 +12,7 @@ Require Import nat.
 Open Scope card_scope.
 (* end hide *)
 Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → prod A C ~ prod B D.
+Proof.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, (f (fst x), g (snd x))).
     split.
@@ -34,6 +35,7 @@ Global Instance card_mult_class : Mult card := {
 }.
 
 Theorem card_mult_type : ∀ A B, |(A*B)%type| = |A| * |B|.
+Proof.
     intros A B.
     unfold mult; cbn.
     rewrite equiv_binary_self_op.
@@ -42,6 +44,7 @@ Qed.
 
 (* begin hide *)
 Lemma card_mult_assoc : ∀ κ μ ν, κ * (μ * ν) = (κ * μ) * ν.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold mult; equiv_simpl.
@@ -61,6 +64,7 @@ Global Instance card_mult_assoc_class : MultAssoc card := {
 }.
 
 Lemma card_mult_comm : ∀ κ μ, κ * μ = μ * κ.
+Proof.
     intros A B.
     equiv_get_value A B.
     unfold mult; equiv_simpl.
@@ -80,6 +84,7 @@ Global Instance card_mult_comm_class : MultComm card := {
 }.
 
 Lemma card_mult_lanni : ∀ κ, 0 * κ = 0.
+Proof.
     intros A.
     equiv_get_value A.
     unfold zero; cbn.
@@ -105,6 +110,7 @@ Global Instance card_one : One card := {
 }.
 
 Lemma card_mult_lid : ∀ κ, 1 * κ = κ.
+Proof.
     intros A.
     equiv_get_value A.
     unfold one; cbn.
@@ -138,6 +144,7 @@ Global Instance card_mult_lid_class : MultLid card := {
 }.
 
 Lemma card_ldist : ∀ κ μ ν, κ * (μ + ν) = κ * μ + κ * ν.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold plus, mult; equiv_simpl.
@@ -162,6 +169,7 @@ Global Instance card_ldist_class : Ldist card := {
 }.
 (* end hide *)
 Theorem card_0_false : ∀ A, (|A| = 0) = (A → False).
+Proof.
     intros A.
     unfold zero; cbn.
     unfold nat_to_card; equiv_simpl.
@@ -177,6 +185,7 @@ Theorem card_0_false : ∀ A, (|A| = 0) = (A → False).
 Qed.
 
 Theorem card_mult_zero : ∀ κ μ, κ * μ = 0 → {κ = 0} + {μ = 0}.
+Proof.
     intros A B eq.
     equiv_get_value A B.
     unfold mult in eq; equiv_simpl in eq.
@@ -191,6 +200,7 @@ Theorem card_mult_zero : ∀ κ μ, κ * μ = 0 → {κ = 0} + {μ = 0}.
 Qed.
 
 Theorem card_le_lmult : ∀ {κ μ} ν, κ <= μ → ν * κ <= ν * μ.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold le, mult; equiv_simpl.
@@ -205,6 +215,7 @@ Theorem card_le_lmult : ∀ {κ μ} ν, κ <= μ → ν * κ <= ν * μ.
 Qed.
 (* begin hide *)
 Lemma card_le_lmult_pos : ∀ κ μ ν, zero <= ν → κ <= μ → ν * κ <= ν * μ.
+Proof.
     intros κ μ ν ν_pos.
     apply card_le_lmult.
 Qed.
@@ -213,12 +224,14 @@ Global Instance card_le_lmult_pos_class : OrderLmult card := {
 }.
 (* end hide *)
 Theorem card_le_rmult : ∀ {κ μ} ν, κ <= μ → κ * ν <= μ * ν.
+Proof.
     intros κ μ ν.
     apply le_rmult_pos.
     apply card_le_zero.
 Qed.
 
 Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
+Proof.
     intros a.
     unfold one; cbn.
     unfold nat_to_card; equiv_simpl.
@@ -237,6 +250,7 @@ Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
 Qed.
 
 Theorem card_one_eq {U} : |U| = 1 → ∀ a b : U, a = b.
+Proof.
     intros U_one a b.
     unfold one in U_one; cbn in U_one.
     unfold nat_to_card in U_one; equiv_simpl in U_one.
@@ -250,6 +264,7 @@ Theorem card_one_eq {U} : |U| = 1 → ∀ a b : U, a = b.
     reflexivity.
 Qed.
 Theorem card_one_ex {U} : |U| = 1 → U.
+Proof.
     intros U_one.
     apply card_nz_ex.
     rewrite U_one.
@@ -263,6 +278,7 @@ Theorem card_one_ex {U} : |U| = 1 → U.
 Qed.
 
 Theorem card_unique_one {U} : U → (∀ a b : U, a = b) → |U| = 1.
+Proof.
     intros a eq.
     unfold one; cbn.
     unfold nat_to_card; equiv_simpl.

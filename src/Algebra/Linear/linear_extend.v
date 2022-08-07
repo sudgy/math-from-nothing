@@ -67,7 +67,8 @@ Variable f_scalar_base' : linear_extend_scalar_base f_base.
 
 (* begin hide *)
 Lemma linear_extend_base_eq : ∀ i u v H1 H2,
-        u = v → f_base i u H1 = f_base i v H2.
+    u = v → f_base i u H1 = f_base i v H2.
+Proof.
     intros i u v iu iv uv.
     subst v.
     rewrite (proof_irrelevance iu iv).
@@ -75,6 +76,7 @@ Lemma linear_extend_base_eq : ∀ i u v H1 H2,
 Qed.
 
 Theorem f_scalar_base : ∀ i a v H1 H2, f_base i (a · v) H1 = a · f_base i v H2.
+Proof.
     intros i a v avi vi.
     pose proof (f_scalar_base' a v i vi) as eq.
     rewrite (proof_irrelevance _ avi) in eq.
@@ -82,6 +84,7 @@ Theorem f_scalar_base : ∀ i a v H1 H2, f_base i (a · v) H1 = a · f_base i v 
 Qed.
 
 Theorem linear_extend_zero_base : ∀ i H, f_base i 0 H = 0.
+Proof.
     intros i i0.
     pose proof (scalar_lanni 0).
     pose proof i0 as i0'.
@@ -95,7 +98,8 @@ Theorem linear_extend_zero_base : ∀ i H, f_base i 0 H = 0.
 Qed.
 
 Theorem f_plus_base : ∀ i u v H1 H2 H3,
-        f_base i (u + v) H1 = f_base i u H2 + f_base i v H3.
+    f_base i (u + v) H1 = f_base i u H2 + f_base i v H3.
+Proof.
     intros i u v uvi ui vi.
     pose proof (f_plus_base' u v i ui vi) as eq.
     rewrite (proof_irrelevance _ uvi) in eq.
@@ -110,6 +114,7 @@ Definition linear_extend (v : V1) :=
 Let f := linear_extend.
 
 Theorem linear_extend_zero : f 0 = 0.
+Proof.
     unfold f, linear_extend.
     rewrite grade_decomposition_zero.
     rewrite ulist_image_end.
@@ -117,6 +122,7 @@ Theorem linear_extend_zero : f 0 = 0.
 Qed.
 
 Theorem linear_extend_plus : ∀ u v, f (u + v) = f u + f v.
+Proof.
     intros u.
     induction u as [|a u i ai ui IHu] using grade_induction; intros.
     1: {
@@ -317,6 +323,7 @@ Theorem linear_extend_plus : ∀ u v, f (u + v) = f u + f v.
 Qed.
 
 Theorem linear_extend_scalar : ∀ a v, f (a · v) = a · f v.
+Proof.
     intros a v.
     induction v as [|u v i ui vi IHv] using grade_induction.
     1: {
@@ -380,6 +387,7 @@ Theorem linear_extend_scalar : ∀ a v, f (a · v) = a · f v.
 Qed.
 
 Theorem linear_extend_homo : ∀ i v H, f v = f_base i v H.
+Proof.
     intros i v iv; cbn.
     unfold f, linear_extend.
     classic_case (0 = v) as [v_z|v_nz].
@@ -482,7 +490,8 @@ Variable op_rscalar' : bilinear_extend_rscalar_base op.
 
 (* begin hide *)
 Lemma bilinear_extend_base_leq : ∀ i j u v w H1 H2 H3,
-        u = v → op i j u w H1 H3 = op i j v w H2 H3.
+    u = v → op i j u w H1 H3 = op i j v w H2 H3.
+Proof.
     intros i j u v w iu iv jw eq.
     subst v.
     rewrite (proof_irrelevance iu iv).
@@ -490,7 +499,8 @@ Lemma bilinear_extend_base_leq : ∀ i j u v w H1 H2 H3,
 Qed.
 
 Lemma bilinear_extend_base_req : ∀ i j u v w H1 H2 H3,
-        v = w → op i j u v H1 H2 = op i j u w H1 H3.
+    v = w → op i j u v H1 H2 = op i j u w H1 H3.
+Proof.
     intros i j u v w iu jv jw eq.
     subst v.
     rewrite (proof_irrelevance jv jw).
@@ -498,7 +508,8 @@ Lemma bilinear_extend_base_req : ∀ i j u v w H1 H2 H3,
 Qed.
 
 Lemma op_ldist : ∀ i j u v w H1 H2 H3 H4,
-        op i j u (v + w) H1 H2 = op i j u v H1 H3 + op i j u w H1 H4.
+    op i j u (v + w) H1 H2 = op i j u v H1 H3 + op i j u w H1 H4.
+Proof.
     intros i j u v w iu jvw jv jw.
     rewrite <- op_ldist'.
     rewrite (proof_irrelevance (of_grade_plus _ _ _ _ _) jvw).
@@ -506,7 +517,8 @@ Lemma op_ldist : ∀ i j u v w H1 H2 H3 H4,
 Qed.
 
 Lemma op_rdist : ∀ i j u v w H1 H2 H3 H4,
-        op i j (u + v) w H1 H2 = op i j u w H3 H2 + op i j v w H4 H2.
+    op i j (u + v) w H1 H2 = op i j u w H3 H2 + op i j v w H4 H2.
+Proof.
     intros i j u v w iuv jw iu iv.
     rewrite <- op_rdist'.
     rewrite (proof_irrelevance (of_grade_plus _ _ _ _ _) iuv).
@@ -514,7 +526,8 @@ Lemma op_rdist : ∀ i j u v w H1 H2 H3 H4,
 Qed.
 
 Lemma op_lscalar : ∀ i j a u v H1 H2 H3,
-        op i j (a · u) v H1 H3 = a · op i j u v H2 H3.
+    op i j (a · u) v H1 H3 = a · op i j u v H2 H3.
+Proof.
     intros i j a u v iau iu jv.
     rewrite <- op_lscalar'.
     rewrite (proof_irrelevance (of_grade_scalar _ _ _ _) iau).
@@ -522,7 +535,8 @@ Lemma op_lscalar : ∀ i j a u v H1 H2 H3,
 Qed.
 
 Lemma op_rscalar : ∀ i j a u v H1 H2 H3,
-        op i j u (a · v) H1 H2 = a · op i j u v H1 H3.
+    op i j u (a · v) H1 H2 = a · op i j u v H1 H3.
+Proof.
     intros i j a u v iu jav jv.
     rewrite <- op_rscalar'.
     rewrite (proof_irrelevance (of_grade_scalar _ _ _ _) jav).
@@ -530,6 +544,7 @@ Lemma op_rscalar : ∀ i j a u v H1 H2 H3,
 Qed.
 
 Lemma bilinear_extend_lanni_base : ∀ i j v H1 H2, op i j 0 v H1 H2 = 0.
+Proof.
     intros i j v i0 jv.
     pose (op' i u H1 j v H2 := op j i v u H2 H1).
     change (op i j 0 v i0 jv) with (op' j v jv i 0 i0).
@@ -542,6 +557,7 @@ Lemma bilinear_extend_lanni_base : ∀ i j v H1 H2, op i j 0 v H1 H2 = 0.
 Qed.
 
 Lemma bilinear_extend_ranni_base : ∀ i j v H1 H2, op i j v 0 H1 H2 = 0.
+Proof.
     intros i j v iv j0.
     pose (op' i u H1 j v H2 := op i j u v H1 H2).
     change (op i j v 0 iv j0) with (op' i v iv j 0 j0).
@@ -559,12 +575,14 @@ Context i a (ia : of_grade i a).
 Let f1_base := λ j v jv, op i j a v ia jv.
 
 Lemma bilinear_extend_base_plus : linear_extend_plus_base f1_base.
+Proof.
     intros u v j ju jv.
     unfold f1_base.
     apply op_ldist.
 Qed.
 
 Lemma bilinear_extend_base_scalar : linear_extend_scalar_base f1_base.
+Proof.
     intros α v j jv.
     unfold f1_base.
     apply op_rscalar.
@@ -591,6 +609,7 @@ Local Existing Instances TP TZ TN TPC TPA TPZ TPN TSM TSMO TSML TSMR TSMC.
 Let f_base := bilinear_extend_base.
 
 Lemma bilinear_extend_plus_base : linear_extend_plus_base f_base.
+Proof.
     intros u v i iu iv.
     unfold f_base, bilinear_extend_base.
     apply functional_ext.
@@ -619,6 +638,7 @@ Lemma bilinear_extend_plus_base : linear_extend_plus_base f_base.
 Qed.
 
 Lemma bilinear_extend_scalar_base : linear_extend_scalar_base f_base.
+Proof.
     intros a v i vi.
     unfold f_base, bilinear_extend_base.
     apply functional_ext.
@@ -646,6 +666,7 @@ Definition bilinear_extend := linear_extend f_base.
 Let f := bilinear_extend.
 
 Theorem bilinear_extend_ldist : ∀ u v w, f u (v + w) = f u v + f u w.
+Proof.
     intros u v w.
     unfold f, bilinear_extend.
     unfold linear_extend.
@@ -675,6 +696,7 @@ Theorem bilinear_extend_ldist : ∀ u v w, f u (v + w) = f u v + f u w.
 Qed.
 
 Theorem bilinear_extend_rdist : ∀ u v w, f (u + v) w = f u w + f v w.
+Proof.
     intros u v w.
     unfold f, bilinear_extend.
     rewrite linear_extend_plus.
@@ -684,6 +706,7 @@ Theorem bilinear_extend_rdist : ∀ u v w, f (u + v) w = f u w + f v w.
 Qed.
 
 Theorem bilinear_extend_lscalar : ∀ a u v, f (a · u) v = a · f u v.
+Proof.
     intros a u v.
     unfold f, bilinear_extend.
     rewrite linear_extend_scalar.
@@ -693,6 +716,7 @@ Theorem bilinear_extend_lscalar : ∀ a u v, f (a · u) v = a · f u v.
 Qed.
 
 Theorem bilinear_extend_rscalar : ∀ a u v, f u (a · v) = a · f u v.
+Proof.
     intros a u v.
     unfold f, bilinear_extend, linear_extend.
     remember (grade_decomposition u) as l.
@@ -716,6 +740,7 @@ Theorem bilinear_extend_rscalar : ∀ a u v, f u (a · v) = a · f u v.
     -   unfold linear_extend_scalar_base; apply bilinear_extend_base_scalar.
 Qed.
 Theorem bilinear_extend_lanni : ∀ v, f 0 v = 0.
+Proof.
     intros v.
     rewrite <- (scalar_lanni 0).
     rewrite bilinear_extend_lscalar.
@@ -723,6 +748,7 @@ Theorem bilinear_extend_lanni : ∀ v, f 0 v = 0.
 Qed.
 
 Theorem bilinear_extend_ranni : ∀ v, f v 0 = 0.
+Proof.
     intros v.
     rewrite <- (scalar_lanni 0).
     rewrite bilinear_extend_rscalar.
@@ -730,6 +756,7 @@ Theorem bilinear_extend_ranni : ∀ v, f v 0 = 0.
 Qed.
 
 Theorem bilinear_extend_homo : ∀ i j u v H1 H2, f u v = op i j u v H1 H2.
+Proof.
     intros i j u v iu jv.
     classic_case (0 = u) as [u_z|u_nz].
     2: classic_case (0 = v) as [v_z|v_nz].

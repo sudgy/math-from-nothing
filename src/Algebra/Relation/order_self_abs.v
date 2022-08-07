@@ -12,6 +12,7 @@ Definition abs (a : U) := If 0 <= a then a else -a.
 Notation "| a |" := (abs a) (at level 30).
 
 Theorem abs_zero : 0 = |0|.
+Proof.
     unfold abs; case_if.
     -   reflexivity.
     -   rewrite neg_zero.
@@ -19,6 +20,7 @@ Theorem abs_zero : 0 = |0|.
 Qed.
 
 Theorem abs_one : |1| = 1.
+Proof.
     unfold abs; case_if.
     -   reflexivity.
     -   pose proof one_pos as [leq neq].
@@ -26,6 +28,7 @@ Theorem abs_one : |1| = 1.
 Qed.
 
 Theorem abs_def : ∀ x, 0 = |x| ↔ 0 = x.
+Proof.
     intros x.
     split.
     -   intros eq.
@@ -39,6 +42,7 @@ Theorem abs_def : ∀ x, 0 = |x| ↔ 0 = x.
 Qed.
 
 Theorem abs_nz : ∀ x, 0 ≠ |x| ↔ 0 ≠ x.
+Proof.
     intros x.
     split; intros eq contr.
     -   rewrite <- abs_def in contr.
@@ -48,6 +52,7 @@ Theorem abs_nz : ∀ x, 0 ≠ |x| ↔ 0 ≠ x.
 Qed.
 
 Theorem abs_pos : ∀ x, 0 <= |x|.
+Proof.
     intros x.
     unfold abs; case_if.
     -   exact l.
@@ -57,6 +62,7 @@ Theorem abs_pos : ∀ x, 0 <= |x|.
 Qed.
 
 Theorem abs_pos_eq : ∀ x, 0 <= x → |x| = x.
+Proof.
     intros x x_pos.
     unfold abs; case_if.
     -   reflexivity.
@@ -64,6 +70,7 @@ Theorem abs_pos_eq : ∀ x, 0 <= x → |x| = x.
 Qed.
 
 Theorem abs_neg : ∀ a, | -a| = |a|.
+Proof.
     intros a.
     unfold abs; do 2 case_if.
     -   apply pos_neg in l.
@@ -81,6 +88,7 @@ Theorem abs_neg : ∀ a, | -a| = |a|.
 Qed.
 
 Theorem abs_neg_eq : ∀ x, x <= 0 → |x| = -x.
+Proof.
     intros x x_neg.
     rewrite <- abs_neg.
     apply neg_pos in x_neg.
@@ -88,6 +96,7 @@ Theorem abs_neg_eq : ∀ x, x <= 0 → |x| = -x.
 Qed.
 
 Theorem abs_minus : ∀ a b, |a - b| = |b - a|.
+Proof.
     intros a b.
     rewrite <- abs_neg.
     rewrite neg_plus, neg_neg.
@@ -96,6 +105,7 @@ Theorem abs_minus : ∀ a b, |a - b| = |b - a|.
 Qed.
 
 Theorem abs_mult : ∀ a b, |a * b| = |a| * |b|.
+Proof.
     assert (∀ a b, 0 <= a → |a * b| = a * |b|) as lem.
     {
         intros a b a_pos.
@@ -123,6 +133,7 @@ Theorem abs_mult : ∀ a b, |a * b| = |a| * |b|.
 Qed.
 
 Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
+Proof.
     intros a b.
     split.
     -   intros leq.
@@ -147,6 +158,7 @@ Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
 Qed.
 
 Theorem abs_lt : ∀ a b, |a| < b ↔ -b < a ∧ a < b.
+Proof.
     intros a b.
     split.
     -   intros leq.
@@ -171,6 +183,7 @@ Theorem abs_lt : ∀ a b, |a| < b ↔ -b < a ∧ a < b.
 Qed.
 
 Theorem abs_le_pos : ∀ x, x <= |x|.
+Proof.
     intros x.
     unfold abs; case_if.
     -   apply refl.
@@ -180,12 +193,14 @@ Theorem abs_le_pos : ∀ x, x <= |x|.
 Qed.
 
 Theorem abs_le_neg : ∀ x, -x <= |x|.
+Proof.
     intros x.
     rewrite <- abs_neg.
     apply abs_le_pos.
 Qed.
 
 Theorem abs_tri : ∀ a b, |a + b| <= |a| + |b|.
+Proof.
     intros a b.
     apply abs_le; split.
     -   apply le_neg.
@@ -196,6 +211,7 @@ Theorem abs_tri : ∀ a b, |a + b| <= |a| + |b|.
 Qed.
 
 Theorem abs_reverse_tri : ∀ a b, | |a| - |b| | <= |a - b|.
+Proof.
     intros a b.
     apply abs_le; split.
     -   pose proof (abs_tri (b - a) a) as leq.
@@ -211,6 +227,7 @@ Theorem abs_reverse_tri : ∀ a b, | |a| - |b| | <= |a - b|.
 Qed.
 
 Theorem abs_div : ∀ a, 0 ≠ a → /|a| = |/a|.
+Proof.
     intros a a_nz.
     pose proof a_nz as a_nz'.
     apply abs_nz in a_nz'.
@@ -222,6 +239,7 @@ Theorem abs_div : ∀ a, 0 ≠ a → /|a| = |/a|.
 Qed.
 
 Theorem abs_abs : ∀ a, | |a| | = |a|.
+Proof.
     intros a.
     unfold abs at 2; case_if.
     -   reflexivity.

@@ -30,8 +30,8 @@ Context {U V} `{
 Existing Instance abs_metric.
 (* end hide *)
 Theorem continuous_plus : ∀ (f g : U → V) x,
-        continuous_at f x → continuous_at g x →
-        continuous_at (λ a, f a + g a) x.
+    continuous_at f x → continuous_at g x → continuous_at (λ a, f a + g a) x.
+Proof.
     intros f g x f_cont g_cont.
     rewrite metric_continuous_seq in *.
     intros a ax.
@@ -43,9 +43,10 @@ Theorem continuous_plus : ∀ (f g : U → V) x,
 Qed.
 
 Theorem continuous_bilinear : ∀ m x (f g : U → V),
-        bilinear m → cauchy_schwarz m →
-        continuous_at f x → continuous_at g x →
-        continuous_at (λ a, m (f a) (g a)) x.
+    bilinear m → cauchy_schwarz m →
+    continuous_at f x → continuous_at g x →
+    continuous_at (λ a, m (f a) (g a)) x.
+Proof.
     intros m x f g m_bil m_cs f_cont g_cont.
     rewrite metric_continuous_seq in *.
     intros a ax.

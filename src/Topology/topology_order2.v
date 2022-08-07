@@ -24,6 +24,7 @@ Existing Instance order_topology.
 Existing Instance subspace_topology.
 (* end hide *)
 Theorem complete_connected : connected U.
+Proof.
     pose (f (x : set_type (@all U)) := [x|]).
     apply (continuous_connected f).
     -   intros x T T_neigh.

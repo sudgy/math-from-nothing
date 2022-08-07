@@ -30,7 +30,8 @@ Arguments ord_pow_f {A B}.
 Arguments ord_pow_fin {A B}.
 
 Theorem ord_pow_eq : ∀ {A B : ord_type} {C D : ord_pow_type A B},
-        (∀ x, ord_pow_f C x = ord_pow_f D x) → C = D.
+    (∀ x, ord_pow_f C x = ord_pow_f D x) → C = D.
+Proof.
     intros A B [Cf C_fin] [Df D_fin] eq.
     cbn in *.
     apply functional_ext in eq.
@@ -40,10 +41,11 @@ Theorem ord_pow_eq : ∀ {A B : ord_type} {C D : ord_pow_type A B},
 Qed.
 
 Theorem ord_pow_max_ex : ∀ {A B : ord_type} (C : ord_pow_type A B),
-        (∃ x, ord_pow_f C x ≠ ord_zero (ord_pow_f C x)) →
-        ∃ x, ord_pow_f C x ≠ ord_zero (ord_pow_f C x) ∧
-             ∀ y, strict (ord_le B) x y →
-                 ord_pow_f C y = ord_zero (ord_pow_f C y).
+    (∃ x, ord_pow_f C x ≠ ord_zero (ord_pow_f C x)) →
+    ∃ x, ord_pow_f C x ≠ ord_zero (ord_pow_f C x) ∧
+         ∀ y, strict (ord_le B) x y →
+             ord_pow_f C y = ord_zero (ord_pow_f C y).
+Proof.
     intros A B C [x x_eq].
     get_ord_wo B.
     classic_contradiction contr.
@@ -69,9 +71,10 @@ Theorem ord_pow_max_ex : ∀ {A B : ord_type} (C : ord_pow_type A B),
 Qed.
 
 Theorem ord_pow_max_dif_ex : ∀ {A B : ord_type} {C D : ord_pow_type A B},
-        C ≠ D →
-        ∃ x, ord_pow_f C x ≠ ord_pow_f D x ∧
-             ∀ y, strict (ord_le B) x y → ord_pow_f C y = ord_pow_f D y.
+    C ≠ D →
+    ∃ x, ord_pow_f C x ≠ ord_pow_f D x ∧
+         ∀ y, strict (ord_le B) x y → ord_pow_f C y = ord_pow_f D y.
+Proof.
     intros A B C D neq.
     get_ord_wo B.
     pose (S x := ord_pow_f C x ≠ ord_pow_f D x).
@@ -143,8 +146,9 @@ Definition ord_pow_le (A B : ord_type) (C D : ord_pow_type A B) :=
 
 (* begin hide *)
 Lemma ord_pow_wo_wo : ∀ A B,
-        ∀ S : (ord_pow_type A B → Prop), (∃ C, S C) →
-        ∃ M, is_least (ord_pow_le A B) S M.
+    ∀ S : (ord_pow_type A B → Prop), (∃ C, S C) →
+    ∃ M, is_least (ord_pow_le A B) S M.
+Proof.
     intros A B.
     remember (to_equiv_type ord_equiv B) as β.
     revert B Heqβ.
@@ -365,6 +369,7 @@ Lemma ord_pow_wo_wo : ∀ A B,
 Qed.
 
 Lemma ord_pow_wo_antisym : ∀ A B, Antisymmetric (ord_pow_le A B).
+Proof.
     intros A B.
     get_ord_wo A.
     get_ord_wo B.
@@ -393,6 +398,7 @@ Lemma ord_pow_wo_antisym : ∀ A B, Antisymmetric (ord_pow_le A B).
 Qed.
 (* end hide *)
 Lemma ord_pow_wo : ∀ A B, well_orders (ord_pow_le A B).
+Proof.
     intros A B.
     get_ord_wo A.
     get_ord_wo B.
@@ -468,11 +474,12 @@ Notation "A ⊙ B" := (make_ord_type _ (ord_pow_le A B) (ord_pow_wo A B)).
 
 (* begin hide *)
 Lemma ord_pow_wd_fin : ∀ {A B C D} (F : ord_pow_type A C)
-        (f : ord_U A → ord_U B) (g : ord_U D → ord_U C),
-        bijective f → bijective g →
-        (∀ a b, ord_le A a b ↔ ord_le B (f a) (f b)) →
-        (∀ a b, ord_le D a b ↔ ord_le C (g a) (g b)) →
-        ord_fin_support (λ x : ord_U D, f (ord_pow_f F (g x))).
+    (f : ord_U A → ord_U B) (g : ord_U D → ord_U C),
+    bijective f → bijective g →
+    (∀ a b, ord_le A a b ↔ ord_le B (f a) (f b)) →
+    (∀ a b, ord_le D a b ↔ ord_le C (g a) (g b)) →
+    ord_fin_support (λ x : ord_U D, f (ord_pow_f F (g x))).
+Proof.
     intros A B C D E f g f_bij g_bij f_iso g_iso.
     get_ord_wo A.
     get_ord_wo B.
@@ -527,6 +534,7 @@ Lemma ord_pow_wd_fin : ∀ {A B C D} (F : ord_pow_type A C)
 Qed.
 
 Lemma ord_pow_wd : ∀ A B C D, A ~ B → C ~ D → A ⊙ C ~ B ⊙ D.
+Proof.
     intros A B C D [f [f_bij f_iso]] [g [g_bij g_iso]].
     get_ord_wo A.
     get_ord_wo B.

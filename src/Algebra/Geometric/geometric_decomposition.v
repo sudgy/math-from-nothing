@@ -98,7 +98,8 @@ Local Open Scope nat_scope.
 
 (* end hide *)
 Theorem geo_mult_inner_grade : ∀ v (A : geo B) i, of_grade (nat_suc i) A
-        → of_grade i (geo_mult_inner B v A).
+    → of_grade i (geo_mult_inner B v A).
+Proof.
     intros v A' i [A [Ai A_eq]]; subst A'; cbn.
     rewrite <- ext_to_geo_inner.
     exists (ext_inner B v A).
@@ -108,8 +109,9 @@ Theorem geo_mult_inner_grade : ∀ v (A : geo B) i, of_grade (nat_suc i) A
 Qed.
 
 Theorem mult_inner_grade_add : ∀ v (A : geo B) n,
-        grade_project (geo_mult_inner B v A) n =
-        geo_mult_inner B v (grade_project A (nat_suc n)).
+    grade_project (geo_mult_inner B v A) n =
+    geo_mult_inner B v (grade_project A (nat_suc n)).
+Proof.
     intros v A n.
     induction A as [|A A' i Ai A'i IHA] using grade_induction.
     {
@@ -147,8 +149,9 @@ Existing Instances EG EGA.
 
 (* end hide *)
 Theorem exterior_grade_add : ∀ v (A : ext V) n,
-        grade_project (vector_to_ext V v * A) (nat_suc n) =
-        vector_to_ext V v * grade_project A n.
+    grade_project (vector_to_ext V v * A) (nat_suc n) =
+    vector_to_ext V v * grade_project A n.
+Proof.
     intros v A n.
     induction A as [|A A' i Ai A'i IHA] using grade_induction.
     {
@@ -186,9 +189,10 @@ Remove Hints EG EGA : typeclass_instances.
 
 (* end hide *)
 Lemma geo_grade_decompose1 : ∀ (a b : geo B) (r s n : nat),
-        of_grade r a → of_grade s b → r <= s →
-        (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
-        grade_project (a * b) n = 0.
+    of_grade r a → of_grade s b → r <= s →
+    (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
+    grade_project (a * b) n = 0.
+Proof.
     intros a b r s n ar bs leq n_lt.
     revert n n_lt a ar.
     induction r using strong_induction; intros.
@@ -437,9 +441,10 @@ Lemma geo_grade_decompose1 : ∀ (a b : geo B) (r s n : nat),
 Qed.
 
 Lemma geo_grade_decompose2 : ∀ (a b : geo B) (r s n : nat),
-        of_grade r a → of_grade s b →
-        (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
-        grade_project (a * b) n = 0.
+    of_grade r a → of_grade s b →
+    (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
+    grade_project (a * b) n = 0.
+Proof.
     intros a b r s n ar bs n_eq.
     destruct (connex r s) as [leq|leq].
     -   apply (geo_grade_decompose1 a b r s n ar bs leq n_eq).
@@ -455,9 +460,10 @@ Lemma geo_grade_decompose2 : ∀ (a b : geo B) (r s n : nat),
 Qed.
 
 Theorem geo_grade_decompose : ∀ (a b : geo B) (r s : nat),
-        of_grade r a → of_grade s b →
-        a * b = sum (U := geo B)
-            (λ n, grade_project (a * b) (r ⊖ s + 2*n)) 0 (nat_suc (min r s)).
+    of_grade r a → of_grade s b →
+    a * b = sum (U := geo B)
+        (λ n, grade_project (a * b) (r ⊖ s + 2*n)) 0 (nat_suc (min r s)).
+Proof.
     intros a b r s ar bs.
     apply all_grade_project_eq.
     intros n.
@@ -538,8 +544,9 @@ Theorem geo_grade_decompose : ∀ (a b : geo B) (r s : nat),
 Qed.
 
 Theorem geo_mult_project_bigger : ∀ (a b : geo B) (r s : nat),
-        of_grade r a → of_grade s b →
-        ∀ n, r + s < n → grade_project (a * b) n = 0.
+    of_grade r a → of_grade s b →
+    ∀ n, r + s < n → grade_project (a * b) n = 0.
+Proof.
     intros a b r s ar bs n n_gt.
     apply (geo_grade_decompose2 _ _ _ _ _ ar bs).
     right; left.
@@ -547,8 +554,9 @@ Theorem geo_mult_project_bigger : ∀ (a b : geo B) (r s : nat),
 Qed.
 
 Theorem geo_mult_project_smaller : ∀ (a b : geo B) (r s : nat),
-        of_grade r a → of_grade s b →
-        ∀ n, n < r ⊖ s → grade_project (a * b) n = 0.
+    of_grade r a → of_grade s b →
+    ∀ n, n < r ⊖ s → grade_project (a * b) n = 0.
+Proof.
     intros a b r s ar bs n n_lt.
     apply (geo_grade_decompose2 _ _ _ _ _ ar bs).
     left.

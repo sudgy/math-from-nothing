@@ -9,6 +9,7 @@ Set Implicit Arguments.
 Inductive singleton_type : Type := Single.
 
 Theorem singleton_eq : ∀ a b : singleton_type, a = b.
+Proof.
     intros [] [].
     reflexivity.
 Qed.
@@ -36,6 +37,7 @@ Section Prod.
 Context {A B : Type}.
 (* end hide *)
 Theorem prod_combine : ∀ a b : prod A B, fst a = fst b → snd a = snd b → a = b.
+Proof.
     intros [a1 b1] [a2 b2] eq1 eq2.
     cbn in *.
     subst.
@@ -60,6 +62,7 @@ Section Sum.
 Context {A B : Type}.
 (* end hide *)
 Theorem inl_eq : ∀ a b : A, (inl (B := B) a = inl b) = (a = b).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intro eq.
@@ -70,6 +73,7 @@ Theorem inl_eq : ∀ a b : A, (inl (B := B) a = inl b) = (a = b).
 Qed.
 
 Theorem inr_eq : ∀ a b : B, (inr (A := A) a = inr b) = (a = b).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intro eq.
@@ -80,6 +84,7 @@ Theorem inr_eq : ∀ a b : B, (inr (A := A) a = inr b) = (a = b).
 Qed.
 
 Theorem inl_neq : ∀ a b : A, (inl (B := B) a ≠ inl b) = (a ≠ b).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intros neq eq.
@@ -91,6 +96,7 @@ Theorem inl_neq : ∀ a b : A, (inl (B := B) a ≠ inl b) = (a ≠ b).
 Qed.
 
 Theorem inr_neq : ∀ a b : B, (inr (A := A) a ≠ inr b) = (a ≠ b).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intros neq eq.
@@ -120,6 +126,7 @@ Class NotTrivial U := {
 }.
 
 Theorem not_trivial2 {U} `{NotTrivial U} : ∀ a : U, ∃ b, a ≠ b.
+Proof.
     intros a.
     classic_case (a = not_trivial_a) as [eq|neq].
     -   exists not_trivial_b.

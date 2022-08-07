@@ -104,6 +104,7 @@ Definition geo_outer_base i j (a b : geo B) (ai : of_grade i a) (bj : of_grade j
     := grade_project (a * b) (i + j) : geo B.
 
 Lemma geo_outer_ldist_base : bilinear_extend_ldist_base geo_outer_base.
+Proof.
     intros u v w i j ui vj wj.
     unfold geo_outer_base.
     rewrite ldist.
@@ -111,6 +112,7 @@ Lemma geo_outer_ldist_base : bilinear_extend_ldist_base geo_outer_base.
 Qed.
 
 Lemma geo_outer_rdist_base : bilinear_extend_rdist_base geo_outer_base.
+Proof.
     intros u v w i j ui vi wj.
     unfold geo_outer_base.
     rewrite rdist.
@@ -118,6 +120,7 @@ Lemma geo_outer_rdist_base : bilinear_extend_rdist_base geo_outer_base.
 Qed.
 
 Lemma geo_outer_lscalar_base : bilinear_extend_lscalar_base geo_outer_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_outer_base.
     rewrite scalar_lmult.
@@ -125,6 +128,7 @@ Lemma geo_outer_lscalar_base : bilinear_extend_lscalar_base geo_outer_base.
 Qed.
 
 Lemma geo_outer_rscalar_base : bilinear_extend_rscalar_base geo_outer_base.
+Proof.
     intros a u v i j ui vj.
     unfold geo_outer_base.
     rewrite scalar_rmult.
@@ -141,30 +145,35 @@ Local Infix "⋀" := geo_outer (at level 34, left associativity).
 (* end show *)
 
 Theorem outer_ldist : ∀ a b c, a ⋀ (b + c) = a ⋀ b + a ⋀ c.
+Proof.
     apply bilinear_extend_ldist.
     -   exact geo_outer_ldist_base.
     -   exact geo_outer_rscalar_base.
 Qed.
 
 Theorem outer_rdist : ∀ a b c, (a + b) ⋀ c = a ⋀ c + b ⋀ c.
+Proof.
     apply bilinear_extend_rdist.
     -   exact geo_outer_rdist_base.
     -   exact geo_outer_lscalar_base.
 Qed.
 
 Theorem outer_lscalar : ∀ a u v, (a · u) ⋀ v = a · (u ⋀ v).
+Proof.
     apply bilinear_extend_lscalar.
     -   apply geo_outer_rdist_base.
     -   apply geo_outer_lscalar_base.
 Qed.
 
 Theorem outer_rscalar : ∀ a u v, u ⋀ (a · v) = a · (u ⋀ v).
+Proof.
     apply bilinear_extend_rscalar.
     -   apply geo_outer_ldist_base.
     -   apply geo_outer_rscalar_base.
 Qed.
 
 Theorem outer_lanni : ∀ a, 0 ⋀ a = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite outer_lscalar.
@@ -172,6 +181,7 @@ Theorem outer_lanni : ∀ a, 0 ⋀ a = 0.
 Qed.
 
 Theorem outer_ranni : ∀ a, a ⋀ 0 = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0) at 1.
     rewrite outer_rscalar.
@@ -179,7 +189,8 @@ Theorem outer_ranni : ∀ a, a ⋀ 0 = 0.
 Qed.
 
 Lemma outer_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-        u ⋀ v = geo_outer_base i j u v ui vj.
+    u ⋀ v = geo_outer_base i j u v ui vj.
+Proof.
     intros i j u v ui vj.
     unfold geo_outer.
     apply bilinear_extend_homo.
@@ -197,6 +208,7 @@ Existing Instances EG EGA.
 
 (* end hide *)
 Theorem outer_exterior : ∀ a b, a ⋀ b = G (E a * E b).
+Proof.
     intros a' b'.
     rewrite <- (ext_to_geo_to_ext B a') at 1.
     rewrite <- (ext_to_geo_to_ext B b') at 1.
@@ -320,6 +332,7 @@ Theorem outer_exterior : ∀ a b, a ⋀ b = G (E a * E b).
 Qed.
 
 Theorem outer_assoc : ∀ a b c : geo B, a ⋀ (b ⋀ c) = (a ⋀ b) ⋀ c.
+Proof.
     intros a b c.
     do 4 rewrite outer_exterior.
     do 2 rewrite geo_to_ext_to_geo.
@@ -328,6 +341,7 @@ Theorem outer_assoc : ∀ a b c : geo B, a ⋀ (b ⋀ c) = (a ⋀ b) ⋀ c.
 Qed.
 
 Theorem outer_lid : ∀ a : geo B, 1 ⋀ a = a.
+Proof.
     intros a.
     rewrite outer_exterior.
     rewrite geo_to_ext_one.
@@ -336,6 +350,7 @@ Theorem outer_lid : ∀ a : geo B, 1 ⋀ a = a.
 Qed.
 
 Theorem outer_rid : ∀ a : geo B, a ⋀ 1 = a.
+Proof.
     intros a.
     rewrite outer_exterior.
     rewrite geo_to_ext_one.
@@ -344,6 +359,7 @@ Theorem outer_rid : ∀ a : geo B, a ⋀ 1 = a.
 Qed.
 
 Theorem outer_alternating : ∀ v, φ v ⋀ φ v = 0.
+Proof.
     intros v.
     rewrite outer_exterior.
     rewrite geo_to_ext_vector.
@@ -352,6 +368,7 @@ Theorem outer_alternating : ∀ v, φ v ⋀ φ v = 0.
 Qed.
 
 Theorem outer_anticomm : ∀ u v, φ u ⋀ φ v = -(φ v ⋀ φ u).
+Proof.
     intros u v.
     do 2 rewrite outer_exterior.
     do 2 rewrite geo_to_ext_vector.
@@ -360,6 +377,7 @@ Theorem outer_anticomm : ∀ u v, φ u ⋀ φ v = -(φ v ⋀ φ u).
 Qed.
 
 Theorem outer_reverse : ∀ a b, (a ⋀ b)† = b† ⋀ a†.
+Proof.
     intros a b.
     do 2 rewrite outer_exterior.
     rewrite ext_to_geo_reverse.
@@ -369,6 +387,7 @@ Theorem outer_reverse : ∀ a b, (a ⋀ b)† = b† ⋀ a†.
 Qed.
 
 Theorem outer_involute : ∀ a b, (a ⋀ b)∗ = a∗ ⋀ b∗.
+Proof.
     intros a b.
     do 2 rewrite outer_exterior.
     rewrite ext_to_geo_involute.
@@ -378,6 +397,7 @@ Theorem outer_involute : ∀ a b, (a ⋀ b)∗ = a∗ ⋀ b∗.
 Qed.
 
 Theorem outer_involute_swap : ∀ a X, φ a ⋀ X = X∗ ⋀ φ a.
+Proof.
     intros a X.
     do 2 rewrite outer_exterior.
     rewrite geo_to_ext_vector.

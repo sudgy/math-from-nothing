@@ -24,42 +24,50 @@ Definition top_convex (S : U → Prop) :=
     ∀ a b, S a → S b → closed_interval a b ⊆ S.
 
 Theorem open_interval_convex : ∀ a b, top_convex (open_interval a b).
+Proof.
     intros a b c d [ac cb] [ad db] x [cx dx].
     split.
     -   exact (lt_le_trans ac cx).
     -   exact (le_lt_trans dx db).
 Qed.
 Theorem open_closed_interval_convex:∀ a b,top_convex (open_closed_interval a b).
+Proof.
     intros a b c d [ac cb] [ad db] x [cx dx].
     split.
     -   exact (lt_le_trans ac cx).
     -   exact (trans dx db).
 Qed.
 Theorem closed_open_interval_convex:∀ a b,top_convex (closed_open_interval a b).
+Proof.
     intros a b c d [ac cb] [ad db] x [cx dx].
     split.
     -   exact (trans ac cx).
     -   exact (le_lt_trans dx db).
 Qed.
 Theorem closed_interval_convex : ∀ a b, top_convex (closed_interval a b).
+Proof.
     intros a b c d [ac cb] [ad db] x [cx dx].
     split.
     -   exact (trans ac cx).
     -   exact (trans dx db).
 Qed.
 Theorem open_inf_interval_convex : ∀ a, top_convex (open_inf_interval a).
+Proof.
     intros a b c ab ac x [bx xc].
     exact (lt_le_trans ab bx).
 Qed.
 Theorem closed_inf_interval_convex : ∀ a, top_convex (closed_inf_interval a).
+Proof.
     intros a b c ab ac x [bx xc].
     exact (trans ab bx).
 Qed.
 Theorem inf_open_interval_convex : ∀ a, top_convex (inf_open_interval a).
+Proof.
     intros a b c ab ac x [bx xc].
     exact (le_lt_trans xc ac).
 Qed.
 Theorem inf_closed_interval_convex : ∀ a, top_convex (inf_closed_interval a).
+Proof.
     intros a b c ab ac x [bx xc].
     exact (trans xc ac).
 Qed.
@@ -72,7 +80,8 @@ Existing Instance order_top.
 Existing Instance subspace_topology.
 
 Lemma convex_connected_wlog : ∀ S, top_convex S →
-        ∀ (A B : set_type S → Prop) a b, A a → B b → a < b → ¬(separation A B).
+    ∀ (A B : set_type S → Prop) a b, A a → B b → a < b → ¬(separation A B).
+Proof.
     intros S S_convex A B a b Aa Bb ab.
     intros [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
     pose (A' x := A x ∧ x < b).
@@ -398,6 +407,7 @@ Lemma convex_connected_wlog : ∀ S, top_convex S →
 Qed.
 (* end hide *)
 Theorem convex_connected : ∀ S, top_convex S → connected (set_type S).
+Proof.
     intros S S_convex A B AB_sep.
     pose proof (land AB_sep) as A_ex.
     pose proof (land (rand AB_sep)) as B_ex.
@@ -415,49 +425,57 @@ Theorem convex_connected : ∀ S, top_convex S → connected (set_type S).
 Qed.
 
 Theorem open_interval_connected :
-        ∀ a b, connected (set_type (open_interval a b)).
+    ∀ a b, connected (set_type (open_interval a b)).
+Proof.
     intros a b.
     apply convex_connected.
     apply open_interval_convex.
 Qed.
 Theorem open_closed_interval_connected :
-        ∀ a b, connected (set_type (open_closed_interval a b)).
+    ∀ a b, connected (set_type (open_closed_interval a b)).
+Proof.
     intros a b.
     apply convex_connected.
     apply open_closed_interval_convex.
 Qed.
 Theorem closed_open_interval_connected :
-        ∀ a b, connected (set_type (closed_open_interval a b)).
+    ∀ a b, connected (set_type (closed_open_interval a b)).
+Proof.
     intros a b.
     apply convex_connected.
     apply closed_open_interval_convex.
 Qed.
 Theorem closed_interval_connected :
-        ∀ a b, connected (set_type (closed_interval a b)).
+    ∀ a b, connected (set_type (closed_interval a b)).
+Proof.
     intros a b.
     apply convex_connected.
     apply closed_interval_convex.
 Qed.
 Theorem open_inf_interval_connected :
-        ∀ a, connected (set_type (open_inf_interval a)).
+    ∀ a, connected (set_type (open_inf_interval a)).
+Proof.
     intros a.
     apply convex_connected.
     apply open_inf_interval_convex.
 Qed.
 Theorem closed_inf_interval_connected :
-        ∀ a, connected (set_type (closed_inf_interval a)).
+    ∀ a, connected (set_type (closed_inf_interval a)).
+Proof.
     intros a.
     apply convex_connected.
     apply closed_inf_interval_convex.
 Qed.
 Theorem inf_open_interval_connected :
-        ∀ a, connected (set_type (inf_open_interval a)).
+    ∀ a, connected (set_type (inf_open_interval a)).
+Proof.
     intros a.
     apply convex_connected.
     apply inf_open_interval_convex.
 Qed.
 Theorem inf_closed_interval_connected :
-        ∀ a, connected (set_type (inf_closed_interval a)).
+    ∀ a, connected (set_type (inf_closed_interval a)).
+Proof.
     intros a.
     apply convex_connected.
     apply inf_closed_interval_convex.

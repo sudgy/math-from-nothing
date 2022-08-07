@@ -20,10 +20,12 @@ Existing Instance abs_metric.
 Open Scope card_scope.
 
 Lemma real_size_leq1 : |real| <= 2 ^ |nat|.
+Proof.
     apply arch_ordered_size.
 Qed.
 
 Lemma real_size_leq2 : 2 ^ |nat| <= |real|.
+Proof.
     rewrite <- power_set_size.
 Open Scope nat_scope.
 Close Scope card_scope.
@@ -386,6 +388,7 @@ Close Scope nat_scope.
 Open Scope card_scope.
 (* end hide *)
 Theorem real_size : |real| = 2 ^ |nat|.
+Proof.
     apply antisym.
     -   exact real_size_leq1.
     -   exact real_size_leq2.

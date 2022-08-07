@@ -89,7 +89,8 @@ Definition vector_to_tensor v := power_to_tensor V (k := 1)
     (tensor_mult V (cring_module F) v 1).
 
 Theorem vector_to_tensor_eq : ∀ u v,
-        vector_to_tensor u = vector_to_tensor v → u = v.
+    vector_to_tensor u = vector_to_tensor v → u = v.
+Proof.
     intros u v eq.
     unfold vector_to_tensor in eq.
     apply power_to_tensor_eq in eq.
@@ -101,7 +102,8 @@ Theorem vector_to_tensor_eq : ∀ u v,
 Qed.
 
 Theorem vector_to_tensor_plus : ∀ u v,
-        vector_to_tensor (u + v) = vector_to_tensor u + vector_to_tensor v.
+    vector_to_tensor (u + v) = vector_to_tensor u + vector_to_tensor v.
+Proof.
     intros u v.
     unfold vector_to_tensor.
     rewrite (tensor_rdist V).
@@ -110,7 +112,8 @@ Theorem vector_to_tensor_plus : ∀ u v,
 Qed.
 
 Theorem vector_to_tensor_scalar : ∀ α v,
-        vector_to_tensor (α · v) = α · vector_to_tensor v.
+    vector_to_tensor (α · v) = α · vector_to_tensor v.
+Proof.
     intros α v.
     unfold vector_to_tensor.
     rewrite (tensor_lscalar V).
@@ -119,14 +122,15 @@ Theorem vector_to_tensor_scalar : ∀ α v,
 Qed.
 
 Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
+Proof.
     rewrite <- (scalar_lanni 0).
     rewrite vector_to_tensor_scalar.
     rewrite scalar_lanni.
     reflexivity.
 Qed.
 
-Theorem vector_to_tensor_homogeneous :
-        ∀ v, homogeneous (vector_to_tensor v).
+Theorem vector_to_tensor_homogeneous : ∀ v, homogeneous (vector_to_tensor v).
+Proof.
     intros v.
     exists 1, (tensor_mult V (cring_module F) v 1).
     reflexivity.

@@ -56,7 +56,8 @@ Existing Instance abs_metric.
 (* end hide *)
 
 Theorem seq_lim_scalar2 : ∀ a x af xf, seq_lim af a → seq_lim xf x →
-        seq_lim (λ n, af n · xf n) (a · x).
+    seq_lim (λ n, af n · xf n) (a · x).
+Proof.
     intros a x af xf afa xfx.
 
     assert (seq_lim (λ n, xf n - x) 0) as lim1.
@@ -115,9 +116,10 @@ Theorem seq_lim_scalar2 : ∀ a x af xf, seq_lim af a → seq_lim xf x →
 Qed.
 
 Theorem func_lim_scalar2 : ∀ (A : U → Prop)
-        (af : set_type A → real) (xf : set_type A → V)
-        (c : U) (a : real) (x : V), func_lim_base af c a → func_lim_base xf c x →
-        func_lim_base (λ n, af n · xf n) c (a · x).
+    (af : set_type A → real) (xf : set_type A → V)
+    (c : U) (a : real) (x : V), func_lim_base af c a → func_lim_base xf c x →
+    func_lim_base (λ n, af n · xf n) c (a · x).
+Proof.
     intros A af xf c a x a_lim x_lim.
     rewrite metric_func_seq_lim in *.
     rewrite metric_func_seq_lim in a_lim.

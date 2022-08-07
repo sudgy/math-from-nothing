@@ -14,8 +14,8 @@ Require Import rat.
 
 Definition real_pos := set_type (λ x, 0 < x).
 
-Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y →
-        ∃ n, x < n × y.
+Theorem real_archimedean_base : ∀ x y : real, 0 < x → 0 < y → ∃ n, x < n × y.
+Proof.
     intros x y x_pos y_pos.
     classic_contradiction contr.
     rewrite not_ex in contr.
@@ -72,15 +72,17 @@ Global Instance real_archimedean : Archimedean real := {
 }.
 
 Lemma real_n_div_pos : ∀ n, 0 < / nat_to_abstract (nat_suc n).
+Proof.
     intros n.
     apply div_pos.
     apply nat_to_abstract_pos.
 Qed.
 
 Theorem real_nested_interval : ∀ I : nat → real → Prop,
-        (∀ n, ∃ a b, a <= b ∧ I n = closed_interval a b) →
-        (∀ n, I (1 + n) ⊆ I n) →
-        ∃ x, ∀ n, I n x.
+    (∀ n, ∃ a b, a <= b ∧ I n = closed_interval a b) →
+    (∀ n, I (1 + n) ⊆ I n) →
+    ∃ x, ∀ n, I n x.
+Proof.
     intros I I_closed I_sub.
     pose (an n := ex_val (I_closed n)).
     pose (bn n := ex_val (ex_proof (I_closed n))).

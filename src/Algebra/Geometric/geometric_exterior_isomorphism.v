@@ -78,7 +78,8 @@ Existing Instances GP GZ GN GPA GPC GPZ GPN GM GL GR GS GSL GSC GSMR.
 
 (* end hide *)
 Lemma ext_inner_inner : ∀ a b (x : ext V),
-        ext_inner B a (ext_inner B b x) + ext_inner B b (ext_inner B a x) = 0.
+    ext_inner B a (ext_inner B b x) + ext_inner B b (ext_inner B a x) = 0.
+Proof.
     intros a b x.
     symmetry; apply plus_0_ab_a_nb.
     pose proof (ext_sum V x) as [l l_eq]; subst x.
@@ -122,8 +123,9 @@ Lemma ext_inner_inner : ∀ a b (x : ext V),
 Qed.
 
 Lemma geo_mult_inner_inner : ∀ a b (x : geo B),
-        geo_mult_inner B a (geo_mult_inner B b x) +
-        geo_mult_inner B b (geo_mult_inner B a x) = 0.
+    geo_mult_inner B a (geo_mult_inner B b x) +
+    geo_mult_inner B b (geo_mult_inner B a x) = 0.
+Proof.
     intros a b x.
     symmetry; apply plus_0_ab_a_nb.
     pose proof (geo_sum B x) as [l l_eq]; subst x.
@@ -167,7 +169,8 @@ Lemma geo_mult_inner_inner : ∀ a b (x : geo B),
 Qed.
 
 Lemma geo_to_ext_inner : ∀ a (x : geo B),
-        geo_to_ext B (geo_mult_inner B a x) = ext_inner B a (geo_to_ext B x).
+    geo_to_ext B (geo_mult_inner B a x) = ext_inner B a (geo_to_ext B x).
+Proof.
     intros a x.
     pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -216,7 +219,8 @@ Lemma geo_to_ext_inner : ∀ a (x : geo B),
 Qed.
 
 Lemma ext_to_geo_inner : ∀ a (x : ext V),
-        ext_to_geo B (ext_inner B a x) = geo_mult_inner B a (ext_to_geo B x).
+    ext_to_geo B (ext_inner B a x) = geo_mult_inner B a (ext_to_geo B x).
+Proof.
     intros a x.
     pose proof (ext_sum V x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -267,6 +271,7 @@ Lemma ext_to_geo_inner : ∀ a (x : ext V),
 Qed.
 
 Theorem geo_to_ext_to_geo : ∀ x, geo_to_ext B (ext_to_geo B x) = x.
+Proof.
     intros x.
     pose proof (ext_sum V x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -305,6 +310,7 @@ Theorem geo_to_ext_to_geo : ∀ x, geo_to_ext B (ext_to_geo B x) = x.
 Qed.
 
 Theorem ext_to_geo_to_ext : ∀ x, ext_to_geo B (geo_to_ext B x) = x.
+Proof.
     intros x.
     pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -357,12 +363,14 @@ Definition geo_to_ext_homo := make_module_homomorphism
     (geo_to_ext_scalar B) : cat_morphism (MODULE F) _ _.
 
 Theorem ext_to_geo_to_ext_homo : ext_to_geo_homo ∘ geo_to_ext_homo = 𝟙.
+Proof.
     apply module_homomorphism_eq.
     intros x.
     cbn.
     apply ext_to_geo_to_ext.
 Qed.
 Theorem geo_to_ext_to_geo_homo : geo_to_ext_homo ∘ ext_to_geo_homo = 𝟙.
+Proof.
     apply module_homomorphism_eq.
     intros x.
     cbn.
@@ -370,12 +378,14 @@ Theorem geo_to_ext_to_geo_homo : geo_to_ext_homo ∘ ext_to_geo_homo = 𝟙.
 Qed.
 
 Theorem ext_to_geo_iso : isomorphism ext_to_geo_homo.
+Proof.
     exists geo_to_ext_homo.
     split.
     -   exact ext_to_geo_to_ext_homo.
     -   exact geo_to_ext_to_geo_homo.
 Qed.
 Theorem geo_to_ext_iso : isomorphism geo_to_ext_homo.
+Proof.
     exists ext_to_geo_homo.
     split.
     -   exact geo_to_ext_to_geo_homo.
@@ -383,13 +393,15 @@ Theorem geo_to_ext_iso : isomorphism geo_to_ext_homo.
 Qed.
 
 Theorem geo_ext_iso : isomorphic (C0 := MODULE F)
-        (algebra_module (geometric_algebra B))
-        (algebra_module (exterior_algebra V)).
+    (algebra_module (geometric_algebra B))
+    (algebra_module (exterior_algebra V)).
+Proof.
     exists geo_to_ext_homo.
     exact geo_to_ext_iso.
 Qed.
 
 Theorem scalar_to_geo_eq : ∀ a b, scalar_to_geo B a = scalar_to_geo B b → a = b.
+Proof.
     intros a b eq.
     apply (f_equal (geo_to_ext B)) in eq.
     do 2 rewrite geo_to_ext_of_scalar in eq.
@@ -398,6 +410,7 @@ Theorem scalar_to_geo_eq : ∀ a b, scalar_to_geo B a = scalar_to_geo B b → a 
 Qed.
 
 Theorem vector_to_geo_eq : ∀ a b, vector_to_geo B a = vector_to_geo B b → a = b.
+Proof.
     intros a b eq.
     apply (f_equal (geo_to_ext B)) in eq.
     do 2 rewrite geo_to_ext_vector in eq.

@@ -35,6 +35,7 @@ Let frac_mult_base (a b : frac_base U) :=
 Local Infix "⊗" := frac_mult_base.
 
 Lemma frac_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
+Proof.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] eq1 eq2.
     cbn in *.
     unfold frac_eq in *.
@@ -126,6 +127,7 @@ Let frac_div_base (a : frac_base U) :=
 Local Notation "⊘ a" := (frac_div_base a).
 
 Lemma frac_div_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
+Proof.
     intros [a1 a2] [b1 b2] eq.
     destruct a2 as [a2 a2_nz], b2 as [b2 b2_nz].
     cbn in *.
@@ -188,6 +190,7 @@ Next Obligation.
 Qed.
 
 Theorem to_frac_mult : ∀ a b, to_frac U (a * b) = to_frac U a * to_frac U b.
+Proof.
     intros a b.
     unfold mult at 2, to_frac; equiv_simpl.
     unfold frac_eq; cbn.
@@ -196,6 +199,7 @@ Theorem to_frac_mult : ∀ a b, to_frac U (a * b) = to_frac U a * to_frac U b.
 Qed.
 
 Theorem to_frac_one : to_frac U 1 = 1.
+Proof.
     reflexivity.
 Qed.
 

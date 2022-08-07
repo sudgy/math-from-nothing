@@ -64,6 +64,7 @@ Definition subspace_homo_set (S : Subspace U V1) y
     := ∃ x, subspace_set S x ∧ module_homo_f f x = y.
 
 Lemma subspace_homo_zero : ∀ S, subspace_homo_set S 0.
+Proof.
     intros S.
     unfold subspace_homo_set.
     exists 0.
@@ -73,8 +74,9 @@ Lemma subspace_homo_zero : ∀ S, subspace_homo_set S 0.
 Qed.
 
 Lemma subspace_homo_plus : ∀ S, ∀ a b,
-        subspace_homo_set S a → subspace_homo_set S b →
-        subspace_homo_set S (a + b).
+    subspace_homo_set S a → subspace_homo_set S b →
+    subspace_homo_set S (a + b).
+Proof.
     intros S x y [a [Sa a_eq]] [b [Sb b_eq]].
     exists (a + b).
     split.
@@ -85,7 +87,8 @@ Lemma subspace_homo_plus : ∀ S, ∀ a b,
 Qed.
 
 Lemma subspace_homo_scalar : ∀ S, ∀ a v,
-        subspace_homo_set S v → subspace_homo_set S (a · v).
+    subspace_homo_set S v → subspace_homo_set S (a · v).
+Proof.
     intros S a y [x [Sx x_eq]].
     exists (a · x).
     split.
@@ -163,6 +166,7 @@ Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
 Let g := ex_val f_iso.
 
 Lemma grade_iso_fg : ∀ x, module_homo_f f (module_homo_f g x) = x.
+Proof.
     intros x.
     pose proof (land (ex_proof f_iso)) as eq.
     change (ex_type_val (ex_to_type f_iso)) with g in eq.
@@ -172,6 +176,7 @@ Lemma grade_iso_fg : ∀ x, module_homo_f f (module_homo_f g x) = x.
     apply (func_eq _ _ eq2).
 Qed.
 Lemma grade_iso_gf : ∀ x, module_homo_f g (module_homo_f f x) = x.
+Proof.
     intros x.
     pose proof (rand (ex_proof f_iso)) as eq.
     change (ex_type_val (ex_to_type f_iso)) with g in eq.

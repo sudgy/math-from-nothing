@@ -15,12 +15,14 @@ Global Instance nat_plus : Plus nat := {
 }.
 (* end hide *)
 Theorem nat_plus_lrsuc : ∀ a b, nat_suc a + b = a + nat_suc b.
+Proof.
     intros a b.
     unfold plus; cbn.
     reflexivity.
 Qed.
 
 Theorem nat_plus_lsuc : ∀ a b, nat_suc a + b = nat_suc (a + b).
+Proof.
     induction a.
     -   intros b.
         unfold plus; cbn.
@@ -33,6 +35,7 @@ Theorem nat_plus_lsuc : ∀ a b, nat_suc a + b = nat_suc (a + b).
 Qed.
 
 Theorem nat_plus_rsuc : ∀ a b, a + nat_suc b = nat_suc (a + b).
+Proof.
     intros a b.
     rewrite <- nat_plus_lrsuc, nat_plus_lsuc.
     reflexivity.
@@ -46,6 +49,7 @@ Ltac nat_induction n := induction n; change nat_zero with zero in *.
 Ltac nat_destruct n := destruct n; change nat_zero with zero in *.
 
 Lemma nat_plus_lid_ : ∀ a, zero + a = a.
+Proof.
     intros a.
     reflexivity.
 Qed.
@@ -53,6 +57,7 @@ Global Instance nat_plus_lid : PlusLid nat := {
     plus_lid := nat_plus_lid_;
 }.
 Lemma nat_plus_rid_ : ∀ a, a + zero = a.
+Proof.
     nat_induction a.
     -   reflexivity.
     -   rewrite nat_plus_lsuc.
@@ -61,6 +66,7 @@ Lemma nat_plus_rid_ : ∀ a, a + zero = a.
 Qed.
 
 Lemma nat_plus_comm_ : ∀ a b, a + b = b + a.
+Proof.
     intros a b.
     nat_induction a.
     -   rewrite plus_lid, nat_plus_rid_.
@@ -75,6 +81,7 @@ Global Instance nat_plus_comm : PlusComm nat := {
 }.
 
 Lemma nat_plus_assoc_ : ∀ a b c, a + (b + c) = (a + b) + c.
+Proof.
     intros a b c.
     nat_induction a.
     -   do 2 rewrite plus_lid.
@@ -88,6 +95,7 @@ Global Instance nat_plus_assoc : PlusAssoc nat := {
 }.
 
 Lemma nat_plus_lcancel_ : ∀ a b c, c + a = c + b → a = b.
+Proof.
     intros a b c eq.
     nat_induction c.
     -   do 2 rewrite plus_lid in eq.
@@ -102,6 +110,7 @@ Global Instance nat_plus_lcancel : PlusLcancel nat := {
 }.
 (* end hide *)
 Theorem nat_plus_zero : ∀ a b, 0 = a + b → 0 = a ∧ 0 = b.
+Proof.
     intros a b eq.
     nat_destruct a.
     -   nat_destruct b.

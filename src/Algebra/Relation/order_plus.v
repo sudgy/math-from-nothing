@@ -31,6 +31,7 @@ Section OrderPlusImply.
 Context {U} `{OrderPlus U}.
 
 Lemma le_lplus_rplus_ : ∀ a b c, a <= b → a + c <= b + c.
+Proof.
     intros a b c eq.
     do 2 rewrite (plus_comm _ c).
     apply le_lplus.
@@ -38,6 +39,7 @@ Lemma le_lplus_rplus_ : ∀ a b c, a <= b → a + c <= b + c.
 Qed.
 
 Lemma le_plus_lcancel_rcancel_ : ∀ a b c, a + c <= b + c → a <= b.
+Proof.
     intros a b c eq.
     do 2 rewrite (plus_comm _ c) in eq.
     apply le_plus_lcancel in eq.
@@ -45,6 +47,7 @@ Lemma le_plus_lcancel_rcancel_ : ∀ a b c, a + c <= b + c → a <= b.
 Qed.
 
 Lemma le_plus_linv_lcancel : ∀ a b c, c + a <= c + b → a <= b.
+Proof.
     intros a b c eq.
     apply le_lplus with (-c) in eq.
     do 2 rewrite plus_assoc in eq.
@@ -53,6 +56,7 @@ Lemma le_plus_linv_lcancel : ∀ a b c, c + a <= c + b → a <= b.
     exact eq.
 Qed.
 Lemma le_plus_rinv_rcancel : ∀ a b c, a + c <= b + c → a <= b.
+Proof.
     intros a b c eq.
     apply le_rplus with (-c) in eq.
     do 2 rewrite <- plus_assoc in eq.
@@ -85,6 +89,7 @@ Context {U} `{OrderPlus U}.
 
 (* end hide *)
 Theorem le_lrplus : ∀ {a b c d}, a <= b → c <= d → a + c <= b + d.
+Proof.
     intros a b c d ab cd.
     apply le_rplus with c in ab.
     apply le_lplus with b in cd.
@@ -92,6 +97,7 @@ Theorem le_lrplus : ∀ {a b c d}, a <= b → c <= d → a + c <= b + d.
 Qed.
 
 Theorem lt_lplus : ∀ {a b} c, a < b → c + a < c + b.
+Proof.
     intros a b c [leq neq].
     split.
     -   apply le_lplus.
@@ -102,6 +108,7 @@ Theorem lt_lplus : ∀ {a b} c, a < b → c + a < c + b.
 Qed.
 
 Theorem lt_rplus : ∀ {a b} c, a < b → a + c < b + c.
+Proof.
     intros a b c [leq neq].
     split.
     -   apply le_rplus.
@@ -112,6 +119,7 @@ Theorem lt_rplus : ∀ {a b} c, a < b → a + c < b + c.
 Qed.
 
 Theorem lt_lrplus : ∀ {a b c d}, a < b → c < d → a + c < b + d.
+Proof.
     intros a b c d ab cd.
     apply lt_rplus with c in ab.
     apply lt_lplus with b in cd.
@@ -119,6 +127,7 @@ Theorem lt_lrplus : ∀ {a b c d}, a < b → c < d → a + c < b + d.
 Qed.
 
 Theorem le_lt_lrplus : ∀ {a b c d}, a <= b → c < d → a + c < b + d.
+Proof.
     intros a b c d ab cd.
     apply le_rplus with c in ab.
     apply lt_lplus with b in cd.
@@ -126,6 +135,7 @@ Theorem le_lt_lrplus : ∀ {a b c d}, a <= b → c < d → a + c < b + d.
 Qed.
 
 Theorem lt_le_lrplus : ∀ {a b c d}, a < b → c <= d → a + c < b + d.
+Proof.
     intros a b c d ab cd.
     apply lt_rplus with c in ab.
     apply le_lplus with b in cd.
@@ -133,6 +143,7 @@ Theorem lt_le_lrplus : ∀ {a b c d}, a < b → c <= d → a + c < b + d.
 Qed.
 
 Theorem lt_plus_lcancel : ∀ {a b} c, c + a < c + b → a < b.
+Proof.
     intros a b c [leq neq].
     split.
     -   apply le_plus_lcancel in leq.
@@ -143,6 +154,7 @@ Theorem lt_plus_lcancel : ∀ {a b} c, c + a < c + b → a < b.
 Qed.
 
 Theorem lt_plus_rcancel : ∀ {a b} c, a + c < b + c → a < b.
+Proof.
     intros a b c [leq neq].
     split.
     -   apply le_plus_rcancel in leq.
@@ -153,12 +165,14 @@ Theorem lt_plus_rcancel : ∀ {a b} c, a + c < b + c → a < b.
 Qed.
 
 Theorem neg_pos : ∀ a, a <= 0 → 0 <= -a.
+Proof.
     intros a a_pos.
     apply le_rplus with (-a) in a_pos.
     rewrite plus_rinv, plus_lid in a_pos.
     exact a_pos.
 Qed.
 Theorem neg_pos2 : ∀ a, a < 0 → 0 < -a.
+Proof.
     intros a a_pos.
     apply lt_rplus with (-a) in a_pos.
     rewrite plus_rinv, plus_lid in a_pos.
@@ -166,12 +180,14 @@ Theorem neg_pos2 : ∀ a, a < 0 → 0 < -a.
 Qed.
 
 Theorem pos_neg : ∀ a, 0 <= a → -a <= 0.
+Proof.
     intros a a_pos.
     apply le_rplus with (-a) in a_pos.
     rewrite plus_rinv, plus_lid in a_pos.
     exact a_pos.
 Qed.
 Theorem pos_neg2 : ∀ a, 0 < a → -a < 0.
+Proof.
     intros a a_pos.
     apply lt_rplus with (-a) in a_pos.
     rewrite plus_rinv, plus_lid in a_pos.
@@ -179,6 +195,7 @@ Theorem pos_neg2 : ∀ a, 0 < a → -a < 0.
 Qed.
 
 Theorem le_plus_llmove : ∀ a b c, a + b <= c ↔ b <= -a + c.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply le_lplus with (-a) in eq.
@@ -189,6 +206,7 @@ Theorem le_plus_llmove : ∀ a b c, a + b <= c ↔ b <= -a + c.
         exact eq.
 Qed.
 Theorem le_plus_lrmove : ∀ a b c, a + b <= c ↔ a <= c - b.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply le_rplus with (-b) in eq.
@@ -199,6 +217,7 @@ Theorem le_plus_lrmove : ∀ a b c, a + b <= c ↔ a <= c - b.
         exact eq.
 Qed.
 Theorem le_plus_rlmove : ∀ a b c, a <= b + c ↔ -b + a <= c.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply le_lplus with (-b) in eq.
@@ -209,6 +228,7 @@ Theorem le_plus_rlmove : ∀ a b c, a <= b + c ↔ -b + a <= c.
         exact eq.
 Qed.
 Theorem le_plus_rrmove : ∀ a b c, a <= b + c ↔ a - c <= b.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply le_rplus with (-c) in eq.
@@ -220,24 +240,28 @@ Theorem le_plus_rrmove : ∀ a b c, a <= b + c ↔ a - c <= b.
 Qed.
 
 Theorem le_plus_0_ab_na_b : ∀ a b, 0 <= a + b ↔ -a <= b.
+Proof.
     intros a b.
     rewrite le_plus_rlmove.
     rewrite plus_rid.
     reflexivity.
 Qed.
 Theorem le_plus_0_ab_nb_a : ∀ a b, 0 <= a + b ↔ -b <= a.
+Proof.
     intros a b.
     rewrite le_plus_rrmove.
     rewrite plus_lid.
     reflexivity.
 Qed.
 Theorem le_plus_ab_0_a_nb : ∀ a b, a + b <= 0 ↔ a <= -b.
+Proof.
     intros a b.
     rewrite le_plus_lrmove.
     rewrite plus_lid.
     reflexivity.
 Qed.
 Theorem le_plus_ab_0_b_na : ∀ a b, a + b <= 0 ↔ b <= -a.
+Proof.
     intros a b.
     rewrite le_plus_llmove.
     rewrite plus_rid.
@@ -245,24 +269,28 @@ Theorem le_plus_ab_0_b_na : ∀ a b, a + b <= 0 ↔ b <= -a.
 Qed.
 
 Theorem le_plus_a_0_ab_b : ∀ a b, a <= 0 ↔ a + b <= b.
+Proof.
     intros a b.
     rewrite le_plus_lrmove.
     rewrite plus_rinv.
     reflexivity.
 Qed.
 Theorem le_plus_a_0_ba_b : ∀ a b, a <= 0 ↔ b + a <= b.
+Proof.
     intros a b.
     rewrite le_plus_llmove.
     rewrite plus_linv.
     reflexivity.
 Qed.
 Theorem le_plus_0_a_b_ab : ∀ a b, 0 <= a ↔ b <= a + b.
+Proof.
     intros a b.
     rewrite le_plus_rrmove.
     rewrite plus_rinv.
     reflexivity.
 Qed.
 Theorem le_plus_0_a_b_ba : ∀ a b, 0 <= a ↔ b <= b + a.
+Proof.
     intros a b.
     rewrite le_plus_rlmove.
     rewrite plus_linv.
@@ -270,24 +298,28 @@ Theorem le_plus_0_a_b_ba : ∀ a b, 0 <= a ↔ b <= b + a.
 Qed.
 
 Theorem le_plus_0_nab_a_b : ∀ a b, 0 <= -a + b ↔ a <= b.
+Proof.
     intros a b.
     rewrite <- le_plus_llmove.
     rewrite plus_rid.
     reflexivity.
 Qed.
 Theorem le_plus_anb_0_a_b : ∀ a b, a - b <= 0 ↔ a <= b.
+Proof.
     intros a b.
     rewrite <- le_plus_rrmove.
     rewrite plus_lid.
     reflexivity.
 Qed.
 Theorem le_plus_nab_0_b_a : ∀ a b, -a + b <= 0 ↔ b <= a.
+Proof.
     intros a b.
     rewrite <- le_plus_rlmove.
     rewrite plus_rid.
     reflexivity.
 Qed.
 Theorem le_plus_0_anb_b_a : ∀ a b, 0 <= a - b ↔ b <= a.
+Proof.
     intros a b.
     rewrite <- le_plus_lrmove.
     rewrite plus_lid.
@@ -295,6 +327,7 @@ Theorem le_plus_0_anb_b_a : ∀ a b, 0 <= a - b ↔ b <= a.
 Qed.
 
 Theorem lt_plus_llmove : ∀ a b c, a + b < c ↔ b < -a + c.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply lt_lplus with (-a) in eq.
@@ -305,6 +338,7 @@ Theorem lt_plus_llmove : ∀ a b c, a + b < c ↔ b < -a + c.
         exact eq.
 Qed.
 Theorem lt_plus_lrmove : ∀ a b c, a + b < c ↔ a < c - b.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply lt_rplus with (-b) in eq.
@@ -315,6 +349,7 @@ Theorem lt_plus_lrmove : ∀ a b c, a + b < c ↔ a < c - b.
         exact eq.
 Qed.
 Theorem lt_plus_rlmove : ∀ a b c, a < b + c ↔ -b + a < c.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply lt_lplus with (-b) in eq.
@@ -325,6 +360,7 @@ Theorem lt_plus_rlmove : ∀ a b c, a < b + c ↔ -b + a < c.
         exact eq.
 Qed.
 Theorem lt_plus_rrmove : ∀ a b c, a < b + c ↔ a - c < b.
+Proof.
     intros a b c.
     split; intros eq.
     -   apply lt_rplus with (-c) in eq.
@@ -336,24 +372,28 @@ Theorem lt_plus_rrmove : ∀ a b c, a < b + c ↔ a - c < b.
 Qed.
 
 Theorem lt_plus_0_ab_na_b : ∀ a b, 0 < a + b ↔ -a < b.
+Proof.
     intros a b.
     rewrite lt_plus_rlmove.
     rewrite plus_rid.
     reflexivity.
 Qed.
 Theorem lt_plus_0_ab_nb_a : ∀ a b, 0 < a + b ↔ -b < a.
+Proof.
     intros a b.
     rewrite lt_plus_rrmove.
     rewrite plus_lid.
     reflexivity.
 Qed.
 Theorem lt_plus_ab_0_a_nb : ∀ a b, a + b < 0 ↔ a < -b.
+Proof.
     intros a b.
     rewrite lt_plus_lrmove.
     rewrite plus_lid.
     reflexivity.
 Qed.
 Theorem lt_plus_ab_0_b_na : ∀ a b, a + b < 0 ↔ b < -a.
+Proof.
     intros a b.
     rewrite lt_plus_llmove.
     rewrite plus_rid.
@@ -361,24 +401,28 @@ Theorem lt_plus_ab_0_b_na : ∀ a b, a + b < 0 ↔ b < -a.
 Qed.
 
 Theorem lt_plus_a_0_ab_b : ∀ a b, a < 0 ↔ a + b < b.
+Proof.
     intros a b.
     rewrite lt_plus_lrmove.
     rewrite plus_rinv.
     reflexivity.
 Qed.
 Theorem lt_plus_a_0_ba_b : ∀ a b, a < 0 ↔ b + a < b.
+Proof.
     intros a b.
     rewrite lt_plus_llmove.
     rewrite plus_linv.
     reflexivity.
 Qed.
 Theorem lt_plus_0_a_b_ab : ∀ a b, 0 < a ↔ b < a + b.
+Proof.
     intros a b.
     rewrite lt_plus_rrmove.
     rewrite plus_rinv.
     reflexivity.
 Qed.
 Theorem lt_plus_0_a_b_ba : ∀ a b, 0 < a ↔ b < b + a.
+Proof.
     intros a b.
     rewrite lt_plus_rlmove.
     rewrite plus_linv.
@@ -386,24 +430,28 @@ Theorem lt_plus_0_a_b_ba : ∀ a b, 0 < a ↔ b < b + a.
 Qed.
 
 Theorem lt_plus_0_nab_a_b : ∀ a b, 0 < -a + b ↔ a < b.
+Proof.
     intros a b.
     rewrite <- lt_plus_llmove.
     rewrite plus_rid.
     reflexivity.
 Qed.
 Theorem lt_plus_anb_0_a_b : ∀ a b, a - b < 0 ↔ a < b.
+Proof.
     intros a b.
     rewrite <- lt_plus_rrmove.
     rewrite plus_lid.
     reflexivity.
 Qed.
 Theorem lt_plus_nab_0_b_a : ∀ a b, -a + b < 0 ↔ b < a.
+Proof.
     intros a b.
     rewrite <- lt_plus_rlmove.
     rewrite plus_rid.
     reflexivity.
 Qed.
 Theorem lt_plus_0_anb_b_a : ∀ a b, 0 < a - b ↔ b < a.
+Proof.
     intros a b.
     rewrite <- lt_plus_lrmove.
     rewrite plus_lid.
@@ -411,12 +459,14 @@ Theorem lt_plus_0_anb_b_a : ∀ a b, 0 < a - b ↔ b < a.
 Qed.
 
 Theorem le_neg : ∀ a b, a <= b ↔ -b <= -a.
+Proof.
     intros a b.
     rewrite <- le_plus_0_anb_b_a.
     rewrite le_plus_0_ab_na_b.
     reflexivity.
 Qed.
 Theorem lt_neg : ∀ a b, a < b ↔ -b < -a.
+Proof.
     intros a b.
     rewrite <- lt_plus_0_anb_b_a.
     rewrite lt_plus_0_ab_na_b.

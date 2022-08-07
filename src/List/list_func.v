@@ -11,7 +11,8 @@ Fixpoint list_image (A B : Type) (l : list A) (f : A → B) :=
     end.
 
 Theorem list_image_conc {A B : Type} : ∀ (l1 l2 : list A) (f : A → B),
-        list_image (l1 ++ l2) f = list_image l1 f ++ list_image l2 f.
+    list_image (l1 ++ l2) f = list_image l1 f ++ list_image l2 f.
+Proof.
     intros l1 l2 f.
     induction l1.
     -   cbn.
@@ -22,7 +23,8 @@ Theorem list_image_conc {A B : Type} : ∀ (l1 l2 : list A) (f : A → B),
 Qed.
 
 Theorem list_image_comp {A B C : Type} : ∀ (l : list A) (f : A → B) (g : B → C),
-        list_image (list_image l f) g = list_image l (λ x, g (f x)).
+    list_image (list_image l f) g = list_image l (λ x, g (f x)).
+Proof.
     intros l f g.
     induction l.
     -   cbn.
@@ -45,7 +47,8 @@ Fixpoint list_prod2 {A B : Type} (op : A → A → B) (l1 l2 : list A) :=
     end.
 
 Theorem list_prod2_lend {A B : Type} (op : A → A → B) (l : list A) :
-        list_prod2 op list_end l = list_end.
+    list_prod2 op list_end l = list_end.
+Proof.
     induction l.
     -   cbn.
         reflexivity.
@@ -54,13 +57,15 @@ Theorem list_prod2_lend {A B : Type} (op : A → A → B) (l : list A) :
 Qed.
 
 Theorem list_prod2_rend {A B : Type} (op : A → A → B) (l : list A) :
-        list_prod2 op l list_end = list_end.
+    list_prod2 op l list_end = list_end.
+Proof.
     cbn.
     reflexivity.
 Qed.
 
 Theorem list_prod2_base_image {A B} (op : A → A → B) : ∀ l b,
-        list_prod2_base op l b = list_image l (λ x, op x b).
+    list_prod2_base op l b = list_image l (λ x, op x b).
+Proof.
     intros l b.
     induction l.
     -   cbn.

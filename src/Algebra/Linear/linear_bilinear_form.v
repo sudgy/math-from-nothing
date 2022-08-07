@@ -48,27 +48,33 @@ Context {U V} `{
 Variable f : set_type bilinear_form.
 
 Theorem bilinear_form_lscalar : ∀ a v1 v2, [f|] (a · v1) v2 = a * ([f|] v1 v2).
+Proof.
     apply [|f].
 Qed.
 Theorem bilinear_form_rscalar : ∀ a v1 v2, [f|] v1 (a · v2) = a * ([f|] v1 v2).
+Proof.
     apply [|f].
 Qed.
 Theorem bilinear_form_lplus : ∀ v1 v2 v3,
-        [f|] (v1 + v2) v3 = [f|] v1 v3 + [f|] v2 v3.
+    [f|] (v1 + v2) v3 = [f|] v1 v3 + [f|] v2 v3.
+Proof.
     apply [|f].
 Qed.
 Theorem bilinear_form_rplus : ∀ v1 v2 v3,
-        [f|] v1 (v2 + v3) = [f|] v1 v2 + [f|] v1 v3.
+    [f|] v1 (v2 + v3) = [f|] v1 v2 + [f|] v1 v3.
+Proof.
     apply [|f].
 Qed.
 Theorem bilinear_form_comm : ∀ v1 v2,
-        [f|] v1 v2 = [f|] v2 v1.
+    [f|] v1 v2 = [f|] v2 v1.
+Proof.
     apply [|f].
 Qed.
 
 Theorem nondegenerate_nz_ex :
-        (∃ x, 0 ≠ x) → ¬degenerate_bilinear_form f →
-        ∃ x, 0 ≠ [f|] x x.
+    (∃ x, 0 ≠ x) → ¬degenerate_bilinear_form f →
+    ∃ x, 0 ≠ [f|] x x.
+Proof.
     intros [x x_nz] f_non.
     unfold degenerate_bilinear_form in f_non.
     rewrite not_ex in f_non.

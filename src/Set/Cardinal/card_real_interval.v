@@ -11,6 +11,7 @@ Open Scope card_scope.
 
 (* end hide *)
 Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
+Proof.
     assert (∀ x, open_interval (-(1)) 1 x → 0 ≠ 1 - x*x) as lem.
     {
         intros x [x_gt x_lt].
@@ -354,7 +355,8 @@ Theorem real_interval_size_base : |set_type (open_interval (-(1)) 1)| = |real|.
 Qed.
 
 Theorem real_open_interval_size : ∀ a b, a < b →
-        |set_type (open_interval a b)| = |real|.
+    |set_type (open_interval a b)| = |real|.
+Proof.
     intros a b ab.
     rewrite <- real_interval_size_base.
     equiv_simpl.
@@ -447,7 +449,8 @@ Theorem real_open_interval_size : ∀ a b, a < b →
 Qed.
 
 Theorem real_closed_interval_size : ∀ a b, a < b →
-        |set_type (closed_interval a b)| = |real|.
+    |set_type (closed_interval a b)| = |real|.
+Proof.
     intros a b ab.
     rewrite <- (real_open_interval_size a b ab).
     assert (|set_type (closed_interval a b)|

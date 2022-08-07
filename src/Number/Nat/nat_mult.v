@@ -16,6 +16,7 @@ Global Instance nat_mult : Mult nat := {
 }.
 
 Lemma nat_mult_lanni_ : ∀ a, zero * a = zero.
+Proof.
     intros a.
     reflexivity.
 Qed.
@@ -36,6 +37,7 @@ Ltac nat_destruct n ::=
     change (nat_suc zero) with (one (U := nat)) in *.
 
 Lemma nat_mult_lid_ : ∀ a, one * a = a.
+Proof.
     intros a.
     unfold one, mult; cbn.
     apply plus_rid.
@@ -45,11 +47,13 @@ Global Instance nat_mult_lid : MultLid nat := {
 }.
 (* end hide *)
 Theorem nat_mult_lsuc : ∀ a b, nat_suc a * b = b + a * b.
+Proof.
     intros a b.
     unfold mult; cbn.
     reflexivity.
 Qed.
 Theorem nat_mult_rsuc : ∀ a b, a * nat_suc b = a + a * b.
+Proof.
     intros a b.
     nat_induction a.
     -   do 2 rewrite mult_lanni.
@@ -66,6 +70,7 @@ Qed.
 
 (* begin hide *)
 Lemma nat_mult_comm_ : ∀ a b, a * b = b * a.
+Proof.
     intros a b.
     nat_induction a.
     -   rewrite mult_lanni.
@@ -87,6 +92,7 @@ Global Instance nat_mult_comm : MultComm nat := {
 }.
 
 Lemma nat_ldist_ : ∀ a b c, a * (b + c) = a * b + a * c.
+Proof.
     intros a b c.
     nat_induction a.
     -   do 3 rewrite mult_lanni.
@@ -108,6 +114,7 @@ Global Instance nat_ldist : Ldist nat := {
 }.
 
 Lemma nat_mult_assoc_ : ∀ a b c, a * (b * c) = (a * b) * c.
+Proof.
     intros a b c.
     nat_induction a.
     -   do 3 rewrite mult_lanni.
@@ -123,6 +130,7 @@ Global Instance nat_mult_assoc : MultAssoc nat := {
 }.
 (* end hide *)
 Theorem nat_neq_suc_mult : ∀ a b, zero ≠ nat_suc a * nat_suc b.
+Proof.
     intros a b contr.
     rewrite nat_mult_lsuc in contr.
     rewrite nat_plus_lsuc in contr.
@@ -130,6 +138,7 @@ Theorem nat_neq_suc_mult : ∀ a b, zero ≠ nat_suc a * nat_suc b.
 Qed.
 
 Theorem nat_mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b.
+Proof.
     intros a b eq.
     nat_destruct a.
     -   left; reflexivity.
@@ -142,6 +151,7 @@ Qed.
 
 (* begin hide *)
 Lemma nat_mult_lcancel_ : ∀ a b c, zero ≠ c → c * a = c * b → a = b.
+Proof.
     intros a b c c_neq eq.
     nat_destruct c.
     { contradiction. }
@@ -172,6 +182,7 @@ Global Instance nat_mult_lcancel : MultLcancel nat := {
 }.
 
 Lemma nat_not_trivial : 0 ≠ 1.
+Proof.
     intro contr; inversion contr.
 Qed.
 

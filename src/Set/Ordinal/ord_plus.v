@@ -15,6 +15,7 @@ Definition ord_plus_le (A B : ord_type) (a b : ord_U A + ord_U B) :=
     end.
 
 Lemma ord_plus_wo : ∀ A B, well_orders (ord_plus_le A B).
+Proof.
     intros A B.
     destruct (ord_wo A) as [[A_connex] [[A_antisym] [[A_trans] [A_wo]]]].
     destruct (ord_wo B) as [[B_connex] [[B_antisym] [[B_trans] [B_wo]]]].
@@ -72,6 +73,7 @@ Section OrdPlus.
 Local Open Scope ord_scope.
 
 Lemma ord_plus_wd : ∀ A B C D, A ~ B → C ~ D → A ⊕ C ~ B ⊕ D.
+Proof.
     intros A B C D [f [f_bij f_iso]] [g [g_bij g_iso]].
     pose (h x := match x with
                  | inl a => inl (f a)
@@ -109,6 +111,7 @@ Global Instance ord_plus_class : Plus ord := {
 }.
 
 Lemma ord_plus_assoc : ∀ α β γ, α + (β + γ) = (α + β) + γ.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold plus; equiv_simpl.
@@ -144,6 +147,7 @@ Global Instance ord_zero : Zero ord := {
 }.
 
 Lemma ord_plus_lid : ∀ α, 0 + α = α.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -169,6 +173,7 @@ Global Instance ord_plus_lid_class : PlusLid ord := {
 }.
 
 Lemma ord_plus_rid : ∀ α, α + 0 = α.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -195,6 +200,7 @@ Global Instance ord_plus_rid_class : PlusRid ord := {
 (* end hide *)
 
 Theorem ord_lt_lplus : ∀ {α β} γ, α < β → γ + α < γ + β.
+Proof.
     intros A B C AB.
     equiv_get_value A B C.
     unfold plus; equiv_simpl.
@@ -247,6 +253,7 @@ Theorem ord_lt_lplus : ∀ {α β} γ, α < β → γ + α < γ + β.
 Qed.
 
 Lemma ord_plus_lcancel : ∀ α β γ, γ + α = γ + β → α = β.
+Proof.
     intros α β γ eq.
     destruct (trichotomy α β) as [[leq|H]|leq]; try assumption.
     exfalso.
@@ -263,6 +270,7 @@ Global Instance ord_plus_lcancel_class : PlusLcancel ord := {
 (* end hide *)
 
 Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
+Proof.
     intros A B AB.
     equiv_get_value A B.
     destruct (ord_wo B) as [[B_connex] [[B_antisym] [[B_trans] [B_wo]]]].
@@ -379,6 +387,7 @@ Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
                 reflexivity.
 Qed.
 Theorem ord_le_ex : ∀ α β, α <= β → ∃ γ, α + γ = β.
+Proof.
     intros α β leq.
     classic_case (α = β) as [eq|neq].
     -   subst.
@@ -390,6 +399,7 @@ Theorem ord_le_ex : ∀ α β, α <= β → ∃ γ, α + γ = β.
 Qed.
 
 Theorem ord_lt_zero : ∀ α, 0 ≠ α → 0 < α.
+Proof.
     intros A A_nz.
     equiv_get_value A.
     unfold zero; cbn.
@@ -438,6 +448,7 @@ Theorem ord_lt_zero : ∀ α, 0 ≠ α → 0 < α.
 Qed.
 
 Theorem ord_le_zero : ∀ α, 0 <= α.
+Proof.
     intros α.
     classic_case (0 = α) as [eq|neq].
     -   rewrite eq.
@@ -447,6 +458,7 @@ Theorem ord_le_zero : ∀ α, 0 <= α.
 Qed.
 
 Theorem ord_lt_plus_lcancel : ∀ {α β} γ, γ + α < γ + β → α < β.
+Proof.
     intros α β γ leq.
     apply ord_lt_ex in leq as [δ [δ_nz eq]].
     rewrite <- plus_assoc in eq.
@@ -459,6 +471,7 @@ Theorem ord_lt_plus_lcancel : ∀ {α β} γ, γ + α < γ + β → α < β.
 Qed.
 
 Lemma ord_le_lplus : ∀ α β γ, α <= β → γ + α <= γ + β.
+Proof.
     intros α β γ leq.
     classic_case (α = β) as [eq|neq].
     -   subst.
@@ -473,6 +486,7 @@ Global Instance ord_le_lplus_class : OrderLplus ord := {
 }.
 (* end hide *)
 Lemma ord_le_plus_lcancel : ∀ α β γ, γ + α <= γ + β → α <= β.
+Proof.
     intros α β γ leq.
     classic_case (γ + α = γ + β) as [eq|neq].
     -   apply plus_lcancel in eq.
@@ -489,6 +503,7 @@ Global Instance ord_le_plus_lcancel_class : OrderPlusLcancel ord := {
 (* end hide *)
 
 Theorem ord_le_self_rplus : ∀ α β, α <= α + β.
+Proof.
     intros α β.
     rewrite <- plus_rid at 1.
     apply le_lplus.
@@ -496,6 +511,7 @@ Theorem ord_le_self_rplus : ∀ α β, α <= α + β.
 Qed.
 
 Theorem ord_le_self_lplus : ∀ α β, α <= β + α.
+Proof.
     intros α β.
     classic_contradiction ltq.
     rewrite nle_lt in ltq.
@@ -529,6 +545,7 @@ Theorem ord_le_self_lplus : ∀ α β, α <= β + α.
 Qed.
 
 Theorem ord_lt_rplus : ∀ {α β} γ, α < β → α + γ <= β + γ.
+Proof.
     intros α β γ eq.
     apply ord_lt_ex in eq as [δ [δ_nz δ_eq]].
     rewrite <- δ_eq.
@@ -537,6 +554,7 @@ Theorem ord_lt_rplus : ∀ {α β} γ, α < β → α + γ <= β + γ.
     apply ord_le_self_lplus.
 Qed.
 Theorem ord_lt_plus_rcancel : ∀ {α β} γ, α + γ < β + γ → α < β.
+Proof.
     intros α β γ eq.
     classic_contradiction contr.
     rewrite nlt_le in contr.
@@ -550,6 +568,7 @@ Theorem ord_lt_plus_rcancel : ∀ {α β} γ, α + γ < β + γ → α < β.
 Qed.
 
 Lemma ord_le_rplus : ∀ α β γ, α <= β → α + γ <= β + γ.
+Proof.
     intros α β γ leq.
     classic_case (α = β) as [eq|neq].
     -   subst.
@@ -564,7 +583,8 @@ Global Instance ord_le_rplus_class : OrderRplus ord := {
 (* end hide *)
 
 Theorem nat_to_ord_plus : ∀ a b,
-        nat_to_ord a + nat_to_ord b = nat_to_ord (a + b).
+    nat_to_ord a + nat_to_ord b = nat_to_ord (a + b).
+Proof.
     intros a b.
     unfold nat_to_ord, plus at 1; equiv_simpl.
     pose (dom := sum (set_type (λ m, m < a)) (set_type (λ m, m < b))).
@@ -642,6 +662,7 @@ Theorem nat_to_ord_plus : ∀ a b,
 Qed.
 
 Theorem ord_lt_self_rplus : ∀ α β, 0 ≠ β → α < α + β.
+Proof.
     intros A B B_nz.
     equiv_get_value A B.
     assert (ord_U B) as b.
@@ -695,6 +716,7 @@ Theorem ord_lt_self_rplus : ∀ α β, 0 ≠ β → α < α + β.
 Qed.
 
 Theorem ord_false_0 : ∀ A, (ord_U A → False) → 0 = to_equiv_type ord_equiv A.
+Proof.
     intros A A_false.
     symmetry.
     unfold zero; cbn.

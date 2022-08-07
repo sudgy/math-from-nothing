@@ -73,6 +73,7 @@ Definition versor (A : geo B) := ∃ l : list (module_V V),
         A = list_prod (list_image l φ).
 
 Theorem versor_reverse : ∀ A, versor A → versor (A†).
+Proof.
     intros A [l l_eq]; subst A.
     exists (list_reverse l).
     induction l.
@@ -91,6 +92,7 @@ Theorem versor_reverse : ∀ A, versor A → versor (A†).
 Qed.
 
 Theorem versor_norm2 : ∀ A, versor A → A† * A = σ (geo_norm2 B A).
+Proof.
     intros A [l A_eq]; subst A.
     unfold geo_norm2.
     rewrite scalar_part_eq.
@@ -115,6 +117,7 @@ Theorem versor_norm2 : ∀ A, versor A → A† * A = σ (geo_norm2 B A).
 Qed.
 
 Theorem versor_norm2_2 : ∀ A, versor A → A * A† = σ (geo_norm2 B A).
+Proof.
     intros A A_versor.
     rewrite <- (geo_reverse_reverse B A) at 1.
     rewrite versor_norm2 by (exact (versor_reverse _ A_versor)).
@@ -126,7 +129,8 @@ Theorem versor_norm2_2 : ∀ A, versor A → A * A† = σ (geo_norm2 B A).
 Qed.
 
 Lemma vector_sandwich_grade : ∀ a,
-        ∀ (X : geo B) (n : nat), of_grade n X → of_grade n (φ a * X * φ a).
+    ∀ (X : geo B) (n : nat), of_grade n X → of_grade n (φ a * X * φ a).
+Proof.
     intros a X n Xn.
     rewrite <- mult_assoc.
     rewrite vector_lmult.
@@ -192,7 +196,8 @@ Lemma vector_sandwich_grade : ∀ a,
 Qed.
 
 Theorem versor_sandwich_grade : ∀ A, versor A →
-        ∀ (X : geo B) (n : nat), of_grade n X → of_grade n (A† * X * A).
+    ∀ (X : geo B) (n : nat), of_grade n X → of_grade n (A† * X * A).
+Proof.
     intros A [l A_eq] X n Xn; subst A.
     revert X Xn.
     induction l; intros.
@@ -213,7 +218,8 @@ Theorem versor_sandwich_grade : ∀ A, versor A →
 Qed.
 
 Theorem versor_outermorphism : ∀ A, versor A → ∀ (X Y : geo B),
-        (A† * X * A) ⋀ (A† * Y * A) = geo_norm2 B A · (A† * (X ⋀ Y) * A).
+    (A† * X * A) ⋀ (A† * Y * A) = geo_norm2 B A · (A† * (X ⋀ Y) * A).
+Proof.
     intros A A_versor X Y.
     induction X as [|X X' m Xm X'm IHX] using grade_induction.
     {

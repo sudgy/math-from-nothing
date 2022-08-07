@@ -76,10 +76,11 @@ Definition tensor_mult_base i j a b (ai : of_grade i a) (bj : of_grade j b)
         (tensor_mult _ _ (ex_val ai) (ex_val bj))).
 
 Lemma power_to_tensor_tm :
-        ∀ k1 k2 (A : k_tensor k1) (B : k_tensor k2) AH BH,
-        tensor_mult_base k1 k2 (power_to_tensor V A) (power_to_tensor V B) AH BH
-        = power_to_tensor V
-            (module_homo_f (tensor_power_mult V _ _) (tensor_mult _ _ A B)).
+    ∀ k1 k2 (A : k_tensor k1) (B : k_tensor k2) AH BH,
+    tensor_mult_base k1 k2 (power_to_tensor V A) (power_to_tensor V B) AH BH
+    = power_to_tensor V
+        (module_homo_f (tensor_power_mult V _ _) (tensor_mult _ _ A B)).
+Proof.
     intros k1 k2 A B Ak1 Bk2.
     unfold tensor_mult_base.
     rewrite_ex_val A' A'_eq.
@@ -91,6 +92,7 @@ Lemma power_to_tensor_tm :
 Qed.
 
 Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
+Proof.
     intros u' v' w' i j ui vj wj.
     pose proof ui as [u u_eq].
     pose proof vj as [v v_eq].
@@ -110,6 +112,7 @@ Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
     reflexivity.
 Qed.
 Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
+Proof.
     intros u' v' w' i j ui vi wj.
     pose proof ui as [u u_eq].
     pose proof vi as [v v_eq].
@@ -129,7 +132,8 @@ Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
     reflexivity.
 Qed.
 Theorem tensor_mult_base_lscalar :
-        bilinear_extend_lscalar_base tensor_mult_base.
+    bilinear_extend_lscalar_base tensor_mult_base.
+Proof.
     intros a u' v' i j ui vj.
     pose proof ui as [u u_eq].
     pose proof vj as [v v_eq].
@@ -149,7 +153,8 @@ Theorem tensor_mult_base_lscalar :
     reflexivity.
 Qed.
 Theorem tensor_mult_base_rscalar :
-        bilinear_extend_rscalar_base tensor_mult_base.
+    bilinear_extend_rscalar_base tensor_mult_base.
+Proof.
     intros a u' v' i j ui vj.
     pose proof ui as [u u_eq].
     pose proof vj as [v v_eq].
@@ -210,7 +215,8 @@ Next Obligation.
 Qed.
 
 Theorem tensor_mult_homo : ∀ i j u v H1 H2,
-        u * v = tensor_mult_base i j u v H1 H2.
+    u * v = tensor_mult_base i j u v H1 H2.
+Proof.
     apply bilinear_extend_homo.
     -   apply tensor_mult_base_ldist.
     -   apply tensor_mult_base_rdist.
@@ -219,7 +225,8 @@ Theorem tensor_mult_homo : ∀ i j u v H1 H2,
 Qed.
 
 Lemma tensor_mult_base_grade : ∀ u v i j H1 H2,
-        of_grade (plus (U := nat) i j) (tensor_mult_base i j u v H1 H2).
+    of_grade (plus (U := nat) i j) (tensor_mult_base i j u v H1 H2).
+Proof.
     intros u v i j ui vj.
     exists (module_homo_f (tensor_power_mult V _ _)
         (tensor_mult _ _ (ex_val ui) (ex_val vj))).

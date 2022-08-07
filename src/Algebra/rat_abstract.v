@@ -35,6 +35,7 @@ Definition rat_to_abstract_base (x : frac_base int)
 Local Infix "~" := (eq_equal (frac_equiv int)).
 
 Theorem int_to_abstract_nz : ∀ a : frac_base int, 0 ≠ int_to_abstract [snd a|].
+Proof.
     intros a.
     intros contr.
     apply [|snd a].
@@ -44,7 +45,8 @@ Theorem int_to_abstract_nz : ∀ a : frac_base int, 0 ≠ int_to_abstract [snd a
 Qed.
 
 Theorem rat_to_abstract_wd : ∀ a b, a ~ b →
-        rat_to_abstract_base a = rat_to_abstract_base b.
+    rat_to_abstract_base a = rat_to_abstract_base b.
+Proof.
     intros a b eq.
     cbn in eq.
     unfold frac_eq in eq; cbn in eq.
@@ -62,7 +64,8 @@ Qed.
 Definition rat_to_abstract (a : rat) := unary_op rat_to_abstract_wd a.
 
 Theorem rat_to_abstract_eq : ∀ a b,
-        rat_to_abstract a = rat_to_abstract b → a = b.
+    rat_to_abstract a = rat_to_abstract b → a = b.
+Proof.
     intros a b eq.
     equiv_get_value a b.
     unfold rat_to_abstract in eq.
@@ -81,6 +84,7 @@ Theorem rat_to_abstract_eq : ∀ a b,
 Qed.
 
 Theorem rat_to_abstract_zero : rat_to_abstract 0 = 0.
+Proof.
     unfold zero at 1, rat_to_abstract; equiv_simpl.
     unfold rat_to_abstract_base; cbn.
     rewrite int_to_abstract_zero.
@@ -88,6 +92,7 @@ Theorem rat_to_abstract_zero : rat_to_abstract 0 = 0.
 Qed.
 
 Theorem rat_to_abstract_one : rat_to_abstract 1 = 1.
+Proof.
     unfold one at 1, rat_to_abstract; equiv_simpl.
     unfold rat_to_abstract_base; cbn.
     rewrite int_to_abstract_one.
@@ -96,7 +101,8 @@ Theorem rat_to_abstract_one : rat_to_abstract 1 = 1.
 Qed.
 
 Theorem rat_to_abstract_plus : ∀ a b,
-        rat_to_abstract (a + b) = rat_to_abstract a + rat_to_abstract b.
+    rat_to_abstract (a + b) = rat_to_abstract a + rat_to_abstract b.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold plus at 1, rat_to_abstract; equiv_simpl.
@@ -116,6 +122,7 @@ Theorem rat_to_abstract_plus : ∀ a b,
 Qed.
 
 Theorem rat_to_abstract_neg : ∀ a, rat_to_abstract (-a) = -rat_to_abstract a.
+Proof.
     intros a.
     equiv_get_value a.
     unfold neg at 1, rat_to_abstract; equiv_simpl.
@@ -125,7 +132,8 @@ Theorem rat_to_abstract_neg : ∀ a, rat_to_abstract (-a) = -rat_to_abstract a.
 Qed.
 
 Theorem rat_to_abstract_mult : ∀ a b,
-        rat_to_abstract (a * b) = rat_to_abstract a * rat_to_abstract b.
+    rat_to_abstract (a * b) = rat_to_abstract a * rat_to_abstract b.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold mult at 1, rat_to_abstract; equiv_simpl.
@@ -140,7 +148,8 @@ Theorem rat_to_abstract_mult : ∀ a b,
 Qed.
 
 Theorem rat_to_abstract_div : ∀ a, 0 ≠ a →
-        rat_to_abstract (/a) = /rat_to_abstract a.
+    rat_to_abstract (/a) = /rat_to_abstract a.
+Proof.
     intros a a_nz.
     equiv_get_value a.
     unfold div at 1, rat_to_abstract; equiv_simpl.
@@ -163,7 +172,8 @@ Theorem rat_to_abstract_div : ∀ a, 0 ≠ a →
 Qed.
 
 Theorem int_to_rat_to_abstract : ∀ n,
-        rat_to_abstract (int_to_rat n) = int_to_abstract n.
+    rat_to_abstract (int_to_rat n) = int_to_abstract n.
+Proof.
     intros n.
     equiv_get_value n.
     unfold int_to_rat, rat_to_abstract; equiv_simpl.
@@ -174,7 +184,8 @@ Theorem int_to_rat_to_abstract : ∀ n,
 Qed.
 
 Theorem nat_to_rat_to_abstract : ∀ n,
-        rat_to_abstract (nat_to_rat n) = nat_to_abstract n.
+    rat_to_abstract (nat_to_rat n) = nat_to_abstract n.
+Proof.
     intros n.
     unfold nat_to_rat.
     rewrite int_to_rat_to_abstract.
@@ -224,7 +235,8 @@ Context {U} `{
 }.
 
 Lemma rat_dense_in_arch_pos : ∀ a b : U, 0 <= a → a < b →
-        ∃ r : rat, a < rat_to_abstract r ∧ rat_to_abstract r < b.
+    ∃ r : rat, a < rat_to_abstract r ∧ rat_to_abstract r < b.
+Proof.
     intros a b a_pos ab.
     apply lt_plus_0_anb_b_a in ab.
     pose proof (archimedean2 _ ab) as [n ltq].
@@ -286,7 +298,8 @@ Lemma rat_dense_in_arch_pos : ∀ a b : U, 0 <= a → a < b →
         exact m_ltq2.
 Qed.
 Theorem rat_dense_in_arch : ∀ a b : U, a < b →
-        ∃ r : rat, a < rat_to_abstract r ∧ rat_to_abstract r < b.
+    ∃ r : rat, a < rat_to_abstract r ∧ rat_to_abstract r < b.
+Proof.
     intros a b ab.
     classic_case (0 <= a) as [a_pos|a_neg].
     {

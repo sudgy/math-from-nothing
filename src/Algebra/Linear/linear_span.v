@@ -47,17 +47,20 @@ Variable A : V → Prop.
 Let S := linear_span U A.
 
 Lemma linear_span_zero : S 0.
+Proof.
     intros [T T_zero T_plus T_scalar]; cbn.
     intros sub.
     exact T_zero.
 Qed.
 Lemma linear_span_plus : ∀ a b, S a → S b → S (a + b).
+Proof.
     intros a b Sa Sb T sub.
     specialize (Sa T sub).
     specialize (Sb T sub).
     apply subspace_plus; assumption.
 Qed.
 Lemma linear_span_scalar : ∀ a v, S v → S (a · v).
+Proof.
     intros a v Sv T sub.
     specialize (Sv T sub).
     apply subspace_scalar.
@@ -68,6 +71,7 @@ Definition linear_span_subspace := make_subspace S
     linear_span_zero linear_span_plus linear_span_scalar.
 
 Theorem linear_span_sub : A ⊆ S.
+Proof.
     intros v Av.
     unfold S, linear_span.
     intros sub A_sub.
@@ -104,6 +108,7 @@ Definition linear_span_quotient_scalar_rdist
     := quotient_space_scalar_rdist linear_span_subspace.
 
 Theorem span_linear_combination : S = linear_combination_of A.
+Proof.
     pose (A_sub := make_subspace _ (linear_combination_of_zero A)
         (linear_combination_of_plus A) (linear_combination_of_scalar A)).
     apply antisym.

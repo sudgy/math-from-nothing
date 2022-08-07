@@ -41,6 +41,7 @@ Context `{VG : @GradedSpace U V VP VPC VPA VZ SM}.
 
 (* end hide *)
 Theorem grade_decomposition_zero : grade_decomposition 0 = ulist_end.
+Proof.
     apply grade_decomposition_unique.
     -   rewrite ulist_image_end, ulist_sum_end.
         reflexivity.
@@ -50,31 +51,36 @@ Theorem grade_decomposition_zero : grade_decomposition 0 = ulist_end.
 Qed.
 
 Theorem of_grade_zero : ∀ i, of_grade i 0.
+Proof.
     intros i.
     apply subspace_zero.
 Qed.
 
 Theorem of_grade_scalar : ∀ a v i, of_grade i v → of_grade i (a · v).
+Proof.
     intros a v i v_in.
     apply subspace_scalar.
     exact v_in.
 Qed.
 
 Theorem of_grade_neg : ∀ v i, of_grade i v → of_grade i (-v).
+Proof.
     intros v i v_in.
     apply subspace_neg.
     exact v_in.
 Qed.
 
 Theorem of_grade_plus : ∀ u v i,
-        of_grade i u → of_grade i v → of_grade i (u + v).
+    of_grade i u → of_grade i v → of_grade i (u + v).
+Proof.
     intros u v i u_in v_in.
     apply subspace_plus; assumption.
 Qed.
 
 Theorem grade_decomposition_of_grade : ∀ v i, 0 ≠ v → ∀ H : of_grade i v,
-        grade_decomposition v =
-        [v|ex_intro _ i H] ::: ulist_end.
+    grade_decomposition v =
+    [v|ex_intro _ i H] ::: ulist_end.
+Proof.
     intros v i v_nz v_in.
     apply grade_decomposition_unique.
     -   rewrite ulist_image_add, ulist_image_end; cbn.
@@ -89,19 +95,22 @@ Theorem grade_decomposition_of_grade : ∀ v i, 0 ≠ v → ∀ H : of_grade i v
 Qed.
 
 Theorem grade_decomposition_homo : ∀ v : set_type homogeneous, 0 ≠ [v|] →
-        grade_decomposition [v|] = v ::: ulist_end.
+    grade_decomposition [v|] = v ::: ulist_end.
+Proof.
     intros [v [i v_in]] v_neq; cbn in *.
     apply grade_decomposition_of_grade.
     exact v_neq.
 Qed.
 
 Theorem homo_scalar : ∀ a v, homogeneous v → homogeneous (a · v).
+Proof.
     intros a v [i v_in].
     exists i.
     exact (of_grade_scalar _ _ _ v_in).
 Qed.
 
 Theorem homo_neg : ∀ v, homogeneous v → homogeneous (-v).
+Proof.
     intros v [i v_in].
     exists i.
     exact (of_grade_neg _ _ v_in).
@@ -141,6 +150,7 @@ Ltac case_grade_project v i vi vi_eq vi_in v_nin := let X := fresh in
     |].
 
 Theorem grade_project_grade : ∀ v i, of_grade i (grade_project v i).
+Proof.
     intros v i.
     case_grade_project v i vi vi_eq vi_in v_nin.
     -   unfold of_grade.
@@ -150,14 +160,16 @@ Theorem grade_project_grade : ∀ v i, of_grade i (grade_project v i).
 Qed.
 
 Theorem grade_project_homo : ∀ v i, homogeneous (grade_project v i).
+Proof.
     intros v i.
     exists i.
     apply grade_project_grade.
 Qed.
 
 Theorem grade_project_in : ∀ v i, 0 ≠ grade_project v i →
-        in_ulist (grade_decomposition v)
-            [grade_project v i|grade_project_homo v i].
+    in_ulist (grade_decomposition v)
+        [grade_project v i|grade_project_homo v i].
+Proof.
     intros v i vi_nz.
     assert (in_ulist (ulist_image
         (grade_decomposition v) (λ x, [x|])) (grade_project v i)) as vi_in.
@@ -180,6 +192,7 @@ Theorem grade_project_in : ∀ v i, 0 ≠ grade_project v i →
 Qed.
 
 Theorem grade_project_zero : ∀ i, grade_project 0 i = 0.
+Proof.
     intros i.
     case_grade_project 0 i zi zi_eq zi_in v_nin.
     -   rewrite grade_decomposition_zero in zi_in.
@@ -189,6 +202,7 @@ Theorem grade_project_zero : ∀ i, grade_project 0 i = 0.
 Qed.
 
 Theorem grade_project_of_grade : ∀ v i, of_grade i v → grade_project v i = v.
+Proof.
     intros v i v_in.
     classic_case (0 = v) as [v_z|v_nz].
     {
@@ -218,7 +232,8 @@ Theorem grade_project_of_grade : ∀ v i, of_grade i v → grade_project v i = v
 Qed.
 
 Theorem grade_project_of_grade_neq : ∀ i j v, of_grade i v → i ≠ j →
-        grade_project v j = 0.
+    grade_project v j = 0.
+Proof.
     intros i j v iv neq.
     case_grade_project v j vj vj_eq vj_in vj_nin; [>|reflexivity].
     assert (homogeneous v) as v_homo by (exists i; exact iv).
@@ -242,21 +257,24 @@ Theorem grade_project_of_grade_neq : ∀ i j v, of_grade i v → i ≠ j →
 Qed.
 
 Theorem grade_project_project : ∀ v i,
-        grade_project (grade_project v i) i = grade_project v i.
+    grade_project (grade_project v i) i = grade_project v i.
+Proof.
     intros v i.
     apply grade_project_of_grade.
     apply grade_project_grade.
 Qed.
 
 Theorem grade_project_eq_of_grade : ∀ v i, v = grade_project v i → of_grade i v.
+Proof.
     intros v i v_eq.
     rewrite v_eq.
     apply grade_project_grade.
 Qed.
 
 Theorem grade_induction : ∀ S : V → Prop,
-        S 0 → (∀ u v i, of_grade i u →
-            0 = grade_project v i → S v → S (u + v)) → ∀ v, S v.
+    S 0 → (∀ u v i, of_grade i u →
+        0 = grade_project v i → S v → S (u + v)) → ∀ v, S v.
+Proof.
     intros S S0 S_ind v.
     remember (grade_decomposition v) as l.
     pose proof (grade_decomposition_uni v) as l_uni.
@@ -300,9 +318,10 @@ Theorem grade_induction : ∀ S : V → Prop,
 Qed.
 
 Lemma grade_decomposition_plus_homo : ∀ (a b : set_type homogeneous) v,
-        ex_val [|a] ≠ ex_val [|b] →
-        in_ulist (grade_decomposition v) a →
-        in_ulist (grade_decomposition ([b|] + v)) a.
+    ex_val [|a] ≠ ex_val [|b] →
+    in_ulist (grade_decomposition v) a →
+    in_ulist (grade_decomposition ([b|] + v)) a.
+Proof.
     intros a b v neq a_in.
     classic_case (0 = [b|]) as [b_z|b_nz].
     1: {
@@ -421,7 +440,8 @@ Lemma grade_decomposition_plus_homo : ∀ (a b : set_type homogeneous) v,
 Qed.
 
 Lemma grade_project_plus_neq : ∀ a v i j, i ≠ j → of_grade i a →
-        grade_project (a + v) j = grade_project v j.
+    grade_project (a + v) j = grade_project v j.
+Proof.
     intros a v i j neq ai.
     classic_case (0 = a) as [a_z|a_nz].
     1: {
@@ -493,7 +513,8 @@ Lemma grade_project_plus_neq : ∀ a v i j, i ≠ j → of_grade i a →
 Qed.
 
 Theorem grade_project_plus : ∀ u v i,
-        grade_project (u + v) i = grade_project u i + grade_project v i.
+    grade_project (u + v) i = grade_project u i + grade_project v i.
+Proof.
     intros u v i.
     revert v.
     induction u as [|u' u j u'j eq IHu] using grade_induction; intros.
@@ -554,7 +575,8 @@ Theorem grade_project_plus : ∀ u v i,
 Qed.
 
 Theorem grade_project_scalar : ∀ a v i,
-        grade_project (a · v) i = a · grade_project v i.
+    grade_project (a · v) i = a · grade_project v i.
+Proof.
     intros a v i.
     induction v as [|u v j uj eq IHv] using grade_induction.
     1: {
@@ -583,6 +605,7 @@ Theorem grade_project_scalar : ∀ a v i,
 Qed.
 
 Theorem grade_project_neg : ∀ v i, grade_project (-v) i = -grade_project v i.
+Proof.
     intros v i.
     rewrite <- scalar_neg_one.
     rewrite grade_project_scalar.
@@ -590,7 +613,8 @@ Theorem grade_project_neg : ∀ v i, grade_project (-v) i = -grade_project v i.
 Qed.
 
 Theorem in_grade_decomposition_project : ∀ v u,
-        in_ulist (grade_decomposition v) u → ∃ i, [u|] = grade_project v i.
+    in_ulist (grade_decomposition v) u → ∃ i, [u|] = grade_project v i.
+Proof.
     intros v u u_in.
     destruct u as [u [i ui]]; cbn.
     assert (0 ≠ u) as u_nz.
@@ -632,7 +656,8 @@ Theorem in_grade_decomposition_project : ∀ v u,
 Qed.
 
 Theorem all_grade_project_eq : ∀ u v,
-        (∀ i, grade_project u i = grade_project v i) → u = v.
+    (∀ i, grade_project u i = grade_project v i) → u = v.
+Proof.
     intros u v all_eq.
     rewrite (grade_decomposition_eq u).
     rewrite (grade_decomposition_eq v).
@@ -690,18 +715,21 @@ Context `{
 
 (* end hide *)
 Theorem of_grade_mult : ∀ u v i j, of_grade i u → of_grade j v →
-        of_grade (i + j) (u * v).
+    of_grade (i + j) (u * v).
+Proof.
     apply grade_mult.
 Qed.
 
 Theorem homo_mult : ∀ u v, homogeneous u → homogeneous v → homogeneous (u * v).
+Proof.
     intros u v [i ui] [j vj].
     exists (i + j).
     apply of_grade_mult; assumption.
 Qed.
 
 Theorem homo_lmult_project : ∀ i j u v, of_grade i u →
-        grade_project (u * v) (i + j) = u * (grade_project v j).
+    grade_project (u * v) (i + j) = u * (grade_project v j).
+Proof.
     intros i j u v ui.
     induction v as [|v' v j' v'j' vj' IHv] using grade_induction.
     1: {
@@ -735,7 +763,8 @@ Theorem homo_lmult_project : ∀ i j u v, of_grade i u →
 Qed.
 
 Theorem homo_rmult_project : ∀ i j u v, of_grade j v →
-        grade_project (u * v) (i + j) = (grade_project u i) * v.
+    grade_project (u * v) (i + j) = (grade_project u i) * v.
+Proof.
     intros i j u v vj.
     induction u as [|u' u i' u'i' ui' IHu] using grade_induction.
     1: {
@@ -769,7 +798,8 @@ Theorem homo_rmult_project : ∀ i j u v, of_grade j v →
 Qed.
 
 Theorem grade_project_sum : ∀ f n a b,
-        grade_project (sum f a b) n = sum (λ m, grade_project (f m) n) a b.
+    grade_project (sum f a b) n = sum (λ m, grade_project (f m) n) a b.
+Proof.
     intros f n a b.
     nat_induction b.
     -   unfold zero; cbn.
@@ -781,9 +811,10 @@ Theorem grade_project_sum : ∀ f n a b,
 Qed.
 
 Theorem sum_grade_project_single : ∀ f A n a b, injective f →
-        ∀ m, f m = n → a <= m → m < a + b →
-        sum (λ m, grade_project (grade_project A (f m)) n) a b =
-        grade_project A n.
+    ∀ m, f m = n → a <= m → m < a + b →
+    sum (λ m, grade_project (grade_project A (f m)) n) a b =
+    grade_project A n.
+Proof.
     intros f A n a b f_inj m eq m_geq m_leq.
     subst n.
     nat_induction b.

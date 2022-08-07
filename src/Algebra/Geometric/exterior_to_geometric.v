@@ -82,7 +82,8 @@ Definition geo_mult_inner_base1 (a : module_V V) (v : module_V V) (p : module_V 
     ) : module_V G12.
 
 Lemma geo_mult_inner_base_plus : ∀ a v p1 p2, geo_mult_inner_base1 a v (p1 + p2) =
-        geo_mult_inner_base1 a v p1 + geo_mult_inner_base1 a v p2.
+    geo_mult_inner_base1 a v p1 + geo_mult_inner_base1 a v p2.
+Proof.
     intros a v [p11 p12] [p21 p22]; cbn.
     unfold geo_mult_inner_base1; cbn.
     unfold plus at 1 3 4 5; cbn.
@@ -98,7 +99,8 @@ Lemma geo_mult_inner_base_plus : ∀ a v p1 p2, geo_mult_inner_base1 a v (p1 + p
 Qed.
 
 Lemma geo_mult_inner_base_scalar : ∀ a v b p, geo_mult_inner_base1 a v (b · p) =
-        b · geo_mult_inner_base1 a v p.
+    b · geo_mult_inner_base1 a v p.
+Proof.
     intros a v b [p1 p2].
     unfold geo_mult_inner_base1; cbn.
     unfold scalar_mult at 1 2 4 5; cbn.
@@ -127,7 +129,8 @@ Let G3O := algebra_one G3.
 Existing Instances G3P G3S G3M G3O.
 
 Lemma geo_mult_inner_base2_plus : ∀ a v1 v2, geo_mult_inner_base2 a (v1 + v2) =
-        geo_mult_inner_base2 a v1 + geo_mult_inner_base2 a v2.
+    geo_mult_inner_base2 a v1 + geo_mult_inner_base2 a v2.
+Proof.
     intros a v1 v2.
     apply module_homomorphism_eq.
     intros [x1 x2].
@@ -151,7 +154,8 @@ Lemma geo_mult_inner_base2_plus : ∀ a v1 v2, geo_mult_inner_base2 a (v1 + v2) 
 Qed.
 
 Lemma geo_mult_inner_base2_scalar : ∀ a b v,
-        geo_mult_inner_base2 a (b · v) = b · geo_mult_inner_base2 a v.
+    geo_mult_inner_base2 a (b · v) = b · geo_mult_inner_base2 a v.
+Proof.
     intros a b v.
     apply module_homomorphism_eq.
     intros [x1 x2].
@@ -173,7 +177,8 @@ Lemma geo_mult_inner_base2_scalar : ∀ a b v,
 Qed.
 
 Lemma geo_mult_inner_base_contract : ∀ a v,
-        geo_mult_inner_base2 a v * geo_mult_inner_base2 a v = [B|] v v · 1.
+    geo_mult_inner_base2 a v * geo_mult_inner_base2 a v = [B|] v v · 1.
+Proof.
     intros a v.
     apply module_homomorphism_eq.
     intros [x1 x2].
@@ -220,13 +225,15 @@ Definition geo_mult_inner_f_homo a := [geo_mult_inner_base a|].
 Definition geo_mult_inner_f a := algebra_homo_f (geo_mult_inner_f_homo a).
 
 Theorem geo_mult_inner_f_eq : ∀ a v,
-        geo_mult_inner_f a (vector_to_geo B v) = geo_mult_inner_base2 a v.
+    geo_mult_inner_f a (vector_to_geo B v) = geo_mult_inner_base2 a v.
+Proof.
     intros a.
     apply [|geo_mult_inner_base a].
 Qed.
 
 Theorem geo_mult_inner_f_mult : ∀ a u v,
-        geo_mult_inner_f a (u * v) = geo_mult_inner_f a u * geo_mult_inner_f a v.
+    geo_mult_inner_f a (u * v) = geo_mult_inner_f a u * geo_mult_inner_f a v.
+Proof.
     intros a u v.
     apply algebra_homo_mult.
 Qed.
@@ -235,7 +242,8 @@ Definition geo_mult_inner a v := snd (module_homo_f (geo_mult_inner_f a v) (1, 0
 
 (* end hide *)
 Theorem geo_mult_inner_rplus : ∀ a u v,
-        geo_mult_inner a (u + v) = geo_mult_inner a u + geo_mult_inner a v.
+    geo_mult_inner a (u + v) = geo_mult_inner a u + geo_mult_inner a v.
+Proof.
     intros a u v.
     unfold geo_mult_inner.
     unfold geo_mult_inner_f.
@@ -247,7 +255,8 @@ Theorem geo_mult_inner_rplus : ∀ a u v,
 Qed.
 
 Theorem geo_mult_inner_rscalar : ∀ a α v,
-        geo_mult_inner a (α · v) = α · geo_mult_inner a v.
+    geo_mult_inner a (α · v) = α · geo_mult_inner a v.
+Proof.
     intros a α v.
     unfold geo_mult_inner.
     unfold geo_mult_inner_f.
@@ -259,6 +268,7 @@ Theorem geo_mult_inner_rscalar : ∀ a α v,
 Qed.
 
 Theorem geo_mult_inner_rzero : ∀ a, geo_mult_inner a 0 = 0.
+Proof.
     intros a.
     rewrite <- (scalar_lanni 0).
     rewrite geo_mult_inner_rscalar.
@@ -266,6 +276,7 @@ Theorem geo_mult_inner_rzero : ∀ a, geo_mult_inner a 0 = 0.
 Qed.
 
 Theorem geo_mult_inner_rneg : ∀ a v, geo_mult_inner a (-v) = -geo_mult_inner a v.
+Proof.
     intros a v.
     rewrite <- scalar_neg_one.
     rewrite geo_mult_inner_rscalar.
@@ -273,8 +284,9 @@ Theorem geo_mult_inner_rneg : ∀ a v, geo_mult_inner a (-v) = -geo_mult_inner a
 Qed.
 
 Theorem geo_mult_inner_add : ∀ a v x,
-        geo_mult_inner a (vector_to_geo B v * x) =
-        [B|] a v · x - vector_to_geo B v * geo_mult_inner a x.
+    geo_mult_inner a (vector_to_geo B v * x) =
+    [B|] a v · x - vector_to_geo B v * geo_mult_inner a x.
+Proof.
     intros a v x.
     pose proof (geo_sum B x) as [l l_eq]; subst x.
     induction l as [|[α x] l] using ulist_induction.
@@ -339,6 +351,7 @@ Theorem geo_mult_inner_add : ∀ a v x,
 Qed.
 
 Theorem geo_mult_inner_scalar : ∀ a α, geo_mult_inner a (scalar_to_geo B α) = 0.
+Proof.
     intros a α.
     unfold geo_mult_inner.
     unfold geo_mult_inner_f.
@@ -354,7 +367,8 @@ Theorem geo_mult_inner_scalar : ∀ a α, geo_mult_inner a (scalar_to_geo B α) 
 Qed.
 
 Theorem geo_mult_inner_vector : ∀ a v,
-        geo_mult_inner a (vector_to_geo B v) = [B|] a v · 1.
+    geo_mult_inner a (vector_to_geo B v) = [B|] a v · 1.
+Proof.
     intros a v.
     rewrite <- (mult_rid (vector_to_geo B v)).
     rewrite geo_mult_inner_add.
@@ -367,9 +381,10 @@ Theorem geo_mult_inner_vector : ∀ a v,
 Qed.
 
 Theorem geo_mult_inner_bivector : ∀ a u v,
-        geo_mult_inner a (vector_to_geo B u * vector_to_geo B v) =
-        [B|] a u · vector_to_geo B v -
-        [B|] a v · vector_to_geo B u.
+    geo_mult_inner a (vector_to_geo B u * vector_to_geo B v) =
+    [B|] a u · vector_to_geo B v -
+    [B|] a v · vector_to_geo B u.
+Proof.
     intros a u v.
     rewrite geo_mult_inner_add.
     rewrite geo_mult_inner_vector.
@@ -379,7 +394,8 @@ Theorem geo_mult_inner_bivector : ∀ a u v,
 Qed.
 
 Theorem geo_mult_inner_lplus : ∀ a b v,
-        geo_mult_inner (a + b) v = geo_mult_inner a v + geo_mult_inner b v.
+    geo_mult_inner (a + b) v = geo_mult_inner a v + geo_mult_inner b v.
+Proof.
     intros a b v.
     pose proof (geo_sum B v) as [l l_eq]; subst v.
     induction l as [|[α v] l] using ulist_induction.
@@ -424,7 +440,8 @@ Theorem geo_mult_inner_lplus : ∀ a b v,
 Qed.
 
 Theorem geo_mult_inner_lscalar : ∀ α a v,
-        geo_mult_inner (α · a) v = α · geo_mult_inner a v.
+    geo_mult_inner (α · a) v = α · geo_mult_inner a v.
+Proof.
     intros α a v.
     pose proof (geo_sum B v) as [l l_eq]; subst v.
     induction l as [|[β v] l] using ulist_induction.
@@ -498,7 +515,8 @@ Let GGSL := algebra_scalar_ldist GG.
 Existing Instances GGP GGZ GGN GGPA GGPC GGPZ GGPN GGM GGO GGL GGR GGS GGSL.
 
 Theorem geo_mult_inner_alternating : ∀ a,
-        geo_mult_inner_homo a * geo_mult_inner_homo a = 0.
+    geo_mult_inner_homo a * geo_mult_inner_homo a = 0.
+Proof.
     intros a.
     apply module_homomorphism_eq.
     intros x.
@@ -540,6 +558,7 @@ Theorem geo_mult_inner_alternating : ∀ a,
 Qed.
 
 Theorem geo_mult_contract : ∀ a, geo_mult_homo a * geo_mult_homo a = [B|] a a · 1.
+Proof.
     intros a.
     apply module_homomorphism_eq.
     intros x.
@@ -556,7 +575,8 @@ Qed.
 Definition ext_to_geo_base1 a := -geo_mult_inner_homo a + geo_mult_homo a.
 
 Lemma ext_to_geo_base1_plus : ∀ u v,
-        ext_to_geo_base1 (u + v) = ext_to_geo_base1 u + ext_to_geo_base1 v.
+    ext_to_geo_base1 (u + v) = ext_to_geo_base1 u + ext_to_geo_base1 v.
+Proof.
     intros u v.
     unfold ext_to_geo_base1.
     apply module_homomorphism_eq.
@@ -577,7 +597,8 @@ Lemma ext_to_geo_base1_plus : ∀ u v,
 Qed.
 
 Lemma ext_to_geo_base1_scalar : ∀ a v,
-        ext_to_geo_base1 (a · v) = a · ext_to_geo_base1 v.
+    ext_to_geo_base1 (a · v) = a · ext_to_geo_base1 v.
+Proof.
     intros a v.
     unfold ext_to_geo_base1.
     apply module_homomorphism_eq.
@@ -595,7 +616,8 @@ Lemma ext_to_geo_base1_scalar : ∀ a v,
 Qed.
 
 Lemma ext_to_geo_base_alternating : ∀ v,
-        0 = ext_to_geo_base1 v * ext_to_geo_base1 v.
+    0 = ext_to_geo_base1 v * ext_to_geo_base1 v.
+Proof.
     intros v.
     unfold ext_to_geo_base1.
     rewrite ldist.
@@ -660,12 +682,14 @@ Let ESR := ext_scalar_rdist V.
 Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EMR ES ESO ESR.
 
 Theorem ext_to_geo_f_eq :
-        ∀ v, ext_to_geo_f (vector_to_ext V v) = ext_to_geo_base1 v.
+    ∀ v, ext_to_geo_f (vector_to_ext V v) = ext_to_geo_base1 v.
+Proof.
     apply [|ext_to_geo_base].
 Qed.
 
 Theorem ext_to_geo_f_mult :
-        ∀ u v, ext_to_geo_f (u * v) = ext_to_geo_f u * ext_to_geo_f v.
+    ∀ u v, ext_to_geo_f (u * v) = ext_to_geo_f u * ext_to_geo_f v.
+Proof.
     apply algebra_homo_mult.
 Qed.
 
@@ -673,7 +697,8 @@ Definition ext_to_geo (v : ext V) := module_homo_f (ext_to_geo_f v) 1 : geo B.
 
 (* end hide *)
 Theorem ext_to_geo_plus : ∀ u v,
-        ext_to_geo (u + v) = ext_to_geo u + ext_to_geo v.
+    ext_to_geo (u + v) = ext_to_geo u + ext_to_geo v.
+Proof.
     intros u v.
     unfold ext_to_geo.
     unfold ext_to_geo_f.
@@ -684,6 +709,7 @@ Theorem ext_to_geo_plus : ∀ u v,
 Qed.
 
 Theorem ext_to_geo_scalar : ∀ a v, ext_to_geo (a · v) = a · ext_to_geo v.
+Proof.
     intros a v.
     unfold ext_to_geo.
     unfold ext_to_geo_f.
@@ -694,7 +720,8 @@ Theorem ext_to_geo_scalar : ∀ a v, ext_to_geo (a · v) = a · ext_to_geo v.
 Qed.
 
 Theorem ext_to_geo_add : ∀ v x, ext_to_geo (vector_to_ext V v * x) =
-        -geo_mult_inner v (ext_to_geo x) + vector_to_geo B v * ext_to_geo x.
+    -geo_mult_inner v (ext_to_geo x) + vector_to_geo B v * ext_to_geo x.
+Proof.
     intros v x.
     unfold ext_to_geo.
     rewrite ext_to_geo_f_mult.
@@ -708,6 +735,7 @@ Theorem ext_to_geo_add : ∀ v x, ext_to_geo (vector_to_ext V v * x) =
 Qed.
 
 Theorem ext_to_geo_neg : ∀ x, ext_to_geo (-x) = -ext_to_geo x.
+Proof.
     intros x.
     rewrite <- scalar_neg_one.
     rewrite ext_to_geo_scalar.
@@ -715,12 +743,14 @@ Theorem ext_to_geo_neg : ∀ x, ext_to_geo (-x) = -ext_to_geo x.
 Qed.
 
 Theorem ext_to_geo_zero : ext_to_geo 0 = 0.
+Proof.
     rewrite <- (scalar_lanni 0).
     rewrite ext_to_geo_scalar.
     apply scalar_lanni.
 Qed.
 
 Theorem ext_to_geo_one : ext_to_geo 1 = 1.
+Proof.
     unfold ext_to_geo.
     unfold ext_to_geo_f.
     rewrite algebra_homo_one.
@@ -729,7 +759,8 @@ Theorem ext_to_geo_one : ext_to_geo 1 = 1.
 Qed.
 
 Theorem ext_to_geo_of_scalar : ∀ α,
-        ext_to_geo (scalar_to_ext V α) = scalar_to_geo B α.
+    ext_to_geo (scalar_to_ext V α) = scalar_to_geo B α.
+Proof.
     intros α.
     rewrite scalar_to_ext_one_scalar.
     rewrite ext_to_geo_scalar.
@@ -739,7 +770,8 @@ Theorem ext_to_geo_of_scalar : ∀ α,
 Qed.
 
 Theorem ext_to_geo_vector : ∀ v,
-        ext_to_geo (vector_to_ext V v) = vector_to_geo B v.
+    ext_to_geo (vector_to_ext V v) = vector_to_geo B v.
+Proof.
     intros v.
     rewrite <- (mult_rid (vector_to_ext V v)).
     rewrite ext_to_geo_add.
@@ -753,8 +785,9 @@ Theorem ext_to_geo_vector : ∀ v,
 Qed.
 
 Theorem ext_to_geo_vector2 : ∀ u v,
-        ext_to_geo (vector_to_ext V u * vector_to_ext V v) =
-        -[B|] u v · 1 + vector_to_geo B u * vector_to_geo B v.
+    ext_to_geo (vector_to_ext V u * vector_to_ext V v) =
+    -[B|] u v · 1 + vector_to_geo B u * vector_to_geo B v.
+Proof.
     intros u v.
     rewrite ext_to_geo_add.
     rewrite ext_to_geo_vector.

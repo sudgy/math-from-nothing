@@ -27,6 +27,7 @@ Section Finite.
 Hypothesis A_fin : finite (|set_type A|).
 
 Lemma x_ex : ∃ x, infinite (|set_type (λ n, a n = x)|).
+Proof.
     classic_contradiction contr.
     rewrite not_ex in contr.
     assert (infinite (|set_type A|)) as A_inf.
@@ -110,17 +111,20 @@ Qed.
 Definition x := ex_val x_ex.
 Definition X n := a n = x.
 Lemma x_inf : infinite (|set_type X|).
+Proof.
     unfold X, x.
     rewrite_ex_val x x_inf.
     exact x_inf.
 Qed.
 
 Lemma x_0 : set_type X.
+Proof.
     apply infinite_ex.
     exact x_inf.
 Qed.
 
 Lemma n_gt : ∀ n : set_type X, ∃ n', n < n'.
+Proof.
     intros [n Xn].
     unfold X in Xn.
     pose proof x_inf as x_inf.
@@ -155,6 +159,7 @@ Fixpoint Xf n := match n with
 Definition f n := [Xf n|].
 
 Lemma x_subseq : subsequence a (λ _, x).
+Proof.
     exists f.
     split.
     -   intros n.
@@ -179,6 +184,7 @@ Hypothesis A_inf : infinite (|set_type A|).
 
 Definition y := ex_val (U_comp A A_inf).
 Lemma y_lim : ∀ S, open S → S y → infinite (|set_type (A ∩ S)|).
+Proof.
     apply limit_point_inf.
     unfold y.
     rewrite_ex_val y y_H.
@@ -186,6 +192,7 @@ Lemma y_lim : ∀ S, open S → S y → infinite (|set_type (A ∩ S)|).
 Qed.
 
 Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
+Proof.
     intros n ε.
     pose proof (y_lim (open_ball y ε) (open_ball_open y ε) (open_ball_self y ε))
         as ε_inf.
@@ -223,6 +230,7 @@ Lemma b_ex : ∀ n ε, ∃ n', n < n' ∧ open_ball y ε (a n').
 Qed.
 
 Lemma n_pos : ∀ n, 0 < / nat_to_abstract (nat_suc n).
+Proof.
     intros n.
     apply div_pos.
     apply nat_to_abstract_pos.
@@ -235,6 +243,7 @@ Fixpoint g n := match n with
 Definition b n := a (g n).
 
 Lemma b_subseq : subsequence a b.
+Proof.
     exists g.
     split.
     -   intros n.
@@ -246,6 +255,7 @@ Lemma b_subseq : subsequence a b.
 Qed.
 
 Lemma b_converges : seq_converges b.
+Proof.
     exists y.
     intros S S_open Sy.
     rewrite open_all_balls in S_open.
@@ -290,6 +300,7 @@ End Infinite.
 End Proof.
 
 Lemma limit_point_sequentially_compact : sequentially_compact U.
+Proof.
     intros a.
     pose (A x := ∃ n, a n = x).
     classic_case (finite (|set_type A|)) as [A_fin|A_inf].
@@ -320,6 +331,7 @@ Variable SS : (U → Prop) → Prop.
 Hypothesis SS_cover : open_covering SS.
 
 Lemma lebesgue_number_lemma : ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ S.
+Proof.
     classic_contradiction contr.
     rewrite not_ex in contr.
     assert (∀ n, ∃ x, ∀ S, SS S → ¬(open_ball x [_|real_n_div_pos n] ⊆ S))
@@ -382,6 +394,7 @@ Local Open Scope card_scope.
 Let to_balls A ε := image_under (λ x, open_ball x ε) A.
 
 Lemma compact_totally_bounded : totally_bounded all.
+Proof.
     intros ε.
     classic_contradiction contr.
     rewrite not_ex in contr.
@@ -489,6 +502,7 @@ Lemma compact_totally_bounded : totally_bounded all.
 Qed.
 
 Theorem sequentially_compact_compact : compact U.
+Proof.
     intros SS SS_cover.
     pose proof (lebesgue_number_lemma SS SS_cover) as [[δ δ_pos] δ_leb].
     pose proof (compact_totally_bounded [δ|δ_pos]) as [A [A_fin A_sub]].
@@ -545,6 +559,7 @@ Existing Instance subspace_metric.
 (* end hide *)
 
 Theorem metric_limit_point_compact : compact U ↔ limit_point_compact U.
+Proof.
     split.
     -   exact compact_limit_point_compact.
     -   intros U_comp.
@@ -554,6 +569,7 @@ Theorem metric_limit_point_compact : compact U ↔ limit_point_compact U.
 Qed.
 
 Theorem metric_sequentially_compact : compact U ↔ sequentially_compact U.
+Proof.
     split.
     -   intros U_comp.
         apply AnalysisCompact1.limit_point_sequentially_compact.
@@ -563,7 +579,8 @@ Theorem metric_sequentially_compact : compact U ↔ sequentially_compact U.
 Qed.
 
 Theorem lebesgue_number_lemma : compact U → ∀ SS, open_covering SS →
-        ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ S.
+    ∃ δ, ∀ x, ∃ S, SS S ∧ open_ball x δ ⊆ S.
+Proof.
     intros U_compact SS SS_cover.
     apply AnalysisCompact2.lebesgue_number_lemma.
     -   apply metric_sequentially_compact.
@@ -572,6 +589,7 @@ Theorem lebesgue_number_lemma : compact U → ∀ SS, open_covering SS →
 Qed.
 
 Theorem compact_totally_bounded_all : compact U → totally_bounded all.
+Proof.
     intros U_comp.
     apply AnalysisCompact2.compact_totally_bounded.
     apply metric_sequentially_compact.
@@ -587,6 +605,7 @@ Existing Instance subspace_metric.
 
 (* end hide *)
 Theorem compact_totally_bounded : ∀ X, compact (set_type X) → totally_bounded X.
+Proof.
     intros X X_compact.
     apply compact_totally_bounded_all in X_compact.
     intros ε.
@@ -620,6 +639,7 @@ Theorem compact_totally_bounded : ∀ X, compact (set_type X) → totally_bounde
 Qed.
 
 Theorem metric_compact_closed : ∀ X, compact (set_type X) → closed X.
+Proof.
     intros X X_comp.
     apply metric_sequentially_compact in X_comp.
     apply closed_limit_points.
@@ -659,6 +679,7 @@ Theorem metric_compact_closed : ∀ X, compact (set_type X) → closed X.
 Qed.
 
 Theorem metric_compact_closed_all : compact U → closed all.
+Proof.
     intros U_comp.
     apply metric_compact_closed.
     rewrite <- metric_subspace_topology.
@@ -673,6 +694,7 @@ Theorem metric_compact_closed_all : compact U → closed all.
 Qed.
 
 Theorem compact_complete : compact U → complete U.
+Proof.
     intros U_comp a a_cauchy.
     apply metric_sequentially_compact in U_comp.
     specialize (U_comp a) as [b [ab_sub [x b_lim]]].
@@ -698,7 +720,8 @@ Variable XS : set_type X → Prop.
 Hypothesis XS_inf : infinite (|set_type XS|).
 
 Theorem ball_ex : ∀ S : set_type X → Prop, infinite (|set_type S|) →
-        ∀ ε, ∃ x, infinite (|set_type (open_ball x ε ∩ S)|).
+    ∀ ε, ∃ x, infinite (|set_type (open_ball x ε ∩ S)|).
+Proof.
     clear XS XS_inf.
     intros S S_inf ε.
     pose proof (half_pos [ε|] [|ε]) as ε2_pos.
@@ -792,6 +815,7 @@ Fixpoint S n : set_type infs :=
     [open_ball (ex_val bex) ε ∩ [Sn|] | ex_proof bex].
 
 Lemma S_sub : ∀ n, [S n|] ⊆ XS.
+Proof.
     nat_induction n.
     -   apply inter_rsub.
     -   apply (trans2 IHn).
@@ -799,6 +823,7 @@ Lemma S_sub : ∀ n, [S n|] ⊆ XS.
 Qed.
 
 Lemma S_sub2 : ∀ m n, m <= n → [S n|] ⊆ [S m|].
+Proof.
     intros m n leq.
     apply nat_le_ex in leq.
     destruct leq as [c n_eq]; subst n.
@@ -811,7 +836,8 @@ Lemma S_sub2 : ∀ m n, m <= n → [S n|] ⊆ [S m|].
 Qed.
 
 Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
-        d x y <= 2 / nat_to_abstract (nat_suc n).
+    d x y <= 2 / nat_to_abstract (nat_suc n).
+Proof.
     intros n x y Snx Sny.
     pose (ε := [_|real_n_div_pos n]).
     pose (Sn :=
@@ -843,6 +869,7 @@ Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
 Qed.
 
 Lemma x_ex : ∀ n, ∃ x, [S n|] x.
+Proof.
     intros n.
     pose proof [|S n] as S_inf.
     apply infinite_ex in S_inf.
@@ -854,6 +881,7 @@ Qed.
 Definition xn n := [ex_val (x_ex n)|].
 
 Lemma xn_cauchy : cauchy_seq xn.
+Proof.
     intros ε ε_pos.
     pose proof (half_pos ε ε_pos) as ε2_pos.
     pose proof (archimedean2 (ε / 2) ε2_pos) as [N N_lt].
@@ -883,6 +911,7 @@ Qed.
 Definition Ux := ex_val (U_comp xn xn_cauchy).
 
 Lemma x_in : X Ux.
+Proof.
     unfold Ux.
     rewrite_ex_val x x_H.
     pose proof X_closed as X_closed2.
@@ -899,6 +928,7 @@ Qed.
 Definition x := [Ux|x_in].
 
 Lemma x2_ex : ∀ n, ∃ x2, [S n|] x2 ∧ x2 ≠ x.
+Proof.
     intros n.
     pose proof [|S n] as Sn_inf.
     pose proof (infinite_seq_ex Sn_inf) as [f f_neq].
@@ -920,6 +950,7 @@ Qed.
 Definition xn2 n := ex_val (x2_ex n).
 
 Lemma x2_lim : seq_lim xn2 x.
+Proof.
     rewrite metric_seq_lim.
     intros ε ε_pos.
     unfold x, Ux.
@@ -962,6 +993,7 @@ Lemma x2_lim : seq_lim xn2 x.
 Qed.
 
 Lemma X_compact : limit_point XS x.
+Proof.
     intros T T_open Tx.
     pose proof (x2_lim T T_open Tx) as [N x2_lim].
     specialize (x2_lim N (refl _)).
@@ -989,7 +1021,8 @@ Context {U} `{Metric U}.
 Existing Instance subspace_metric.
 
 Theorem complete_closed_tbounded_compact : complete U → ∀ X,
-        closed X → totally_bounded X → compact (set_type X).
+    closed X → totally_bounded X → compact (set_type X).
+Proof.
     intros U_comp X X_closed X_bound.
     apply metric_limit_point_compact.
     intros S S_inf.
@@ -1007,7 +1040,8 @@ Existing Instance subspace_metric.
 (* end hide *)
 
 Theorem complete_closed_tbounded_compact : complete U → ∀ X,
-        closed X → totally_bounded X → compact (set_type X).
+    closed X → totally_bounded X → compact (set_type X).
+Proof.
     intros U_comp X X_closed X_bound.
     apply AnalysisCompact3.complete_closed_tbounded_compact.
     all: assumption.

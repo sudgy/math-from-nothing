@@ -45,7 +45,8 @@ Variable f : ModuleObjHomomorphism V1 V2.
 Definition outermorphism_base1 x := vector_to_ext V2 (module_homo_f f x) : ext V2.
 
 Lemma outermorphism_base_plus : ∀ u v, outermorphism_base1 (u + v) =
-        outermorphism_base1 u + outermorphism_base1 v.
+    outermorphism_base1 u + outermorphism_base1 v.
+Proof.
     intros u v.
     unfold outermorphism_base1.
     rewrite (module_homo_plus _ _ f).
@@ -53,7 +54,8 @@ Lemma outermorphism_base_plus : ∀ u v, outermorphism_base1 (u + v) =
 Qed.
 
 Lemma outermorphism_base_scalar : ∀ a v, outermorphism_base1 (a · v) =
-        a · outermorphism_base1 v.
+    a · outermorphism_base1 v.
+Proof.
     intros a v.
     unfold outermorphism_base1.
     rewrite (module_homo_scalar _ _ f).
@@ -69,7 +71,8 @@ Definition outermorphism_base2 := make_module_homomorphism
     outermorphism_base_scalar.
 
 Lemma outermorphism_base2_alternating :
-        ∀ v, 0 = outermorphism_base1 v * outermorphism_base1 v.
+    ∀ v, 0 = outermorphism_base1 v * outermorphism_base1 v.
+Proof.
     intros v.
     unfold outermorphism_base1.
     apply ext_alternating.
@@ -89,34 +92,41 @@ Definition outermorphism_homo := [outermorphism_base|].
 Definition outermorphism := algebra_homo_f outermorphism_homo : ext V1 → ext V2.
 
 Theorem outermorphism_eq : ∀ v, outermorphism (vector_to_ext V1 v) =
-        vector_to_ext V2 (module_homo_f f v).
+    vector_to_ext V2 (module_homo_f f v).
+Proof.
     apply [|outermorphism_base].
 Qed.
 
 Theorem outermorphism_plus :
-        ∀ u v, outermorphism (u + v) = outermorphism u + outermorphism v.
+    ∀ u v, outermorphism (u + v) = outermorphism u + outermorphism v.
+Proof.
     apply (algebra_homo_plus _ _ outermorphism_homo).
 Qed.
 
 Theorem outermorphism_scalar :
-        ∀ a v, outermorphism (a · v) = a · outermorphism v.
+    ∀ a v, outermorphism (a · v) = a · outermorphism v.
+Proof.
     apply (algebra_homo_scalar _ _ outermorphism_homo).
 Qed.
 
 Theorem outermorphism_mult :
-        ∀ u v, outermorphism (u * v) = outermorphism u * outermorphism v.
+    ∀ u v, outermorphism (u * v) = outermorphism u * outermorphism v.
+Proof.
     apply (algebra_homo_mult _ _ outermorphism_homo).
 Qed.
 
 Theorem outermorphism_one : outermorphism 1 = 1.
+Proof.
     apply (algebra_homo_one _ _ outermorphism_homo).
 Qed.
 
 Theorem outermorphism_neg : ∀ v, outermorphism (-v) = -outermorphism v.
+Proof.
     apply (algebra_homo_neg outermorphism_homo).
 Qed.
 
 Theorem outermorphism_zero : outermorphism 0 = 0.
+Proof.
     apply (algebra_homo_zero outermorphism_homo).
 Qed.
 

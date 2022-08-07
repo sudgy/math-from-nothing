@@ -22,8 +22,9 @@ Definition slice_set_compose `{C0 : Category} {X : cat_U C0}
     := [f|] ∘ [g|].
 
 Lemma slice_set_compose_in `{C0 : Category} {X : cat_U C0}
-        {F G H : morphism_to X} : ∀ (f : set_type (slice_set G H)) g,
-        slice_set F H (slice_set_compose f g).
+    {F G H : morphism_to X} : ∀ (f : set_type (slice_set G H)) g,
+    slice_set F H (slice_set_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold slice_set in *.
     unfold slice_set_compose; cbn.
@@ -33,7 +34,8 @@ Lemma slice_set_compose_in `{C0 : Category} {X : cat_U C0}
 Qed.
 
 Lemma slice_set_id_in `{C0 : Category} {X : cat_U C0}
-        : ∀ f : morphism_to X, slice_set f f 𝟙.
+    : ∀ f : morphism_to X, slice_set f f 𝟙.
+Proof.
     intros f.
     unfold slice_set.
     apply cat_rid.
@@ -81,8 +83,9 @@ Definition coslice_set_compose `{C0 : Category} {X : cat_U C0}
     := [f|] ∘ [g|].
 
 Lemma coslice_set_compose_in `{C0 : Category} {X : cat_U C0}
-        {F G H : morphism_from X} : ∀ (f : set_type (coslice_set G H)) g,
-        coslice_set F H (coslice_set_compose f g).
+    {F G H : morphism_from X} : ∀ (f : set_type (coslice_set G H)) g,
+    coslice_set F H (coslice_set_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold coslice_set in *.
     unfold coslice_set_compose; cbn.
@@ -92,7 +95,8 @@ Lemma coslice_set_compose_in `{C0 : Category} {X : cat_U C0}
 Qed.
 
 Lemma coslice_set_id_in `{C0 : Category} {X : cat_U C0}
-        : ∀ f : morphism_from X, coslice_set f f 𝟙.
+    : ∀ f : morphism_from X, coslice_set f f 𝟙.
+Proof.
     intros f.
     unfold coslice_set.
     apply cat_lid.

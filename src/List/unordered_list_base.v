@@ -21,7 +21,8 @@ Notation "'ulist' U" := (equiv_type (ulist_equiv U)) (at level 1).
 Definition ulist_end {U} := to_equiv_type (ulist_equiv U) list_end.
 
 Lemma uadd_wd U : ∀ l1 l2 (a : U),
-        list_permutation l1 l2 → list_permutation (a :: l1) (a :: l2).
+    list_permutation l1 l2 → list_permutation (a :: l1) (a :: l2).
+Proof.
     intros l1 l2 a l_perm.
     apply list_perm_skip.
     exact l_perm.
@@ -30,7 +31,8 @@ Definition ulist_add {U} := binary_rself_op (E := ulist_equiv U) (uadd_wd U).
 Infix ":::" := ulist_add (at level 60, right associativity) : list_scope.
 
 Theorem ulist_induction {U} : ∀ S : ulist U → Prop,
-        S ulist_end → (∀ a l, S l → S (a ::: l)) → ∀ l, S l.
+    S ulist_end → (∀ a l, S l → S (a ::: l)) → ∀ l, S l.
+Proof.
     intros S S_end S_add l.
     equiv_get_value l.
     induction l.
@@ -47,7 +49,8 @@ Theorem ulist_induction {U} : ∀ S : ulist U → Prop,
 Qed.
 
 Theorem ulist_destruct {U} : ∀ S : ulist U → Prop,
-        S ulist_end → (∀ a l, S (a ::: l)) → ∀ l, S l.
+    S ulist_end → (∀ a l, S (a ::: l)) → ∀ l, S l.
+Proof.
     intros S S_end S_ind l.
     induction l using ulist_induction.
     -   exact S_end.
@@ -55,6 +58,7 @@ Theorem ulist_destruct {U} : ∀ S : ulist U → Prop,
 Qed.
 
 Theorem ulist_end_neq {U} : ∀ (a : U) l, a ::: l ≠ ulist_end.
+Proof.
     intros a l contr.
     equiv_get_value l.
     unfold ulist_add, ulist_end in contr; equiv_simpl in contr.
@@ -64,7 +68,8 @@ Theorem ulist_end_neq {U} : ∀ (a : U) l, a ::: l ≠ ulist_end.
 Qed.
 
 Theorem ulist_single_eq {U} : ∀ (a b : U), a ::: ulist_end = b ::: ulist_end →
-        a = b.
+    a = b.
+Proof.
     intros a b eq.
     unfold ulist_add, ulist_end in eq; equiv_simpl in eq.
     pose proof (list_perm_single eq) as eq2.
@@ -73,8 +78,9 @@ Theorem ulist_single_eq {U} : ∀ (a b : U), a ::: ulist_end = b ::: ulist_end �
 Qed.
 
 Lemma uconc_wd U : ∀ al1 al2 bl1 bl2 : list U,
-        list_permutation al1 al2 → list_permutation bl1 bl2 →
-        list_permutation (al1 ++ bl1) (al2 ++ bl2).
+    list_permutation al1 al2 → list_permutation bl1 bl2 →
+    list_permutation (al1 ++ bl1) (al2 ++ bl2).
+Proof.
     intros al1 al2 bl1 bl2 eq1 eq2.
     pose proof (list_perm_rpart al1 eq2).
     pose proof (list_perm_lpart bl2 eq1).
@@ -84,7 +90,8 @@ Definition ulist_conc {U} := binary_self_op (E := ulist_equiv U) (uconc_wd U).
 Infix "+++" := ulist_conc (right associativity, at level 60) : list_scope.
 
 Theorem ulist_add_conc_add {U} : ∀ (a : U) l1 l2,
-        a ::: (l1 +++ l2) = (a ::: l1) +++ l2.
+    a ::: (l1 +++ l2) = (a ::: l1) +++ l2.
+Proof.
     intros a l1 l2.
     equiv_get_value l1 l2.
     unfold ulist_conc, ulist_add; equiv_simpl.
@@ -92,6 +99,7 @@ Theorem ulist_add_conc_add {U} : ∀ (a : U) l1 l2,
 Qed.
 
 Theorem ulist_add_conc {U} : ∀ (a : U) l, a ::: l = (a ::: ulist_end) +++ l.
+Proof.
     intros a l.
     equiv_get_value l.
     unfold ulist_end, ulist_add, ulist_conc; equiv_simpl.
@@ -99,6 +107,7 @@ Theorem ulist_add_conc {U} : ∀ (a : U) l, a ::: l = (a ::: ulist_end) +++ l.
 Qed.
 
 Theorem ulist_conc_lid {U} : ∀ l : ulist U, ulist_end +++ l = l.
+Proof.
     intros l.
     equiv_get_value l.
     unfold ulist_end, ulist_conc; equiv_simpl.
@@ -106,6 +115,7 @@ Theorem ulist_conc_lid {U} : ∀ l : ulist U, ulist_end +++ l = l.
 Qed.
 
 Theorem ulist_conc_rid {U} : ∀ l : ulist U, l +++ ulist_end = l.
+Proof.
     intros l.
     equiv_get_value l.
     unfold ulist_end, ulist_conc; equiv_simpl.
@@ -114,6 +124,7 @@ Theorem ulist_conc_rid {U} : ∀ l : ulist U, l +++ ulist_end = l.
 Qed.
 
 Theorem ulist_conc_comm {U} : ∀ a b : ulist U, a +++ b = b +++ a.
+Proof.
     intros a b.
     equiv_get_value a b.
     unfold ulist_conc; equiv_simpl.
@@ -121,7 +132,8 @@ Theorem ulist_conc_comm {U} : ∀ a b : ulist U, a +++ b = b +++ a.
 Qed.
 
 Theorem ulist_conc_assoc {U} : ∀ a b c : ulist U,
-        a +++ (b +++ c) = (a +++ b) +++ c.
+    a +++ (b +++ c) = (a +++ b) +++ c.
+Proof.
     intros a b c.
     equiv_get_value a b c.
     unfold ulist_conc; equiv_simpl.
@@ -130,6 +142,7 @@ Theorem ulist_conc_assoc {U} : ∀ a b c : ulist U,
 Qed.
 
 Theorem ulist_swap {U} : ∀ (a b : U) l, a ::: b ::: l = b ::: a ::: l.
+Proof.
     intros a b l.
     equiv_get_value l.
     unfold ulist_add; equiv_simpl.
@@ -137,6 +150,7 @@ Theorem ulist_swap {U} : ∀ (a b : U) l, a ::: b ::: l = b ::: a ::: l.
 Qed.
 
 Theorem ulist_skip {U} : ∀ (a : U) l1 l2, a ::: l1 = a ::: l2 → l1 = l2.
+Proof.
     intros a l1 l2.
     equiv_get_value l1 l2.
     unfold ulist_add; equiv_simpl.
@@ -144,7 +158,8 @@ Theorem ulist_skip {U} : ∀ (a : U) l1 l2, a ::: l1 = a ::: l2 → l1 = l2.
 Qed.
 
 Theorem ulist_conc_lcancel {U} : ∀ l1 l2 l3 : ulist U,
-        l1 +++ l2 = l1 +++ l3 → l2 = l3.
+    l1 +++ l2 = l1 +++ l3 → l2 = l3.
+Proof.
     intros l1 l2 l3.
     equiv_get_value l1 l2 l3.
     unfold ulist_conc; equiv_simpl.
@@ -152,7 +167,8 @@ Theorem ulist_conc_lcancel {U} : ∀ l1 l2 l3 : ulist U,
 Qed.
 
 Theorem ulist_conc_rcancel {U} : ∀ l1 l2 l3 : ulist U,
-        l2 +++ l1 = l3 +++ l1 → l2 = l3.
+    l2 +++ l1 = l3 +++ l1 → l2 = l3.
+Proof.
     intros l1 l2 l3.
     do 2 rewrite (ulist_conc_comm _ l1).
     apply ulist_conc_lcancel.

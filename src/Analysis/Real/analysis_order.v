@@ -16,6 +16,7 @@ Section AnalysisOrder.
 Existing Instance abs_metric.
 (* end hide *)
 Theorem seq_lim_pos : ∀ xf x, (∀ n, 0 <= xf n) → seq_lim xf x → 0 <= x.
+Proof.
     intros xf x xf_pos x_lim.
     rewrite metric_seq_lim in x_lim.
     classic_contradiction contr.
@@ -33,7 +34,8 @@ Theorem seq_lim_pos : ∀ xf x, (∀ n, 0 <= xf n) → seq_lim xf x → 0 <= x.
 Qed.
 
 Theorem seq_lim_le : ∀ xf yf x y,
-        (∀ n, xf n <= yf n) → seq_lim xf x → seq_lim yf y → x <= y.
+    (∀ n, xf n <= yf n) → seq_lim xf x → seq_lim yf y → x <= y.
+Proof.
     intros xf yf x y f_leq x_lim y_lim.
     pose (xyf n := yf n - xf n).
     apply le_plus_0_anb_b_a.
@@ -48,7 +50,8 @@ Theorem seq_lim_le : ∀ xf yf x y,
 Qed.
 
 Theorem seq_lim_le_constant : ∀ xf x y,
-        (∀ n, xf n <= y) → seq_lim xf x → x <= y.
+    (∀ n, xf n <= y) → seq_lim xf x → x <= y.
+Proof.
     intros xf x y f_leq x_lim.
     apply (seq_lim_le xf (λ _, y)).
     -   exact f_leq.
@@ -57,7 +60,8 @@ Theorem seq_lim_le_constant : ∀ xf x y,
 Qed.
 
 Theorem seq_lim_ge_constant : ∀ yf x y,
-        (∀ n, x <= yf n) → seq_lim yf y → x <= y.
+    (∀ n, x <= yf n) → seq_lim yf y → x <= y.
+Proof.
     intros yf x y f_leq y_lim.
     apply (seq_lim_le (λ _, x) yf).
     -   exact f_leq.
@@ -66,8 +70,9 @@ Theorem seq_lim_ge_constant : ∀ yf x y,
 Qed.
 
 Theorem increasing_seq_converges : ∀ f : nat → real,
-        (∃ M, ∀ n, |f n| <= M) → (∀ n, f n <= f (nat_suc n)) →
-        seq_converges f.
+    (∃ M, ∀ n, |f n| <= M) → (∀ n, f n <= f (nat_suc n)) →
+    seq_converges f.
+Proof.
     intros f [M M_bound] f_inc.
     assert (∀ m n, m <= n → f m <= f n) as f_inc2.
     {
@@ -129,8 +134,9 @@ Theorem increasing_seq_converges : ∀ f : nat → real,
 Qed.
 
 Theorem decreasing_seq_converges : ∀ f : nat → real,
-        (∃ M, ∀ n, |f n| <= M) → (∀ n, f (nat_suc n) <= f n) →
-        seq_converges f.
+    (∃ M, ∀ n, |f n| <= M) → (∀ n, f (nat_suc n) <= f n) →
+    seq_converges f.
+Proof.
     intros f [M M_bound] f_dec.
     pose (g n := -f n).
     assert (seq_converges g) as [x x_lim].
@@ -159,6 +165,7 @@ Theorem decreasing_seq_converges : ∀ f : nat → real,
 Qed.
 
 Theorem real_complete : complete real.
+Proof.
     intros f f_cauchy.
     pose (fn m n := f (m + n)).
     assert (∀ m, cauchy_seq (fn m)) as fn_cauchy.
@@ -314,8 +321,9 @@ Theorem real_complete : complete real.
 Qed.
 
 Theorem series_le_converge : ∀ a b,
-        seq_converges (series b) → (∀ n, 0 <= a n) → (∀ n, a n <= b n) →
-        seq_converges (series a).
+    seq_converges (series b) → (∀ n, 0 <= a n) → (∀ n, a n <= b n) →
+    seq_converges (series a).
+Proof.
     intros a b b_conv a_pos ab.
     apply cauchy_series_converges.
     1: exact real_complete.
@@ -363,7 +371,8 @@ Theorem series_le_converge : ∀ a b,
 Qed.
 
 Theorem seq_squeeze : ∀ an bn cn l, (∀ n, an n <= bn n ∧ bn n <= cn n) →
-        seq_lim an l → seq_lim cn l → seq_lim bn l.
+    seq_lim an l → seq_lim cn l → seq_lim bn l.
+Proof.
     intros an bn cn l leqs anl cnl.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
@@ -392,9 +401,10 @@ Qed.
 Local Open Scope nat_scope.
 (* end hide *)
 Theorem alternating_series_test : ∀ an,
-        (∀ n, an (nat_suc n) <= an n) →
-        seq_lim an 0 →
-        seq_converges (series (λ n, (-(1))^n * an n)).
+    (∀ n, an (nat_suc n) <= an n) →
+    seq_lim an 0 →
+    seq_converges (series (λ n, (-(1))^n * an n)).
+Proof.
     intros an an_dec an0'.
     pose proof an0' as an0.
     rewrite metric_seq_lim in an0.

@@ -49,6 +49,7 @@ Context {U} `{Up : Plus U,
               }.
 
 Lemma divides_refl : ∀ a, a ∣ a.
+Proof.
     intros a.
     exists 1.
     apply mult_lid.
@@ -60,6 +61,7 @@ Global Instance divides_refl_class : Reflexive divides := {
 
 (* begin hide *)
 Lemma divides_trans : ∀ a b c, a ∣ b → b ∣ c → a ∣ c.
+Proof.
     intros a b c [d eq1] [e eq2].
     exists (e * d).
     rewrite <- mult_assoc.
@@ -73,18 +75,21 @@ Global Instance divides_trans_class : Transitive divides := {
 }.
 
 Theorem one_divides : ∀ n, 1 ∣ n.
+Proof.
     intros n.
     exists n.
     apply mult_rid.
 Qed.
 
 Theorem divides_zero : ∀ a, a ∣ 0.
+Proof.
     intros a.
     exists 0.
     apply mult_lanni.
 Qed.
 
 Theorem divides_neg : ∀ a b, a ∣ b → a ∣ -b.
+Proof.
     intros a b [c eq].
     exists (-c).
     rewrite mult_lneg.
@@ -93,6 +98,7 @@ Theorem divides_neg : ∀ a b, a ∣ b → a ∣ -b.
 Qed.
 
 Theorem plus_stays_divides : ∀ p a b, p ∣ a → p ∣ b → p ∣ (a + b).
+Proof.
     intros p a b [c c_eq] [d d_eq].
     exists (c + d).
     rewrite <- c_eq, <- d_eq.
@@ -101,6 +107,7 @@ Qed.
 
 Theorem plus_changes_divides : ∀ p a b,
                                p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
+Proof.
     intros p a b [c c_eq] not [d d_eq].
     rewrite <- c_eq in d_eq.
     apply lplus with (-(c * p)) in d_eq.
@@ -114,6 +121,7 @@ Theorem plus_changes_divides : ∀ p a b,
 Qed.
 
 Theorem mult_factors_extend : ∀ p a b, p ∣ a → p ∣ a * b.
+Proof.
     intros p a b [c eq].
     exists (b * c).
     rewrite (mult_comm a).
@@ -122,6 +130,7 @@ Theorem mult_factors_extend : ∀ p a b, p ∣ a → p ∣ a * b.
 Qed.
 
 Theorem mult_factors_back : ∀ a b c, a * b = c → a ∣ c ∧ b ∣ c.
+Proof.
     intros a b c eq.
     split.
     -   exists b.
@@ -132,18 +141,21 @@ Theorem mult_factors_back : ∀ a b c, a * b = c → a ∣ c ∧ b ∣ c.
 Qed.
 
 Theorem mult_div_lself : ∀ a b, a ∣ a * b.
+Proof.
     intros a b.
     exists b.
     apply mult_comm.
 Qed.
 
 Theorem mult_div_rself : ∀ a b, a ∣ b * a.
+Proof.
     intros a b.
     exists b.
     reflexivity.
 Qed.
 
 Theorem div_rcancel : ∀ a b c, 0 ≠ c → a * c ∣ b * c → a ∣ b.
+Proof.
     intros a b c c_nz [x eq].
     exists x.
     rewrite mult_assoc in eq.
@@ -152,6 +164,7 @@ Theorem div_rcancel : ∀ a b c, 0 ≠ c → a * c ∣ b * c → a ∣ b.
 Qed.
 
 Theorem div_lcancel : ∀ a b c, 0 ≠ a → a * b ∣ a * c → b ∣ c.
+Proof.
     intros a b c a_nz.
     do 2 rewrite (mult_comm a).
     apply div_rcancel.
@@ -159,6 +172,7 @@ Theorem div_lcancel : ∀ a b c, 0 ≠ a → a * b ∣ a * c → b ∣ c.
 Qed.
 
 Theorem unit_mult : ∀ a b, unit a → unit b → unit (a * b).
+Proof.
     intros a b [a' a_eq] [b' b_eq].
     exists (b' * a').
     rewrite <- mult_assoc.
@@ -169,6 +183,7 @@ Theorem unit_mult : ∀ a b, unit a → unit b → unit (a * b).
 Qed.
 
 Theorem div_mult_unit : ∀ a b, 0 ≠ a → a * b ∣ a → unit b.
+Proof.
     intros a b a_nz eq.
     destruct eq as [c eq].
     exists c.
@@ -180,6 +195,7 @@ Theorem div_mult_unit : ∀ a b, 0 ≠ a → a * b ∣ a → unit b.
 Qed.
 
 Theorem prime_irreducible : ∀ p, prime p → irreducible p.
+Proof.
     intros p [p_nz [p_nu p_prime]].
     repeat split; [>exact p_nz|exact p_nu|].
     intros a b a_nu b_nu.
@@ -208,6 +224,7 @@ Theorem prime_irreducible : ∀ p, prime p → irreducible p.
 Qed.
 
 Theorem associates_refl : ∀ a, associates a a.
+Proof.
     intros a.
     split.
     all: exists 1.
@@ -215,12 +232,14 @@ Theorem associates_refl : ∀ a, associates a a.
 Qed.
 
 Theorem associates_sym : ∀ a b, associates a b → associates b a.
+Proof.
     intros a b [ab ba].
     split; assumption.
 Qed.
 
 Theorem associates_trans :
-        ∀ a b c, associates a b → associates b c → associates a c.
+    ∀ a b c, associates a b → associates b c → associates a c.
+Proof.
     intros a b c [ab ba] [bc cb].
     split.
     -   exact (divides_trans _ _ _ ab bc).

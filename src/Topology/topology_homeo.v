@@ -13,7 +13,8 @@ Context {U V} `{Topology U, Topology V}.
 Variable f : U → V.
 (* end hide *)
 Theorem homeomorphism_open :
-       homeomorphism f ↔ (bijective f ∧ (∀ A, open A ↔ open (image_under f A))).
+   homeomorphism f ↔ (bijective f ∧ (∀ A, open A ↔ open (image_under f A))).
+Proof.
     split.
     -   intros [cont [bij inv_cont]].
         split; try exact bij.

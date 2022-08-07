@@ -99,12 +99,14 @@ Section MultRingImply.
 Context {U} `{AllMult U}.
 
 Lemma mult_lid_rid_ : ∀ a, a * one = a.
+Proof.
     intros a.
     rewrite mult_comm.
     apply mult_lid.
 Qed.
 
 Lemma mult_lcancel_rcancel_ : ∀ a b c, zero ≠ c → a * c = b * c → a = b.
+Proof.
     intros a b c neq eq.
     do 2 rewrite (mult_comm _ c) in eq.
     apply mult_lcancel with c; try exact neq.
@@ -112,12 +114,14 @@ Lemma mult_lcancel_rcancel_ : ∀ a b c, zero ≠ c → a * c = b * c → a = b.
 Qed.
 
 Lemma mult_lanni_ranni_ : ∀ a, a * zero = zero.
+Proof.
     intros a.
     rewrite mult_comm.
     apply mult_lanni.
 Qed.
 
 Lemma ldist_rdist_ : ∀ a b c, (a + b) * c = a * c + b * c.
+Proof.
     intros a b c.
     do 3 rewrite (mult_comm _ c).
     apply ldist.
@@ -156,16 +160,20 @@ Global Instance mult_op_lanni : Lanni mult := {lanni := mult_lanni}.
 Global Instance mult_op_ranni : Ranni mult := {ranni := mult_ranni}.
 (* end hide *)
 Theorem lmult : ∀ {a b} c, a = b → c * a = c * b.
+Proof.
     apply lop.
 Qed.
 Theorem rmult : ∀ {a b} c, a = b → a * c = b * c.
+Proof.
     apply lop.
 Qed.
 Theorem lrmult : ∀ {a b c d}, a = b → c = d → a * c = b * d.
+Proof.
     apply lrop.
 Qed.
 
 Theorem not_trivial_one : 0 ≠ 1.
+Proof.
     intros contr.
     pose proof not_trivial_zero as [a a_nz].
     apply rmult with a in contr.
@@ -176,6 +184,7 @@ Qed.
 
 (* begin hide *)
 Theorem ring_mult_lanni : ∀ a, 0 * a = 0.
+Proof.
     intros a.
     assert (0 * a = 0 * a) as eq by reflexivity.
     rewrite <- (plus_rid 0) in eq at 1.
@@ -185,6 +194,7 @@ Theorem ring_mult_lanni : ∀ a, 0 * a = 0.
     exact eq.
 Qed.
 Theorem ring_mult_ranni : ∀ a, a * 0 = 0.
+Proof.
     intros a.
     assert (a * 0 = a * 0) as eq by reflexivity.
     rewrite <- (plus_rid 0) in eq at 1.
@@ -202,6 +212,7 @@ Global Instance rint_mult_ranni_class : MultRanni U := {
 }.
 (* end hide *)
 Theorem mult_lneg : ∀ a b, -a * b = -(a * b).
+Proof.
     intros a b.
     apply plus_lcancel with (a * b).
     rewrite <- rdist.
@@ -209,6 +220,7 @@ Theorem mult_lneg : ∀ a b, -a * b = -(a * b).
     apply mult_lanni.
 Qed.
 Theorem mult_rneg : ∀ a b, a * -b = -(a * b).
+Proof.
     intros a b.
     apply plus_lcancel with (a * b).
     rewrite <- ldist.
@@ -216,12 +228,14 @@ Theorem mult_rneg : ∀ a b, a * -b = -(a * b).
     apply mult_ranni.
 Qed.
 Theorem mult_lrneg : ∀ a b, -a * b = a * -b.
+Proof.
     intros a b.
     rewrite mult_lneg, mult_rneg.
     reflexivity.
 Qed.
 
 Theorem mult_neg_one : ∀ a, -one * a = -a.
+Proof.
     intros a.
     rewrite mult_lneg.
     rewrite mult_lid.
@@ -229,6 +243,7 @@ Theorem mult_neg_one : ∀ a, -one * a = -a.
 Qed.
 
 Theorem neg_nz : ∀ a, 0 ≠ a → 0 ≠ -a.
+Proof.
     intros a a_nz eq.
     apply (f_equal neg) in eq.
     rewrite neg_neg, neg_zero in eq.
@@ -236,6 +251,7 @@ Theorem neg_nz : ∀ a, 0 ≠ a → 0 ≠ -a.
 Qed.
 
 Theorem plus_two : ∀ a, a + a = 2*a.
+Proof.
     intros a.
     rewrite <- (mult_lid a) at 1 2.
     rewrite <- rdist.
@@ -243,17 +259,20 @@ Theorem plus_two : ∀ a, a + a = 2*a.
 Qed.
 
 Theorem two_plus_two : 2 + 2 = 4.
+Proof.
     rewrite <- plus_assoc.
     reflexivity.
 Qed.
 
 Theorem two_times_two : 2 * 2 = 4.
+Proof.
     rewrite ldist.
     rewrite mult_rid.
     exact two_plus_two.
 Qed.
 
 Theorem dif_squares : ∀ a b, a*a - b*b = (a + b) * (a - b).
+Proof.
     intros a b.
     rewrite rdist.
     do 2 rewrite ldist.
@@ -266,6 +285,7 @@ Theorem dif_squares : ∀ a b, a*a - b*b = (a + b) * (a - b).
 Qed.
 
 Theorem mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b.
+Proof.
     intros a b eq.
     classic_case (0 = a) as [a_z|a_nz].
     -   left.
@@ -277,6 +297,7 @@ Theorem mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b.
 Qed.
 
 Theorem mult_nz : ∀ a b, 0 ≠ a → 0 ≠ b → 0 ≠ a * b.
+Proof.
     intros a b neq1 neq2 contr.
     apply mult_zero in contr.
     destruct contr; contradiction.

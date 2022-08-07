@@ -99,6 +99,7 @@ Local Open Scope nat_scope.
 
 (* end hide *)
 Theorem lcontr_mult_inner : ∀ v X, φ v ⌋ X = geo_mult_inner B v X.
+Proof.
     intros v X.
     induction X as [|X X' n Xn X'n IHX] using grade_induction.
     {
@@ -155,12 +156,14 @@ Theorem lcontr_mult_inner : ∀ v X, φ v ⌋ X = geo_mult_inner B v X.
 Qed.
 
 Theorem lcontr_bilinear : ∀ a b, φ a ⌋ φ b = [B|] a b · 1.
+Proof.
     intros a b.
     rewrite lcontr_mult_inner.
     apply geo_mult_inner_vector.
 Qed.
 
 Theorem inner_bilinear : ∀ a b, φ a • φ b = [B|] a b · 1.
+Proof.
     intros a b.
     rewrite <- (lcontr_inner _ _ _ _ _ (refl 1)
         (vector_to_geo_grade B a) (vector_to_geo_grade B b)).
@@ -168,6 +171,7 @@ Theorem inner_bilinear : ∀ a b, φ a • φ b = [B|] a b · 1.
 Qed.
 
 Theorem rcontr_bilinear : ∀ a b, φ a ⌊ φ b = [B|] a b · 1.
+Proof.
     intros a b.
     rewrite (rcontr_inner _ _ _ _ _ (refl 1)
         (vector_to_geo_grade B a) (vector_to_geo_grade B b)).
@@ -175,7 +179,8 @@ Theorem rcontr_bilinear : ∀ a b, φ a ⌊ φ b = [B|] a b · 1.
 Qed.
 
 Theorem lcontr_geo_add : ∀ a v X,
-        φ a ⌋ (φ v * X) = φ a ⌋ φ v * X - φ v * (φ a ⌋ X).
+    φ a ⌋ (φ v * X) = φ a ⌋ φ v * X - φ v * (φ a ⌋ X).
+Proof.
     intros a v X.
     rewrite lcontr_bilinear.
     do 2 rewrite lcontr_mult_inner.
@@ -185,7 +190,8 @@ Theorem lcontr_geo_add : ∀ a v X,
 Qed.
 
 Theorem lcontr_outer_add : ∀ a v X,
-        φ a ⌋ (φ v ⋀ X) = φ a ⌋ φ v * X - φ v ⋀ (φ a ⌋ X).
+    φ a ⌋ (φ v ⋀ X) = φ a ⌋ φ v * X - φ v ⋀ (φ a ⌋ X).
+Proof.
     intros a v X.
     rewrite lcontr_bilinear.
     rewrite scalar_lmult.
@@ -204,12 +210,14 @@ Theorem lcontr_outer_add : ∀ a v X,
 Qed.
 
 Theorem lcontr_vector_scalar : ∀ v a, φ v ⌋ σ a = 0.
+Proof.
     intros v a.
     rewrite lcontr_mult_inner.
     apply geo_mult_inner_scalar.
 Qed.
 
 Theorem rcontr_scalar_vector : ∀ a v, σ a ⌊ φ v = 0.
+Proof.
     intros a v.
     rewrite <- (geo_reverse_reverse B (σ a ⌊ φ v)).
     rewrite rlcontr_reverse.
@@ -219,7 +227,8 @@ Theorem rcontr_scalar_vector : ∀ a v, σ a ⌊ φ v = 0.
 Qed.
 
 Theorem rcontr_geo_add : ∀ a v X,
-        (X * φ v) ⌊ φ a = φ a ⌋ φ v * X - (X ⌊ φ a) * φ v.
+    (X * φ v) ⌊ φ a = φ a ⌋ φ v * X - (X ⌊ φ a) * φ v.
+Proof.
     intros a v X.
     rewrite <- (geo_reverse_reverse B ((X * φ v) ⌊ φ a)).
     rewrite rlcontr_reverse.
@@ -240,7 +249,8 @@ Theorem rcontr_geo_add : ∀ a v X,
 Qed.
 
 Theorem rcontr_outer_add : ∀ a v X,
-        (X ⋀ φ v) ⌊ φ a = φ a ⌋ φ v * X - (X ⌊ φ a) ⋀ φ v.
+    (X ⋀ φ v) ⌊ φ a = φ a ⌋ φ v * X - (X ⌊ φ a) ⋀ φ v.
+Proof.
     intros a v X.
     rewrite <- (geo_reverse_reverse B ((X ⋀ φ v) ⌊ φ a)).
     rewrite rlcontr_reverse.
@@ -261,6 +271,7 @@ Theorem rcontr_outer_add : ∀ a v X,
 Qed.
 
 Theorem vector_lmult : ∀ v X, φ v * X = φ v ⌋ X + φ v ⋀ X.
+Proof.
     intros v X.
     induction X as [|X X' n Xn X'n IHX] using grade_induction.
     {
@@ -322,6 +333,7 @@ Theorem vector_lmult : ∀ v X, φ v * X = φ v ⌋ X + φ v ⋀ X.
 Qed.
 
 Theorem vector_rmult : ∀ X v, X * φ v = X ⌊ φ v + X ⋀ φ v.
+Proof.
     intros X v.
     rewrite <- (geo_reverse_reverse B (X * φ v)).
     rewrite geo_reverse_mult.
@@ -336,6 +348,7 @@ Theorem vector_rmult : ∀ X v, X * φ v = X ⌊ φ v + X ⋀ φ v.
 Qed.
 
 Theorem lcontr_twice : ∀ a X, φ a ⌋ (φ a ⌋ X) = 0.
+Proof.
     intros a X.
     do 2 rewrite lcontr_mult_inner.
     pose proof (geo_mult_inner_alternating B a) as eq.

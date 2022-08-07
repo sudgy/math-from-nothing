@@ -12,6 +12,7 @@ Require Import nat.
 Open Scope card_scope.
 (* end hide *)
 Lemma card_pow_wd : ∀ A B C D, A ~ B → C ~ D → (C → A) ~ (D → B).
+Proof.
     intros A B C D [f f_bij] [g g_bij].
     pose (g' := bij_inv g g_bij).
     exists (λ h, (λ x, f (h (g' x)))).
@@ -38,6 +39,7 @@ Definition card_pow := binary_self_op card_pow_wd.
 Infix "^" := card_pow : card_scope.
 
 Theorem func_size : ∀ A B, |A → B| = |B| ^ |A|.
+Proof.
     intros A B.
     unfold card_pow; equiv_simpl.
     exists identity.
@@ -45,6 +47,7 @@ Theorem func_size : ∀ A B, |A → B| = |B| ^ |A|.
 Qed.
 
 Theorem card_pow_0 : ∀ κ, κ ^ 0 = 1.
+Proof.
     intros A.
     equiv_get_value A.
     unfold zero, one; cbn.
@@ -68,6 +71,7 @@ Theorem card_pow_0 : ∀ κ, κ ^ 0 = 1.
 Qed.
 
 Theorem card_pow_from_0 : ∀ κ, 1 <= κ → 0 ^ κ = 0.
+Proof.
     intros A.
     equiv_get_value A.
     unfold one, zero; cbn.
@@ -86,6 +90,7 @@ Theorem card_pow_from_0 : ∀ κ, 1 <= κ → 0 ^ κ = 0.
 Qed.
 
 Theorem card_pow_from_1 : ∀ κ, 1 ^ κ = 1.
+Proof.
     intros A.
     equiv_get_value A.
     unfold one; cbn.
@@ -110,6 +115,7 @@ Theorem card_pow_from_1 : ∀ κ, 1 ^ κ = 1.
 Qed.
 
 Theorem card_pow_1 : ∀ κ, κ ^ 1 = κ.
+Proof.
     intros A.
     symmetry.
     equiv_get_value A.
@@ -131,6 +137,7 @@ Theorem card_pow_1 : ∀ κ, κ ^ 1 = κ.
 Qed.
 
 Theorem card_pow_plus : ∀ κ μ ν, κ ^ (μ + ν) = κ ^ μ * κ ^ ν.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold plus, mult, card_pow; equiv_simpl.
@@ -159,6 +166,7 @@ Theorem card_pow_plus : ∀ κ μ ν, κ ^ (μ + ν) = κ ^ μ * κ ^ ν.
 Qed.
 
 Theorem card_pow_mult : ∀ κ μ ν, κ ^ (μ * ν) = (κ ^ μ) ^ ν.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold mult, card_pow; equiv_simpl.
@@ -179,6 +187,7 @@ Theorem card_pow_mult : ∀ κ μ ν, κ ^ (μ * ν) = (κ ^ μ) ^ ν.
 Qed.
 
 Theorem card_mult_pow : ∀ κ μ ν, (κ * μ) ^ ν = κ ^ ν * μ ^ ν.
+Proof.
     intros A B C.
     equiv_get_value A B C.
     unfold mult, card_pow; equiv_simpl.
@@ -207,6 +216,7 @@ Theorem card_mult_pow : ∀ κ μ ν, (κ * μ) ^ ν = κ ^ ν * μ ^ ν.
 Qed.
 
 Theorem prop_size : |Prop| = 2.
+Proof.
     unfold one; cbn.
     unfold nat_to_card, plus; equiv_simpl.
     exists (λ P, If (P = True) then (inl [0|nat_0_lt_1])
@@ -236,6 +246,7 @@ Theorem prop_size : |Prop| = 2.
 Qed.
 
 Theorem power_set_size : ∀ A, |A → Prop| = 2 ^ |A|.
+Proof.
     intros A.
     rewrite func_size.
     rewrite prop_size.
@@ -243,6 +254,7 @@ Theorem power_set_size : ∀ A, |A → Prop| = 2 ^ |A|.
 Qed.
 
 Theorem power_set_bigger : ∀ A, |A| < |A → Prop|.
+Proof.
     intros A.
     split.
     -   unfold le; equiv_simpl.
@@ -268,6 +280,7 @@ Theorem power_set_bigger : ∀ A, |A| < |A → Prop|.
 Qed.
 
 Theorem card_lt_pow2 : ∀ κ, κ < 2^κ.
+Proof.
     intros A.
     equiv_get_value A.
     rewrite <- power_set_size.
@@ -276,6 +289,7 @@ Qed.
 
 (* begin hide *)
 Lemma card_suc_ex : ∀ κ, ∃ μ, κ < μ ∧ ∀ ν, κ < ν → μ <= ν.
+Proof.
     intros κ.
     pose (S μ := κ < μ).
     assert (∃ x, S x) as S_nempty.
@@ -295,6 +309,7 @@ Qed.
 Definition card_suc κ := ex_val (card_suc_ex κ).
 
 Theorem card_suc_lt : ∀ κ, κ < card_suc κ.
+Proof.
     intros κ.
     unfold card_suc.
     rewrite_ex_val μ μ_eq.
@@ -302,6 +317,7 @@ Theorem card_suc_lt : ∀ κ, κ < card_suc κ.
 Qed.
 
 Theorem card_suc_le : ∀ κ μ, κ < μ → card_suc κ <= μ.
+Proof.
     intros κ μ lt.
     unfold card_suc.
     rewrite_ex_val ν ν_eq.

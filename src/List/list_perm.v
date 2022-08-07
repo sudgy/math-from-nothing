@@ -17,6 +17,7 @@ Inductive list_permutation {U} : list U → list U → Prop :=
     list_permutation l l' → list_permutation l' l'' → list_permutation l l''.
 
 Theorem list_perm_refl {U} : ∀ l : list U, list_permutation l l.
+Proof.
     intros l.
     induction l.
     -   exact list_perm_nil.
@@ -25,7 +26,8 @@ Theorem list_perm_refl {U} : ∀ l : list U, list_permutation l l.
 Qed.
 
 Theorem list_perm_sym {U} : ∀ al bl : list U,
-        list_permutation al bl → list_permutation bl al.
+    list_permutation al bl → list_permutation bl al.
+Proof.
     intros al bl perm.
     induction perm.
     -   exact list_perm_nil.
@@ -36,14 +38,16 @@ Theorem list_perm_sym {U} : ∀ al bl : list U,
 Qed.
 
 Theorem list_perm_trans2 {U} (l l' l'' : list U) :
-        list_permutation l' l'' → list_permutation l l' →
-        list_permutation l l''.
+    list_permutation l' l'' → list_permutation l l' →
+    list_permutation l l''.
+Proof.
     intros eq1 eq2.
     apply (list_perm_trans eq2 eq1).
 Qed.
 
 Theorem list_perm_nil_eq {U} : ∀ l : list U,
-        list_permutation list_end l → list_end = l.
+    list_permutation list_end l → list_end = l.
+Proof.
     intros l l_end.
     remember (list_end) as m in l_end.
     induction l_end.
@@ -57,7 +61,8 @@ Theorem list_perm_nil_eq {U} : ∀ l : list U,
 Qed.
 
 Theorem list_perm_lpart {U} : ∀ (al bl cl : list U),
-        list_permutation al bl → list_permutation (al ++ cl) (bl ++ cl).
+    list_permutation al bl → list_permutation (al ++ cl) (bl ++ cl).
+Proof.
     intros al bl cl albl.
     induction albl.
     -   cbn.
@@ -71,7 +76,8 @@ Theorem list_perm_lpart {U} : ∀ (al bl cl : list U),
 Qed.
 
 Theorem list_perm_add {U} : ∀ (l : list U) a,
-        list_permutation (a :: l) (l ++ a :: list_end).
+    list_permutation (a :: l) (l ++ a :: list_end).
+Proof.
     intros l a.
     induction l.
     -   cbn.
@@ -110,7 +116,8 @@ Theorem list_perm_add {U} : ∀ (l : list U) a,
 Qed.
 
 Theorem list_perm_conc {U} : ∀ al bl : list U,
-        list_permutation (al ++ bl) (bl ++ al).
+    list_permutation (al ++ bl) (bl ++ al).
+Proof.
     intros al bl.
     induction al.
     -   cbn.
@@ -172,7 +179,8 @@ Theorem list_perm_conc {U} : ∀ al bl : list U,
 Qed.
 
 Theorem list_perm_rpart {U} : ∀ (al bl cl : list U),
-        list_permutation bl cl → list_permutation (al ++ bl) (al ++ cl).
+    list_permutation bl cl → list_permutation (al ++ bl) (al ++ cl).
+Proof.
     intros al bl cl blcl.
     apply (list_perm_trans (list_perm_conc al bl)).
     apply (list_perm_trans2 (list_perm_conc cl al)).
@@ -181,8 +189,9 @@ Theorem list_perm_rpart {U} : ∀ (al bl cl : list U),
 Qed.
 
 Theorem list_in_unique_perm {U} : ∀ al bl : list U,
-        list_unique al → list_unique bl → (∀ x, in_list al x ↔ in_list bl x) →
-        list_permutation al bl.
+    list_unique al → list_unique bl → (∀ x, in_list al x ↔ in_list bl x) →
+    list_permutation al bl.
+Proof.
     intros al bl al_uni bl_uni l_in.
     revert bl bl_uni l_in.
     induction al; intros.
@@ -284,7 +293,8 @@ Theorem list_in_unique_perm {U} : ∀ al bl : list U,
 Qed.
 
 Lemma list_perm_in_wlog {U} : ∀ al bl : list U,
-        list_permutation al bl → (∀ x, in_list al x → in_list bl x).
+    list_permutation al bl → (∀ x, in_list al x → in_list bl x).
+Proof.
     intros al bl albl x al_x.
     induction albl.
     -   contradiction al_x.
@@ -306,7 +316,8 @@ Lemma list_perm_in_wlog {U} : ∀ al bl : list U,
 Qed.
 
 Theorem list_perm_in {U} : ∀ al bl : list U,
-        list_permutation al bl → (∀ x, in_list al x ↔ in_list bl x).
+    list_permutation al bl → (∀ x, in_list al x ↔ in_list bl x).
+Proof.
     intros al bl albl x.
     split; apply list_perm_in_wlog.
     -   exact albl.
@@ -315,7 +326,8 @@ Theorem list_perm_in {U} : ∀ al bl : list U,
 Qed.
 
 Theorem list_perm_unique {U} : ∀ al bl : list U,
-        list_permutation al bl → list_unique al → list_unique bl.
+    list_permutation al bl → list_unique al → list_unique bl.
+Proof.
     intros al bl albl al_uni.
     induction albl.
     -   exact al_uni.
@@ -340,8 +352,9 @@ Theorem list_perm_unique {U} : ∀ al bl : list U,
 Qed.
 
 Theorem list_image_perm {U V} : ∀ al bl (f : U → V),
-        list_permutation al bl →
-        list_permutation (list_image al f) (list_image bl f).
+    list_permutation al bl →
+    list_permutation (list_image al f) (list_image bl f).
+Proof.
     intros al bl f albl.
     induction albl.
     -   cbn.
@@ -355,7 +368,8 @@ Theorem list_image_perm {U V} : ∀ al bl (f : U → V),
 Qed.
 
 Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
-        list_permutation (l1 ++ x :: l2) (x :: l1 ++ l2).
+    list_permutation (l1 ++ x :: l2) (x :: l1 ++ l2).
+Proof.
     intros l1 l2 x.
     rewrite (list_add_conc).
     rewrite list_conc_assoc.
@@ -366,7 +380,8 @@ Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
 Qed.
 
 Theorem list_split_perm {U} : ∀ l (a : U), in_list l a → ∃ l',
-        list_permutation l (a :: l').
+    list_permutation l (a :: l').
+Proof.
     intros l a a_in.
     pose proof (in_list_split l a a_in) as [l1 [l2 l_eq]].
     rewrite l_eq.
@@ -375,7 +390,8 @@ Theorem list_split_perm {U} : ∀ l (a : U), in_list l a → ∃ l',
 Qed.
 
 Theorem list_perm_single {U} : ∀ (x : U) l, list_permutation (x :: list_end) l →
-        l = x :: list_end.
+    l = x :: list_end.
+Proof.
     intros x l l_perm.
     remember (x :: list_end) as m in l_perm.
     induction l_perm.
@@ -393,13 +409,15 @@ Theorem list_perm_single {U} : ∀ (x : U) l, list_permutation (x :: list_end) l
 Qed.
 
 Theorem list_perm_eq {U} : ∀ l1 l2 : list U, l1 = l2 → list_permutation l1 l2.
+Proof.
     intros l1 l2 eq.
     rewrite eq.
     apply list_perm_refl.
 Qed.
 
 Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
-        list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
+    list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
+Proof.
     intros S l1 l2 eq Sl1.
     induction eq.
     -   exact Sl1.
@@ -413,7 +431,8 @@ Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
 Qed.
 
 Theorem list_perm_swap2 {U} : ∀ (a b : U) l1 l2, list_permutation l1 l2 →
-        list_permutation (a :: b :: l1) (b :: a :: l2).
+    list_permutation (a :: b :: l1) (b :: a :: l2).
+Proof.
     intros a b l1 l2 eq.
     pose proof (list_perm_swap b a l1) as eq1.
     apply (list_perm_trans eq1).
@@ -423,7 +442,8 @@ Theorem list_perm_swap2 {U} : ∀ (a b : U) l1 l2, list_permutation l1 l2 →
 Qed.
 
 Theorem list_perm_reverse {U} : ∀ l : list U,
-        list_permutation l (list_reverse l).
+    list_permutation l (list_reverse l).
+Proof.
     intros l.
     induction l.
     -   cbn.
@@ -439,8 +459,9 @@ but this is what the standard library starts with and I couldn't find any way to
 start from somewhere else.
 *)
 Theorem list_perm_inside_eq {U} : ∀ l1 l2 l3 l4 (a : U),
-        list_permutation (l1 ++ a :: l2) (l3 ++ a :: l4) →
-        list_permutation (l1 ++ l2) (l3 ++ l4).
+    list_permutation (l1 ++ a :: l2) (l3 ++ a :: l4) →
+    list_permutation (l1 ++ l2) (l3 ++ l4).
+Proof.
     intros l1 l2 l3 l4 a eq.
     remember (l1 ++ a :: l2) as l12.
     remember (l3 ++ a :: l4) as l34.
@@ -624,13 +645,15 @@ Theorem list_perm_inside_eq {U} : ∀ l1 l2 l3 l4 (a : U),
 Qed.
 
 Theorem list_perm_add_eq {U} : ∀ (a : U) l1 l2,
-        list_permutation (a :: l1) (a :: l2) → list_permutation l1 l2.
+    list_permutation (a :: l1) (a :: l2) → list_permutation l1 l2.
+Proof.
     intros a l1 l2 eq.
     exact (list_perm_inside_eq list_end l1 list_end l2 a eq).
 Qed.
 
 Theorem list_perm_conc_lcancel {U} : ∀ (l1 l2 l3 : list U),
-        list_permutation (l1 ++ l2) (l1 ++ l3) → list_permutation l2 l3.
+    list_permutation (l1 ++ l2) (l1 ++ l3) → list_permutation l2 l3.
+Proof.
     intros l1 l2 l3 eq.
     induction l1.
     -   exact eq.
@@ -639,7 +662,8 @@ Theorem list_perm_conc_lcancel {U} : ∀ (l1 l2 l3 : list U),
 Qed.
 
 Theorem list_perm_conc_rcancel {U} : ∀ (l1 l2 l3 : list U),
-        list_permutation (l2 ++ l1) (l3 ++ l1) → list_permutation l2 l3.
+    list_permutation (l2 ++ l1) (l3 ++ l1) → list_permutation l2 l3.
+Proof.
     intros l1 l2 l3 eq.
     apply (list_perm_trans (list_perm_conc l1 l2)) in eq.
     apply (list_perm_trans2 (list_perm_conc l3 l1)) in eq.

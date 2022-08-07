@@ -117,6 +117,7 @@ Next Obligation.
 Qed.
 
 Theorem subspace_open : ∀ S : U → Prop, open S → open (to_set_type X S).
+Proof.
     intros S S_open.
     exists S.
     split.
@@ -125,7 +126,8 @@ Theorem subspace_open : ∀ S : U → Prop, open S → open (to_set_type X S).
 Qed.
 
 Theorem open_subspace_open : open X → ∀ S : U → Prop,
-        S ⊆ X → open (to_set_type X S) → open S.
+    S ⊆ X → open (to_set_type X S) → open S.
+Proof.
     intros X_open S sub S_open.
     unfold open in S_open; cbn in S_open.
     destruct S_open as [T [T_open T_eq]].
@@ -150,7 +152,8 @@ Theorem open_subspace_open : open X → ∀ S : U → Prop,
 Qed.
 
 Theorem subspace_inter_closed : ∀ A B, closed B → A = B ∩ X →
-        closed (to_set_type X A).
+    closed (to_set_type X A).
+Proof.
     intros A B B_closed A_eq.
     unfold closed in B_closed.
     assert (open (λ x : set_type X, (complement B) [x|])) as B'_open.
@@ -182,7 +185,8 @@ Theorem subspace_inter_closed : ∀ A B, closed B → A = B ∩ X →
     exact B'_open.
 Qed.
 Theorem subspace_closed_inter : ∀ A, A ⊆ X → closed (to_set_type X A) →
-        ∃ B, closed B ∧ A = B ∩ X.
+    ∃ B, closed B ∧ A = B ∩ X.
+Proof.
     intros A sub A'_closed.
     unfold closed in A'_closed.
     destruct A'_closed as [S [S_open S_eq]].
@@ -211,7 +215,8 @@ Theorem subspace_closed_inter : ∀ A, A ⊆ X → closed (to_set_type X A) →
 Qed.
 
 Theorem closed_subspace_closed : closed X → ∀ S : U → Prop,
-        S ⊆ X → closed (to_set_type X S) → closed S.
+    S ⊆ X → closed (to_set_type X S) → closed S.
+Proof.
     intros X_closed S sub S_closed.
     unfold closed, open in S_closed; cbn in S_closed.
     destruct S_closed as [T [T_open T_eq]].
@@ -252,6 +257,7 @@ Variable X : U → Prop.
 Let C S := ∃ B, top_basis B ∧ S = to_set_type X B.
 
 Lemma subspace_basis_open : C ⊆ open.
+Proof.
     intros S [B [B_basis eq]].
     rewrite eq.
     exists B.
@@ -261,6 +267,7 @@ Lemma subspace_basis_open : C ⊆ open.
 Qed.
 
 Lemma subspace_basis_contains : ∀ S x, open S → S x → ∃ B, C B ∧ B ⊆ S ∧ B x.
+Proof.
     intros S x [T [T_open S_eq]] Sx.
     subst S.
     specialize (T_open [x|] Sx) as [B [B_basis [Bx B_sub]]].
@@ -278,6 +285,7 @@ Definition subspace_basis_topology :=
 Existing Instance subspace_basis_topology.
 
 Theorem subspace_basis_eq : basis_topology = (subspace_topology X).
+Proof.
     apply make_basis_equal.
 Qed.
 

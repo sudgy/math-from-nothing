@@ -16,7 +16,8 @@ Context {U} `{AllMult U}.
 
 (* end hide *)
 Theorem list_prod_mult :
-        ∀ l1 l2, list_prod (l1 ++ l2) = list_prod l1 * list_prod l2.
+    ∀ l1 l2, list_prod (l1 ++ l2) = list_prod l1 * list_prod l2.
+Proof.
     intros l1 l2.
     induction l1.
     -   cbn.
@@ -27,7 +28,8 @@ Theorem list_prod_mult :
 Qed.
 
 Theorem list_prod_perm : ∀ l1 l2, list_permutation l1 l2 →
-        list_prod l1 = list_prod l2.
+    list_prod l1 = list_prod l2.
+Proof.
     intros l1 l2 eq.
     induction eq.
     -   reflexivity.

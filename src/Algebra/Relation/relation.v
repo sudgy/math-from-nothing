@@ -44,12 +44,14 @@ Definition dual_op {U} (op : U → U → Prop) a b := op b a.
 
 (* begin hide *)
 Lemma neq_sym_ {U : Type} : ∀ x y : U, x ≠ y → y ≠ x.
+Proof.
     intros x y neq eq.
     subst.
     contradiction.
 Qed.
 (* end hide *)
 Theorem neq_sym {U : Type} : ∀ x y : U, (x ≠ y) = (y ≠ x).
+Proof.
     intros x y.
     apply propositional_ext.
     split; apply neq_sym_.
@@ -84,6 +86,7 @@ Section TotalOrderImply.
 Context {U} `{TotalOrder U}.
 
 Lemma total_order_refl_ : ∀ a, a <= a.
+Proof.
     intros a.
     destruct (connex a a); assumption.
 Qed.
@@ -105,6 +108,7 @@ Context {U} {op : U → U → Prop} `{
 }.
 
 Lemma op_lt_irrefl_ : ∀ x, ¬(strict op x x).
+Proof.
     intros x [leq neq].
     contradiction.
 Qed.
@@ -113,6 +117,7 @@ Global Instance op_lt_irrefl : Irreflexive (strict op) := {
 }.
 
 Lemma op_lt_asym_ : ∀ x y, strict op x y → ¬(strict op y x).
+Proof.
     intros x y [leq neq] [cleq cneq].
     pose proof (antisym leq cleq).
     contradiction.
@@ -122,6 +127,7 @@ Global Instance op_lt_asym : Asymmetric (strict op) := {
 }.
 
 Lemma op_lt_trans_ : ∀ x y z, strict op x y → strict op y z → strict op x z.
+Proof.
     intros x y z [xy_leq xy_neq] [yz_leq yz_neq].
     split.
     -   exact (trans xy_leq yz_leq).
@@ -134,6 +140,7 @@ Global Instance op_lt_trans : Transitive (strict op) := {
 }.
 
 Lemma op_lt_trichotomy_ : ∀ x y, {strict op x y} + {x = y} + {strict op y x}.
+Proof.
     intros x y.
     classic_case (x = y) as [eq|neq].
     -   left; right.
@@ -150,6 +157,7 @@ Global Instance op_lt_trichotomy : Trichotomy (strict op) := {
 }.
 (* end hide *)
 Theorem op_nle_lt : ∀ a b, (¬op a b) = (strict op b a).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intro eq.
@@ -166,6 +174,7 @@ Theorem op_nle_lt : ∀ a b, (¬op a b) = (strict op b a).
 Qed.
 
 Theorem op_nlt_le : ∀ a b, (¬strict op a b) = (op b a).
+Proof.
     intros a b.
     apply propositional_ext.
     split; intro eq.
@@ -183,6 +192,7 @@ Theorem op_nlt_le : ∀ a b, (¬strict op a b) = (op b a).
 Qed.
 
 Theorem op_le_lt_trans : ∀ {a b c}, op a b → strict op b c → strict op a c.
+Proof.
     intros a b c ab [leq neq].
     split.
     -   apply (trans ab leq).
@@ -191,6 +201,7 @@ Theorem op_le_lt_trans : ∀ {a b c}, op a b → strict op b c → strict op a c
         contradiction.
 Qed.
 Theorem op_lt_le_trans : ∀ {a b c}, strict op a b → op b c → strict op a c.
+Proof.
     intros a b c [leq neq] bc.
     split.
     -   apply (trans leq bc).
@@ -200,21 +211,25 @@ Theorem op_lt_le_trans : ∀ {a b c}, strict op a b → op b c → strict op a c
 Qed.
 
 Theorem trans2 : ∀ {a b c}, op b c → op a b → op a c.
+Proof.
     intros a b c bc ab.
     exact (trans ab bc).
 Qed.
 
 Theorem le_lt_trans2 : ∀ {a b c}, strict op b c → op a b → strict op a c.
+Proof.
     intros a b c bc ab.
     exact (op_le_lt_trans ab bc).
 Qed.
 Theorem lt_le_trans2 : ∀ {a b c}, op b c → strict op a b → strict op a c.
+Proof.
     intros a b c bc ab.
     exact (op_lt_le_trans ab bc).
 Qed.
 
 (* begin hide *)
 Lemma ge_refl : Reflexive (dual_op op).
+Proof.
     split.
     intros x.
     unfold dual_op.
@@ -222,6 +237,7 @@ Lemma ge_refl : Reflexive (dual_op op).
 Qed.
 
 Lemma ge_antisym : Antisymmetric (dual_op op).
+Proof.
     split.
     intros a b ab ba.
     unfold dual_op in *.
@@ -229,6 +245,7 @@ Lemma ge_antisym : Antisymmetric (dual_op op).
 Qed.
 
 Lemma ge_trans : Transitive (dual_op op).
+Proof.
     split.
     intros a b c ab bc.
     unfold dual_op in *.
@@ -236,6 +253,7 @@ Lemma ge_trans : Transitive (dual_op op).
 Qed.
 
 Lemma ge_connex : Connex (dual_op op).
+Proof.
     split.
     intros a b.
     unfold dual_op.
@@ -260,6 +278,7 @@ Section TotalOrder2.
 Context {U} `{TotalOrder U}.
 
 Lemma lt_irrefl_ : ∀ x, ¬x < x.
+Proof.
     apply op_lt_irrefl.
 Qed.
 Global Instance lt_irrefl : Irreflexive lt := {
@@ -267,6 +286,7 @@ Global Instance lt_irrefl : Irreflexive lt := {
 }.
 
 Lemma lt_asym_ : ∀ x y, x < y → ¬y < x.
+Proof.
     apply op_lt_asym.
 Qed.
 Global Instance lt_asym : Asymmetric lt := {
@@ -274,6 +294,7 @@ Global Instance lt_asym : Asymmetric lt := {
 }.
 
 Lemma lt_trans_ : ∀ x y z, x < y → y < z → x < z.
+Proof.
     apply op_lt_trans.
 Qed.
 Global Instance lt_trans : Transitive lt := {
@@ -281,6 +302,7 @@ Global Instance lt_trans : Transitive lt := {
 }.
 
 Lemma lt_trichotomy_ : ∀ x y, {x < y} + {x = y} + {y < x}.
+Proof.
     apply op_lt_trichotomy.
 Qed.
 Global Instance lt_trichotomy : Trichotomy lt := {
@@ -288,18 +310,22 @@ Global Instance lt_trichotomy : Trichotomy lt := {
 }.
 (* end hide *)
 Theorem nle_lt : ∀ a b, (¬a <= b) = (b < a).
+Proof.
     apply op_nle_lt.
 Qed.
 
 Theorem nlt_le : ∀ a b, (¬a < b) = (b <= a).
+Proof.
     apply op_nlt_le.
 Qed.
 
 Theorem le_lt_trans : ∀ {a b c}, a <= b → b < c → a < c.
+Proof.
     intros a b c ab bc.
     apply (op_le_lt_trans ab bc).
 Qed.
 Theorem lt_le_trans : ∀ {a b c}, a < b → b <= c → a < c.
+Proof.
     intros a b c ab bc.
     apply (op_lt_le_trans ab bc).
 Qed.

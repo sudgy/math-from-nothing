@@ -26,6 +26,7 @@ Context {U} `{
 }.
 
 Theorem two_nz : 0 ≠ 2.
+Proof.
     pose proof characteristic_not as neq.
     unfold one in neq; cbn in neq.
     unfold plus in neq; cbn in neq.
@@ -34,7 +35,8 @@ Theorem two_nz : 0 ≠ 2.
 Qed.
 
 Theorem nat_to_abstract_eq : ∀ a b,
-        nat_to_abstract a = nat_to_abstract b → a = b.
+    nat_to_abstract a = nat_to_abstract b → a = b.
+Proof.
     nat_induction a.
     -   intros b eq.
         nat_destruct b.

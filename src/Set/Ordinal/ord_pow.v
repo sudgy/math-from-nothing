@@ -16,6 +16,7 @@ Open Scope card_scope.
 Open Scope ord_scope.
 (* end hide *)
 Theorem ord_pow_0 : ∀ α, α ^ 0 = 1.
+Proof.
     intros A.
     equiv_get_value A.
     unfold zero, one; cbn.
@@ -63,6 +64,7 @@ Theorem ord_pow_0 : ∀ α, α ^ 0 = 1.
 Qed.
 
 Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
+Proof.
     intros A B.
     equiv_get_value A B.
     unfold one; cbn.
@@ -250,6 +252,7 @@ Theorem ord_pow_suc : ∀ α β, α ^ (β + 1) = α ^ β * α.
 Qed.
 
 Theorem ord_pow_from_0 : ∀ α, 0 < α → 0 ^ α = 0.
+Proof.
     intros A A_nz.
     equiv_get_value A.
     assert (ord_U A) as a.
@@ -274,6 +277,7 @@ Theorem ord_pow_from_0 : ∀ α, 0 < α → 0 ^ α = 0.
 Qed.
 
 Theorem ord_pow_from_1 : ∀ α, 1 ^ α = 1.
+Proof.
     intros A.
     equiv_get_value A.
     unfold ord_pow, one; cbn; unfold nat_to_ord; equiv_simpl.

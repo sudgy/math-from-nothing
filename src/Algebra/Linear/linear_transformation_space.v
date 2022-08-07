@@ -172,8 +172,9 @@ Definition linear_trans_plus_base (f g : ModuleObjHomomorphism V1 V2) :=
     λ v, module_homo_f f v + module_homo_f g v.
 
 Lemma linear_trans_plus_plus : ∀ f g, ∀ u v,
-        linear_trans_plus_base f g (u + v) =
-        linear_trans_plus_base f g u + linear_trans_plus_base f g v.
+    linear_trans_plus_base f g (u + v) =
+    linear_trans_plus_base f g u + linear_trans_plus_base f g v.
+Proof.
     intros f g u v.
     unfold linear_trans_plus_base.
     rewrite (module_homo_plus _ _ f).
@@ -186,7 +187,8 @@ Lemma linear_trans_plus_plus : ∀ f g, ∀ u v,
 Qed.
 
 Lemma linear_trans_plus_scalar : ∀ f g, ∀ a v,
-        linear_trans_plus_base f g (a · v) = a · linear_trans_plus_base f g v.
+    linear_trans_plus_base f g (a · v) = a · linear_trans_plus_base f g v.
+Proof.
     intros f g a v.
     unfold linear_trans_plus_base.
     rewrite (module_homo_scalar _ _ f).
@@ -204,8 +206,9 @@ Instance linear_trans_plus : Plus (ModuleObjHomomorphism V1 V2) := {
 Definition linear_trans_zero_base := λ v : module_V V1, 0 : module_V V2.
 
 Lemma linear_trans_zero_plus : ∀ u v,
-        linear_trans_zero_base (u + v) =
-        linear_trans_zero_base u + linear_trans_zero_base v.
+    linear_trans_zero_base (u + v) =
+    linear_trans_zero_base u + linear_trans_zero_base v.
+Proof.
     intros u v.
     unfold linear_trans_zero_base.
     rewrite plus_rid.
@@ -213,7 +216,8 @@ Lemma linear_trans_zero_plus : ∀ u v,
 Qed.
 
 Lemma linear_trans_zero_scalar : ∀ a v,
-        linear_trans_zero_base (a · v) = a · linear_trans_zero_base v.
+    linear_trans_zero_base (a · v) = a · linear_trans_zero_base v.
+Proof.
     intros a v.
     unfold linear_trans_zero_base.
     rewrite scalar_ranni.
@@ -231,8 +235,9 @@ Definition linear_trans_neg_base (f : ModuleObjHomomorphism V1 V2) :=
     λ v, -module_homo_f f v.
 
 Lemma linear_trans_neg_plus : ∀ f, ∀ u v,
-        linear_trans_neg_base f (u + v) =
-        linear_trans_neg_base f u + linear_trans_neg_base f v.
+    linear_trans_neg_base f (u + v) =
+    linear_trans_neg_base f u + linear_trans_neg_base f v.
+Proof.
     intros f u v.
     unfold linear_trans_neg_base.
     rewrite (module_homo_plus _ _ f).
@@ -240,7 +245,8 @@ Lemma linear_trans_neg_plus : ∀ f, ∀ u v,
 Qed.
 
 Lemma linear_trans_neg_scalar : ∀ f, ∀ a v,
-        linear_trans_neg_base f (a · v) = a · linear_trans_neg_base f v.
+    linear_trans_neg_base f (a · v) = a · linear_trans_neg_base f v.
+Proof.
     intros f a v.
     unfold linear_trans_neg_base.
     rewrite (module_homo_scalar _ _ f).
@@ -295,8 +301,9 @@ Definition linear_trans_scalar_base a (f : ModuleObjHomomorphism V1 V2) :=
     λ v, a · module_homo_f f v.
 
 Lemma linear_trans_scalar_plus : ∀ a f, ∀ u v,
-        linear_trans_scalar_base a f (u + v) =
-        linear_trans_scalar_base a f u + linear_trans_scalar_base a f v.
+    linear_trans_scalar_base a f (u + v) =
+    linear_trans_scalar_base a f u + linear_trans_scalar_base a f v.
+Proof.
     intros a f u v.
     unfold linear_trans_scalar_base.
     rewrite (module_homo_plus _ _ f).
@@ -304,8 +311,9 @@ Lemma linear_trans_scalar_plus : ∀ a f, ∀ u v,
 Qed.
 
 Lemma linear_trans_scalar_scalar : ∀ a f, ∀ b v,
-        linear_trans_scalar_base a f (b · v) =
-        b · linear_trans_scalar_base a f v.
+    linear_trans_scalar_base a f (b · v) =
+    b · linear_trans_scalar_base a f v.
+Proof.
     intros a f b v.
     unfold linear_trans_scalar_base.
     rewrite (module_homo_scalar _ _ f).
@@ -399,8 +407,9 @@ Definition linear_trans_mult_base (f g : ModuleObjHomomorphism V V) :=
     λ v, module_homo_f f (module_homo_f g v).
 
 Lemma linear_trans_mult_plus : ∀ f g, ∀ u v,
-        linear_trans_mult_base f g (u + v) =
-        linear_trans_mult_base f g u + linear_trans_mult_base f g v.
+    linear_trans_mult_base f g (u + v) =
+    linear_trans_mult_base f g u + linear_trans_mult_base f g v.
+Proof.
     intros f g u v.
     unfold linear_trans_mult_base.
     rewrite (module_homo_plus _ _ g).
@@ -408,7 +417,8 @@ Lemma linear_trans_mult_plus : ∀ f g, ∀ u v,
 Qed.
 
 Lemma linear_trans_mult_scalar : ∀ f g, ∀ a v,
-        linear_trans_mult_base f g (a · v) = a · linear_trans_mult_base f g v.
+    linear_trans_mult_base f g (a · v) = a · linear_trans_mult_base f g v.
+Proof.
     intros f g a v.
     unfold linear_trans_mult_base.
     rewrite (module_homo_scalar _ _ g).

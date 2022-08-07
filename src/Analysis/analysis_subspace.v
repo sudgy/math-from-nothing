@@ -36,6 +36,7 @@ Next Obligation.
 Qed.
 
 Theorem complete_sub_closed : complete U → closed X ↔ complete (set_type X).
+Proof.
     intros U_complete.
     split.
     -   intros X_closed Xf Xf_cauchy.
@@ -78,7 +79,8 @@ Section SubspaceMetricEquiv.
 Existing Instance subspace_metric.
 (* end hide *)
 Theorem metric_subspace_topology {U} `{Metric U} : ∀ X,
-        subspace_topology X = (basis_topology (b := metric_topology)).
+    subspace_topology X = (basis_topology (b := metric_topology)).
+Proof.
     intros X.
     apply topology_equal.
     intros S.

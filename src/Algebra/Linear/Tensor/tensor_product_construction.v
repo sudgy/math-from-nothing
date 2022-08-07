@@ -114,6 +114,7 @@ Existing Instances tensor_plus tensor_zero tensor_neg tensor_plus_assoc
     tensor_scalar_id tensor_scalar_ldist tensor_scalar_rdist tensor_scalar_comp.
 
 Theorem tensor_ldist_base : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
+Proof.
     intros a b c.
     unfold tensor_mult_base; cbn.
     unfold plus at 2; cbn.
@@ -129,6 +130,7 @@ Theorem tensor_ldist_base : ∀ a b c, a ⊗ (b + c) = a ⊗ b + a ⊗ c.
 Qed.
 
 Theorem tensor_rdist_base : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
+Proof.
     intros a b c.
     unfold tensor_mult_base, plus at 2; cbn.
     unfold to_quotient; equiv_simpl.
@@ -143,6 +145,7 @@ Theorem tensor_rdist_base : ∀ a b c, (a + b) ⊗ c = a ⊗ c + b ⊗ c.
 Qed.
 
 Theorem tensor_lscalar_base : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
+Proof.
     intros a u v.
     symmetry.
     unfold tensor_mult_base, scalar_mult; cbn.
@@ -156,6 +159,7 @@ Theorem tensor_lscalar_base : ∀ a u v, (a · u) ⊗ v = a · (u ⊗ v).
 Qed.
 
 Theorem tensor_rscalar_base : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
+Proof.
     intros a u v.
     symmetry.
     unfold tensor_mult_base, scalar_mult; cbn.
@@ -169,12 +173,14 @@ Theorem tensor_rscalar_base : ∀ a u v, u ⊗ (a · v) = a · (u ⊗ v).
 Qed.
 
 Theorem tensor_mult_lneg_base : ∀ u v, (-u) ⊗ v = -(u ⊗ v).
+Proof.
     intros u v.
     rewrite <- scalar_neg_one.
     rewrite tensor_lscalar_base.
     apply scalar_neg_one.
 Qed.
 Theorem tensor_mult_rneg_base : ∀ u v, u ⊗ (-v) = -(u ⊗ v).
+Proof.
     intros u v.
     rewrite <- scalar_neg_one.
     rewrite tensor_rscalar_base.
@@ -188,7 +194,8 @@ Local Open Scope card_scope.
 
 (* end hide *)
 Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
-        T = ulist_sum (ulist_image l (λ x, [x|])).
+    T = ulist_sum (ulist_image l (λ x, [x|])).
+Proof.
     intros T.
     equiv_get_value T.
     destruct T as [T T_fin'].

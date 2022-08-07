@@ -7,7 +7,8 @@ Require Import set.
 Require Import nat.
 
 Theorem transfinite_induction :
-        ∀ S : ord → Prop, (∀ α, (∀ β, β < α → S β) → S α) → ∀ α, S α.
+    ∀ S : ord → Prop, (∀ α, (∀ β, β < α → S β) → S α) → ∀ α, S α.
+Proof.
     intros S S_all α.
     classic_contradiction contr.
     pose (S' α := ¬S α).
@@ -25,10 +26,11 @@ Definition suc_ord α := ∃ β, α = β + 1.
 Definition lim_ord α := 0 ≠ α ∧ ¬suc_ord α.
 
 Theorem transfinite_induction2 :
-        ∀ S : ord → Prop,
-        (∀ α, suc_ord α → (∀ β, β < α → S β) → S α) →
-        (∀ α, ¬suc_ord α → (∀ β, β < α → S β) → S α) →
-        ∀ α, S α.
+    ∀ S : ord → Prop,
+    (∀ α, suc_ord α → (∀ β, β < α → S β) → S α) →
+    (∀ α, ¬suc_ord α → (∀ β, β < α → S β) → S α) →
+    ∀ α, S α.
+Proof.
     intros S sucs lims α.
     induction α using transfinite_induction.
     classic_case (suc_ord α).
@@ -37,11 +39,12 @@ Theorem transfinite_induction2 :
 Qed.
 
 Theorem transfinite_induction3 :
-        ∀ S : ord → Prop,
-        S 0 →
-        (∀ α, suc_ord α → (∀ β, β < α → S β) → S α) →
-        (∀ α, lim_ord α → (∀ β, β < α → S β) → S α) →
-        ∀ α, S α.
+    ∀ S : ord → Prop,
+    S 0 →
+    (∀ α, suc_ord α → (∀ β, β < α → S β) → S α) →
+    (∀ α, lim_ord α → (∀ β, β < α → S β) → S α) →
+    ∀ α, S α.
+Proof.
     intros S S0 sucs lims α.
     induction α using transfinite_induction2.
     -   apply sucs; assumption.
@@ -53,6 +56,7 @@ Theorem transfinite_induction3 :
 Qed.
 
 Theorem ord_lt_plus1 : ∀ α, α < α + 1.
+Proof.
     intros α.
     apply ord_lt_self_rplus.
     apply ord_not_trivial.

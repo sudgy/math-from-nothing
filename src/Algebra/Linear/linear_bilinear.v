@@ -63,22 +63,27 @@ Context {U V1 V2 V3} `{
 Variables (f : V1 → V2 → V3) (f_bil : bilinear f).
 
 Theorem bilinear_lscalar : ∀ a v1 v2, f (a · v1) v2 = a · (f v1 v2).
+Proof.
     apply f_bil.
 Qed.
 
 Theorem bilinear_rscalar : ∀ a v1 v2, f v1 (a · v2) = a · (f v1 v2).
+Proof.
     apply f_bil.
 Qed.
 
 Theorem bilinear_rdist : ∀ v1 v2 v3, f (v1 + v2) v3 = f v1 v3 + f v2 v3.
+Proof.
     apply f_bil.
 Qed.
 
 Theorem bilinear_ldist : ∀ v1 v2 v3, f v1 (v2 + v3) = f v1 v2 + f v1 v3.
+Proof.
     apply f_bil.
 Qed.
 
 Theorem bilinear_lanni : ∀ v, f 0 v = 0.
+Proof.
     intros v.
     rewrite <- (scalar_lanni 0).
     rewrite bilinear_lscalar.
@@ -86,6 +91,7 @@ Theorem bilinear_lanni : ∀ v, f 0 v = 0.
 Qed.
 
 Theorem bilinear_ranni : ∀ v, f v 0 = 0.
+Proof.
     intros v.
     rewrite <- (scalar_lanni 0).
     rewrite bilinear_rscalar.
@@ -93,6 +99,7 @@ Theorem bilinear_ranni : ∀ v, f v 0 = 0.
 Qed.
 
 Theorem bilinear_lneg : ∀ u v, f (-u) v = -(f u v).
+Proof.
     intros u v.
     rewrite <- scalar_neg_one.
     rewrite bilinear_lscalar.
@@ -101,6 +108,7 @@ Theorem bilinear_lneg : ∀ u v, f (-u) v = -(f u v).
 Qed.
 
 Theorem bilinear_rneg : ∀ u v, f u (-v) = -(f u v).
+Proof.
     intros u v.
     rewrite <- scalar_neg_one.
     rewrite bilinear_rscalar.

@@ -43,6 +43,7 @@ Next Obligation.
 Qed.
 
 Theorem product_open : ∀ A B, open A → open B → open (A * B).
+Proof.
     intros A B A_open B_open [x1 x2] ABx.
     exists (A * B).
     split. 2: split.

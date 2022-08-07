@@ -32,6 +32,7 @@ Let c3 (f : U → V) :=
     ∀ B, closed B → closed (inverse_image f B).
 
 Lemma c1c2 : ∀ f, c1 f → c2 f.
+Proof.
     unfold c1, c2; clear c1 c2 c3.
     intros f all_open A y y_in.
     destruct y_in as [x [Ax y_eq]].
@@ -51,6 +52,7 @@ Lemma c1c2 : ∀ f, c1 f → c2 f.
 Qed.
 
 Lemma c2c3 : ∀ f, c2 f → c3 f.
+Proof.
     unfold c2, c3; clear c1 c2 c3.
     intros f cl_sub B B_closed.
     remember (inverse_image f B) as A.
@@ -77,6 +79,7 @@ Lemma c2c3 : ∀ f, c2 f → c3 f.
 Qed.
 
 Lemma c3c1 : ∀ f, c3 f → c1 f.
+Proof.
     unfold c1, c3; clear c1 c2 c3.
     intros f all_closed B B_open.
     specialize (all_closed (complement B) (open_complement_closed _ B_open)).
@@ -87,6 +90,7 @@ Lemma c3c1 : ∀ f, c3 f → c1 f.
 Qed.
 
 Lemma c1c : ∀ f, c1 f → continuous f.
+Proof.
     unfold c1, continuous, continuous_at; clear c1 c2 c3.
     intros f all_open x B B_neigh.
     exists (inverse_image f B).
@@ -101,6 +105,7 @@ Lemma c1c : ∀ f, c1 f → continuous f.
 Qed.
 
 Lemma cc1 : ∀ f, continuous f → c1 f.
+Proof.
     unfold c1, continuous, continuous_at; clear c1 c2 c3.
     intros f f_cont B B_open.
     assert (∀ x : set_type (inverse_image f B),
@@ -142,12 +147,14 @@ Lemma cc1 : ∀ f, continuous f → c1 f.
 Qed.
 
 Lemma continuous_open : ∀ f, continuous f ↔ c1 f.
+Proof.
     intros f; split; intro cont.
     -   apply cc1; exact cont.
     -   apply c1c; exact cont.
 Qed.
 
 Lemma continuous_closure : ∀ f, continuous f ↔ c2 f.
+Proof.
     intros f.
     rewrite continuous_open.
     split; intro cont.
@@ -156,6 +163,7 @@ Lemma continuous_closure : ∀ f, continuous f ↔ c2 f.
 Qed.
 
 Lemma continuous_closed : ∀ f, continuous f ↔ c3 f.
+Proof.
     intros f; split; intro cont.
     -   apply c2c3; apply continuous_closure; exact cont.
     -   apply continuous_open; apply c3c1; exact cont.
@@ -169,22 +177,25 @@ Section Continuous.
 Context {U V} `{Topology U, Topology V}.
 (* end hide *)
 Theorem continuous_open : ∀ f : U → V,
-        continuous f ↔ (∀ A, open A → open (inverse_image f A)).
+    continuous f ↔ (∀ A, open A → open (inverse_image f A)).
+Proof.
     exact ContinuousImpl.continuous_open.
 Qed.
 
 Theorem continuous_closure : ∀ f : U → V,
-        continuous f ↔
-        (∀ A, image_under f (closure A) ⊆ closure (image_under f A)).
+    continuous f ↔ (∀ A, image_under f (closure A) ⊆ closure (image_under f A)).
+Proof.
     exact ContinuousImpl.continuous_closure.
 Qed.
 
 Theorem continuous_closed : ∀ f : U → V,
-        continuous f ↔ (∀ B, closed B → closed (inverse_image f B)).
+    continuous f ↔ (∀ B, closed B → closed (inverse_image f B)).
+Proof.
     exact ContinuousImpl.continuous_closed.
 Qed.
 
 Theorem constant_continuous : ∀ (y : V), continuous (λ x : U, y).
+Proof.
     intros y x T T_neigh.
     exists all.
     repeat split.
@@ -195,6 +206,7 @@ Theorem constant_continuous : ∀ (y : V), continuous (λ x : U, y).
 Qed.
 
 Theorem identity_continuous : continuous (λ x : U, x).
+Proof.
     intros x T T_neigh.
     exists T.
     split.
@@ -204,7 +216,8 @@ Theorem identity_continuous : continuous (λ x : U, x).
 Qed.
 
 Theorem continuous_seq : ∀ (f : U → V) x, continuous_at f x →
-        ∀ a, seq_lim a x → seq_lim (λ n, f (a n)) (f x).
+    ∀ a, seq_lim a x → seq_lim (λ n, f (a n)) (f x).
+Proof.
     intros f x cont a lim.
     intros T T_open Tfx.
     specialize (cont T (make_and T_open Tfx)) as [S [[S_open Sx] sub]].
@@ -218,7 +231,8 @@ Theorem continuous_seq : ∀ (f : U → V) x, continuous_at f x →
 Qed.
 
 Theorem continuous_connected : ∀ (f : U → V), continuous f → surjective f →
-        connected U → connected V.
+    connected U → connected V.
+Proof.
     intros f f_cont f_sur f_con A B
         [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
     apply (f_con (inverse_image f A) (inverse_image f B)).
@@ -266,8 +280,9 @@ Qed.
 Context {W} `{Topology W}.
 (* end hide *)
 Theorem comp_continuous_at : ∀ (f : U → V) (g : V → W) a,
-        continuous_at f a → continuous_at g (f a) →
-        continuous_at (λ x, g (f x)) a.
+    continuous_at f a → continuous_at g (f a) →
+    continuous_at (λ x, g (f x)) a.
+Proof.
     intros f g a f_cont g_cont.
     intros T T_neigh.
     specialize (g_cont T T_neigh) as [S [S_neigh S_sub]].
@@ -284,7 +299,8 @@ Theorem comp_continuous_at : ∀ (f : U → V) (g : V → W) a,
 Qed.
 
 Theorem comp_continuous : ∀ (f : U → V) (g : V → W),
-        continuous f → continuous g → continuous (λ x, g (f x)).
+    continuous f → continuous g → continuous (λ x, g (f x)).
+Proof.
     intros f g f_cont g_cont x.
     apply comp_continuous_at.
     -   apply f_cont.
@@ -300,7 +316,8 @@ Context {U V} `{Topology U, Topology V}.
 Existing Instance subspace_topology.
 (* end hide *)
 Theorem continuous_connected_image : ∀ (f : U → V), continuous f →
-        connected U → connected (set_type (image f)).
+    connected U → connected (set_type (image f)).
+Proof.
     intros f f_cont U_con.
     assert (∀ x, (image f) (f x)) as f_in
         by (intros x; exists x; reflexivity).
@@ -334,7 +351,8 @@ Theorem continuous_connected_image : ∀ (f : U → V), continuous f →
 Qed.
 
 Theorem continuous_compact_image : ∀ (f : U → V), continuous f →
-        compact U → compact (set_type (image f)).
+    compact U → compact (set_type (image f)).
+Proof.
     intros f f_cont U_comp.
     apply compact_subspace.
     intros VSS [VSS_sub VSS_open].
@@ -389,7 +407,8 @@ Theorem continuous_compact_image : ∀ (f : U → V), continuous f →
 Qed.
 
 Theorem continuous_subspace : ∀ (f : U → V) (S : U → Prop) x,
-        continuous_at f [x|] → continuous_at (λ x : set_type S, f [x|]) x.
+    continuous_at f [x|] → continuous_at (λ x : set_type S, f [x|]) x.
+Proof.
     intros f S x f_cont T T_neigh.
     specialize (f_cont T T_neigh) as [R [Rx R_sub]].
     exists (to_set_type S R).
@@ -404,7 +423,8 @@ Theorem continuous_subspace : ∀ (f : U → V) (S : U → Prop) x,
 Qed.
 
 Theorem continuous_subspace2 : ∀ (S : V → Prop) (f : U → set_type S) x,
-        continuous_at (λ x, [f x|]) x → continuous_at f x.
+    continuous_at (λ x, [f x|]) x → continuous_at f x.
+Proof.
     intros S f x f_cont T' [T_open Tx].
     destruct T_open as [T [T_open T'_eq]]; subst T'.
     specialize (f_cont T (make_and T_open Tx)) as [R [Rx R_sub]].
@@ -428,9 +448,10 @@ Section ContinuousBasis.
 Context {U V} `{Topology U, TopologyBasis V}.
 (* end hide *)
 Theorem basis_continuous_at : ∀ (f : U → V) x,
-        continuous_at f x ↔
-        (∀ T, top_basis T → T (f x) →
-            ∃ S, neighborhood x S ∧ image_under f S ⊆ T).
+    continuous_at f x ↔
+    (∀ T, top_basis T → T (f x) →
+        ∃ S, neighborhood x S ∧ image_under f S ⊆ T).
+Proof.
     intros f x.
     split.
     -   intros cont T T_basis Tfx.
@@ -448,7 +469,8 @@ Theorem basis_continuous_at : ∀ (f : U → V) x,
 Qed.
 
 Theorem basis_continuous_open : ∀ f,
-        continuous f ↔ (∀ B, top_basis B → open (inverse_image f B)).
+    continuous f ↔ (∀ B, top_basis B → open (inverse_image f B)).
+Proof.
     intros f.
     rewrite continuous_open.
     split.
@@ -490,7 +512,8 @@ Hypothesis con : connected U.
 Existing Instance order_topology.
 (* end hide *)
 Theorem ivt : ∀ f : U → V, continuous f →
-        ∀ a b r, f a < r → r < f b → ∃ c, f c = r.
+    ∀ a b r, f a < r → r < f b → ∃ c, f c = r.
+Proof.
     intros f f_cont a b r r_gt r_lt.
     classic_contradiction contr.
     rewrite not_ex in contr.
@@ -561,6 +584,7 @@ Hypothesis U_inhab : U.
 Existing Instance order_topology.
 (* end hide *)
 Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f x <= f d.
+Proof.
     intros f f_cont.
     pose (A := image f).
     pose proof (continuous_compact_image f f_cont com) as A_compact.

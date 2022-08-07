@@ -41,7 +41,8 @@ Existing Instance abs_metric.
 Definition abs_converges (a : nat → V) := seq_converges (series (λ n, |a n|)).
 
 Theorem series_scalar : ∀ af a c, seq_lim (series af) a →
-        seq_lim (series (λ n, c · af n)) (c · a).
+    seq_lim (series (λ n, c · af n)) (c · a).
+Proof.
     intros af a c a_lim.
     assert (series (λ n, c · af n) = (λ n, c · sum af 0 n)) as f_eq.
     {
@@ -64,7 +65,8 @@ Theorem series_scalar : ∀ af a c, seq_lim (series af) a →
 Qed.
 
 Theorem series_sum : ∀ af bf a b, seq_lim (series af) a → seq_lim (series bf) b
-        → seq_lim (series (λ n, af n + bf n)) (a + b).
+    → seq_lim (series (λ n, af n + bf n)) (a + b).
+Proof.
     intros af bf a b a_lim b_lim.
     assert (series (λ n, af n + bf n) = (λ n, series af n + series bf n))
         as f_eq.
@@ -89,7 +91,8 @@ Theorem series_sum : ∀ af bf a b, seq_lim (series af) a → seq_lim (series bf
 Qed.
 
 Theorem series_converges_cauchy :
-        ∀ af, seq_converges (series af) → cauchy_series af.
+    ∀ af, seq_converges (series af) → cauchy_series af.
+Proof.
     intros af af_conv.
     apply converges_cauchy in af_conv.
     intros ε ε_pos.
@@ -111,7 +114,8 @@ Theorem series_converges_cauchy :
 Qed.
 
 Theorem cauchy_series_converges : complete V →
-        ∀ af, cauchy_series af → seq_converges (series af).
+    ∀ af, cauchy_series af → seq_converges (series af).
+Proof.
     intros V_comp af af_conv.
     apply V_comp.
     intros ε ε_pos.
@@ -163,7 +167,8 @@ Existing Instance abs_metric.
 (* end hide *)
 
 Theorem abs_converge_test : complete V → ∀ af,
-        abs_converges af → seq_converges (series af).
+    abs_converges af → seq_converges (series af).
+Proof.
     intros V_comp af af_conv.
     apply (cauchy_series_converges V_comp).
     intros ε ε_pos.
@@ -198,7 +203,8 @@ Theorem abs_converge_test : complete V → ∀ af,
 Qed.
 
 Theorem series_skip : ∀ an n,
-        seq_converges (series an) ↔ seq_converges (series (λ m, an (m + n))).
+    seq_converges (series an) ↔ seq_converges (series (λ m, an (m + n))).
+Proof.
     intros an n.
     split.
     -   intros [x anx].

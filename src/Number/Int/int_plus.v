@@ -14,6 +14,7 @@ Section IntPlus.
 Local Open Scope int_scope.
 
 Lemma int_plus_wd : ∀ a b c d, a ~ b → c ~ d → a ⊕ c ~ b ⊕ d.
+Proof.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd.
     cbn in *.
     pose proof (lrplus ab cd) as eq; clear ab cd.
@@ -31,6 +32,7 @@ Global Instance int_plus : Plus int := {
 }.
 
 Lemma int_plus_comm : ∀ a b, a + b = b + a.
+Proof.
     intros a b.
     equiv_get_value a b.
     destruct a as [a1 a2], b as [b1 b2].
@@ -44,6 +46,7 @@ Global Instance int_plus_comm_class : PlusComm int := {
 }.
 
 Lemma int_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
+Proof.
     intros a b c.
     equiv_get_value a b c.
     destruct a as [a1 a2], b as [b1 b2], c as [c1 c2].
@@ -60,6 +63,7 @@ Global Instance int_zero : Zero int := {
 }.
 
 Lemma int_plus_lid : ∀ a, zero + a = a.
+Proof.
     intros a.
     equiv_get_value a.
     unfold zero, plus; equiv_simpl.
@@ -79,6 +83,7 @@ Section IntNeg.
 Local Open Scope int_scope.
 
 Lemma int_neg_wd : ∀ a b, a ~ b → ⊖a ~ ⊖b.
+Proof.
     intros [a1 a2] [b1 b2] eq.
     cbn in *.
     symmetry.
@@ -93,6 +98,7 @@ Global Instance int_neg : Neg int := {
 }.
 
 Lemma int_plus_linv : ∀ a, -a + a = zero.
+Proof.
     intros a.
     equiv_get_value a.
     unfold zero, plus, neg; equiv_simpl.
@@ -105,7 +111,8 @@ Global Instance int_plus_linv_class : PlusLinv int := {
 }.
 (* end hide *)
 Theorem nat_to_int_plus : ∀ a b,
-        nat_to_int (a + b) = nat_to_int a + nat_to_int b.
+    nat_to_int (a + b) = nat_to_int a + nat_to_int b.
+Proof.
     intros a b.
     unfold plus at 2, nat_to_int; equiv_simpl.
     do 2 rewrite plus_rid.
@@ -113,6 +120,7 @@ Theorem nat_to_int_plus : ∀ a b,
 Qed.
 
 Theorem nat_nz_int : ∀ n, 0 ≠ nat_to_int (nat_suc n).
+Proof.
     intros n n_eq.
     apply nat_to_int_eq in n_eq.
     inversion n_eq.

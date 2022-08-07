@@ -144,6 +144,7 @@ Proof.
 Qed.
 
 Theorem free_extend_neg : ∀ x, f (-x) = -f x.
+Proof.
     intros x.
     rewrite <- scalar_neg_one.
     rewrite free_extend_scalar.
@@ -367,8 +368,9 @@ Definition free_from_compose {F G H : free_from}
     := [f|] ∘ [g|].
 
 Lemma free_from_set_compose_in
-        {F' G H : free_from} : ∀ (f : set_type (free_from_set G H)) g,
-        free_from_set F' H (free_from_compose f g).
+    {F' G H : free_from} : ∀ (f : set_type (free_from_set G H)) g,
+    free_from_set F' H (free_from_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold free_from_set in *.
     unfold free_from_compose; cbn.
@@ -378,6 +380,7 @@ Lemma free_from_set_compose_in
 Qed.
 
 Lemma free_from_set_id_in : ∀ f : free_from, free_from_set f f 𝟙.
+Proof.
     intros f.
     unfold free_from_set.
     intros x.

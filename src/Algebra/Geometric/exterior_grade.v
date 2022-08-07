@@ -76,6 +76,7 @@ Definition ext_grade_set n (v : ext V)
     := ∃ v', tensor_to_ext V v' = v ∧ of_grade (H10 := TG) n v'.
 
 Lemma ext_grade_zero : ∀ n, ext_grade_set n 0.
+Proof.
     intros n.
     exists 0.
     split.
@@ -84,7 +85,8 @@ Lemma ext_grade_zero : ∀ n, ext_grade_set n 0.
 Qed.
 
 Lemma ext_grade_plus : ∀ n u v,
-        ext_grade_set n u → ext_grade_set n v → ext_grade_set n (u + v).
+    ext_grade_set n u → ext_grade_set n v → ext_grade_set n (u + v).
+Proof.
     intros n u v [u' [u_eq nu]] [v' [v_eq nv]].
     subst u v.
     exists (u' + v').
@@ -94,6 +96,7 @@ Lemma ext_grade_plus : ∀ n u v,
 Qed.
 
 Lemma ext_grade_scalar : ∀ n a v, ext_grade_set n v → ext_grade_set n (a · v).
+Proof.
     intros n a v [v' [v_eq nv]]; subst v.
     exists (a · v').
     split.
@@ -467,6 +470,7 @@ Next Obligation.
 Qed.
 
 Theorem scalar_to_ext_grade : ∀ a, of_grade 0 (scalar_to_ext V a).
+Proof.
     intros a.
     exists (scalar_to_tensor V a).
     split.
@@ -475,7 +479,8 @@ Theorem scalar_to_ext_grade : ∀ a, of_grade 0 (scalar_to_ext V a).
 Qed.
 
 Theorem ext_grade_zero_scalar : ∀ v : ext V,
-        of_grade 0 v ↔ (∃ a, v = scalar_to_ext V a).
+    of_grade 0 v ↔ (∃ a, v = scalar_to_ext V a).
+Proof.
     intros v.
     split.
     -   intros [v' [v_eq v0]].
@@ -489,6 +494,7 @@ Theorem ext_grade_zero_scalar : ∀ v : ext V,
 Qed.
 
 Theorem vector_to_ext_grade : ∀ a, of_grade 1 (vector_to_ext V a).
+Proof.
     intros a.
     exists (vector_to_tensor a).
     split.
@@ -497,7 +503,8 @@ Theorem vector_to_ext_grade : ∀ a, of_grade 1 (vector_to_ext V a).
 Qed.
 
 Theorem ext_grade_one_vector : ∀ v : ext V,
-        of_grade 1 v ↔ (∃ a, v = vector_to_ext V a).
+    of_grade 1 v ↔ (∃ a, v = vector_to_ext V a).
+Proof.
     intros v.
     split.
     -   intros [v' [v_eq v0]].
@@ -511,8 +518,9 @@ Theorem ext_grade_one_vector : ∀ v : ext V,
 Qed.
 
 Theorem ext_list_grade : ∀ l,
-        of_grade (H10 := exterior_grade) (list_size l)
-        (list_prod (list_image l (vector_to_ext V))).
+    of_grade (H10 := exterior_grade) (list_size l)
+    (list_prod (list_image l (vector_to_ext V))).
+Proof.
     intros l.
     induction l.
     -   cbn.
@@ -526,9 +534,10 @@ Theorem ext_list_grade : ∀ l,
 Qed.
 
 Theorem ext_grade_sum : ∀ (v : ext V) n, of_grade n v →
-        ∃ l : ulist (cring_U F * set_type (λ l', list_size l' = n)),
-            v = ulist_sum (ulist_image l
-            (λ p, fst p · list_prod (list_image [snd p|] (vector_to_ext V)))).
+    ∃ l : ulist (cring_U F * set_type (λ l', list_size l' = n)),
+        v = ulist_sum (ulist_image l
+        (λ p, fst p · list_prod (list_image [snd p|] (vector_to_ext V)))).
+Proof.
     intros v' n nv.
     destruct nv as [v [v_eq nv]]; subst v'.
     pose proof (tensor_grade_sum _ _ _ nv) as [l l_eq].

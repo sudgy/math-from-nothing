@@ -95,6 +95,7 @@ Global Arguments of_grade : simpl never.
 Definition homogeneous v := ∃ i, of_grade i v.
 
 Theorem of_grade_unique : ∀ v i j, 0 ≠ v → of_grade i v → of_grade j v → i = j.
+Proof.
     intros v i j v_nz vi vj.
     classic_contradiction contr.
     pose proof (grade_distinct i j contr v vi vj).
@@ -102,9 +103,10 @@ Theorem of_grade_unique : ∀ v i j, 0 ≠ v → of_grade i v → of_grade j v �
 Qed.
 
 Theorem grade_decompose_ex2 : ∀ v : V, ∃ l : ulist (set_type homogeneous),
-        v = ulist_sum (ulist_image l (λ x, [x|])) ∧
-        ulist_unique (ulist_image l (λ x, ex_val [|x])) ∧
-        ulist_prop (λ x, 0 ≠ [x|]) l.
+    v = ulist_sum (ulist_image l (λ x, [x|])) ∧
+    ulist_unique (ulist_image l (λ x, ex_val [|x])) ∧
+    ulist_prop (λ x, 0 ≠ [x|]) l.
+Proof.
     intros v.
     pose proof (grade_decompose_ex v) as [l [v_eq l_subs]].
     revert v v_eq l_subs.
@@ -251,25 +253,29 @@ Qed.
 Definition grade_decomposition v := ex_val (grade_decompose_ex2 v).
 
 Theorem grade_decomposition_eq : ∀ v,
-        v = ulist_sum (ulist_image (grade_decomposition v) (λ x, [x|])).
+    v = ulist_sum (ulist_image (grade_decomposition v) (λ x, [x|])).
+Proof.
     intros v.
     apply (ex_proof (grade_decompose_ex2 v)).
 Qed.
 
 Theorem grade_decomposition_uni : ∀ v,
-        ulist_unique (ulist_image (grade_decomposition v) (λ x, ex_val [|x])).
+    ulist_unique (ulist_image (grade_decomposition v) (λ x, ex_val [|x])).
+Proof.
     intros v.
     apply (ex_proof (grade_decompose_ex2 v)).
 Qed.
 
 Theorem grade_decomposition_nz : ∀ v,
-        ulist_prop (λ x, 0 ≠ [x|]) (grade_decomposition v).
+    ulist_prop (λ x, 0 ≠ [x|]) (grade_decomposition v).
+Proof.
     intros v.
     apply (ex_proof (grade_decompose_ex2 v)).
 Qed.
 
 Theorem in_grade_decomposition_nz : ∀ v a, in_ulist (grade_decomposition v) a →
-        0 ≠ [a|].
+    0 ≠ [a|].
+Proof.
     intros v a a_in.
     pose proof (grade_decomposition_nz v) as nz.
     apply in_ulist_split in a_in as [l l_eq].
@@ -279,10 +285,11 @@ Theorem in_grade_decomposition_nz : ∀ v a, in_ulist (grade_decomposition v) a 
 Qed.
 
 Lemma grade_decompose_unique_strengthen : ∀ l : ulist (set_type homogeneous),
-        ulist_unique (ulist_image l (λ x, ex_val [|x])) →
-        ulist_prop (λ x, 0 ≠ [x|]) l →
-        ulist_unique (ulist_image l
-            (λ x, subspace_set (grade_subspace (ex_val [|x])))).
+    ulist_unique (ulist_image l (λ x, ex_val [|x])) →
+    ulist_prop (λ x, 0 ≠ [x|]) l →
+    ulist_unique (ulist_image l
+        (λ x, subspace_set (grade_subspace (ex_val [|x])))).
+Proof.
     intros l l_uni l_nz.
     induction l using ulist_induction.
     -   rewrite ulist_image_end.
@@ -311,14 +318,15 @@ Lemma grade_decompose_unique_strengthen : ∀ l : ulist (set_type homogeneous),
 Qed.
 
 Lemma grade_decomposition_perm_wlog :
-        ∀ v (al bl : ulist (set_type homogeneous)),
-        v = ulist_sum (ulist_image al (λ x, [x|])) →
-        v = ulist_sum (ulist_image bl (λ x, [x|])) →
-        ulist_unique (ulist_image al (λ x, ex_val [|x])) →
-        ulist_unique (ulist_image bl (λ x, ex_val [|x])) →
-        ulist_prop (λ x, 0 ≠ [x|]) al →
-        ulist_prop (λ x, 0 ≠ [x|]) bl →
-        ∀ x, in_ulist al x → in_ulist bl x.
+    ∀ v (al bl : ulist (set_type homogeneous)),
+    v = ulist_sum (ulist_image al (λ x, [x|])) →
+    v = ulist_sum (ulist_image bl (λ x, [x|])) →
+    ulist_unique (ulist_image al (λ x, ex_val [|x])) →
+    ulist_unique (ulist_image bl (λ x, ex_val [|x])) →
+    ulist_prop (λ x, 0 ≠ [x|]) al →
+    ulist_prop (λ x, 0 ≠ [x|]) bl →
+    ∀ x, in_ulist al x → in_ulist bl x.
+Proof.
     intros v al bl v_eq1 v_eq2 al_uni bl_uni al_nz bl_nz x al_x.
     classic_contradiction bl_x.
     assert (∃ (x' : set_type homogeneous) al bl,
@@ -701,10 +709,11 @@ Lemma grade_decomposition_perm_wlog :
 Qed.
 
 Theorem grade_decomposition_unique : ∀ v l,
-        v = ulist_sum (ulist_image l (λ x, [x|])) →
-        ulist_unique (ulist_image l (λ x, ex_val [|x])) →
-        ulist_prop (λ x, 0 ≠ [x|]) l →
-        grade_decomposition v = l.
+    v = ulist_sum (ulist_image l (λ x, [x|])) →
+    ulist_unique (ulist_image l (λ x, ex_val [|x])) →
+    ulist_prop (λ x, 0 ≠ [x|]) l →
+    grade_decomposition v = l.
+Proof.
     intros v l l_eq l_uni l_nz.
     apply ulist_in_unique_eq.
     -   pose proof (grade_decomposition_uni v) as v_uni.

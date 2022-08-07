@@ -18,7 +18,8 @@ Context {U V} `{Metric U, Metric V}.
 (* end hide *)
 
 Theorem metric_continuous_at : ∀ (f : U → V) a, continuous_at f a ↔
-        (∀ ε, 0 < ε → ∃ δ, 0 < δ ∧ (∀ x, d a x < δ → d (f a) (f x) < ε)).
+    (∀ ε, 0 < ε → ∃ δ, 0 < δ ∧ (∀ x, d a x < δ → d (f a) (f x) < ε)).
+Proof.
     intros f a.
     rewrite basis_continuous_at.
     split.
@@ -58,7 +59,8 @@ Theorem metric_continuous_at : ∀ (f : U → V) a, continuous_at f a ↔
 Qed.
 
 Theorem metric_continuous_seq : ∀ (f : U → V) x, continuous_at f x ↔
-        (∀ a, seq_lim a x → seq_lim (λ n, f (a n)) (f x)).
+    (∀ a, seq_lim a x → seq_lim (λ n, f (a n)) (f x)).
+Proof.
     intros f x.
     split.
     -   apply continuous_seq.
@@ -112,7 +114,8 @@ Theorem metric_continuous_seq : ∀ (f : U → V) x, continuous_at f x ↔
 Qed.
 
 Theorem unformly_implies_continuous : ∀ f : U → V,
-        uniformly_continuous f → continuous f.
+    uniformly_continuous f → continuous f.
+Proof.
     intros f f_cont x.
     rewrite metric_continuous_at.
     intros ε ε_pos.
@@ -124,7 +127,8 @@ Theorem unformly_implies_continuous : ∀ f : U → V,
 Qed.
 
 Theorem compact_continuous_uniformly : compact U → ∀ f : U → V,
-        continuous f → uniformly_continuous f.
+    continuous f → uniformly_continuous f.
+Proof.
     intros U_comp f f_cont ε ε_pos.
     pose (S a (δ : real_pos) := ∀ x, d a x < [δ|] → d (f a) (f x) < ε / 2).
     assert (∀ a, ∃ δ, S a δ) as δ_ex.
@@ -174,7 +178,8 @@ Theorem compact_continuous_uniformly : compact U → ∀ f : U → V,
 Qed.
 
 Theorem uniform_converge_continuous : ∀ fn (f : U → V),
-        f_seq_lim_uniform fn f → (∀ n, continuous (fn n)) → continuous f.
+    f_seq_lim_uniform fn f → (∀ n, continuous (fn n)) → continuous f.
+Proof.
     intros fn f f_uni f_cont a.
     rewrite metric_continuous_at.
     intros ε ε_pos.

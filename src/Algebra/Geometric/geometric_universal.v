@@ -54,8 +54,9 @@ Definition to_geo_compose {F G H : to_geo}
     := [f|] ∘ [g|].
 
 Lemma to_geo_set_compose_in {F' G H : to_geo} :
-        ∀ (f : set_type (to_geo_set G H)) g,
-        to_geo_set F' H (to_geo_compose f g).
+    ∀ (f : set_type (to_geo_set G H)) g,
+    to_geo_set F' H (to_geo_compose f g).
+Proof.
     intros [f f_eq] [g g_eq].
     unfold to_geo_set in *.
     unfold to_geo_compose; cbn.
@@ -65,6 +66,7 @@ Lemma to_geo_set_compose_in {F' G H : to_geo} :
 Qed.
 
 Lemma to_geo_set_id_in : ∀ f : to_geo, to_geo_set f f 𝟙.
+Proof.
     intros f.
     unfold to_geo_set.
     intros x.
@@ -113,6 +115,7 @@ Definition geo_to_geo := make_to_geo
     (geo_contract B).
 
 Theorem geometric_universal : @initial TO_GEO geo_to_geo.
+Proof.
     pose (UZ := cring_zero F).
     pose (UPC := cring_plus_comm F).
     pose (UPZ := cring_plus_lid F).

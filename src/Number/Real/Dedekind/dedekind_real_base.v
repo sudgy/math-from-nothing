@@ -13,6 +13,7 @@ Definition dedekind_cut (a : rat → Prop) :=
     (∀ l, a l → ∃ u, a u ∧ l < u).
 
 Theorem dedekind_le : ∀ a, dedekind_cut a → ∀ l u, a u → l <= u → a l.
+Proof.
     intros a a_cut l u au lu.
     classic_case (l = u).
     -   subst.
@@ -22,6 +23,7 @@ Theorem dedekind_le : ∀ a, dedekind_cut a → ∀ l u, a u → l <= u → a l.
 Qed.
 
 Theorem dedekind_lt : ∀ a, dedekind_cut a → ∀ l u, a l → ¬a u → l < u.
+Proof.
     intros a a_cut l u al nau.
     classic_case (l = u) as [eq|neq]; try (subst; contradiction).
     classic_contradiction leq.
@@ -35,6 +37,7 @@ Notation "'real'" := (set_type dedekind_cut).
 
 Definition rat_to_real_base (a b : rat) := b < a.
 Lemma rat_to_real_cut : ∀ a, dedekind_cut (rat_to_real_base a).
+Proof.
     intros a.
     unfold rat_to_real_base.
     split.

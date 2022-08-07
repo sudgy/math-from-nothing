@@ -32,12 +32,14 @@ Context `{C1 : Category, C2 : Category}
 Context `(Ad : @Adjunction C1 C2 F G).
 
 Theorem adj_ab : ∀ {A B} (f : cat_morphism C1 A (G ⌈B⌉)), adj_a Ad (adj_b Ad f) = f.
+Proof.
     intros A B f.
     unfold adj_b.
     apply inverse_eq2.
     apply bij_inv_inv.
 Qed.
 Theorem adj_ba : ∀ {A B} (f : cat_morphism C2 (F ⌈A⌉) B), adj_b Ad (adj_a Ad f) = f.
+Proof.
     intros A B f.
     unfold adj_b.
     apply inverse_eq1.

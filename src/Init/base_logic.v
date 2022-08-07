@@ -12,12 +12,14 @@ Axiom propositional_ext : ∀ (P Q : Prop), P ↔ Q → P = Q.
 Axiom indefinite_description : ∀ {A : Type}, inhabited A → A.
 
 Global Instance iff_rewrite : subrelation iff equal.
+Proof.
     intros A B Hequiv.
     apply propositional_ext.
     exact Hequiv.
 Qed.
 
 Theorem ex_to_type : ∀ {A : Type} {P : A → Prop}, ex P → ex_type P.
+Proof.
     intros A P P_ex.
     apply indefinite_description.
     destruct P_ex as [y Py].
@@ -30,6 +32,7 @@ Qed.
 (* This proof is not my own *)
 Module ProofIrrelevance.
     Lemma prop_eq_self_impl_when_true : ∀ {P : Prop}, P → P = (P → P).
+    Proof.
         intros P H.
         apply propositional_ext.
         split; intros; exact H.
@@ -39,6 +42,7 @@ Module ProofIrrelevance.
         has_fixpoint_fix : ∀ f, has_fixpoint_F f = f (has_fixpoint_F f)
     }.
     Lemma prop_has_fixpoint_when_true : ∀ P : Prop, P → has_fixpoint P.
+    Proof.
         intros P H.
         set (P' := P).
         assert (P' = P) as P_eq by (unfold P'; reflexivity).
@@ -65,6 +69,7 @@ Module ProofIrrelevance.
         | trueP : boolP
         | falseP : boolP.
     Lemma trueP_eq_falseP : trueP = falseP.
+    Proof.
         pose proof (@prop_has_fixpoint_when_true boolP trueP) as [Y Yfix].
         set (neg := λ b, match b with | trueP => falseP | falseP => trueP end).
         pose proof (Yfix neg) as F.
@@ -83,6 +88,7 @@ Module ProofIrrelevance.
         }
     Qed.
     Theorem proof_irrelevance : ∀ {P : Prop} (a b : P), a = b.
+    Proof.
         intros P a b.
         set (f := λ c, match c with trueP => a | falseP => b end).
         change a with (f trueP).
@@ -93,12 +99,14 @@ Module ProofIrrelevance.
 End ProofIrrelevance.
 (* end hide *)
 Theorem proof_irrelevance : ∀ {P : Prop} (a b : P), a = b.
+Proof.
     intros P.
     apply ProofIrrelevance.proof_irrelevance.
 Qed.
 
 Theorem predicate_ext : ∀ {U : Type} (P Q : U → Prop),
-        (∀ x, P x ↔ Q x) → P = Q.
+    (∀ x, P x ↔ Q x) → P = Q.
+Proof.
     intros U P Q H.
     apply functional_ext.
     intros x.
@@ -118,7 +126,8 @@ Definition ex_proof {A : Type} {P : A → Prop} (e : ex P) :=
     ex_type_proof (ex_to_type e).
 
 Theorem unpack_ex_val {A : Type} {P : A → Prop} : ∀ H : ex P,
-        ∃ a, ex_val H = a ∧ P a.
+    ∃ a, ex_val H = a ∧ P a.
+Proof.
     intros H.
     exists (ex_val H).
     split.
@@ -164,6 +173,7 @@ Module ExcludedMiddle.
         | true : bool
         | false : bool.
     Theorem excluded_middle : ∀ (P : Prop), P ∨ ¬P.
+    Proof.
         intros P.
         set (B1 b := b = true ∨ P).
         set (B2 b := b = false ∨ P).
@@ -184,6 +194,7 @@ Module ExcludedMiddle.
         inversion HA.
     Qed.
     Theorem strong_excluded_middle : ∀ P, {P} + {¬P}.
+    Proof.
         intros P.
         apply indefinite_description.
         destruct (excluded_middle P) as [PH|PH].
@@ -193,9 +204,11 @@ Module ExcludedMiddle.
 End ExcludedMiddle.
 (* end hide *)
 Theorem excluded_middle : ∀ (P : Prop), P ∨ ¬P.
+Proof.
     apply ExcludedMiddle.excluded_middle.
 Qed.
 Theorem strong_excluded_middle : ∀ (P : Prop), {P} + {¬P}.
+Proof.
     apply ExcludedMiddle.strong_excluded_middle.
 Qed.
 

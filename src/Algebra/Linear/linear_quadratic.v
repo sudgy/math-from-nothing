@@ -27,22 +27,27 @@ Context {U V} `{
 Variable Q : set_type (quadratic_form U V).
 
 Theorem qf_eq : ∀ a v, [Q|] (a · v) = a * a * [Q|] v.
+Proof.
     apply [|Q].
 Qed.
 Theorem qf_polar_lscalar : ∀ a u v,
-        qf_polar [Q|] (a · u) v = a * (qf_polar [Q|] u v).
+    qf_polar [Q|] (a · u) v = a * (qf_polar [Q|] u v).
+Proof.
     apply [|Q].
 Qed.
 Theorem qf_polar_rscalar : ∀ a u v,
-        qf_polar [Q|] u (a · v) = a * (qf_polar [Q|] u v).
+    qf_polar [Q|] u (a · v) = a * (qf_polar [Q|] u v).
+Proof.
     apply [|Q].
 Qed.
 Theorem qf_polar_lplus : ∀ u v w,
-        qf_polar [Q|] (u + v) w = qf_polar [Q|] u w + qf_polar [Q|] v w.
+    qf_polar [Q|] (u + v) w = qf_polar [Q|] u w + qf_polar [Q|] v w.
+Proof.
     apply [|Q].
 Qed.
 Theorem qf_polar_rplus : ∀ u v w,
-        qf_polar [Q|] u (v + w) = qf_polar [Q|] u v + qf_polar [Q|] u w.
+    qf_polar [Q|] u (v + w) = qf_polar [Q|] u v + qf_polar [Q|] u w.
+Proof.
     apply [|Q].
 Qed.
 (* begin hide *)

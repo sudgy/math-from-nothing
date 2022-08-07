@@ -22,6 +22,7 @@ Ltac get_ord_wo A :=
         by (split; intro x; destruct (connex x x); assumption).
 
 Theorem ord_zero_ex A : ord_U A → ∃ z, ∀ x, ord_le A z x.
+Proof.
     get_ord_wo A.
     intros a.
     assert (∃ x : ord_U A, all x) as S_ex by (exists a; exact true).
@@ -33,20 +34,23 @@ Theorem ord_zero_ex A : ord_U A → ∃ z, ∀ x, ord_le A z x.
 Qed.
 Definition ord_zero {A} (H : ord_U A) := ex_val (ord_zero_ex A H).
 Theorem ord_zero_le {A} {H : ord_U A}: ∀ x, ord_le A (ord_zero H) x.
+Proof.
     intros x.
     unfold ord_zero.
     unpack_ex_val z z_ex z_le; rewrite z_ex.
     apply z_le.
 Qed.
 Theorem ord_zero_eq {A} (H1 H2 : ord_U A) : ord_zero H1 = ord_zero H2.
+Proof.
     get_ord_wo A.
     apply antisym; apply ord_zero_le.
 Qed.
 
 Theorem ord_zero_iso {A} {B} (H : ord_U A) :
-        ∀ f : ord_U A → ord_U B, bijective f →
-        (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
-        f (ord_zero H) = ord_zero (f H).
+    ∀ f : ord_U A → ord_U B, bijective f →
+    (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
+    f (ord_zero H) = ord_zero (f H).
+Proof.
     intros f f_bij f_iso.
     get_ord_wo B.
     apply antisym; try apply ord_zero_le.
@@ -61,7 +65,8 @@ Definition initial_segment_set (A : ord_type) (x : ord_U A) :=
 Definition initial_segment_le (A : ord_type) (x : ord_U A) :=
     λ (a b : set_type (initial_segment_set A x)), ord_le A [a|] [b|].
 Lemma initial_segment_wo : ∀ (A : ord_type) (x : ord_U A),
-        well_orders (initial_segment_le A x).
+    well_orders (initial_segment_le A x).
+Proof.
     intros A x.
     destruct (ord_wo A) as [[[connex]] [[[antisym]] [[[trans]] [[wo]]]]].
     repeat split.
@@ -106,8 +111,9 @@ Definition initial_segment (A : ord_type) (x : ord_U A)
     := make_ord_type _ _ (initial_segment_wo A x).
 
 Theorem ord_iso_le : ∀ (A : ord_type) f, injective f →
-        (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
-        ∀ x, ord_le A x (f x).
+    (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
+    ∀ x, ord_le A x (f x).
+Proof.
     intros A f f_inj f_iso x.
     pose proof (ord_wo A)
         as [[A_connex] [[[A_antisym]] [[[A_trans]] [[A_wo]]]]].
@@ -143,6 +149,7 @@ Let ord_eq A B := ∃ f, bijective f ∧
 Local Infix "~" := ord_eq.
 
 Lemma ord_eq_reflexive : ∀ A, A ~ A.
+Proof.
     intros A.
     exists identity.
     split.
@@ -155,6 +162,7 @@ Instance ord_eq_reflexive_class : Reflexive _ := {
 }.
 
 Lemma ord_eq_symmetric : ∀ A B, A ~ B → B ~ A.
+Proof.
     intros A B [f [f_bij f_iso]].
     exists (bij_inv f f_bij).
     split.
@@ -177,6 +185,7 @@ Instance ord_eq_symmetric_class : Symmetric _ := {
 }.
 
 Lemma ord_eq_transitive : ∀ A B C, A ~ B → B ~ C → A ~ C.
+Proof.
     intros A B C [f [f_bij f_iso]] [g [g_bij g_iso]].
     exists (λ x, g (f x)).
     split.
@@ -202,6 +211,7 @@ Notation "'ord'" := (equiv_type ord_equiv).
 Open Scope ord_scope.
 (* end hide *)
 Theorem ord_niso_init : ∀ A x, ¬(A ~ initial_segment A x).
+Proof.
     intros A x [f [f_bij f_iso]].
     pose (f' a := [f a|]).
     assert (injective f') as f'_inj.
@@ -222,7 +232,8 @@ Theorem ord_niso_init : ∀ A x, ¬(A ~ initial_segment A x).
 Qed.
 
 Theorem ord_iso_init_eq : ∀ A B C x,
-        B ~ initial_segment A x → C ~ initial_segment A x → B ~ C.
+    B ~ initial_segment A x → C ~ initial_segment A x → B ~ C.
+Proof.
     intros A B C x [f [f_bij f_iso]] [g [g_bij g_iso]].
     pose (g' := bij_inv g g_bij).
     exists (λ x, g' (f x)).
@@ -239,7 +250,8 @@ Qed.
 
 (* begin hide *)
 Lemma ord_init_iso_eq1 : ∀ A x y,
-        initial_segment A x ~ initial_segment A y → ord_le A y x.
+    initial_segment A x ~ initial_segment A y → ord_le A y x.
+Proof.
     intros A x y eq.
     destruct (ord_wo A) as [[A_connex] [C0 [[A_trans] C1]]]; clear C0 C1.
     classic_contradiction xy.
@@ -310,7 +322,8 @@ Lemma ord_init_iso_eq1 : ∀ A x y,
 Qed.
 (* end hide *)
 Theorem ord_init_iso_eq : ∀ A x y,
-        initial_segment A x ~ initial_segment A y → x = y.
+    initial_segment A x ~ initial_segment A y → x = y.
+Proof.
     intros A x y eq.
     pose proof (ord_wo A) as [C0 [[A_antisym] C1]]; clear C1 C0.
     apply antisym.
@@ -323,9 +336,10 @@ Qed.
 
 (* begin hide *)
 Lemma ord_iso_unique_le : ∀ (A B : ord_type) f g, bijective f → bijective g →
-        (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
-        (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
-        ∀ x, ord_le B (f x) (g x).
+    (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
+    (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
+    ∀ x, ord_le B (f x) (g x).
+Proof.
     intros A B f g f_bij g_bij f_iso g_iso x.
     pose (f' := bij_inv f f_bij).
     pose (h x := f' (g x)).
@@ -350,9 +364,10 @@ Lemma ord_iso_unique_le : ∀ (A B : ord_type) f g, bijective f → bijective g 
 Qed.
 (* end hide *)
 Theorem ord_iso_unique : ∀ (A B : ord_type) f g, bijective f → bijective g →
-        (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
-        (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
-        f = g.
+    (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
+    (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
+    f = g.
+Proof.
     intros A B f g f_bij g_bij f_iso g_iso.
     apply functional_ext.
     intros x.
@@ -360,8 +375,9 @@ Theorem ord_iso_unique : ∀ (A B : ord_type) f g, bijective f → bijective g �
     apply antisym; apply ord_iso_unique_le; assumption.
 Qed.
 Theorem ord_iso_id : ∀ A f, bijective f →
-        (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
-        f = identity.
+    (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
+    f = identity.
+Proof.
     intros A f f_bij f_iso.
     apply ord_iso_unique; try assumption.
     -   exact identity_bijective.
@@ -369,9 +385,10 @@ Theorem ord_iso_id : ∀ A f, bijective f →
 Qed.
 
 Theorem ord_iso_strict :
-       ∀ {A B f}, bijective f →
-       (∀ a b : ord_U A, ord_le A a b ↔ ord_le B (f a) (f b)) →
-       (∀ a b : ord_U A, strict (ord_le A) a b ↔ strict (ord_le B) (f a) (f b)).
+   ∀ {A B f}, bijective f →
+   (∀ a b : ord_U A, ord_le A a b ↔ ord_le B (f a) (f b)) →
+   (∀ a b : ord_U A, strict (ord_le A) a b ↔ strict (ord_le B) (f a) (f b)).
+Proof.
     intros A B f f_bij f_iso a b.
     split.
     -   intros ab.

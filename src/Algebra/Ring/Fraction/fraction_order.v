@@ -56,7 +56,8 @@ Existing Instance frac_mult_linv.
 Existing Instance frac_not_trivial.
 
 Theorem frac_pos_ex : ∀ (x : frac U), ∃ a b,
-        0 < [b|] ∧ x = to_equiv_type (frac_equiv U) (a, b).
+    0 < [b|] ∧ x = to_equiv_type (frac_equiv U) (a, b).
+Proof.
     intros x.
     equiv_get_value x.
     destruct x as [a [b b_nz]].
@@ -84,7 +85,8 @@ Theorem frac_pos_ex : ∀ (x : frac U), ∃ a b,
 Qed.
 
 Theorem frac_pos_ex_div : ∀ (x : frac U), ∃ (a b : U),
-        0 < b ∧ x = to_frac U a / to_frac U b.
+    0 < b ∧ x = to_frac U a / to_frac U b.
+Proof.
     intros x.
     pose proof (frac_pos_ex x) as [a [[b b_nz] [b_pos x_eq]]].
     exists a, b.
@@ -102,6 +104,7 @@ Qed.
 Let frac_pos_base (a : frac_base U) := 0 <= fst a * [snd a|].
 
 Lemma frac_pos_wd_1 : ∀ a b, a ~ b → frac_pos_base a → frac_pos_base b.
+Proof.
     intros [a1 a2] [b1 b2] eq.
     unfold frac_pos_base; cbn in *.
     unfold frac_eq in eq; cbn in eq.
@@ -124,6 +127,7 @@ Lemma frac_pos_wd_1 : ∀ a b, a ~ b → frac_pos_base a → frac_pos_base b.
 Qed.
 
 Lemma frac_pos_wd : ∀ a b, a ~ b → frac_pos_base a = frac_pos_base b.
+Proof.
     intros a b eq.
     apply propositional_ext.
     split; apply frac_pos_wd_1.
@@ -139,6 +143,7 @@ Local Instance frac_order : Order (frac U) := {
 }.
 
 Theorem frac_pos_zero : ∀ a, 0 <= a ↔ frac_pos a.
+Proof.
     intros a.
     equiv_get_value a.
     unfold le; cbn.
@@ -147,9 +152,10 @@ Theorem frac_pos_zero : ∀ a, 0 <= a ↔ frac_pos a.
 Qed.
 
 Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-        (to_equiv_type (frac_equiv U) (a1, a2) <=
-         to_equiv_type (frac_equiv U) (b1, b2)) ↔
-        (a1 * [b2|] <= b1 * [a2|]).
+    (to_equiv_type (frac_equiv U) (a1, a2) <=
+     to_equiv_type (frac_equiv U) (b1, b2)) ↔
+    (a1 * [b2|] <= b1 * [a2|]).
+Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
     unfold le at 1; cbn.
     unfold frac_pos, plus, neg; equiv_simpl.
@@ -169,9 +175,10 @@ Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
         +   apply lt_mult; assumption.
 Qed.
 Theorem frac_lt : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-        (to_equiv_type (frac_equiv U) (a1, a2) <
-         to_equiv_type (frac_equiv U) (b1, b2)) ↔
-        (a1 * [b2|] < b1 * [a2|]).
+    (to_equiv_type (frac_equiv U) (a1, a2) <
+     to_equiv_type (frac_equiv U) (b1, b2)) ↔
+    (a1 * [b2|] < b1 * [a2|]).
+Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
     unfold lt, strict.
     rewrite frac_le by assumption.
@@ -270,6 +277,7 @@ Next Obligation.
 Qed.
 
 Theorem to_frac_le : ∀ a b, to_frac U a <= to_frac U b ↔ a <= b.
+Proof.
     intros a b.
     unfold to_frac.
     rewrite frac_le by apply one_pos; cbn.
@@ -277,6 +285,7 @@ Theorem to_frac_le : ∀ a b, to_frac U a <= to_frac U b ↔ a <= b.
     reflexivity.
 Qed.
 Theorem to_frac_lt : ∀ a b, to_frac U a < to_frac U b ↔ a < b.
+Proof.
     intros a b.
     split.
     -   intros [leq neq].
@@ -294,6 +303,7 @@ Qed.
 
 (* begin hide *)
 Theorem frac_archimedean : ∀ x : frac U, ∃ n, x < nat_to_abstract n.
+Proof.
     intros x.
     classic_case (0 < x) as [x_pos|x_neg].
     -   pose proof (frac_pos_ex x) as [a [b [b_pos x_eq]]].

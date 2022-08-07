@@ -17,6 +17,7 @@ Definition real_div_base a := λ p, p <= 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -
 Notation "⊘ a" := (real_div_base a) : real_scope.
 
 Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
+Proof.
     intros [a a_cut] a_pos; cbn.
     pose proof (gt_rat_to_real_in _ _ a_pos) as a0; cbn in a0.
     split.
@@ -140,6 +141,7 @@ Global Instance real_div : Div real := {
 }.
 
 Lemma real_div_pos : ∀ a, 0 < a → 0 < div a.
+Proof.
     intros a a_pos.
     unfold div; cbn.
     destruct (trichotomy 0 a) as [[a_pos'|a_z]|a_neg].
@@ -166,6 +168,7 @@ Lemma real_div_pos : ∀ a, 0 < a → 0 < div a.
     -   destruct (trans a_pos a_neg); contradiction.
 Qed.
 Lemma real_div_neg : ∀ a, 0 < a → -(div a) = div (-a).
+Proof.
     intros a a_pos.
     unfold div; cbn.
     destruct (trichotomy 0 a) as [[a_pos'|a_z]|a_neg]; cbn.
@@ -181,6 +184,7 @@ Lemma real_div_neg : ∀ a, 0 < a → -(div a) = div (-a).
     -   pose proof (trans a_pos a_neg) as [C0 C1]; contradiction.
 Qed.
 Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
+Proof.
     intros a a_pos.
     pose proof [|div a] as a'_cut.
     unfold div in a'_cut; cbn in a'_cut.
@@ -494,6 +498,7 @@ Lemma real_mult_linv1 : ∀ a, 0 < a → div a * a = 1.
     -   pose proof (trans a_pos a_neg) as [C0 C1]; contradiction.
 Qed.
 Lemma real_mult_linv_ : ∀ a, 0 ≠ a → div a * a = 1.
+Proof.
     intros a a_neq.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_mult_linv1.
@@ -513,6 +518,7 @@ Global Instance real_mult_linv : MultLinv real := {
 }.
 
 Lemma real_not_trivial_ : 0 ≠ 1.
+Proof.
     intro contr.
     assert ([(one (U := real))|] (zero (U := rat))) by exact one_pos.
     rewrite <- contr in H.

@@ -91,6 +91,7 @@ Let top_of_cut δ x := cut x ∧ ¬cut (x + δ).
 Definition top_of_cut_in := top_of_cut_in cut cut_lt.
 
 Theorem top_of_cut_ex : ∀ δ, 0 < δ → ∃ x, top_of_cut δ x.
+Proof.
     classic_case (cut 0) as [z_in|z_nin].
     -   destruct cut_out as [b b_nin].
         apply (top_of_cut_ex_wlog _ b); try assumption.
@@ -597,6 +598,7 @@ Qed.
 Local Infix "~" := (eq_equal (ideal_equiv zorn_real_ideal)).
 
 Lemma real_zorn_quotient_eq_le : ∀ a b, a ~ b → zorn_real_q_le a b.
+Proof.
     intros a b ab.
     right.
     apply ideal_eq_symmetric in ab.

@@ -56,6 +56,7 @@ Local Open Scope nat_scope.
 Existing Instance abs_metric.
 (* end hide *)
 Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
+Proof.
     intros r r_small.
     apply seq_lim_zero.
     assert (∀ n, |r^n| <= 1) as r_bound.
@@ -188,7 +189,8 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
 Qed.
 
 Theorem geometric_series_partial : ∀ r n, r ≠ 1 →
-        series (λ n', r ^ n') n = (1 - r^n) / (1 - r).
+    series (λ n', r ^ n') n = (1 - r^n) / (1 - r).
+Proof.
     intros r n r_neq.
     nat_induction n.
     -   unfold zero; cbn.
@@ -221,7 +223,8 @@ Theorem geometric_series_partial : ∀ r n, r ≠ 1 →
 Qed.
 
 Theorem geometric_series_sum : ∀ r, |r| < 1 →
-        seq_lim (series (λ n, r ^ n)) (/(1 - r)).
+    seq_lim (series (λ n, r ^ n)) (/(1 - r)).
+Proof.
     intros r r_small.
     assert (series (λ n, (r ^ n)) = (λ n, (1 - r^n) / (1 - r))) as f_eq.
     {
@@ -247,7 +250,8 @@ Theorem geometric_series_sum : ∀ r, |r| < 1 →
 Qed.
 
 Theorem geometric_series_sum_constant : ∀ a r, |r| < 1 →
-        seq_lim (series (λ n, a · r ^ n)) (a · / (1 - r)).
+    seq_lim (series (λ n, a · r ^ n)) (a · / (1 - r)).
+Proof.
     intros a r r_small.
     apply series_scalar.
     apply geometric_series_sum.
@@ -291,8 +295,8 @@ Existing Instance abs_metric.
 can't think of a better place to put it
 *)
 Theorem ratio_test : ∀ an, (∀ n, 0 ≠ an n) →
-        ∀ r, seq_lim (λ n, |an (nat_suc n) / an n|) r → r < 1 →
-        abs_converges an.
+    ∀ r, seq_lim (λ n, |an (nat_suc n) / an n|) r → r < 1 → abs_converges an.
+Proof.
     intros an an_nz r r_lim r_lt.
     assert (∀ n, 0 < |an n|) as an_pos.
     {

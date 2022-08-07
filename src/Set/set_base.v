@@ -46,6 +46,7 @@ Section SetBase.
 Context {U : Type}.
 
 Lemma subset_refl_ : ∀ S : U → Prop, S ⊆ S.
+Proof.
     intros S x Sx.
     exact Sx.
 Qed.
@@ -54,6 +55,7 @@ Global Instance subset_refl : Reflexive subset := {
 }.
 
 Lemma subset_trans_ : ∀ R S T : U → Prop, R ⊆ S → S ⊆ T → R ⊆ T.
+Proof.
     intros R S T RS ST x Rx.
     apply ST.
     apply RS.
@@ -64,6 +66,7 @@ Global Instance subset_trans : Transitive subset := {
 }.
 
 Lemma subset_antisym_ : ∀ S T : U → Prop, S ⊆ T → T ⊆ S → S = T.
+Proof.
     intros S T ST TS.
     apply predicate_ext.
     intro x.
@@ -76,16 +79,19 @@ Global Instance subset_antisym : Antisymmetric subset := {
 }.
 (* end hide *)
 Theorem empty_sub : ∀ S : U → Prop, ∅ ⊆ S.
+Proof.
     intros S x contr.
     contradiction contr.
 Qed.
 Theorem sub_all : ∀ S : U → Prop, S ⊆ all.
+Proof.
     intros S x Sx.
     unfold all.
     trivial.
 Qed.
 
 Theorem not_ex_empty : ∀ S : U → Prop, (∀ x, ¬S x) → S = ∅.
+Proof.
     intros S all_not.
     apply antisym.
     -   intros x Sx.
@@ -95,6 +101,7 @@ Theorem not_ex_empty : ∀ S : U → Prop, (∀ x, ¬S x) → S = ∅.
 Qed.
 
 Theorem not_empty_ex : ∀ S : U → Prop, S ≠ ∅ → ∃ x, S x.
+Proof.
     intros S S_neq.
     classic_contradiction contr.
     rewrite not_ex in contr.
@@ -103,18 +110,21 @@ Theorem not_empty_ex : ∀ S : U → Prop, S ≠ ∅ → ∃ x, S x.
 Qed.
 
 Theorem ex_not_empty : ∀ S : U → Prop, (∃ x, S x) → S ≠ ∅.
+Proof.
     intros S [x Sx] contr.
     rewrite contr in Sx.
     contradiction Sx.
 Qed.
 
 Theorem empty_not_ex : ∀ S : U → Prop, S = ∅ → (∀ x, ¬S x).
+Proof.
     intros S eq x Sx.
     rewrite eq in Sx.
     contradiction Sx.
 Qed.
 
 Theorem not_all_not_ex : ∀ S : U → Prop, S ≠ all → (∃ x, ¬S x).
+Proof.
     intros S S_neq.
     classic_contradiction contr.
     apply S_neq.
@@ -128,6 +138,7 @@ Theorem not_all_not_ex : ∀ S : U → Prop, S ≠ all → (∃ x, ¬S x).
 Qed.
 
 Theorem all_is_all : ∀ S : U → Prop, (∀ x, S x) → S = all.
+Proof.
     intros S all_x.
     apply antisym.
     -   intros x Sx.
@@ -137,18 +148,21 @@ Theorem all_is_all : ∀ S : U → Prop, (∀ x, S x) → S = all.
 Qed.
 
 Theorem not_in_empty : ∀ x : U, ¬∅ x.
+Proof.
     intros x contr.
     contradiction contr.
 Qed.
 
 Theorem set_comm_base : ∀ (op : (U → Prop) → (U → Prop) → (U → Prop)),
-        (∀ A B, op A B ⊆ op B A) → (∀ A B, op A B = op B A).
+    (∀ A B, op A B ⊆ op B A) → (∀ A B, op A B = op B A).
+Proof.
     intros op sub A B.
     apply antisym; apply sub.
 Qed.
 Theorem set_assoc_base: ∀ (op : (U → Prop) → (U → Prop) → (U → Prop)), Comm op →
-        (∀ A B C, op A (op B C) ⊆ op (op A B) C) →
-        (∀ A B C, op A (op B C) = op (op A B) C).
+    (∀ A B C, op A (op B C) ⊆ op (op A B) C) →
+    (∀ A B C, op A (op B C) = op (op A B) C).
+Proof.
     intros op H sub A B C.
     apply antisym.
     -   apply sub.
@@ -159,6 +173,7 @@ Theorem set_assoc_base: ∀ (op : (U → Prop) → (U → Prop) → (U → Prop)
 Qed.
 
 Lemma union_comm : ∀ S T : U → Prop, S ∪ T = T ∪ S.
+Proof.
     apply set_comm_base.
     intros S T x [Sx|Tx].
     -   right; exact Sx.
@@ -171,6 +186,7 @@ Global Instance union_comm_class : Comm union := {
 }.
 (* end hide *)
 Lemma union_assoc : ∀ R S T : U → Prop, R ∪ (S ∪ T) = (R ∪ S) ∪ T.
+Proof.
     apply set_assoc_base; try exact union_comm_class.
     intros R S T x [Rx|[Sx|Tx]].
     -   left; left; exact Rx.
@@ -188,6 +204,7 @@ Global Instance union_id : Id union := {
 }.
 (* end hide *)
 Lemma union_lid : ∀ S : U → Prop, ∅ ∪ S = S.
+Proof.
     intros S.
     apply antisym.
     -   intros x [x_contr|x_in].
@@ -207,6 +224,7 @@ Global Instance union_ani : Anni union := {
 }.
 (* end hide *)
 Lemma union_lanni : ∀ S : U → Prop, all ∪ S = all.
+Proof.
     intros S.
     apply antisym.
     -   intros x x_in.
@@ -223,16 +241,19 @@ Global Instance union_lanni_class : Lanni union := {
 }.
 (* end hide *)
 Theorem union_lsub : ∀ S T : U → Prop, S ⊆ S ∪ T.
+Proof.
     intros S T x Sx.
     left; exact Sx.
 Qed.
 Theorem union_rsub : ∀ S T : U → Prop, T ⊆ S ∪ T.
+Proof.
     intros S T.
     rewrite comm.
     apply union_lsub.
 Qed.
 
 Theorem union_compl_all : ∀ S : U → Prop, S ∪ complement S = all.
+Proof.
     intros S.
     apply antisym.
     -   intros x x_in.
@@ -243,6 +264,7 @@ Theorem union_compl_all : ∀ S : U → Prop, S ∪ complement S = all.
 Qed.
 
 Lemma union_idemp : ∀ S : U → Prop, S ∪ S = S.
+Proof.
     intros S.
     apply antisym.
     -   intros x [Sx|Sx]; exact Sx.
@@ -255,6 +277,7 @@ Global Instance union_idemp_class : Idempotent union := {
 }.
 (* end hide *)
 Lemma inter_comm : ∀ S T : U → Prop, S ∩ T = T ∩ S.
+Proof.
     apply set_comm_base.
     intros S T x [Sx Tx].
     split; assumption.
@@ -266,6 +289,7 @@ Global Instance inter_comm_class : Comm intersection := {
 }.
 (* end hide *)
 Lemma inter_assoc : ∀ R S T : U → Prop, R ∩ (S ∩ T) = (R ∩ S) ∩ T.
+Proof.
     apply set_assoc_base; try exact inter_comm_class.
     intros R S T.
     intros x [Rx [Sx Tx]].
@@ -282,6 +306,7 @@ Global Instance inter_id : Id intersection := {
 }.
 (* end hide *)
 Lemma inter_lid : ∀ S : U → Prop, all ∩ S = S.
+Proof.
     intros S.
     apply antisym.
     -   intros x [x_all Sx].
@@ -302,6 +327,7 @@ Global Instance inter_ani : Anni intersection := {
 }.
 (* end hide *)
 Lemma inter_lanni : ∀ S : U → Prop, ∅ ∩ S = ∅.
+Proof.
     intros S.
     apply not_ex_empty.
     intros x [contr Sx].
@@ -314,16 +340,19 @@ Global Instance inter_lanni_class : Lanni intersection := {
 }.
 (* end hide *)
 Theorem inter_lsub : ∀ S T : U → Prop, S ∩ T ⊆ S.
+Proof.
     intros S T x [Sx Tx].
     exact Sx.
 Qed.
 Theorem inter_rsub : ∀ S T : U → Prop, S ∩ T ⊆ T.
+Proof.
     intros S T.
     rewrite comm.
     apply inter_lsub.
 Qed.
 
 Theorem lsub_inter_equal : ∀ S T : U → Prop, S ⊆ T → S ∩ T = S.
+Proof.
     intros S T sub.
     apply antisym.
     -   intros x [Sx Tx].
@@ -335,6 +364,7 @@ Theorem lsub_inter_equal : ∀ S T : U → Prop, S ⊆ T → S ∩ T = S.
 Qed.
 
 Theorem rsub_inter_equal : ∀ S T : U → Prop, T ⊆ S → S ∩ T = T.
+Proof.
     intros S T sub.
     rewrite comm.
     apply lsub_inter_equal.
@@ -342,6 +372,7 @@ Theorem rsub_inter_equal : ∀ S T : U → Prop, T ⊆ S → S ∩ T = T.
 Qed.
 
 Theorem inter_compl_empty : ∀ S : U → Prop, S ∩ complement S = ∅.
+Proof.
     intros S.
     apply not_ex_empty.
     intros x [Sx nSx].
@@ -349,6 +380,7 @@ Theorem inter_compl_empty : ∀ S : U → Prop, S ∩ complement S = ∅.
 Qed.
 
 Lemma inter_idemp : ∀ S : U → Prop, S ∩ S = S.
+Proof.
     intros S.
     apply antisym.
     -   intros x [Sx Sx']; exact Sx.
@@ -361,6 +393,7 @@ Global Instance inter_idemp_class : Idempotent intersection := {
 }.
 (* end hide *)
 Theorem union_ldist : ∀ R S T : U → Prop, R ∪ (S ∩ T) = (R ∪ S) ∩ (R ∪ T).
+Proof.
     intros R S T.
     apply antisym.
     -   intros x [Rx|[Sx Tx]].
@@ -373,11 +406,13 @@ Theorem union_ldist : ∀ R S T : U → Prop, R ∪ (S ∩ T) = (R ∪ S) ∩ (R
         +   right; split; assumption.
 Qed.
 Theorem union_rdist : ∀ R S T : U → Prop, (R ∩ S) ∪ T = (R ∪ T) ∩ (S ∪ T).
+Proof.
     intros R S T.
     do 3 rewrite (union_comm _ T).
     apply union_ldist.
 Qed.
 Theorem inter_ldist : ∀ R S T : U → Prop, R ∩ (S ∪ T) = (R ∩ S) ∪ (R ∩ T).
+Proof.
     intros R S T.
     apply antisym.
     -   intros x [Rx [Sx|Tx]].
@@ -388,12 +423,14 @@ Theorem inter_ldist : ∀ R S T : U → Prop, R ∩ (S ∪ T) = (R ∩ S) ∪ (R
         +   right; exact Tx.
 Qed.
 Theorem inter_rdist : ∀ R S T : U → Prop, (R ∪ S) ∩ T = (R ∩ T) ∪ (S ∩ T).
+Proof.
     intros R S T.
     do 3 rewrite (inter_comm _ T).
     apply inter_ldist.
 Qed.
 
 Theorem union_inter_self : ∀ A B : U → Prop, A ∪ (A ∩ B) = A.
+Proof.
     intros A B.
     apply antisym.
     -   intros x [Ax|[Ax Bx]]; exact Ax.
@@ -401,6 +438,7 @@ Theorem union_inter_self : ∀ A B : U → Prop, A ∪ (A ∩ B) = A.
         left; exact Ax.
 Qed.
 Theorem inter_union_self : ∀ A B : U → Prop, A ∩ (A ∪ B) = A.
+Proof.
     intros A B.
     apply antisym.
     -   intros x [Ax Bx]; exact Ax.
@@ -409,6 +447,7 @@ Theorem inter_union_self : ∀ A B : U → Prop, A ∩ (A ∪ B) = A.
 Qed.
 
 Theorem compl_compl : ∀ A : U → Prop, complement (complement A) = A.
+Proof.
     intros A.
     unfold complement.
     apply antisym.
@@ -421,6 +460,7 @@ Theorem compl_compl : ∀ A : U → Prop, complement (complement A) = A.
 Qed.
 
 Theorem compl_empty : @complement U ∅ = all.
+Proof.
     apply antisym.
     -   intros x x_in.
         unfold all.
@@ -430,6 +470,7 @@ Theorem compl_empty : @complement U ∅ = all.
 Qed.
 
 Theorem compl_all : @complement U all = ∅.
+Proof.
     apply not_ex_empty.
     intros x x_in.
     contradiction x_in.
@@ -437,7 +478,8 @@ Theorem compl_all : @complement U all = ∅.
 Qed.
 
 Theorem union_compl : ∀ A B : U → Prop,
-        complement (A ∪ B) = complement A ∩ complement B.
+    complement (A ∪ B) = complement A ∩ complement B.
+Proof.
     intros A B.
     unfold complement, union, intersection.
     apply antisym.
@@ -450,7 +492,8 @@ Theorem union_compl : ∀ A B : U → Prop,
 Qed.
 
 Theorem inter_compl : ∀ A B : U → Prop,
-        complement (A ∩ B) = complement A ∪ complement B.
+    complement (A ∩ B) = complement A ∪ complement B.
+Proof.
     intros A B.
     unfold complement, union, intersection.
     apply antisym.
@@ -463,6 +506,7 @@ Theorem inter_compl : ∀ A B : U → Prop,
 Qed.
 
 Theorem compl_eq : ∀ A B : U → Prop, complement A = complement B → A = B.
+Proof.
     intros A B eq.
     apply predicate_ext; intros x; split; intros H1; classic_contradiction H2.
     -   assert (complement B x) as Bx by exact H2.
@@ -479,6 +523,7 @@ Global Instance set_minus_id : Id set_minus := {
 }.
 (* end hide *)
 Lemma set_minus_rid : ∀ S : U → Prop, S - ∅ = S.
+Proof.
     intros S.
     apply antisym.
     -   intros x [Sx C].
@@ -495,6 +540,7 @@ Global Instance set_minus_rid_class : Rid set_minus := {
 }.
 (* end hide *)
 Theorem set_minus_lid : ∀ S : U → Prop, ∅ - S = ∅.
+Proof.
     intros S.
     apply not_ex_empty.
     intros x [contr Sx].
@@ -507,6 +553,7 @@ Global Instance set_minus_inv_class : Inv set_minus := {
 }.
 (* end hide *)
 Lemma set_minus_inv : ∀ S : U → Prop, S - S = ∅.
+Proof.
     intros S.
     apply not_ex_empty.
     intros x [Sx nSx].
@@ -522,6 +569,7 @@ Global Instance set_minus_rinv : Rinv set_minus := {
 }.
 (* end hide *)
 Theorem set_minus_twice : ∀ S T : U → Prop, S - T - T = S - T.
+Proof.
     intros S T.
     apply antisym.
     -   intros x [[Sx Tx] Tx'].
@@ -531,6 +579,7 @@ Theorem set_minus_twice : ∀ S T : U → Prop, S - T - T = S - T.
 Qed.
 
 Theorem symdif_formula : ∀ S T : U → Prop, S + T = (S ∪ T) - (S ∩ T).
+Proof.
     intros S T.
     unfold symmetric_difference.
     apply antisym.
@@ -552,6 +601,7 @@ Theorem symdif_formula : ∀ S T : U → Prop, S + T = (S ∪ T) - (S ∩ T).
 Qed.
 
 Lemma symdif_comm : ∀ S T : U → Prop, S + T = T + S.
+Proof.
     apply set_comm_base.
     intros S T x [[Sx nTx]|[Tx nSx]].
     -   right; split; assumption.
@@ -564,6 +614,7 @@ Global Instance symdif_comm_class : Comm symmetric_difference := {
 }.
 (* end hide *)
 Lemma symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
+Proof.
     apply set_assoc_base; try exact symdif_comm_class.
     intros R S T x x_in.
     destruct x_in as [[Rx nSTx]|[STx nRx]].
@@ -605,6 +656,7 @@ Global Instance symdif_id : Id symmetric_difference := {
 }.
 (* end hide *)
 Lemma symdif_lid : ∀ S : U → Prop, ∅ + S = S.
+Proof.
     intros S.
     apply antisym.
     -   intros x [[x1 x2]|[x1 x2]].
@@ -626,6 +678,7 @@ Global Instance symdif_inv : Inv symmetric_difference := {
 }.
 (* end hide *)
 Lemma symdif_linv : ∀ S : U → Prop, S + S = ∅.
+Proof.
     intros S.
     apply not_ex_empty.
     intros x x_in.

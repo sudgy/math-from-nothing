@@ -404,6 +404,7 @@ Next Obligation.
 Qed.
 
 Theorem open_interval_open : ∀ a b, open (open_interval a b).
+Proof.
     intros a b x x_in.
     exists (open_interval a b).
     split.
@@ -416,6 +417,7 @@ Theorem open_interval_open : ∀ a b, open (open_interval a b).
 Qed.
 
 Theorem open_inf_interval_open : ∀ a, open (open_inf_interval a).
+Proof.
     intros a.
     classic_case (∃ b, ∀ x, x <= b) as [b_max|no_max].
     -   destruct b_max as [b b_max].
@@ -464,6 +466,7 @@ Theorem open_inf_interval_open : ∀ a, open (open_inf_interval a).
 Qed.
 
 Theorem inf_open_interval_open : ∀ a, open (inf_open_interval a).
+Proof.
     intros b.
     classic_case (∃ a, ∀ x, a <= x) as [a_min|no_min].
     -   destruct a_min as [a a_min].
@@ -512,6 +515,7 @@ Theorem inf_open_interval_open : ∀ a, open (inf_open_interval a).
 Qed.
 
 Theorem closed_interval_closed : ∀ a b, closed (closed_interval a b).
+Proof.
     intros a b.
     unfold closed.
     assert (complement (closed_interval a b) =
@@ -531,6 +535,7 @@ Theorem closed_interval_closed : ∀ a b, closed (closed_interval a b).
 Qed.
 
 Theorem closed_inf_interval_closed : ∀ a, closed (closed_inf_interval a).
+Proof.
     intros a.
     unfold closed.
     assert (complement (closed_inf_interval a) = inf_open_interval a) as eq.
@@ -545,6 +550,7 @@ Theorem closed_inf_interval_closed : ∀ a, closed (closed_inf_interval a).
 Qed.
 
 Theorem inf_closed_interval_closed : ∀ a, closed (inf_closed_interval a).
+Proof.
     intros a.
     unfold closed.
     assert (complement (inf_closed_interval a) = open_inf_interval a) as eq.
@@ -560,7 +566,8 @@ Qed.
 
 (* begin hide *)
 Lemma order_hausdorff_wlog : ∀ a b, a < b →
-        ∃ S1 S2, open S1 ∧ open S2 ∧ S1 a ∧ S2 b ∧ disjoint S1 S2.
+    ∃ S1 S2, open S1 ∧ open S2 ∧ S1 a ∧ S2 b ∧ disjoint S1 S2.
+Proof.
     intros a b ab.
     classic_case (∃ c, a < c ∧ c < b) as [between|near].
     -   destruct between as [c [ac cb]].

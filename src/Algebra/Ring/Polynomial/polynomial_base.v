@@ -61,7 +61,8 @@ Local Existing Instances polynomial_plus polynomial_zero polynomial_neg
 Definition polynomial_xn (n : nat) := to_free F nat n.
 
 Theorem polynomial_xn_ex : ∀ (n : nat) (f : polynomial),
-        of_grade n f → ∃ α, f = α · polynomial_xn n.
+    of_grade n f → ∃ α, f = α · polynomial_xn n.
+Proof.
     intros n f fn.
     apply to_free_ex in fn as [α eq]; subst f.
     exists α.
@@ -323,6 +324,7 @@ Proof.
 Qed.
 
 Theorem to_polynomial_grade : ∀ a, of_grade 0 (to_polynomial a).
+Proof.
     intros a.
     unfold to_polynomial.
     apply of_grade_scalar.
@@ -354,6 +356,7 @@ Proof.
 Qed.
 
 Theorem polynomial_eval_zero : ∀ x, polynomial_eval 0 x = 0.
+Proof.
     intros x.
     rewrite <- to_polynomial_zero.
     apply polynomial_eval_constant.

@@ -600,6 +600,7 @@ Proof.
     exact leq.
 Qed.
 Lemma ub_le_wd : ∀ a b c d, a ~ b → c ~ d → (a ≦ c) = (b ≦ d).
+Proof.
     intros a b c d ab cd.
     apply propositional_ext.
     split; apply ub_le_wd_1; auto; try apply eq_symmetric; auto.
