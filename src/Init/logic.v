@@ -3,10 +3,9 @@
 
 Require Export base_logic.
 
-Theorem not_not : ∀ P, (¬¬P) = P.
+Theorem not_not : ∀ P, (¬¬P) ↔ P.
 Proof.
     intro P.
-    apply propositional_ext.
     split; intro PH.
     -   classic_case P as [PH'|PH'].
         +   exact PH'.
@@ -14,24 +13,11 @@ Proof.
     -   intro PH'.
         contradiction (PH' PH).
 Qed.
-Theorem not_not_impl : ∀ P, ¬¬P → P.
-Proof.
-    intros P.
-    rewrite not_not.
-    trivial.
-Qed.
-Theorem not_not_impl2 : ∀ P : Prop, P → ¬¬P.
-Proof.
-    intros P.
-    rewrite not_not.
-    trivial.
-Qed.
-Ltac classic_contradiction_prop H := apply not_not_impl; intros H.
+Ltac classic_contradiction_prop H := apply (land (not_not _)); intros H.
 
-Theorem not_impl : ∀ A B : Prop, (¬(A → B)) = (A ∧ ¬B).
+Theorem not_impl : ∀ A B : Prop, (¬(A → B)) ↔ (A ∧ ¬B).
 Proof.
     intros A B.
-    apply propositional_ext.
     split.
     -   intros n.
         classic_case B.
@@ -45,10 +31,9 @@ Proof.
         specialize (ab a).
         contradiction.
 Qed.
-Theorem not_and : ∀ A B, (¬(A ∧ B)) = (¬A ∨ ¬B).
+Theorem not_and : ∀ A B, (¬(A ∧ B)) ↔ (¬A ∨ ¬B).
 Proof.
     intros A B.
-    apply propositional_ext.
     split.
     -   intros n.
         classic_case A.
@@ -59,10 +44,9 @@ Proof.
         +   left; exact n0.
     -   intros [na|nb] [a b]; contradiction.
 Qed.
-Theorem not_or : ∀ A B, (¬(A ∨ B)) = (¬A ∧ ¬B).
+Theorem not_or : ∀ A B, (¬(A ∨ B)) ↔ (¬A ∧ ¬B).
 Proof.
     intros A B.
-    apply propositional_ext.
     split.
     -   intro n.
         split; intro.
@@ -72,10 +56,9 @@ Proof.
             contradiction.
     -   intros [na nb] [a|b]; contradiction.
 Qed.
-Theorem not_ex : ∀ {U} (P : U → Prop), (¬(∃ a, P a)) = (∀ a, ¬P a).
+Theorem not_ex : ∀ {U} (P : U → Prop), (¬(∃ a, P a)) ↔ (∀ a, ¬P a).
 Proof.
     intros U P.
-    apply propositional_ext.
     split.
     -   intros not_ex a Pa.
         apply not_ex.
@@ -86,10 +69,9 @@ Proof.
         contradiction.
 Qed.
 
-Theorem not_all : ∀ {U} (P : U → Prop), equal (¬(∀ a, P a)) (∃ a, ¬P a).
+Theorem not_all : ∀ {U} (P : U → Prop), (¬(∀ a, P a)) ↔ (∃ a, ¬P a).
 Proof.
     intros U P.
-    apply propositional_ext.
     split.
     -   intro not_all.
         classic_contradiction_prop H.
@@ -103,7 +85,7 @@ Proof.
         contradiction.
 Qed.
 
-Theorem not_and_impl : ∀ A B, (¬(A ∧ B)) = (A → ¬B).
+Theorem not_and_impl : ∀ A B, (¬(A ∧ B)) ↔ (A → ¬B).
 Proof.
     intros A B.
     rewrite <- (not_not (A → ¬B)).
@@ -112,18 +94,18 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem and_comm : ∀ A B, (A ∧ B) = (B ∧ A).
+Theorem and_comm : ∀ A B, (A ∧ B) ↔ (B ∧ A).
 Proof.
     intros A B.
-    apply propositional_ext; split.
+    split.
     all: intros [P1 P2].
     all: split; assumption.
 Qed.
 
-Theorem or_comm : ∀ A B, (A ∨ B) = (B ∨ A).
+Theorem or_comm : ∀ A B, (A ∨ B) ↔ (B ∨ A).
 Proof.
     intros A B.
-    apply propositional_ext; split.
+    split.
     all: intros [P1|P2].
     -   right; exact P1.
     -   left; exact P2.
@@ -131,10 +113,10 @@ Proof.
     -   left; exact P2.
 Qed.
 
-Theorem and_or_ldist : ∀ A B C, (A ∧ (B ∨ C)) = ((A ∧ B) ∨ (A ∧ C)).
+Theorem and_or_ldist : ∀ A B C, (A ∧ (B ∨ C)) ↔ ((A ∧ B) ∨ (A ∧ C)).
 Proof.
     intros A B C.
-    apply propositional_ext; split.
+    split.
     -   intros [PA [PB|PC]].
         +   left; split; assumption.
         +   right; split; assumption.
@@ -143,17 +125,17 @@ Proof.
         +   left; exact PB.
         +   right; exact PC.
 Qed.
-Theorem and_or_rdist : ∀ A B C, ((A ∨ B) ∧ C) = ((A ∧ C) ∨ (B ∧ C)).
+Theorem and_or_rdist : ∀ A B C, ((A ∨ B) ∧ C) ↔ ((A ∧ C) ∨ (B ∧ C)).
 Proof.
     intros A B C.
     do 3 rewrite (and_comm _ C).
     apply and_or_ldist.
 Qed.
 
-Theorem or_and_ldist : ∀ A B C, (A ∨ (B ∧ C)) = ((A ∨ B) ∧ (A ∨ C)).
+Theorem or_and_ldist : ∀ A B C, (A ∨ (B ∧ C)) ↔ ((A ∨ B) ∧ (A ∨ C)).
 Proof.
     intros A B C.
-    apply propositional_ext; split.
+    split.
     -   intros [PA|[PB PC]].
         +   split; left; exact PA.
         +   split; right; assumption.
@@ -161,7 +143,7 @@ Proof.
         all: try (left; assumption).
         right; split; assumption.
 Qed.
-Theorem or_and_rdist : ∀ A B C, ((A ∧ B) ∨ C) = ((A ∨ C) ∧ (B ∨ C)).
+Theorem or_and_rdist : ∀ A B C, ((A ∧ B) ∨ C) ↔ ((A ∨ C) ∧ (B ∨ C)).
 Proof.
     intros A B C.
     do 3 rewrite (or_comm _ C).

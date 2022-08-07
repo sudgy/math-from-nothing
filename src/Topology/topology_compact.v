@@ -245,7 +245,7 @@ Proof.
         -   intros S [x S_eq].
             subst S.
             rewrite_ex_val S S_H.
-            rewrite not_impl in S_H.
+            setoid_rewrite not_impl in S_H.
             exact (land S_H).
     }
     specialize (U_comp SS SS_cover) as [SS' [SS'_sub [SS'_fin sub_SS']]].

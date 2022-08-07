@@ -61,10 +61,9 @@ Section Sum.
 
 Context {A B : Type}.
 (* end hide *)
-Theorem inl_eq : ∀ a b : A, (inl (B := B) a = inl b) = (a = b).
+Theorem inl_eq : ∀ a b : A, (inl (B := B) a = inl b) ↔ (a = b).
 Proof.
     intros a b.
-    apply propositional_ext.
     split; intro eq.
     -   inversion eq.
         reflexivity.
@@ -72,10 +71,9 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem inr_eq : ∀ a b : B, (inr (A := A) a = inr b) = (a = b).
+Theorem inr_eq : ∀ a b : B, (inr (A := A) a = inr b) ↔ (a = b).
 Proof.
     intros a b.
-    apply propositional_ext.
     split; intro eq.
     -   inversion eq.
         reflexivity.
@@ -83,10 +81,9 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem inl_neq : ∀ a b : A, (inl (B := B) a ≠ inl b) = (a ≠ b).
+Theorem inl_neq : ∀ a b : A, (inl (B := B) a ≠ inl b) ↔ (a ≠ b).
 Proof.
     intros a b.
-    apply propositional_ext.
     split; intros neq eq.
     -   rewrite eq in neq.
         contradiction.
@@ -95,10 +92,9 @@ Proof.
         contradiction.
 Qed.
 
-Theorem inr_neq : ∀ a b : B, (inr (A := A) a ≠ inr b) = (a ≠ b).
+Theorem inr_neq : ∀ a b : B, (inr (A := A) a ≠ inr b) ↔ (a ≠ b).
 Proof.
     intros a b.
-    apply propositional_ext.
     split; intros neq eq.
     -   rewrite eq in neq.
         contradiction.
