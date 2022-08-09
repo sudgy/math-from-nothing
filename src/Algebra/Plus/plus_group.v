@@ -17,11 +17,12 @@ Class PlusComm U `{Plus U} := {
 Class Zero U := {
     zero : U;
 }.
+Notation "0" := zero : algebra_scope.
 Class PlusLid U `{Plus U} `{Zero U} := {
-    plus_lid : ∀ a, zero + a = a;
+    plus_lid : ∀ a, 0 + a = a;
 }.
 Class PlusRid U `{Plus U} `{Zero U} := {
-    plus_rid : ∀ a, a + zero = a;
+    plus_rid : ∀ a, a + 0 = a;
 }.
 
 Class PlusLcancel U `{Plus U} := {
@@ -38,16 +39,14 @@ Class Neg U := {
 Notation "- a" := (neg a) : algebra_scope.
 Notation "a - b" := (a + -b) : algebra_scope.
 Class PlusLinv U `{Plus U} `{Zero U} `{Neg U} := {
-    plus_linv : ∀ a, -a + a = zero;
+    plus_linv : ∀ a, -a + a = 0;
 }.
 Class PlusRinv U `{Plus U} `{Zero U} `{Neg U} := {
-    plus_rinv : ∀ a, a + -a = zero;
+    plus_rinv : ∀ a, a - a = 0;
 }.
 Arguments plus : simpl never.
 Arguments zero : simpl never.
 Arguments neg : simpl never.
-
-Notation "0" := zero : algebra_scope.
 
 Class Group U `{
     UP : Plus U,
@@ -77,39 +76,26 @@ Section PlusGroupImply.
 
 Context {U} `{AllPlus U}.
 
-Lemma plus_lid_rid_ : ∀ a, a + zero = a.
-Proof.
-    intros a.
+Global Program Instance plus_lid_rid : PlusRid U.
+Next Obligation.
     rewrite plus_comm.
     apply plus_lid.
 Qed.
 
-Lemma plus_lcancel_rcancel_ : ∀ a b c, a + c = b + c → a = b.
-Proof.
-    intros a b c eq.
+Global Program Instance plus_lcancel_rcancel : PlusRcancel U.
+Next Obligation.
+    rename H0 into eq.
     do 2 rewrite (plus_comm _ c) in eq.
     apply plus_lcancel with c.
     exact eq.
 Qed.
 
-Lemma plus_linv_rinv : ∀ a, a + -a = 0.
+Global Program Instance plus_linv_rinv : PlusRinv U.
+Next Obligation.
 Proof.
-    intros a.
     rewrite plus_comm.
     apply plus_linv.
 Qed.
-
-Global Instance plus_lid_rid : PlusRid U := {
-    plus_rid := plus_lid_rid_;
-}.
-
-Global Instance plus_lcancel_rcancel : PlusRcancel U := {
-    plus_rcancel := plus_lcancel_rcancel_;
-}.
-
-Global Instance plus_linv_rinv_class : PlusRinv U := {
-    plus_rinv := plus_linv_rinv
-}.
 
 End PlusGroupImply.
 
@@ -150,77 +136,6 @@ Section PlusGroup2.
 
 Context {U} `{AllPlus U}.
 
-Lemma plus_linv_lcancel : ∀ a b c, c + a = c + b → a = b.
-Proof.
-    intros a b c eq.
-    apply lplus with (-c) in eq.
-    do 2 rewrite plus_assoc in eq.
-    rewrite plus_linv in eq.
-    do 2 rewrite plus_lid in eq.
-    exact eq.
-Qed.
-Lemma plus_rinv_rcancel : ∀ a b c, a + c = b + c → a = b.
-Proof.
-    intros a b c eq.
-    apply rplus with (-c) in eq.
-    do 2 rewrite <- plus_assoc in eq.
-    rewrite plus_rinv in eq.
-    do 2 rewrite plus_rid in eq.
-    exact eq.
-Qed.
-Global Instance plus_linv_lcancel_class : PlusLcancel U := {
-    plus_lcancel := plus_linv_lcancel
-}.
-Global Instance plus_rinv_rcancel_class : PlusRcancel U := {
-    plus_rcancel := plus_rinv_rcancel
-}.
-(* end hide *)
-Theorem neg_zero : -0 = 0.
-Proof.
-    apply plus_rcancel with 0.
-    rewrite plus_linv.
-    rewrite plus_rid.
-    reflexivity.
-Qed.
-
-Theorem neg_neg : ∀ a, --a = a.
-Proof.
-    intros a.
-    apply plus_rcancel with (-a).
-    rewrite plus_linv, plus_rinv.
-    reflexivity.
-Qed.
-
-Theorem neg_eq : ∀ a b, a = b ↔ -a = -b.
-Proof.
-    intros a b.
-    split; intros eq.
-    -   apply lplus with (-a) in eq.
-        rewrite plus_linv in eq.
-        apply rplus with (-b) in eq.
-        rewrite <- plus_assoc, plus_rinv, plus_rid, plus_lid in eq.
-        symmetry; exact eq.
-    -   apply lplus with a in eq.
-        rewrite plus_rinv in eq.
-        apply rplus with b in eq.
-        rewrite <- plus_assoc, plus_linv, plus_rid, plus_lid in eq.
-        symmetry; exact eq.
-Qed.
-
-Theorem neg_plus : ∀ a b, -(a + b) = -a + -b.
-Proof.
-    intros a b.
-    apply plus_rcancel with b.
-    apply plus_lcancel with a.
-    rewrite plus_comm.
-    repeat rewrite <- plus_assoc.
-    rewrite (plus_comm b a).
-    do 2 rewrite plus_linv.
-    rewrite plus_rid.
-    rewrite plus_rinv.
-    reflexivity.
-Qed.
-
 Theorem plus_rrinv : ∀ a b, a + b - b = a.
 Proof.
     intros a b.
@@ -248,6 +163,49 @@ Proof.
     rewrite plus_assoc.
     rewrite plus_linv.
     apply plus_lid.
+Qed.
+
+Global Program Instance plus_linv_lcancel : PlusLcancel U.
+Next Obligation.
+    rename H0 into eq.
+    apply lplus with (-c) in eq.
+    do 2 rewrite plus_llinv in eq.
+    exact eq.
+Qed.
+Global Program Instance plus_rinv_rcancel : PlusRcancel U.
+Next Obligation.
+    rename H0 into eq.
+    apply rplus with (-c) in eq.
+    do 2 rewrite plus_rrinv in eq.
+    exact eq.
+Qed.
+
+(* end hide *)
+Theorem neg_zero : -0 = 0.
+Proof.
+    apply plus_rcancel with 0.
+    rewrite plus_linv.
+    rewrite plus_rid.
+    reflexivity.
+Qed.
+
+Theorem neg_neg : ∀ a, --a = a.
+Proof.
+    intros a.
+    apply plus_rcancel with (-a).
+    rewrite plus_linv, plus_rinv.
+    reflexivity.
+Qed.
+
+Theorem neg_eq : ∀ a b, a = b ↔ -a = -b.
+Proof.
+    intros a b.
+    split; intros eq.
+    -   rewrite eq.
+        reflexivity.
+    -   apply (f_equal neg) in eq.
+        do 2 rewrite neg_neg in eq.
+        exact eq.
 Qed.
 
 Theorem plus_llmove : ∀ a b c, a + b = c ↔ b = -a + c.
@@ -312,8 +270,7 @@ Qed.
 Theorem plus_0_ab_a_nb : ∀ a b, 0 = a + b ↔ a = -b.
 Proof.
     intros a b.
-    rewrite plus_rlmove.
-    rewrite plus_rid.
+    rewrite plus_0_ab_na_b.
     rewrite neg_eq.
     rewrite neg_neg.
     reflexivity.
@@ -321,8 +278,7 @@ Qed.
 Theorem plus_0_ab_b_na : ∀ a b, 0 = a + b ↔ b = -a.
 Proof.
     intros a b.
-    rewrite plus_rrmove.
-    rewrite plus_lid.
+    rewrite plus_0_ab_nb_a.
     rewrite neg_eq.
     rewrite neg_neg.
     reflexivity.
@@ -331,21 +287,15 @@ Qed.
 Theorem plus_0_a_ab_b : ∀ a b, 0 = a ↔ a + b = b.
 Proof.
     intros a b.
-    rewrite plus_llmove.
-    rewrite plus_rrmove.
+    rewrite plus_lrmove.
     rewrite plus_rinv.
-    rewrite neg_eq.
-    rewrite neg_zero.
-    reflexivity.
+    split; intro; symmetry; assumption.
 Qed.
 Theorem plus_0_a_ba_b : ∀ a b, 0 = a ↔ b + a = b.
 Proof.
     intros a b.
-    rewrite plus_lrmove.
-    rewrite plus_rlmove.
-    rewrite plus_linv.
-    rewrite neg_eq.
-    rewrite neg_zero.
+    rewrite plus_0_a_ab_b.
+    rewrite plus_comm.
     reflexivity.
 Qed.
 Theorem plus_0_a_b_ab : ∀ a b, 0 = a ↔ b = a + b.
@@ -389,6 +339,17 @@ Proof.
     intros a b.
     rewrite plus_0_ab_nb_a.
     rewrite neg_neg.
+    reflexivity.
+Qed.
+
+Theorem neg_plus : ∀ a b, -(a + b) = -a + -b.
+Proof.
+    intros a b.
+    rewrite <- plus_llmove.
+    rewrite <- plus_0_ab_b_na.
+    rewrite plus_assoc.
+    rewrite (plus_comm b a).
+    rewrite plus_rinv.
     reflexivity.
 Qed.
 

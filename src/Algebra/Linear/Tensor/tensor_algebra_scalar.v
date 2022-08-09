@@ -133,7 +133,7 @@ Proof.
     rewrite (tensor_mult_homo _ _ _ _ _ α0 β0).
     rewrite power_to_tensor_tm.
     unfold zero at 9; cbn.
-    destruct (Logic.eq_sym (plus_lid_rid_ 0)); cbn.
+    destruct (Logic.eq_sym (plus_group.plus_lid_rid_obligation_1 0)); cbn.
     fold (tensor_product_comm_f (tensor_power V 0) (cring_module F)).
     rewrite tensor_product_comm_eq.
     fold (tensor_product_lid_f (tensor_power V 0)).
