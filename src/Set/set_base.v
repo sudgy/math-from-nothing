@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Export relation.
-Require Export op.
 
 Unset Keyed Unification.
 
@@ -159,20 +158,20 @@ Proof.
     intros op sub A B.
     apply antisym; apply sub.
 Qed.
-Theorem set_assoc_base: ∀ (op : (U → Prop) → (U → Prop) → (U → Prop)), Comm op →
+Theorem set_assoc_base: ∀ (op : (U → Prop) → (U → Prop) → (U → Prop)),
+    (∀ A B, op A B = op B A) →
     (∀ A B C, op A (op B C) ⊆ op (op A B) C) →
     (∀ A B C, op A (op B C) = op (op A B) C).
 Proof.
-    intros op H sub A B C.
+    intros op comm sub A B C.
     apply antisym.
     -   apply sub.
-    -   destruct H.
-        do 2 rewrite (comm A).
+    -   do 2 rewrite (comm A).
         do 2 rewrite (comm _ C).
         apply sub.
 Qed.
 
-Lemma union_comm : ∀ S T : U → Prop, S ∪ T = T ∪ S.
+Theorem union_comm : ∀ S T : U → Prop, S ∪ T = T ∪ S.
 Proof.
     apply set_comm_base.
     intros S T x [Sx|Tx].
@@ -180,30 +179,16 @@ Proof.
     -   left; exact Tx.
 Qed.
 
-(* begin hide *)
-Global Instance union_comm_class : Comm union := {
-    comm := union_comm
-}.
-(* end hide *)
-Lemma union_assoc : ∀ R S T : U → Prop, R ∪ (S ∪ T) = (R ∪ S) ∪ T.
+Theorem union_assoc : ∀ R S T : U → Prop, R ∪ (S ∪ T) = (R ∪ S) ∪ T.
 Proof.
-    apply set_assoc_base; try exact union_comm_class.
+    apply set_assoc_base; [>exact union_comm|].
     intros R S T x [Rx|[Sx|Tx]].
     -   left; left; exact Rx.
     -   left; right; exact Sx.
     -   right; exact Tx.
 Qed.
 
-(* begin hide *)
-Global Instance union_assoc_class : Assoc union := {
-    assoc := union_assoc
-}.
-
-Global Instance union_id : Id union := {
-    id := @empty U
-}.
-(* end hide *)
-Lemma union_lid : ∀ S : U → Prop, ∅ ∪ S = S.
+Theorem union_lid : ∀ S : U → Prop, ∅ ∪ S = S.
 Proof.
     intros S.
     apply antisym.
@@ -213,33 +198,30 @@ Proof.
     -   intros x x_in.
         right; exact x_in.
 Qed.
+Theorem union_rid : ∀ S : U → Prop, S ∪ ∅ = S.
+Proof.
+    intros S.
+    rewrite union_comm.
+    apply union_lid.
+Qed.
 
-(* begin hide *)
-Global Instance union_lid_class : Lid union := {
-    lid := union_lid
-}.
-
-Global Instance union_ani : Anni union := {
-    anni := @all U
-}.
-(* end hide *)
-Lemma union_lanni : ∀ S : U → Prop, all ∪ S = all.
+Theorem union_lall : ∀ S : U → Prop, all ∪ S = all.
 Proof.
     intros S.
     apply antisym.
     -   intros x x_in.
-        unfold all.
-        trivial.
+        exact true.
     -   intros x x_in.
         left.
         exact x_in.
 Qed.
+Theorem union_rall : ∀ S : U → Prop, S ∪ all = all.
+Proof.
+    intros S.
+    rewrite union_comm.
+    apply union_lall.
+Qed.
 
-(* begin hide *)
-Global Instance union_lanni_class : Lanni union := {
-    lanni := union_lanni
-}.
-(* end hide *)
 Theorem union_lsub : ∀ S T : U → Prop, S ⊆ S ∪ T.
 Proof.
     intros S T x Sx.
@@ -248,7 +230,7 @@ Qed.
 Theorem union_rsub : ∀ S T : U → Prop, T ⊆ S ∪ T.
 Proof.
     intros S T.
-    rewrite comm.
+    rewrite union_comm.
     apply union_lsub.
 Qed.
 
@@ -263,7 +245,7 @@ Proof.
         exact (excluded_middle (S x)).
 Qed.
 
-Lemma union_idemp : ∀ S : U → Prop, S ∪ S = S.
+Theorem union_idemp : ∀ S : U → Prop, S ∪ S = S.
 Proof.
     intros S.
     apply antisym.
@@ -271,41 +253,22 @@ Proof.
     -   intros x Sx; left; exact Sx.
 Qed.
 
-(* begin hide *)
-Global Instance union_idemp_class : Idempotent union := {
-    idemp := union_idemp
-}.
-(* end hide *)
-Lemma inter_comm : ∀ S T : U → Prop, S ∩ T = T ∩ S.
+Theorem inter_comm : ∀ S T : U → Prop, S ∩ T = T ∩ S.
 Proof.
     apply set_comm_base.
     intros S T x [Sx Tx].
     split; assumption.
 Qed.
 
-(* begin hide *)
-Global Instance inter_comm_class : Comm intersection := {
-    comm := inter_comm
-}.
-(* end hide *)
-Lemma inter_assoc : ∀ R S T : U → Prop, R ∩ (S ∩ T) = (R ∩ S) ∩ T.
+Theorem inter_assoc : ∀ R S T : U → Prop, R ∩ (S ∩ T) = (R ∩ S) ∩ T.
 Proof.
-    apply set_assoc_base; try exact inter_comm_class.
+    apply set_assoc_base; [>exact inter_comm|].
     intros R S T.
     intros x [Rx [Sx Tx]].
     repeat split; assumption.
 Qed.
 
-(* begin hide *)
-Global Instance inter_assoc_class : Assoc intersection := {
-    assoc := inter_assoc
-}.
-
-Global Instance inter_id : Id intersection := {
-    id := @all U
-}.
-(* end hide *)
-Lemma inter_lid : ∀ S : U → Prop, all ∩ S = S.
+Theorem inter_lall : ∀ S : U → Prop, all ∩ S = S.
 Proof.
     intros S.
     apply antisym.
@@ -316,29 +279,27 @@ Proof.
         +   unfold all; trivial.
         +   exact Sx.
 Qed.
+Theorem inter_rall : ∀ S : U → Prop, S ∩ all = S.
+Proof.
+    intros S.
+    rewrite inter_comm.
+    apply inter_lall.
+Qed.
 
-(* begin hide *)
-Global Instance inter_lid_class : Lid intersection := {
-    lid := inter_lid
-}.
-
-Global Instance inter_ani : Anni intersection := {
-    anni := @empty U
-}.
-(* end hide *)
-Lemma inter_lanni : ∀ S : U → Prop, ∅ ∩ S = ∅.
+Theorem inter_lempty : ∀ S : U → Prop, ∅ ∩ S = ∅.
 Proof.
     intros S.
     apply not_ex_empty.
     intros x [contr Sx].
     contradiction contr.
 Qed.
+Theorem inter_rempty : ∀ S : U → Prop, S ∩ ∅ = ∅.
+Proof.
+    intros S.
+    rewrite inter_comm.
+    apply inter_lempty.
+Qed.
 
-(* begin hide *)
-Global Instance inter_lanni_class : Lanni intersection := {
-    lanni := inter_lanni
-}.
-(* end hide *)
 Theorem inter_lsub : ∀ S T : U → Prop, S ∩ T ⊆ S.
 Proof.
     intros S T x [Sx Tx].
@@ -347,7 +308,7 @@ Qed.
 Theorem inter_rsub : ∀ S T : U → Prop, S ∩ T ⊆ T.
 Proof.
     intros S T.
-    rewrite comm.
+    rewrite inter_comm.
     apply inter_lsub.
 Qed.
 
@@ -366,7 +327,7 @@ Qed.
 Theorem rsub_inter_equal : ∀ S T : U → Prop, T ⊆ S → S ∩ T = T.
 Proof.
     intros S T sub.
-    rewrite comm.
+    rewrite inter_comm.
     apply lsub_inter_equal.
     exact sub.
 Qed.
@@ -379,7 +340,7 @@ Proof.
     contradiction.
 Qed.
 
-Lemma inter_idemp : ∀ S : U → Prop, S ∩ S = S.
+Theorem inter_idemp : ∀ S : U → Prop, S ∩ S = S.
 Proof.
     intros S.
     apply antisym.
@@ -387,11 +348,6 @@ Proof.
     -   intros x Sx; split; exact Sx.
 Qed.
 
-(* begin hide *)
-Global Instance inter_idemp_class : Idempotent intersection := {
-    idemp := inter_idemp
-}.
-(* end hide *)
 Theorem union_ldist : ∀ R S T : U → Prop, R ∪ (S ∩ T) = (R ∪ S) ∩ (R ∪ T).
 Proof.
     intros R S T.
@@ -517,12 +473,7 @@ Proof.
         contradiction.
 Qed.
 
-(* begin hide *)
-Global Instance set_minus_id : Id set_minus := {
-    id := @empty U
-}.
-(* end hide *)
-Lemma set_minus_rid : ∀ S : U → Prop, S - ∅ = S.
+Theorem set_minus_rid : ∀ S : U → Prop, S - ∅ = S.
 Proof.
     intros S.
     apply antisym.
@@ -534,11 +485,6 @@ Proof.
         +   apply not_in_empty.
 Qed.
 
-(* begin hide *)
-Global Instance set_minus_rid_class : Rid set_minus := {
-    rid := set_minus_rid
-}.
-(* end hide *)
 Theorem set_minus_lid : ∀ S : U → Prop, ∅ - S = ∅.
 Proof.
     intros S.
@@ -547,12 +493,7 @@ Proof.
     contradiction contr.
 Qed.
 
-(* begin hide *)
-Global Instance set_minus_inv_class : Inv set_minus := {
-    inv (S : U → Prop) := S
-}.
-(* end hide *)
-Lemma set_minus_inv : ∀ S : U → Prop, S - S = ∅.
+Theorem set_minus_inv : ∀ S : U → Prop, S - S = ∅.
 Proof.
     intros S.
     apply not_ex_empty.
@@ -560,14 +501,6 @@ Proof.
     contradiction.
 Qed.
 
-(* begin hide *)
-Global Instance set_minus_linv : Linv set_minus := {
-    linv := set_minus_inv
-}.
-Global Instance set_minus_rinv : Rinv set_minus := {
-    rinv := set_minus_inv
-}.
-(* end hide *)
 Theorem set_minus_twice : ∀ S T : U → Prop, S - T - T = S - T.
 Proof.
     intros S T.
@@ -600,7 +533,7 @@ Proof.
         +   contradiction.
 Qed.
 
-Lemma symdif_comm : ∀ S T : U → Prop, S + T = T + S.
+Theorem symdif_comm : ∀ S T : U → Prop, S + T = T + S.
 Proof.
     apply set_comm_base.
     intros S T x [[Sx nTx]|[Tx nSx]].
@@ -608,14 +541,9 @@ Proof.
     -   left; split; assumption.
 Qed.
 
-(* begin hide *)
-Global Instance symdif_comm_class : Comm symmetric_difference := {
-    comm := symdif_comm
-}.
-(* end hide *)
-Lemma symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
+Theorem symdif_assoc : ∀ R S T : U → Prop, R + (S + T) = (R + S) + T.
 Proof.
-    apply set_assoc_base; try exact symdif_comm_class.
+    apply set_assoc_base; [>exact symdif_comm|].
     intros R S T x x_in.
     destruct x_in as [[Rx nSTx]|[STx nRx]].
     -   unfold symmetric_difference, union in nSTx.
@@ -646,16 +574,7 @@ Proof.
             split; left; assumption.
 Qed.
 
-(* begin hide *)
-Global Instance symdif_assoc_class : Assoc symmetric_difference := {
-    assoc := symdif_assoc
-}.
-
-Global Instance symdif_id : Id symmetric_difference := {
-    id := @empty U
-}.
-(* end hide *)
-Lemma symdif_lid : ∀ S : U → Prop, ∅ + S = S.
+Theorem symdif_lid : ∀ S : U → Prop, ∅ + S = S.
 Proof.
     intros S.
     apply antisym.
@@ -667,17 +586,14 @@ Proof.
         +   exact x_in.
         +   apply not_in_empty.
 Qed.
+Theorem symdif_rid : ∀ S : U → Prop, S + ∅ = S.
+Proof.
+    intros S.
+    rewrite symdif_comm.
+    apply symdif_lid.
+Qed.
 
-(* begin hide *)
-Global Instance symdif_lid_class : Lid symmetric_difference := {
-    lid := symdif_lid
-}.
-
-Global Instance symdif_inv : Inv symmetric_difference := {
-    inv (S : U → Prop) := S
-}.
-(* end hide *)
-Lemma symdif_linv : ∀ S : U → Prop, S + S = ∅.
+Theorem symdif_inv : ∀ S : U → Prop, S + S = ∅.
 Proof.
     intros S.
     apply not_ex_empty.
@@ -685,9 +601,6 @@ Proof.
     destruct x_in; destruct H; contradiction.
 Qed.
 (* begin hide *)
-Global Instance symdif_linv_class : Linv symmetric_difference := {
-    linv := symdif_linv
-}.
 
 End SetBase.
 

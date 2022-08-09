@@ -176,7 +176,7 @@ Theorem card_union_right {U} : ∀ S T : U → Prop,
     |set_type T| <= |set_type (S ∪ T)%set|.
 Proof.
     intros S T.
-    rewrite comm.
+    rewrite union_comm.
     apply card_union_left.
 Qed.
 

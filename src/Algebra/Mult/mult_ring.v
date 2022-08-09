@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Export plus_group.
-Require Import op.
 
 #[universes(template)]
 Class Mult U := {
@@ -150,26 +149,24 @@ Section MultRing.
 
 Context {U} `{AllMult U, NotTrivial U}.
 
-Global Instance mult_op_assoc : Assoc mult := {assoc := mult_assoc}.
-Global Instance mult_op_comm : Comm mult := {comm := mult_comm}.
-Global Instance mult_op_id : Id mult := {id := one}.
-Global Instance mult_op_lid : Lid mult := {lid := mult_lid}.
-Global Instance mult_op_rid : Rid mult := {rid := mult_rid}.
-Global Instance mult_op_anni : Anni mult := {anni := zero}.
-Global Instance mult_op_lanni : Lanni mult := {lanni := mult_lanni}.
-Global Instance mult_op_ranni : Ranni mult := {ranni := mult_ranni}.
 (* end hide *)
 Theorem lmult : ∀ {a b} c, a = b → c * a = c * b.
 Proof.
-    apply lop.
+    intros a b c ab.
+    apply f_equal.
+    exact ab.
 Qed.
 Theorem rmult : ∀ {a b} c, a = b → a * c = b * c.
 Proof.
-    apply lop.
+    intros a b c ab.
+    rewrite ab.
+    reflexivity.
 Qed.
 Theorem lrmult : ∀ {a b c d}, a = b → c = d → a * c = b * d.
 Proof.
-    apply lrop.
+    intros a b c d ab cd.
+    rewrite ab, cd.
+    reflexivity.
 Qed.
 
 Theorem not_trivial_one : 0 ≠ 1.

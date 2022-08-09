@@ -840,7 +840,7 @@ Proof.
             apply nat_lt_ex in leq as [c [c_nz c_eq]].
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
-            rewrite <- assoc in eq2.
+            rewrite <- plus_assoc in eq2.
             apply plus_lcancel in eq2.
             rewrite eq2 in n1_lt.
             pose proof (nat_le_self_rplus (c * b) n2) as eq3.
@@ -856,7 +856,7 @@ Proof.
             apply nat_lt_ex in leq as [c [c_nz c_eq]].
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
-            rewrite <- assoc in eq2.
+            rewrite <- plus_assoc in eq2.
             apply plus_lcancel in eq2.
             rewrite <- eq2 in n2_lt.
             pose proof (nat_le_self_rplus (c * b) n1) as eq3.

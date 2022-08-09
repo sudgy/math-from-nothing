@@ -533,7 +533,7 @@ Proof.
             unfold X.
             rewrite contr2.
             cbn.
-            rewrite assoc.
+            rewrite union_assoc.
             rewrite union_idemp.
             reflexivity.
         }

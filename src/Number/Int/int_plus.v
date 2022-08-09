@@ -51,7 +51,7 @@ Proof.
     equiv_get_value a b c.
     destruct a as [a1 a2], b as [b1 b2], c as [c1 c2].
     unfold plus; equiv_simpl.
-    repeat rewrite assoc.
+    repeat rewrite plus_assoc.
     reflexivity.
 Qed.
 Global Instance int_plus_assoc_class : PlusAssoc int := {

@@ -24,13 +24,13 @@ Proof.
     split.
     -   intros [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
         unfold disjoint in AB_dis.
-        rewrite comm in AB_dis.
-        rewrite comm in AB_all.
+        rewrite inter_comm in AB_dis.
+        rewrite union_comm in AB_all.
         repeat split; assumption.
     -   intros [B_empty [A_empty [B_open [A_open [AB_dis AB_all]]]]].
         unfold disjoint in AB_dis.
-        rewrite comm in AB_dis.
-        rewrite comm in AB_all.
+        rewrite inter_comm in AB_dis.
+        rewrite union_comm in AB_all.
         repeat split; assumption.
 Qed.
 
@@ -133,9 +133,7 @@ Proof.
             rewrite <- AB_X.
             rewrite inter_ldist.
             rewrite cAB_empty.
-            (* TODO: Figure out why rewrite rid doesn't work *)
-            rewrite comm.
-            rewrite union_lid.
+            rewrite union_rid.
             apply rsub_inter_equal.
             apply closure_sub.
         }
@@ -143,7 +141,7 @@ Proof.
         {
             rewrite <- AB_X.
             rewrite inter_ldist.
-            rewrite comm in AcB_empty.
+            rewrite inter_comm in AcB_empty.
             rewrite AcB_empty.
             rewrite union_lid.
             apply rsub_inter_equal.
@@ -575,7 +573,7 @@ Proof.
         repeat split; assumption.
     -   apply (wlog B A Bx).
         unfold separation, disjoint.
-        repeat split; try rewrite comm; assumption.
+        repeat split; try rewrite inter_comm; try rewrite union_comm; assumption.
 Qed.
 
 Theorem connected_union_connected2 : ∀ (A B : U → Prop) x,

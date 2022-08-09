@@ -42,10 +42,6 @@
 ./src/Category/category_slice.v
 ./src/Category/basic_categories.v
 
-./src/Algebra/Op/op.v
-./src/Algebra/Op/op_group.v
-./src/Algebra/Op/op_pow.v
-
 ./src/Algebra/Plus/plus_group.v
 ./src/Algebra/Plus/plus_sum.v
 ./src/Algebra/Plus/plus.v

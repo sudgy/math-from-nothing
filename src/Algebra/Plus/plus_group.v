@@ -1,7 +1,5 @@
 Require Import init.
 
-Require Import op.
-
 #[universes(template)]
 Class Plus U := {
     plus : U → U → U;
@@ -120,30 +118,24 @@ Section PlusGroup.
 
 Context {U} `{AllPlus U, NotTrivial U}.
 
-Global Instance plus_op_assoc : Assoc plus := {assoc := plus_assoc}.
-Global Instance plus_op_comm : Comm plus := {comm := plus_comm}.
-Global Instance plus_op_id : Id plus := {id := zero}.
-Global Instance plus_op_lid : Lid plus := {lid := plus_lid}.
-Global Instance plus_op_rid : Rid plus := {rid := plus_rid}.
-Global Instance plus_op_lcancel : Lcancel plus :=
-    {lcancel := (@plus_lcancel _ _ _)}.
-Global Instance plus_op_rcancel : Rcancel plus :=
-    {rcancel := (@plus_rcancel _ _ _)}.
-Global Instance plus_op_inv : Inv plus := {inv := neg}.
-Global Instance plus_op_linv : Linv plus := {linv := plus_linv}.
-Global Instance plus_op_rinv : Rinv plus := {rinv := plus_rinv}.
 (* end hide *)
 Theorem lplus : ∀ {a b} c, a = b → c + a = c + b.
 Proof.
-    apply lop.
+    intros a b c ab.
+    apply f_equal.
+    exact ab.
 Qed.
 Theorem rplus : ∀ {a b} c, a = b → a + c = b + c.
 Proof.
-    apply lop.
+    intros a b c ab.
+    rewrite ab.
+    reflexivity.
 Qed.
 Theorem lrplus : ∀ {a b c d}, a = b → c = d → a + c = b + d.
 Proof.
-    apply lrop.
+    intros a b c d ab cd.
+    rewrite ab, cd.
+    reflexivity.
 Qed.
 
 Theorem not_trivial_zero : ∃ a, 0 ≠ a.

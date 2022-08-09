@@ -68,7 +68,7 @@ Proof.
             assert (B n x) as Bnx by apply open_ball_self.
             specialize (Ax (B n) B_open Bnx).
             apply not_empty_ex in Ax as [a a_in].
-            rewrite comm in a_in.
+            rewrite inter_comm in a_in.
             exists a.
             exact a_in.
         }
