@@ -3,6 +3,8 @@
 
 Require Export base_logic.
 
+Ltac exfalso := elimtype False.
+
 Theorem not_not : ∀ P, (¬¬P) ↔ P.
 Proof.
     intro P.
@@ -20,13 +22,14 @@ Proof.
     intros A B.
     split.
     -   intros n.
-        classic_case B.
-        +   assert (A → B) by (intro; exact b).
+        classic_case B as [BH|nBH].
+        +   assert (A → B) by (intro; exact BH).
             contradiction.
-        +   split; try exact n0.
-            classic_case A; try assumption.
-            assert (A → B) by (intro; contradiction).
-            contradiction.
+        +   split; [>|exact nBH].
+            classic_case A as [AH|nAH]; [>exact AH|].
+            exfalso.
+            apply n.
+            intro; contradiction.
     -   intros [a b] ab.
         specialize (ab a).
         contradiction.
@@ -36,25 +39,21 @@ Proof.
     intros A B.
     split.
     -   intros n.
-        classic_case A.
-        +   classic_case B.
-            *   assert (A ∧ B) by (split; assumption).
-                contradiction.
-            *   right; exact n0.
-        +   left; exact n0.
+        classic_case A as [AH|nAH].
+        +   right.
+            intros b.
+            apply n.
+            split; assumption.
+        +   left; exact nAH.
     -   intros [na|nb] [a b]; contradiction.
 Qed.
 Theorem not_or : ∀ A B, (¬(A ∨ B)) ↔ (¬A ∧ ¬B).
 Proof.
     intros A B.
-    split.
-    -   intro n.
-        split; intro.
-        +   assert (A ∨ B) by (left; assumption).
-            contradiction.
-        +   assert (A ∨ B) by (right; assumption).
-            contradiction.
-    -   intros [na nb] [a|b]; contradiction.
+    rewrite <- (not_not (¬A ∧ ¬B)).
+    rewrite not_and.
+    do 2 rewrite not_not.
+    reflexivity.
 Qed.
 Theorem not_ex : ∀ {U} (P : U → Prop), (¬(∃ a, P a)) ↔ (∀ a, ¬P a).
 Proof.
@@ -72,17 +71,16 @@ Qed.
 Theorem not_all : ∀ {U} (P : U → Prop), (¬(∀ a, P a)) ↔ (∃ a, ¬P a).
 Proof.
     intros U P.
+    rewrite <- (not_not (∃ a, ¬P a)).
+    rewrite not_ex.
     split.
-    -   intro not_all.
-        classic_contradiction_prop H.
-        apply not_all; intros a.
-        rewrite not_ex in H.
-        specialize (H a).
-        rewrite not_not in H.
-        exact H.
-    -   intros [a a_not] all.
-        specialize (all a).
-        contradiction.
+    all: intros not_all all.
+    all: apply not_all.
+    all: intros a.
+    -   rewrite <- not_not.
+        apply all.
+    -   rewrite not_not.
+        apply all.
 Qed.
 
 Theorem not_and_impl : ∀ A B, (¬(A ∧ B)) ↔ (A → ¬B).
@@ -186,8 +184,8 @@ Proof.
         rewrite not_true in contr.
         exact (Ps contr).
     }
-    destruct (ex_to_type H).
-    exact x.
+    destruct (ex_to_type H) as [p pH].
+    exact p.
 Qed.
 Ltac classic_contradiction H :=
     classic_contradiction_prop H ||
@@ -233,10 +231,10 @@ Qed.
 Theorem prop_split : ∀ P, {P = True} + {P = False}.
 Proof.
     intros P.
-    classic_case (P = True) as [eq|neq]; try (left; exact eq).
-    right.
-    rewrite neq_true_false in neq.
-    exact neq.
+    classic_case (P = True) as [eq|neq]; [>left|right].
+    -   exact eq.
+    -   rewrite neq_true_false in neq.
+        exact neq.
 Qed.
 
 Theorem prop_neq : True ≠ False.
@@ -254,8 +252,8 @@ Proof.
         rewrite <- eq.
         exact true.
     -   rewrite eq.
-        intro contr.
-        contradiction.
+        rewrite not_false.
+        exact true.
 Qed.
 
 Theorem not_eq_eq : ∀ A B, (¬A) = (¬B) → A = B.

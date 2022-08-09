@@ -10,8 +10,6 @@ Ltac case_if :=
     | K: context [if ?P then _ else _] |- _ => go P
     end.
 
-Ltac exfalso := elimtype False.
-
 Tactic Notation "bring_left" constr(x) constr(comm) constr(assoc) :=
     repeat rewrite assoc;
     repeat rewrite (comm _ x);
