@@ -135,7 +135,7 @@ Proof.
     -   intros y y_gt.
         classic_contradiction Sy.
         specialize (x_max y Sy).
-        pose proof (op_le_lt_trans x_max y_gt) as [leq neq2].
+        pose proof (le_lt_trans x_max y_gt) as [leq neq2].
         contradiction.
 Qed.
 
@@ -302,11 +302,11 @@ Proof.
     -   classic_case (strict (ord_le B) m x) as [ltq|leq].
         +   rewrite LM by exact ltq.
             apply ord_zero_le.
-        +   rewrite op_nlt_le in leq.
+        +   rewrite nlt_le in leq.
             assert (L C) as LC.
             {
                 intros b b_gt.
-                rewrite x_gt by exact (op_le_lt_trans leq b_gt).
+                rewrite x_gt by exact (le_lt_trans leq b_gt).
                 rewrite LM by exact b_gt.
                 apply ord_zero_eq.
             }

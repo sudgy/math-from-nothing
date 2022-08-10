@@ -223,7 +223,7 @@ Theorem nat_to_abstract_lt : ∀ a b,
     nat_to_abstract a < nat_to_abstract b ↔ a < b.
 Proof.
     intros a b.
-    unfold lt, strict.
+    unfold strict.
     rewrite nat_to_abstract_le.
     assert ((nat_to_abstract a ≠ nat_to_abstract b) ↔ a ≠ b) as eq.
     {

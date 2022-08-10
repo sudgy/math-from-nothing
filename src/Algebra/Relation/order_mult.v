@@ -513,7 +513,7 @@ Proof.
         apply lt_rplus.
         exact ab.
 Qed.
-Global Instance ordered_field_dense_class : Dense lt := {
+Global Instance ordered_field_dense_class : Dense (strict le) := {
     dense := ordered_field_dense
 }.
 (* end hide *)

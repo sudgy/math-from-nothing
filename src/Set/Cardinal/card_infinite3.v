@@ -177,7 +177,7 @@ Theorem finite_well_ordered_max :
     split; try exact Sx.
     intros y Sy.
     classic_contradiction contr.
-    rewrite op_nle_lt in contr.
+    rewrite nle_lt in contr.
     destruct contr as [leq neq].
     rewrite neq_sym in neq.
     apply (x_max y Sy); assumption.
@@ -283,7 +283,7 @@ Theorem finite_well_ordered_set : ∀ S : U → Prop,
     split; try exact Sx.
     intros y Sy.
     classic_contradiction contr.
-    rewrite op_nle_lt in contr.
+    rewrite nle_lt in contr.
     destruct contr as [leq neq].
     exact (x_least y Sy neq leq).
 Qed.
@@ -296,7 +296,7 @@ Theorem finite_well_ordered_set_max : ∀ S : U → Prop,
     split; try exact Sx.
     intros y Sy.
     classic_contradiction contr.
-    rewrite op_nle_lt in contr.
+    rewrite nle_lt in contr.
     destruct contr as [leq neq].
     rewrite neq_sym in neq.
     exact (x_least y Sy neq leq).

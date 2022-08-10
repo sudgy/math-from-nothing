@@ -726,7 +726,7 @@ Proof.
         intros a b eq.
         apply set_type_eq.
         inversion eq.
-        reflexivity.
+        exact H0.
 Qed.
 
 Lemma f1_ex : ∃ f :

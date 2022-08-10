@@ -64,8 +64,7 @@ Class Order U := {
     le : U → U → Prop;
 }.
 Infix "<=" := le.
-Definition lt {U} `{Order U} := strict le.
-Infix "<" := lt.
+Infix "<" := (strict le).
 Arguments le: simpl never.
 
 Class PartialOrder U `{
@@ -85,15 +84,10 @@ Section TotalOrderImply.
 
 Context {U} `{TotalOrder U}.
 
-Lemma total_order_refl_ : ∀ a, a <= a.
-Proof.
-    intros a.
-    destruct (connex a a); assumption.
+Global Program Instance total_order_refl : Reflexive le.
+Next Obligation.
+    destruct (connex x x); assumption.
 Qed.
-
-Global Instance total_order_refl : Reflexive le := {
-    refl := total_order_refl_
-}.
 
 End TotalOrderImply.
 
@@ -107,41 +101,32 @@ Context {U} {op : U → U → Prop} `{
     Reflexive U op
 }.
 
-Lemma op_lt_irrefl_ : ∀ x, ¬(strict op x x).
-Proof.
-    intros x [leq neq].
+Global Program Instance lt_irrefl : Irreflexive (strict op).
+Next Obligation.
+    intros [leq neq].
     contradiction.
 Qed.
-Global Instance op_lt_irrefl : Irreflexive (strict op) := {
-    irrefl := op_lt_irrefl_
-}.
 
-Lemma op_lt_asym_ : ∀ x y, strict op x y → ¬(strict op y x).
-Proof.
-    intros x y [leq neq] [cleq cneq].
+Global Program Instance lt_asym : Asymmetric (strict op).
+Next Obligation.
+    destruct H3 as [leq neq].
+    intros [cleq cneq].
     pose proof (antisym leq cleq).
     contradiction.
 Qed.
-Global Instance op_lt_asym : Asymmetric (strict op) := {
-    asym := op_lt_asym_
-}.
 
-Lemma op_lt_trans_ : ∀ x y z, strict op x y → strict op y z → strict op x z.
-Proof.
-    intros x y z [xy_leq xy_neq] [yz_leq yz_neq].
+Global Program Instance lt_trans : Transitive (strict op).
+Next Obligation.
+    rename H3 into xy, H4 into yz.
     split.
-    -   exact (trans xy_leq yz_leq).
+    -   destruct xy as [xy_leq xy_neq], yz as [yz_leq yz_neq].
+        exact (trans xy_leq yz_leq).
     -   intro contr; subst.
-        pose proof (antisym xy_leq yz_leq).
-        contradiction.
+        exact (asym y z yz xy).
 Qed.
-Global Instance op_lt_trans : Transitive (strict op) := {
-    trans := op_lt_trans_
-}.
 
-Lemma op_lt_trichotomy_ : ∀ x y, {strict op x y} + {x = y} + {strict op y x}.
-Proof.
-    intros x y.
+Global Program Instance lt_trichotomy : Trichotomy (strict op).
+Next Obligation.
     classic_case (x = y) as [eq|neq].
     -   left; right.
         exact eq.
@@ -152,18 +137,13 @@ Proof.
             rewrite neq_sym in neq.
             split; assumption.
 Qed.
-Global Instance op_lt_trichotomy : Trichotomy (strict op) := {
-    trichotomy := op_lt_trichotomy_
-}.
 (* end hide *)
-Theorem op_nle_lt : ∀ a b, (¬op a b) = (strict op b a).
+Theorem nle_lt : ∀ a b, ¬op a b ↔ strict op b a.
 Proof.
     intros a b.
-    apply propositional_ext.
     split; intro eq.
     -   split.
-        +   destruct (connex a b); try assumption.
-            contradiction.
+        +   destruct (connex a b); [>contradiction|assumption].
         +   intro contr; subst.
             apply eq.
             apply refl.
@@ -173,25 +153,14 @@ Proof.
         contradiction.
 Qed.
 
-Theorem op_nlt_le : ∀ a b, (¬strict op a b) = (op b a).
+Theorem nlt_le : ∀ a b, ¬strict op a b ↔ op b a.
 Proof.
     intros a b.
-    apply propositional_ext.
-    split; intro eq.
-    -   unfold lt, strict in eq.
-        rewrite not_and in eq.
-        rewrite not_not in eq.
-        destruct eq as [neq|eq].
-        +   destruct (connex a b); try assumption.
-            contradiction.
-        +   subst.
-            apply refl.
-    -   intros [leq neq].
-        pose proof (antisym leq eq).
-        contradiction.
+    rewrite <- nle_lt.
+    apply not_not.
 Qed.
 
-Theorem op_le_lt_trans : ∀ {a b c}, op a b → strict op b c → strict op a c.
+Theorem le_lt_trans : ∀ {a b c}, op a b → strict op b c → strict op a c.
 Proof.
     intros a b c ab [leq neq].
     split.
@@ -200,7 +169,7 @@ Proof.
         pose proof (antisym leq ab).
         contradiction.
 Qed.
-Theorem op_lt_le_trans : ∀ {a b c}, strict op a b → op b c → strict op a c.
+Theorem lt_le_trans : ∀ {a b c}, strict op a b → op b c → strict op a c.
 Proof.
     intros a b c [leq neq] bc.
     split.
@@ -219,12 +188,12 @@ Qed.
 Theorem le_lt_trans2 : ∀ {a b c}, strict op b c → op a b → strict op a c.
 Proof.
     intros a b c bc ab.
-    exact (op_le_lt_trans ab bc).
+    exact (le_lt_trans ab bc).
 Qed.
 Theorem lt_le_trans2 : ∀ {a b c}, op b c → strict op a b → strict op a c.
 Proof.
     intros a b c bc ab.
-    exact (op_lt_le_trans ab bc).
+    exact (lt_le_trans ab bc).
 Qed.
 
 (* begin hide *)
@@ -271,64 +240,3 @@ Ltac make_dual_op op' :=
     try pose proof (ge_trans (op := op'));
     try pose proof (ge_connex (op := op')).
 (* end show *)
-
-(* begin hide *)
-Section TotalOrder2.
-
-Context {U} `{TotalOrder U}.
-
-Lemma lt_irrefl_ : ∀ x, ¬x < x.
-Proof.
-    apply op_lt_irrefl.
-Qed.
-Global Instance lt_irrefl : Irreflexive lt := {
-    irrefl := lt_irrefl_
-}.
-
-Lemma lt_asym_ : ∀ x y, x < y → ¬y < x.
-Proof.
-    apply op_lt_asym.
-Qed.
-Global Instance lt_asym : Asymmetric lt := {
-    asym := lt_asym_
-}.
-
-Lemma lt_trans_ : ∀ x y z, x < y → y < z → x < z.
-Proof.
-    apply op_lt_trans.
-Qed.
-Global Instance lt_trans : Transitive lt := {
-    trans := lt_trans_
-}.
-
-Lemma lt_trichotomy_ : ∀ x y, {x < y} + {x = y} + {y < x}.
-Proof.
-    apply op_lt_trichotomy.
-Qed.
-Global Instance lt_trichotomy : Trichotomy lt := {
-    trichotomy := lt_trichotomy_
-}.
-(* end hide *)
-Theorem nle_lt : ∀ a b, (¬a <= b) = (b < a).
-Proof.
-    apply op_nle_lt.
-Qed.
-
-Theorem nlt_le : ∀ a b, (¬a < b) = (b <= a).
-Proof.
-    apply op_nlt_le.
-Qed.
-
-Theorem le_lt_trans : ∀ {a b c}, a <= b → b < c → a < c.
-Proof.
-    intros a b c ab bc.
-    apply (op_le_lt_trans ab bc).
-Qed.
-Theorem lt_le_trans : ∀ {a b c}, a < b → b <= c → a < c.
-Proof.
-    intros a b c ab bc.
-    apply (op_lt_le_trans ab bc).
-Qed.
-(* begin hide *)
-End TotalOrder2.
-(* end hide *)

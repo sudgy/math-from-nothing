@@ -39,7 +39,7 @@ Context {U} `{
     @Connex U le,
     @Antisymmetric U le,
     @Transitive U le,
-    @Dense U lt
+    @Dense U (strict le)
 }.
 (* end hide *)
 Hypothesis distinct : ∃ a b : U, a ≠ b.

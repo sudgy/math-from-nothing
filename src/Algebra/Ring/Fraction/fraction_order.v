@@ -180,7 +180,7 @@ Theorem frac_lt : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
     (a1 * [b2|] < b1 * [a2|]).
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
-    unfold lt, strict.
+    unfold strict.
     rewrite frac_le by assumption.
     equiv_simpl.
     unfold frac_eq; cbn.

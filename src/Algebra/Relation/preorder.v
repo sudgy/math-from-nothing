@@ -124,7 +124,7 @@ Proof.
     exists a.
     intros x leq.
     specialize (a_max (to_equiv_type preorder_equiv x)).
-    unfold lt, strict in a_max.
+    unfold strict in a_max.
     rewrite not_and in a_max.
     rewrite not_not in a_max.
     unfold le in a_max; equiv_simpl in a_max.

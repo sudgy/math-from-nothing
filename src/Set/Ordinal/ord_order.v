@@ -111,7 +111,7 @@ Proof.
     }
     revert neq.
     equiv_get_value α β.
-    unfold lt, strict, le; equiv_simpl.
+    unfold strict, le; equiv_simpl.
     intros neq.
     apply propositional_ext; split.
     -   intros [eq|leq]; try contradiction.
@@ -127,7 +127,7 @@ Theorem ord_lt_initial : ∀ A B,
     (∃ x, A ~ (initial_segment B x)).
 Proof.
     intros A B.
-    unfold lt, strict, le; equiv_simpl.
+    unfold strict, le; equiv_simpl.
     apply propositional_ext; split.
     -   intros [[eq|leq] neq].
         +   contradiction.

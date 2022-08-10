@@ -291,8 +291,8 @@ Close Scope card_scope.
                     do 2 rewrite plus_lid.
                     change nat_zero with (zero (U := nat)).
                     unfold f', F; case_if.
-                    +   rewrite plus_rid in l.
-                        destruct l; contradiction.
+                    +   rewrite plus_rid in s.
+                        destruct s; contradiction.
                     +   reflexivity.
                 -   rewrite nat_plus_lsuc.
                     cbn.

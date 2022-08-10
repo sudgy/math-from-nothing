@@ -90,7 +90,7 @@ Proof.
                 rewrite <- eq in m_eq.
                 apply f_bij in m_eq.
                 symmetry in m_eq.
-                destruct l; contradiction.
+                destruct s; contradiction.
             -   pose proof [|f (nat_suc x)] as fx_lt.
                 cbn in fx_lt.
                 rewrite nat_lt_suc_le in fx_lt.
@@ -113,13 +113,13 @@ Proof.
         do 2 case_if.
         all: apply f_bij in eq2.
         +   exact eq2.
-        +   rewrite eq2 in l.
+        +   rewrite eq2 in s.
             rewrite nlt_le in n0.
-            pose proof (trans (le_lt_trans n0 (nat_lt_suc b)) l) as [eq neq].
+            pose proof (trans (le_lt_trans n0 (nat_lt_suc b)) s) as [eq neq].
             contradiction.
-        +   rewrite <- eq2 in l.
+        +   rewrite <- eq2 in s.
             rewrite nlt_le in n0.
-            pose proof (trans (le_lt_trans n0 (nat_lt_suc a)) l) as [eq neq].
+            pose proof (trans (le_lt_trans n0 (nat_lt_suc a)) s) as [eq neq].
             contradiction.
         +   inversion eq2.
             reflexivity.

@@ -200,7 +200,7 @@ Proof.
     intros a b.
     equiv_get_value a b.
     destruct a as [a1 a2], b as [b1 b2].
-    unfold lt, strict, le, int_suc, plus, one; equiv_simpl.
+    unfold strict, le, int_suc, plus, one; equiv_simpl.
     intros eq.
     rewrite plus_rid in eq.
     destruct eq as [leq neq].
@@ -217,7 +217,7 @@ Proof.
     intros a b.
     equiv_get_value a b.
     destruct a as [a1 a2], b as [b1 b2].
-    unfold lt, strict, le, int_suc, plus, one; equiv_simpl.
+    unfold strict, le, int_suc, plus, one; equiv_simpl.
     intros eq.
     rewrite <- nat_lt_suc_le in eq.
     change 1 with (nat_suc 0).

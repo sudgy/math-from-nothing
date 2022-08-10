@@ -157,7 +157,7 @@ Theorem arch_ordered_homo_lt : ∀ f, arch_ordered_homo f →
     ∀ x y, x < y ↔ f x < f y.
 Proof.
     intros f f_homo x y.
-    unfold lt, strict.
+    unfold strict.
     rewrite <- (arch_ordered_homo_le _ f_homo).
     split.
     -   intros [leq neq].

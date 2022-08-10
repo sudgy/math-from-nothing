@@ -73,7 +73,7 @@ Proof.
 Qed.
 
 (* begin hide *)
-Context `{SupremumComplete U le, Dense U lt}.
+Context `{SupremumComplete U le, Dense U (strict le)}.
 
 Let order_top := order_topology.
 Existing Instance order_top.

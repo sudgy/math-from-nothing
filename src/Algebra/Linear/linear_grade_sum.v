@@ -526,9 +526,9 @@ Next Obligation.
                 unfold g'.
                 destruct (strong_excluded_middle (m' < n)).
                 case_if; subst.
-                1: destruct (strong_excluded_middle ([g [[vn|]|l]|] = m));
+                1: destruct (strong_excluded_middle ([g [[vn|]|s]|] = m));
                     subst; cbn.
-                3: destruct (strong_excluded_middle ([g [m'|l]|] = m));
+                3: destruct (strong_excluded_middle ([g [m'|s]|] = m));
                     subst; cbn.
                 5: case_if; subst.
                 1, 4, 6: reflexivity.

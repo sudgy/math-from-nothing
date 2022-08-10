@@ -15,7 +15,7 @@ Context {U} `{
     Antisymmetric U le,
     Transitive U le,
     SupremumComplete U le,
-    Dense U lt,
+    Dense U (strict le),
     NotTrivial U
 }.
 
