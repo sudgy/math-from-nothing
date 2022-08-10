@@ -1127,7 +1127,7 @@ Proof.
         +   intros contr.
             rewrite <- (plus_0_anb_b_a) in contr.
             rewrite dif_squares in contr.
-            apply mult_0 in contr.
+            apply mult_zero in contr.
             destruct contr as [eq|eq].
             *   apply plus_0_ab_a_nb in eq.
                 subst b.

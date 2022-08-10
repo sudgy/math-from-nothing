@@ -263,3 +263,8 @@ Proof.
     do 2 rewrite not_not in eq.
     exact eq.
 Qed.
+
+Theorem eq_iff {U} : ∀ a b : U, a = b ↔ b = a.
+    intros a b.
+    split; intro eq; symmetry; exact eq.
+Qed.

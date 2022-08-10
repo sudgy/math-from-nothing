@@ -287,7 +287,7 @@ Proof.
             classic_case (0 = r1) as [r1_z|r1_nz].
             {
                 subst.
-                apply mult_0 in r1_z as [C0|s2_z]; try contradiction.
+                apply mult_zero in r1_z as [C0|s2_z]; try contradiction.
                 subst.
                 exists r3, s3.
                 repeat split; trivial.
@@ -299,7 +299,7 @@ Proof.
             classic_case (0 = s1) as [s1_z|s1_nz].
             {
                 subst.
-                apply mult_0 in s1_z as [C0|s3_z]; try contradiction.
+                apply mult_zero in s1_z as [C0|s3_z]; try contradiction.
                 subst.
                 exists r2, s2.
                 repeat split; trivial.

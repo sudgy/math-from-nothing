@@ -54,7 +54,7 @@ Proof.
             *   classic_case (0 = s) as [s0|s_nz].
                 --  subst.
                     rewrite mult_ranni in eq.
-                    symmetry in eq; apply mult_0 in eq as [eq|eq].
+                    symmetry in eq; apply mult_zero in eq as [eq|eq].
                     ++  subst.
                         destruct (le_lt_trans r_pos ur); contradiction.
                     ++  subst.
