@@ -13,20 +13,55 @@ Arguments list_add {A} a l.
 Infix "::" := list_add (at level 60, right associativity) : list_scope.
 Open Scope list_scope.
 
-Definition list_conc (A : Type) : list A → list A → list A :=
-  fix list_app l m :=
-  match l with
-   | list_end => m
-   | a :: l1 => a :: list_app l1 m
+Fixpoint list_conc {U : Type} (al bl : list U) : list U :=
+  match al with
+   | list_end => bl
+   | a :: al' => a :: list_conc al' bl
   end.
 
 Infix "++" := list_conc (right associativity, at level 60) : list_scope.
 
-Fixpoint list_reverse (A : Type) (l : list A) : list A :=
+Fixpoint list_reverse {U : Type} (l : list U) : list U :=
     match l with
     | list_end => list_end
     | a :: l1 => list_reverse l1 ++ (a :: list_end)
     end.
+
+Theorem list_end_neq {U} : ∀ (a : U) l, a :: l ≠ list_end.
+Proof.
+    intros a l eq.
+    inversion eq.
+Qed.
+
+Theorem list_inversion {U} : ∀ (a b : U) al bl, a :: al = b :: bl →
+    a = b ∧ al = bl.
+Proof.
+    intros a b al bl eq.
+    inversion eq.
+    split; reflexivity.
+Qed.
+
+Theorem list_single_eq {U} : ∀ (a b : U), a :: list_end = b :: list_end → a = b.
+Proof.
+    intros a b eq.
+    apply list_inversion in eq.
+    apply eq.
+Qed.
+
+Theorem list_conc_eq {U} : ∀ (x : U) al bl, x :: al = x :: bl → al = bl.
+Proof.
+    intros x al bl eq.
+    apply list_inversion in eq.
+    apply eq.
+Qed.
+
+Theorem list_add_conc_add {U} : ∀ (a : U) l1 l2,
+    a :: (l1 ++ l2) = (a :: l1) ++ l2.
+Proof.
+    intros a l1 l2.
+    cbn.
+    reflexivity.
+Qed.
 
 Theorem list_add_conc {U} : ∀ (a : U) l, a :: l = (a :: list_end) ++ l.
 Proof.
@@ -62,9 +97,8 @@ Theorem list_conc_add_assoc {U} :
     ∀ (a : U) l1 l2, a :: (l1 ++ l2) = (a :: l1) ++ l2.
 Proof.
     intros a l1 l2.
-    rewrite list_add_conc.
-    rewrite (list_add_conc a l1).
-    apply list_conc_assoc.
+    cbn.
+    reflexivity.
 Qed.
 
 Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
@@ -85,12 +119,17 @@ Theorem list_reverse_end {U : Type} : ∀ l : list U,
     list_end = list_reverse l → list_end = l.
 Proof.
     intros l eq.
-    destruct l.
-    1: reflexivity.
+    destruct l; [>reflexivity|].
     cbn in eq.
     destruct (list_reverse l).
-    -   inversion eq.
-    -   inversion eq.
+    -   cbn in eq.
+        symmetry in eq.
+        apply list_end_neq in eq.
+        contradiction.
+    -   cbn in eq.
+        symmetry in eq.
+        apply list_end_neq in eq.
+        contradiction.
 Qed.
 
 Theorem list_reverse_reverse {U : Type} : ∀ l : list U,
@@ -111,8 +150,7 @@ Theorem list_reverse_eq {U : Type} : ∀ l1 l2 : list U,
     l1 = l2 ↔ list_reverse l1 = list_reverse l2.
 Proof.
     intros l1 l2.
-    split.
-    1: intros; subst; reflexivity.
+    split; [>intros; subst; reflexivity|].
     intros l_eq.
     rewrite <- (list_reverse_reverse l1).
     rewrite <- (list_reverse_reverse l2).
