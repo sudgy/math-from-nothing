@@ -109,7 +109,7 @@ Qed.
 Theorem neg_div : ∀ a, 0 ≠ a → /(-a) = -/a.
 Proof.
     intros a a_nz.
-    pose proof (neg_nz _ a_nz) as na_nz.
+    pose proof (land (neg_nz _) a_nz) as na_nz.
     apply mult_rcancel with (-a); try exact na_nz.
     rewrite mult_linv by exact na_nz.
     rewrite mult_lneg, mult_rneg, neg_neg.
@@ -323,3 +323,16 @@ Qed.
 (* begin hide *)
 End Field.
 (* end hide *)
+
+Tactic Notation "mult_cancel_left" constr(x) :=
+    mult_bring_left x;
+    apply lmult.
+Tactic Notation "mult_cancel_left" constr(x) "in" ident(H) :=
+    mult_bring_left x in H;
+    apply mult_lcancel in H.
+Tactic Notation "mult_cancel_right" constr(x) :=
+    mult_bring_right x;
+    apply rmult.
+Tactic Notation "mult_cancel_right" constr(x) "in" ident(H) :=
+    mult_bring_right x in H;
+    apply mult_rcancel in H.

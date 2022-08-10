@@ -23,28 +23,30 @@ Class MultComm U `{Mult U} := {
 }.
 
 Class MultLanni U `{Zero U, Mult U} := {
-    mult_lanni : ∀ a, zero * a = zero;
+    mult_lanni : ∀ a, 0 * a = 0;
 }.
 Class MultRanni U `{Zero U, Mult U} := {
-    mult_ranni : ∀ a, a * zero = zero;
+    mult_ranni : ∀ a, a * 0 = 0;
 }.
 
 #[universes(template)]
 Class One U := {
     one : U;
 }.
+Notation "1" := one : algebra_scope.
+Notation "- 1" := (-(1)) : algebra_scope.
 Class MultLid U `{Mult U, One U} := {
-    mult_lid : ∀ a, one * a = a;
+    mult_lid : ∀ a, 1 * a = a;
 }.
 Class MultRid U `{Mult U, One U} := {
-    mult_rid : ∀ a, a * one = a;
+    mult_rid : ∀ a, a * 1 = a;
 }.
 
 Class MultLcancel U `{Zero U, Mult U} := {
-    mult_lcancel : ∀ {a b} c, zero ≠ c → c * a = c * b → a = b;
+    mult_lcancel : ∀ {a b} c, 0 ≠ c → c * a = c * b → a = b;
 }.
 Class MultRcancel U `{Zero U, Mult U} := {
-    mult_rcancel : ∀ {a b} c, zero ≠ c → a * c = b * c → a = b;
+    mult_rcancel : ∀ {a b} c, 0 ≠ c → a * c = b * c → a = b;
 }.
 
 Class Rng U `{
@@ -82,7 +84,6 @@ Class AllMult U `{
 Arguments mult : simpl never.
 Arguments one : simpl never.
 
-Notation "1" := one : algebra_scope.
 Notation "2" := (one + 1) : algebra_scope.
 Notation "3" := (one + 2) : algebra_scope.
 Notation "4" := (one + 3) : algebra_scope.
@@ -91,56 +92,45 @@ Notation "6" := (one + 5) : algebra_scope.
 Notation "7" := (one + 6) : algebra_scope.
 Notation "8" := (one + 7) : algebra_scope.
 Notation "9" := (one + 8) : algebra_scope.
+Notation "- 2" := (-(2)) : algebra_scope.
+Notation "- 3" := (-(3)) : algebra_scope.
+Notation "- 4" := (-(4)) : algebra_scope.
+Notation "- 5" := (-(5)) : algebra_scope.
+Notation "- 6" := (-(6)) : algebra_scope.
+Notation "- 7" := (-(7)) : algebra_scope.
+Notation "- 8" := (-(8)) : algebra_scope.
+Notation "- 9" := (-(9)) : algebra_scope.
 
 (* begin hide *)
 Section MultRingImply.
 
 Context {U} `{AllMult U}.
 
-Lemma mult_lid_rid_ : ∀ a, a * one = a.
-Proof.
-    intros a.
+Global Program Instance mult_lid_rid : MultRid U.
+Next Obligation.
     rewrite mult_comm.
     apply mult_lid.
 Qed.
 
-Lemma mult_lcancel_rcancel_ : ∀ a b c, zero ≠ c → a * c = b * c → a = b.
-Proof.
-    intros a b c neq eq.
+Global Program Instance mult_lcancel_rcancel : MultRcancel U.
+Next Obligation.
+    rename H0 into neq, H1 into eq.
     do 2 rewrite (mult_comm _ c) in eq.
-    apply mult_lcancel with c; try exact neq.
+    apply mult_lcancel with c; [>exact neq|].
     exact eq.
 Qed.
 
-Lemma mult_lanni_ranni_ : ∀ a, a * zero = zero.
-Proof.
-    intros a.
+Global Program Instance mult_lanni_ranni : MultRanni U.
+Next Obligation.
     rewrite mult_comm.
     apply mult_lanni.
 Qed.
 
-Lemma ldist_rdist_ : ∀ a b c, (a + b) * c = a * c + b * c.
-Proof.
-    intros a b c.
+Global Program Instance ldist_rdist : Rdist U.
+Next Obligation.
     do 3 rewrite (mult_comm _ c).
     apply ldist.
 Qed.
-
-Global Instance mult_lid_rid : MultRid U := {
-    mult_rid := mult_lid_rid_;
-}.
-
-Global Instance mult_lcancel_rcancel : MultRcancel U := {
-    mult_rcancel := mult_lcancel_rcancel_;
-}.
-
-Global Instance mult_lanni_ranni : MultRanni U := {
-    mult_ranni := mult_lanni_ranni_;
-}.
-
-Global Instance ldist_rdist : Rdist U := {
-    rdist := ldist_rdist_;
-}.
 
 End MultRingImply.
 
@@ -179,35 +169,21 @@ Proof.
     contradiction.
 Qed.
 
-(* begin hide *)
-Theorem ring_mult_lanni : ∀ a, 0 * a = 0.
-Proof.
-    intros a.
-    assert (0 * a = 0 * a) as eq by reflexivity.
-    rewrite <- (plus_rid 0) in eq at 1.
-    rewrite rdist in eq.
-    rewrite <- (plus_lid (0 * a)) in eq at 3.
-    apply plus_rcancel in eq.
-    exact eq.
+Global Program Instance ring_mult_lanni : MultLanni U.
+Next Obligation.
+    apply plus_rcancel with (0 * a).
+    rewrite <- rdist.
+    do 2 rewrite plus_lid.
+    reflexivity.
 Qed.
-Theorem ring_mult_ranni : ∀ a, a * 0 = 0.
-Proof.
-    intros a.
-    assert (a * 0 = a * 0) as eq by reflexivity.
-    rewrite <- (plus_rid 0) in eq at 1.
-    rewrite ldist in eq.
-    rewrite <- (plus_lid (a * 0)) in eq at 3.
-    apply plus_rcancel in eq.
-    exact eq.
+Global Program Instance ring_mult_ranni : MultRanni U.
+Next Obligation.
+    apply plus_lcancel with (a * 0).
+    rewrite <- ldist.
+    do 2 rewrite plus_rid.
+    reflexivity.
 Qed.
 
-Global Instance rint_mult_lanni_class : MultLanni U := {
-    mult_lanni := ring_mult_lanni;
-}.
-Global Instance rint_mult_ranni_class : MultRanni U := {
-    mult_ranni := ring_mult_ranni;
-}.
-(* end hide *)
 Theorem mult_lneg : ∀ a b, -a * b = -(a * b).
 Proof.
     intros a b.
@@ -231,7 +207,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem mult_neg_one : ∀ a, -one * a = -a.
+Theorem mult_neg_one : ∀ a, -1 * a = -a.
 Proof.
     intros a.
     rewrite mult_lneg.
@@ -239,12 +215,16 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem neg_nz : ∀ a, 0 ≠ a → 0 ≠ -a.
+Theorem neg_nz : ∀ a, 0 ≠ a ↔ 0 ≠ -a.
 Proof.
-    intros a a_nz eq.
-    apply (f_equal neg) in eq.
-    rewrite neg_neg, neg_zero in eq.
-    contradiction.
+    intros a.
+    split; intros neq eq.
+    -   apply (f_equal neg) in eq.
+        rewrite neg_neg, neg_zero in eq.
+        contradiction.
+    -   rewrite <- eq in neq.
+        rewrite neg_zero in neq.
+        contradiction.
 Qed.
 
 Theorem plus_two : ∀ a, a + a = 2*a.
@@ -273,11 +253,10 @@ Proof.
     intros a b.
     rewrite rdist.
     do 2 rewrite ldist.
-    rewrite mult_rneg.
+    do 2 rewrite mult_rneg.
     rewrite (mult_comm b a).
     rewrite <- plus_assoc.
     rewrite plus_llinv.
-    rewrite mult_rneg.
     reflexivity.
 Qed.
 
@@ -320,15 +299,3 @@ Tactic Notation "mult_bring_right" constr(x) "in" ident(H) :=
     repeat rewrite <- mult_assoc in H;
     repeat rewrite (mult_comm x _) in H;
     repeat rewrite mult_assoc in H.
-Tactic Notation "mult_cancel_left" constr(x) :=
-    mult_bring_left x;
-    apply lmult.
-Tactic Notation "mult_cancel_left" constr(x) "in" ident(H) :=
-    mult_bring_left x in H;
-    apply mult_lcancel in H.
-Tactic Notation "mult_cancel_right" constr(x) :=
-    mult_bring_right x;
-    apply rmult.
-Tactic Notation "mult_cancel_right" constr(x) "in" ident(H) :=
-    mult_bring_right x in H;
-    apply mult_rcancel in H.
