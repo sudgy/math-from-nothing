@@ -83,15 +83,16 @@ Proof.
     intros S S_ex.
     destruct (well_founded S S_ex) as [x [Sx x_min]].
     exists x.
-    split; try exact Sx.
+    split; [>exact Sx|].
     intros y Sy.
     classic_contradiction contr.
     apply (x_min y Sy).
     -   intro; subst.
-        destruct (connex x x); contradiction.
-    -   destruct (connex x y).
+        apply contr.
+        apply refl.
+    -   destruct (connex x y) as [xy|yx].
         +   contradiction.
-        +   exact o.
+        +   exact yx.
 Qed.
 
 (* begin hide *)
@@ -100,18 +101,8 @@ End WellOrders.
 Section SupremumComplete.
 
 Context {U} `{
-    PLUS : Plus U,
-    @PlusAssoc U PLUS,
-    ZERO : Zero U,
-    @PlusLid U PLUS ZERO,
-    @PlusRid U PLUS ZERO,
-    NEG : Neg U,
-    @PlusLinv U PLUS ZERO NEG,
-    @PlusRinv U PLUS ZERO NEG,
-    ORD : Order U,
-    @SupremumComplete U le,
-    @OrderLplus U PLUS ORD,
-    @OrderRplus U PLUS ORD
+    OrderPlus U,
+    @SupremumComplete U le
 }.
 (* end hide *)
 Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
@@ -119,7 +110,8 @@ Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
 Proof.
     intros S S_ex S_lower.
     pose (S' x := S (-x)).
-    assert (∃ x, S' x) as S'_ex.
+    pose proof (sup_complete S') as S'_sup.
+    prove_parts S'_sup.
     {
         destruct S_ex as [x Sx].
         exists (-x).
@@ -127,38 +119,30 @@ Proof.
         rewrite neg_neg.
         exact Sx.
     }
-    assert (has_upper_bound le S') as S'_upper.
     {
         destruct S_lower as [x x_lower].
         exists (-x).
         intros y S'y.
         specialize (x_lower (-y) S'y).
-        apply le_neg in x_lower.
-        rewrite neg_neg in x_lower.
+        rewrite le_half_rneg.
         exact x_lower.
     }
-    pose proof (sup_complete S' S'_ex S'_upper) as [α [α_ub α_lub]].
+    destruct S'_sup as [α [α_ub α_lub]].
     exists (-α).
     split.
     -   intros x Sx.
-        assert (S' (-x)) as S'x by (unfold S'; rewrite neg_neg; exact Sx).
-        specialize (α_ub (-x) S'x).
-        apply le_neg in α_ub.
-        rewrite neg_neg in α_ub.
-        exact α_ub.
+        rewrite le_half_lneg.
+        apply α_ub.
+        unfold S'.
+        rewrite neg_neg.
+        exact Sx.
     -   intros y y_lower.
-        assert (is_upper_bound le S' (-y)) as y_upper.
-        {
-            intros x S'x.
-            specialize (y_lower (-x) S'x).
-            apply le_neg in y_lower.
-            rewrite neg_neg in y_lower.
-            exact y_lower.
-        }
-        specialize (α_lub (-y) y_upper).
-        rewrite le_neg in α_lub.
-        rewrite neg_neg in α_lub.
-        exact α_lub.
+        rewrite le_half_rneg.
+        apply α_lub.
+        intros x S'x.
+        rewrite le_half_rneg.
+        apply y_lower.
+        exact S'x.
 Qed.
 (* begin hide *)
 End SupremumComplete.
