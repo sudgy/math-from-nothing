@@ -453,6 +453,31 @@ Proof.
     rewrite lt_plus_0_ab_na_b.
     reflexivity.
 Qed.
+
+Theorem le_half_rneg : ∀ a b, a <= -b ↔ b <= -a.
+    intros a b.
+    rewrite le_neg.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
+Theorem lt_half_rneg : ∀ a b, a < -b ↔ b < -a.
+    intros a b.
+    rewrite lt_neg.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
+Theorem le_half_lneg : ∀ a b, -a <= b ↔ -b <= a.
+    intros a b.
+    rewrite le_neg.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
+Theorem lt_half_lneg : ∀ a b, -a < b ↔ -b < a.
+    intros a b.
+    rewrite lt_neg.
+    rewrite neg_neg.
+    reflexivity.
+Qed.
 (* begin hide *)
 End OrderPlus.
 (* end hide *)
