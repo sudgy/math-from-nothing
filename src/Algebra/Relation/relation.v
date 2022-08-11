@@ -80,18 +80,6 @@ Class TotalOrder U `{
 }.
 
 (* begin hide *)
-Section TotalOrderImply.
-
-Context {U} `{TotalOrder U}.
-
-Global Program Instance total_order_refl : Reflexive le.
-Next Obligation.
-    destruct (connex x x); assumption.
-Qed.
-
-End TotalOrderImply.
-
-
 Section TotalOrder.
 
 Context {U} {op : U → U → Prop} `{
@@ -229,6 +217,11 @@ Proof.
     destruct (connex a b).
     -   right; assumption.
     -   left; assumption.
+Qed.
+
+Global Program Instance total_order_refl : Reflexive op.
+Next Obligation.
+    destruct (connex x x); assumption.
 Qed.
 
 End TotalOrder.
