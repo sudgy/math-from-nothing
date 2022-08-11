@@ -30,55 +30,36 @@ Section OrderPlusImply.
 
 Context {U} `{OrderPlus U}.
 
-Lemma le_lplus_rplus_ : ∀ a b c, a <= b → a + c <= b + c.
-Proof.
-    intros a b c eq.
+Global Program Instance le_lplus_rplus : OrderRplus U.
+Next Obligation.
+    rename H0 into leq.
     do 2 rewrite (plus_comm _ c).
     apply le_lplus.
-    exact eq.
+    exact leq.
 Qed.
 
-Lemma le_plus_lcancel_rcancel_ : ∀ a b c, a + c <= b + c → a <= b.
-Proof.
-    intros a b c eq.
-    do 2 rewrite (plus_comm _ c) in eq.
-    apply le_plus_lcancel in eq.
-    exact eq.
+Global Program Instance le_lcancel_rcancel : OrderPlusRcancel U.
+Next Obligation.
+    rename H0 into leq.
+    do 2 rewrite (plus_comm _ c) in leq.
+    apply le_plus_lcancel in leq.
+    exact leq.
 Qed.
 
-Lemma le_plus_linv_lcancel : ∀ a b c, c + a <= c + b → a <= b.
-Proof.
-    intros a b c eq.
-    apply le_lplus with (-c) in eq.
-    do 2 rewrite plus_assoc in eq.
-    rewrite plus_linv in eq.
-    do 2 rewrite plus_lid in eq.
-    exact eq.
+Global Program Instance le_plus_linv_lcancel : OrderPlusLcancel U.
+Next Obligation.
+    rename H0 into leq.
+    apply le_lplus with (-c) in leq.
+    do 2 rewrite plus_llinv in leq.
+    exact leq.
 Qed.
-Lemma le_plus_rinv_rcancel : ∀ a b c, a + c <= b + c → a <= b.
-Proof.
-    intros a b c eq.
-    apply le_rplus with (-c) in eq.
-    do 2 rewrite <- plus_assoc in eq.
-    rewrite plus_rinv in eq.
-    do 2 rewrite plus_rid in eq.
-    exact eq.
+Global Program Instance le_plus_rinv_rcancel : OrderPlusRcancel U.
+Next Obligation.
+    rename H0 into leq.
+    apply le_rplus with (-c) in leq.
+    do 2 rewrite plus_rrinv in leq.
+    exact leq.
 Qed.
-
-Global Instance le_lplus_rplus : OrderRplus U := {
-    le_rplus := le_lplus_rplus_
-}.
-
-Global Instance le_lcancel_rcancel : OrderPlusRcancel U := {
-    le_plus_rcancel := le_plus_lcancel_rcancel_
-}.
-
-Global Instance le_plus_linv_lcancel_class : OrderPlusLcancel U := {
-    le_plus_lcancel := le_plus_linv_lcancel
-}.
-Global Instance le_plus_rinv_rcancel_class : OrderPlusRcancel U := {
-    le_plus_rcancel := le_plus_rinv_rcancel
-}.
 
 End OrderPlusImply.
 
@@ -162,36 +143,6 @@ Proof.
     -   intro contr.
         rewrite contr in neq.
         contradiction.
-Qed.
-
-Theorem neg_pos : ∀ a, a <= 0 → 0 <= -a.
-Proof.
-    intros a a_pos.
-    apply le_rplus with (-a) in a_pos.
-    rewrite plus_rinv, plus_lid in a_pos.
-    exact a_pos.
-Qed.
-Theorem neg_pos2 : ∀ a, a < 0 → 0 < -a.
-Proof.
-    intros a a_pos.
-    apply lt_rplus with (-a) in a_pos.
-    rewrite plus_rinv, plus_lid in a_pos.
-    exact a_pos.
-Qed.
-
-Theorem pos_neg : ∀ a, 0 <= a → -a <= 0.
-Proof.
-    intros a a_pos.
-    apply le_rplus with (-a) in a_pos.
-    rewrite plus_rinv, plus_lid in a_pos.
-    exact a_pos.
-Qed.
-Theorem pos_neg2 : ∀ a, 0 < a → -a < 0.
-Proof.
-    intros a a_pos.
-    apply lt_rplus with (-a) in a_pos.
-    rewrite plus_rinv, plus_lid in a_pos.
-    exact a_pos.
 Qed.
 
 Theorem le_plus_llmove : ∀ a b c, a + b <= c ↔ b <= -a + c.
@@ -456,6 +407,36 @@ Proof.
     rewrite <- lt_plus_lrmove.
     rewrite plus_lid.
     reflexivity.
+Qed.
+
+Theorem neg_pos : ∀ a, a <= 0 → 0 <= -a.
+Proof.
+    intros a a_pos.
+    rewrite <- le_plus_ab_0_a_nb.
+    rewrite plus_lid.
+    exact a_pos.
+Qed.
+Theorem neg_pos2 : ∀ a, a < 0 → 0 < -a.
+Proof.
+    intros a a_pos.
+    rewrite <- lt_plus_ab_0_a_nb.
+    rewrite plus_lid.
+    exact a_pos.
+Qed.
+
+Theorem pos_neg : ∀ a, 0 <= a → -a <= 0.
+Proof.
+    intros a a_pos.
+    rewrite <- le_plus_0_ab_na_b.
+    rewrite plus_rid.
+    exact a_pos.
+Qed.
+Theorem pos_neg2 : ∀ a, 0 < a → -a < 0.
+Proof.
+    intros a a_pos.
+    rewrite <- lt_plus_0_ab_na_b.
+    rewrite plus_rid.
+    exact a_pos.
 Qed.
 
 Theorem le_neg : ∀ a b, a <= b ↔ -b <= -a.
