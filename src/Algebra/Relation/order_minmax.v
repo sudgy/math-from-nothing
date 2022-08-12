@@ -10,83 +10,47 @@ Definition max {U} `{Order U} x y :=
 (* begin hide *)
 Section MinMax.
 
-Context {U} `{P : Plus U,
-                 @PlusAssoc U P,
-                 @PlusComm U P,
-              Z : Zero U,
-                 @PlusLid U P Z,
-                 @PlusRid U P Z,
-              N : Neg U,
-                 @PlusLinv U P Z N,
-                 @PlusRinv U P Z N,
-              M : Mult U,
-                 @MultAssoc U M,
-                 @MultComm U M,
-                 @Ldist U P M,
-                 @Rdist U P M,
-              O : One U,
-                 @MultLid U M O,
-                 @MultRid U M O,
-                 NotTrivial,
-              R : Order U,
-                 @Antisymmetric U le,
-                 @Transitive U le,
-                 @Connex U le,
-                 @OrderLplus U P R,
-                 @OrderRplus U P R,
-                 @OrderPlusLcancel U P R,
-                 @OrderPlusRcancel U P R,
-                 @OrderMult U Z M R,
-                 @OrderLmult U Z M R,
-                 @OrderRmult U Z M R,
-                 @OrderMultLcancel U Z M R,
-                 @OrderMultRcancel U Z M R
-             }.
+Context {U} `{OrderedField U}.
 (* end hide *)
 Theorem min_comm : ∀ a b, min a b = min b a.
 Proof.
     intros a b.
-    unfold min; do 2 case_if; try reflexivity.
-    -   apply antisym; auto.
-    -   rewrite nle_lt in n.
-        rewrite nle_lt in n0.
-        apply antisym.
-        +   apply n.
-        +   apply n0.
+    unfold min.
+    case_if [leq1|leq1]; case_if [leq2|leq2]; try reflexivity.
+    -   apply antisym; assumption.
+    -   rewrite nle_lt in leq1, leq2.
+        destruct (trans leq1 leq2); contradiction.
 Qed.
 
 Theorem max_comm : ∀ a b, max a b = max b a.
 Proof.
     intros a b.
-    unfold max; do 2 case_if; try reflexivity.
+    unfold max; case_if [leq1|leq1]; case_if [leq2|leq2]; try reflexivity.
     -   apply antisym; auto.
-    -   rewrite nle_lt in n.
-        rewrite nle_lt in n0.
-        apply antisym.
-        +   apply n0.
-        +   apply n.
+    -   rewrite nle_lt in leq1, leq2.
+        destruct (trans leq1 leq2); contradiction.
 Qed.
 
-Theorem lmin : ∀ a b, min a b <= a.
-Proof.
-    intros a b.
-    unfold min; case_if.
-    -   apply refl.
-    -   rewrite nle_lt in n.
-        apply n.
-Qed.
 Theorem rmin : ∀ a b, min a b <= b.
 Proof.
     intros a b.
+    unfold min; case_if [leq|leq].
+    -   exact leq.
+    -   apply refl.
+Qed.
+Theorem lmin : ∀ a b, min a b <= a.
+Proof.
+    intros a b.
     rewrite min_comm.
-    apply lmin.
+    apply rmin.
 Qed.
 
 Theorem lmax : ∀ a b, a <= max a b.
 Proof.
     intros a b.
-    unfold max; case_if; auto.
-    apply refl.
+    unfold max; case_if [leq|leq].
+    -   apply leq.
+    -   apply refl.
 Qed.
 Theorem rmax : ∀ a b, b <= max a b.
 Proof.
@@ -98,7 +62,7 @@ Qed.
 Theorem min_max_plus : ∀ a b, min a b + max a b = a + b.
 Proof.
     intros a b.
-    unfold min, max; case_if.
+    unfold min, max; case_if [leq|leq].
     -   reflexivity.
     -   apply plus_comm.
 Qed.
