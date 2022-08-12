@@ -49,6 +49,11 @@ Class WellFounded {U} (op : U → U → Prop) := {
     well_founded : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x
 }.
 
+Class WellOrder U `{
+    WOT : TotalOrder U,
+    WOW : WellFounded U le
+}.
+
 Class SupremumComplete {U} (op : U → U → Prop) := {
     sup_complete : ∀ S : U → Prop, (∃ x, S x) →
         has_upper_bound op S → has_supremum op S
@@ -93,6 +98,22 @@ Proof.
     -   destruct (connex x y) as [xy|yx].
         +   contradiction.
         +   exact yx.
+Qed.
+
+Theorem well_ordered_founded :
+    (∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x) →
+    WellFounded op.
+Proof.
+    intros wf.
+    split.
+    intros S S_ex.
+    specialize (wf S S_ex) as [x [Sx x_least]].
+    exists x.
+    split; [>exact Sx|].
+    intros y Sy y_neq leq.
+    specialize (x_least y Sy).
+    pose proof (antisym leq x_least).
+    contradiction.
 Qed.
 
 (* begin hide *)
