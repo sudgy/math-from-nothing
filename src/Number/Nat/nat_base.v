@@ -8,11 +8,22 @@ Inductive nat : Set :=
     | nat_suc : nat → nat.
 Bind Scope nat_scope with nat.
 
+Theorem nat_zero_suc : ∀ n, nat_zero ≠ nat_suc n.
+    intros n eq.
+    inversion eq.
+Qed.
+
+Theorem nat_suc_eq : ∀ a b, nat_suc a = nat_suc b → a = b.
+    intros a b eq.
+    inversion eq.
+    reflexivity.
+Qed.
+
 Theorem nat_neq_suc : ∀ n, n ≠ nat_suc n.
 Proof.
     induction n.
-    -   intro contr; inversion contr.
+    -   apply nat_zero_suc.
     -   intro contr.
-        inversion contr.
+        apply nat_suc_eq in contr.
         contradiction.
 Qed.
