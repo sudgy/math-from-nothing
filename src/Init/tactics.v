@@ -9,6 +9,13 @@ Ltac case_if :=
     | |- context [if ?P then _ else _] => go P
     | K: context [if ?P then _ else _] |- _ => go P
     end.
+Tactic Notation "case_if"
+    "[" simple_intropattern(A) "|" simple_intropattern(B) "]" :=
+    let go P := destruct P as [A|B]; try solve [elimtype False] in
+    match goal with
+    | |- context [if ?P then _ else _] => go P
+    | K: context [if ?P then _ else _] |- _ => go P
+    end.
 
 Tactic Notation "bring_left" constr(x) constr(comm) constr(assoc) :=
     repeat rewrite assoc;
