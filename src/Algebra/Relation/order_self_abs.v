@@ -147,7 +147,7 @@ Proof.
                 rewrite neg_neg in leq.
                 exact leq.
             *   rewrite nle_lt in n.
-                pose proof (neg_pos2 _ n) as a_pos.
+                pose proof (land (neg_pos2 _) n) as a_pos.
                 apply (trans n (lt_le_trans a_pos leq)).
     -   intros [ba ab].
         unfold abs; case_if.
@@ -172,7 +172,7 @@ Proof.
                 rewrite neg_neg in leq.
                 exact leq.
             *   rewrite nle_lt in n.
-                pose proof (neg_pos2 _ n) as a_pos.
+                pose proof (land (neg_pos2 _) n) as a_pos.
                 apply (trans n (trans a_pos leq)).
     -   intros [ba ab].
         unfold abs; case_if.
@@ -188,7 +188,7 @@ Proof.
     unfold abs; case_if.
     -   apply refl.
     -   rewrite nle_lt in n.
-        pose proof (neg_pos2 _ n) as ltq.
+        pose proof (land (neg_pos2 _) n) as ltq.
         apply (trans n ltq).
 Qed.
 

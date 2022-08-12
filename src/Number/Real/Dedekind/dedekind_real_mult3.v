@@ -40,7 +40,7 @@ Proof.
     -   apply ex_not_empty.
         exists (-(1)).
         left.
-        apply pos_neg.
+        rewrite <- pos_neg.
         apply one_pos.
     -   intros l u nau lu.
         classic_case (l <= 0) as [l_neg|l_pos].
@@ -136,7 +136,7 @@ Global Instance real_div : Div real := {
         | strong_or_left comp => [_|real_div_dedekind a comp]
         | strong_or_right comp => 0
         end
-    | semi_or_right comp => -[_|real_div_dedekind (-a) (neg_pos2 _ comp)]
+    | semi_or_right comp => -[_|real_div_dedekind (-a) (land (neg_pos2 _) comp)]
     end
 }.
 

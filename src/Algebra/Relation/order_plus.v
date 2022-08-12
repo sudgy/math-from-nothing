@@ -413,34 +413,34 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem neg_pos : ∀ a, a <= 0 → 0 <= -a.
+Theorem neg_pos : ∀ a, a <= 0 ↔ 0 <= -a.
 Proof.
-    intros a a_pos.
+    intros a.
     rewrite <- le_plus_ab_0_a_nb.
     rewrite plus_lid.
-    exact a_pos.
+    reflexivity.
 Qed.
-Theorem neg_pos2 : ∀ a, a < 0 → 0 < -a.
+Theorem neg_pos2 : ∀ a, a < 0 ↔ 0 < -a.
 Proof.
-    intros a a_pos.
+    intros a.
     rewrite <- lt_plus_ab_0_a_nb.
     rewrite plus_lid.
-    exact a_pos.
+    reflexivity.
 Qed.
 
-Theorem pos_neg : ∀ a, 0 <= a → -a <= 0.
+Theorem pos_neg : ∀ a, 0 <= a ↔ -a <= 0.
 Proof.
-    intros a a_pos.
+    intros a.
     rewrite <- le_plus_0_ab_na_b.
     rewrite plus_rid.
-    exact a_pos.
+    reflexivity.
 Qed.
-Theorem pos_neg2 : ∀ a, 0 < a → -a < 0.
+Theorem pos_neg2 : ∀ a, 0 < a ↔ -a < 0.
 Proof.
-    intros a a_pos.
+    intros a.
     rewrite <- lt_plus_0_ab_na_b.
     rewrite plus_rid.
-    exact a_pos.
+    reflexivity.
 Qed.
 
 Theorem le_neg : ∀ a b, a <= b ↔ -b <= -a.
@@ -481,6 +481,48 @@ Theorem lt_half_lneg : ∀ a b, -a < b ↔ -b < a.
     rewrite lt_neg.
     rewrite neg_neg.
     reflexivity.
+Qed.
+
+Theorem le_pos_plus : ∀ {a b}, 0 <= a → 0 <= b → 0 <= a + b.
+    intros a b a_pos b_pos.
+    rewrite <- (plus_rid 0).
+    apply le_lrplus; assumption.
+Qed.
+Theorem lt_pos_plus : ∀ {a b}, 0 < a → 0 < b → 0 < a + b.
+    intros a b a_pos b_pos.
+    rewrite <- (plus_rid 0).
+    apply lt_lrplus; assumption.
+Qed.
+Theorem le_lt_pos_plus : ∀ {a b}, 0 <= a → 0 < b → 0 < a + b.
+    intros a b a_pos b_pos.
+    rewrite <- (plus_rid 0).
+    apply le_lt_lrplus; assumption.
+Qed.
+Theorem lt_le_pos_plus : ∀ {a b}, 0 < a → 0 <= b → 0 < a + b.
+    intros a b a_pos b_pos.
+    rewrite <- (plus_rid 0).
+    apply lt_le_lrplus; assumption.
+Qed.
+
+Theorem le_neg_plus : ∀ {a b}, a <= 0 → b <= 0 → a + b <= 0.
+    intros a b a_neg b_neg.
+    rewrite <- (plus_rid 0).
+    apply le_lrplus; assumption.
+Qed.
+Theorem lt_neg_plus : ∀ {a b}, a < 0 → b < 0 → a + b < 0.
+    intros a b a_neg b_neg.
+    rewrite <- (plus_rid 0).
+    apply lt_lrplus; assumption.
+Qed.
+Theorem le_lt_neg_plus : ∀ {a b}, a <= 0 → b < 0 → a + b < 0.
+    intros a b a_neg b_neg.
+    rewrite <- (plus_rid 0).
+    apply le_lt_lrplus; assumption.
+Qed.
+Theorem lt_le_neg_plus : ∀ {a b}, a < 0 → b <= 0 → a + b < 0.
+    intros a b a_neg b_neg.
+    rewrite <- (plus_rid 0).
+    apply lt_le_lrplus; assumption.
 Qed.
 (* begin hide *)
 End OrderPlus.

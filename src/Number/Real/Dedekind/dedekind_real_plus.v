@@ -372,7 +372,7 @@ Proof.
         +   intros x_neg.
             exists (-x).
             split.
-            *   exact (neg_pos2 _ x_neg).
+            *   exact (land (neg_pos2 _) x_neg).
             *   intro contr.
                 rewrite plus_rinv in contr.
                 destruct contr; contradiction.
@@ -395,7 +395,7 @@ Proof.
                 {
                     exists (-x).
                     split.
-                    -   exact (neg_pos2 _ x_neg).
+                    -   exact (land (neg_pos2 _) x_neg).
                     -   rewrite neg_neg, neg_zero, plus_lid.
                         exact contr.
                 }

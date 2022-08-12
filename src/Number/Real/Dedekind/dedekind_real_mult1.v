@@ -163,11 +163,11 @@ Global Instance real_mult : Mult real := {
         | strong_or_left a_pos, strong_or_left b_pos =>
             [_|real_mult_dedekind _ _ a_pos b_pos]
         | strong_or_left a_pos, strong_or_right b_neg =>
-            -[_|real_mult_dedekind _ _ a_pos (neg_pos _ b_neg)]
+            -[_|real_mult_dedekind _ _ a_pos (land (neg_pos _) b_neg)]
         | strong_or_right a_neg, strong_or_left b_pos =>
-            -[_|real_mult_dedekind _ _ (neg_pos _ a_neg) b_pos]
+            -[_|real_mult_dedekind _ _ (land (neg_pos _) a_neg) b_pos]
         | strong_or_right a_neg, strong_or_right b_neg =>
-            [_|real_mult_dedekind _ _ (neg_pos _ a_neg) (neg_pos _ b_neg)]
+            [_|real_mult_dedekind _ _ (land (neg_pos _) a_neg) (land (neg_pos _) b_neg)]
     end
 }.
 Lemma real_mult_comm_pos : ∀ a b, 0 <= a → 0 <= b → [a|] ⊗ [b|] = [b|] ⊗ [a|].
@@ -381,7 +381,7 @@ Proof.
     intros a b a_neg.
     destruct (connex 0 b) as [b_pos|b_neg].
     -   apply real_mult_neg_pos; assumption.
-    -   pose proof (neg_pos _ a_neg).
+    -   pose proof (land (neg_pos _) a_neg).
         rewrite (real_mult_pos_neg (-a) b) by assumption.
         rewrite neg_neg.
         apply real_mult_neg_neg; assumption.
@@ -392,7 +392,7 @@ Proof.
     intros a b b_neg.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply real_mult_pos_neg; assumption.
-    -   pose proof (neg_pos _ b_neg).
+    -   pose proof (land (neg_pos _) b_neg).
         rewrite (real_mult_neg_pos a (-b)) by assumption.
         rewrite neg_neg.
         apply real_mult_neg_neg; assumption.
