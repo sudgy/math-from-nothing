@@ -226,30 +226,46 @@ Qed.
 Theorem le_plus_a_0_ab_b : ∀ a b, a <= 0 ↔ a + b <= b.
 Proof.
     intros a b.
-    rewrite le_plus_lrmove.
-    rewrite plus_rinv.
-    reflexivity.
+    split; intros leq.
+    -   apply le_rplus with b in leq.
+        rewrite plus_lid in leq.
+        exact leq.
+    -   apply le_plus_rcancel with b.
+        rewrite plus_lid.
+        exact leq.
 Qed.
 Theorem le_plus_a_0_ba_b : ∀ a b, a <= 0 ↔ b + a <= b.
 Proof.
     intros a b.
-    rewrite le_plus_llmove.
-    rewrite plus_linv.
-    reflexivity.
+    split; intros leq.
+    -   apply le_lplus with b in leq.
+        rewrite plus_rid in leq.
+        exact leq.
+    -   apply le_plus_lcancel with b.
+        rewrite plus_rid.
+        exact leq.
 Qed.
 Theorem le_plus_0_a_b_ab : ∀ a b, 0 <= a ↔ b <= a + b.
 Proof.
     intros a b.
-    rewrite le_plus_rrmove.
-    rewrite plus_rinv.
-    reflexivity.
+    split; intros leq.
+    -   apply le_rplus with b in leq.
+        rewrite plus_lid in leq.
+        exact leq.
+    -   apply le_plus_rcancel with b.
+        rewrite plus_lid.
+        exact leq.
 Qed.
 Theorem le_plus_0_a_b_ba : ∀ a b, 0 <= a ↔ b <= b + a.
 Proof.
     intros a b.
-    rewrite le_plus_rlmove.
-    rewrite plus_linv.
-    reflexivity.
+    split; intros leq.
+    -   apply le_lplus with b in leq.
+        rewrite plus_rid in leq.
+        exact leq.
+    -   apply le_plus_lcancel with b.
+        rewrite plus_rid.
+        exact leq.
 Qed.
 
 Theorem le_plus_0_nab_a_b : ∀ a b, 0 <= -a + b ↔ a <= b.
@@ -358,30 +374,46 @@ Qed.
 Theorem lt_plus_a_0_ab_b : ∀ a b, a < 0 ↔ a + b < b.
 Proof.
     intros a b.
-    rewrite lt_plus_lrmove.
-    rewrite plus_rinv.
-    reflexivity.
+    split; intros ltq.
+    -   apply lt_rplus with b in ltq.
+        rewrite plus_lid in ltq.
+        exact ltq.
+    -   apply lt_plus_rcancel with b.
+        rewrite plus_lid.
+        exact ltq.
 Qed.
 Theorem lt_plus_a_0_ba_b : ∀ a b, a < 0 ↔ b + a < b.
 Proof.
     intros a b.
-    rewrite lt_plus_llmove.
-    rewrite plus_linv.
-    reflexivity.
+    split; intros ltq.
+    -   apply lt_lplus with b in ltq.
+        rewrite plus_rid in ltq.
+        exact ltq.
+    -   apply lt_plus_lcancel with b.
+        rewrite plus_rid.
+        exact ltq.
 Qed.
 Theorem lt_plus_0_a_b_ab : ∀ a b, 0 < a ↔ b < a + b.
 Proof.
     intros a b.
-    rewrite lt_plus_rrmove.
-    rewrite plus_rinv.
-    reflexivity.
+    split; intros ltq.
+    -   apply lt_rplus with b in ltq.
+        rewrite plus_lid in ltq.
+        exact ltq.
+    -   apply lt_plus_rcancel with b.
+        rewrite plus_lid.
+        exact ltq.
 Qed.
 Theorem lt_plus_0_a_b_ba : ∀ a b, 0 < a ↔ b < b + a.
 Proof.
     intros a b.
-    rewrite lt_plus_rlmove.
-    rewrite plus_linv.
-    reflexivity.
+    split; intros ltq.
+    -   apply lt_lplus with b in ltq.
+        rewrite plus_rid in ltq.
+        exact ltq.
+    -   apply lt_plus_lcancel with b.
+        rewrite plus_rid.
+        exact ltq.
 Qed.
 
 Theorem lt_plus_0_nab_a_b : ∀ a b, 0 < -a + b ↔ a < b.
