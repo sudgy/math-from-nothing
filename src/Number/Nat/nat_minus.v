@@ -12,6 +12,7 @@ Fixpoint nat_minus a b := match a, b with
     | nat_suc a', nat_suc b' => nat_minus a' b'
     end.
 
+(** This is \bar *)
 Infix "¯" := nat_minus (at level 50) : nat_scope.
 
 Open Scope nat_scope.
@@ -40,8 +41,7 @@ Proof.
     intros a b ltq.
     apply nat_lt_ex in ltq as [c [c_nz eq]].
     subst b.
-    nat_destruct c; [>contradiction|].
-    clear c_nz.
+    nat_destruct c; [>contradiction|]; clear c_nz.
     rewrite nat_plus_rsuc.
     nat_induction a.
     -   unfold zero at 1; cbn.
@@ -119,21 +119,19 @@ Qed.
 Theorem nat_abs_minus_min : ∀ a b, a ⊖ b + min a b = max a b.
 Proof.
     intros a b.
-    unfold min, max; case_if.
-    -   apply nat_le_ex in l as [c eq]; subst.
+    unfold min, max; case_if [leq|leq].
+    -   apply nat_le_ex in leq as [c eq]; subst.
         rewrite nat_abs_minus_comm.
         rewrite nat_abs_minus_plus.
         apply plus_comm.
-    -   rewrite nle_lt in n.
-        destruct n as [leq neq].
-        apply nat_le_ex in leq as [c eq]; subst.
+    -   rewrite nle_lt in leq.
+        apply nat_lt_ex in leq as [c [c_nz eq]]; subst.
         rewrite nat_abs_minus_plus.
         apply plus_comm.
 Qed.
 
 Theorem nat_abs_minus_eq_zero : ∀ a b, 0 = a ⊖ b → a = b.
 Proof.
-    intros a.
     nat_induction a; intros b eq.
     -   rewrite nat_abs_minus_lid in eq.
         exact eq.
