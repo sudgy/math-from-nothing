@@ -89,23 +89,25 @@ Context {U} {op : U → U → Prop} `{
     Reflexive U op
 }.
 
-Global Program Instance lt_irrefl : Irreflexive (strict op).
-Next Obligation.
-    intros [leq neq].
+Global Instance lt_irrefl : Irreflexive (strict op).
+Proof.
+    split.
+    intros x [leq neq].
     contradiction.
 Qed.
 
-Global Program Instance lt_asym : Asymmetric (strict op).
-Next Obligation.
-    destruct H3 as [leq neq].
-    intros [cleq cneq].
+Global Instance lt_asym : Asymmetric (strict op).
+Proof.
+    split.
+    intros x y [leq neq] [cleq cneq].
     pose proof (antisym leq cleq).
     contradiction.
 Qed.
 
-Global Program Instance lt_trans : Transitive (strict op).
-Next Obligation.
-    rename H3 into xy, H4 into yz.
+Global Instance lt_trans : Transitive (strict op).
+Proof.
+    split.
+    intros x y z xy yz.
     split.
     -   destruct xy as [xy_leq xy_neq], yz as [yz_leq yz_neq].
         exact (trans xy_leq yz_leq).
@@ -113,8 +115,10 @@ Next Obligation.
         exact (asym y z yz xy).
 Qed.
 
-Global Program Instance lt_trichotomy : Trichotomy (strict op).
-Next Obligation.
+Global Instance lt_trichotomy : Trichotomy (strict op).
+Proof.
+    split.
+    intros x y.
     classic_case (x = y) as [eq|neq].
     -   left; right.
         exact eq.
@@ -219,8 +223,10 @@ Proof.
     -   left; assumption.
 Qed.
 
-Global Program Instance total_order_refl : Reflexive op.
-Next Obligation.
+Global Instance total_order_refl : Reflexive op.
+Proof.
+    split.
+    intros x.
     destruct (connex x x); assumption.
 Qed.
 

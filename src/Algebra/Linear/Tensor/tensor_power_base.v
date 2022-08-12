@@ -328,7 +328,7 @@ Proof.
         cbn.
         unfold f; cbn.
         unfold zero at 4; cbn.
-        destruct (Logic.eq_sym (plus_group.plus_lid_rid_obligation_1 (list_size l1))); cbn.
+        destruct (Logic.eq_sym (plus_rid (list_size l1))); cbn.
         rewrite cat_lid.
         change (module_homo_f (tensor_product_rid_homo _)) with
             (tensor_product_rid_f (tensor_power (list_size l1))).
@@ -507,7 +507,7 @@ Proof.
     apply tensor_power_eq_generic.
     unfold f; cbn.
     unfold zero at 4; cbn.
-    destruct (Logic.eq_sym (plus_group.plus_lid_rid_obligation_1 n)); cbn.
+    destruct (Logic.eq_sym (plus_rid n)); cbn.
     rewrite cat_lid.
     change (module_homo_f (tensor_product_rid_homo _)) with
         (tensor_product_rid_f (tensor_power n)).

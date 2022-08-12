@@ -36,9 +36,10 @@ Section FieldImply1.
 
 Context {U} `{Field U}.
 
-Global Program Instance mult_linv_rinv : MultRinv U.
-Next Obligation.
-    rename H1 into a_nz.
+Global Instance mult_linv_rinv : MultRinv U.
+Proof.
+    split.
+    intros a a_nz.
     rewrite mult_comm.
     apply mult_linv.
     exact a_nz.
@@ -50,9 +51,10 @@ Section FieldImply2.
 
 Context {U} `{Field U}.
 
-Global Program Instance mult_linv_lcancel : MultLcancel U.
-Next Obligation.
-    rename H1 into c_nz, H2 into eq.
+Global Instance mult_linv_lcancel : MultLcancel U.
+Proof.
+    split.
+    intros a b c c_nz eq.
     apply lmult with (/c) in eq.
     do 2 rewrite mult_assoc in eq.
     rewrite mult_linv in eq by exact c_nz.
@@ -60,9 +62,10 @@ Next Obligation.
     exact eq.
 Qed.
 
-Global Program Instance mult_rinv_rcancel : MultRcancel U.
-Next Obligation.
-    rename H1 into c_nz, H2 into eq.
+Global Instance mult_rinv_rcancel : MultRcancel U.
+Proof.
+    split.
+    intros a b c c_nz eq.
     apply rmult with (/c) in eq.
     do 2 rewrite <- mult_assoc in eq.
     rewrite mult_rinv in eq by exact c_nz.

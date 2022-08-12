@@ -76,23 +76,27 @@ Section PlusGroupImply.
 
 Context {U} `{AllPlus U}.
 
-Global Program Instance plus_lid_rid : PlusRid U.
-Next Obligation.
+Global Instance plus_lid_rid : PlusRid U.
+Proof.
+    split.
+    intros a.
     rewrite plus_comm.
     apply plus_lid.
 Qed.
 
-Global Program Instance plus_lcancel_rcancel : PlusRcancel U.
-Next Obligation.
-    rename H0 into eq.
+Global Instance plus_lcancel_rcancel : PlusRcancel U.
+Proof.
+    split.
+    intros a b c eq.
     do 2 rewrite (plus_comm _ c) in eq.
     apply plus_lcancel with c.
     exact eq.
 Qed.
 
-Global Program Instance plus_linv_rinv : PlusRinv U.
-Next Obligation.
+Global Instance plus_linv_rinv : PlusRinv U.
 Proof.
+    split.
+    intros a.
     rewrite plus_comm.
     apply plus_linv.
 Qed.
@@ -165,16 +169,18 @@ Proof.
     apply plus_lid.
 Qed.
 
-Global Program Instance plus_linv_lcancel : PlusLcancel U.
-Next Obligation.
-    rename H0 into eq.
+Global Instance plus_linv_lcancel : PlusLcancel U.
+Proof.
+    split.
+    intros a b c eq.
     apply lplus with (-c) in eq.
     do 2 rewrite plus_llinv in eq.
     exact eq.
 Qed.
-Global Program Instance plus_rinv_rcancel : PlusRcancel U.
-Next Obligation.
-    rename H0 into eq.
+Global Instance plus_rinv_rcancel : PlusRcancel U.
+Proof.
+    split.
+    intros a b c eq.
     apply rplus with (-c) in eq.
     do 2 rewrite plus_rrinv in eq.
     exact eq.

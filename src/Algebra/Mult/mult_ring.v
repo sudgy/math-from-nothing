@@ -106,28 +106,35 @@ Section MultRingImply.
 
 Context {U} `{AllMult U}.
 
-Global Program Instance mult_lid_rid : MultRid U.
-Next Obligation.
+Global Instance mult_lid_rid : MultRid U.
+Proof.
+    split.
+    intros a.
     rewrite mult_comm.
     apply mult_lid.
 Qed.
 
-Global Program Instance mult_lcancel_rcancel : MultRcancel U.
-Next Obligation.
-    rename H0 into neq, H1 into eq.
+Global Instance mult_lcancel_rcancel : MultRcancel U.
+Proof.
+    split.
+    intros a b c neq eq.
     do 2 rewrite (mult_comm _ c) in eq.
     apply mult_lcancel with c; [>exact neq|].
     exact eq.
 Qed.
 
-Global Program Instance mult_lanni_ranni : MultRanni U.
-Next Obligation.
+Global Instance mult_lanni_ranni : MultRanni U.
+Proof.
+    split.
+    intros a.
     rewrite mult_comm.
     apply mult_lanni.
 Qed.
 
-Global Program Instance ldist_rdist : Rdist U.
-Next Obligation.
+Global Instance ldist_rdist : Rdist U.
+Proof.
+    split.
+    intros a b c.
     do 3 rewrite (mult_comm _ c).
     apply ldist.
 Qed.
@@ -169,15 +176,19 @@ Proof.
     contradiction.
 Qed.
 
-Global Program Instance ring_mult_lanni : MultLanni U.
-Next Obligation.
+Global Instance ring_mult_lanni : MultLanni U.
+Proof.
+    split.
+    intros a.
     apply plus_rcancel with (0 * a).
     rewrite <- rdist.
     do 2 rewrite plus_lid.
     reflexivity.
 Qed.
-Global Program Instance ring_mult_ranni : MultRanni U.
-Next Obligation.
+Global Instance ring_mult_ranni : MultRanni U.
+Proof.
+    split.
+    intros a.
     apply plus_lcancel with (a * 0).
     rewrite <- ldist.
     do 2 rewrite plus_rid.

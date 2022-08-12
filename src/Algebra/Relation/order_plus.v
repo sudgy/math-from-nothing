@@ -30,32 +30,36 @@ Section OrderPlusImply.
 
 Context {U} `{OrderPlus U}.
 
-Global Program Instance le_lplus_rplus : OrderRplus U.
-Next Obligation.
-    rename H0 into leq.
+Global Instance le_lplus_rplus : OrderRplus U.
+Proof.
+    split.
+    intros a b c leq.
     do 2 rewrite (plus_comm _ c).
     apply le_lplus.
     exact leq.
 Qed.
 
-Global Program Instance le_lcancel_rcancel : OrderPlusRcancel U.
-Next Obligation.
-    rename H0 into leq.
+Global Instance le_lcancel_rcancel : OrderPlusRcancel U.
+Proof.
+    split.
+    intros a b c leq.
     do 2 rewrite (plus_comm _ c) in leq.
     apply le_plus_lcancel in leq.
     exact leq.
 Qed.
 
-Global Program Instance le_plus_linv_lcancel : OrderPlusLcancel U.
-Next Obligation.
-    rename H0 into leq.
+Global Instance le_plus_linv_lcancel : OrderPlusLcancel U.
+Proof.
+    split.
+    intros a b c leq.
     apply le_lplus with (-c) in leq.
     do 2 rewrite plus_llinv in leq.
     exact leq.
 Qed.
-Global Program Instance le_plus_rinv_rcancel : OrderPlusRcancel U.
-Next Obligation.
-    rename H0 into leq.
+Global Instance le_plus_rinv_rcancel : OrderPlusRcancel U.
+Proof.
+    split.
+    intros a b c leq.
     apply le_rplus with (-c) in leq.
     do 2 rewrite plus_rrinv in leq.
     exact leq.
