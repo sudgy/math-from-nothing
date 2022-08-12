@@ -459,24 +459,28 @@ Proof.
 Qed.
 
 Theorem le_half_rneg : ∀ a b, a <= -b ↔ b <= -a.
+Proof.
     intros a b.
     rewrite le_neg.
     rewrite neg_neg.
     reflexivity.
 Qed.
 Theorem lt_half_rneg : ∀ a b, a < -b ↔ b < -a.
+Proof.
     intros a b.
     rewrite lt_neg.
     rewrite neg_neg.
     reflexivity.
 Qed.
 Theorem le_half_lneg : ∀ a b, -a <= b ↔ -b <= a.
+Proof.
     intros a b.
     rewrite le_neg.
     rewrite neg_neg.
     reflexivity.
 Qed.
 Theorem lt_half_lneg : ∀ a b, -a < b ↔ -b < a.
+Proof.
     intros a b.
     rewrite lt_neg.
     rewrite neg_neg.
@@ -484,42 +488,50 @@ Theorem lt_half_lneg : ∀ a b, -a < b ↔ -b < a.
 Qed.
 
 Theorem le_pos_plus : ∀ {a b}, 0 <= a → 0 <= b → 0 <= a + b.
+Proof.
     intros a b a_pos b_pos.
     rewrite <- (plus_rid 0).
     apply le_lrplus; assumption.
 Qed.
 Theorem lt_pos_plus : ∀ {a b}, 0 < a → 0 < b → 0 < a + b.
+Proof.
     intros a b a_pos b_pos.
     rewrite <- (plus_rid 0).
     apply lt_lrplus; assumption.
 Qed.
 Theorem le_lt_pos_plus : ∀ {a b}, 0 <= a → 0 < b → 0 < a + b.
+Proof.
     intros a b a_pos b_pos.
     rewrite <- (plus_rid 0).
     apply le_lt_lrplus; assumption.
 Qed.
 Theorem lt_le_pos_plus : ∀ {a b}, 0 < a → 0 <= b → 0 < a + b.
+Proof.
     intros a b a_pos b_pos.
     rewrite <- (plus_rid 0).
     apply lt_le_lrplus; assumption.
 Qed.
 
 Theorem le_neg_plus : ∀ {a b}, a <= 0 → b <= 0 → a + b <= 0.
+Proof.
     intros a b a_neg b_neg.
     rewrite <- (plus_rid 0).
     apply le_lrplus; assumption.
 Qed.
 Theorem lt_neg_plus : ∀ {a b}, a < 0 → b < 0 → a + b < 0.
+Proof.
     intros a b a_neg b_neg.
     rewrite <- (plus_rid 0).
     apply lt_lrplus; assumption.
 Qed.
 Theorem le_lt_neg_plus : ∀ {a b}, a <= 0 → b < 0 → a + b < 0.
+Proof.
     intros a b a_neg b_neg.
     rewrite <- (plus_rid 0).
     apply le_lt_lrplus; assumption.
 Qed.
 Theorem lt_le_neg_plus : ∀ {a b}, a < 0 → b <= 0 → a + b < 0.
+Proof.
     intros a b a_neg b_neg.
     rewrite <- (plus_rid 0).
     apply lt_le_lrplus; assumption.
