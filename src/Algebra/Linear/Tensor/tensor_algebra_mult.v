@@ -322,8 +322,8 @@ Next Obligation.
     rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ bcjk' eq); clear eq.
     do 2 rewrite power_to_tensor_tm.
     rewrite <- tensor_power_mult_assoc.
+    cbn in i, j, k.
     destruct (plus_assoc i j k); cbn.
-    destruct (nat_plus_assoc_ i j k); cbn.
     reflexivity.
 Qed.
 (* begin hide *)

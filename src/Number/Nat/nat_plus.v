@@ -3,21 +3,17 @@ Require Export nat_base.
 
 Require Export plus_group.
 
-Fixpoint nat_plus_ a b :=
-    match a with
-        | nat_zero => b
-        | nat_suc a' => nat_plus_ a' (nat_suc b)
-    end.
-
-(* begin hide *)
 Global Instance nat_plus : Plus nat := {
-    plus := nat_plus_;
+    plus := fix plus a b :=
+        match a with
+            | nat_zero => b
+            | nat_suc a' => plus a' (nat_suc b)
+        end
 }.
-(* end hide *)
+
 Theorem nat_plus_lrsuc : ∀ a b, nat_suc a + b = a + nat_suc b.
 Proof.
     intros a b.
-    unfold plus; cbn.
     reflexivity.
 Qed.
 
@@ -41,47 +37,44 @@ Proof.
     reflexivity.
 Qed.
 
-(* begin hide *)
 Global Instance nat_zero_instance : Zero nat := {
     zero := nat_zero;
 }.
 Ltac nat_induction n := induction n; change nat_zero with zero in *.
 Ltac nat_destruct n := destruct n; change nat_zero with zero in *.
 
-Lemma nat_plus_lid_ : ∀ a, zero + a = a.
+Global Instance nat_plus_lid : PlusLid nat.
 Proof.
+    split.
     intros a.
+    unfold zero, plus; cbn.
     reflexivity.
 Qed.
-Global Instance nat_plus_lid : PlusLid nat := {
-    plus_lid := nat_plus_lid_;
-}.
-Lemma nat_plus_rid_ : ∀ a, a + zero = a.
+
+Lemma nat_plus_rid_tmp : ∀ a, a + 0 = a.
 Proof.
     nat_induction a.
-    -   reflexivity.
+    -   apply plus_lid.
     -   rewrite nat_plus_lsuc.
         rewrite IHa.
         reflexivity.
 Qed.
 
-Lemma nat_plus_comm_ : ∀ a b, a + b = b + a.
+Global Instance nat_plus_comm : PlusComm nat.
 Proof.
+    split.
     intros a b.
     nat_induction a.
-    -   rewrite plus_lid, nat_plus_rid_.
+    -   rewrite plus_lid, nat_plus_rid_tmp.
         reflexivity.
     -   rewrite nat_plus_lsuc, nat_plus_rsuc.
         rewrite IHa.
         reflexivity.
 Qed.
 
-Global Instance nat_plus_comm : PlusComm nat := {
-    plus_comm := nat_plus_comm_;
-}.
-
-Lemma nat_plus_assoc_ : ∀ a b c, a + (b + c) = (a + b) + c.
+Global Instance nat_plus_assoc : PlusAssoc nat.
 Proof.
+    split.
     intros a b c.
     nat_induction a.
     -   do 2 rewrite plus_lid.
@@ -90,33 +83,27 @@ Proof.
         rewrite IHa.
         reflexivity.
 Qed.
-Global Instance nat_plus_assoc : PlusAssoc nat := {
-    plus_assoc := nat_plus_assoc_;
-}.
 
-Lemma nat_plus_lcancel_ : ∀ a b c, c + a = c + b → a = b.
+Global Instance nat_plus_lcancel : PlusLcancel nat.
 Proof.
+    split.
     intros a b c eq.
     nat_induction c.
     -   do 2 rewrite plus_lid in eq.
         exact eq.
     -   apply IHc; clear IHc.
         do 2 rewrite nat_plus_lsuc in eq.
-        inversion eq.
-        reflexivity.
+        apply nat_suc_eq in eq.
+        exact eq.
 Qed.
-Global Instance nat_plus_lcancel : PlusLcancel nat := {
-    plus_lcancel := nat_plus_lcancel_;
-}.
-(* end hide *)
+
 Theorem nat_plus_zero : ∀ a b, 0 = a + b → 0 = a ∧ 0 = b.
 Proof.
     intros a b eq.
     nat_destruct a.
-    -   nat_destruct b.
-        +   split; reflexivity.
-        +   rewrite nat_plus_rsuc in eq.
-            inversion eq.
+    -   rewrite plus_lid in eq.
+        split; [>reflexivity|exact eq].
     -   rewrite nat_plus_lsuc in eq.
-        inversion eq.
+        apply nat_zero_suc in eq.
+        contradiction.
 Qed.
