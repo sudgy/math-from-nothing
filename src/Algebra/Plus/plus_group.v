@@ -359,6 +359,14 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem zero_eq_neg : ∀ a, 0 = a ↔ 0 = -a.
+Proof.
+    intros a.
+    rewrite neg_eq.
+    rewrite neg_zero.
+    reflexivity.
+Qed.
+
 (* begin hide *)
 End PlusGroup2.
 (* end hide *)
