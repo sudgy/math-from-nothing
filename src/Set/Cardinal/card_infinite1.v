@@ -410,7 +410,7 @@ Proof.
     {
         intros [x1 x2] eq.
         unfold f in eq; cbn in eq.
-        apply nat_mult_zero in eq.
+        apply mult_zero in eq.
         destruct eq as [eq|eq].
         -   apply pow_not_zero_nat in eq; try contradiction.
             intro contr; inversion contr.
@@ -501,7 +501,7 @@ Proof.
             }
             nat_destruct y.
             -   rewrite pow_0_nat in div.
-                pose proof (le_lt_trans div (make_and (nat_le_zero 1) not_trivial))
+                pose proof (le_lt_trans div (make_and (nat_le_zero 1) not_trivial_one))
                     as [C0 C1]; contradiction.
             -   specialize (ltq y).
                 pose proof (lt_le_trans ltq div) as [C0 C1]; contradiction.

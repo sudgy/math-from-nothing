@@ -76,7 +76,7 @@ Proof.
         rewrite <- (plus_rid (d * p)) in d_eq at 1.
         apply plus_lcancel in d_eq.
         apply nat_plus_zero in d_eq as [eq1 eq2].
-        apply nat_mult_zero in eq1 as [x_z|p_z]; try contradiction.
+        apply mult_zero in eq1 as [x_z|p_z]; try contradiction.
         subst.
         apply not.
         apply refl.

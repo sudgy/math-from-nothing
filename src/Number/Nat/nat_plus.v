@@ -104,6 +104,5 @@ Proof.
     -   rewrite plus_lid in eq.
         split; [>reflexivity|exact eq].
     -   rewrite nat_plus_lsuc in eq.
-        apply nat_zero_suc in eq.
-        contradiction.
+        contradiction (nat_zero_suc eq).
 Qed.
