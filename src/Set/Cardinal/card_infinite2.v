@@ -367,8 +367,8 @@ Proof.
         pose proof (rand f_bij [y|Xy]) as [[n n_lt] n_eq].
         pose proof m_lt as m_lt2.
         pose proof n_lt as n_lt2.
-        apply nat_lt_1 in m_lt2.
-        apply nat_lt_1 in n_lt2.
+        apply nat_lt_one_eq in m_lt2.
+        apply nat_lt_one_eq in n_lt2.
         subst.
         rewrite (proof_irrelevance m_lt n_lt) in m_eq.
         rewrite m_eq in n_eq.
@@ -1054,8 +1054,8 @@ Proof.
         exists (λ a, x).
         intros [a a_lt] [b b_lt] eq.
         apply set_type_eq; cbn.
-        apply nat_lt_1 in a_lt.
-        apply nat_lt_1 in b_lt.
+        apply nat_lt_one_eq in a_lt.
+        apply nat_lt_one_eq in b_lt.
         subst.
         reflexivity.
 Qed.

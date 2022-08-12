@@ -163,7 +163,7 @@ Proof.
         +   exfalso.
             rewrite <- nle_lt in x_lt.
             apply x_lt.
-            apply nat_le_zero.
+            apply nat_pos.
         +   exists x; reflexivity.
     -   intros a b.
         reflexivity.
@@ -190,7 +190,7 @@ Proof.
         +   exfalso.
             rewrite <- nle_lt in x_lt.
             apply x_lt.
-            apply nat_le_zero.
+            apply nat_pos.
     -   intros a b.
         reflexivity.
 Qed.
@@ -325,7 +325,7 @@ Proof.
         }
         unfold surjective in f_sur.
         specialize (f_sur [_|Cx]) as [[y y_lt] C0]; clear C0.
-        apply nat_lt_zero in y_lt.
+        apply nat_neg2 in y_lt.
         exact y_lt.
     -   unfold plus; equiv_simpl.
         destruct ABx as [f [f_bij f_iso]].
@@ -410,7 +410,7 @@ Proof.
         intros m mlt.
         rewrite <- nle_lt in mlt.
         apply mlt.
-        apply nat_le_zero.
+        apply nat_pos.
     }
     assert (∃ x, @all (ord_U A) x) as ex.
     {
@@ -596,7 +596,7 @@ Proof.
     assert (∀ x, f x < a + b) as f_in.
     {
         intros [[x x_lt]|[x x_lt]]; unfold f; cbn.
-        -   pose proof (nat_le_zero b) as eq.
+        -   pose proof (nat_pos b) as eq.
             apply le_lplus with a in eq.
             rewrite plus_rid in eq.
             exact (lt_le_trans x_lt eq).
@@ -616,14 +616,14 @@ Proof.
             rewrite eq2 in m_eq.
             rewrite <- (plus_rid a) in m_eq at 2.
             apply lt_plus_lcancel in m_eq.
-            exact (nat_lt_zero _ m_eq).
+            exact (nat_neg2 m_eq).
         +   exfalso.
             destruct n as [n n_eq].
             cbn in eq2.
             rewrite <- eq2 in n_eq.
             rewrite <- (plus_rid a) in n_eq at 2.
             apply lt_plus_lcancel in n_eq.
-            exact (nat_lt_zero _ n_eq).
+            exact (nat_neg2 n_eq).
         +   apply plus_lcancel in eq2.
             apply set_type_eq in eq2.
             rewrite eq2; reflexivity.
@@ -646,7 +646,7 @@ Proof.
         +   reflexivity.
         +   split; try trivial.
             intros C0; clear C0.
-            pose proof (nat_le_zero y) as eq.
+            pose proof (nat_pos y) as eq.
             apply le_lplus with a in eq.
             rewrite plus_rid in eq.
             apply (lt_le_trans x_lt eq).
@@ -655,7 +655,7 @@ Proof.
             pose proof (le_lt_trans eq y_lt) as contr.
             rewrite <- (plus_rid a) in contr at 2.
             apply lt_plus_lcancel in contr.
-            exact (nat_lt_zero _ contr).
+            exact (nat_neg2 contr).
         +   split.
             *   apply le_lplus.
             *   apply le_plus_lcancel.
@@ -678,7 +678,7 @@ Proof.
         -   intros a; contradiction (contr a).
         -   intros [a a_lt].
             exfalso.
-            apply nat_lt_zero in a_lt.
+            apply nat_neg2 in a_lt.
             exact a_lt.
         -   intros a; contradiction (contr a).
     }

@@ -244,14 +244,14 @@ Proof.
             rewrite <- f_z.
             reflexivity.
         -   apply n_deg.
-            apply nat_zero_lt_suc.
+            apply nat_pos2.
     }
     specialize (n_least n).
     prove_parts n_least.
     {
         intros m m_gt.
         nat_destruct m.
-        -   apply nat_lt_zero in m_gt.
+        -   apply nat_neg2 in m_gt.
             contradiction m_gt.
         -   rewrite nat_lt_suc_le in m_gt.
             classic_case (n = m) as [eq|neq].
@@ -308,7 +308,7 @@ Qed.
 
 Theorem polynomial_degree_zero : polynomial_degree 0 = 0.
 Proof.
-    apply antisym; [>|apply nat_le_zero].
+    apply antisym; [>|apply nat_pos].
     apply polynomial_degree_leq.
     intros m m_gt.
     reflexivity.
@@ -335,7 +335,7 @@ Proof.
         rewrite mult_ranni.
         symmetry; apply polynomial_degree_gt.
         rewrite f_zero.
-        split; [>apply nat_le_zero|exact n_nz].
+        split; [>apply nat_pos|exact n_nz].
 Qed.
 
 Theorem polynomial_degree_plus : ∀ f g,
@@ -374,7 +374,7 @@ Proof.
         pose proof polynomial_degree_zero as g0.
         rewrite contr in g0.
         rewrite g0 in fg.
-        apply nat_lt_zero in fg.
+        apply nat_neg2 in fg.
         exact fg.
     }
     apply antisym.
@@ -648,7 +648,7 @@ Next Obligation.
     classic_case (0 = n) as [n_z|n_nz].
     {
         rewrite <- n_z in mn.
-        apply nat_le_zero_eq in mn.
+        apply nat_neg_eq in mn.
         unfold m in mn.
         rewrite Heqn in n_z.
         symmetry in mn, n_z.
@@ -675,7 +675,7 @@ Next Obligation.
         {
             rewrite <- a'_z.
             rewrite polynomial_degree_zero.
-            split; [>apply nat_le_zero|exact n_nz].
+            split; [>apply nat_pos|exact n_nz].
         }
         rewrite Heqn.
         split.
@@ -700,7 +700,7 @@ Next Obligation.
             {
                 rewrite <- (plus_rid m) at 1.
                 apply lt_lplus.
-                split; [>apply nat_le_zero|exact d_nz].
+                split; [>apply nat_pos|exact d_nz].
             }
             rewrite <- (polynomial_degree_gt _ _ d_gt).
             rewrite mult_ranni.

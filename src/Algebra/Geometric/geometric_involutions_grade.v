@@ -449,8 +449,12 @@ Proof.
         rewrite ext_to_geo_of_scalar.
         rewrite geo_mult_inner_scalar.
         rewrite neg_zero, plus_lid.
-        rewrite binom_greater by apply nat_zero_lt_suc.
-        rewrite binom_greater by (rewrite nat_sucs_lt; apply nat_zero_lt_suc).
+        rewrite binom_greater by apply nat_pos2.
+        rewrite binom_greater.
+        2: {
+            rewrite <- lt_plus_0_a_b_ba.
+            exact nat_one_pos.
+        }
         rewrite pow_0_nat.
         do 2 rewrite scalar_id.
         apply scalar_to_geo_comm.

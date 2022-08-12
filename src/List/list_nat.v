@@ -114,7 +114,7 @@ Proof.
     induction l.
     -   intros n n_lt.
         cbn in n_lt.
-        apply nat_lt_zero in n_lt.
+        apply nat_neg2 in n_lt.
         contradiction.
     -   intros n n_lt.
         cbn in *.
@@ -136,7 +136,7 @@ Proof.
             exists 0.
             split.
             *   cbn.
-                apply nat_zero_lt_suc.
+                apply nat_pos2.
             *   unfold zero; cbn.
                 reflexivity.
         +   specialize (IHl x_in) as [n [n_lt x_eq]].

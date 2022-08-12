@@ -287,12 +287,12 @@ Proof.
     -   rewrite <- nat_to_abstract_zero.
         change (1 + nat_to_abstract N) with (nat_to_abstract (U := real) (nat_suc N)).
         rewrite nat_to_abstract_lt.
-        apply nat_zero_lt_suc.
+        apply nat_pos2.
     -   apply le_lplus.
         rewrite nat_to_abstract_le.
         rewrite <- (plus_rid N) at 1.
         apply le_lplus.
-        apply nat_le_zero.
+        apply nat_pos.
 Qed.
 
 End Infinite.
@@ -455,7 +455,7 @@ Proof.
         intros m n mn.
         nat_destruct n.
         {
-            contradiction (nat_lt_zero m mn).
+            contradiction (nat_neg2 mn).
         }
         rewrite f_gt.
         unfold h.

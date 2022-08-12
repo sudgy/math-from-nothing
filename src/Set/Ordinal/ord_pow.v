@@ -47,7 +47,7 @@ Proof.
         exists (make_ord_pow f f_fin).
         destruct z as [z z_lt].
         apply set_type_eq; cbn.
-        apply nat_lt_1 in z_lt.
+        apply nat_lt_one_eq in z_lt.
         exact z_lt.
     -   intros F G.
         assert (F = G) as eq.
@@ -107,7 +107,7 @@ Proof.
         intros [x|x].
         +   exact (eq1' x).
         +   destruct x as [x x_gt].
-            pose proof (nat_lt_1 x x_gt) as x0.
+            pose proof (nat_lt_one_eq x x_gt) as x0.
             subst x.
             rewrite (proof_irrelevance x_gt z_gt).
             exact eq2.
@@ -163,8 +163,8 @@ Proof.
                 destruct ltq; contradiction.
             -   destruct a as [a a_lt], b as [b b_lt].
                 apply set_type_eq; cbn.
-                apply nat_lt_1 in a_lt.
-                apply nat_lt_1 in b_lt.
+                apply nat_lt_one_eq in a_lt.
+                apply nat_lt_one_eq in b_lt.
                 subst.
                 reflexivity.
         }
@@ -208,7 +208,7 @@ Proof.
                 --  left.
                     destruct x as [x x_lt2]; cbn in *.
                     pose proof x_lt2 as x_eq.
-                    apply nat_lt_1 in x_eq.
+                    apply nat_lt_one_eq in x_eq.
                     subst x.
                     rewrite (proof_irrelevance _ x_lt2).
                     exact x_lt.
@@ -226,7 +226,7 @@ Proof.
                         destruct y as [y y_lt].
                         apply set_type_eq; cbn.
                         clear leq2 neq2.
-                        apply nat_lt_1 in y_lt.
+                        apply nat_lt_one_eq in y_lt.
                         exact y_lt.
             *   destruct leq as [eq2|leq].
                 --  left.
@@ -234,7 +234,7 @@ Proof.
                     ++  cbn in eq2.
                         apply eq2.
                     ++  destruct x as [x x_lt].
-                        pose proof (nat_lt_1 _ x_lt); subst x.
+                        pose proof (nat_lt_one_eq _ x_lt); subst x.
                         rewrite (proof_irrelevance _ z_gt).
                         exact eq.
                 --  right.
@@ -246,7 +246,7 @@ Proof.
                         split; try apply ltq.
                         intro contr; subst.
                         destruct ltq; contradiction.
-                    ++  pose proof (nat_lt_1 _ y_lt); subst y.
+                    ++  pose proof (nat_lt_one_eq _ y_lt); subst y.
                         rewrite (proof_irrelevance _ z_gt).
                         exact eq.
 Qed.
@@ -281,7 +281,7 @@ Proof.
     intros A.
     equiv_get_value A.
     unfold ord_pow, one; cbn; unfold nat_to_ord; equiv_simpl.
-    assert ((zero (U := nat)) < 1) as one_pos by apply nat_zero_lt_suc.
+    assert ((zero (U := nat)) < 1) as one_pos by apply nat_pos2.
     exists (λ f, [0|one_pos]).
     split.
     split.
@@ -292,9 +292,9 @@ Proof.
             intros x.
             apply set_type_eq.
             pose proof [|f x] as fz; cbn in fz.
-            apply nat_lt_1 in fz.
+            apply nat_lt_one_eq in fz.
             pose proof [|g x] as gz; cbn in gz.
-            apply nat_lt_1 in gz.
+            apply nat_lt_one_eq in gz.
             rewrite <- fz, <- gz.
             reflexivity.
         }
@@ -326,7 +326,7 @@ Proof.
                     cbn in z_eq.
                     apply set_type_eq; cbn.
                     unfold le in z_eq; cbn in z_eq.
-                    apply nat_le_zero_eq in z_eq.
+                    apply nat_neg_eq in z_eq.
                     exact z_eq.
                 }
                 assert (set_type (λ x, f x ≠ ord_zero (f x)) → False) as fa.
@@ -345,7 +345,7 @@ Proof.
         exists (make_ord_pow f fin).
         destruct x as [x x_lt].
         apply set_type_eq; cbn.
-        apply nat_lt_1 in x_lt.
+        apply nat_lt_one_eq in x_lt.
         exact x_lt.
     -   intros f g.
         split.
@@ -357,10 +357,10 @@ Proof.
             apply set_type_eq.
             pose proof [|ord_pow_f f x] as fz.
             cbn in fz.
-            apply nat_lt_1 in fz.
+            apply nat_lt_one_eq in fz.
             pose proof [|ord_pow_f g x] as gz.
             cbn in gz.
-            apply nat_lt_1 in gz.
+            apply nat_lt_one_eq in gz.
             rewrite <- fz, <- gz.
             reflexivity.
 Qed.

@@ -528,7 +528,7 @@ Proof.
         }
         symmetry; apply (sum_grade_project_single (VG := GG) _ _ _ _ _ f_inj m).
         +   exact c_eq.
-        +   apply nat_le_zero.
+        +   apply nat_pos.
         +   rewrite plus_lid.
             rewrite nat_lt_suc_le.
             subst n.

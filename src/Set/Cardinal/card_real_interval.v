@@ -523,7 +523,7 @@ Proof.
                     destruct ab; contradiction.
                 *   apply f_equal.
                     rewrite nat_sucs_lt in x_lt, y_lt.
-                    apply nat_lt_1 in x_lt, y_lt.
+                    apply nat_lt_one_eq in x_lt, y_lt.
                     subst.
                     reflexivity.
         -   intros [y [y_gt y_lt]].

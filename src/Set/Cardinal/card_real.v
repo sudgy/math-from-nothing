@@ -308,7 +308,7 @@ Close Scope card_scope.
                         rewrite <- (plus_rid n) at 1.
                         apply lt_lplus.
                         rewrite plus_comm.
-                        apply nat_zero_lt_suc.
+                        apply nat_pos2.
             }
             rewrite f_eq.
             apply geometric_series_sum_constant.

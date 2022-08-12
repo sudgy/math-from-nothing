@@ -57,8 +57,8 @@ Lemma single_to_grade_sum_finite {k} : ∀ A : module_V (V k),
 Proof.
     intros A.
     apply (le_lt_trans2 (nat_is_finite 1)).
-    unfold nat_to_card, le; equiv_simpl.
-    exists (λ _, [0|nat_0_lt_1]).
+    unfold nat_to_card, le at 1; equiv_simpl.
+    exists (λ _, [0|nat_one_pos]).
     intros [a a_neq] [b b_neq] eq; clear eq.
     unfold single_to_grade_sum_base in *.
     apply set_type_eq; cbn.

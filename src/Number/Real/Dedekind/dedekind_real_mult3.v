@@ -257,7 +257,7 @@ Proof.
                 {
                     change 0 with (nat_to_rat 0).
                     rewrite nat_to_rat_lt.
-                    apply nat_zero_lt_suc.
+                    apply nat_pos2.
                 }
                 remember (nat_to_rat (nat_suc m)) as n.
                 apply lt_lmult_pos with n in eq.
@@ -304,7 +304,7 @@ Proof.
                 change 0 with (nat_to_rat 0).
                 rewrite nat_to_rat_lt.
                 split.
-                -   apply nat_le_zero.
+                -   apply nat_pos.
                 -   exact n_nz.
             }
             pose (S m := ¬a (m × q)).
@@ -350,7 +350,7 @@ Proof.
                     rewrite <- nat_to_rat_plus.
                     rewrite plus_comm.
                     rewrite nat_to_rat_lt.
-                    apply nat_zero_lt_suc.
+                    apply nat_pos2.
                 }
                 assert (0 < n) as n_pos.
                 {
@@ -358,7 +358,7 @@ Proof.
                     change 0 with (nat_to_rat 0).
                     rewrite nat_to_rat_lt.
                     split; try exact n_nz.
-                    apply nat_le_zero.
+                    apply nat_pos.
                 }
                 assert (0 < n + 1) as n1_pos.
                 {
@@ -442,7 +442,7 @@ Proof.
                 rewrite nat_to_rat_lt in ltq.
                 apply n_nz.
                 apply antisym.
-                -   apply nat_le_zero.
+                -   apply nat_pos.
                 -   rewrite <- nat_lt_suc_le.
                     exact ltq.
             }
@@ -451,7 +451,7 @@ Proof.
                 rewrite Heqm.
                 change 0 with (nat_to_rat 0).
                 rewrite nat_to_rat_lt.
-                apply nat_zero_lt_suc.
+                apply nat_pos2.
             }
             pose proof (lt_lrplus m_pos one_pos) as m1_pos.
             rewrite plus_lid in m1_pos.

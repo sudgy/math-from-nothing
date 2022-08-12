@@ -16,7 +16,7 @@ Definition subsequence {U} (a b : sequence U) :=
 Theorem nat_lt_0_false : nat_to_set_type 0 → False.
 Proof.
     intros [x x_lt].
-    contradiction (nat_lt_zero x x_lt).
+    contradiction (nat_neg2 x_lt).
 Qed.
 
 Theorem subsequence_seq_leq : ∀ f, subsequence_seq f → ∀ n, n <= f n.
@@ -25,7 +25,7 @@ Proof.
     unfold subsequence_seq in f_sub.
     intros n.
     nat_induction n.
-    -   apply nat_le_zero.
+    -   apply nat_pos.
     -   rewrite <- nat_lt_suc_le.
         rewrite nat_sucs_lt.
         exact (le_lt_trans IHn (f_sub n)).
@@ -62,7 +62,7 @@ Proof.
 Qed.
 
 Definition K (j : nat_strong_recursion_domain B) :=
-    nat_sr_f B j [0|nat_zero_lt_suc (nat_sr_p B j)] = c ∧
+    nat_sr_f B j [0|nat_pos2 (nat_sr_p B j)] = c ∧
     ∀ m : nat_to_set_type (nat_sr_p B j),
         nat_sr_f B j [nat_suc [m|] | nat_sucs_lt_impl [|m]] =
         h (make_nat_srd B [m|] (λ x : nat_to_set_type (nat_suc [m|]),
@@ -212,7 +212,7 @@ Proof.
     split.
     -   destruct (ex_to_type (nat_k_ex B c h 0))
             as [k [[k0 Kk] z_lt]]; cbn.
-        rewrite (proof_irrelevance _ (nat_zero_lt_suc (nat_sr_p B k))).
+        rewrite (proof_irrelevance _ (nat_pos2 (nat_sr_p B k))).
         exact k0.
     -   intros n.
         destruct (ex_to_type (nat_k_ex B c h (nat_suc n)))

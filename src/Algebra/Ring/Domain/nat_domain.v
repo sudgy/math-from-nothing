@@ -21,20 +21,20 @@ Proof.
             apply nat_le_rmult.
             nat_destruct b; try contradiction.
             unfold one; cbn; rewrite nat_sucs_le.
-            apply nat_le_zero.
+            apply nat_pos.
         }
-        assert (0 < b) as b_pos by (split; try assumption; apply nat_le_zero).
+        assert (0 < b) as b_pos by (split; try assumption; apply nat_pos).
         apply le_lplus with b in eq.
         apply lt_rplus with a in b_pos.
         rewrite plus_lid in b_pos.
         exact (lt_le_trans b_pos eq).
     }
-    pose proof (nat_wo _ S_ex) as [q [Sq q_min]].
+    pose proof (well_ordered _ S_ex) as [q [Sq q_min]].
     nat_destruct q.
     {
         unfold S in Sq.
         rewrite mult_ranni in Sq.
-        contradiction (nat_lt_zero _ Sq).
+        contradiction (nat_neg2 Sq).
     }
     assert (b * q <= a) as leq.
     {
@@ -118,7 +118,7 @@ Proof.
                     exact true.
                 -   intro contr; inversion contr.
             }
-            pose proof (nat_le_zero (c * 2)) as leq2.
+            pose proof (nat_pos (c * 2)) as leq2.
             apply le_lplus with 2 in leq2.
             rewrite plus_rid in leq2.
             pose proof (lt_le_trans leq leq2) as [C0 C1].
@@ -158,7 +158,7 @@ Proof.
         rewrite nle_lt in contr.
         unfold one in contr; cbn in contr.
         rewrite nat_lt_suc_le in contr.
-        apply nat_le_zero_eq in contr.
+        apply nat_neg_eq in contr.
         contradiction.
 Qed.
 
@@ -175,7 +175,7 @@ Proof.
         rewrite nle_lt in contr.
         change 1 with (nat_suc 0) in contr.
         rewrite nat_lt_suc_le in contr.
-        apply nat_le_zero_eq in contr.
+        apply nat_neg_eq in contr.
         subst c.
         rewrite mult_lanni in c_eq.
         contradiction.

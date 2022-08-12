@@ -228,7 +228,7 @@ Proof.
     rewrite <- nat_to_card_plus in T_size.
     unfold plus, nat_to_card in T_size; equiv_simpl in T_size.
     destruct T_size as [f [f_inj f_sur]].
-    pose (x := f (inl [0|nat_0_lt_1])).
+    pose (x := f (inl [0|nat_one_pos])).
     pose (T' v := If v = [x|] then 0 else T v).
     assert (nat_to_card n = |set_type (λ x, 0 ≠ T' x)|) as T'n.
     {
@@ -277,7 +277,7 @@ Proof.
                 destruct a as [a a_lt].
                 apply set_type_eq; cbn.
                 clear - a_lt.
-                apply nat_lt_1 in a_lt.
+                apply nat_lt_one_eq in a_lt.
                 symmetry; exact a_lt.
             +   exists a.
                 subst b.

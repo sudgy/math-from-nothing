@@ -104,7 +104,7 @@ Proof.
         apply (trans i_ge).
         rewrite <- (plus_rid i) at 1.
         apply le_lplus.
-        apply nat_le_zero.
+        apply nat_pos.
     }
     specialize (af_conv (i + j) i j_ge i_ge).
     unfold series in af_conv; cbn in af_conv.

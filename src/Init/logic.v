@@ -158,6 +158,11 @@ Proof.
     -   split; right.
         exact PQ.
 Qed.
+Theorem or_from_strong : ∀ P Q, {P} + {Q} → P ∨ Q.
+    intros P Q [PQ|PQ].
+    -   left; exact PQ.
+    -   right; exact PQ.
+Qed.
 
 Theorem not_true : (¬True) = False.
 Proof.

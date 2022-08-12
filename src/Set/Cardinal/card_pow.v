@@ -52,11 +52,11 @@ Proof.
     equiv_get_value A.
     unfold zero, one; cbn.
     unfold nat_to_card, card_pow; equiv_simpl.
-    exists (λ x, [0|nat_0_lt_1]).
+    exists (λ x, [0|nat_one_pos]).
     assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        contradiction (nat_lt_zero _ x_lt).
+        contradiction (nat_neg2 x_lt).
     }
     split.
     -   intros f g eq; clear eq.
@@ -66,7 +66,7 @@ Proof.
     -   intros [n n_lt].
         exists (empty_function _ _ xf).
         apply set_type_eq; cbn.
-        apply nat_lt_1 in n_lt.
+        apply nat_lt_one_eq in n_lt.
         exact n_lt.
 Qed.
 
@@ -75,14 +75,14 @@ Proof.
     intros A.
     equiv_get_value A.
     unfold one, zero; cbn.
-    unfold nat_to_card, card_pow, le; equiv_simpl.
+    unfold nat_to_card, card_pow, le at 1; equiv_simpl.
     intros [f f_inj].
     assert ((A → set_type (λ x : nat, x < 0)) → False) as Af.
     {
         intros g.
         apply nat_lt_0_false.
         apply g; clear g.
-        exact (f [0|nat_0_lt_1]).
+        exact (f [0|nat_one_pos]).
     }
     exists (empty_function _ _ Af).
     apply empty_bij.
@@ -95,7 +95,7 @@ Proof.
     equiv_get_value A.
     unfold one; cbn.
     unfold nat_to_card, card_pow; equiv_simpl.
-    exists (λ x, [0|nat_0_lt_1]).
+    exists (λ x, [0|nat_one_pos]).
     split.
     -   intros f g eq; clear eq.
         apply functional_ext.
@@ -103,14 +103,14 @@ Proof.
         destruct (f a) as [fa fa_lt].
         destruct (g a) as [ga ga_lt].
         apply set_type_eq; cbn.
-        apply nat_lt_1 in fa_lt.
-        apply nat_lt_1 in ga_lt.
+        apply nat_lt_one_eq in fa_lt.
+        apply nat_lt_one_eq in ga_lt.
         subst.
         reflexivity.
     -   intros [n n_lt].
-        exists (λ x, [0|nat_0_lt_1]).
+        exists (λ x, [0|nat_one_pos]).
         apply set_type_eq; cbn.
-        apply nat_lt_1 in n_lt.
+        apply nat_lt_one_eq in n_lt.
         exact n_lt.
 Qed.
 
@@ -125,14 +125,14 @@ Proof.
     split.
     -   intros a b eq.
         apply func_eq in eq; try exact eq.
-        exact [0|nat_0_lt_1].
+        exact [0|nat_one_pos].
     -   intros f.
-        exists (f [0|nat_0_lt_1]).
+        exists (f [0|nat_one_pos]).
         apply functional_ext.
         intros [x x_lt].
         apply f_equal.
         apply set_type_eq; cbn.
-        apply nat_lt_1 in x_lt.
+        apply nat_lt_one_eq in x_lt.
         exact x_lt.
 Qed.
 
@@ -219,8 +219,8 @@ Theorem prop_size : |Prop| = 2.
 Proof.
     unfold one; cbn.
     unfold nat_to_card, plus; equiv_simpl.
-    exists (λ P, If (P = True) then (inl [0|nat_0_lt_1])
-                               else (inr [0|nat_0_lt_1])).
+    exists (λ P, If (P = True) then (inl [0|nat_one_pos])
+                               else (inr [0|nat_one_pos])).
     split.
     -   intros A B eq.
         repeat case_if.
@@ -230,7 +230,7 @@ Proof.
             subst; reflexivity.
     -   intros [[n n_lt]|[n n_lt]].
         all: pose proof n_lt as n_lt2.
-        all: apply nat_lt_1 in n_lt2.
+        all: apply nat_lt_one_eq in n_lt2.
         all: subst.
         +   exists True.
             case_if; try contradiction.

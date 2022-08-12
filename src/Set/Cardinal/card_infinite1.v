@@ -176,7 +176,7 @@ Proof.
     {
         intros m n ltq.
         nat_destruct n.
-        -   apply nat_lt_zero in ltq.
+        -   apply nat_neg2 in ltq.
             contradiction.
         -   specialize (f_rec n).
             rewrite_ex_val a a_eq; cbn in *.
@@ -210,7 +210,7 @@ Proof.
         rewrite <- nle_lt.
         apply contr.
     }
-    pose proof (nat_wo _ κ_le) as [m [κ_le_m m_min]]; clear κ_le.
+    pose proof (well_ordered _ κ_le) as [m [κ_le_m m_min]]; clear κ_le.
     exists m.
     classic_contradiction contr.
     rewrite neq_sym in contr.
@@ -342,7 +342,7 @@ Proof.
                 rewrite <- eq in b_lt.
                 rewrite <- (plus_lid n) in b_lt at 2.
                 apply lt_plus_rcancel in b_lt.
-                contradiction (nat_lt_zero _ b_lt).
+                contradiction (nat_neg2 b_lt).
             *   cbn in eq.
                 rewrite not_ex in n0.
                 specialize (n0 b).
@@ -354,7 +354,7 @@ Proof.
                 rewrite eq in a_lt.
                 rewrite <- (plus_lid n) in a_lt at 2.
                 apply lt_plus_rcancel in a_lt.
-                contradiction (nat_lt_zero _ a_lt).
+                contradiction (nat_neg2 a_lt).
             *   rewrite not_ex in n0.
                 specialize (n0 a).
                 contradiction.
@@ -493,20 +493,20 @@ Proof.
                         rewrite mult_rid.
                         rewrite <- plus_lid at 1.
                         apply lt_rplus.
-                        split; try apply nat_le_zero.
+                        split; try apply nat_pos.
                         intro contr.
                         rewrite <- contr in IHn.
-                        pose proof (lt_le_trans IHn (nat_le_zero 1))
+                        pose proof (lt_le_trans IHn (nat_pos 1))
                             as [C0 C1]; contradiction.
             }
             nat_destruct y.
             -   rewrite pow_0_nat in div.
-                pose proof (le_lt_trans div (make_and (nat_le_zero 1) not_trivial_one))
+                pose proof (le_lt_trans div (make_and (nat_pos 1) not_trivial_one))
                     as [C0 C1]; contradiction.
             -   specialize (ltq y).
                 pose proof (lt_le_trans ltq div) as [C0 C1]; contradiction.
         }
-        pose proof (nat_wo S S_ex) as [x1 [Sx1 x1_min]].
+        pose proof (well_ordered S S_ex) as [x1 [Sx1 x1_min]].
         nat_destruct x1.
         {
             unfold S in Sx1.

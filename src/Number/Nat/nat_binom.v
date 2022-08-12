@@ -52,7 +52,7 @@ Proof.
             reflexivity.
     -   intros k ltq.
         nat_destruct k.
-        +   pose proof (nat_le_zero (nat_suc n)) as leq.
+        +   pose proof (nat_pos (nat_suc n)) as leq.
             destruct (le_lt_trans leq ltq); contradiction.
         +   cbn.
             rewrite nat_sucs_lt in ltq.

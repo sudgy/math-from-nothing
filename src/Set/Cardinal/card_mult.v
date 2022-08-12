@@ -92,7 +92,7 @@ Proof.
     assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat_lt_zero _ x_lt).
+        exact (nat_neg2 x_lt).
     }
     exists (λ x, False_rect _ (xf (fst x))).
     split.
@@ -125,15 +125,15 @@ Proof.
         unfold one in x_lt, y_lt; cbn in x_lt, y_lt.
         rewrite nat_lt_suc_le in x_lt.
         rewrite nat_lt_suc_le in y_lt.
-        apply nat_le_zero_eq in x_lt.
-        apply nat_le_zero_eq in y_lt.
+        apply nat_neg_eq in x_lt.
+        apply nat_neg_eq in y_lt.
         subst.
         reflexivity.
     -   intros a.
         assert (zero (U := nat) < 1) as z_lt.
         {
             split.
-            -   apply nat_le_zero.
+            -   apply nat_pos.
             -   intro contr; inversion contr.
         }
         exists ([0|z_lt], a).
@@ -176,12 +176,12 @@ Proof.
     apply propositional_ext; split.
     -   intros [f f_bij] a.
         destruct (f a) as [x x_lt].
-        exact (nat_lt_zero _ x_lt).
+        exact (nat_neg2 x_lt).
     -   intros af.
         exists (empty_function _ _ af).
         apply empty_bij.
         intros [x x_lt].
-        exact (nat_lt_zero _ x_lt).
+        exact (nat_neg2 x_lt).
 Qed.
 
 Theorem card_mult_zero : ∀ κ μ, κ * μ = 0 → {κ = 0} + {μ = 0}.
@@ -245,7 +245,7 @@ Proof.
     -   intros [y y_lt].
         exists [a|Logic.eq_refl a].
         apply set_type_eq; cbn.
-        apply nat_lt_1.
+        apply nat_lt_one_eq.
         exact y_lt.
 Qed.
 
@@ -259,7 +259,7 @@ Proof.
     destruct (f a) as [m m_lt].
     destruct (f b) as [n n_lt].
     apply set_type_eq; cbn.
-    apply nat_lt_1 in m_lt, n_lt.
+    apply nat_lt_one_eq in m_lt, n_lt.
     subst.
     reflexivity.
 Qed.
@@ -274,7 +274,7 @@ Proof.
     unfold zero, one in contr; cbn in contr.
     unfold nat_to_card in contr; equiv_simpl in contr.
     destruct contr as [f [f_inj f_sur]].
-    contradiction (nat_lt_0_false (f [0|nat_0_lt_1])).
+    contradiction (nat_lt_0_false (f [0|nat_one_pos])).
 Qed.
 
 Theorem card_unique_one {U} : U → (∀ a b : U, a = b) → |U| = 1.
@@ -282,7 +282,7 @@ Proof.
     intros a eq.
     unfold one; cbn.
     unfold nat_to_card; equiv_simpl.
-    exists (λ _, [0|nat_0_lt_1]).
+    exists (λ _, [0|nat_one_pos]).
     split.
     -   intros x y eq'.
         apply eq.
@@ -290,7 +290,7 @@ Proof.
         exists a.
         destruct z as [z z_lt].
         apply set_type_eq; cbn.
-        apply nat_lt_1 in z_lt.
+        apply nat_lt_one_eq in z_lt.
         exact z_lt.
 Qed.
 (* begin hide *)

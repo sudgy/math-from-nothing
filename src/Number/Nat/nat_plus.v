@@ -93,7 +93,7 @@ Proof.
         exact eq.
     -   apply IHc; clear IHc.
         do 2 rewrite nat_plus_lsuc in eq.
-        apply nat_suc_eq in eq.
+        rewrite nat_suc_eq in eq.
         exact eq.
 Qed.
 

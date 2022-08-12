@@ -247,7 +247,7 @@ Proof.
     assert (∀ m : set_type (λ m : nat, m < 0), False) as none.
     {
         intros [m m_lt].
-        exact (nat_lt_zero _ m_lt).
+        exact (nat_neg2 m_lt).
     }
     exists (λ x, False_rect _ (none x)).
     split.
@@ -278,7 +278,7 @@ Proof.
     assert (∀ m : set_type (λ m : nat, m < 0), False) as none.
     {
         intros [m m_lt].
-        exact (nat_lt_zero _ m_lt).
+        exact (nat_neg2 m_lt).
     }
     exists (λ x, False_rect _ (none x)).
     split.
@@ -312,7 +312,7 @@ Proof.
     unfold one; cbn; unfold nat_to_ord, mult; equiv_simpl.
     assert (zero (U := nat)  < 1) as z_lt.
     {
-        split; try apply nat_le_zero.
+        split; try apply nat_pos.
         intro contr; inversion contr.
     }
     exists (λ x, ([0|z_lt], x)).
@@ -328,7 +328,7 @@ Proof.
         apply set_type_eq; cbn.
         unfold one in a_lt; cbn in a_lt.
         rewrite nat_lt_suc_le in a_lt.
-        apply nat_le_zero_eq.
+        apply nat_neg_eq.
         exact a_lt.
     -   intros a b.
         cbn.
@@ -358,7 +358,7 @@ Proof.
     unfold one; cbn; unfold nat_to_ord, mult; equiv_simpl.
     assert (zero (U := nat)  < 1) as z_lt.
     {
-        split; try apply nat_le_zero.
+        split; try apply nat_pos.
         intro contr; inversion contr.
     }
     exists (λ x, (x, [0|z_lt])).
@@ -374,7 +374,7 @@ Proof.
         apply set_type_eq; cbn.
         unfold one in b_lt; cbn in b_lt.
         rewrite nat_lt_suc_le in b_lt.
-        apply nat_le_zero_eq.
+        apply nat_neg_eq.
         exact b_lt.
     -   intros a b.
         cbn.
@@ -427,7 +427,7 @@ Proof.
         -   intros a.
             contradiction (contr a).
         -   intros [b b_eq].
-            contradiction (nat_lt_zero _ b_eq).
+            contradiction (nat_neg2 b_eq).
         -   intros a.
             contradiction (contr a).
     }
@@ -696,7 +696,7 @@ Proof.
         assert (∀ m : set_type (λ n : nat, n < 0), False) as m_empty.
         {
             intros [m m_lt].
-            apply nat_lt_zero in m_lt.
+            apply nat_neg2 in m_lt.
             contradiction.
         }
         assert (ord_U A) as a.
@@ -756,10 +756,10 @@ Proof.
         unfold one in x_lt; cbn in x_lt.
         pose proof x_lt as x_lt2.
         rewrite nat_lt_suc_le in x_lt2.
-        apply nat_le_zero_eq in x_lt2.
+        apply nat_neg_eq in x_lt2.
         subst x.
         unfold le in b_leq; cbn in b_leq.
-        apply nat_le_zero_eq in b_leq.
+        apply nat_neg_eq in b_leq.
         subst.
         contradiction b_neq.
         apply set_type_eq; reflexivity.
@@ -767,7 +767,7 @@ Proof.
     assert (∀ m : set_type (λ n : nat, n < 0), False) as m_empty.
     {
         intros [m m_lt].
-        apply nat_lt_zero in m_lt.
+        apply nat_neg2 in m_lt.
         contradiction.
     }
     exists (λ m, False_rect _ (m_empty m)).
@@ -818,7 +818,7 @@ Proof.
         unfold f; cbn.
         clear dom f.
         destruct a.
-        -   apply nat_lt_zero in m_lt.
+        -   apply nat_neg2 in m_lt.
             contradiction.
         -   rewrite nat_mult_lsuc.
             rewrite nat_lt_suc_le in m_lt.
@@ -888,7 +888,7 @@ Proof.
     equiv_simpl.
     rewrite ord_lt_initial in A_lt.
     destruct A_lt as [[z z_lt] [f [f_bij f_iso]]].
-    pose proof (nat_lt_1 z z_lt); subst z.
+    pose proof (nat_lt_one_eq z z_lt); subst z.
     exists (λ x, False_rect _ (nat_lt_0_false x)).
     split.
     1: split.
@@ -902,7 +902,7 @@ Proof.
         apply neq.
         apply antisym; try exact leq.
         unfold le; cbn.
-        apply nat_le_zero.
+        apply nat_pos.
     -   intros a.
         contradiction (nat_lt_0_false a).
 Qed.

@@ -179,7 +179,7 @@ Proof.
         apply f_cauchy.
         all: rewrite <- (plus_lid N).
         all: apply le_lrplus.
-        1, 3: apply nat_le_zero.
+        1, 3: apply nat_pos.
         1, 2: assumption.
     }
     assert (∀ m, seq_norm_bounded (fn m)) as fn_bounded.
@@ -286,7 +286,7 @@ Proof.
             destruct contr as [contr|contr].
             -   rewrite <- (plus_rid N) in contr at 2.
                 apply lt_plus_lcancel in contr.
-                contradiction (nat_lt_zero _ contr).
+                contradiction (nat_neg2 contr).
             -   specialize (A_upper m).
                 unfold fn in A_upper.
                 apply le_plus_0_anb_b_a in A_upper.

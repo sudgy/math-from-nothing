@@ -123,7 +123,7 @@ Proof.
     destruct a as [a1 a2]; simpl.
     intro eq.
     do 2 rewrite plus_lid in eq.
-    pose proof (nat_le_ex a2 a1 eq) as [c c_eq].
+    pose proof (nat_le_ex eq) as [c c_eq].
     exists c.
     equiv_simpl; simpl.
     rewrite plus_rid.
@@ -149,7 +149,7 @@ Proof.
     unfold zero at 1, nat_to_int, mult, le; simpl; equiv_simpl; simpl.
     rewrite mult_lanni, mult_ranni.
     do 2 rewrite plus_lid.
-    apply nat_le_zero.
+    apply nat_pos.
 Qed.
 
 Global Instance int_le_mult_class : OrderMult int := {
@@ -253,7 +253,7 @@ Proof.
     intros a.
     unfold zero, nat_to_int, le; simpl; equiv_simpl; simpl.
     do 2 rewrite plus_lid.
-    apply nat_le_zero.
+    apply nat_pos.
 Qed.
 
 Theorem nat_to_int_ex : ∀ a, 0 <= a → ∃ n, nat_to_int n = a.
@@ -263,7 +263,7 @@ Proof.
     unfold zero, le in a_pos; simpl in a_pos; equiv_simpl in a_pos.
     destruct a as [a1 a2]; simpl in a_pos.
     do 2 rewrite plus_lid in a_pos.
-    pose proof (nat_le_ex _ _ a_pos) as [c c_eq].
+    pose proof (nat_le_ex a_pos) as [c c_eq].
     exists c.
     unfold nat_to_int; equiv_simpl; simpl.
     rewrite plus_comm, plus_rid.
@@ -277,7 +277,7 @@ Proof.
     -   revert b.
         induction a.
         +   intros b eq.
-            apply nat_le_zero.
+            apply nat_pos.
         +   intros b eq.
             destruct b.
             *   change (nat_suc a) with (1 + a) in eq.
@@ -368,7 +368,7 @@ Proof.
     apply nat_to_int_le.
     unfold one; cbn.
     rewrite nat_sucs_le.
-    apply nat_le_zero.
+    apply nat_pos.
 Qed.
 
 Global Program Instance int_archimedean : Archimedean int.

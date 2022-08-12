@@ -106,7 +106,7 @@ Proof.
     assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat_lt_zero _ x_lt).
+        exact (nat_neg2 x_lt).
     }
     exists (λ x, match x with
                  | inl y => False_rect _ (xf y)
@@ -154,7 +154,7 @@ Proof.
     assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat_lt_zero _ x_lt).
+        exact (nat_neg2 x_lt).
     }
     exists (empty_function _ _ xf).
     apply empty_inj.

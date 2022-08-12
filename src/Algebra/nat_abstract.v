@@ -191,7 +191,7 @@ Proof.
     -   revert b.
         nat_induction a.
         +   intros b b_ge.
-            apply nat_le_zero.
+            apply nat_pos.
         +   nat_destruct b.
             *   intros contr.
                 rewrite nat_to_abstract_zero in contr.
@@ -210,7 +210,7 @@ Proof.
             apply nat_to_abstract_pos2.
         +   intros b b_ge.
             nat_destruct b.
-            *   pose proof (nat_zero_lt_suc a) as a_pos.
+            *   pose proof (nat_pos2 a) as a_pos.
                 destruct (lt_le_trans a_pos b_ge); contradiction.
             *   cbn.
                 apply le_lplus.

@@ -53,7 +53,7 @@ Proof.
             apply div_pos.
             rewrite <- nat_to_abstract_zero.
             rewrite nat_to_abstract_lt.
-            apply nat_zero_lt_suc.
+            apply nat_pos2.
         }
         pose (B n := open_ball x [_|n_pos n]).
         assert (∀ n, ∃ a, B n a ∧ A a) as f_ex.
@@ -201,7 +201,7 @@ Proof.
         exists 1.
         intros i j.
         subst N.
-        apply a_cauchy; apply nat_le_zero.
+        apply a_cauchy; apply nat_pos.
     }
     pose (S m := ∃ i j, i < 1 + N ∧ j < 1 + N ∧ m = d (a i) (a j)).
     assert (finite (|set_type S|)) as S_fin.
@@ -238,7 +238,7 @@ Proof.
         exists 0, 0.
         split.
         2: split.
-        1, 2: split; try apply nat_le_zero.
+        1, 2: split; try apply nat_pos.
         1, 2: intros contr; inversion contr.
         reflexivity.
     }
@@ -300,7 +300,7 @@ Proof.
         exists 0, 0.
         split.
         2: split.
-        1, 2: apply nat_zero_lt_suc.
+        1, 2: apply nat_pos2.
         rewrite d_zero.
         reflexivity.
     }

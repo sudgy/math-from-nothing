@@ -158,11 +158,11 @@ Proof.
         rewrite (geo_mult_project_smaller _ _ _ _ _ am bn).
         rewrite (geo_mult_project_smaller _ _ _ _ _ bn am).
         reflexivity.
-        +   split; [>apply nat_le_zero|].
+        +   split; [>apply nat_pos|].
             intros contr.
             apply nat_abs_minus_eq_zero in contr.
             subst; contradiction.
-        +   split; [>apply nat_le_zero|].
+        +   split; [>apply nat_pos|].
             intros contr.
             apply nat_abs_minus_eq_zero in contr.
             contradiction.
