@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export relation.
+Require Export order_def.
 
 (* begin hide *)
 Section OrderDictionary.
@@ -8,16 +8,8 @@ Section OrderDictionary.
 Variables U V : Type.
 
 Context `{
-    Order U,
-    Order V,
-    Connex U le,
-    Antisymmetric U le,
-    Transitive U le,
-    Reflexive U le,
-    Connex V le,
-    Antisymmetric V le,
-    Transitive V le,
-    Reflexive V le
+    WellOrder U,
+    WellOrder V
 }.
 (* end hide *)
 Instance dictionary_order : Order (U * V) := {
@@ -26,9 +18,10 @@ Instance dictionary_order : Order (U * V) := {
         end
 }.
 (* begin hide *)
-Global Program Instance dict_order_connex : @Connex (U * V) le.
-Next Obligation.
-    destruct x as [a1 b1], y as [a2 b2].
+Global Instance dict_order_connex : @Connex (U * V) le.
+Proof.
+    split.
+    intros [a1 b1] [a2 b2].
     unfold le; cbn.
     destruct (trichotomy b1 b2) as [[ltq|eq]|ltq].
     -   left; left.
@@ -43,11 +36,11 @@ Next Obligation.
         exact ltq.
 Qed.
 
-Global Program Instance dict_order_antisym : @Antisymmetric (U * V) le.
-Next Obligation.
-    rename H9 into eq1, H10 into eq2.
-    destruct x as [a1 b1], y as [a2 b2].
-    unfold le in eq1, eq2; cbn in *.
+Global Instance dict_order_antisym : @Antisymmetric (U * V) le.
+Proof.
+    split.
+    intros [a1 b1] [a2 b2] eq1 eq2.
+    unfold le in eq1, eq2; cbn in eq1, eq2.
     destruct eq1 as [ltq1|[leq1 eq1]];
     destruct eq2 as [ltq2|[leq2 eq2]].
     -   destruct (trans ltq1 ltq2); contradiction.
@@ -60,10 +53,10 @@ Next Obligation.
         reflexivity.
 Qed.
 
-Global Program Instance dict_order_trans : @Transitive (U * V) le.
-Next Obligation.
-    rename H9 into xy, H10 into yz.
-    destruct x as [a1 b1], y as [a2 b2], z as [a3 b3].
+Global Instance dict_order_trans : @Transitive (U * V) le.
+Proof.
+    split.
+    intros [a1 b1] [a2 b2] [a3 b3] xy yz.
     unfold le in xy, yz; unfold le; cbn in *.
     destruct xy as [ltq1|[leq1 eq1]];
     destruct yz as [ltq2|[leq2 eq2]].
@@ -77,18 +70,34 @@ Next Obligation.
         exact ltq2.
     -   subst.
         right.
-        split.
-        2: reflexivity.
+        split; [>|reflexivity].
         exact (trans leq1 leq2).
 Qed.
 
-Global Program Instance dict_order_refl : @Reflexive (U * V) le.
-Next Obligation.
-    destruct x as [a1 b1].
-    right.
-    split.
-    -   apply refl.
-    -   reflexivity.
+Global Instance dict_order_well_founded : @WellFounded (U * V) le.
+Proof.
+    apply well_ordered_founded.
+    intros S [[a b] Sx].
+    pose (SV (b : V) := ∃ a, S (a, b)).
+    pose proof (well_ordered SV) as SV_wo.
+    prove_parts SV_wo; [>exists b; exists a; exact Sx|].
+    destruct SV_wo as [b' [Sb' b'_least]].
+    pose (SU (a : U) := S (a, b')).
+    pose proof (well_ordered SU Sb') as [a' [Sa' a'_least]].
+    exists (a', b').
+    split; [>exact Sa'|].
+    intros [x y] Sxy.
+    unfold le; cbn.
+    specialize (b'_least y).
+    prove_parts b'_least; [>exists x; exact Sxy|].
+    classic_case (b' = y) as [eq|neq].
+    -   subst y.
+        right.
+        split; [>|reflexivity].
+        apply a'_least.
+        exact Sxy.
+    -   left.
+        split; assumption.
 Qed.
 
 End OrderDictionary.
