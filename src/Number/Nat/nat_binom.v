@@ -34,8 +34,8 @@ Proof.
     intros n.
     nat_induction n.
     -   reflexivity.
-    -   unfold one; cbn.
-        change nat_zero with 0.
+    -   change 1 with (nat_suc 0).
+        rewrite binom_suc.
         rewrite binom_zero.
         rewrite IHn.
         reflexivity.
@@ -43,23 +43,18 @@ Qed.
 
 Theorem binom_greater : ∀ n k, n < k → binom n k = 0.
 Proof.
-    intros n.
-    nat_induction n.
-    -   intros k ltq.
-        nat_destruct k.
+    nat_induction n; intros k ltq.
+    -   nat_destruct k.
         +   destruct ltq; contradiction.
         +   unfold zero at 1; cbn.
             reflexivity.
-    -   intros k ltq.
-        nat_destruct k.
-        +   pose proof (nat_pos (nat_suc n)) as leq.
-            destruct (le_lt_trans leq ltq); contradiction.
+    -   nat_destruct k.
+        +   contradiction (nat_neg2 ltq).
         +   cbn.
             rewrite nat_sucs_lt in ltq.
             rewrite IHn by exact ltq.
             rewrite IHn by (exact (trans ltq (nat_lt_suc k))).
-            rewrite plus_rid.
-            reflexivity.
+            apply plus_rid.
 Qed.
 
 Theorem binom_eq : ∀ n, binom n n = 1.
@@ -87,28 +82,25 @@ Theorem factorial_nz : ∀ n, 0 ≠ factorial n.
 Proof.
     intros n.
     nat_induction n.
-    -   intros contr; inversion contr.
+    -   apply nat_zero_suc.
     -   intros contr.
         cbn in contr.
         rewrite <- (mult_ranni (nat_suc n)) in contr.
         apply mult_lcancel in contr.
         +   contradiction.
-        +   intros contr2; inversion contr2.
+        +   apply nat_zero_suc.
 Qed.
 
 Theorem binom_fact : ∀ m n,
     binom (n + m) n * factorial n * factorial m = factorial (n + m).
 Proof.
-    intros m.
-    nat_induction m.
-    -   intros n.
-        rewrite plus_rid.
+    nat_induction m; intros n.
+    -   rewrite plus_rid.
         rewrite factorial_zero.
         rewrite binom_eq.
         rewrite mult_lid, mult_rid.
         reflexivity.
-    -   intros n.
-        nat_induction n.
+    -   nat_induction n.
         +   rewrite plus_lid.
             rewrite factorial_zero.
             rewrite binom_zero.
