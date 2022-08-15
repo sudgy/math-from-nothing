@@ -470,39 +470,14 @@ Theorem zorn_real_q_le_out : ∀ a, ¬cut a →
     zorn_real_q_le (polynomial_x real_cring) (to_polynomial real_cring a).
 Proof.
     intros b b_cut.
-
-    classic_case (∃ a, ¬cut a ∧ a < b) as [a_ex|a_nex].
-    -   destruct a_ex as [a [a_nin ab]].
-        rewrite <- lt_plus_0_anb_b_a in ab.
-        left.
-        exists (b - a).
-        split; [>exact ab|].
-        intros x [x_in x_nin].
-        rewrite polynomial_eval_plus, polynomial_eval_neg.
-        rewrite polynomial_eval_x, polynomial_eval_constant.
-        rewrite lt_plus_0_anb_b_a.
-        exact (cut_inout _ _ x_in b_cut).
-    -   rewrite not_ex in a_nex.
-        right.
-        intros ε ε_pos.
-        exists (ε/2).
-        split; [>apply half_pos; exact ε_pos|].
-        intros x [x_in x_nin].
-        rewrite polynomial_eval_plus, polynomial_eval_neg.
-        rewrite polynomial_eval_x, polynomial_eval_constant.
-        pose proof (cut_inout _ _ x_in b_cut) as ltq.
-        specialize (a_nex (x + ε/2)).
-        rewrite not_and, not_not, nlt_le in a_nex.
-        destruct a_nex as [contr|leq]; [>contradiction|].
-        rewrite <- lt_plus_0_anb_b_a in ltq.
-        rewrite (abs_pos_eq _ (land ltq)).
-        rewrite le_plus_rlmove in leq.
-        rewrite plus_comm in leq.
-        apply (le_lt_trans leq).
-        rewrite <- (plus_half ε) at 2.
-        rewrite <- lt_plus_0_a_b_ba.
-        apply half_pos.
-        exact ε_pos.
+    left.
+    exists 1.
+    split; [>exact one_pos|].
+    intros x [x_in x_nin].
+    rewrite polynomial_eval_plus, polynomial_eval_neg.
+    rewrite polynomial_eval_x, polynomial_eval_constant.
+    rewrite lt_plus_0_anb_b_a.
+    exact (cut_inout _ _ x_in b_cut).
 Qed.
 
 Lemma zorn_real_q_le_trans_wlog : ∀ f g,
