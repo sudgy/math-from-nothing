@@ -82,8 +82,9 @@ Proof.
     -   cbn.
         rewrite geo_reverse_mult.
         rewrite IHl.
+        rewrite list_reverse_add.
         rewrite list_image_conc.
-        cbn.
+        rewrite list_image_single.
         rewrite list_prod_mult.
         cbn.
         rewrite geo_reverse_vector.

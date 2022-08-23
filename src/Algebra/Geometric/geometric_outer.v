@@ -268,7 +268,7 @@ Proof.
         apply grade_project_of_grade.
         exact b_grade.
     }
-    cbn.
+    do 2 rewrite list_image_add; cbn.
     remember (list_prod (list_image al (vector_to_ext V))) as a.
     remember (list_size al) as m.
     assert (of_grade m a) as a_grade.

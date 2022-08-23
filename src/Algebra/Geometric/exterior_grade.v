@@ -523,10 +523,12 @@ Theorem ext_list_grade : ∀ l,
 Proof.
     intros l.
     induction l.
-    -   cbn.
+    -   rewrite list_image_end.
+        cbn.
         rewrite <- scalar_to_ext_one.
         apply scalar_to_ext_grade.
-    -   cbn.
+    -   rewrite list_image_add.
+        cbn.
         change (nat_suc (list_size l)) with (1 + list_size l).
         apply (grade_mult (GradedAlgebraObj := exterior_grade_mult)).
         +   apply vector_to_ext_grade.

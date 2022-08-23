@@ -494,7 +494,7 @@ Proof.
         rewrite pow_0_nat.
         rewrite scalar_id.
         apply ext_reverse_one.
-    -   cbn.
+    -   rewrite list_image_add; cbn.
         rewrite ext_reverse_mult.
         rewrite IHl; clear IHl.
         rewrite ext_reverse_vector.

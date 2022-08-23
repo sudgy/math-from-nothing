@@ -119,7 +119,7 @@ Proof.
     intros l.
     equiv_get_value l.
     unfold ulist_end, ulist_conc; equiv_simpl.
-    rewrite list_conc_end.
+    rewrite list_conc_rid.
     apply list_perm_refl.
 Qed.
 

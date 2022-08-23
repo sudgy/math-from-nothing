@@ -100,7 +100,7 @@ Proof.
         apply uconc_wd.
         +   apply (ulist_prod2_base_wd _ _ _ _ a_eq).
         +   exact IHb_eq.
-    -   cbn.
+    -   do 4 rewrite list_prod2_radd.
         do 2 rewrite list_conc_assoc.
         apply uconc_wd.
         +   apply (list_perm_trans (list_perm_conc _ _)).
@@ -164,6 +164,10 @@ Proof.
     induction l2.
     1: apply list_perm_refl.
     cbn.
+    do 2 rewrite list_prod2_radd.
+    rewrite list_prod2_base_add.
+    rewrite list_image_add.
+    do 2 rewrite list_conc_add.
     apply list_perm_skip.
     rewrite list_prod2_base_image.
     pose proof (list_perm_conc (list_image l2 (λ x, op a x))
@@ -183,6 +187,7 @@ Proof.
     intros op l1 l2 a.
     equiv_get_value l1 l2.
     unfold ulist_conc, ulist_prod2, ulist_add, ulist_image; equiv_simpl.
+    rewrite list_prod2_radd.
     rewrite list_prod2_base_image.
     apply list_perm_refl.
 Qed.

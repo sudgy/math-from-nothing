@@ -324,7 +324,7 @@ Proof.
     symmetry; apply tensor_power_eq_generic.
     revert l1.
     induction l2; intros.
-    -   rewrite list_conc_end.
+    -   rewrite list_conc_rid.
         cbn.
         unfold f; cbn.
         unfold zero at 4; cbn.
@@ -376,7 +376,7 @@ Proof.
             induction l1.
             -   apply tensor_power_eq_generic.
                 cbn.
-                unfold zero at 6; cbn.
+                unfold zero at 4; cbn.
                 change (module_homo_f (tensor_product_comm_homo _ _)) with
                     (tensor_product_comm_f (cring_module F) V).
                 rewrite tensor_product_comm_eq.

@@ -122,7 +122,8 @@ Proof.
     -   cbn.
         rewrite plus_lid.
         reflexivity.
-    -   cbn.
+    -   rewrite list_conc_add.
+        cbn.
         rewrite IHl1.
         apply plus_assoc.
 Qed.
@@ -246,7 +247,8 @@ Proof.
     induction l1.
     -   cbn.
         reflexivity.
-    -   cbn.
+    -   rewrite list_image_add, list_prod2_base_add.
+        cbn.
         rewrite IHl1.
         reflexivity.
 Qed.

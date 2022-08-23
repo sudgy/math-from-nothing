@@ -152,10 +152,13 @@ Proof.
             unfold h1.
             clear eq1 eq2 eq3.
             induction l1.
-            -   cbn.
+            -   unfold list_conc; cbn.
+                do 3 rewrite list_image_add.
                 rewrite (module_homo_plus _ _ g).
                 apply rdist.
-            -   cbn.
+            -   do 3 rewrite list_conc_add.
+                do 3 rewrite list_image_add.
+                do 3 rewrite rfold_add.
                 rewrite IHl1; clear IHl1.
                 apply ldist.
         }
@@ -167,10 +170,13 @@ Proof.
             unfold h1.
             clear eq1 eq2.
             induction l1.
-            -   cbn.
+            -   unfold list_conc; cbn.
+                do 2 rewrite list_image_add.
                 rewrite (module_homo_scalar _ _ g).
                 apply scalar_lmult.
-            -   cbn.
+            -   do 2 rewrite list_conc_add.
+                do 2 rewrite list_image_add.
+                do 2 rewrite rfold_add.
                 rewrite IHl1; clear IHl1.
                 apply scalar_rmult.
         }
@@ -420,7 +426,9 @@ Proof.
             -   cbn.
                 rewrite mult_lid.
                 reflexivity.
-            -   cbn.
+            -   rewrite list_image_add.
+                rewrite list_conc_add.
+                rewrite rfold_add.
                 rewrite IHul.
                 apply mult_assoc.
         }

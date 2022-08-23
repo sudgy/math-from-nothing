@@ -131,14 +131,14 @@ Proof.
     apply lscalar; clear α.
     induction x as [|v l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite geo_involute_one.
         rewrite <- scalar_to_geo_one.
         rewrite geo_mult_inner_scalar.
         rewrite neg_zero, geo_involute_zero.
         reflexivity.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite geo_involute_mult.
     rewrite geo_involute_vector.
     rewrite mult_lneg.
@@ -179,12 +179,12 @@ Proof.
     apply lscalar; clear α.
     induction x as [|v l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite ext_involute_one.
         rewrite ext_to_geo_one.
         apply geo_involute_one.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite ext_involute_mult.
     rewrite ext_involute_vector.
     rewrite mult_lneg.
@@ -256,7 +256,7 @@ Proof.
         destruct l as [|a l]; [>inversion l_size|].
         destruct l; [>|inversion l_size].
         clear l_size.
-        cbn.
+        rewrite list_image_add; cbn.
         rewrite mult_rid.
         rewrite ext_inner_vector.
         apply of_grade_scalar.
@@ -265,12 +265,12 @@ Proof.
     }
     destruct l as [|a l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_ext_one.
         rewrite ext_inner_scalar.
         apply of_grade_zero.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     inversion l_size as [l_size'].
     rewrite ext_inner_add.
     apply of_grade_plus.
@@ -325,7 +325,7 @@ Proof.
     apply lscalar; clear α.
     induction x as [|b l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_geo_one at 1.
         rewrite geo_mult_inner_scalar.
         rewrite scalar_ranni.
@@ -334,7 +334,7 @@ Proof.
         rewrite plus_rinv.
         reflexivity.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     remember (list_prod (list_image l (λ v, φ v))) as X.
     clear HeqX.
     rewrite geo_mult_inner_add.
@@ -411,7 +411,7 @@ Proof.
         do 2 rewrite ext_to_geo_one.
         apply geo_reverse_one.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     nat_destruct n; [>inversion ln|].
     remember (list_prod (list_image l (vector_to_ext V))) as X.
     assert (of_grade n X) as Xn.

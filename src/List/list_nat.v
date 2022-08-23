@@ -82,6 +82,7 @@ Proof.
     -   unfold zero; cbn.
         reflexivity.
     -   cbn.
+        rewrite list_reverse_add.
         unfold func_to_list, func_to_list2 in IHn.
         rewrite IHn.
         clear IHn.
@@ -91,7 +92,8 @@ Proof.
             reflexivity.
         +   intros.
             cbn.
-            specialize (IHn (λ x, f (nat_suc x))).
+            rewrite list_conc_add.
+            specialize (IHn (λ n, f (nat_suc n))).
             cbn in IHn.
             apply f_equal.
             rewrite <- func_to_list2_base_eq in IHn.
@@ -209,6 +211,7 @@ Proof.
         reflexivity.
     -   cbn.
         intros f.
+        rewrite list_image_add.
         specialize (IHn (λ m, f (nat_suc m))).
         unfold func_to_list2 in IHn.
         rewrite <- func_to_list2_base_eq in IHn.
@@ -241,15 +244,16 @@ Theorem list_size_conc {U} : ∀ l1 l2 : list U,
     list_size (l1 ++ l2) = list_size (l2 ++ l1).
 Proof.
     induction l1; intros l2.
-    -   cbn.
-        rewrite list_conc_end.
+    -   rewrite list_conc_lid, list_conc_rid.
         reflexivity.
-    -   cbn.
+    -   rewrite list_conc_add.
+        cbn.
         rewrite IHl1; clear IHl1.
         induction l2.
         +   cbn.
             reflexivity.
-        +   cbn.
+        +   rewrite list_conc_add.
+            cbn.
             rewrite IHl2.
             reflexivity.
 Qed.
@@ -262,7 +266,8 @@ Proof.
     -   cbn.
         rewrite plus_lid.
         reflexivity.
-    -   cbn.
+    -   rewrite list_conc_add.
+        cbn.
         rewrite IHl1.
         rewrite nat_plus_lsuc.
         reflexivity.
@@ -275,8 +280,10 @@ Proof.
     nat_induction n.
     -   unfold zero at 1; cbn.
         reflexivity.
-    -   cbn.
+    -   unfold func_to_list; cbn.
+        rewrite list_reverse_add.
         rewrite list_size_conc.
+        rewrite list_conc_add, list_conc_lid.
         cbn.
         unfold func_to_list in IHn.
         rewrite IHn.
@@ -329,7 +336,7 @@ Proof.
     induction l.
     -   cbn.
         reflexivity.
-    -   cbn.
+    -   rewrite list_image_add; cbn.
         rewrite IHl.
         reflexivity.
 Qed.

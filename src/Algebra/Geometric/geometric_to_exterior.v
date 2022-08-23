@@ -416,13 +416,13 @@ Proof.
     apply f_equal.
     induction v as [|v l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_ext_one.
         do 3 rewrite ext_inner_scalar.
         rewrite plus_rid.
         reflexivity.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     do 3 rewrite ext_inner_add.
     rewrite IHl; clear IHl.
     rewrite ldist.
@@ -459,13 +459,13 @@ Proof.
     apply f_equal; clear β.
     induction v as [|v l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_ext_one.
         do 2 rewrite ext_inner_scalar.
         rewrite scalar_ranni.
         reflexivity.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     do 2 rewrite ext_inner_add.
     rewrite IHl; clear IHl.
     rewrite bilinear_form_lscalar.
@@ -531,12 +531,12 @@ Proof.
     apply f_equal.
     induction x as [|v l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_ext_one.
         rewrite ext_inner_scalar.
         apply ext_inner_rzero.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite ext_inner_add.
     rewrite ext_inner_rplus.
     rewrite ext_inner_rneg.

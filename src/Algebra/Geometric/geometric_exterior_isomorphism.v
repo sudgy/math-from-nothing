@@ -99,13 +99,13 @@ Proof.
     apply f_equal.
     induction x as [|u l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_ext_one.
         do 2 rewrite ext_inner_scalar.
         do 2 rewrite ext_inner_rzero.
         symmetry; apply neg_zero.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     do 2 rewrite ext_inner_add.
     do 2 rewrite ext_inner_rplus.
     rewrite neg_plus.
@@ -145,13 +145,13 @@ Proof.
     apply f_equal.
     induction x as [|u l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_geo_one.
         do 2 rewrite geo_mult_inner_scalar.
         do 2 rewrite geo_mult_inner_rzero.
         symmetry; apply neg_zero.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     do 2 rewrite geo_mult_inner_add.
     do 2 rewrite geo_mult_inner_rplus.
     rewrite neg_plus.
@@ -193,14 +193,14 @@ Proof.
     clear α l.
     induction x as [|b l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_geo_one.
         rewrite geo_to_ext_of_scalar.
         rewrite geo_mult_inner_scalar.
         rewrite ext_inner_scalar.
         apply geo_to_ext_zero.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite geo_mult_inner_add.
     rewrite geo_to_ext_add.
     rewrite geo_to_ext_plus, geo_to_ext_neg.
@@ -243,14 +243,14 @@ Proof.
     clear α l.
     induction x as [|b l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite <- scalar_to_ext_one.
         rewrite ext_to_geo_of_scalar.
         rewrite ext_inner_scalar.
         rewrite geo_mult_inner_scalar.
         apply ext_to_geo_zero.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite ext_inner_add.
     rewrite ext_to_geo_add.
     rewrite ext_to_geo_plus, ext_to_geo_neg.
@@ -290,12 +290,12 @@ Proof.
     apply f_equal.
     induction x as [|a l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         replace (ext_to_geo B 1) with (@one _ (geo_one B))
             by (symmetry; apply (ext_to_geo_one B)).
         apply geo_to_ext_one.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite ext_to_geo_add.
     rewrite (geo_to_ext_plus B).
     rewrite geo_to_ext_add.
@@ -329,11 +329,11 @@ Proof.
     apply f_equal.
     induction x as [|a l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         rewrite geo_to_ext_one.
         apply ext_to_geo_one.
     }
-    cbn.
+    rewrite list_image_add; cbn.
     rewrite geo_to_ext_add.
     rewrite (ext_to_geo_plus B).
     rewrite ext_to_geo_add.

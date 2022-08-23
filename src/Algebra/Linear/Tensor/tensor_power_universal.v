@@ -134,6 +134,8 @@ Proof.
     destruct eq3.
     induction l1.
     -   cbn in *.
+        rewrite list_conc_lid.
+        unfold list_conc; cbn.
         rewrite (tensor_rdist V).
         apply (@to_generic_tensor_plus F V).
         +   reflexivity.
@@ -163,7 +165,7 @@ Proof.
     destruct eq2; cbn.
     clear eq1.
     induction l1.
-    -   cbn.
+    -   unfold list_conc; cbn.
         rewrite (tensor_lscalar V).
         reflexivity.
     -   cbn in *.

@@ -140,7 +140,7 @@ Proof.
     exists (list_prod (list_image l (vector_to_ext V))).
     induction l as [|v l].
     {
-        cbn.
+        rewrite list_image_end; cbn.
         split.
         -   rewrite <- scalar_to_ext_one.
             apply scalar_to_ext_grade.
@@ -148,7 +148,7 @@ Proof.
     }
     destruct l_orth as [v_orth l_orth].
     specialize (IHl l_orth) as [IHl1 IHl2].
-    cbn.
+    rewrite list_image_add; cbn.
     split.
     -   change (nat_suc (list_size l)) with (1 + list_size l).
         apply (grade_mult (GradedAlgebraObj := exterior_grade_mult V)).
@@ -162,12 +162,12 @@ Proof.
         apply f_equal.
         clear l_orth IHl1 IHl2.
         induction l as [|u l].
-        +   cbn.
+        +   rewrite list_image_end; cbn.
             rewrite <- scalar_to_geo_one.
             symmetry; apply geo_mult_inner_scalar.
         +   destruct v_orth as [uv_orth u_orth].
             specialize (IHl u_orth).
-            cbn.
+            rewrite list_image_add; cbn.
             rewrite geo_mult_inner_add.
             rewrite <- IHl.
             rewrite mult_ranni.

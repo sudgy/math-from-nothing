@@ -22,7 +22,8 @@ Proof.
     induction l1.
     -   cbn.
         symmetry; apply mult_lid.
-    -   cbn.
+    -   rewrite list_conc_add.
+        cbn.
         rewrite IHl1.
         apply mult_assoc.
 Qed.

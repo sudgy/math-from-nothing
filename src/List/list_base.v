@@ -20,12 +20,14 @@ Fixpoint list_conc {U : Type} (al bl : list U) : list U :=
   end.
 
 Infix "++" := list_conc (right associativity, at level 60) : list_scope.
+Arguments list_conc : simpl never.
 
 Fixpoint list_reverse {U : Type} (l : list U) : list U :=
     match l with
     | list_end => list_end
     | a :: l1 => list_reverse l1 ++ (a :: list_end)
     end.
+Arguments list_reverse : simpl never.
 
 Theorem list_end_neq {U} : ∀ (a : U) l, a :: l ≠ list_end.
 Proof.
@@ -48,35 +50,43 @@ Proof.
     apply eq.
 Qed.
 
-Theorem list_conc_eq {U} : ∀ (x : U) al bl, x :: al = x :: bl → al = bl.
+Theorem list_add_eq {U} : ∀ (x : U) al bl, x :: al = x :: bl → al = bl.
 Proof.
     intros x al bl eq.
     apply list_inversion in eq.
     apply eq.
 Qed.
 
-Theorem list_add_conc_add {U} : ∀ (a : U) l1 l2,
-    a :: (l1 ++ l2) = (a :: l1) ++ l2.
+Theorem list_conc_lid {U} : ∀ l : list U, list_end ++ l = l.
 Proof.
-    intros a l1 l2.
-    cbn.
+    reflexivity.
+Qed.
+
+Theorem list_conc_add {U} : ∀ a (l1 l2 : list U),
+    (a :: l1) ++ l2 = a :: (l1 ++ l2).
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_conc_single {U} : ∀ (a : U) l, (a :: list_end) ++ l = a :: l.
+Proof.
     reflexivity.
 Qed.
 
 Theorem list_add_conc {U} : ∀ (a : U) l, a :: l = (a :: list_end) ++ l.
 Proof.
     intros a l.
-    cbn.
+    rewrite list_conc_add.
+    rewrite list_conc_lid.
     reflexivity.
 Qed.
 
-Theorem list_conc_end {U} : ∀ l : list U, l ++ list_end = l.
+Theorem list_conc_rid {U} : ∀ l : list U, l ++ list_end = l.
 Proof.
     intros l.
     induction l.
-    -   cbn.
-        reflexivity.
-    -   cbn.
+    -   apply list_conc_lid.
+    -   rewrite list_conc_add.
         rewrite IHl.
         reflexivity.
 Qed.
@@ -86,18 +96,29 @@ Theorem list_conc_assoc {U} :
 Proof.
     intros l1 l2 l3.
     induction l1.
-    -   cbn.
+    -   do 2 rewrite list_conc_lid.
         reflexivity.
-    -   cbn.
+    -   do 3 rewrite list_conc_add.
         rewrite IHl1.
         reflexivity.
 Qed.
 
-Theorem list_conc_add_assoc {U} :
-    ∀ (a : U) l1 l2, a :: (l1 ++ l2) = (a :: l1) ++ l2.
+Theorem list_reverse_end {U} : list_reverse (U := U) list_end = list_end.
 Proof.
-    intros a l1 l2.
-    cbn.
+    reflexivity.
+Qed.
+
+Theorem list_reverse_add {U} : ∀ (a : U) l,
+    list_reverse (a :: l) = list_reverse l ++ (a :: list_end).
+Proof.
+    reflexivity.
+Qed.
+
+Global Arguments list_reverse : simpl never.
+
+Theorem list_reverse_single {U} : ∀ (a : U),
+    list_reverse (a :: list_end) = a :: list_end.
+Proof.
     reflexivity.
 Qed.
 
@@ -106,27 +127,28 @@ Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
 Proof.
     intros l1 l2.
     induction l1.
-    -   cbn.
-        rewrite list_conc_end.
+    -   rewrite list_reverse_end.
+        rewrite list_conc_lid, list_conc_rid.
         reflexivity.
-    -   cbn.
+    -   rewrite list_conc_add, list_reverse_add.
         rewrite IHl1.
+        rewrite list_reverse_add.
         rewrite list_conc_assoc.
         reflexivity.
 Qed.
 
-Theorem list_reverse_end {U : Type} : ∀ l : list U,
+Theorem list_reverse_end_eq {U : Type} : ∀ l : list U,
     list_end = list_reverse l → list_end = l.
 Proof.
     intros l eq.
     destruct l; [>reflexivity|].
-    cbn in eq.
+    rewrite list_reverse_add in eq.
     destruct (list_reverse l).
-    -   cbn in eq.
+    -   rewrite list_conc_lid in eq.
         symmetry in eq.
         apply list_end_neq in eq.
         contradiction.
-    -   cbn in eq.
+    -   rewrite list_conc_add in eq.
         symmetry in eq.
         apply list_end_neq in eq.
         contradiction.
@@ -137,13 +159,13 @@ Theorem list_reverse_reverse {U : Type} : ∀ l : list U,
 Proof.
     intros l.
     induction l.
-    -   cbn.
+    -   rewrite list_reverse_end.
         reflexivity.
-    -   cbn.
+    -   rewrite list_reverse_add.
         rewrite list_reverse_conc.
         rewrite IHl.
-        cbn.
-        reflexivity.
+        rewrite list_reverse_single.
+        apply list_conc_single.
 Qed.
 
 Theorem list_reverse_eq {U : Type} : ∀ l1 l2 : list U,

@@ -367,6 +367,8 @@ Proof.
         destruct l as [l l_eq]; cbn; clear l_eq.
         induction l.
         +   cbn.
+            unfold vectors_to_tensor.
+            rewrite list_image_end, rfold_end.
             unfold TAO.
             pose proof (algebra_homo_one _ _ f).
             cbn in *.
@@ -374,7 +376,9 @@ Proof.
             rewrite <- H.
             apply f_equal.
             reflexivity.
-        +   cbn.
+        +   unfold vectors_to_tensor.
+            rewrite list_image_add, rfold_add.
+            unfold vectors_to_tensor in IHl.
             rewrite IHl.
             rewrite <- (tensor_algebra_iso_fg (vector_to_tensor a)).
             rewrite <- (algebra_homo_mult _ _ f).
@@ -490,8 +494,10 @@ Proof.
         cbn.
         reflexivity.
     }
+    unfold vectors_to_tensor in *.
+    rewrite list_image_add, rfold_add.
     cbn.
-    rewrite <- IHl; clear IHl.
+    rewrite IHl; clear IHl.
     reflexivity.
 Qed.
 (* begin hide *)

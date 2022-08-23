@@ -120,8 +120,7 @@ Theorem list_perm_conc {U} : ∀ al bl : list U,
 Proof.
     intros al bl.
     induction al.
-    -   cbn.
-        rewrite list_conc_end.
+    -   rewrite list_conc_lid, list_conc_rid.
         apply list_perm_refl.
     -   remember (al ++ bl) as l1.
         remember (bl ++ al) as l2.
@@ -132,10 +131,9 @@ Proof.
                 inversion Heql1.
             }
             subst al.
-            cbn in *.
-            rewrite list_conc_end in Heql2.
+            rewrite list_conc_rid in Heql2.
             subst bl.
-            cbn.
+            rewrite list_conc_rid, list_conc_lid.
             apply list_perm_refl.
         +   clear IHIHal.
             destruct al.
@@ -149,7 +147,7 @@ Proof.
                 pose proof (list_perm_add bl a) as eq.
                 pose proof (list_perm_lpart al' eq) as eq2.
                 rewrite <- list_conc_assoc in eq2.
-                cbn in eq2.
+                rewrite list_conc_add in eq2.
                 apply (list_perm_trans2 eq2).
                 rewrite (list_add_conc a).
                 rewrite (list_add_conc a (bl ++ al')).
@@ -161,18 +159,17 @@ Proof.
         +   pose proof (list_perm_add bl a) as eq.
             pose proof (list_perm_lpart al eq) as eq2.
             rewrite <- list_conc_assoc in eq2.
-            cbn in eq2.
+            rewrite list_conc_add in eq2.
             apply (list_perm_trans2 eq2).
-            cbn.
+            rewrite list_conc_add.
             rewrite <- Heql1, <- Heql2.
             apply list_perm_skip.
             apply list_perm_swap.
         +   pose proof (list_perm_add bl a) as eq.
             pose proof (list_perm_lpart al eq) as eq2.
             rewrite <- list_conc_assoc in eq2.
-            cbn in eq2.
             apply (list_perm_trans2 eq2).
-            cbn.
+            do 2 rewrite list_conc_add.
             rewrite <- Heql1, <- Heql2.
             apply list_perm_skip.
             apply (list_perm_trans IHal1 IHal2).
@@ -476,18 +473,20 @@ Proof.
                 subst l4.
                 cbn.
                 exact eq.
-            *   inversion Heql34 as [[eq2 Heql34']].
+            *   rewrite list_conc_add in Heql34.
+                inversion Heql34 as [[eq2 Heql34']].
                 subst a3.
-                cbn.
+                rewrite list_conc_lid, list_conc_add.
                 rewrite Heql34' in eq.
                 apply (list_perm_trans eq).
                 rewrite list_add_conc.
                 rewrite list_conc_assoc.
-                rewrite list_conc_add_assoc.
+                rewrite <- list_conc_add.
                 apply list_perm_lpart.
                 apply list_perm_sym.
                 apply list_perm_add.
-        +   inversion Heql12 as [[eq2 Heql12']].
+        +   rewrite list_conc_add in Heql12.
+            inversion Heql12 as [[eq2 Heql12']].
             subst a1.
             destruct l3 as [|a3 l3].
             *   inversion Heql34.
@@ -497,7 +496,6 @@ Proof.
                 apply (list_perm_trans2 eq).
                 rewrite (list_add_conc a l2).
                 rewrite list_conc_assoc.
-                rewrite list_conc_add_assoc.
                 apply list_perm_lpart.
                 apply list_perm_add.
             *   inversion Heql34.
@@ -561,7 +559,8 @@ Proof.
             clear.
             rewrite (list_add_conc a l4).
             rewrite list_conc_assoc.
-            rewrite list_conc_add_assoc.
+            rewrite list_conc_single.
+            rewrite list_conc_assoc.
             apply list_perm_lpart.
             pose proof (list_perm_conc l3 (a :: list_end)) as eq.
             cbn in eq.
@@ -594,9 +593,9 @@ Proof.
             cbn.
             clear.
             rewrite (list_add_conc a l2).
-            rewrite list_conc_assoc.
-            do 3 rewrite list_conc_add_assoc.
+            do 2 rewrite list_conc_assoc.
             apply list_perm_lpart.
+            rewrite list_conc_single.
             pose proof (list_perm_conc (a :: list_end) l1) as eq.
             cbn in eq.
             apply (list_perm_skip x) in eq.

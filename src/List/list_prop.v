@@ -154,7 +154,8 @@ Theorem list_unique_add {U} : ∀ (l : list U) a,
         list_unique (a :: l) → list_unique (l ++ (a :: list_end)).
     intros l a [a_nin a_uni].
     induction l.
-    -   cbn.
+    -   rewrite list_conc_lid.
+        cbn.
         rewrite not_false.
         split; exact true.
     -   cbn in a_nin.
@@ -173,15 +174,15 @@ Qed.
 Theorem list_unique_conc {U} : ∀ l1 l2 : list U,
         list_unique (l1 ++ l2) → list_unique (l2 ++ l1).
     induction l1; intros l2 uni.
-    -   cbn in uni.
-        rewrite list_conc_end.
+    -   rewrite list_conc_lid in uni.
+        rewrite list_conc_rid.
         exact uni.
     -   change ((a :: l1) ++ l2) with (a :: (l1 ++ l2)) in uni.
         apply list_unique_add in uni.
         rewrite <- list_conc_assoc in uni.
         specialize (IHl1 _ uni).
         rewrite <- list_conc_assoc in IHl1.
-        cbn in IHl1.
+        rewrite list_conc_single in IHl1.
         exact IHl1.
 Qed.
 
@@ -326,12 +327,11 @@ Theorem list_prop_ex {U} : ∀ (l : list U) S, list_prop S l →
     intros l S Sl.
     induction l.
     -   exists list_end.
-        cbn.
-        reflexivity.
+        apply list_image_end.
     -   destruct Sl as [Sa Sl].
         specialize (IHl Sl) as [l' l_eq].
         exists ([a|Sa] :: l').
-        cbn.
+        rewrite list_image_add.
         rewrite l_eq.
         reflexivity.
 Qed.
