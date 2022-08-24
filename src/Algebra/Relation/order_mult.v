@@ -6,7 +6,7 @@ Require Export mult.
 Require Export order_plus.
 
 Class OrderMult U `{Zero U, Mult U, Order U} := {
-    le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b
+    le_mult : ∀ {a b}, 0 <= a → 0 <= b → 0 <= a * b
 }.
 Class OrderLmult U `{Zero U, Mult U, Order U} := {
     le_lmult_pos : ∀ {a b} c, 0 <= c → a <= b → c * a <= c * b
@@ -62,7 +62,7 @@ Proof.
     intros a b c c_pos leq.
     apply le_lplus with (-a) in leq.
     rewrite plus_linv in leq.
-    pose proof (le_mult _ _ c_pos leq) as eq.
+    pose proof (le_mult c_pos leq) as eq.
     rewrite ldist in eq.
     rewrite mult_rneg in eq.
     apply le_lplus with (c * a) in eq.
@@ -71,7 +71,7 @@ Proof.
     exact eq.
 Qed.
 (* end hide *)
-Theorem div_pos : ∀ a, 0 < a → 0 < div a.
+Theorem div_pos : ∀ {a}, 0 < a → 0 < div a.
 Proof.
     intros a a_pos.
     classic_contradiction contr.
@@ -169,7 +169,7 @@ Proof.
     exact eq.
 Qed.
 
-Theorem lt_mult : ∀ a b, 0 < a → 0 < b → 0 < a * b.
+Theorem lt_mult : ∀ {a b}, 0 < a → 0 < b → 0 < a * b.
 Proof.
     intros a b a_pos b_pos.
     apply lt_rmult_pos with b in a_pos; [>|exact b_pos].
@@ -197,7 +197,7 @@ Proof.
     exact eq.
 Qed.
 
-Theorem div_neg : ∀ a, a < 0 → /a < 0.
+Theorem div_neg : ∀ {a}, a < 0 → /a < 0.
 Proof.
     intros a a_neg.
     pose proof (land (neg_pos2 _) a_neg) as a_pos.
@@ -798,7 +798,7 @@ Proof.
     destruct (connex 0 a) as [a_pos|a_neg].
     -   apply le_mult; exact a_pos.
     -   apply neg_pos in a_neg.
-        pose proof (le_mult _ _ a_neg a_neg) as a_pos.
+        pose proof (le_mult a_neg a_neg) as a_pos.
         rewrite mult_lneg, mult_rneg in a_pos.
         rewrite neg_neg in a_pos.
         exact a_pos.
@@ -847,7 +847,7 @@ Proof.
     classic_contradiction contr.
     rewrite nle_lt in contr.
     pose proof (land (neg_pos2 _) contr) as eq.
-    pose proof (lt_mult _ _ eq eq) as eq2.
+    pose proof (lt_mult eq eq) as eq2.
     rewrite mult_rneg, mult_lneg in eq2.
     rewrite neg_neg in eq2.
     rewrite mult_lid in eq2.

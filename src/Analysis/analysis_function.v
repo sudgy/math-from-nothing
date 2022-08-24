@@ -208,7 +208,7 @@ Proof.
             apply x_eq.
     }
     pose (xn n := [_|xn_in n]).
-    assert (∀ n, d [xn n|] c < /nat_to_abstract (nat_suc n)) as xn_lt.
+    assert (∀ n, d [xn n|] c < /from_nat (nat_suc n)) as xn_lt.
     {
         intros n.
         unfold xn, xn'; cbn.
@@ -245,8 +245,8 @@ Proof.
         rewrite d_sym.
         apply (trans xn_lt).
         apply (le_lt_trans2 n_lt).
-        apply le_div_pos; [>apply nat_to_abstract_pos|].
-        rewrite nat_to_abstract_le.
+        apply le_div_pos; [>apply from_nat_pos|].
+        rewrite from_nat_le.
         rewrite nat_sucs_le.
         exact m_leq.
     }

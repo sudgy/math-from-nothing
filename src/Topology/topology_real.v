@@ -93,7 +93,7 @@ End LowerLimit.
 
 Section KTop.
 (* end hide *)
-Definition real_K x := ∃ n, x = /(nat_to_abstract (nat_suc n)).
+Definition real_K x := ∃ n, x = /(from_nat (nat_suc n)).
 
 Program Instance real_k_topology : TopologyBasis real := {
     top_basis S := ∃ a b,
@@ -298,7 +298,7 @@ Proof.
         unfold B2 in B1_sub; clear B2 B2_basis B20.
         destruct B1x as [a_neg b_pos].
         pose proof (archimedean2 b b_pos) as [n n_ltq].
-        assert (open_interval a b (/nat_to_abstract (nat_suc n))) as n_in.
+        assert (open_interval a b (/from_nat (nat_suc n))) as n_in.
         {
             split.
             -   apply (trans a_neg).
@@ -342,7 +342,7 @@ Proof.
         unfold B2 in B1_sub; clear B2 B2_basis B20.
         destruct B1x as [a_neg b_pos].
         pose proof (archimedean2 b b_pos) as [n n_ltq].
-        assert (closed_open_interval a b (/nat_to_abstract (nat_suc n))) as n_in.
+        assert (closed_open_interval a b (/from_nat (nat_suc n))) as n_in.
         {
             split.
             -   apply (trans a_neg).

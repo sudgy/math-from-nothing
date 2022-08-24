@@ -295,7 +295,7 @@ Proof.
                     apply lt_plus_0_anb_b_a in u'_lt.
                     exists (nat_suc n × -x + -u').
                     split; try exact u'_lt.
-                    rewrite abstract_mult_rneg.
+                    rewrite nat_mult_rneg.
                     rewrite neg_plus.
                     rewrite plus_lrinv.
                     rewrite neg_neg.
@@ -305,7 +305,7 @@ Proof.
                     pose proof (le_lt_trans n_least (nat_lt_suc _)) as [C0 C1].
                     contradiction.
                 --  cbn.
-                    rewrite <- abstract_mult_rneg.
+                    rewrite <- nat_mult_rneg.
                     rewrite plus_rrinv.
                     reflexivity.
             *   exists (nat_suc n × x + x * div 2), (n × -x + -x * div 2).
@@ -316,7 +316,7 @@ Proof.
                     exists (-x * div 2).
                     split; try exact x_neg.
                     rewrite neg_plus.
-                    rewrite abstract_mult_rneg.
+                    rewrite nat_mult_rneg.
                     rewrite mult_lneg.
                     rewrite plus_rrinv.
                     exact Sn.
@@ -324,7 +324,7 @@ Proof.
                     specialize (cusp (n × -x + -x * div 2)).
                     rewrite not_and, not_not, nlt_le in cusp.
                     destruct cusp as [cusp|cusp]; [>|exact cusp].
-                    cbn in cusp.
+                    rewrite nat_mult_suc in cusp.
                     rewrite plus_comm in cusp.
                     apply le_plus_lcancel in cusp.
                     apply le_neg in cusp.
@@ -339,8 +339,8 @@ Proof.
                     apply le_plus_lcancel in cusp.
                     apply pos_neg in cusp.
                     destruct (le_lt_trans cusp x_neg); contradiction.
-                --  cbn.
-                    rewrite <- abstract_mult_rneg.
+                --  rewrite nat_mult_suc.
+                    rewrite <- nat_mult_rneg.
                     rewrite <- plus_assoc.
                     rewrite (plus_comm (-(n × x))).
                     rewrite mult_lneg.

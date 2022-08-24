@@ -24,9 +24,7 @@ Proof.
     {
         exists y.
         exists 1.
-        unfold one; cbn.
-        rewrite plus_rid.
-        reflexivity.
+        symmetry; apply nat_mult_one.
     }
     assert (has_upper_bound le A) as A_upper.
     {
@@ -52,15 +50,15 @@ Proof.
         destruct Aa as [n eq]; subst a.
         apply lt_plus_lrmove in nup.
         rewrite neg_neg in nup.
-        rewrite <- nat_to_abstract_mult_abstract in nup.
+        rewrite <- from_nat_nat_mult in nup.
         rewrite <- (mult_lid y) in nup at 2.
         rewrite <- rdist in nup.
-        assert (A ((nat_to_abstract n + 1) * y)) as n_in.
+        assert (A ((from_nat n + 1) * y)) as n_in.
         {
             exists (n + 1).
-            rewrite <- nat_to_abstract_mult_abstract.
-            rewrite nat_to_abstract_plus.
-            rewrite nat_to_abstract_one.
+            rewrite <- from_nat_nat_mult.
+            rewrite from_nat_plus.
+            rewrite from_nat_one.
             reflexivity.
         }
         specialize (α_upper _ n_in).
@@ -71,11 +69,11 @@ Global Instance real_archimedean : Archimedean real := {
     archimedean := real_archimedean_base
 }.
 
-Lemma real_n_div_pos : ∀ n, 0 < / nat_to_abstract (nat_suc n).
+Lemma real_n_div_pos : ∀ n, 0 < / from_nat (nat_suc n).
 Proof.
     intros n.
     apply div_pos.
-    apply nat_to_abstract_pos.
+    apply from_nat_pos.
 Qed.
 
 Theorem real_nested_interval : ∀ I : nat → real → Prop,

@@ -150,10 +150,10 @@ Proof.
         cbn.
         apply (trans x_lt).
         apply (le_lt_trans2 N_ltq).
-        apply le_div_pos; [>apply nat_to_abstract_pos|].
+        apply le_div_pos; [>apply from_nat_pos|].
         cbn.
         apply le_lplus.
-        rewrite nat_to_abstract_le.
+        rewrite from_nat_le.
         exact n_geq.
     }
     specialize (f_lim c_lim).

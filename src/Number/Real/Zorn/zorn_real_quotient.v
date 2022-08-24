@@ -190,8 +190,8 @@ Proof.
     }
     clearbody M.
     clear M' M'_max.
-    pose proof (div_pos _ M_nz) as M'_nz.
-    specialize (g_in _ (lt_mult _ _ ε_pos M'_nz)) as [δ [δ_pos g_in]].
+    pose proof (div_pos M_nz) as M'_nz.
+    specialize (g_in _ (lt_mult ε_pos M'_nz)) as [δ [δ_pos g_in]].
     exists (min δ 1).
     split.
     -   unfold min; case_if.
@@ -339,7 +339,7 @@ Proof.
     pose proof (zorn_real_polynomial_nz a a_nin)
         as [ε' [δ1 [ε'_pos [δ1_pos a_gt]]]].
     unfold zorn_real_ideal_set in ab.
-    specialize (ab _ (lt_mult _ _ ε'_pos ε_pos)) as [δ2 [δ2_pos ab]].
+    specialize (ab _ (lt_mult ε'_pos ε_pos)) as [δ2 [δ2_pos ab]].
     exists (min δ1 δ2).
     split; [>unfold min; case_if; assumption|].
     intros x x_in.
@@ -767,7 +767,7 @@ Next Obligation.
     rewrite polynomial_eval_mult.
     specialize (a_pos _ (top_of_cut_in _ _ _ (lmin _ _) x_in)).
     specialize (b_pos _ (top_of_cut_in _ _ _ (rmin _ _) x_in)).
-    exact (lt_mult _ _ a_pos b_pos).
+    exact (lt_mult a_pos b_pos).
 Qed.
 
 Local Program Instance zorn_real_order_le_mult_lcancel : OrderMultLcancel zorn_real_quotient.
@@ -894,7 +894,7 @@ Proof.
         nat_induction n.
         -   unfold zero; cbn.
             reflexivity.
-        -   cbn.
+        -   do 2 rewrite nat_mult_suc.
             rewrite IHn.
             unfold plus at 1; cbn.
             rewrite equiv_binary_self_op.
@@ -916,26 +916,26 @@ Proof.
     specialize (g_gt y (top_of_cut_in _ _ _ δ_le1 y_in)).
     specialize (g_pos y (top_of_cut_in _ _ _ δ_le3 y_in)).
     rewrite abs_pos_eq in g_gt by apply g_pos.
-    rewrite <- nat_to_abstract_mult_abstract in n_ltq.
+    rewrite <- from_nat_nat_mult in n_ltq.
     destruct g_gt as [g_ge g_neq]; clear g_neq.
-    apply (le_lmult_pos (nat_to_abstract n)) in g_ge.
+    apply (le_lmult_pos (from_nat n)) in g_ge.
     2: {
         (* TODO: Make this a new theorem *)
         nat_destruct n.
-        -   rewrite nat_to_abstract_zero.
+        -   rewrite from_nat_zero.
             apply refl.
-        -   apply nat_to_abstract_pos.
+        -   apply from_nat_pos.
     }
     apply (lt_le_trans2 g_ge) in n_ltq.
     rewrite polynomial_eval_plus, polynomial_eval_neg.
     rewrite lt_plus_0_anb_b_a.
     applys_eq n_ltq.
-    rewrite <- nat_to_abstract_mult_abstract.
+    rewrite <- from_nat_nat_mult.
     rewrite polynomial_eval_mult.
     apply rmult.
     clear.
     nat_induction n.
-    -   do 2 rewrite nat_to_abstract_zero.
+    -   do 2 rewrite from_nat_zero.
         apply polynomial_eval_zero.
     -   cbn.
         rewrite polynomial_eval_plus.

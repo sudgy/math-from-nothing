@@ -121,12 +121,12 @@ Proof.
     apply nat_to_int_lt.
 Qed.
 
-Theorem nat_to_abstract_rat : ∀ a, nat_to_abstract a = nat_to_rat a.
+Theorem from_nat_rat : ∀ a, from_nat a = nat_to_rat a.
 Proof.
     nat_induction a.
-    -   rewrite nat_to_abstract_zero.
+    -   rewrite from_nat_zero.
         reflexivity.
-    -   cbn.
+    -   rewrite from_nat_suc.
         rewrite IHa.
         change (nat_suc a) with (1 + a).
         rewrite nat_to_rat_plus.

@@ -47,12 +47,12 @@ Proof.
     -   intros [f [Af lim]].
         exact (seq_closure A x f Af lim).
     -   intros Ax.
-        assert (∀ n, 0 < / nat_to_abstract (nat_suc n)) as n_pos.
+        assert (∀ n, 0 < / from_nat (nat_suc n)) as n_pos.
         {
             intros n.
             apply div_pos.
-            rewrite <- nat_to_abstract_zero.
-            rewrite nat_to_abstract_lt.
+            rewrite <- from_nat_zero.
+            rewrite from_nat_lt.
             apply nat_pos2.
         }
         pose (B n := open_ball x [_|n_pos n]).
@@ -87,9 +87,9 @@ Proof.
             unfold B in Bna.
             apply (trans2 N_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite <- nat_to_abstract_le in n_gt.
+            rewrite <- from_nat_le in n_gt.
             apply le_div_pos in n_gt.
-            2: apply nat_to_abstract_pos.
+            2: apply from_nat_pos.
             apply (lt_le_trans2 n_gt).
             exact Bna.
 Qed.
@@ -159,9 +159,9 @@ Proof.
         apply (trans b_in).
         apply (le_lt_trans2 N_lt).
         apply le_div_pos.
-        1: apply nat_to_abstract_pos.
-        change (1 + nat_to_abstract m) with (nat_to_abstract (U := real) (nat_suc m)).
-        rewrite nat_to_abstract_le.
+        1: apply from_nat_pos.
+        change (1 + from_nat m) with (from_nat (U := real) (nat_suc m)).
+        rewrite from_nat_le.
         rewrite nat_sucs_le.
         exact m_geq.
 Qed.

@@ -229,11 +229,11 @@ Proof.
     exact x_eq.
 Qed.
 
-Lemma n_pos : ∀ n, 0 < / nat_to_abstract (nat_suc n).
+Lemma n_pos : ∀ n, 0 < / from_nat (nat_suc n).
 Proof.
     intros n.
     apply div_pos.
-    apply nat_to_abstract_pos.
+    apply from_nat_pos.
 Qed.
 
 Fixpoint g n := match n with
@@ -284,12 +284,12 @@ Proof.
     Unshelve.
     unfold le; cbn.
     apply le_div_pos.
-    -   rewrite <- nat_to_abstract_zero.
-        change (1 + nat_to_abstract N) with (nat_to_abstract (U := real) (nat_suc N)).
-        rewrite nat_to_abstract_lt.
+    -   rewrite <- from_nat_zero.
+        change (1 + from_nat N) with (from_nat (U := real) (nat_suc N)).
+        rewrite from_nat_lt.
         apply nat_pos2.
     -   apply le_lplus.
-        rewrite nat_to_abstract_le.
+        rewrite from_nat_le.
         rewrite <- (plus_rid N) at 1.
         apply le_lplus.
         apply nat_pos.
@@ -369,12 +369,12 @@ Proof.
     apply (trans2 ε_sub).
     intros z z_lt.
     unfold open_ball in *; cbn in *.
-    assert (/nat_to_abstract (nat_suc (f N)) <= /nat_to_abstract (nat_suc N1))
+    assert (/from_nat (nat_suc (f N)) <= /from_nat (nat_suc N1))
         as N_ltq.
     {
         apply le_div_pos.
-        1:  apply nat_to_abstract_pos.
-        rewrite nat_to_abstract_le.
+        1:  apply from_nat_pos.
+        rewrite from_nat_le.
         rewrite nat_sucs_le.
         apply (trans (lmax N1 N2)).
         apply subsequence_seq_leq.
@@ -836,7 +836,7 @@ Proof.
 Qed.
 
 Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
-    d x y <= 2 / nat_to_abstract (nat_suc n).
+    d x y <= 2 / from_nat (nat_suc n).
 Proof.
     intros n x y Snx Sny.
     pose (ε := [_|real_n_div_pos n]).
@@ -854,7 +854,7 @@ Proof.
         rewrite d_sym in x_in.
         pose proof (lt_lrplus x_in y_in) as ltq.
         apply (le_lt_trans (d_tri _ _ _)) in ltq.
-        rewrite <- (mult_lid (/nat_to_abstract 1)) in ltq.
+        rewrite <- (mult_lid (/from_nat 1)) in ltq.
         rewrite <- rdist in ltq.
         apply ltq.
     -   assert (open_ball (ex_val bex) ε x) as x_in by apply Snx.
@@ -863,7 +863,7 @@ Proof.
         rewrite d_sym in x_in.
         pose proof (lt_lrplus x_in y_in) as ltq.
         apply (le_lt_trans (d_tri _ _ _)) in ltq.
-        rewrite <- (mult_lid (/nat_to_abstract (nat_suc (nat_suc n)))) in ltq.
+        rewrite <- (mult_lid (/from_nat (nat_suc (nat_suc n)))) in ltq.
         rewrite <- rdist in ltq.
         apply ltq.
 Qed.
@@ -978,9 +978,9 @@ Proof.
     rewrite mult_rlinv in N2_eq by apply two_pos.
     pose proof (trans (rmax N1 N2) n_ge) as n_ge2.
     rewrite <- nat_sucs_le in n_ge2.
-    rewrite <- nat_to_abstract_le in n_ge2.
+    rewrite <- from_nat_le in n_ge2.
     apply le_div_pos in n_ge2.
-    2: apply nat_to_abstract_pos.
+    2: apply from_nat_pos.
     apply le_lmult_pos with 2 in n_ge2.
     2: apply two_pos.
     pose proof (trans leq n_ge2) as leq2.

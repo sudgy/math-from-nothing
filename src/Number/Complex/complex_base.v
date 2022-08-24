@@ -15,7 +15,7 @@ Definition complex := (real * real)%type.
 Definition real_to_complex a := (a, 0) : complex.
 Definition rat_to_complex a := real_to_complex (rat_to_abstract a).
 Definition int_to_complex a := real_to_complex (int_to_abstract a).
-Definition nat_to_complex a := real_to_complex (nat_to_abstract a).
+Definition nat_to_complex a := real_to_complex (from_nat a).
 
 Theorem real_to_complex_eq : ∀ a b,
     real_to_complex a = real_to_complex b → a = b.
@@ -44,7 +44,7 @@ Qed.
 Theorem nat_to_complex_eq : ∀ a b, nat_to_complex a = nat_to_complex b → a = b.
 Proof.
     intros a b eq.
-    apply nat_to_abstract_eq.
+    apply from_nat_eq.
     apply real_to_complex_eq.
     exact eq.
 Qed.

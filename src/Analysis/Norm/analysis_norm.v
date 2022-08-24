@@ -312,11 +312,11 @@ Proof.
         apply rmax.
     }
     pose proof (rand M_pos) as M_neq.
-    pose proof (div_pos _ M_pos) as M'_pos.
+    pose proof (div_pos M_pos) as M'_pos.
     classic_case (zero = x) as [x_eq|x_neq].
     {
         subst x.
-        pose proof (lt_mult _ _ ε_pos M'_pos) as εM_pos.
+        pose proof (lt_mult ε_pos M'_pos) as εM_pos.
         specialize (x_lim _ εM_pos) as [N x_lim].
         exists N.
         intros n n_gt.
@@ -345,10 +345,10 @@ Proof.
         -   apply abs_pos.
         -   exact x_neq2.
     }
-    pose proof (div_pos _ x_pos) as x'_pos.
+    pose proof (div_pos x_pos) as x'_pos.
     pose proof (half_pos ε ε_pos) as ε2_pos.
-    pose proof (lt_mult _ _ ε2_pos M'_pos) as εM_pos.
-    pose proof (lt_mult _ _ ε2_pos x'_pos) as εa_pos.
+    pose proof (lt_mult ε2_pos M'_pos) as εM_pos.
+    pose proof (lt_mult ε2_pos x'_pos) as εa_pos.
     specialize (x_lim _ εM_pos) as [N1 x_lim].
     specialize (y_lim _ εa_pos) as [N2 y_lim].
     exists (max N1 N2).

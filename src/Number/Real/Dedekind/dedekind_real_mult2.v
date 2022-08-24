@@ -39,8 +39,8 @@ Lemma real_mult_assoc1 : ∀ a b c, 0 <= a → 0 <= b → 0 <= c →
 Proof.
     intros a b c a_pos b_pos c_pos.
     apply set_type_eq.
-    pose proof (le_mult _ _ a_pos b_pos).
-    pose proof (le_mult _ _ b_pos c_pos).
+    pose proof (le_mult a_pos b_pos).
+    pose proof (le_mult b_pos c_pos).
     apply antisym.
     -   do 4 rewrite real_mult_pos_pos by assumption.
         apply real_mult_assoc0; assumption.
@@ -199,13 +199,13 @@ Proof.
                 rewrite mult_lanni, plus_rid in x_pos.
                 destruct (lt_le_trans r1_neg x_pos); contradiction.
             }
-            pose proof (div_pos _ (make_and r3_pos r3_nz)) as r3'_pos.
+            pose proof (div_pos (make_and r3_pos r3_nz)) as r3'_pos.
             exists r3, (r1 * div r3 + s3).
             repeat split; try assumption.
             *   exists (r1 * div r3), s3.
                 repeat split; trivial.
                 apply neg_pos2 in r1_neg.
-                pose proof (lt_mult _ _ r1_neg r3'_pos) as ltq.
+                pose proof (lt_mult r1_neg r3'_pos) as ltq.
                 rewrite mult_lneg in ltq.
                 apply pos_neg2 in ltq.
                 rewrite neg_neg in ltq.
@@ -233,14 +233,14 @@ Proof.
                 rewrite mult_lanni, plus_lid in x_pos.
                 pose proof (lt_le_trans s1_neg x_pos) as [C0 C1]; contradiction.
             }
-            pose proof (div_pos _ (make_and r2_pos r2_nz)) as r2'_pos.
+            pose proof (div_pos (make_and r2_pos r2_nz)) as r2'_pos.
             exists r2, (s1 * div r2 + s2).
             repeat split; try assumption.
             *   exists s2, (s1 * div r2).
                 repeat split; trivial.
                 2: apply plus_comm.
                 apply neg_pos2 in s1_neg.
-                pose proof (lt_mult _ _ s1_neg r2'_pos) as ltq.
+                pose proof (lt_mult s1_neg r2'_pos) as ltq.
                 rewrite mult_lneg in ltq.
                 apply pos_neg2 in ltq.
                 rewrite neg_neg in ltq.
@@ -308,9 +308,9 @@ Proof.
                 repeat split; trivial.
                 rewrite plus_rid; reflexivity.
             }
-            pose proof (le_mult _ _ r2_pos s2_pos) as r1_pos.
+            pose proof (le_mult r2_pos s2_pos) as r1_pos.
             rewrite <- eq1 in r1_pos.
-            pose proof (le_mult _ _ r3_pos s3_pos) as s1_pos.
+            pose proof (le_mult r3_pos s3_pos) as s1_pos.
             rewrite <- eq2 in s1_pos.
             destruct (connex r2 r3) as [leq|leq].
             *   exists r3, (s3 + r1 / r3).

@@ -9,23 +9,12 @@ Require Import set.
 Section IntAbstract.
 
 Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusComm U UP,
-    @PlusAssoc U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    @Ldist U UP UM,
-    @Rdist U UP UM,
-    @MultLid U UM UO,
-    @CharacteristicZero U UP UZ UO
+    OrderedField U,
+    @CharacteristicZero U UP UZ UE
 }.
 
 Definition int_to_abstract_base (x : nat * nat)
-    := nat_to_abstract (fst x) - nat_to_abstract (snd x).
+    := from_nat (fst x) - from_nat (snd x).
 
 Local Open Scope int_scope.
 
@@ -39,7 +28,7 @@ Proof.
     rewrite (plus_comm (_ b1)).
     rewrite <- plus_assoc.
     rewrite <- plus_llmove.
-    do 2 rewrite <- nat_to_abstract_plus.
+    do 2 rewrite <- from_nat_plus.
     rewrite plus_comm.
     rewrite eq.
     reflexivity.
@@ -60,8 +49,8 @@ Proof.
     rewrite <- plus_lrmove in eq.
     rewrite <- plus_assoc in eq.
     rewrite <- plus_rlmove in eq.
-    do 2 rewrite <- nat_to_abstract_plus in eq.
-    apply nat_to_abstract_eq in eq.
+    do 2 rewrite <- from_nat_plus in eq.
+    apply from_nat_eq in eq.
     rewrite eq.
     apply plus_comm.
 Qed.
@@ -70,7 +59,7 @@ Theorem int_to_abstract_zero : int_to_abstract 0 = 0.
 Proof.
     unfold zero at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    rewrite nat_to_abstract_zero.
+    rewrite from_nat_zero.
     rewrite neg_zero, plus_rid.
     reflexivity.
 Qed.
@@ -79,7 +68,7 @@ Theorem int_to_abstract_one : int_to_abstract 1 = 1.
 Proof.
     unfold one at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    rewrite nat_to_abstract_zero, nat_to_abstract_one.
+    rewrite from_nat_zero, from_nat_one.
     rewrite neg_zero, plus_rid.
     reflexivity.
 Qed.
@@ -91,7 +80,7 @@ Proof.
     equiv_get_value a b.
     unfold plus at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    do 2 rewrite nat_to_abstract_plus.
+    do 2 rewrite from_nat_plus.
     rewrite neg_plus.
     repeat rewrite plus_assoc.
     apply rplus.
@@ -119,8 +108,8 @@ Proof.
     equiv_get_value a b.
     unfold mult at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    do 2 rewrite nat_to_abstract_plus.
-    do 4 rewrite nat_to_abstract_mult.
+    do 2 rewrite from_nat_plus.
+    do 4 rewrite from_nat_mult.
     rewrite ldist.
     do 2 rewrite rdist.
     repeat rewrite <- plus_assoc.
@@ -137,12 +126,12 @@ Proof.
 Qed.
 
 Theorem nat_to_int_to_abstract : ∀ n,
-    int_to_abstract (nat_to_int n) = nat_to_abstract n.
+    int_to_abstract (nat_to_int n) = from_nat n.
 Proof.
     nat_induction n.
     -   unfold int_to_abstract, nat_to_int; equiv_simpl.
         unfold int_to_abstract_base; cbn.
-        rewrite nat_to_abstract_zero.
+        rewrite from_nat_zero.
         rewrite neg_zero.
         apply plus_lid.
     -   cbn.

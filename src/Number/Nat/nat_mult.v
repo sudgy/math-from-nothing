@@ -19,7 +19,7 @@ Proof.
     reflexivity.
 Qed.
 
-Global Instance nat_mult_one : One nat := {
+Global Instance nat_one : One nat := {
     one := nat_suc nat_zero;
 }.
 Ltac nat_induction n ::=
@@ -30,6 +30,11 @@ Ltac nat_destruct n ::=
     destruct n;
     change nat_zero with (zero (U := nat)) in *;
     change (nat_suc zero) with (one (U := nat)) in *.
+
+Theorem nat_one_eq : nat_suc 0 = 1.
+Proof.
+    reflexivity.
+Qed.
 
 Global Instance nat_mult_lid : MultLid nat.
 Proof.

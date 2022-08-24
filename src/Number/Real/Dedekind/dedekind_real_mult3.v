@@ -214,7 +214,7 @@ Proof.
             assert (¬(⊘ a) (div s)) as ns.
             {
                 intros [s_neg|nas].
-                -   pose proof (div_pos _ (make_and s_pos s_nz)) as ltq.
+                -   pose proof (div_pos (make_and s_pos s_nz)) as ltq.
                     destruct (le_lt_trans s_neg ltq); contradiction.
                 -   destruct nas as [ε [ε_pos nas]].
                     rewrite div_div in nas by exact s_nz.
@@ -252,7 +252,7 @@ Proof.
                 pose proof x_lt as ε_pos.
                 apply lt_plus_0_anb_b_a in ε_pos.
                 pose proof (archimedean2 _ ε_pos) as [m eq].
-                rewrite nat_to_abstract_rat in eq.
+                rewrite from_nat_rat in eq.
                 assert (0 < nat_to_rat (nat_suc m)) as n_pos.
                 {
                     change 0 with (nat_to_rat 0).
@@ -337,8 +337,8 @@ Proof.
                 destruct (le_lt_trans m_least (nat_lt_suc m)); contradiction.
             }
             clear m_least.
-            rewrite <- nat_to_abstract_mult_abstract in am.
-            rewrite nat_to_abstract_rat in am.
+            rewrite <- from_nat_nat_mult in am.
+            rewrite from_nat_rat in am.
             rename m into m'; remember (nat_to_rat m') as m.
             assert (x < m / (m + 1)) as m_eq.
             {
@@ -390,8 +390,8 @@ Proof.
                     rewrite mult_assoc, mult_rid in contr.
                     pose proof (lt_le_trans q_lt contr) as ltq.
                     pose proof (land (rand (rand a_cut)) _ _ au ltq).
-                    rewrite <- nat_to_abstract_mult_abstract in nam.
-                    rewrite nat_to_abstract_rat in nam.
+                    rewrite <- from_nat_nat_mult in nam.
+                    rewrite from_nat_rat in nam.
                     change (nat_suc m') with (1 + m') in nam.
                     rewrite plus_comm in nam.
                     rewrite nat_to_rat_plus in nam.
@@ -412,8 +412,7 @@ Proof.
             }
             nat_destruct m'.
             {
-                unfold one in nam; cbn in nam.
-                rewrite plus_rid in nam.
+                rewrite nat_mult_one in nam.
                 pose proof (dedekind_lt a a_cut _ _ au nam) as ltq1.
                 pose proof (trans ltq1 q_lt) as ltq.
                 exfalso.
@@ -455,13 +454,13 @@ Proof.
             }
             pose proof (lt_lrplus m_pos one_pos) as m1_pos.
             rewrite plus_lid in m1_pos.
-            pose proof (lt_mult _ _ m_pos q_pos) as mq_pos.
+            pose proof (lt_mult m_pos q_pos) as mq_pos.
             right.
             exists (x / (m * q)), (m * q).
             repeat split.
             *   right.
-                rewrite <- nat_to_abstract_mult_abstract in nam.
-                rewrite nat_to_abstract_rat in nam.
+                rewrite <- from_nat_nat_mult in nam.
+                rewrite from_nat_rat in nam.
                 change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
                 rewrite nat_to_rat_plus in nam.
                 rewrite <- Heqm in nam.

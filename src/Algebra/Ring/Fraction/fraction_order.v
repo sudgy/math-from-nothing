@@ -267,7 +267,7 @@ Next Obligation.
     unfold frac_pos, mult; equiv_simpl.
     unfold frac_pos_base; cbn.
     intros leq1 leq2.
-    pose proof (le_mult _ _ leq1 leq2) as leq.
+    pose proof (le_mult leq1 leq2) as leq.
     rewrite <- mult_assoc in leq.
     rewrite (mult_assoc [a2|]) in leq.
     rewrite (mult_comm _ b1) in leq.
@@ -302,7 +302,7 @@ Proof.
 Qed.
 
 (* begin hide *)
-Theorem frac_archimedean : ∀ x : frac U, ∃ n, x < nat_to_abstract n.
+Theorem frac_archimedean : ∀ x : frac U, ∃ n, x < from_nat n.
 Proof.
     intros x.
     classic_case (0 < x) as [x_pos|x_neg].
@@ -336,11 +336,11 @@ Proof.
             reflexivity.
         }
         rewrite eq; clear eq.
-        assert (nat_to_abstract n * to_frac U [b|] = to_frac U (n × [b|]))as eq.
+        assert (from_nat n * to_frac U [b|] = to_frac U (n × [b|]))as eq.
         {
             clear n_ltq.
             nat_induction n.
-            -   rewrite nat_to_abstract_zero.
+            -   rewrite from_nat_zero.
                 unfold zero at 3; cbn.
                 rewrite mult_lanni.
                 reflexivity.
@@ -357,7 +357,7 @@ Proof.
     -   exists 1.
         rewrite nlt_le in x_neg.
         apply (le_lt_trans x_neg).
-        rewrite nat_to_abstract_one.
+        rewrite from_nat_one.
         exact one_pos.
 Qed.
 

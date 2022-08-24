@@ -191,7 +191,7 @@ Next Obligation.
     -   rewrite mult_rneg, mult_lneg.
         rewrite neg_neg.
         reflexivity.
-    -   pose proof (le_mult _ _ l l0).
+    -   pose proof (le_mult l l0).
         contradiction.
     -   rewrite mult_rneg.
         reflexivity.
@@ -200,7 +200,7 @@ Next Obligation.
     -   rewrite nle_lt in n, n0, n1.
         apply lt_neg in n0, n1.
         rewrite neg_zero in n0, n1.
-        pose proof (lt_mult _ _ n0 n1) as ltq.
+        pose proof (lt_mult n0 n1) as ltq.
         rewrite mult_lneg, mult_rneg, neg_neg in ltq.
         pose proof (trans n ltq) as [C0 C1]; contradiction.
 Qed.

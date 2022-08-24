@@ -110,7 +110,7 @@ Proof.
             apply abs_pos_eq.
             rewrite nle_lt in leq.
             apply neg_pos2 in leq as [leq neq].
-            pose proof (le_mult _ _ a_pos leq) as eq.
+            pose proof (le_mult a_pos leq) as eq.
             rewrite mult_rneg in eq.
             exact eq.
     }

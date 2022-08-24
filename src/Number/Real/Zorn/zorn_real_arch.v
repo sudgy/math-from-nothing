@@ -218,7 +218,7 @@ Next Obligation.
     unfold zero, le, mult in *; cbn in *.
     rewrite aof_ex_f_eq1 in *.
     rewrite aof_ex_f_eq1.
-    apply (le_mult _ _ a_pos b_pos).
+    apply (le_mult a_pos b_pos).
 Qed.
 Global Program Instance aof_ex_not_trivial : NotTrivial (set_type aof_ex_set) := {
     not_trivial_a := 0;
@@ -261,10 +261,10 @@ Next Obligation.
     {
         clear n_gt.
         nat_induction n.
-        -   unfold zero; cbn.
+        -   do 2 rewrite nat_mult_zero.
             unfold zero at 1; cbn.
             apply aof_ex_f_eq1.
-        -   cbn.
+        -   do 2 rewrite nat_mult_suc.
             unfold plus at 1; cbn.
             rewrite aof_ex_f_eq1.
             rewrite IHn.

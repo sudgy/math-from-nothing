@@ -43,6 +43,11 @@ Global Instance nat_zero_instance : Zero nat := {
 Ltac nat_induction n := induction n; change nat_zero with zero in *.
 Ltac nat_destruct n := destruct n; change nat_zero with zero in *.
 
+Theorem nat_zero_eq : nat_zero = 0.
+Proof.
+    reflexivity.
+Qed.
+
 Global Instance nat_plus_lid : PlusLid nat.
 Proof.
     split.

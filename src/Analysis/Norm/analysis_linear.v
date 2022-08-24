@@ -336,7 +336,7 @@ Proof.
         cbn in δ_geq.
         do 2 rewrite neg_zero in δ_geq.
         do 2 rewrite plus_rid in δ_geq.
-        pose proof (lt_mult _ _ δ_pos δ_pos) as δ2_pos.
+        pose proof (lt_mult δ_pos δ_pos) as δ2_pos.
         prove_parts δ_geq.
         {
             rewrite abs_scalar.
@@ -425,11 +425,11 @@ Proof.
         rewrite linear_map_scalar in δ_geq.
         rewrite abs_scalar in δ_geq.
         assert (0 < |x|) as x_pos by (split; [>apply abs_pos|exact x_nz']).
-        rewrite <- abs_div in δ_geq; [>|apply (lt_mult _ _ δ1_pos x_pos)].
+        rewrite <- abs_div in δ_geq; [>|apply (lt_mult δ1_pos x_pos)].
         rewrite <- lt_mult_rlmove_pos in δ_geq.
-        2: rewrite abs_pos_eq; apply (lt_mult _ _ δ1_pos x_pos).
+        2: rewrite abs_pos_eq; apply (lt_mult δ1_pos x_pos).
         apply (lt_le_trans δ_geq).
-        rewrite abs_pos_eq by (apply (lt_mult _ _ δ1_pos x_pos)).
+        rewrite abs_pos_eq by (apply (lt_mult δ1_pos x_pos)).
         rewrite mult_rid.
         apply refl.
 Qed.

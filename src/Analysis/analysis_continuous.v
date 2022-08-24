@@ -79,11 +79,11 @@ Proof.
             exists a.
             exact contr.
         }
-        assert (∀ n, 0 < /(nat_to_abstract (nat_suc n))) as n_pos'.
+        assert (∀ n, 0 < /(from_nat (nat_suc n))) as n_pos'.
         {
             intros n.
             apply div_pos.
-            apply nat_to_abstract_pos.
+            apply from_nat_pos.
         }
         pose (a n := ex_val (contr2 _ (n_pos' n))).
         assert (seq_lim a x) as lim.
@@ -98,9 +98,9 @@ Proof.
             destruct b_eq as [b_lt b_nlt].
             apply (trans b_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite <- nat_to_abstract_le in n_gt.
+            rewrite <- from_nat_le in n_gt.
             apply le_div_pos in n_gt.
-            2: apply nat_to_abstract_pos.
+            2: apply from_nat_pos.
             apply (le_lt_trans n_gt).
             exact N_ltq.
         }

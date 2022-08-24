@@ -10,22 +10,8 @@ Require Import set.
 Section RatAbstract.
 
 Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusComm U UP,
-    @PlusAssoc U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    UD : Div U,
-    @Ldist U UP UM,
-    @MultComm U UM,
-    @MultAssoc U UM,
-    @MultLid U UM UO,
-    @MultLinv U UZ UM UO UD,
-    @CharacteristicZero U UP UZ UO
+    OrderedField U,
+    @CharacteristicZero U UP UZ UE
 }.
 Local Existing Instance characteristic_zero_not_trivial.
 
@@ -184,7 +170,7 @@ Proof.
 Qed.
 
 Theorem nat_to_rat_to_abstract : ∀ n,
-    rat_to_abstract (nat_to_rat n) = nat_to_abstract n.
+    rat_to_abstract (nat_to_rat n) = from_nat n.
 Proof.
     intros n.
     unfold nat_to_rat.
@@ -240,20 +226,20 @@ Proof.
     intros a b a_pos ab.
     apply lt_plus_0_anb_b_a in ab.
     pose proof (archimedean2 _ ab) as [n ltq].
-    apply lt_rmult_pos with (nat_to_abstract (nat_suc n)) in ltq.
-    2: apply nat_to_abstract_pos.
-    rewrite mult_linv in ltq by apply nat_to_abstract_pos.
-    remember (nat_to_abstract (nat_suc n)) as n'.
+    apply lt_rmult_pos with (from_nat (nat_suc n)) in ltq.
+    2: apply from_nat_pos.
+    rewrite mult_linv in ltq by apply from_nat_pos.
+    remember (from_nat (nat_suc n)) as n'.
     rewrite rdist in ltq.
     apply lt_plus_rrmove in ltq.
     rewrite mult_lneg in ltq.
     rewrite neg_neg in ltq.
     pose proof (archimedean1 (a * n')) as [m' m'_ltq].
-    assert (∃ m, a * n' < nat_to_abstract m) as S_ex
+    assert (∃ m, a * n' < from_nat m) as S_ex
         by (exists m'; exact m'_ltq).
     pose proof (well_ordered _ S_ex) as [m [m_ltq m_least]].
     clear m' m'_ltq S_ex.
-    remember (nat_to_abstract m) as m'.
+    remember (from_nat m) as m'.
     exists (nat_to_rat m / nat_to_rat (nat_suc n)).
     rewrite rat_to_abstract_mult.
     rewrite rat_to_abstract_div.
@@ -267,21 +253,21 @@ Proof.
     rewrite <- Heqn', <- Heqm'.
     split.
     -   apply lt_mult_lrmove_pos.
-        1: rewrite Heqn'; apply nat_to_abstract_pos.
+        1: rewrite Heqn'; apply from_nat_pos.
         exact m_ltq.
     -   apply lt_mult_rrmove_pos.
-        1: rewrite Heqn'; apply nat_to_abstract_pos.
+        1: rewrite Heqn'; apply from_nat_pos.
         nat_destruct m.
         {
             rewrite lt_plus_0_anb_b_a in ab.
             rewrite Heqm'.
-            change (nat_to_abstract 0) with 0.
+            change (from_nat 0) with 0.
             apply lt_mult.
             -   exact (le_lt_trans a_pos ab).
             -   rewrite Heqn'.
-                apply nat_to_abstract_pos.
+                apply from_nat_pos.
         }
-        assert (nat_to_abstract m <= a * n') as m_ltq2.
+        assert (from_nat m <= a * n') as m_ltq2.
         {
             classic_contradiction contr.
             rewrite nle_lt in contr.
@@ -292,8 +278,8 @@ Proof.
         apply (le_lt_trans2 ltq).
         rewrite Heqm'.
         change (nat_suc m) with (1 + m).
-        rewrite nat_to_abstract_plus.
-        rewrite nat_to_abstract_one.
+        rewrite from_nat_plus.
+        rewrite from_nat_one.
         apply le_lplus.
         exact m_ltq2.
 Qed.

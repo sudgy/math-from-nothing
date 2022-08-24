@@ -781,23 +781,23 @@ Local Instance ub_arch : Archimedean ub.
     pose (xA := aof_arch [ub_A x|]).
     pose proof (archimedean1 (ub_x x)) as [n [leq neq]].
     exists n.
-    assert (nat_to_abstract n = to_equiv_type ub_equiv
-        (make_ub_base (ub_A x) (nat_to_abstract n))) as eq.
+    assert (from_nat n = to_equiv_type ub_equiv
+        (make_ub_base (ub_A x) (from_nat n))) as eq.
     {
         clear leq neq.
         nat_induction n.
-        -   do 2 rewrite nat_to_abstract_zero.
+        -   do 2 rewrite from_nat_zero.
             unfold zero at 1; equiv_simpl.
             intros A f g f_homo g_homo; cbn.
             rewrite (land g_homo).
             apply f_homo.
-        -   cbn.
+        -   do 2 rewrite from_nat_suc.
             rewrite IHn; clear IHn.
             unfold one at 1, plus at 1; equiv_simpl.
             pose proof (ub_base_max F' (ub_A x))
                 as [A [Af [Ag [Af_homo Ag_homo]]]].
             pose (o := make_ub_base F' (@one _ (aof_one [F'|]))).
-            pose (n' := make_ub_base _ (nat_to_abstract n)).
+            pose (n' := make_ub_base _ (from_nat n)).
             apply (trans (ub_bin_eq _ o n'
                 ub_plus_homo A Af Ag Af_homo Ag_homo)); cbn.
             intros B Bf Bg Bf_homo Bg_homo; cbn in *.

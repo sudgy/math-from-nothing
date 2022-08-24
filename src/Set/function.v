@@ -11,6 +11,15 @@ Proof.
     rewrite eq; reflexivity.
 Qed.
 
+Theorem f_eq_iff {A B} : ∀ {f : A → B}, (∀ a b, f a = f b → a = b) →
+    ∀ a b, f a = f b ↔ a = b.
+Proof.
+    intros f f_eq a b.
+    split.
+    -   apply f_eq.
+    -   intros eq; subst; reflexivity.
+Qed.
+
 Definition image {U V} (f : U → V) := λ y, ∃ x, y = f x.
 Definition image_under {U V} (f : U → V) (S : U → Prop)
     := λ y, ∃ x, S x ∧ y = f x.

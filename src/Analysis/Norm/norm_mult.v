@@ -132,7 +132,7 @@ Proof.
         exact a_pos'.
     }
     clear a_pos'.
-    pose proof (lt_mult _ _ (lt_mult _ _ ε_pos a_pos) D_pos) as ε'_pos.
+    pose proof (lt_mult (lt_mult ε_pos a_pos) D_pos) as ε'_pos.
     specialize (a_lim _ ε'_pos) as [N2 a_lim].
     exists (max N1 N2).
     intros n n_gt.
@@ -196,8 +196,8 @@ Proof.
     }
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
-    pose proof (div_pos _ M_pos) as M'_pos.
-    pose proof (lt_mult _ _ ε_pos M'_pos) as ε'_pos.
+    pose proof (div_pos M_pos) as M'_pos.
+    pose proof (lt_mult ε_pos M'_pos) as ε'_pos.
     specialize (bn_zero _ ε'_pos) as [N bn_zero].
     exists N.
     intros n n_geq.
