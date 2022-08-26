@@ -454,8 +454,7 @@ Proof.
     unfold module_homo_compose, module_homo_id in *; cbn in *.
     inversion fg as [fg']; clear fg.
     inversion gf as [gf']; clear gf.
-    apply (inverse_ex_bijective af g).
-    rewrite is_inverse_iff; split.
+    apply (inverse_ex_bijective af g); split.
     -   apply func_eq.
         exact fg'.
     -   apply func_eq.
@@ -510,8 +509,7 @@ Proof.
     unfold module_homo_compose, module_homo_id in *; cbn in *.
     inversion fg as [fg']; clear fg.
     inversion gf as [gf']; clear gf.
-    apply (inverse_ex_bijective _ g).
-    rewrite is_inverse_iff; split.
+    apply (inverse_ex_bijective _ g); split.
     -   apply func_eq.
         exact fg'.
     -   apply func_eq.

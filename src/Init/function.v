@@ -100,33 +100,7 @@ Proof.
 Qed.
 
 Definition is_inverse {U V} (f : U → V) (g : V → U)
-    := ∀ x y, f x = y ↔ g y = x.
-Definition is_inverse2 {U V} (f : U → V) (g : V → U)
-    := (∀ x, f (g x) = x) ∧ ∀ x, g (f x) = x.
-
-Theorem is_inverse_iff {U V} : ∀ (f : U → V) (g : V → U),
-    is_inverse f g ↔ is_inverse2 f g.
-Proof.
-    intros f g.
-    unfold is_inverse, is_inverse2.
-    split.
-    -   intros inv.
-        split.
-        +   intros x.
-            apply inv.
-            reflexivity.
-        +   intros x.
-            apply inv.
-            reflexivity.
-    -   intros [inv1 inv2] x y.
-        split; intros eq.
-        +   rewrite <- inv2.
-            apply f_equal.
-            symmetry; exact eq.
-        +   rewrite <- inv1.
-            apply f_equal.
-            symmetry; exact eq.
-Qed.
+    := (∀ x, f (g x) = x) ∧ (∀ x, g (f x) = x).
 
 Theorem inverse_symmetric {U V} : ∀ (f : U → V) (g : V → U),
     is_inverse f g → is_inverse g f.
@@ -137,16 +111,14 @@ Qed.
 Theorem inverse_eq1 {U V} : ∀ (f : U → V) (g : V → U), is_inverse f g →
     ∀ x, g (f x) = x.
 Proof.
-    intros f g inv x.
-    apply (inv x (f x)).
-    reflexivity.
+    intros f g inv.
+    apply inv.
 Qed.
 Theorem inverse_eq2 {U V} : ∀ (f : U → V) (g : V → U), is_inverse f g →
     ∀ x, f (g x) = x.
 Proof.
     intros f g inv x.
-    apply (inv (g x) x).
-    reflexivity.
+    apply inv.
 Qed.
 
 Theorem bijective_inverse_ex {U V} : ∀ f : U → V, bijective f →
@@ -156,20 +128,16 @@ Proof.
     exists (λ y, ex_val (f_sur y)).
     split; intros eq.
     -   rewrite_ex_val a a_eq.
-        rewrite <- eq in a_eq.
-        apply f_inj.
         exact a_eq.
     -   rewrite_ex_val a a_eq.
-        subst x y.
-        reflexivity.
+        apply f_inj in a_eq.
+        exact a_eq.
 Qed.
 
 Theorem inverse_ex_bijective {A B} : ∀ (f : A → B) (g : B → A),
     is_inverse f g → bijective f.
 Proof.
-    intros f g.
-    rewrite is_inverse_iff.
-    intros [fg gf].
+    intros f g [fg gf].
     split.
     -   intros a b eq.
         apply (f_equal g) in eq.
@@ -195,7 +163,6 @@ Theorem bij_inv_bij {U V} : ∀ (f : U → V) f_bij, bijective (bij_inv f f_bij)
 Proof.
     intros f f_bij.
     pose proof (bij_inv_inv f f_bij) as g_inv.
-    rewrite is_inverse_iff in g_inv.
     split.
     -   intros a b eq.
         unfold is_inverse in g_inv.
