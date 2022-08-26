@@ -153,9 +153,7 @@ Proof.
         -   assert (|A| <= nat_to_card (nat_suc fp)) as leq.
             {
                 unfold nat_to_card, le; equiv_simpl.
-                apply partition_principle.
-                exists ff.
-                exact s.
+                apply (partition_principle ff s).
             }
             pose proof (lt_le_trans (A_gt (nat_suc fp)) leq) as [C0 C1].
             contradiction.

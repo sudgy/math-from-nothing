@@ -14,6 +14,7 @@
 ./src/Init/tactics.v
 ./src/Init/tlc_tactics.v
 ./src/Init/types.v
+./src/Init/function.v
 ./src/Init/init.v
 
 ./src/List/list_base.v
@@ -78,7 +79,7 @@
 ./src/Set/set_base.v
 ./src/Set/set_set.v
 ./src/Set/set_type.v
-./src/Set/function.v
+./src/Set/set_function.v
 ./src/Set/equivalence.v
 ./src/Set/zorn.v
 ./src/Set/well_order.v

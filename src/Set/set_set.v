@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export set_base.
-Require Export function.
+Require Export set_function.
 
 Notation "⋃ S" := (λ x, ∃ A, S A ∧ A x) (at level 45).
 Notation "⋂ S" := (λ x, ∀ A, S A → A x) (at level 45).

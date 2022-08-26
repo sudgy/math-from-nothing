@@ -455,6 +455,7 @@ Proof.
     inversion fg as [fg']; clear fg.
     inversion gf as [gf']; clear gf.
     apply (inverse_ex_bijective af g).
+    rewrite is_inverse_iff; split.
     -   apply func_eq.
         exact fg'.
     -   apply func_eq.
@@ -510,6 +511,7 @@ Proof.
     inversion fg as [fg']; clear fg.
     inversion gf as [gf']; clear gf.
     apply (inverse_ex_bijective _ g).
+    rewrite is_inverse_iff; split.
     -   apply func_eq.
         exact fg'.
     -   apply func_eq.

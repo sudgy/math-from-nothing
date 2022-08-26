@@ -5,7 +5,6 @@ Require Export mult.
 Require Export relation.
 Require Import order_mult.
 Require Export nat.
-Require Import set.
 
 Fixpoint nat_mult {U} `{Plus U, Zero U} (a : nat) (b : U) :=
     match a with

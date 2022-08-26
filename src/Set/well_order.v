@@ -4,7 +4,7 @@ Require Import zorn.
 Require Export order_def.
 Require Import set_base.
 Require Import set_type.
-Require Import function.
+Require Import set_function.
 
 (* begin hide *)
 Module WellOrderModule.

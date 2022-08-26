@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export ord_base.
-Require Import function.
+Require Import set_function.
 Require Import equivalence.
 Require Import zorn.
 Require Import nat.

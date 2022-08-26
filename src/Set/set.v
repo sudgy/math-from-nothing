@@ -5,4 +5,4 @@ Require Export set_type.
 Require Export equivalence.
 Require Export nat_set.
 Require Export set_set.
-Require Export function.
+Require Export set_function.

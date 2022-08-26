@@ -5,21 +5,6 @@ Require Import set_type.
 Require Export relation.
 Require Import nat.
 
-Theorem func_eq {A B} : ∀ f1 f2 : A → B, f1 = f2 → ∀ x, f1 x = f2 x.
-Proof.
-    intros f1 f2 eq x.
-    rewrite eq; reflexivity.
-Qed.
-
-Theorem f_eq_iff {A B} : ∀ {f : A → B}, (∀ a b, f a = f b → a = b) →
-    ∀ a b, f a = f b ↔ a = b.
-Proof.
-    intros f f_eq a b.
-    split.
-    -   apply f_eq.
-    -   intros eq; subst; reflexivity.
-Qed.
-
 Definition image {U V} (f : U → V) := λ y, ∃ x, y = f x.
 Definition image_under {U V} (f : U → V) (S : U → Prop)
     := λ y, ∃ x, S x ∧ y = f x.
@@ -51,129 +36,11 @@ Proof.
     reflexivity.
 Qed.
 
-Definition injective {U V} (f : U → V) := ∀ a b, f a = f b → a = b.
-Definition surjective {U V} (f : U → V) := ∀ y, ∃ x, f x = y.
-Definition bijective {U V} (f : U → V) := injective f ∧ surjective f.
-
-Definition identity {U} (x : U) := x.
 Fixpoint iterate_func {U} (f : U → U) n :=
     match n with
     | nat_zero => identity
     | nat_suc n' => λ x, f (iterate_func f n' x)
     end.
-
-Theorem identity_injective {U} : injective (@identity U).
-Proof.
-    intros a b eq.
-    exact eq.
-Qed.
-Theorem identity_surjective {U} : surjective (@identity U).
-Proof.
-    intros x.
-    exists x.
-    reflexivity.
-Qed.
-Theorem identity_bijective {U} : bijective (@identity U).
-Proof.
-    split.
-    -   exact identity_injective.
-    -   exact identity_surjective.
-Qed.
-
-Definition is_inverse {U V} (f : U → V) (g : V → U) := ∀ x y, f x = y ↔ g y = x.
-Theorem inverse_symmetric {U V} : ∀ (f : U → V) (g : V → U),
-    is_inverse f g → is_inverse g f.
-Proof.
-    intros f g f_inv.
-    split; apply f_inv.
-Qed.
-Theorem inverse_eq1 {U V} : ∀ (f : U → V) (g : V → U), is_inverse f g →
-    ∀ x, g (f x) = x.
-Proof.
-    intros f g inv x.
-    apply (inv x (f x)).
-    reflexivity.
-Qed.
-Theorem inverse_eq2 {U V} : ∀ (f : U → V) (g : V → U), is_inverse f g →
-    ∀ x, f (g x) = x.
-Proof.
-    intros f g inv x.
-    apply (inv (g x) x).
-    reflexivity.
-Qed.
-
-Theorem bijective_inverse_ex {U V} : ∀ f : U → V, bijective f →
-    ∃ g, is_inverse f g.
-Proof.
-    intros f [f_inj f_sur].
-    exists (λ y, ex_val (f_sur y)).
-    split.
-    -   intros eq.
-        unpack_ex_val a a_ex a_eq; rewrite a_ex.
-        rewrite <- eq in a_eq.
-        apply f_inj.
-        exact a_eq.
-    -   unpack_ex_val a a_ex a_eq; rewrite a_ex.
-        intros eq.
-        subst x y.
-        reflexivity.
-Qed.
-Definition bij_inv {U V} (f : U → V) (f_bij : bijective f) :=
-    ex_val (bijective_inverse_ex f f_bij).
-Theorem bij_inv_inv {U V} : ∀ (f : U → V) f_bij, is_inverse f (bij_inv f f_bij).
-Proof.
-    intros f f_bij.
-    unfold bij_inv.
-    unpack_ex_val g g_ex g_inv; rewrite g_ex.
-    exact g_inv.
-Qed.
-Theorem bij_inv_bij {U V} : ∀ (f : U → V) f_bij, bijective (bij_inv f f_bij).
-Proof.
-    intros f [f_inv f_sur].
-    unfold bij_inv.
-    unpack_ex_val g g_ex g_inv; rewrite g_ex.
-    split.
-    -   intros a b eq.
-        unfold is_inverse in g_inv.
-        pose proof (g_inv (g b) a) as [C eq1]; clear C; specialize (eq1 eq).
-        symmetry in eq.
-        pose proof (g_inv (g a) b) as [C eq2]; clear C; specialize (eq2 eq).
-        rewrite <- eq1.
-        rewrite <- eq2 at 2.
-        rewrite eq.
-        reflexivity.
-    -   intros x.
-        exists (f x).
-        apply g_inv.
-        reflexivity.
-Qed.
-
-Theorem inj_comp {U V W} : ∀ (f : U → V) (g : V → W),
-    injective f → injective g → injective (λ x, g (f x)).
-Proof.
-    intros f g f_inj g_inj a b eq.
-    apply g_inj in eq.
-    apply f_inj in eq.
-    exact eq.
-Qed.
-Theorem sur_comp {U V W} : ∀ (f : U → V) (g : V → W),
-    surjective f → surjective g → surjective (λ x, g (f x)).
-Proof.
-    intros f g f_sur g_sur z.
-    destruct (g_sur z) as [y y_eq].
-    destruct (f_sur y) as [x x_eq].
-    exists x.
-    rewrite x_eq.
-    exact y_eq.
-Qed.
-Theorem bij_comp {U V W} : ∀ (f : U → V) (g : V → W),
-    bijective f → bijective g → bijective (λ x, g (f x)).
-Proof.
-    intros f g [f_inj f_sur] [g_inj g_sur].
-    split.
-    -   apply inj_comp; assumption.
-    -   apply sur_comp; assumption.
-Qed.
 
 Theorem inverse_image_bij_inv {U V} : ∀ S (f : U → V) f_bij,
     (inverse_image (bij_inv f f_bij) S) = image_under f S.
@@ -218,50 +85,6 @@ Proof.
     -   intros x Sx.
         exists x.
         split; trivial.
-Qed.
-
-Definition empty_function A B (H : A → False) := λ x : A, False_rect B (H x).
-
-Theorem empty_inj {A B H} : injective (empty_function A B H).
-Proof.
-    intros a.
-    contradiction (H a).
-Qed.
-Theorem empty_bij {A B H} : (B → False) → bijective (empty_function A B H).
-Proof.
-    intros BH.
-    split; try apply empty_inj.
-    intros b.
-    contradiction (BH b).
-Qed.
-
-Theorem partition_principle {A B} :
-    (∃ f : A → B, surjective f) → ∃ f : B → A, injective f.
-Proof.
-    intros [f f_sur].
-    unfold surjective in f_sur.
-    exists (λ b, ex_val (f_sur b)).
-    intros x y eq.
-    unfold ex_val in eq.
-    destruct (ex_to_type (f_sur x)); cbn in *.
-    destruct (ex_to_type (f_sur y)); cbn in *.
-    subst.
-    reflexivity.
-Qed.
-
-Theorem inverse_ex_bijective {A B} : ∀ (f : A → B) (g : B → A),
-    (∀ x, f (g x) = x) → (∀ x, g (f x) = x) → bijective f.
-Proof.
-    intros f g fg gf.
-    split.
-    -   intros a b eq.
-        apply (f_equal g) in eq.
-        do 2 rewrite gf in eq.
-        exact eq.
-    -   intros y.
-        exists (g y).
-        rewrite fg.
-        reflexivity.
 Qed.
 
 
