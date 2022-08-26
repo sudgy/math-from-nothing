@@ -64,7 +64,6 @@
 ./src/Algebra/Relation/order_dict.v
 ./src/Algebra/Relation/preorder.v
 
-./src/Algebra/nat_abstract.v
 ./src/Algebra/int_abstract.v
 ./src/Algebra/rat_abstract.v
 
@@ -74,6 +73,7 @@
 ./src/Number/Nat/nat_order.v
 ./src/Number/Nat/nat_minus.v
 ./src/Number/Nat/nat_binom.v
+./src/Number/Nat/nat_abstract.v
 ./src/Number/Nat/nat.v
 
 ./src/Set/set_base.v

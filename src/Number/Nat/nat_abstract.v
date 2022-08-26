@@ -1,10 +1,9 @@
 Require Import init.
 
-Require Export plus.
-Require Export mult.
-Require Export relation.
-Require Import order_mult.
-Require Export nat.
+Require Export nat_base.
+Require Export nat_plus.
+Require Export nat_mult.
+Require Export nat_order.
 
 Fixpoint nat_mult {U} `{Plus U, Zero U} (a : nat) (b : U) :=
     match a with
