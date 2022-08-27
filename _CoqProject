@@ -134,6 +134,7 @@
 ./src/Number/Real/Zorn/zorn_real.v
 
 ./src/Number/Real/Cauchy/cauchy_real_base.v
+./src/Number/Real/Cauchy/cauchy_real_plus.v
 
 ./src/Number/Real/real_base.v
 ./src/Number/Real/real.v

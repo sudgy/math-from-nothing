@@ -71,7 +71,7 @@ End RealEquiv.
 
 Definition real_equiv := make_equiv _
     real_eq_reflexive real_eq_symmetric real_eq_transitive.
-Notation "a ~ b" := (eq_equal real_equiv a b) : int_scope.
+Notation "a ~ b" := (eq_equal real_equiv a b) : real_scope.
 
 Notation "'real'" := (equiv_type real_equiv).
 
