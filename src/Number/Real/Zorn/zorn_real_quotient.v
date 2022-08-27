@@ -145,7 +145,7 @@ Theorem zorn_real_ideal_plus : ∀ a b,
     zorn_real_ideal_set a → zorn_real_ideal_set b → zorn_real_ideal_set (a + b).
 Proof.
     intros a b a_in b_in ε ε_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     specialize (a_in _ ε2_pos) as [δ1 [δ1_pos a_in]].
     specialize (b_in _ ε2_pos) as [δ2 [δ2_pos b_in]].
     exists (min δ1 δ2).
@@ -278,7 +278,7 @@ Proof.
     rewrite not_impl, not_ex in f_nin.
     destruct f_nin as [ε_pos f_nin].
 
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     exists (ε / 2).
     pose proof (polynomial_continuous cut cut_in cut_out cut_lt f _ ε2_pos)
         as [δ2 [δ2_pos f_cont]].

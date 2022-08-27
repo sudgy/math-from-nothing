@@ -51,7 +51,7 @@ Instance real_eq_transitive : Transitive real_eq.
 Proof.
     split.
     intros a b c ab bc ε ε_pos.
-    pose proof (half_pos _ ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     specialize (ab _ ε2_pos) as [N1 ab].
     specialize (bc _ ε2_pos) as [N2 bc].
     exists (max N1 N2).

@@ -43,7 +43,7 @@ Proof.
             -   exact one_pos.
             -   exact ε_pos.
         }
-        pose proof (half_pos ε ε_pos) as ε2_pos.
+        pose proof (half_pos ε_pos) as ε2_pos.
         specialize (f_uni _ ε2_pos) as [N f_uni].
         exists N.
         intros n n_ge.

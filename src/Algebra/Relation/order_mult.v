@@ -992,7 +992,7 @@ Proof.
     exact ab.
 Qed.
 
-Theorem half_pos : ∀ a, 0 < a → 0 < a / 2.
+Theorem half_pos : ∀ {a}, 0 < a → 0 < a / 2.
 Proof.
     intros a a_pos.
     apply lt_mult_rcancel_pos with 2; [>exact two_pos|].
@@ -1000,7 +1000,7 @@ Proof.
     rewrite mult_rlinv by apply two_pos.
     exact a_pos.
 Qed.
-Theorem half_neg : ∀ a, a < 0 → a / 2 < 0.
+Theorem half_neg : ∀ {a}, a < 0 → a / 2 < 0.
 Proof.
     intros a a_neg.
     apply lt_mult_rcancel_pos with 2; [>exact two_pos|].

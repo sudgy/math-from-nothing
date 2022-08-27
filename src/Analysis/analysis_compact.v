@@ -355,7 +355,7 @@ Proof.
     apply (rand SS_cover) in SS_S.
     rewrite open_all_balls in SS_S.
     specialize (SS_S a Sa) as [[ε ε_pos] ε_sub].
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (archimedean2 (ε / 2) ε2_pos) as [N1 ltq].
     rewrite metric_seq_lim in x'_lim.
     specialize (x'_lim (ε / 2) ε2_pos) as [N2 x'_lim].
@@ -487,7 +487,7 @@ Proof.
     specialize (U_comp f) as [g [[h [h_sub fg_eq]] [x x_lim]]].
     rewrite metric_seq_lim in x_lim.
     destruct ε as [ε ε_pos]; cbn in ε_le.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     specialize (x_lim (ε / 2) ε2_pos) as [N x_lim].
     pose proof (x_lim N (refl N)) as ltq1.
     pose proof (x_lim (nat_suc N) (nat_le_suc N)) as ltq2.
@@ -724,7 +724,7 @@ Theorem ball_ex : ∀ S : set_type X → Prop, infinite (|set_type S|) →
 Proof.
     clear XS XS_inf.
     intros S S_inf ε.
-    pose proof (half_pos [ε|] [|ε]) as ε2_pos.
+    pose proof (half_pos [|ε]) as ε2_pos.
     specialize (X_bound [_|ε2_pos]) as [A [A_fin sub_A]].
     pose (A' (a : set_type A) :=
         ∃ x : set_type X, open_ball [a|] [_|ε2_pos] [x|]).
@@ -883,7 +883,7 @@ Definition xn n := [ex_val (x_ex n)|].
 Lemma xn_cauchy : cauchy_seq xn.
 Proof.
     intros ε ε_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (archimedean2 (ε / 2) ε2_pos) as [N N_lt].
     exists N.
     assert (∀ i j, N <= i → i <= j → d (xn i) (xn j) < ε) as wlog.
@@ -957,9 +957,9 @@ Proof.
     unfold d; cbn.
     rewrite_ex_val x x_lim.
     rewrite metric_seq_lim in x_lim.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     specialize (x_lim (ε / 2) ε2_pos) as [N1 x_lim].
-    pose proof (half_pos (ε / 2) ε2_pos) as ε4_pos.
+    pose proof (half_pos ε2_pos) as ε4_pos.
     pose proof (archimedean2 _ ε4_pos) as [N2 N2_eq].
     exists (max N1 N2).
     intros n n_ge.

@@ -115,7 +115,7 @@ Qed.
 Theorem converges_cauchy : ∀ f, seq_converges f → cauchy_seq f.
 Proof.
     intros f [x fx] ε ε_pos.
-    pose proof (half_pos _ ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     rewrite metric_seq_lim in fx.
     specialize (fx _ ε2_pos) as [N fx].
     exists N.
@@ -172,7 +172,7 @@ Proof.
     intros a b x a_cauchy [f [f_sub ab_eq]] b_lim.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     specialize (b_lim (ε / 2) ε2_pos) as [N1 b_lim].
     specialize (a_cauchy (ε / 2) ε2_pos) as [N2 a_cauchy].
     exists (max N1 N2).

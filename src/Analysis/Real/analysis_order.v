@@ -246,8 +246,8 @@ Proof.
     exists x.
     rewrite metric_seq_lim in *; cbn in *.
     intros ε ε_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
-    pose proof (half_pos _ ε2_pos) as ε4_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
+    pose proof (half_pos ε2_pos) as ε4_pos.
     specialize (f_cauchy _ ε2_pos) as [N1 f_cauchy]; cbn in f_cauchy.
     specialize (x_lim _ ε4_pos) as [N2 x_lim].
     pose (N := max N1 N2).

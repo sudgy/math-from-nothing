@@ -214,7 +214,7 @@ Proof.
     intros xf yf x y x_lim y_lim.
     rewrite metric_seq_lim in *.
     intros ε ε_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     specialize (x_lim _ ε2_pos) as [N1 x_lim].
     specialize (y_lim _ ε2_pos) as [N2 y_lim].
     exists (max N1 N2).
@@ -346,7 +346,7 @@ Proof.
         -   exact x_neq2.
     }
     pose proof (div_pos x_pos) as x'_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (lt_mult ε2_pos M'_pos) as εM_pos.
     pose proof (lt_mult ε2_pos x'_pos) as εa_pos.
     specialize (x_lim _ εM_pos) as [N1 x_lim].

@@ -136,7 +136,7 @@ Proof.
         intros a.
         specialize (f_cont a).
         rewrite metric_continuous_at in f_cont.
-        pose proof (half_pos _ ε_pos) as ε2_pos.
+        pose proof (half_pos ε_pos) as ε2_pos.
         destruct (f_cont _ ε2_pos) as [δ [δ_pos f_cont2]].
         exists [δ|δ_pos].
         exact f_cont2.
@@ -183,8 +183,8 @@ Proof.
     intros fn f f_uni f_cont a.
     rewrite metric_continuous_at.
     intros ε ε_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
-    pose proof (half_pos (ε / 2) ε2_pos) as ε4_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
+    pose proof (half_pos ε2_pos) as ε4_pos.
     specialize (f_uni _ ε4_pos) as [N f_uni].
     specialize (f_uni N (refl N)).
     specialize (f_cont N a).

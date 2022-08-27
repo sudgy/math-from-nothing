@@ -202,7 +202,7 @@ Proof.
             destruct (trans ltq one_pos); contradiction.
     }
     pose proof (div_pos m_pos) as m'_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (lt_mult ε2_pos m'_pos) as ε2m_pos.
     specialize (IHn _ ε2m_pos) as [δ1 [δ1_pos IHn]].
     destruct (polynomial_bounded (polynomial_xn real_cring n) (a-1) b) as [M' M'_max].
@@ -369,7 +369,7 @@ Proof.
             exact a_nz.
     }
     pose proof (div_pos a_pos) as a'_pos.
-    pose proof (half_pos ε ε_pos) as ε2_pos.
+    pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (lt_mult ε2_pos a'_pos) as ε2a_pos.
     specialize (IHf _ ε2_pos) as [δ1 [δ1_pos IHf]].
     specialize (xn_lim _ ε2a_pos) as [δ2 [δ2_pos xn_lim]].
