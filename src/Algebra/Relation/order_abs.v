@@ -69,6 +69,15 @@ Proof.
         contradiction.
 Qed.
 
+Theorem abs_pos2 : ∀ {x}, 0 ≠ x → 0 < |x|.
+Proof.
+    intros x x_nz.
+    split.
+    -   apply abs_pos.
+    -   rewrite abs_def.
+        exact x_nz.
+Qed.
+
 Theorem abs_one : |1| = 1.
 Proof.
     pose proof (Logic.eq_refl (|1 * 1|)) as eq.

@@ -52,6 +52,15 @@ Proof.
         apply leq.
 Qed.
 
+Theorem abs_pos2 : ∀ {x}, 0 ≠ x → 0 < |x|.
+Proof.
+    intros x x_nz.
+    split.
+    -   apply abs_pos.
+    -   rewrite abs_def.
+        exact x_nz.
+Qed.
+
 Theorem abs_pos_eq : ∀ x, 0 <= x → |x| = x.
 Proof.
     intros x x_pos.
@@ -212,6 +221,13 @@ Proof.
         rewrite plus_rlinv in leq.
         rewrite le_plus_rrmove in leq.
         exact leq.
+Qed.
+
+Theorem abs_reverse_tri2 : ∀ a b, |a| - |b| <= |a - b|.
+Proof.
+    intros a b.
+    apply (trans2 (abs_reverse_tri _ _)).
+    apply abs_le_pos.
 Qed.
 
 Theorem abs_div : ∀ a, 0 ≠ a → /|a| = |/a|.
