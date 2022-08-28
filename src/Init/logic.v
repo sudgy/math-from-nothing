@@ -273,3 +273,17 @@ Theorem eq_iff {U} : ∀ a b : U, a = b ↔ b = a.
     intros a b.
     split; intro eq; symmetry; exact eq.
 Qed.
+
+Theorem or_left : ∀ A B : Prop, (¬B → A) → A ∨ B.
+    intros A B H.
+    classic_case B as [BH|BH].
+    -   right; exact BH.
+    -   left; exact (H BH).
+Qed.
+
+Theorem or_right : ∀ A B : Prop, (¬A → B) → A ∨ B.
+    intros A B H.
+    classic_case A as [AH|AH].
+    -   left; exact AH.
+    -   right; exact (H AH).
+Qed.
