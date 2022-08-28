@@ -30,20 +30,23 @@ Fixpoint create_greater n :=
     end.
 
 Lemma create_greater_suc :
-        ∀ n, strict op (create_greater n) (create_greater (nat_suc n)).
+    ∀ n, strict op (create_greater n) (create_greater (nat_suc n)).
+Proof.
     intros n; cbn.
     rewrite_ex_val n' n'_eq.
     exact n'_eq.
 Qed.
 
 Lemma create_greater_zero : ∀ n, op x (create_greater n).
+Proof.
     nat_induction n.
     -   apply refl.
     -   apply (trans IHn).
         apply create_greater_suc.
 Qed.
 Lemma create_greater_zero_suc :
-        ∀ n, strict op x (create_greater (nat_suc n)).
+    ∀ n, strict op x (create_greater (nat_suc n)).
+Proof.
     nat_induction n.
     -   unfold one; cbn.
         rewrite_ex_val x' x'_eq.
@@ -54,7 +57,8 @@ Lemma create_greater_zero_suc :
 Qed.
 
 Lemma create_greater_lt :
-        ∀ a b, a < b → strict op (create_greater a) (create_greater b).
+    ∀ a b, a < b → strict op (create_greater a) (create_greater b).
+Proof.
     intros a b ltq.
     apply nat_lt_ex in ltq as [c [c_nz c_eq]].
     subst b.
@@ -70,6 +74,7 @@ Lemma create_greater_lt :
 Qed.
 
 Theorem all_greater_inf_base : infinite (|U|).
+Proof.
     unfold infinite, le; equiv_simpl.
     exists create_greater.
     intros a.
@@ -97,6 +102,7 @@ Qed.
 End Proof.
 (* end hide *)
 Theorem all_greater_inf : U → (∀ a, ∃ b, strict op a b) → infinite (|U|).
+Proof.
     apply all_greater_inf_base.
 Qed.
 
@@ -114,8 +120,9 @@ Context `{
 }.
 (* end hide *)
 Theorem all_greater_inf_set : ∀ S : U → Prop,
-        (∃ x, S x) → (∀ a : set_type S, ∃ b : set_type S, strict op [a|] [b|]) →
-        infinite (|set_type S|).
+    (∃ x, S x) → (∀ a : set_type S, ∃ b : set_type S, strict op [a|] [b|]) →
+    infinite (|set_type S|).
+Proof.
     intros S S_ex a_gt.
     pose (op' (a b : set_type S) := op [a|] [b|]).
     assert (Antisymmetric op').
@@ -145,7 +152,8 @@ Theorem all_greater_inf_set : ∀ S : U → Prop,
 Qed.
 
 Theorem finite_well_founded_max :
-        finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_maximal op S x.
+    finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_maximal op S x.
+Proof.
     intros U_fin S S_ex.
     classic_contradiction contr.
     rewrite not_ex in contr.
@@ -170,7 +178,8 @@ Theorem finite_well_founded_max :
 Qed.
 
 Theorem finite_well_ordered_max :
-        finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_greatest op S x.
+    finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_greatest op S x.
+Proof.
     intros U_fin S S_ex.
     pose proof (finite_well_founded_max U_fin S S_ex) as [x [Sx x_max]].
     exists x.
@@ -196,7 +205,8 @@ Context `{
 }.
 (* end hide *)
 Theorem finite_well_founded :
-        finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x.
+    finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x.
+Proof.
     make_dual_op op.
     intros U_fin S S_ex.
     pose proof (finite_well_founded_max (op := dual_op op) U_fin S S_ex) as x.
@@ -207,7 +217,8 @@ Qed.
 Context `{Connex U op}.
 (* end hide *)
 Theorem finite_well_ordered :
-        finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x.
+    finite (|U|) → ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x.
+Proof.
     make_dual_op op.
     intros U_fin S S_ex.
     pose proof (finite_well_ordered_max (op := dual_op op) U_fin S S_ex) as x.
@@ -232,7 +243,8 @@ Local Instance op_le : Order U := {
 }.
 (* end hide *)
 Theorem finite_well_founded_set : ∀ S : U → Prop,
-        finite (|set_type S|) → (∃ x, S x) → ∃ x, is_minimal op S x.
+    finite (|set_type S|) → (∃ x, S x) → ∃ x, is_minimal op S x.
+Proof.
     intros S S_fin S_ex.
     assert (set_type S) as x.
     {
@@ -254,7 +266,8 @@ Theorem finite_well_founded_set : ∀ S : U → Prop,
 Qed.
 
 Theorem finite_well_founded_set_max : ∀ S : U → Prop,
-        finite (|set_type S|) → (∃ x, S x) → ∃ x, is_maximal op S x.
+    finite (|set_type S|) → (∃ x, S x) → ∃ x, is_maximal op S x.
+Proof.
     intros S S_fin S_ex.
     assert (set_type S) as x.
     {
@@ -276,7 +289,8 @@ Theorem finite_well_founded_set_max : ∀ S : U → Prop,
 Qed.
 
 Theorem finite_well_ordered_set : ∀ S : U → Prop,
-        finite (|set_type S|) → (∃ x, S x) → ∃ x, is_least op S x.
+    finite (|set_type S|) → (∃ x, S x) → ∃ x, is_least op S x.
+Proof.
     intros S S_fin S_ex.
     pose proof (finite_well_founded_set S S_fin S_ex) as [x [Sx x_least]].
     exists x.
@@ -289,7 +303,8 @@ Theorem finite_well_ordered_set : ∀ S : U → Prop,
 Qed.
 
 Theorem finite_well_ordered_set_max : ∀ S : U → Prop,
-        finite (|set_type S|) → (∃ x, S x) → ∃ x, is_greatest op S x.
+    finite (|set_type S|) → (∃ x, S x) → ∃ x, is_greatest op S x.
+Proof.
     intros S S_fin S_ex.
     pose proof (finite_well_founded_set_max S S_fin S_ex) as [x [Sx x_least]].
     exists x.
@@ -306,18 +321,21 @@ Qed.
 End InfiniteOrder4.
 (* end hide *)
 Theorem empty_finite {U} : finite (|set_type (@empty U)|).
+Proof.
     rewrite <- empty_set_size.
     unfold zero; cbn.
     apply nat_is_finite.
 Qed.
 
 Theorem singleton_finite {U} : ∀ a : U, finite (|set_type (singleton a)|).
+Proof.
     intros a.
     rewrite singleton_size.
     apply nat_is_finite.
 Qed.
 
 Theorem card_pos_ex {U} : 0 ≠ |U| → U.
+Proof.
     intros U_neq.
     classic_contradiction contr.
     apply card_false_0 in contr.
@@ -326,6 +344,7 @@ Theorem card_pos_ex {U} : 0 ≠ |U| → U.
 Qed.
 
 Theorem infinite_ex {U} : infinite (|U|) → U.
+Proof.
     intros U_inf.
     apply card_pos_ex.
     intros contr.
@@ -335,7 +354,8 @@ Theorem infinite_ex {U} : infinite (|U|) → U.
 Qed.
 
 Theorem infinite_seq_ex {U} :
-        infinite (|U|) → ∃ f : sequence U, ∀ i j, i ≠ j → f i ≠ f j.
+    infinite (|U|) → ∃ f : sequence U, ∀ i j, i ≠ j → f i ≠ f j.
+Proof.
     intros U_inf.
     unfold infinite in U_inf.
     unfold le in U_inf; equiv_simpl in U_inf.
@@ -347,8 +367,9 @@ Theorem infinite_seq_ex {U} :
 Qed.
 
 Theorem finite_union_finite {U} : ∀ SS : (U → Prop) → Prop,
-        finite (|set_type SS|) → (∀ S, SS S → finite (|set_type S|)) →
-        finite (|set_type (⋃ SS)|).
+    finite (|set_type SS|) → (∀ S, SS S → finite (|set_type S|)) →
+    finite (|set_type (⋃ SS)|).
+Proof.
     intros SS SS_fin S_fin.
     classic_case (U → False) as [U_nex|u_ex].
     {
@@ -445,7 +466,8 @@ Theorem finite_union_finite {U} : ∀ SS : (U → Prop) → Prop,
 Qed.
 
 Theorem inter_le {U} : ∀ (SS : (U → Prop) → Prop) S μ,
-        SS S → |set_type S| <= μ → |set_type (⋂ SS)| <= μ.
+    SS S → |set_type S| <= μ → |set_type (⋂ SS)| <= μ.
+Proof.
     intros SS S μ SS_S eq.
     apply (trans2 eq); clear eq μ.
     unfold le; equiv_simpl.
@@ -456,8 +478,9 @@ Theorem inter_le {U} : ∀ (SS : (U → Prop) → Prop) S μ,
 Qed.
 
 Theorem finite_inter_finite {U} : ∀ SS : (U → Prop) → Prop,
-        (∃ S, SS S ∧ finite (|set_type S|)) →
-        finite (|set_type (⋂ SS)|).
+    (∃ S, SS S ∧ finite (|set_type S|)) →
+    finite (|set_type (⋂ SS)|).
+Proof.
     intros SS [S [SS_S S_fin]].
     apply (le_lt_trans2 S_fin).
     unfold le; equiv_simpl.
@@ -469,8 +492,9 @@ Theorem finite_inter_finite {U} : ∀ SS : (U → Prop) → Prop,
 Qed.
 
 Theorem union_size_mult {U} : ∀ (SS : (U → Prop) → Prop) κ μ,
-        |set_type SS| <= κ → (∀ S, SS S → |set_type S| <= μ) →
-        |set_type (⋃ SS)| <= κ * μ.
+    |set_type SS| <= κ → (∀ S, SS S → |set_type S| <= μ) →
+    |set_type (⋃ SS)| <= κ * μ.
+Proof.
     intros SS A B A_eq B_ge'.
     classic_case (0 = B) as [B_z|B_nz].
     1: {
@@ -540,8 +564,9 @@ Theorem union_size_mult {U} : ∀ (SS : (U → Prop) → Prop) κ μ,
 Qed.
 
 Theorem countable_union_countable {U} : ∀ (SS : (U → Prop) → Prop),
-        countable (|set_type SS|) → (∀ S, SS S → countable (|set_type S|)) →
-        countable (|set_type (⋃ SS)|).
+    countable (|set_type SS|) → (∀ S, SS S → countable (|set_type S|)) →
+    countable (|set_type (⋃ SS)|).
+Proof.
     intros SS SS_count S_count.
     pose proof (union_size_mult SS _ _ SS_count S_count) as leq.
     rewrite nat_mult_nat in leq.
