@@ -1022,6 +1022,26 @@ Proof.
     apply lt_neg_plus; exact a_neg.
 Qed.
 
+Theorem average_leq1 : ∀ a b, a < b → a < (a + b) / 2.
+Proof.
+    intros a b ltq.
+    rewrite rdist.
+    rewrite <- (plus_half a) at 1.
+    apply lt_lplus.
+    apply lt_rmult_pos; [>apply div_pos; exact two_pos|].
+    exact ltq.
+Qed.
+
+Theorem average_leq2 : ∀ a b, a < b → (a + b) / 2 < b.
+Proof.
+    intros a b ltq.
+    rewrite rdist.
+    rewrite <- (plus_half b) at 2.
+    apply lt_rplus.
+    apply lt_rmult_pos; [>apply div_pos; exact two_pos|].
+    exact ltq.
+Qed.
+
 Global Instance ordered_field_dense_class : Dense (strict le).
 Proof.
     split.

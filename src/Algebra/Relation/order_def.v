@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export relation.
-Require Import order_plus.
+Require Import order_mult.
 
 Definition is_least {U} (op : U → U → Prop) (S : U → Prop) (x : U)
     := S x ∧ ∀ y, S y → op x y.
@@ -122,7 +122,7 @@ End WellOrders.
 Section SupremumComplete.
 
 Context {U} `{
-    OrderPlus U,
+    OrderedField U,
     @SupremumComplete U le
 }.
 (* end hide *)
@@ -164,6 +164,79 @@ Proof.
         rewrite le_half_rneg.
         apply y_lower.
         exact S'x.
+Qed.
+
+Theorem supremum_upper : ∀ (S : U → Prop) (α : U),
+    is_supremum le S α ↔ is_supremum le (λ x, ¬is_upper_bound le S x) α.
+Proof.
+    intros S α.
+    split; intros [α_upper α_least].
+    -   split.
+        +   intros x x_nupper.
+            unfold is_upper_bound in *.
+            rewrite not_all in x_nupper.
+            destruct x_nupper as [y x_nupper].
+            rewrite not_impl in x_nupper.
+            destruct x_nupper as [Sy xy].
+            rewrite nle_lt in xy.
+            apply (lt_le_trans xy).
+            apply α_upper.
+            exact Sy.
+        +   intros y y_upper.
+            classic_contradiction ltq.
+            rewrite nle_lt in ltq.
+            pose (z := (y + α)/2).
+            assert (¬is_upper_bound le S z) as z_nupper.
+            {
+                intros contr.
+                apply α_least in contr.
+                unfold z in contr.
+                pose proof (average_leq2 y α ltq) as ltq'.
+                destruct (le_lt_trans contr ltq'); contradiction.
+            }
+            apply y_upper in z_nupper.
+            unfold z in z_nupper.
+            pose proof (average_leq1 y α ltq) as ltq'.
+            destruct (lt_le_trans ltq' z_nupper); contradiction.
+    -   split.
+        +   intros x Sx.
+            classic_contradiction ltq.
+            rewrite nle_lt in ltq.
+            pose (z := (α + x)/2).
+            assert (¬is_upper_bound le S z) as z_nupper.
+            {
+                intros contr.
+                apply contr in Sx.
+                unfold z in Sx.
+                pose proof (average_leq2 α x ltq) as ltq'.
+                destruct (le_lt_trans Sx ltq'); contradiction.
+            }
+            apply α_upper in z_nupper.
+            unfold z in z_nupper.
+            pose proof (average_leq1 α x ltq) as ltq'.
+            destruct (lt_le_trans ltq' z_nupper); contradiction.
+        +   intros y y_upper.
+            apply α_least.
+            intros z z_nupper.
+            unfold is_upper_bound in z_nupper.
+            rewrite not_all in z_nupper.
+            destruct z_nupper as [a z_nupper].
+            rewrite not_impl, nle_lt in z_nupper.
+            destruct z_nupper as [Sa za].
+            apply y_upper in Sa.
+            apply (lt_le_trans za Sa).
+Qed.
+
+Theorem has_supremum_upper : ∀ (S : U → Prop),
+    has_supremum le S ↔ has_supremum le (λ x, ¬is_upper_bound le S x).
+Proof.
+    intros S.
+    split; intros [α α_sup].
+    all: exists α.
+    -   rewrite <- supremum_upper.
+        exact α_sup.
+    -   rewrite supremum_upper.
+        exact α_sup.
 Qed.
 (* begin hide *)
 End SupremumComplete.
