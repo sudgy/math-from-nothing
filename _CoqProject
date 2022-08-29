@@ -137,6 +137,7 @@
 ./src/Number/Real/Cauchy/cauchy_real_base.v
 ./src/Number/Real/Cauchy/cauchy_real_plus.v
 ./src/Number/Real/Cauchy/cauchy_real_mult.v
+./src/Number/Real/Cauchy/cauchy_real_order.v
 
 ./src/Number/Real/real_base.v
 ./src/Number/Real/real.v
