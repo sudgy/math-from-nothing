@@ -62,6 +62,7 @@
 ./src/Algebra/Relation/order_abs.v
 ./src/Algebra/Relation/order_self_abs.v
 ./src/Algebra/Relation/order_dict.v
+./src/Algebra/Relation/order_cone.v
 ./src/Algebra/Relation/preorder.v
 
 ./src/Algebra/int_abstract.v
