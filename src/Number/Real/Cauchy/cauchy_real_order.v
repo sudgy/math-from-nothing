@@ -157,7 +157,7 @@ Proof.
     rewrite <- lt_plus_a_0_ab_b in ltq.
     apply neg_pos.
     apply ltq.
-Qed.
+Defined.
 
 Definition real_order := cone_order.
 Definition real_le_connex := cone_le_connex.
