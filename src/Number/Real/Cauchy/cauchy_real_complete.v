@@ -49,7 +49,7 @@ Proof.
     exact ε_pos.
 Qed.
 
-Global Instance real_complete : SupremumComplete (U := real) le.
+Global Instance real_sup_complete : SupremumComplete (U := real) le.
 Proof.
     split.
     intros S S_ex S_upper.
