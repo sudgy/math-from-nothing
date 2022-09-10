@@ -176,30 +176,6 @@ Proof.
             rewrite <- plus_rrmove.
             symmetry; apply plus_half.
     }
-    assert (∀ n, (zero (U := rat)) < 2^n) as pow_pos.
-    {
-        nat_induction n.
-        -   rewrite pow_0_nat.
-            exact one_pos.
-        -   rewrite pow_simpl.
-            rewrite <- (mult_lanni 2).
-            apply lt_rmult_pos; [>exact two_pos|].
-            exact IHn.
-    }
-    assert (∀ m n, m <= n → (one (U := rat) + 1) ^ m <= 2 ^ n) as pow_le.
-    {
-        intros m n mn.
-        apply nat_le_ex in mn as [c eq]; subst.
-        nat_induction c.
-        -   rewrite plus_rid.
-            apply refl.
-        -   rewrite nat_plus_rsuc.
-            cbn.
-            apply (trans IHc).
-            rewrite ldist, mult_rid.
-            rewrite <- le_plus_0_a_b_ab.
-            apply pow_pos.
-    }
     assert (∀ ε : rat, 0 < ε → ∃ n, /(2^n) < ε) as arch_pow.
     {
         intros ε ε_pos.
@@ -229,7 +205,8 @@ Proof.
                 rewrite (pow_simpl _ (nat_suc n)).
                 rewrite <- (mult_rid (2^nat_suc n)) at 1.
                 apply lt_lmult_pos.
-                *   apply pow_pos.
+                *   apply pow_pos2.
+                    exact two_pos.
                 *   rewrite <- lt_plus_0_a_b_ba.
                     exact one_pos.
     }
@@ -250,7 +227,8 @@ Proof.
             rewrite <- lt_plus_0_a_b_ba.
             exact ε_pos.
         -   apply div_pos.
-            apply pow_pos.
+            apply pow_pos2.
+            exact two_pos.
     }
     assert (cauchy_seq a) as a_cauchy.
     {
@@ -273,7 +251,8 @@ Proof.
                 apply le_mult.
                 +   apply d_pos.
                 +   apply div_pos.
-                    apply pow_pos.
+                    apply pow_pos2.
+                    exact two_pos.
             -   rewrite rdist, neg_plus.
                 rewrite plus_assoc.
                 rewrite <- (plus_half (fst (p n))) at 1.
@@ -310,7 +289,8 @@ Proof.
                 apply lt_mult.
                 -   apply d_pos.
                 -   apply div_pos.
-                    apply pow_pos.
+                    apply pow_pos2.
+                    exact two_pos.
             }
             rewrite <- (plus_rlinv (a i) (a (nat_suc i))).
             rewrite <- plus_assoc.
@@ -318,15 +298,16 @@ Proof.
             specialize (a_gap i).
             rewrite <- nat_sucs_le in i_ge.
             specialize (IHc _ _ i_ge).
-            pose proof (pow_le _ _ i_ge) as leq.
-            apply le_div_pos in leq; [>|apply pow_pos].
+            pose proof (pow_le (U := rat) 2 _ _ (land lt_1_2) i_ge) as leq.
+            apply le_div_pos in leq; [>|apply pow_pos2; exact two_pos].
             apply le_lmult_pos with (d 0) in leq; [>|apply d_pos].
             pose proof (trans a_gap leq) as a_gap'.
             pose proof (le_lt_lrplus a_gap' IHc) as ltq.
             applys_eq ltq.
             rewrite <- ldist.
             cbn.
-            rewrite div_mult; [>|apply pow_pos|apply two_pos].
+            rewrite div_mult; [>|apply pow_pos2; exact two_pos|apply two_pos].
+            rewrite div_mult; [>|apply pow_pos2; exact two_pos|apply two_pos].
             rewrite plus_half.
             reflexivity.
         }
@@ -390,7 +371,8 @@ Proof.
                 apply lt_mult.
                 -   apply d_pos.
                 -   apply div_pos.
-                    apply pow_pos.
+                    apply pow_pos2.
+                    exact two_pos.
             }
             rewrite <- (plus_rlinv (b i) (b (nat_suc i))).
             rewrite <- plus_assoc.
@@ -398,15 +380,16 @@ Proof.
             specialize (b_gap i).
             rewrite <- nat_sucs_le in i_ge.
             specialize (IHc _ _ i_ge).
-            pose proof (pow_le _ _ i_ge) as leq.
-            apply le_div_pos in leq; [>|apply pow_pos].
+            pose proof (pow_le (U := rat) 2 _ _ (land lt_1_2) i_ge) as leq.
+            apply le_div_pos in leq; [>|apply pow_pos2; exact two_pos].
             apply le_lmult_pos with (d 0) in leq; [>|apply d_pos].
             pose proof (trans b_gap leq) as b_gap'.
             pose proof (le_lt_lrplus b_gap' IHc) as ltq.
             applys_eq ltq.
             rewrite <- ldist.
             cbn.
-            rewrite div_mult; [>|apply pow_pos|apply two_pos].
+            rewrite div_mult; [>|apply pow_pos2; exact two_pos|apply two_pos].
+            rewrite div_mult; [>|apply pow_pos2; exact two_pos|apply two_pos].
             rewrite plus_half.
             reflexivity.
         }
@@ -440,9 +423,10 @@ Proof.
                 rewrite ldist, mult_rid.
                 apply (trans IHc).
                 rewrite <- le_plus_0_a_b_ab.
-                apply pow_pos.
+                apply pow_pos2.
+                exact two_pos.
         }
-        apply le_div_pos in i_ge'; [>|apply pow_pos].
+        apply le_div_pos in i_ge'; [>|apply pow_pos2; exact two_pos].
         apply (le_lt_trans i_ge') in N_ltq.
         rewrite <- lt_mult_lrmove_pos in N_ltq by apply d_pos.
         rewrite mult_comm.

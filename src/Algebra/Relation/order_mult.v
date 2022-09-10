@@ -866,6 +866,12 @@ Proof.
     exact (lt_pos_plus one_pos one_pos).
 Qed.
 
+Theorem lt_1_2 : 1 < 2.
+Proof.
+    rewrite <- lt_plus_0_a_b_ba.
+    exact one_pos.
+Qed.
+
 Theorem three_pos : 0 < 3.
 Proof.
     exact (lt_pos_plus one_pos two_pos).

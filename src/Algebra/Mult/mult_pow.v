@@ -12,7 +12,7 @@ Infix "^" := pow_nat : nat_scope.
 (* begin hide *)
 Section Pow.
 
-Context {U} `{AllMult U, NotTrivial U}.
+Context {U} `{OrderedField U}.
 
 Local Open Scope nat_scope.
 (* end hide *)
@@ -130,6 +130,63 @@ Proof.
     rewrite pow_neg_one_even.
     rewrite mult_lid.
     reflexivity.
+Qed.
+
+Theorem pow_pos : ∀ a n, 0 <= a → 0 <= a^n.
+Proof.
+    intros a n a_pos.
+    nat_induction n.
+    -   rewrite pow_0_nat.
+        apply one_pos.
+    -   cbn.
+        apply le_mult; assumption.
+Qed.
+
+Theorem pow_pos2 : ∀ a n, 0 < a → 0 < a^n.
+Proof.
+    intros a n a_pos.
+    nat_induction n.
+    -   rewrite pow_0_nat.
+        exact one_pos.
+    -   cbn.
+        apply lt_mult; assumption.
+Qed.
+
+Theorem pow_le : ∀ a m n, 1 <= a → m <= n → a^m <= a^n.
+Proof.
+    intros a m n a_ge mn.
+    apply nat_le_ex in mn as [c eq]; subst.
+    nat_induction c; [>rewrite plus_rid; apply refl|].
+    rewrite nat_plus_rsuc.
+    cbn.
+    apply (trans IHc).
+    rewrite <- le_mult_1_a_b_ba_pos.
+    +   exact a_ge.
+    +   apply pow_pos2.
+        exact (lt_le_trans one_pos a_ge).
+Qed.
+
+Theorem pow_lt : ∀ a m n, 1 < a → m < n → a^m < a^n.
+Proof.
+    intros a m n a_gt mn.
+    apply nat_lt_ex in mn as [c [c_nz eq]]; subst.
+    nat_destruct c; [>contradiction|].
+    clear c_nz.
+    rewrite nat_plus_rsuc.
+    nat_induction c.
+    -   rewrite plus_rid.
+        cbn.
+        rewrite <- lt_mult_1_a_b_ba_pos.
+        +   exact a_gt.
+        +   apply pow_pos2.
+            exact (trans one_pos a_gt).
+    -   cbn.
+        apply (trans IHc).
+        rewrite nat_plus_rsuc.
+        rewrite <- lt_mult_1_a_b_ba_pos.
+        +   exact a_gt.
+        +   apply pow_pos2.
+            exact (trans one_pos a_gt).
 Qed.
 (* begin hide *)
 End Pow.
