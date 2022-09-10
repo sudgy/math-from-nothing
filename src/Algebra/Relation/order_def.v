@@ -116,6 +116,36 @@ Proof.
     contradiction.
 Qed.
 
+Theorem upper_bound_leq : ∀ S a b,
+    ¬is_upper_bound op S a → is_upper_bound op S b → strict op a b.
+Proof.
+    intros S a b Sa Sb.
+    split; [>|intro; subst; contradiction].
+    unfold is_upper_bound in *.
+    rewrite not_all in Sa.
+    destruct Sa as [x Sa].
+    rewrite not_impl in Sa.
+    rewrite nle_lt in Sa.
+    destruct Sa as [Sx [ax ax']].
+    specialize (Sb x Sx).
+    exact (trans ax Sb).
+Qed.
+
+Theorem lower_bound_leq : ∀ S a b,
+    ¬is_lower_bound op S a → is_lower_bound op S b → strict op b a.
+Proof.
+    intros S a b Sa Sb.
+    split; [>|intro; subst; contradiction].
+    unfold is_lower_bound in *.
+    rewrite not_all in Sa.
+    destruct Sa as [x Sa].
+    rewrite not_impl in Sa.
+    rewrite nle_lt in Sa.
+    destruct Sa as [Sx [ax ax']].
+    specialize (Sb x Sx).
+    exact (trans Sb ax).
+Qed.
+
 (* begin hide *)
 End WellOrders.
 
