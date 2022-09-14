@@ -153,7 +153,8 @@ Section SupremumComplete.
 
 Context {U} `{
     OrderedField U,
-    @SupremumComplete U le
+    @SupremumComplete U le,
+    @Dense U le
 }.
 (* end hide *)
 Theorem inf_complete : ∀ S : U → Prop, (∃ x, S x) →
@@ -215,36 +216,28 @@ Proof.
         +   intros y y_upper.
             classic_contradiction ltq.
             rewrite nle_lt in ltq.
-            pose (z := (y + α)/2).
+            pose proof (dense _ _ ltq) as [z [z_lt z_gt]].
             assert (¬is_upper_bound le S z) as z_nupper.
             {
                 intros contr.
                 apply α_least in contr.
-                unfold z in contr.
-                pose proof (average_leq2 y α ltq) as ltq'.
-                destruct (le_lt_trans contr ltq'); contradiction.
+                destruct (le_lt_trans contr z_gt); contradiction.
             }
             apply y_upper in z_nupper.
-            unfold z in z_nupper.
-            pose proof (average_leq1 y α ltq) as ltq'.
-            destruct (lt_le_trans ltq' z_nupper); contradiction.
+            destruct (lt_le_trans z_lt z_nupper); contradiction.
     -   split.
         +   intros x Sx.
             classic_contradiction ltq.
             rewrite nle_lt in ltq.
-            pose (z := (α + x)/2).
+            pose proof (dense _ _ ltq) as [z [z_lt z_gt]].
             assert (¬is_upper_bound le S z) as z_nupper.
             {
                 intros contr.
                 apply contr in Sx.
-                unfold z in Sx.
-                pose proof (average_leq2 α x ltq) as ltq'.
-                destruct (le_lt_trans Sx ltq'); contradiction.
+                destruct (le_lt_trans Sx z_gt); contradiction.
             }
             apply α_upper in z_nupper.
-            unfold z in z_nupper.
-            pose proof (average_leq1 α x ltq) as ltq'.
-            destruct (lt_le_trans ltq' z_nupper); contradiction.
+            destruct (lt_le_trans z_lt z_nupper); contradiction.
         +   intros y y_upper.
             apply α_least.
             intros z z_nupper.
