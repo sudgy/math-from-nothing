@@ -920,6 +920,7 @@ Proof.
     exact a_ltq.
 Qed.
 
+(* TODO: Get rid of requiring division *)
 Theorem square_one_one_pos : ∀ a, 0 < a → a * a = 1 → a = 1.
 Proof.
     intros a a_pos eq.
@@ -1046,6 +1047,20 @@ Proof.
     apply lt_rplus.
     apply lt_rmult_pos; [>apply div_pos; exact two_pos|].
     exact ltq.
+Qed.
+
+Theorem lt_plus_one : ∀ a, a < a + 1.
+Proof.
+    intros a.
+    rewrite <- lt_plus_0_a_b_ba.
+    exact one_pos.
+Qed.
+
+Theorem lt_minus_one : ∀ a, a - 1 < a.
+Proof.
+    intros a.
+    rewrite <- lt_plus_rrmove.
+    apply lt_plus_one.
 Qed.
 
 Global Instance ordered_field_dense_class : Dense (strict le).
