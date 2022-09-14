@@ -12,7 +12,7 @@ Definition dedekind_cut (a : rat → Prop) :=
     (∀ l u, a u → l < u → a l) ∧
     (∀ l, a l → ∃ u, a u ∧ l < u).
 
-Theorem dedekind_le : ∀ a, dedekind_cut a → ∀ l u, a u → l <= u → a l.
+Theorem dedekind_le : ∀ a, dedekind_cut a → ∀ l u, a u → l ≤ u → a l.
 Proof.
     intros a a_cut l u au lu.
     classic_case (l = u).

@@ -56,7 +56,7 @@ Proof.
 Qed.
 
 Theorem int_to_abstract_le : ∀ a b,
-    int_to_abstract a <= int_to_abstract b ↔ a <= b.
+    int_to_abstract a ≤ int_to_abstract b ↔ a ≤ b.
 Proof.
     intros a b.
     equiv_get_value a b.

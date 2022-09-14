@@ -19,7 +19,7 @@ Module CardMultIdemp.
 Section CardMultIdemp.
 
 Variable A : Type.
-Hypothesis A_inf : |nat| <= |A|.
+Hypothesis A_inf : |nat| ≤ |A|.
 
 Record fs := make_fs {
     fs_f : bin_set_function_type A A;
@@ -32,7 +32,7 @@ Definition fs_le f g := bin_func_le (fs_f f) (fs_f g).
 Local Instance fs_le_class : Order fs := {
     le := fs_le
 }.
-Lemma fs_le_refl : ∀ f, f <= f.
+Lemma fs_le_refl : ∀ f, f ≤ f.
 Proof.
     intros f.
     unfold le; cbn.
@@ -42,7 +42,7 @@ Qed.
 Local Instance fs_le_refl_class : Reflexive le := {
     refl := fs_le_refl
 }.
-Lemma fs_le_antisym : ∀ f g, f <= g → g <= f → f = g.
+Lemma fs_le_antisym : ∀ f g, f ≤ g → g ≤ f → f = g.
 Proof.
     intros f g.
     unfold le; cbn.
@@ -61,7 +61,7 @@ Qed.
 Local Instance fs_le_antisym_class : Antisymmetric le := {
     antisym := fs_le_antisym
 }.
-Lemma fs_le_trans : ∀ f g h, f <= g → g <= h → f <= h.
+Lemma fs_le_trans : ∀ f g h, f ≤ g → g ≤ h → f ≤ h.
 Proof.
     intros f g h.
     unfold le; cbn.
@@ -618,7 +618,7 @@ Proof.
     apply [|f 0].
 Qed.
 
-Lemma X_le : |set_type X| <= |A|.
+Lemma X_le : |set_type X| ≤ |A|.
 Proof.
     unfold le; equiv_simpl.
     exists (λ x, [x|]).
@@ -651,7 +651,7 @@ Proof.
         +   exists (inr [c|X'c]); reflexivity.
 Qed.
 
-Lemma X'_ge : |set_type X| <= |set_type X'|.
+Lemma X'_ge : |set_type X| ≤ |set_type X'|.
 Proof.
     classic_contradiction ltq.
     rewrite nle_lt in ltq.
@@ -999,7 +999,7 @@ Proof.
     exact A_inf.
 Qed.
 
-Theorem card_plus_lmax : ∀ κ μ, infinite κ → μ <= κ → κ + μ = κ.
+Theorem card_plus_lmax : ∀ κ μ, infinite κ → μ ≤ κ → κ + μ = κ.
 Proof.
     intros κ μ κ_inf leq.
     apply antisym.
@@ -1026,7 +1026,7 @@ Proof.
     apply refl.
 Qed.
 
-Theorem card_mult_lmax : ∀ κ μ, infinite κ → 0 ≠ μ → μ <= κ → κ * μ = κ.
+Theorem card_mult_lmax : ∀ κ μ, infinite κ → 0 ≠ μ → μ ≤ κ → κ * μ = κ.
 Proof.
     intros κ μ κ_inf μ_nz leq.
     apply antisym.

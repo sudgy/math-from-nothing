@@ -59,7 +59,7 @@ Theorem geometric_sequence_zero : ∀ r, |r| < 1 → seq_lim (λ n, r ^ n) 0.
 Proof.
     intros r r_small.
     apply seq_lim_zero.
-    assert (∀ n, |r^n| <= 1) as r_bound.
+    assert (∀ n, |r^n| ≤ 1) as r_bound.
     {
         nat_induction n.
         -   unfold zero; cbn.
@@ -105,7 +105,7 @@ Proof.
         unfold g.
         apply seq_lim_mult; exact L_lim.
     }
-    assert (∀ n, f n <= g n) as fg_leq.
+    assert (∀ n, f n ≤ g n) as fg_leq.
     {
         intros n.
         unfold f, g.
@@ -113,7 +113,7 @@ Proof.
         apply abs_cs.
     }
     pose proof (seq_lim_le _ _ _ _ fg_leq L_lim2 L2_lim) as leq.
-    assert (0 <= L) as L_pos.
+    assert (0 ≤ L) as L_pos.
     {
         classic_contradiction contr.
         rewrite nle_lt in contr.
@@ -335,7 +335,7 @@ Proof.
         apply (trans op).
         exact r'_pos.
     }
-    assert (∃ N, ∀ n, N <= n → |an (nat_suc n)| <= |an n| * r') as [N N_leq].
+    assert (∃ N, ∀ n, N ≤ n → |an (nat_suc n)| ≤ |an n| * r') as [N N_leq].
     {
         rewrite metric_seq_lim in r_lim.
         apply lt_plus_0_anb_b_a in r'_gt.
@@ -357,7 +357,7 @@ Proof.
     rewrite (series_skip _ N).
     pose (bn n := |an (n + N)|).
     fold bn.
-    assert (∀ n, bn (nat_suc n) <= bn n * r') as bn_leq.
+    assert (∀ n, bn (nat_suc n) ≤ bn n * r') as bn_leq.
     {
         intros n.
         unfold bn.
@@ -365,14 +365,14 @@ Proof.
         apply N_leq.
         apply nat_le_self_lplus.
     }
-    assert (∀ n, 0 <= bn n) as bn_pos.
+    assert (∀ n, 0 ≤ bn n) as bn_pos.
     {
         intros n.
         apply abs_pos.
     }
     clearbody bn.
     clear r r_lim r_lt an_pos r'_gt N N_leq.
-    assert (∀ n, bn n <= bn 0 * r' ^ n) as bn_leqn.
+    assert (∀ n, bn n ≤ bn 0 * r' ^ n) as bn_leqn.
     {
         intros n.
         nat_induction n.

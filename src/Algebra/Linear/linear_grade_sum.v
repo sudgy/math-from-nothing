@@ -463,7 +463,7 @@ Next Obligation.
             do 2 rewrite ulist_sum_sum_eq.
             remember n as n'.
             rewrite Heqn'.
-            assert (n <= n') as n_leq by (rewrite Heqn'; apply refl).
+            assert (n ≤ n') as n_leq by (rewrite Heqn'; apply refl).
             clear Heqn'.
             nat_induction n.
             -   unfold zero; cbn.

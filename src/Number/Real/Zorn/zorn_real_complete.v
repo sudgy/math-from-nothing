@@ -43,7 +43,7 @@ Next Obligation.
         rewrite <- le_plus_0_a_b_ba.
         apply one_pos.
     }
-    assert (cut_lt : ∀ l u, cut u → l <= u → cut l).
+    assert (cut_lt : ∀ l u, cut u → l ≤ u → cut l).
     {
         intros l u u_cut lu l_upper.
         apply u_cut.
@@ -169,7 +169,7 @@ Next Obligation.
     pose (α := f5 (f4 (f3 (f2 (polynomial_x real_cring))))).
     exists α.
     assert (∀ x y, zorn_real_q_le cut cut_in cut_out cut_lt x y →
-        f5 (f4 (f3 (f2 x))) <= f5 (f4 (f3 (f2 y)))) as f_le.
+        f5 (f4 (f3 (f2 x))) ≤ f5 (f4 (f3 (f2 y)))) as f_le.
     {
         intros x y xy.
         rewrite <- (arch_ordered_homo_le _ _ _ f5_homo).
@@ -181,7 +181,7 @@ Next Obligation.
         apply (land (zorn_real_quotient_le _ _ _ _ _ _)).
         exact xy.
     }
-    assert (∀ x, ¬is_upper_bound le S x → x <= α) as α_ge.
+    assert (∀ x, ¬is_upper_bound le S x → x ≤ α) as α_ge.
     {
         intros x x_nupper.
         unfold α.
@@ -190,7 +190,7 @@ Next Obligation.
         apply zorn_real_q_le_in.
         exact x_nupper.
     }
-    assert (∀ x, is_upper_bound le S x → α <= x) as α_le.
+    assert (∀ x, is_upper_bound le S x → α ≤ x) as α_le.
     {
         intros x x_upper.
         unfold α.

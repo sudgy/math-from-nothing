@@ -15,7 +15,7 @@ Section AnalysisOrder.
 
 Existing Instance abs_metric.
 (* end hide *)
-Theorem seq_lim_pos : ∀ xf x, (∀ n, 0 <= xf n) → seq_lim xf x → 0 <= x.
+Theorem seq_lim_pos : ∀ xf x, (∀ n, 0 ≤ xf n) → seq_lim xf x → 0 ≤ x.
 Proof.
     intros xf x xf_pos x_lim.
     rewrite metric_seq_lim in x_lim.
@@ -34,7 +34,7 @@ Proof.
 Qed.
 
 Theorem seq_lim_le : ∀ xf yf x y,
-    (∀ n, xf n <= yf n) → seq_lim xf x → seq_lim yf y → x <= y.
+    (∀ n, xf n ≤ yf n) → seq_lim xf x → seq_lim yf y → x ≤ y.
 Proof.
     intros xf yf x y f_leq x_lim y_lim.
     pose (xyf n := yf n - xf n).
@@ -50,7 +50,7 @@ Proof.
 Qed.
 
 Theorem seq_lim_le_constant : ∀ xf x y,
-    (∀ n, xf n <= y) → seq_lim xf x → x <= y.
+    (∀ n, xf n ≤ y) → seq_lim xf x → x ≤ y.
 Proof.
     intros xf x y f_leq x_lim.
     apply (seq_lim_le xf (λ _, y)).
@@ -60,7 +60,7 @@ Proof.
 Qed.
 
 Theorem seq_lim_ge_constant : ∀ yf x y,
-    (∀ n, x <= yf n) → seq_lim yf y → x <= y.
+    (∀ n, x ≤ yf n) → seq_lim yf y → x ≤ y.
 Proof.
     intros yf x y f_leq y_lim.
     apply (seq_lim_le (λ _, x) yf).
@@ -70,11 +70,11 @@ Proof.
 Qed.
 
 Theorem increasing_seq_converges : ∀ f : nat → real,
-    (∃ M, ∀ n, |f n| <= M) → (∀ n, f n <= f (nat_suc n)) →
+    (∃ M, ∀ n, |f n| ≤ M) → (∀ n, f n ≤ f (nat_suc n)) →
     seq_converges f.
 Proof.
     intros f [M M_bound] f_inc.
-    assert (∀ m n, m <= n → f m <= f n) as f_inc2.
+    assert (∀ m n, m ≤ n → f m ≤ f n) as f_inc2.
     {
         intros m n leq.
         apply nat_le_ex in leq as [c eq].
@@ -134,7 +134,7 @@ Proof.
 Qed.
 
 Theorem decreasing_seq_converges : ∀ f : nat → real,
-    (∃ M, ∀ n, |f n| <= M) → (∀ n, f (nat_suc n) <= f n) →
+    (∃ M, ∀ n, |f n| ≤ M) → (∀ n, f (nat_suc n) ≤ f n) →
     seq_converges f.
 Proof.
     intros f [M M_bound] f_dec.
@@ -253,20 +253,20 @@ Proof.
     pose (N := max N1 N2).
     exists N.
     intros n n_ge.
-    assert (∃ n', N <= n' ∧ |a N - f n'| < ε/2/2) as [n' [n'_ge af_leq]].
+    assert (∃ n', N ≤ n' ∧ |a N - f n'| < ε/2/2) as [n' [n'_ge af_leq]].
     {
         unfold a.
         rewrite_ex_val A A_sup.
         destruct A_sup as [A_upper' A_least'].
         unfold is_upper_bound, S in A_upper'.
-        assert (∀ n, fn N n <= A) as A_upper.
+        assert (∀ n, fn N n ≤ A) as A_upper.
         {
             intros m.
             apply A_upper'.
             exists m.
             reflexivity.
         }
-        assert (∀ y, (∀ n, fn N n <= y) → A <= y) as A_least.
+        assert (∀ y, (∀ n, fn N n ≤ y) → A ≤ y) as A_least.
         {
             intros y y_leq.
             apply A_least'.
@@ -276,7 +276,7 @@ Proof.
         clear A_upper' A_least'.
         classic_contradiction contr.
         rewrite not_ex in contr.
-        assert (A <= A - ε/2/2) as leq.
+        assert (A ≤ A - ε/2/2) as leq.
         {
             apply A_least.
             intros m.
@@ -321,7 +321,7 @@ Proof.
 Qed.
 
 Theorem series_le_converge : ∀ a b,
-    seq_converges (series b) → (∀ n, 0 <= a n) → (∀ n, a n <= b n) →
+    seq_converges (series b) → (∀ n, 0 ≤ a n) → (∀ n, a n ≤ b n) →
     seq_converges (series a).
 Proof.
     intros a b b_conv a_pos ab.
@@ -335,7 +335,7 @@ Proof.
     specialize (b_conv i j leq).
     apply (le_lt_trans2 b_conv).
     clear - a_pos ab.
-    assert (0 <= sum a i j) as sum_a_pos.
+    assert (0 ≤ sum a i j) as sum_a_pos.
     {
         clear - a_pos.
         nat_induction j.
@@ -346,7 +346,7 @@ Proof.
             rewrite plus_rid in leq.
             exact leq.
     }
-    assert (0 <= sum b i j) as sum_b_pos.
+    assert (0 ≤ sum b i j) as sum_b_pos.
     {
         clear - a_pos ab.
         nat_induction j.
@@ -370,7 +370,7 @@ Proof.
         +   apply ab.
 Qed.
 
-Theorem seq_squeeze : ∀ an bn cn l, (∀ n, an n <= bn n ∧ bn n <= cn n) →
+Theorem seq_squeeze : ∀ an bn cn l, (∀ n, an n ≤ bn n ∧ bn n ≤ cn n) →
     seq_lim an l → seq_lim cn l → seq_lim bn l.
 Proof.
     intros an bn cn l leqs anl cnl.
@@ -401,7 +401,7 @@ Qed.
 Local Open Scope nat_scope.
 (* end hide *)
 Theorem alternating_series_test : ∀ an,
-    (∀ n, an (nat_suc n) <= an n) →
+    (∀ n, an (nat_suc n) ≤ an n) →
     seq_lim an 0 →
     seq_converges (series (λ n, (-(1))^n * an n)).
 Proof.
@@ -425,7 +425,7 @@ Proof.
         rewrite mult_lid.
         reflexivity.
     }
-    assert (∀ m n, an (m + n) <= an n) as an_dec2.
+    assert (∀ m n, an (m + n) ≤ an n) as an_dec2.
     {
         intros m n.
         nat_induction m.
@@ -435,7 +435,7 @@ Proof.
             apply (trans2 IHm).
             apply an_dec.
     }
-    assert (∀ n, 0 <= an n) as an_pos.
+    assert (∀ n, 0 ≤ an n) as an_pos.
     {
         intros n.
         classic_contradiction contr.
@@ -460,7 +460,7 @@ Proof.
             rewrite abs_pos_eq in an0 by apply contr.
             destruct an0; contradiction.
     }
-    assert (∀ n, 0 <= an'_even n) as even_pos.
+    assert (∀ n, 0 ≤ an'_even n) as even_pos.
     {
         intros n.
         nat_induction n.
@@ -486,7 +486,7 @@ Proof.
             rewrite plus_comm.
             apply an_dec.
     }
-    assert (∀ n, 0 <= an'_odd n) as odd_pos.
+    assert (∀ n, 0 ≤ an'_odd n) as odd_pos.
     {
         intros n.
         rewrite even_odd.

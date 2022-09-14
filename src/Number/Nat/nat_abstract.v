@@ -143,7 +143,7 @@ Proof.
         apply lt_pos_plus; [>exact one_pos|exact IHa].
 Qed.
 
-Theorem from_nat_pos2 : ∀ a, 0 <= from_nat a.
+Theorem from_nat_pos2 : ∀ a, 0 ≤ from_nat a.
 Proof.
     nat_induction a.
     -   rewrite from_nat_zero.
@@ -173,7 +173,7 @@ Proof.
             exact eq.
 Qed.
 
-Theorem from_nat_le : ∀ a b, from_nat a <= from_nat b ↔ a <= b.
+Theorem from_nat_le : ∀ a b, from_nat a ≤ from_nat b ↔ a ≤ b.
 Proof.
     intros a b.
     split.

@@ -74,8 +74,8 @@ Proof.
     apply plus_comm.
 Qed.
 Theorem nat_to_card_sucs_le :
-    ∀ a b, nat_to_card (nat_suc a) <= nat_to_card (nat_suc b) →
-    nat_to_card a <= nat_to_card b.
+    ∀ a b, nat_to_card (nat_suc a) ≤ nat_to_card (nat_suc b) →
+    nat_to_card a ≤ nat_to_card b.
 Proof.
     intros a b leq.
     unfold nat_to_card, le in *; equiv_simpl; equiv_simpl in leq.
@@ -197,8 +197,8 @@ Proof.
     exact ltq.
 Qed.
 Theorem nat_to_card_le_plus_lcancel : ∀ {a b} c,
-    nat_to_card c + nat_to_card a <= nat_to_card c + nat_to_card b →
-    nat_to_card a <= nat_to_card b.
+    nat_to_card c + nat_to_card a ≤ nat_to_card c + nat_to_card b →
+    nat_to_card a ≤ nat_to_card b.
 Proof.
     intros a b c leq.
     nat_induction c.
@@ -212,15 +212,15 @@ Proof.
         exact leq.
 Qed.
 Theorem nat_to_card_le_plus_rcancel : ∀ {a b} c,
-    nat_to_card a + nat_to_card c <= nat_to_card b + nat_to_card c →
-    nat_to_card a <= nat_to_card b.
+    nat_to_card a + nat_to_card c ≤ nat_to_card b + nat_to_card c →
+    nat_to_card a ≤ nat_to_card b.
 Proof.
     intros a b c leq.
     do 2 rewrite (plus_comm _ (nat_to_card c)) in leq.
     exact (nat_to_card_le_plus_lcancel _ leq).
 Qed.
 
-Theorem nat_to_card_le : ∀ a b, (a <= b) = (nat_to_card a <= nat_to_card b).
+Theorem nat_to_card_le : ∀ a b, (a ≤ b) = (nat_to_card a ≤ nat_to_card b).
 Proof.
     intros a b.
     apply propositional_ext; split.

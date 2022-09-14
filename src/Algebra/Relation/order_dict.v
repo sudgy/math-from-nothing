@@ -14,7 +14,7 @@ Context `{
 (* end hide *)
 Instance dictionary_order : Order (U * V) := {
     le a b := match a, b with
-        | (a1, b1), (a2, b2) => (b1 < b2) ∨ (a1 <= a2 ∧ b1 = b2)
+        | (a1, b1), (a2, b2) => (b1 < b2) ∨ (a1 ≤ a2 ∧ b1 = b2)
         end
 }.
 (* begin hide *)

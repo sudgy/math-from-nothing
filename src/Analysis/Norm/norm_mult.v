@@ -112,7 +112,7 @@ Proof.
         exact a_pos.
     }
     pose proof (a_lim _ a2_pos) as [N1 a_pos'].
-    assert (∃ D, 0 < D ∧ ∀ n, N1 <= n → D < |af n|) as [D [D_pos af_pos]].
+    assert (∃ D, 0 < D ∧ ∀ n, N1 ≤ n → D < |af n|) as [D [D_pos af_pos]].
     {
         exists (|a|/2).
         split.

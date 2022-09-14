@@ -19,7 +19,7 @@ Proof.
     contradiction (nat_neg2 x_lt).
 Qed.
 
-Theorem subsequence_seq_leq : ∀ f, subsequence_seq f → ∀ n, n <= f n.
+Theorem subsequence_seq_leq : ∀ f, subsequence_seq f → ∀ n, n ≤ f n.
 Proof.
     intros f f_sub.
     unfold subsequence_seq in f_sub.

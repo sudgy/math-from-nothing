@@ -12,9 +12,9 @@ Section MetricTopology.
 Context {U} `{Metric U}.
 (* end hide *)
 Definition open_ball x (ε : real_pos) := λ y, d x y < [ε|].
-Definition closed_ball x (ε : real_pos) := λ y, d x y <= [ε|].
+Definition closed_ball x (ε : real_pos) := λ y, d x y ≤ [ε|].
 
-Definition bounded X := ∃ M, ∀ a b, X a → X b → d a b <= M.
+Definition bounded X := ∃ M, ∀ a b, X a → X b → d a b ≤ M.
 (* begin hide *)
 Local Open Scope card_scope.
 (* end hide *)
@@ -42,7 +42,7 @@ Proof.
     exact a_in.
 Qed.
 
-Theorem open_ball_sub : ∀ x ε1 ε2, ε1 <= ε2 → open_ball x ε1 ⊆ open_ball x ε2.
+Theorem open_ball_sub : ∀ x ε1 ε2, ε1 ≤ ε2 → open_ball x ε1 ⊆ open_ball x ε2.
 Proof.
     intros x ε1 ε2 leq a a1.
     unfold open_ball in *.
@@ -63,7 +63,7 @@ Proof.
     apply a_lt.
 Qed.
 
-Theorem closed_ball_sub : ∀ x ε1 ε2, ε1 <= ε2 →
+Theorem closed_ball_sub : ∀ x ε1 ε2, ε1 ≤ ε2 →
     closed_ball x ε1 ⊆ closed_ball x ε2.
 Proof.
     intros x ε1 ε2 leq a a1.
@@ -125,7 +125,7 @@ Proof.
     apply open_ball_basis.
 Qed.
 
-Theorem open_ball_le_sub : ∀ x ε δ, δ <= ε → open_ball x δ ⊆ open_ball x ε.
+Theorem open_ball_le_sub : ∀ x ε δ, δ ≤ ε → open_ball x δ ⊆ open_ball x ε.
 Proof.
     intros x ε δ leq y y_in.
     unfold open_ball in *.
@@ -250,7 +250,7 @@ Proof.
     pose (Ms x := ∃ a b : set_type A, x = d [a|] [b|]).
     assert (finite (|set_type Ms|)) as Ms_fin.
     {
-        assert (|set_type (A * A)%set| <= nat_to_card (n * n)) as A2_size.
+        assert (|set_type (A * A)%set| ≤ nat_to_card (n * n)) as A2_size.
         {
             rewrite <- nat_to_card_mult.
             symmetry in n_eq.

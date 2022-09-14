@@ -13,7 +13,7 @@ Require Import dedekind_real_mult2.
 
 Open Scope real_scope.
 
-Definition real_div_base a := λ p, p <= 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
+Definition real_div_base a := λ p, p ≤ 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
 Notation "⊘ a" := (real_div_base a) : real_scope.
 
 Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
@@ -43,7 +43,7 @@ Proof.
         rewrite <- pos_neg.
         apply one_pos.
     -   intros l u nau lu.
-        classic_case (l <= 0) as [l_neg|l_pos].
+        classic_case (l ≤ 0) as [l_neg|l_pos].
         +   left; exact l_neg.
         +   rewrite nle_lt in l_pos.
             right.
@@ -58,7 +58,7 @@ Proof.
                 apply lt_div_pos in lu; try assumption.
                 pose proof (trans ltq lu) as [C0 C1]; contradiction.
     -   intros l al.
-        classic_case (l <= 0) as [l_neg|l_pos].
+        classic_case (l ≤ 0) as [l_neg|l_pos].
         +   pose proof (land a_cut) as u_ex.
             apply not_all_not_ex in u_ex.
             destruct u_ex as [u nau].
@@ -366,7 +366,7 @@ Proof.
                     rewrite plus_lid, plus_comm in n_pos.
                     exact n_pos.
                 }
-                assert (n <= m) as mn.
+                assert (n ≤ m) as mn.
                 {
                     classic_contradiction contr.
                     rewrite nle_lt in contr.

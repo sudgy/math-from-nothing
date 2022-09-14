@@ -12,23 +12,23 @@ Notation "| a |" := (abs a) (at level 30).
 Arguments abs : simpl never.
 
 Global Instance real_abs : AbsoluteValue real := {
-    abs a := If 0 <= a then a else (-a)
+    abs a := If 0 ≤ a then a else (-a)
 }.
 
 Class AbsDefinite U `{AbsoluteValue U, Zero U} := {
     abs_def : ∀ x : U, 0 = |x| ↔ 0 = x
 }.
 Class AbsPositive U `{AbsoluteValue U} := {
-    abs_pos : ∀ x : U, 0 <= |x|
+    abs_pos : ∀ x : U, 0 ≤ |x|
 }.
 Class AbsMult U `{AbsoluteValue U, Mult U} := {
     abs_mult : ∀ a b : U, |a * b| = |a| * |b|
 }.
 Class AbsCauchySchwarz U `{AbsoluteValue U, Mult U} := {
-    abs_cs : ∀ a b : U, |a * b| <= |a| * |b|
+    abs_cs : ∀ a b : U, |a * b| ≤ |a| * |b|
 }.
 Class AbsTriangle U `{AbsoluteValue U, Plus U} := {
-    abs_tri : ∀ a b : U, |a + b| <= |a| + |b|;
+    abs_tri : ∀ a b : U, |a + b| ≤ |a| + |b|;
 }.
 Class AbsScalar U `{AbsoluteValue U, ScalarMult real U} := {
     abs_scalar : ∀ (a : real) (v : U), |a · v| = |a| * |v|
@@ -37,7 +37,7 @@ Class AbsNeg U `{AbsoluteValue U, Neg U} := {
     abs_neg : ∀ (a : U), | -a| = |a|
 }.
 Definition cauchy_schwarz {U} `{AbsoluteValue U} f
-    := ∀ u v, |f u v| <= |u| * |v|.
+    := ∀ u v, |f u v| ≤ |u| * |v|.
 
 (* begin hide *)
 Section Abs.
@@ -264,7 +264,7 @@ Next Obligation.
         apply refl.
 Qed.
 (* end hide *)
-Theorem abs_le_pos : ∀ a, a <= |a|.
+Theorem abs_le_pos : ∀ a, a ≤ |a|.
 Proof.
     intros a.
     unfold abs; cbn.
@@ -276,7 +276,7 @@ Proof.
         apply (trans n ltq).
 Qed.
 
-Theorem abs_le_neg : ∀ a, -a <= |a|.
+Theorem abs_le_neg : ∀ a, -a ≤ |a|.
 Proof.
     intros a.
     unfold abs; cbn.
@@ -287,7 +287,7 @@ Proof.
     -   apply refl.
 Qed.
 
-Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
+Theorem abs_le : ∀ a b, |a| ≤ b ↔ -b ≤ a ∧ a ≤ b.
 Proof.
     intros a b.
     unfold abs; cbn.
@@ -344,7 +344,7 @@ Proof.
                 contradiction.
 Qed.
 
-Theorem abs_pos_eq : ∀ a, 0 <= a → |a| = a.
+Theorem abs_pos_eq : ∀ a, 0 ≤ a → |a| = a.
 Proof.
     intros a a_pos.
     unfold abs; cbn.
@@ -353,7 +353,7 @@ Proof.
     -   contradiction.
 Qed.
 
-Theorem abs_neg_eq : ∀ a, a <= 0 → |a| = -a.
+Theorem abs_neg_eq : ∀ a, a ≤ 0 → |a| = -a.
 Proof.
     intros a a_neg.
     rewrite <- abs_neg.

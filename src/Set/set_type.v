@@ -175,10 +175,10 @@ Context `{
 }.
 
 Global Instance set_type_order : Order (set_type S) := {
-    le a b := [a|] <= [b|]
+    le a b := [a|] ≤ [b|]
 }.
 
-Lemma set_type_le_connex : ∀ a b : set_type S, {a <= b} + {b <= a}.
+Lemma set_type_le_connex : ∀ a b : set_type S, {a ≤ b} + {b ≤ a}.
 Proof.
     intros a b.
     unfold le; cbn.
@@ -188,7 +188,7 @@ Global Instance set_type_le_connex_class : Connex le := {
     connex := set_type_le_connex
 }.
 
-Lemma set_type_le_antisym : ∀ a b : set_type S, a <= b → b <= a → a = b.
+Lemma set_type_le_antisym : ∀ a b : set_type S, a ≤ b → b ≤ a → a = b.
 Proof.
     intros a b ab ba.
     apply set_type_eq.
@@ -198,7 +198,7 @@ Global Instance set_type_le_antisym_class : Antisymmetric le := {
     antisym := set_type_le_antisym
 }.
 
-Lemma set_type_le_trans : ∀ a b c : set_type S, a <= b → b <= c → a <= c.
+Lemma set_type_le_trans : ∀ a b c : set_type S, a ≤ b → b ≤ c → a ≤ c.
 Proof.
     intros a b c.
     unfold le; cbn.
@@ -208,7 +208,7 @@ Global Instance set_type_le_trans_class : Transitive le := {
     trans := set_type_le_trans
 }.
 
-Lemma set_type_le_refl : ∀ a : set_type S, a <= a.
+Lemma set_type_le_refl : ∀ a : set_type S, a ≤ a.
 Proof.
     intros a.
     unfold le; cbn.

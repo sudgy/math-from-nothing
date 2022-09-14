@@ -63,7 +63,7 @@ Qed.
 Class Order U := {
     le : U → U → Prop;
 }.
-Infix "<=" := le.
+Infix "≤" := le.
 Infix "<" := (strict le).
 Arguments le: simpl never.
 

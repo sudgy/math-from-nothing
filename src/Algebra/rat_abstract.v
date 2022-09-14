@@ -71,7 +71,7 @@ Proof.
 Qed.
 
 Theorem rat_to_abstract_le : ∀ a b,
-    rat_to_abstract a <= rat_to_abstract b ↔ a <= b.
+    rat_to_abstract a ≤ rat_to_abstract b ↔ a ≤ b.
 Proof.
     intros a b.
     pose proof (frac_pos_ex int a) as [a1 [a2 [a2_pos a_eq]]].
@@ -254,7 +254,7 @@ Context {U} `{
     @Archimedean U UP UZ UO
 }.
 
-Lemma rat_dense_in_arch_pos : ∀ a b : U, 0 <= a → a < b →
+Lemma rat_dense_in_arch_pos : ∀ a b : U, 0 ≤ a → a < b →
     ∃ r : rat, a < rat_to_abstract r ∧ rat_to_abstract r < b.
 Proof.
     intros a b a_pos ab.
@@ -301,7 +301,7 @@ Proof.
             -   rewrite Heqn'.
                 apply from_nat_pos.
         }
-        assert (from_nat m <= a * n') as m_ltq2.
+        assert (from_nat m ≤ a * n') as m_ltq2.
         {
             classic_contradiction contr.
             rewrite nle_lt in contr.
@@ -321,7 +321,7 @@ Theorem rat_dense_in_arch : ∀ a b : U, a < b →
     ∃ r : rat, a < rat_to_abstract r ∧ rat_to_abstract r < b.
 Proof.
     intros a b ab.
-    classic_case (0 <= a) as [a_pos|a_neg].
+    classic_case (0 ≤ a) as [a_pos|a_neg].
     {
         apply rat_dense_in_arch_pos; assumption.
     }

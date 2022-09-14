@@ -94,13 +94,13 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem int_to_rat_le : ∀ a b, int_to_rat a <= int_to_rat b ↔ a <= b.
+Theorem int_to_rat_le : ∀ a b, int_to_rat a ≤ int_to_rat b ↔ a ≤ b.
 Proof.
     apply to_frac_le.
     exact int_le_antisym_class.
     exact int_le_trans_class.
 Qed.
-Theorem nat_to_rat_le : ∀ a b, nat_to_rat a <= nat_to_rat b ↔ a <= b.
+Theorem nat_to_rat_le : ∀ a b, nat_to_rat a ≤ nat_to_rat b ↔ a ≤ b.
 Proof.
     intros a b.
     unfold nat_to_rat.

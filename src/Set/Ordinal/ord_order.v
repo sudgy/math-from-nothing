@@ -95,7 +95,7 @@ Global Instance ord_order : Order ord := {
 
 Open Scope ord_scope.
 (* end hide *)
-Theorem ord_le_lt : ∀ α β, (α <= β) = (α = β ∨ α < β).
+Theorem ord_le_lt : ∀ α β, (α ≤ β) = (α = β ∨ α < β).
 Proof.
     intros α β.
     classic_case (α = β) as [eq|neq].
@@ -187,7 +187,7 @@ Definition piece_le f g := func_le (piece_f f) (piece_f g).
 Local Instance piece_le_class : Order _ := {
     le := piece_le
 }.
-Lemma piece_le_refl : ∀ f, f <= f.
+Lemma piece_le_refl : ∀ f, f ≤ f.
 Proof.
     unfold le; cbn; unfold piece_le; cbn.
     intros f.
@@ -196,7 +196,7 @@ Qed.
 Local Instance piece_le_reflexive : Reflexive le := {
     refl := piece_le_refl
 }.
-Lemma piece_le_antisym : ∀ f g, f <= g → g <= f → f = g.
+Lemma piece_le_antisym : ∀ f g, f ≤ g → g ≤ f → f = g.
 Proof.
     unfold le; cbn; unfold piece_le; cbn.
     intros f g fg gf.
@@ -209,7 +209,7 @@ Qed.
 Local Instance piece_le_antisym_class : Antisymmetric le := {
     antisym := piece_le_antisym
 }.
-Lemma piece_le_trans : ∀ f g h, f <= g → g <= h → f <= h.
+Lemma piece_le_trans : ∀ f g h, f ≤ g → g ≤ h → f ≤ h.
 Proof.
     unfold le; cbn; unfold piece_le; cbn.
     intros f g h fg gh.
@@ -806,7 +806,7 @@ Qed.
 End OrdConnex.
 End OrdConnex.
 
-Lemma ord_le_connex : ∀ α β, {α <= β} + {β <= α}.
+Lemma ord_le_connex : ∀ α β, {α ≤ β} + {β ≤ α}.
 Proof.
     intros α β.
     classic_case (α = β) as [eq|neq].
@@ -817,8 +817,8 @@ Proof.
         left; exists identity; split; try apply identity_bijective.
         reflexivity.
     }
-    classic_case (α <= β) as [αβ|αβ]; try (left; exact αβ).
-    classic_case (β <= α) as [βα|βα]; try (right; exact βα).
+    classic_case (α ≤ β) as [αβ|αβ]; try (left; exact αβ).
+    classic_case (β ≤ α) as [βα|βα]; try (right; exact βα).
     rewrite ord_le_lt in *.
     rewrite ord_le_lt.
     rewrite not_or in αβ.
@@ -834,7 +834,7 @@ Global Instance ord_le_connex_class : Connex le := {
     connex := ord_le_connex
 }.
 
-Lemma ord_le_antisymmetric : ∀ α β, α <= β → β <= α → α = β.
+Lemma ord_le_antisymmetric : ∀ α β, α ≤ β → β ≤ α → α = β.
 Proof.
     intros α β αβ βα.
     rewrite ord_le_lt in αβ.
@@ -887,7 +887,7 @@ Global Instance ord_le_antisym_class : Antisymmetric le := {
     antisym := ord_le_antisymmetric
 }.
 
-Lemma ord_le_transitive : ∀ α β γ, α <= β → β <= γ → α <= γ.
+Lemma ord_le_transitive : ∀ α β γ, α ≤ β → β ≤ γ → α ≤ γ.
 Proof.
     intros α β γ.
     repeat rewrite ord_le_lt.
@@ -983,7 +983,7 @@ Proof.
 Qed.
 
 Definition ords_lt_set α := λ β, β < α.
-Definition ords_lt_le α (β γ : set_type (ords_lt_set α)) := [β|] <= [γ|].
+Definition ords_lt_le α (β γ : set_type (ords_lt_set α)) := [β|] ≤ [γ|].
 
 (* begin hide *)
 Module OrdsLtWo.
@@ -1340,7 +1340,7 @@ Proof.
     contradiction.
 Qed.
 
-Theorem nat_to_ord_le : ∀ a b, (nat_to_ord a <= nat_to_ord b) = (a <= b).
+Theorem nat_to_ord_le : ∀ a b, (nat_to_ord a ≤ nat_to_ord b) = (a ≤ b).
 Proof.
     intros a b.
     classic_case (a = b) as [eq|neq].

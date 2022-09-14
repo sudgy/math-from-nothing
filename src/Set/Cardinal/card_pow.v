@@ -70,7 +70,7 @@ Proof.
         exact n_lt.
 Qed.
 
-Theorem card_pow_from_0 : ∀ κ, 1 <= κ → 0 ^ κ = 0.
+Theorem card_pow_from_0 : ∀ κ, 1 ≤ κ → 0 ^ κ = 0.
 Proof.
     intros A.
     equiv_get_value A.
@@ -288,7 +288,7 @@ Proof.
 Qed.
 
 (* begin hide *)
-Lemma card_suc_ex : ∀ κ, ∃ μ, κ < μ ∧ ∀ ν, κ < ν → μ <= ν.
+Lemma card_suc_ex : ∀ κ, ∃ μ, κ < μ ∧ ∀ ν, κ < ν → μ ≤ ν.
 Proof.
     intros κ.
     pose (S μ := κ < μ).
@@ -316,7 +316,7 @@ Proof.
     apply μ_eq.
 Qed.
 
-Theorem card_suc_le : ∀ κ μ, κ < μ → card_suc κ <= μ.
+Theorem card_suc_le : ∀ κ μ, κ < μ → card_suc κ ≤ μ.
 Proof.
     intros κ μ lt.
     unfold card_suc.

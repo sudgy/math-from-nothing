@@ -14,7 +14,7 @@ ring.
 (* begin hide *)
 Open Scope real_scope.
 (* end hide *)
-Lemma real_mult_assoc0 : ∀ a b c, 0 <= a → 0 <= b → 0 <= c →
+Lemma real_mult_assoc0 : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c →
     ([a|] ⊗ ([b|] ⊗ [c|]) ⊆ ([a|] ⊗ [b|]) ⊗ [c|])%set.
 Proof.
     intros [a a_cut] [b b_cut] [c c_cut] a_pos b_pos c_pos; cbn.
@@ -34,7 +34,7 @@ Proof.
         rewrite mult_assoc in eq2.
         exact eq2.
 Qed.
-Lemma real_mult_assoc1 : ∀ a b c, 0 <= a → 0 <= b → 0 <= c →
+Lemma real_mult_assoc1 : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c →
     a * (b * c) = (a * b) * c.
 Proof.
     intros a b c a_pos b_pos c_pos.
@@ -52,7 +52,7 @@ Proof.
         do 4 rewrite real_mult_pos_pos by assumption.
         apply real_mult_assoc0; assumption.
 Qed.
-Lemma real_mult_assoc2 : ∀ a b c, 0 <= a → 0 <= b → a * (b * c) = (a * b) * c.
+Lemma real_mult_assoc2 : ∀ a b c, 0 ≤ a → 0 ≤ b → a * (b * c) = (a * b) * c.
 Proof.
     intros a b c a_pos b_pos.
     destruct (connex 0 c) as [c_pos|c_neg].
@@ -66,7 +66,7 @@ Proof.
         apply f_equal.
         apply real_mult_assoc1; assumption.
 Qed.
-Lemma real_mult_assoc3 : ∀ a b c, 0 <= a → a * (b * c) = (a * b) * c.
+Lemma real_mult_assoc3 : ∀ a b c, 0 ≤ a → a * (b * c) = (a * b) * c.
 Proof.
     intros a b c a_pos.
     destruct (connex 0 b) as [b_pos|b_neg].
@@ -95,7 +95,7 @@ Global Instance real_mult_assoc : MultAssoc real := {
     mult_assoc := real_mult_assoc_;
 }.
 
-Lemma real_ldist1 : ∀ a b c, 0 <= a → 0 <= b → 0 <= c →
+Lemma real_ldist1 : ∀ a b c, 0 ≤ a → 0 ≤ b → 0 ≤ c →
     a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_pos c_pos.
@@ -161,7 +161,7 @@ Proof.
             }
             exists (r * r'), (r * s').
             repeat split.
-            *   classic_case (0 <= r') as [r'_pos|r'_neg].
+            *   classic_case (0 ≤ r') as [r'_pos|r'_neg].
                 --  right.
                     exists r, r'.
                     repeat split; assumption.
@@ -171,7 +171,7 @@ Proof.
                     2: split; assumption.
                     rewrite mult_ranni in r'_neg.
                     exact r'_neg.
-            *   classic_case (0 <= s') as [s'_pos|s'_neg].
+            *   classic_case (0 ≤ s') as [s'_pos|s'_neg].
                 --  right.
                     exists r, s'.
                     repeat split; assumption.
@@ -360,7 +360,7 @@ Proof.
                     rewrite <- eq1.
                     exact eq3.
 Qed.
-Lemma real_ldist2 : ∀ a b c, 0 <= a → b <= 0 → c <= 0 →
+Lemma real_ldist2 : ∀ a b c, 0 ≤ a → b ≤ 0 → c ≤ 0 →
     a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_neg c_neg.
@@ -376,7 +376,7 @@ Proof.
     apply neg_pos in b_neg, c_neg.
     apply real_ldist1; assumption.
 Qed.
-Lemma real_ldist3 : ∀ a b c, 0 <= a → 0 <= b → c <= 0 → 0 <= b + c →
+Lemma real_ldist3 : ∀ a b c, 0 ≤ a → 0 ≤ b → c ≤ 0 → 0 ≤ b + c →
     a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_pos c_neg bc_pos.
@@ -388,7 +388,7 @@ Proof.
     rewrite plus_rrinv.
     reflexivity.
 Qed.
-Lemma real_ldist4 : ∀ a b c, 0 <= a → 0 <= b → c <= 0 → b + c <= 0 →
+Lemma real_ldist4 : ∀ a b c, 0 ≤ a → 0 ≤ b → c ≤ 0 → b + c ≤ 0 →
     a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_pos c_neg bc_neg.
@@ -405,7 +405,7 @@ Proof.
     rewrite neg_neg.
     reflexivity.
 Qed.
-Lemma real_ldist5 : ∀ a b c, 0 <= a → 0 <= b → c <= 0 →
+Lemma real_ldist5 : ∀ a b c, 0 ≤ a → 0 ≤ b → c ≤ 0 →
     a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_pos c_neg.
@@ -413,14 +413,14 @@ Proof.
     -   apply real_ldist3; assumption.
     -   apply real_ldist4; assumption.
 Qed.
-Lemma real_ldist6 : ∀ a b c, 0 <= a → 0 <= b → a * (b + c) = a * b + a * c.
+Lemma real_ldist6 : ∀ a b c, 0 ≤ a → 0 ≤ b → a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_pos.
     destruct (connex 0 c) as [c_pos|c_neg].
     -   apply real_ldist1; assumption.
     -   apply real_ldist5; assumption.
 Qed.
-Lemma real_ldist7 : ∀ a b c, 0 <= a → b <= 0 → a * (b + c) = a * b + a * c.
+Lemma real_ldist7 : ∀ a b c, 0 ≤ a → b ≤ 0 → a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos b_neg.
     destruct (connex 0 c) as [c_pos|c_neg].
@@ -429,7 +429,7 @@ Proof.
         apply real_ldist5; assumption.
     -   apply real_ldist2; assumption.
 Qed.
-Lemma real_ldist8 : ∀ a b c, 0 <= a → a * (b + c) = a * b + a * c.
+Lemma real_ldist8 : ∀ a b c, 0 ≤ a → a * (b + c) = a * b + a * c.
 Proof.
     intros a b c a_pos.
     destruct (connex 0 b) as [b_pos|b_neg].
@@ -455,13 +455,13 @@ Global Instance real_one : One real := {
     one := rat_to_real 1
 }.
 
-Lemma real_one_pos : 0 <= 1.
+Lemma real_one_pos : 0 ≤ 1.
 Proof.
     unfold zero, one; cbn.
     rewrite rat_to_real_le.
     apply one_pos.
 Qed.
-Lemma real_mult_lid1 : ∀ a, 0 <= a → 1 * a = a.
+Lemma real_mult_lid1 : ∀ a, 0 ≤ a → 1 * a = a.
 Proof.
     intros a a_pos.
     pose proof real_one_pos as op.

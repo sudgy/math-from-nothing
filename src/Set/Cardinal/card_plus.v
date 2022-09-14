@@ -125,7 +125,7 @@ Global Instance card_plus_lid_class : PlusLid card := {
     plus_lid := card_plus_lid
 }.
 
-Theorem card_le_lplus : ∀ κ μ ν, κ <= μ → ν + κ <= ν + μ.
+Theorem card_le_lplus : ∀ κ μ ν, κ ≤ μ → ν + κ ≤ ν + μ.
 Proof.
     intros A B C.
     equiv_get_value A B C.
@@ -145,7 +145,7 @@ Global Instance card_le_lplus_class : OrderLplus card := {
     le_lplus := card_le_lplus
 }.
 (* end hide *)
-Theorem card_le_zero : ∀ κ, 0 <= κ.
+Theorem card_le_zero : ∀ κ, 0 ≤ κ.
 Proof.
     intros A.
     equiv_get_value A.
@@ -161,7 +161,7 @@ Proof.
 Qed.
 
 Theorem card_union_left {U} : ∀ S T : U → Prop,
-    |set_type S| <= |set_type (S ∪ T)%set|.
+    |set_type S| ≤ |set_type (S ∪ T)%set|.
 Proof.
     intros S T.
     unfold le; equiv_simpl.
@@ -173,7 +173,7 @@ Proof.
 Qed.
 
 Theorem card_union_right {U} : ∀ S T : U → Prop,
-    |set_type T| <= |set_type (S ∪ T)%set|.
+    |set_type T| ≤ |set_type (S ∪ T)%set|.
 Proof.
     intros S T.
     rewrite union_comm.
@@ -181,7 +181,7 @@ Proof.
 Qed.
 
 Theorem card_plus_union {U} : ∀ S T : U → Prop,
-    |set_type (S ∪ T)%set| <= |set_type S| + |set_type T|.
+    |set_type (S ∪ T)%set| ≤ |set_type S| + |set_type T|.
 Proof.
     intros S T.
     unfold plus, le; equiv_simpl.

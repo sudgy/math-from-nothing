@@ -3,9 +3,9 @@ Require Import init.
 Require Import order_mult.
 
 Definition min {U} `{Order U} x y :=
-    If (x <= y) then x else y.
+    If (x ≤ y) then x else y.
 Definition max {U} `{Order U} x y :=
-    If (x <= y) then y else x.
+    If (x ≤ y) then y else x.
 
 (* begin hide *)
 Section MinMax.
@@ -31,28 +31,28 @@ Proof.
         destruct (trans leq1 leq2); contradiction.
 Qed.
 
-Theorem rmin : ∀ a b, min a b <= b.
+Theorem rmin : ∀ a b, min a b ≤ b.
 Proof.
     intros a b.
     unfold min; case_if [leq|leq].
     -   exact leq.
     -   apply refl.
 Qed.
-Theorem lmin : ∀ a b, min a b <= a.
+Theorem lmin : ∀ a b, min a b ≤ a.
 Proof.
     intros a b.
     rewrite min_comm.
     apply rmin.
 Qed.
 
-Theorem lmax : ∀ a b, a <= max a b.
+Theorem lmax : ∀ a b, a ≤ max a b.
 Proof.
     intros a b.
     unfold max; case_if [leq|leq].
     -   apply leq.
     -   apply refl.
 Qed.
-Theorem rmax : ∀ a b, b <= max a b.
+Theorem rmax : ∀ a b, b ≤ max a b.
 Proof.
     intros a b.
     rewrite max_comm.

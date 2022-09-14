@@ -20,13 +20,13 @@ Global Instance nat_order : Order nat := {
         end
 }.
 
-Theorem nat_neg_eq : ∀ {a}, a <= 0 → 0 = a.
+Theorem nat_neg_eq : ∀ {a}, a ≤ 0 → 0 = a.
 Proof.
     intros a eq.
     nat_destruct a; [>reflexivity|].
     contradiction eq.
 Qed.
-Lemma nat_pos : ∀ a, 0 <= a.
+Lemma nat_pos : ∀ a, 0 ≤ a.
 Proof.
     intros a.
     exact true.
@@ -38,7 +38,7 @@ Proof.
     intro contr.
     exact (nat_zero_suc contr).
 Qed.
-Lemma nat_neg : ∀ {n}, ¬(nat_suc n <= 0).
+Lemma nat_neg : ∀ {n}, ¬(nat_suc n ≤ 0).
 Proof.
     intros n contr.
     apply nat_neg_eq in contr.
@@ -56,7 +56,7 @@ Proof.
     apply nat_pos2.
 Qed.
 
-Theorem nat_sucs_le : ∀ a b, nat_suc a <= nat_suc b ↔ a <= b.
+Theorem nat_sucs_le : ∀ a b, nat_suc a ≤ nat_suc b ↔ a ≤ b.
 Proof.
     intros a b.
     split; intro eq; exact eq.
@@ -122,7 +122,7 @@ Proof.
                 apply IHc with b; assumption.
 Qed.
 
-Theorem nat_le_suc : ∀ a, a <= nat_suc a.
+Theorem nat_le_suc : ∀ a, a ≤ nat_suc a.
 Proof.
     nat_induction a.
     -   apply nat_one_pos.
@@ -137,7 +137,7 @@ Proof.
         exact IHa.
 Qed.
 
-Theorem nat_le_ex : ∀ {a b}, a <= b → ∃ c, a + c = b.
+Theorem nat_le_ex : ∀ {a b}, a ≤ b → ∃ c, a + c = b.
 Proof.
     nat_induction a; intros b ab.
     -   exists b.
@@ -196,7 +196,7 @@ Proof.
     apply nat_pos.
 Qed.
 
-Theorem nat_le_lmult : ∀ {a b} c, a <= b → c * a <= c * b.
+Theorem nat_le_lmult : ∀ {a b} c, a ≤ b → c * a ≤ c * b.
 Proof.
     intros a b c ab.
     nat_induction c.
@@ -213,14 +213,14 @@ Proof.
     apply nat_le_lmult.
 Qed.
 
-Theorem nat_le_rmult : ∀ {a b} c, a <= b → a * c <= b * c.
+Theorem nat_le_rmult : ∀ {a b} c, a ≤ b → a * c ≤ b * c.
 Proof.
     intros a b c.
     apply le_rmult_pos.
     apply nat_pos.
 Qed.
 
-Theorem nat_le_mult_lcancel : ∀ {a b} c, 0 ≠ c → c * a <= c * b → a <= b.
+Theorem nat_le_mult_lcancel : ∀ {a b} c, 0 ≠ c → c * a ≤ c * b → a ≤ b.
 Proof.
     intros a b c c_neq eq.
     nat_destruct c; [>contradiction|]; clear c_neq.
@@ -247,14 +247,14 @@ Proof.
     exact c_pos.
 Qed.
 
-Theorem nat_le_mult_rcancel : ∀ {a b} c, 0 ≠ c → a * c <= b * c → a <= b.
+Theorem nat_le_mult_rcancel : ∀ {a b} c, 0 ≠ c → a * c ≤ b * c → a ≤ b.
 Proof.
     intros a b c c_pos.
     apply le_mult_rcancel_pos.
     split; [>apply nat_pos|exact c_pos].
 Qed.
 
-Theorem nat_lt_suc_le : ∀ {a b}, a < nat_suc b ↔ a <= b.
+Theorem nat_lt_suc_le : ∀ {a b}, a < nat_suc b ↔ a ≤ b.
 Proof.
     intros a b.
     split.
@@ -278,7 +278,7 @@ Proof.
             rewrite <- nlt_le in eq.
             exact (eq (nat_lt_suc b)).
 Qed.
-Theorem nat_le_suc_lt : ∀ {a b}, nat_suc a <= b ↔ a < b.
+Theorem nat_le_suc_lt : ∀ {a b}, nat_suc a ≤ b ↔ a < b.
 Proof.
     intros a b.
     nat_destruct b.
@@ -290,13 +290,13 @@ Proof.
         apply nat_lt_suc_le.
 Qed.
 
-Theorem nat_le_self_lplus : ∀ a b, a <= b + a.
+Theorem nat_le_self_lplus : ∀ a b, a ≤ b + a.
 Proof.
     intros a b.
     rewrite <- le_plus_0_a_b_ab.
     apply nat_pos.
 Qed.
-Theorem nat_le_self_rplus : ∀ a b, a <= a + b.
+Theorem nat_le_self_rplus : ∀ a b, a ≤ a + b.
 Proof.
     intros a b.
     rewrite plus_comm.
@@ -312,14 +312,14 @@ Proof.
     exact n_lt.
 Qed.
 
-Theorem nat_le_self_lmult : ∀ a b, 0 ≠ b → a <= b * a.
+Theorem nat_le_self_lmult : ∀ a b, 0 ≠ b → a ≤ b * a.
 Proof.
     intros a b b_nz.
     nat_induction a.
     -   rewrite mult_ranni.
         apply refl.
     -   rewrite nat_mult_rsuc.
-        assert (1 <= b) as b_gt.
+        assert (1 ≤ b) as b_gt.
         {
             rewrite <- nlt_le.
             intro eq.
@@ -328,7 +328,7 @@ Proof.
         }
         exact (le_lrplus b_gt IHa).
 Qed.
-Theorem nat_le_self_rmult : ∀ a b, 0 ≠ b → a <= a * b.
+Theorem nat_le_self_rmult : ∀ a b, 0 ≠ b → a ≤ a * b.
 Proof.
     intros a b.
     rewrite mult_comm.

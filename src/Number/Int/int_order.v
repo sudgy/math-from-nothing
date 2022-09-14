@@ -12,7 +12,7 @@ Require Import nat_abstract.
 Definition int_suc a := a + 1.
 Definition int_pre a := a + -(1).
 
-Notation "a ≦ b" := (fst a + snd b <= snd a + fst b)
+Notation "a ≦ b" := (fst a + snd b ≤ snd a + fst b)
     (at level 70, no associativity) : int_scope.
 
 (* begin hide *)
@@ -47,7 +47,7 @@ Global Instance int_order : Order int := {
     le := binary_op int_le_wd;
 }.
 
-Lemma int_le_connex : ∀ a b, {a <= b} + {b <= a}.
+Lemma int_le_connex : ∀ a b, {a ≤ b} + {b ≤ a}.
 Proof.
     intros a b.
     equiv_get_value a b.
@@ -64,7 +64,7 @@ Global Instance int_le_connex_class : Connex le := {
     connex := int_le_connex
 }.
 
-Lemma int_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
+Lemma int_le_antisymmetric : ∀ a b, a ≤ b → b ≤ a → a = b.
 Proof.
     intros a b.
     equiv_get_value a b.
@@ -80,7 +80,7 @@ Global Instance int_le_antisym_class : Antisymmetric le := {
     antisym := int_le_antisymmetric
 }.
 
-Lemma int_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
+Lemma int_le_transitive : ∀ a b c, a ≤ b → b ≤ c → a ≤ c.
 Proof.
     intros a b c.
     equiv_get_value a b c.
@@ -99,7 +99,7 @@ Global Instance int_le_trans_class : Transitive le := {
     trans := int_le_transitive;
 }.
 
-Lemma int_le_lplus : ∀ a b c, a <= b → c + a <= c + b.
+Lemma int_le_lplus : ∀ a b c, a ≤ b → c + a ≤ c + b.
 Proof.
     intros a b c.
     equiv_get_value a b c.
@@ -115,7 +115,7 @@ Global Instance int_le_lplus_class : OrderLplus int := {
     le_lplus := int_le_lplus;
 }.
 (* end hide *)
-Theorem int_pos_nat_ex : ∀ a, 0 <= a → ∃ n, a = nat_to_int n.
+Theorem int_pos_nat_ex : ∀ a, 0 ≤ a → ∃ n, a = nat_to_int n.
 Proof.
     intros a.
     equiv_get_value a.
@@ -131,7 +131,7 @@ Proof.
     symmetry; exact c_eq.
 Qed.
 
-Theorem int_neg_nat_ex : ∀ a, a <= 0 → ∃ n, -a = nat_to_int n.
+Theorem int_neg_nat_ex : ∀ a, a ≤ 0 → ∃ n, -a = nat_to_int n.
 Proof.
     intros a a_neg.
     apply int_pos_nat_ex.
@@ -140,7 +140,7 @@ Proof.
 Qed.
 
 (* begin hide *)
-Lemma int_le_mult : ∀ a b, 0 <= a → 0 <= b → 0 <= a * b.
+Lemma int_le_mult : ∀ a b, 0 ≤ a → 0 ≤ b → 0 ≤ a * b.
 Proof.
     intros a b a_pos b_pos.
     pose proof (int_pos_nat_ex a a_pos) as [m m_eq].
@@ -156,10 +156,10 @@ Global Instance int_le_mult_class : OrderMult int := {
     le_mult := int_le_mult;
 }.
 
-Lemma int_le_mult_lcancel_pos : ∀ a b c, 0 < c → c * a <= c * b → a <= b.
+Lemma int_le_mult_lcancel_pos : ∀ a b c, 0 < c → c * a ≤ c * b → a ≤ b.
 Proof.
     intros a b c c_pos eq.
-    classic_case (a <= b) as [C|contr]; auto.
+    classic_case (a ≤ b) as [C|contr]; auto.
     rewrite nle_lt in contr.
     apply lt_lmult_pos with c in contr; auto.
     destruct (le_lt_trans eq contr); contradiction.
@@ -177,7 +177,7 @@ Proof.
     apply lt_lplus.
     exact one_pos.
 Qed.
-Theorem int_le_suc : ∀ a, a <= int_suc a.
+Theorem int_le_suc : ∀ a, a ≤ int_suc a.
 Proof.
     apply int_lt_suc.
 Qed.
@@ -191,11 +191,11 @@ Proof.
     rewrite <- lt_neg.
     exact one_pos.
 Qed.
-Theorem int_pre_le : ∀ a, int_pre a <= a.
+Theorem int_pre_le : ∀ a, int_pre a ≤ a.
 Proof.
     apply int_pre_lt.
 Qed.
-Theorem int_lt_suc_le : ∀ a b, a < int_suc b → a <= b.
+Theorem int_lt_suc_le : ∀ a b, a < int_suc b → a ≤ b.
 Proof.
     intros a b.
     equiv_get_value a b.
@@ -212,7 +212,7 @@ Proof.
     rewrite plus_rid in eq.
     exact eq.
 Qed.
-Theorem int_le_lt_suc : ∀ a b, a <= b → a < int_suc b.
+Theorem int_le_lt_suc : ∀ a b, a ≤ b → a < int_suc b.
 Proof.
     intros a b.
     equiv_get_value a b.
@@ -227,7 +227,7 @@ Proof.
     rewrite (plus_comm b1).
     apply eq.
 Qed.
-Theorem int_pre_lt_le : ∀ a b, int_pre a < b → a <= b.
+Theorem int_pre_lt_le : ∀ a b, int_pre a < b → a ≤ b.
 Proof.
     intros a b eq.
     apply int_lt_suc_le.
@@ -236,7 +236,7 @@ Proof.
     rewrite <- plus_assoc, plus_linv, plus_rid in eq.
     exact eq.
 Qed.
-Theorem int_le_pre_lt : ∀ a b, a <= b → int_pre a < b.
+Theorem int_le_pre_lt : ∀ a b, a ≤ b → int_pre a < b.
 Proof.
     intros a b eq.
     apply int_le_lt_suc in eq.
@@ -248,7 +248,7 @@ Qed.
 (* begin hide *)
 Close Scope int_scope.
 (* end hide *)
-Theorem nat_to_int_pos : ∀ a, 0 <= nat_to_int a.
+Theorem nat_to_int_pos : ∀ a, 0 ≤ nat_to_int a.
 Proof.
     intros a.
     unfold zero, nat_to_int, le; simpl; equiv_simpl; simpl.
@@ -256,7 +256,7 @@ Proof.
     apply nat_pos.
 Qed.
 
-Theorem nat_to_int_ex : ∀ a, 0 <= a → ∃ n, nat_to_int n = a.
+Theorem nat_to_int_ex : ∀ a, 0 ≤ a → ∃ n, nat_to_int n = a.
 Proof.
     intros a a_pos.
     equiv_get_value a.
@@ -270,7 +270,7 @@ Proof.
     exact c_eq.
 Qed.
 
-Theorem nat_to_int_le : ∀ a b, nat_to_int a <= nat_to_int b ↔ a <= b.
+Theorem nat_to_int_le : ∀ a b, nat_to_int a ≤ nat_to_int b ↔ a ≤ b.
 Proof.
     intros a b.
     split.
@@ -361,7 +361,7 @@ Proof.
     -   apply nat_nz_int.
 Qed.
 
-Theorem nat1_to_int_pos1 : ∀ n, 1 <= nat_to_int (nat_suc n).
+Theorem nat1_to_int_pos1 : ∀ n, 1 ≤ nat_to_int (nat_suc n).
 Proof.
     intros n.
     change 1 with (nat_to_int 1).

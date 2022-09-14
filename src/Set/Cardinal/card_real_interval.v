@@ -108,7 +108,7 @@ Proof.
             cbn.
             apply mult_lanni.
         }
-        assert (0 <= 1 + 4*y*y) as yy_pos.
+        assert (0 ≤ 1 + 4*y*y) as yy_pos.
         {
             rewrite <- (plus_lid 0).
             apply le_lrplus.

@@ -132,7 +132,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem pow_pos : ∀ a n, 0 <= a → 0 <= a^n.
+Theorem pow_pos : ∀ a n, 0 ≤ a → 0 ≤ a^n.
 Proof.
     intros a n a_pos.
     nat_induction n.
@@ -152,7 +152,7 @@ Proof.
         apply lt_mult; assumption.
 Qed.
 
-Theorem pow_le : ∀ a m n, 1 <= a → m <= n → a^m <= a^n.
+Theorem pow_le : ∀ a m n, 1 ≤ a → m ≤ n → a^m ≤ a^n.
 Proof.
     intros a m n a_ge mn.
     apply nat_le_ex in mn as [c eq]; subst.

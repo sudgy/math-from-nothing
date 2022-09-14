@@ -19,12 +19,12 @@ Existing Instance abs_metric.
 
 Open Scope card_scope.
 
-Lemma real_size_leq1 : |real| <= 2 ^ |nat|.
+Lemma real_size_leq1 : |real| ≤ 2 ^ |nat|.
 Proof.
     apply arch_ordered_size.
 Qed.
 
-Lemma real_size_leq2 : 2 ^ |nat| <= |real|.
+Lemma real_size_leq2 : 2 ^ |nat| ≤ |real|.
 Proof.
     rewrite <- power_set_size.
 Open Scope nat_scope.
@@ -92,7 +92,7 @@ Close Scope card_scope.
     {
         unfold A.
         clear - ab_eq.
-        assert (∀ m, m <= n → sum (F a) 0 m = sum (F b) 0 m) as eq.
+        assert (∀ m, m ≤ n → sum (F a) 0 m = sum (F b) 0 m) as eq.
         {
             nat_induction m.
             -   intros C0; clear C0.
@@ -215,7 +215,7 @@ Close Scope card_scope.
     rewrite x_eq2 in x_eq1.
     apply plus_lcancel in x_eq1.
     clear - n3_pos n_neq x_eq1 ax_lim bx_lim.
-    assert (∀ a x, seq_lim (series (f' a)) x → a n → (/3)^n <= x) as lim_ge.
+    assert (∀ a x, seq_lim (series (f' a)) x → a n → (/3)^n ≤ x) as lim_ge.
     {
         clear - n3_pos.
         intros a x x_lim an.
@@ -249,7 +249,7 @@ Close Scope card_scope.
                 reflexivity.
     }
     assert (∀ a x, seq_lim (series (f' a)) x → ¬a n →
-        x <= ((/3)^(n + 1) · /(1 - /3))) as lim_le.
+        x ≤ ((/3)^(n + 1) · /(1 - /3))) as lim_le.
     {
         clear - n3_pos.
         intros a x x_lim an.
@@ -321,7 +321,7 @@ Close Scope card_scope.
                 apply div_pos.
                 exact three_pos.
     }
-    assert ((/3)^n <= (/3)^(n + 1) · / (1 - /3)) as leq.
+    assert ((/3)^n ≤ (/3)^(n + 1) · / (1 - /3)) as leq.
     {
         classic_case (a n) as [an|an].
         -   assert (¬b n) as bn.

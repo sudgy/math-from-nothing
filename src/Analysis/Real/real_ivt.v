@@ -10,7 +10,7 @@ Existing Instance subspace_topology.
 (* end hide *)
 (* TODO: Make the domain of this better *)
 Theorem real_ivt : ∀ f : real → real, continuous f →
-    ∀ a b r, a < b → f a < r → r < f b → ∃ c, f c = r ∧ a <= c ∧ c <= b.
+    ∀ a b r, a < b → f a < r → r < f b → ∃ c, f c = r ∧ a ≤ c ∧ c ≤ b.
 Proof.
     intros f f_cont a b r ab r_gt r_lt.
     pose (S := closed_interval a b).

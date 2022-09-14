@@ -103,7 +103,7 @@ Definition arch_ordered_homo (f : set_type (aof_set A) → set_type (aof_set B))
         f 1 = 1 ∧
         (∀ a b, f (a + b) = f a + f b) ∧
         (∀ a b, f (a * b) = f a * f b) ∧
-        (∀ a b, a <= b → f a <= f b).
+        (∀ a b, a ≤ b → f a ≤ f b).
 
 Theorem arch_ordered_homo_neg : ∀ f, arch_ordered_homo f → ∀ x, f (-x) = -f x.
 Proof.
@@ -138,7 +138,7 @@ Qed.
 
 
 Theorem arch_ordered_homo_le : ∀ f, arch_ordered_homo f →
-    ∀ x y, x <= y ↔ f x <= f y.
+    ∀ x y, x ≤ y ↔ f x ≤ f y.
 Proof.
     intros f f_homo x y.
     split; [>apply f_homo|].
@@ -238,7 +238,7 @@ Qed.
 
 Theorem arch_ordered_homo_uni_wlog : ∀ f g,
     arch_ordered_homo f → arch_ordered_homo g →
-    ∀ x, f x <= g x.
+    ∀ x, f x ≤ g x.
 Proof.
     intros f g f_homo g_homo x.
     classic_contradiction ltq.

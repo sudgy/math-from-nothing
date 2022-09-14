@@ -6,19 +6,19 @@ Require Export mult.
 Require Export order_plus.
 
 Class OrderMult U `{Zero U, Mult U, Order U} := {
-    le_mult : ∀ {a b}, 0 <= a → 0 <= b → 0 <= a * b
+    le_mult : ∀ {a b}, 0 ≤ a → 0 ≤ b → 0 ≤ a * b
 }.
 Class OrderLmult U `{Zero U, Mult U, Order U} := {
-    le_lmult_pos : ∀ {a b} c, 0 <= c → a <= b → c * a <= c * b
+    le_lmult_pos : ∀ {a b} c, 0 ≤ c → a ≤ b → c * a ≤ c * b
 }.
 Class OrderRmult U `{Zero U, Mult U, Order U} := {
-    le_rmult_pos : ∀ {a b} c, 0 <= c → a <= b → a * c <= b * c
+    le_rmult_pos : ∀ {a b} c, 0 ≤ c → a ≤ b → a * c ≤ b * c
 }.
 Class OrderMultLcancel U `{Zero U, Mult U, Order U} := {
-    le_mult_lcancel_pos : ∀ {a b} c, 0 < c → c * a <= c * b → a <= b
+    le_mult_lcancel_pos : ∀ {a b} c, 0 < c → c * a ≤ c * b → a ≤ b
 }.
 Class OrderMultRcancel U `{Zero U, Mult U, Order U} := {
-    le_mult_rcancel_pos : ∀ {a b} c, 0 < c → a * c <= b * c → a <= b
+    le_mult_rcancel_pos : ∀ {a b} c, 0 < c → a * c ≤ b * c → a ≤ b
 }.
 
 Class OrderedField U `{
@@ -149,7 +149,7 @@ Proof.
         destruct eq; contradiction.
 Qed.
 
-Theorem le_lmult_neg : ∀ {a b} c, c <= 0 → a <= b → c * b <= c * a.
+Theorem le_lmult_neg : ∀ {a b} c, c ≤ 0 → a ≤ b → c * b ≤ c * a.
 Proof.
     intros a b c c_neg eq.
     apply neg_pos in c_neg.
@@ -159,7 +159,7 @@ Proof.
     exact eq.
 Qed.
 
-Theorem le_rmult_neg : ∀ {a b} c, c <= 0 → a <= b → b * c <= a * c.
+Theorem le_rmult_neg : ∀ {a b} c, c ≤ 0 → a ≤ b → b * c ≤ a * c.
 Proof.
     intros a b c c_neg eq.
     apply neg_pos in c_neg.
@@ -207,14 +207,14 @@ Proof.
     exact a_pos.
 Qed.
 
-Theorem le_mult_lcancel_neg : ∀ {a b} c, c < 0 → c * a <= c * b → b <= a.
+Theorem le_mult_lcancel_neg : ∀ {a b} c, c < 0 → c * a ≤ c * b → b ≤ a.
 Proof.
     intros a b c c_neg eq.
     apply le_lmult_neg with (/c) in eq; [>|apply div_neg; exact c_neg].
     do 2 rewrite mult_llinv in eq by (rewrite neq_sym; apply c_neg).
     exact eq.
 Qed.
-Theorem le_mult_rcancel_neg : ∀ {a b} c, c < 0 → a * c <= b * c → b <= a.
+Theorem le_mult_rcancel_neg : ∀ {a b} c, c < 0 → a * c ≤ b * c → b ≤ a.
 Proof.
     intros a b c c_neg eq.
     apply le_rmult_neg with (/c) in eq; [>|apply div_neg; exact c_neg].
@@ -236,7 +236,7 @@ Proof.
     exact eq.
 Qed.
 
-Theorem le_mult_llmove_pos : ∀ a b c, 0 < a → a * b <= c ↔ b <= /a * c.
+Theorem le_mult_llmove_pos : ∀ a b c, 0 < a → a * b ≤ c ↔ b ≤ /a * c.
 Proof.
     intros a b c a_pos.
     split; intros eq.
@@ -247,7 +247,7 @@ Proof.
         rewrite mult_lrinv in eq by apply a_pos.
         exact eq.
 Qed.
-Theorem le_mult_lrmove_pos : ∀ a b c, 0 < b → a * b <= c ↔ a <= c / b.
+Theorem le_mult_lrmove_pos : ∀ a b c, 0 < b → a * b ≤ c ↔ a ≤ c / b.
 Proof.
     intros a b c b_pos.
     split; intros eq.
@@ -258,7 +258,7 @@ Proof.
         rewrite mult_rlinv in eq by apply b_pos.
         exact eq.
 Qed.
-Theorem le_mult_rlmove_pos : ∀ a b c, 0 < b → a <= b * c ↔ /b * a <= c.
+Theorem le_mult_rlmove_pos : ∀ a b c, 0 < b → a ≤ b * c ↔ /b * a ≤ c.
 Proof.
     intros a b c b_pos.
     split; intros eq.
@@ -269,7 +269,7 @@ Proof.
         rewrite mult_lrinv in eq by apply b_pos.
         exact eq.
 Qed.
-Theorem le_mult_rrmove_pos : ∀ a b c, 0 < c → a <= b * c ↔ a / c <= b.
+Theorem le_mult_rrmove_pos : ∀ a b c, 0 < c → a ≤ b * c ↔ a / c ≤ b.
 Proof.
     intros a b c c_pos.
     split; intros eq.
@@ -281,28 +281,28 @@ Proof.
         exact eq.
 Qed.
 
-Theorem le_mult_1_ab_da_b_pos : ∀ a b, 0 < a → 1 <= a * b ↔ /a <= b.
+Theorem le_mult_1_ab_da_b_pos : ∀ a b, 0 < a → 1 ≤ a * b ↔ /a ≤ b.
 Proof.
     intros a b a_nz.
     rewrite le_mult_rlmove_pos by exact a_nz.
     rewrite mult_rid.
     reflexivity.
 Qed.
-Theorem le_mult_1_ab_db_a_pos : ∀ a b, 0 < b → 1 <= a * b ↔ /b <= a.
+Theorem le_mult_1_ab_db_a_pos : ∀ a b, 0 < b → 1 ≤ a * b ↔ /b ≤ a.
 Proof.
     intros a b b_nz.
     rewrite le_mult_rrmove_pos by exact b_nz.
     rewrite mult_lid.
     reflexivity.
 Qed.
-Theorem le_mult_ab_1_a_db_pos : ∀ a b, 0 < b → a * b <= 1 ↔ a <= /b.
+Theorem le_mult_ab_1_a_db_pos : ∀ a b, 0 < b → a * b ≤ 1 ↔ a ≤ /b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_lrmove_pos by exact b_nz.
     rewrite mult_lid.
     reflexivity.
 Qed.
-Theorem le_mult_ab_1_b_da_pos : ∀ a b, 0 < a → a * b <= 1 ↔ b <= /a.
+Theorem le_mult_ab_1_b_da_pos : ∀ a b, 0 < a → a * b ≤ 1 ↔ b ≤ /a.
 Proof.
     intros a b a_nz.
     rewrite le_mult_llmove_pos by exact a_nz.
@@ -310,28 +310,28 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem le_mult_a_1_ab_b_pos : ∀ a b, 0 < b → a <= 1 ↔ a * b <= b.
+Theorem le_mult_a_1_ab_b_pos : ∀ a b, 0 < b → a ≤ 1 ↔ a * b ≤ b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_lrmove_pos by exact b_nz.
     rewrite mult_rinv by apply b_nz.
     reflexivity.
 Qed.
-Theorem le_mult_a_1_ba_b_pos : ∀ a b, 0 < b → a <= 1 ↔ b * a <= b.
+Theorem le_mult_a_1_ba_b_pos : ∀ a b, 0 < b → a ≤ 1 ↔ b * a ≤ b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_llmove_pos by exact b_nz.
     rewrite mult_linv by apply b_nz.
     reflexivity.
 Qed.
-Theorem le_mult_1_a_b_ab_pos : ∀ a b, 0 < b → 1 <= a ↔ b <= a * b.
+Theorem le_mult_1_a_b_ab_pos : ∀ a b, 0 < b → 1 ≤ a ↔ b ≤ a * b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_rrmove_pos by exact b_nz.
     rewrite mult_rinv by apply b_nz.
     reflexivity.
 Qed.
-Theorem le_mult_1_a_b_ba_pos : ∀ a b, 0 < b → 1 <= a ↔ b <= b * a.
+Theorem le_mult_1_a_b_ba_pos : ∀ a b, 0 < b → 1 ≤ a ↔ b ≤ b * a.
 Proof.
     intros a b b_nz.
     rewrite le_mult_rlmove_pos by exact b_nz.
@@ -339,28 +339,28 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem le_mult_1_dab_a_b_pos : ∀ a b, 0 < a → 1 <= /a * b ↔ a <= b.
+Theorem le_mult_1_dab_a_b_pos : ∀ a b, 0 < a → 1 ≤ /a * b ↔ a ≤ b.
 Proof.
     intros a b a_nz.
     rewrite le_mult_1_ab_da_b_pos by (apply div_pos; exact a_nz).
     rewrite div_div by apply a_nz.
     reflexivity.
 Qed.
-Theorem le_mult_adb_1_a_b_pos : ∀ a b, 0 < b → a / b <= 1 ↔ a <= b.
+Theorem le_mult_adb_1_a_b_pos : ∀ a b, 0 < b → a / b ≤ 1 ↔ a ≤ b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_ab_1_a_db_pos by (apply div_pos; exact b_nz).
     rewrite div_div by apply b_nz.
     reflexivity.
 Qed.
-Theorem le_mult_1_dab_b_a_pos : ∀ a b, 0 < a → /a * b <= 1 ↔ b <= a.
+Theorem le_mult_1_dab_b_a_pos : ∀ a b, 0 < a → /a * b ≤ 1 ↔ b ≤ a.
 Proof.
     intros a b a_nz.
     rewrite le_mult_ab_1_b_da_pos by (apply div_pos; exact a_nz).
     rewrite div_div by apply a_nz.
     reflexivity.
 Qed.
-Theorem le_mult_1_adb_b_a_pos : ∀ a b, 0 < b → 1 <= a / b ↔ b <= a.
+Theorem le_mult_1_adb_b_a_pos : ∀ a b, 0 < b → 1 ≤ a / b ↔ b ≤ a.
 Proof.
     intros a b b_nz.
     rewrite le_mult_1_ab_db_a_pos by (apply div_pos; exact b_nz).
@@ -368,7 +368,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem le_mult_llmove_neg : ∀ a b c, a < 0 → a * b <= c ↔ /a * c <= b.
+Theorem le_mult_llmove_neg : ∀ a b c, a < 0 → a * b ≤ c ↔ /a * c ≤ b.
 Proof.
     intros a b c a_neg.
     split; intros eq.
@@ -379,7 +379,7 @@ Proof.
         rewrite mult_lrinv in eq by (rewrite neq_sym; apply a_neg).
         exact eq.
 Qed.
-Theorem le_mult_lrmove_neg : ∀ a b c, b < 0 → a * b <= c ↔ c / b <= a.
+Theorem le_mult_lrmove_neg : ∀ a b c, b < 0 → a * b ≤ c ↔ c / b ≤ a.
 Proof.
     intros a b c b_neg.
     split; intros eq.
@@ -390,7 +390,7 @@ Proof.
         rewrite mult_rlinv in eq by (rewrite neq_sym; apply b_neg).
         exact eq.
 Qed.
-Theorem le_mult_rlmove_neg : ∀ a b c, b < 0 → a <= b * c ↔ c <= /b * a.
+Theorem le_mult_rlmove_neg : ∀ a b c, b < 0 → a ≤ b * c ↔ c ≤ /b * a.
 Proof.
     intros a b c b_neg.
     split; intros eq.
@@ -401,7 +401,7 @@ Proof.
         rewrite mult_lrinv in eq by (rewrite neq_sym; apply b_neg).
         exact eq.
 Qed.
-Theorem le_mult_rrmove_neg : ∀ a b c, c < 0 → a <= b * c ↔ b <= a / c.
+Theorem le_mult_rrmove_neg : ∀ a b c, c < 0 → a ≤ b * c ↔ b ≤ a / c.
 Proof.
     intros a b c c_neg.
     split; intros eq.
@@ -413,28 +413,28 @@ Proof.
         exact eq.
 Qed.
 
-Theorem le_mult_1_ab_b_da_neg : ∀ a b, a < 0 → 1 <= a * b ↔ b <= /a.
+Theorem le_mult_1_ab_b_da_neg : ∀ a b, a < 0 → 1 ≤ a * b ↔ b ≤ /a.
 Proof.
     intros a b a_nz.
     rewrite le_mult_rlmove_neg by exact a_nz.
     rewrite mult_rid.
     reflexivity.
 Qed.
-Theorem le_mult_1_ab_a_db_neg : ∀ a b, b < 0 → 1 <= a * b ↔ a <= /b.
+Theorem le_mult_1_ab_a_db_neg : ∀ a b, b < 0 → 1 ≤ a * b ↔ a ≤ /b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_rrmove_neg by exact b_nz.
     rewrite mult_lid.
     reflexivity.
 Qed.
-Theorem le_mult_ab_1_db_a_neg : ∀ a b, b < 0 → a * b <= 1 ↔ /b <= a.
+Theorem le_mult_ab_1_db_a_neg : ∀ a b, b < 0 → a * b ≤ 1 ↔ /b ≤ a.
 Proof.
     intros a b b_nz.
     rewrite le_mult_lrmove_neg by exact b_nz.
     rewrite mult_lid.
     reflexivity.
 Qed.
-Theorem le_mult_ab_1_da_b_neg : ∀ a b, a < 0 → a * b <= 1 ↔ /a <= b.
+Theorem le_mult_ab_1_da_b_neg : ∀ a b, a < 0 → a * b ≤ 1 ↔ /a ≤ b.
 Proof.
     intros a b a_nz.
     rewrite le_mult_llmove_neg by exact a_nz.
@@ -442,28 +442,28 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem le_mult_a_1_b_ab_neg : ∀ a b, b < 0 → a <= 1 ↔ b <= a * b.
+Theorem le_mult_a_1_b_ab_neg : ∀ a b, b < 0 → a ≤ 1 ↔ b ≤ a * b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_rrmove_neg by exact b_nz.
     rewrite mult_rinv by (rewrite neq_sym; apply b_nz).
     reflexivity.
 Qed.
-Theorem le_mult_a_1_b_ba_neg : ∀ a b, b < 0 → a <= 1 ↔ b <= b * a.
+Theorem le_mult_a_1_b_ba_neg : ∀ a b, b < 0 → a ≤ 1 ↔ b ≤ b * a.
 Proof.
     intros a b b_nz.
     rewrite le_mult_rlmove_neg by exact b_nz.
     rewrite mult_linv by (rewrite neq_sym; apply b_nz).
     reflexivity.
 Qed.
-Theorem le_mult_1_a_ab_b_neg : ∀ a b, b < 0 → 1 <= a ↔ a * b <= b.
+Theorem le_mult_1_a_ab_b_neg : ∀ a b, b < 0 → 1 ≤ a ↔ a * b ≤ b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_lrmove_neg by exact b_nz.
     rewrite mult_rinv by (rewrite neq_sym; apply b_nz).
     reflexivity.
 Qed.
-Theorem le_mult_1_a_ba_b_neg : ∀ a b, b < 0 → 1 <= a ↔ b * a <= b.
+Theorem le_mult_1_a_ba_b_neg : ∀ a b, b < 0 → 1 ≤ a ↔ b * a ≤ b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_llmove_neg by exact b_nz.
@@ -471,28 +471,28 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem le_mult_1_dab_b_a_neg : ∀ a b, a < 0 → 1 <= /a * b ↔ b <= a.
+Theorem le_mult_1_dab_b_a_neg : ∀ a b, a < 0 → 1 ≤ /a * b ↔ b ≤ a.
 Proof.
     intros a b a_nz.
     rewrite le_mult_1_ab_b_da_neg by (apply div_neg; exact a_nz).
     rewrite div_div by (rewrite neq_sym; apply a_nz).
     reflexivity.
 Qed.
-Theorem le_mult_adb_1_b_a_neg : ∀ a b, b < 0 → a / b <= 1 ↔ b <= a.
+Theorem le_mult_adb_1_b_a_neg : ∀ a b, b < 0 → a / b ≤ 1 ↔ b ≤ a.
 Proof.
     intros a b b_nz.
     rewrite le_mult_ab_1_db_a_neg by (apply div_neg; exact b_nz).
     rewrite div_div by (rewrite neq_sym; apply b_nz).
     reflexivity.
 Qed.
-Theorem le_mult_1_dab_a_b_neg : ∀ a b, a < 0 → /a * b <= 1 ↔ a <= b.
+Theorem le_mult_1_dab_a_b_neg : ∀ a b, a < 0 → /a * b ≤ 1 ↔ a ≤ b.
 Proof.
     intros a b a_nz.
     rewrite le_mult_ab_1_da_b_neg by (apply div_neg; exact a_nz).
     rewrite div_div by (rewrite neq_sym; apply a_nz).
     reflexivity.
 Qed.
-Theorem le_mult_1_adb_a_b_neg : ∀ a b, b < 0 → 1 <= a / b ↔ a <= b.
+Theorem le_mult_1_adb_a_b_neg : ∀ a b, b < 0 → 1 ≤ a / b ↔ a ≤ b.
 Proof.
     intros a b b_nz.
     rewrite le_mult_1_ab_a_db_neg by (apply div_neg; exact b_nz).
@@ -764,8 +764,8 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem le_lrmult_pos : ∀ a b c d, 0 <= a → 0 <= c → a <= b → c <= d →
-    a * c <= b * d.
+Theorem le_lrmult_pos : ∀ a b c d, 0 ≤ a → 0 ≤ c → a ≤ b → c ≤ d →
+    a * c ≤ b * d.
 Proof.
     intros a b c d a_pos c_pos ab cd.
     pose proof (trans a_pos ab) as b_pos.
@@ -774,7 +774,7 @@ Proof.
     exact (trans ab cd).
 Qed.
 
-Theorem lt_lrmult_pos : ∀ a b c d, 0 <= a → 0 <= c → a < b → c < d →
+Theorem lt_lrmult_pos : ∀ a b c d, 0 ≤ a → 0 ≤ c → a < b → c < d →
     a * c < b * d.
 Proof.
     intros a b c d a_pos c_pos ab cd.
@@ -792,7 +792,7 @@ Proof.
     exact (trans ab cd).
 Qed.
 
-Theorem square_pos : ∀ a, 0 <= a * a.
+Theorem square_pos : ∀ a, 0 ≤ a * a.
 Proof.
     intros a.
     destruct (connex 0 a) as [a_pos|a_neg].
@@ -804,7 +804,7 @@ Proof.
         exact a_pos.
 Qed.
 
-Theorem le_square : ∀ a b, 0 <= a → 0 <= b → a <= b ↔ a*a <= b*b.
+Theorem le_square : ∀ a b, 0 ≤ a → 0 ≤ b → a ≤ b ↔ a*a ≤ b*b.
 Proof.
     intros a b a_pos b_pos.
     split.
@@ -826,7 +826,7 @@ Proof.
         exact ab.
 Qed.
 
-Theorem lt_square : ∀ a b, 0 <= a → 0 <= b → a < b ↔ a*a < b*b.
+Theorem lt_square : ∀ a b, 0 ≤ a → 0 ≤ b → a < b ↔ a*a < b*b.
 Proof.
     intros a b a_pos b_pos.
     split.
@@ -882,7 +882,7 @@ Proof.
     exact (lt_pos_plus one_pos three_pos).
 Qed.
 
-Theorem inv_ge_one : ∀ a, 1 <= a → /a <= 1.
+Theorem inv_ge_one : ∀ a, 1 ≤ a → /a ≤ 1.
 Proof.
     intros a a_ge.
     pose proof (lt_le_trans one_pos a_ge) as a_pos.
@@ -892,7 +892,7 @@ Proof.
     exact a_ge.
 Qed.
 
-Theorem inv_le_one : ∀ a, 0 < a → a <= 1 → 1 <= /a.
+Theorem inv_le_one : ∀ a, 0 < a → a ≤ 1 → 1 ≤ /a.
 Proof.
     intros a a_pos a_leq.
     apply le_mult_rcancel_pos with a; [>exact a_pos|].
@@ -963,7 +963,7 @@ Proof.
     apply mult_rid.
 Qed.
 
-Theorem le_div_pos : ∀ a b, 0 < a → a <= b → /b <= /a.
+Theorem le_div_pos : ∀ a b, 0 < a → a ≤ b → /b ≤ /a.
 Proof.
     intros a b a_pos ab.
     pose proof (lt_le_trans a_pos ab) as b_pos.
@@ -972,7 +972,7 @@ Proof.
     exact ab.
 Qed.
 
-Theorem le_div_neg : ∀ a b, b < 0 → a <= b → /b <= /a.
+Theorem le_div_neg : ∀ a b, b < 0 → a ≤ b → /b ≤ /a.
 Proof.
     intros a b b_neg ab.
     pose proof (le_lt_trans ab b_neg) as a_neg.

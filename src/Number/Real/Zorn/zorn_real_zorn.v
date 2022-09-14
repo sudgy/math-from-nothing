@@ -19,7 +19,7 @@ Section NotEmpty.
 
 Variable F' : set_type F.
 
-Lemma F_chain2 : ∀ A B : set_type F, {[A|] <= [B|]} + {[B|] <= [A|]}.
+Lemma F_chain2 : ∀ A B : set_type F, {[A|] ≤ [B|]} + {[B|] ≤ [A|]}.
 Proof.
     intros A B.
     apply or_to_strong.
@@ -588,7 +588,7 @@ Proof.
     cbn in ac.
     rewrite ab, cd in ac.
     pose (EO := aof_le [E|]).
-    assert (ef (abg (f (ub_x b))) <= ef (abg (g (ub_x d)))) as leq.
+    assert (ef (abg (f (ub_x b))) ≤ ef (abg (g (ub_x d)))) as leq.
     {
         applys_eq ac.
         apply (arch_ordered_homo_eq (λ x, ef (abg x)) (λ x, (eg (cdg x)))).
@@ -642,7 +642,7 @@ Next Obligation.
 Qed.
 Local Program Instance ub_le_connex : Connex le.
 Next Obligation.
-    classic_case (x <= y) as [leq|nleq].
+    classic_case (x ≤ y) as [leq|nleq].
     1: left; exact leq.
     right.
     equiv_get_value x y.
@@ -712,8 +712,8 @@ Next Obligation.
     pose proof (aof_le_mult [B|]).
     pose (BZ := aof_zero [B|]).
     pose (BO := aof_le [B|]).
-    assert (∀ x f, arch_ordered_homo _ _ f → 0 <= to_equiv_type ub_equiv x →
-        0 <= Bg (f (ub_x x))) as lemma.
+    assert (∀ x f, arch_ordered_homo _ _ f → 0 ≤ to_equiv_type ub_equiv x →
+        0 ≤ Bg (f (ub_x x))) as lemma.
     {
         clear - Bg_homo.
         intros x f f_homo x_pos.

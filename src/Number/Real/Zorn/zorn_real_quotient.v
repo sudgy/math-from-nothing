@@ -42,7 +42,7 @@ Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
     PSML PSMR PSMC PML PMR PG.
 
 Theorem top_of_cut_ex_wlog : ∀ (cut : real → Prop) b,
-    cut 0 → ¬cut b → (∀ l u, cut u → l <= u → cut l) →
+    cut 0 → ¬cut b → (∀ l u, cut u → l ≤ u → cut l) →
     ∀ δ, 0 < δ → ∃ x, cut x ∧ ¬cut (x + δ).
 Proof.
     intros cut b z_in b_nin cut_lt δ δ_pos.
@@ -83,7 +83,7 @@ Qed.
 Variable cut : real → Prop.
 Hypothesis cut_in : ∃ a, cut a.
 Hypothesis cut_out : ∃ a, ¬cut a.
-Hypothesis cut_lt : ∀ l u, cut u → l <= u → cut l.
+Hypothesis cut_lt : ∀ l u, cut u → l ≤ u → cut l.
 
 Definition cut_gt := cut_gt cut cut_lt.
 Definition cut_inout := cut_inout cut cut_lt.
@@ -182,7 +182,7 @@ Proof.
         apply (lt_le_trans2 (rmax M' 1)).
         apply one_pos.
     }
-    assert (∀ x, a - 1 <= x → x <= b → |polynomial_eval f x| <= M) as M_max.
+    assert (∀ x, a - 1 ≤ x → x ≤ b → |polynomial_eval f x| ≤ M) as M_max.
     {
         intros x ax xb.
         apply (trans (M'_max x ax xb)).
@@ -383,7 +383,7 @@ Definition zorn_real_q_pos (a : polynomial real_cring) :=
 Definition zorn_real_q_le (a b : polynomial real_cring) :=
     zorn_real_q_pos (b - a) ∨ I (b - a).
 
-Theorem zorn_real_q_le_to_poly : ∀ a b, a <= b ↔
+Theorem zorn_real_q_le_to_poly : ∀ a b, a ≤ b ↔
     zorn_real_q_le (to_polynomial real_cring a) (to_polynomial real_cring b).
 Proof.
     intros a b.
@@ -607,7 +607,7 @@ Local Instance zorn_real_order : Order zorn_real_quotient := {
 }.
 
 Theorem zorn_real_quotient_le : ∀ a b, zorn_real_q_le a b ↔
-    to_qring zorn_real_ideal a <= to_qring zorn_real_ideal b.
+    to_qring zorn_real_ideal a ≤ to_qring zorn_real_ideal b.
 Proof.
     intros a b.
     unfold le; equiv_simpl.
@@ -846,7 +846,7 @@ Next Obligation.
 Qed.
 
 Lemma real_zorn_quotient_arch1 : ∀ x y : zorn_real_quotient, 0 < x → 0 < y →
-    ∃ n, x <= n × y.
+    ∃ n, x ≤ n × y.
 Proof.
     intros f g f_pos g_pos.
     destruct f_pos as [f_pos f_nz].
@@ -873,10 +873,10 @@ Proof.
     }
     pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
     pose proof (archimedean (polynomial_eval f x + 1) ε) as n_ex.
-    assert (δ <= δ1) as δ_le1 by (apply (trans (lmin _ _)); apply lmin).
-    assert (δ <= δ2) as δ_le2 by (apply (trans (lmin _ _)); apply rmin).
-    assert (δ <= δ3) as δ_le3 by (apply (trans (rmin _ _)); apply lmin).
-    assert (δ <= δ4) as δ_le4 by (apply (trans (rmin _ _)); apply rmin).
+    assert (δ ≤ δ1) as δ_le1 by (apply (trans (lmin _ _)); apply lmin).
+    assert (δ ≤ δ2) as δ_le2 by (apply (trans (lmin _ _)); apply rmin).
+    assert (δ ≤ δ3) as δ_le3 by (apply (trans (rmin _ _)); apply lmin).
+    assert (δ ≤ δ4) as δ_le4 by (apply (trans (rmin _ _)); apply rmin).
     prove_parts n_ex.
     {
         rewrite <- (plus_lid 0).

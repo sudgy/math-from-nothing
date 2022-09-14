@@ -457,7 +457,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem lcontr_inner : ∀ a b (m n : nat), m <= n → of_grade m a → of_grade n b →
+Theorem lcontr_inner : ∀ a b (m n : nat), m ≤ n → of_grade m a → of_grade n b →
     a ⌋ b = a • b.
 Proof.
     intros a b m n leq an bn.
@@ -471,7 +471,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem rcontr_inner : ∀ a b (m n : nat), n <= m → of_grade m a → of_grade n b →
+Theorem rcontr_inner : ∀ a b (m n : nat), n ≤ m → of_grade m a → of_grade n b →
     a ⌊ b = a • b.
 Proof.
     intros a b m n leq an bn.

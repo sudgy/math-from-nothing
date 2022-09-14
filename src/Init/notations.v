@@ -14,6 +14,7 @@ Reserved Notation "a ⊗ b" (at level 40, left associativity).
 Reserved Notation "a ⊙ b" (at level 30, right associativity).
 Reserved Notation "⊖ a" (at level 35, right associativity).
 Reserved Notation "⊘ a" (at level 30, right associativity).
+Reserved Notation "a ≤ b" (at level 70, no associativity).
 Reserved Notation "a ≦ b" (at level 70, no associativity).
 
 Reserved Notation "A ⊆ B" (at level 70, no associativity).

@@ -181,7 +181,7 @@ Next Obligation.
     exact contr.
 Qed.
 Global Instance aof_ex_le : Order (set_type aof_ex_set) := {
-    le a b := aof_ex_f_inv a <= aof_ex_f_inv b
+    le a b := aof_ex_f_inv a ≤ aof_ex_f_inv b
 }.
 Global Program Instance aof_ex_le_antisym : Antisymmetric le.
 Next Obligation.

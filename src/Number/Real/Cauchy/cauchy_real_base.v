@@ -11,7 +11,7 @@ Declare Scope real_scope.
 Delimit Scope real_scope with real.
 
 Definition cauchy_seq (a : nat → rat) :=
-    ∀ ε, 0 < ε → ∃ N, ∀ i j, N <= i → N <= j → |a i - a j| < ε.
+    ∀ ε, 0 < ε → ∃ N, ∀ i j, N ≤ i → N ≤ j → |a i - a j| < ε.
 
 Record real_base := make_real {
     r_seq : nat → rat;
@@ -21,7 +21,7 @@ Record real_base := make_real {
 Section RealEquiv.
 
 Let real_eq (a b : real_base) :=
-    ∀ ε, 0 < ε → ∃ N, ∀ i, N <= i → |r_seq a i - r_seq b i| < ε.
+    ∀ ε, 0 < ε → ∃ N, ∀ i, N ≤ i → |r_seq a i - r_seq b i| < ε.
 
 Local Infix "~" := real_eq.
 

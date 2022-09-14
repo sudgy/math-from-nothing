@@ -8,7 +8,7 @@ Class Metric U := {
     d : U → U → real;
     d_ind : ∀ x y, 0 = d x y ↔ x = y;
     d_sym : ∀ x y, d x y = d y x;
-    d_tri : ∀ x y z, d x z <= d x y + d y z;
+    d_tri : ∀ x y z, d x z ≤ d x y + d y z;
 }.
 (* begin hide *)
 
@@ -25,7 +25,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem d_pos : ∀ x y, 0 <= d x y.
+Theorem d_pos : ∀ x y, 0 ≤ d x y.
 Proof.
     intros x y.
     pose proof (d_tri x y x) as eq.
@@ -50,7 +50,7 @@ Proof.
         contradiction.
 Qed.
 
-Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| <= d y z.
+Theorem d_reverse_tri : ∀ x y z, |d x y - d x z| ≤ d y z.
 Proof.
     intros x y z.
     apply abs_le.

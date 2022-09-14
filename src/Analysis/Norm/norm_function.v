@@ -92,10 +92,10 @@ Context {U V} `{
 Existing Instance abs_metric.
 (* end hide *)
 Definition func_bounded {A : U → Prop} (f : set_type A → V)
-    := ∃ M, ∀ x, |f x| <= M.
+    := ∃ M, ∀ x, |f x| ≤ M.
 
 Definition func_bounded_around {A : U → Prop} (f : set_type A → V) a
-    := ∃ ε M, ∀ x, a ≠ [x|] → open_ball a ε [x|] → |f x| <= M.
+    := ∃ ε M, ∀ x, a ≠ [x|] → open_ball a ε [x|] → |f x| ≤ M.
 
 Theorem func_lim_bounded_around : ∀ (A : U → Prop) (f : set_type A → V) c l,
     func_lim_base f c l → func_bounded_around f c.
@@ -309,7 +309,7 @@ Theorem func_lim_zero_mult : ∀ (A : U → Prop) (af bf : set_type A → V) c,
     func_lim_base (λ x, af x * bf x) c 0.
 Proof.
     intros A af bf c [[ε ε_pos] [M' M'_bound]] bf_lim.
-    assert (∃ M, ∀ x, open_ball c [ε|ε_pos] [x|] → |af x| <= M) as [M M_bound].
+    assert (∃ M, ∀ x, open_ball c [ε|ε_pos] [x|] → |af x| ≤ M) as [M M_bound].
     {
         classic_case (A c) as [Ac|Anc].
         -   exists (max M' (|af [c|Ac]|)).

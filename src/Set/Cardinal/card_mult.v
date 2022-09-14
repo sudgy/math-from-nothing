@@ -199,7 +199,7 @@ Proof.
     contradiction (eq (a, b)).
 Qed.
 
-Theorem card_le_lmult : ∀ {κ μ} ν, κ <= μ → ν * κ <= ν * μ.
+Theorem card_le_lmult : ∀ {κ μ} ν, κ ≤ μ → ν * κ ≤ ν * μ.
 Proof.
     intros A B C.
     equiv_get_value A B C.
@@ -214,7 +214,7 @@ Proof.
     reflexivity.
 Qed.
 (* begin hide *)
-Lemma card_le_lmult_pos : ∀ κ μ ν, zero <= ν → κ <= μ → ν * κ <= ν * μ.
+Lemma card_le_lmult_pos : ∀ κ μ ν, zero ≤ ν → κ ≤ μ → ν * κ ≤ ν * μ.
 Proof.
     intros κ μ ν ν_pos.
     apply card_le_lmult.
@@ -223,7 +223,7 @@ Global Instance card_le_lmult_pos_class : OrderLmult card := {
     le_lmult_pos := card_le_lmult_pos
 }.
 (* end hide *)
-Theorem card_le_rmult : ∀ {κ μ} ν, κ <= μ → κ * ν <= μ * ν.
+Theorem card_le_rmult : ∀ {κ μ} ν, κ ≤ μ → κ * ν ≤ μ * ν.
 Proof.
     intros κ μ ν.
     apply le_rmult_pos.

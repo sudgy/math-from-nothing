@@ -37,13 +37,13 @@ Definition has_supremum {U} (op : U → U → Prop) (S : U → Prop)
     := ∃ x, is_supremum op S x.
 
 Definition open_interval {U} `{Order U} a b := λ x, a < x ∧ x < b.
-Definition open_closed_interval {U} `{Order U} a b := λ x, a < x ∧ x <= b.
-Definition closed_open_interval {U} `{Order U} a b := λ x, a <= x ∧ x < b.
-Definition closed_interval {U} `{Order U} a b := λ x, a <= x ∧ x <= b.
+Definition open_closed_interval {U} `{Order U} a b := λ x, a < x ∧ x ≤ b.
+Definition closed_open_interval {U} `{Order U} a b := λ x, a ≤ x ∧ x < b.
+Definition closed_interval {U} `{Order U} a b := λ x, a ≤ x ∧ x ≤ b.
 Definition open_inf_interval {U} `{Order U} a := λ x, a < x.
-Definition closed_inf_interval {U} `{Order U} a := λ x, a <= x.
+Definition closed_inf_interval {U} `{Order U} a := λ x, a ≤ x.
 Definition inf_open_interval {U} `{Order U} a := λ x, x < a.
-Definition inf_closed_interval {U} `{Order U} a := λ x, x <= a.
+Definition inf_closed_interval {U} `{Order U} a := λ x, x ≤ a.
 
 Class WellFounded {U} (op : U → U → Prop) := {
     well_founded : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x

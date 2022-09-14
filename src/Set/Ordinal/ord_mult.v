@@ -393,7 +393,7 @@ Global Instance ord_mult_rid_class : MultRid ord := {
     mult_rid := ord_mult_rid
 }.
 
-Lemma ord_le_mult : ∀ α β, 0 <= α → 0 <= β → 0 <= α * β.
+Lemma ord_le_mult : ∀ α β, 0 ≤ α → 0 ≤ β → 0 ≤ α * β.
 Proof.
     intros α β a b.
     apply ord_le_zero.
@@ -508,7 +508,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem ord_le_lmult : ∀ {α β} γ, α <= β → γ * α <= γ * β.
+Theorem ord_le_lmult : ∀ {α β} γ, α ≤ β → γ * α ≤ γ * β.
 Proof.
     intros α β γ leq.
     classic_case (0 = γ) as [γ_eq|γ_neq].
@@ -520,7 +520,7 @@ Proof.
             apply refl.
         +   apply ord_lt_lmult; try split; assumption.
 Qed.
-Lemma ord_le_lmult_pos : ∀ α β γ, 0 <= γ → α <= β → γ * α <= γ * β.
+Lemma ord_le_lmult_pos : ∀ α β γ, 0 ≤ γ → α ≤ β → γ * α ≤ γ * β.
 Proof.
     intros α β γ z leq.
     apply ord_le_lmult.
@@ -532,7 +532,7 @@ Global Instance ord_le_lmult_class : OrderLmult ord := {
 }.
 (* end hide *)
 
-Theorem ord_lt_rmult : ∀ {α β} γ, α < β → α * γ <= β * γ.
+Theorem ord_lt_rmult : ∀ {α β} γ, α < β → α * γ ≤ β * γ.
 Proof.
     intros A B C eq.
     classic_contradiction contr.
@@ -594,7 +594,7 @@ Proof.
         contradiction.
 Qed.
 
-Theorem ord_le_rmult : ∀ {α β} γ, α <= β → α * γ <= β * γ.
+Theorem ord_le_rmult : ∀ {α β} γ, α ≤ β → α * γ ≤ β * γ.
 Proof.
     intros α β γ leq.
     classic_case (0 = γ) as [γ_eq|γ_neq].
@@ -606,7 +606,7 @@ Proof.
             apply refl.
         +   apply ord_lt_rmult; try split; assumption.
 Qed.
-Lemma ord_le_rmult_pos : ∀ α β γ, 0 <= γ → α <= β → α * γ <= β * γ.
+Lemma ord_le_rmult_pos : ∀ α β γ, 0 ≤ γ → α ≤ β → α * γ ≤ β * γ.
 Proof.
     intros α β γ z leq.
     apply ord_le_rmult.
@@ -644,7 +644,7 @@ Proof.
     contradiction.
 Qed.
 
-Theorem ord_le_mult_lcancel : ∀ {α β} γ, 0 ≠ γ → γ * α <= γ * β → α <= β.
+Theorem ord_le_mult_lcancel : ∀ {α β} γ, 0 ≠ γ → γ * α ≤ γ * β → α ≤ β.
 Proof.
     intros α β γ γ_nz leq.
     classic_case (α = β) as [eq|neq].
@@ -656,7 +656,7 @@ Proof.
         apply mult_lcancel in contr; try exact γ_nz.
         contradiction.
 Qed.
-Lemma ord_le_mult_lcancel_pos : ∀ α β γ, 0 < γ → γ * α <= γ * β → α <= β.
+Lemma ord_le_mult_lcancel_pos : ∀ α β γ, 0 < γ → γ * α ≤ γ * β → α ≤ β.
 Proof.
     intros α β γ [γ_leq γ_nz] leq.
     apply ord_le_mult_lcancel with γ; assumption.
@@ -783,7 +783,7 @@ Proof.
         contradiction (m_empty m).
 Qed.
 
-Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α <= β * α.
+Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α ≤ β * α.
 Proof.
     intros α β β_nz.
     rewrite <- (mult_lid α) at 1.
@@ -794,7 +794,7 @@ Proof.
     contradiction.
 Qed.
 
-Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α <= α * β.
+Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α ≤ α * β.
 Proof.
     intros α β β_nz.
     rewrite <- (mult_rid α) at 1.

@@ -16,9 +16,9 @@ Require Import mult_pow.
 Open Scope card_scope.
 (* end hide *)
 Definition finite κ := κ < |nat|.
-Definition countable κ := κ <= |nat|.
+Definition countable κ := κ ≤ |nat|.
 Definition denumerable κ := κ = |nat|.
-Definition infinite κ := |nat| <= κ.
+Definition infinite κ := |nat| ≤ κ.
 Definition uncountable κ := |nat| < κ.
 
 Theorem finite_is_countable : ∀ κ, finite κ → countable κ.
@@ -48,7 +48,7 @@ Qed.
 
 Theorem nat_is_finite : ∀ n, finite (nat_to_card n).
 Proof.
-    assert (∀ n, nat_to_card n <= |nat|) as n_countable.
+    assert (∀ n, nat_to_card n ≤ |nat|) as n_countable.
     {
         intros n.
         unfold nat_to_card, le; equiv_simpl.
@@ -150,7 +150,7 @@ Proof.
     {
         intros [fp ff]; cbn.
         classic_case (surjective ff).
-        -   assert (|A| <= nat_to_card (nat_suc fp)) as leq.
+        -   assert (|A| ≤ nat_to_card (nat_suc fp)) as leq.
             {
                 unfold nat_to_card, le; equiv_simpl.
                 apply (partition_principle ff s).
@@ -196,7 +196,7 @@ Qed.
 Theorem fin_nat_ex : ∀ κ, finite κ → ∃ n, nat_to_card n = κ.
 Proof.
     intros κ κ_fin.
-    assert (∃ n, κ <= nat_to_card n) as κ_le.
+    assert (∃ n, κ ≤ nat_to_card n) as κ_le.
     {
         classic_contradiction contr.
         rewrite not_ex in contr.
@@ -215,7 +215,7 @@ Proof.
     nat_destruct m.
     -   pose proof (antisym κ_le_m (card_le_zero κ)).
         contradiction.
-    -   assert (κ <= nat_to_card m) as κ_le_m2.
+    -   assert (κ ≤ nat_to_card m) as κ_le_m2.
         {
             equiv_get_value κ.
             rename κ into A.

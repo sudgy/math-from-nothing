@@ -48,7 +48,7 @@ Global Instance card_order : Order card := {
 }.
 (* end hide *)
 Theorem card_to_initial_ord_lte :
-    ∀ κ μ, card_to_initial_ord κ < card_to_initial_ord μ → κ <= μ.
+    ∀ κ μ, card_to_initial_ord κ < card_to_initial_ord μ → κ ≤ μ.
 Proof.
     intros κ μ lt.
     remember (card_to_initial_ord κ) as α.
@@ -73,7 +73,7 @@ Proof.
 Qed.
 
 (* begin hide *)
-Lemma card_le_connex : ∀ κ μ, {κ <= μ} + {μ <= κ}.
+Lemma card_le_connex : ∀ κ μ, {κ ≤ μ} + {μ ≤ κ}.
 Proof.
     intros A B.
     classic_case (A = B) as [eq|neq].
@@ -100,7 +100,7 @@ Global Instance card_le_connex_class : Connex le := {
     connex := card_le_connex
 }.
 
-Lemma card_le_transitive : ∀ κ μ ν, κ <= μ → μ <= ν → κ <= ν.
+Lemma card_le_transitive : ∀ κ μ ν, κ ≤ μ → μ ≤ ν → κ ≤ ν.
 Proof.
     intros A B C AB BC.
     equiv_get_value A B C.
@@ -117,7 +117,7 @@ Global Instance card_le_trans_class : Transitive le := {
     trans := card_le_transitive
 }.
 
-Lemma card_le_antisymmetric : ∀ κ μ, κ <= μ → μ <= κ → κ = μ.
+Lemma card_le_antisymmetric : ∀ κ μ, κ ≤ μ → μ ≤ κ → κ = μ.
 Proof.
     intros A B AB BC.
     equiv_get_value A B.
@@ -240,7 +240,7 @@ Proof.
     -   subst.
         destruct leq; contradiction.
     -   destruct leq as [leq neq].
-        assert (ord_to_card β <= ord_to_card α) as leq2.
+        assert (ord_to_card β ≤ ord_to_card α) as leq2.
         {
             clear leq neq.
             rename α into A.
@@ -291,7 +291,7 @@ Global Instance card_le_wf_class : WellFounded le := {
     well_founded := card_le_wf
 }.
 (* end hide *)
-Theorem card_le_sub : ∀ κ A, κ <= |A| → ∃ S : A → Prop, |set_type S| = κ.
+Theorem card_le_sub : ∀ κ A, κ ≤ |A| → ∃ S : A → Prop, |set_type S| = κ.
 Proof.
     intros B A leq.
     equiv_get_value B.
@@ -317,7 +317,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem card_sub_le : ∀ (A : Type) (S : A → Prop), |set_type S| <= |A|.
+Theorem card_sub_le : ∀ (A : Type) (S : A → Prop), |set_type S| ≤ |A|.
 Proof.
     intros A S.
     unfold le; equiv_simpl.
@@ -331,7 +331,7 @@ Qed.
 Open Scope set_scope.
 (* end hide *)
 Theorem card_minus_le {U} : ∀ (A B : U → Prop),
-    |set_type (A - B)| <= |set_type A|.
+    |set_type (A - B)| ≤ |set_type A|.
 Proof.
     intros A B.
     unfold le; equiv_simpl.
@@ -343,7 +343,7 @@ Proof.
 Qed.
 
 Theorem image_under_le {U V} : ∀ (A : U → Prop) (f : U → V),
-    |set_type (image_under f A)| <= |set_type A|.
+    |set_type (image_under f A)| ≤ |set_type A|.
 Proof.
     intros A f.
     unfold le; equiv_simpl.

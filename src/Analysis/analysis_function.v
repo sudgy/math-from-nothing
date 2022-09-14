@@ -9,7 +9,7 @@ Require Import order_minmax.
 
 Definition f_seq_lim_uniform {U V} `{Metric U, Metric V}
     (fn : sequence (U → V)) f :=
-    ∀ ε, 0 < ε → ∃ N, ∀ n, N <= n → ∀ x, d (fn n x) (f x) < ε.
+    ∀ ε, 0 < ε → ∃ N, ∀ n, N ≤ n → ∀ x, d (fn n x) (f x) < ε.
 Definition f_seq_uniformly_converges {U V} `{Metric U, Metric V}
     (fn : sequence (U → V)) := ∃ f, f_seq_lim_uniform fn f.
 
@@ -51,13 +51,13 @@ Proof.
         destruct (strong_excluded_middle _) as [sup|nsup].
         +   rewrite_ex_val m m_sup.
             destruct m_sup as [m_upper m_least].
-            assert (m <= ε / 2) as leq.
+            assert (m ≤ ε / 2) as leq.
             {
                 apply m_least.
                 intros c [x c_eq]; subst c.
                 apply f_uni.
             }
-            assert (0 <= m) as m_pos.
+            assert (0 ≤ m) as m_pos.
             {
                 apply (trans (d_pos (fn n Ux) (f Ux))).
                 apply m_upper.
@@ -100,7 +100,7 @@ Proof.
             unfold is_upper_bound in *.
             apply (lt_le_trans2 (rmin _ _)) in f_conv.
             rewrite plus_lid, abs_neg in f_conv.
-            assert (0 <= m) as m_pos.
+            assert (0 ≤ m) as m_pos.
             {
                 apply (trans (d_pos (fn n x) (f x))).
                 apply m_upper.
@@ -182,7 +182,7 @@ Proof.
     classic_contradiction contr.
     rewrite not_ex in contr.
     assert (∀ a, 0 < a → ∃ x : set_type A,
-        [x|] ≠ c ∧ d [x|] c < a ∧ ε <= d (f x) l) as contr'.
+        [x|] ≠ c ∧ d [x|] c < a ∧ ε ≤ d (f x) l) as contr'.
     {
         intros a a_pos.
         specialize (contr a).

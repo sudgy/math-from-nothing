@@ -25,13 +25,13 @@ Context {U} `{
 Program Instance order_topology : TopologyBasis U := {
     top_basis S :=
         (∃ a b, S = open_interval a b) ∨
-        (∃ a b, S = open_closed_interval a b ∧ ∀ x, x <= b) ∨
-        (∃ a b, S = closed_open_interval a b ∧ ∀ x, a <= x)
+        (∃ a b, S = open_closed_interval a b ∧ ∀ x, x ≤ b) ∨
+        (∃ a b, S = closed_open_interval a b ∧ ∀ x, a ≤ x)
 }.
 Next Obligation.
     specialize (not_trivial2 x) as [y neq].
-    classic_case (∀ a, a <= x) as [x_max|x_nmax].
-    2: classic_case (∀ b, x <= b) as [x_min|x_nmin].
+    classic_case (∀ a, a ≤ x) as [x_max|x_nmax].
+    2: classic_case (∀ b, x ≤ b) as [x_min|x_nmin].
     -   exists (open_closed_interval y x).
         split.
         +   right; left.
@@ -74,8 +74,8 @@ Next Obligation.
     destruct H5 as [ [a [b eq1]] |[ [a [b [eq1 b_max]]] | [a [b [eq1 a_min]]] ]].
     all: destruct H6 as [ [c [d eq2]] |[ [c [d [eq2 d_max]]] | [c [d [eq2 c_min]]] ]].
     all: subst.
-    -   classic_case (a <= c) as [ac|ca].
-        all: classic_case (b <= d) as [bd|db].
+    -   classic_case (a ≤ c) as [ac|ca].
+        all: classic_case (b ≤ d) as [bd|db].
         +   exists (open_interval c b).
             split.
             2: split.
@@ -155,7 +155,7 @@ Next Obligation.
                     ++  apply (trans ca).
                         apply y_in.
                     ++  apply y_in.
-    -   classic_case (a <= c) as [ac|ca].
+    -   classic_case (a ≤ c) as [ac|ca].
         +   exists (open_interval c b).
             split.
             2: split.
@@ -189,7 +189,7 @@ Next Obligation.
                     ++  apply (trans ca).
                         apply y_in.
                     ++  apply d_max.
-    -   classic_case (b <= d) as [bd|db].
+    -   classic_case (b ≤ d) as [bd|db].
         +   exists (open_interval a b).
             split.
             2: split.
@@ -223,7 +223,7 @@ Next Obligation.
                 --  split.
                     ++  apply c_min.
                     ++  apply y_in.
-    -   classic_case (a <= c) as [ac|ca].
+    -   classic_case (a ≤ c) as [ac|ca].
         +   exists (open_interval c d).
             split.
             2: split.
@@ -257,7 +257,7 @@ Next Obligation.
                     ++  apply (trans ca).
                         apply y_in.
                     ++  apply y_in.
-    -   classic_case (a <= c) as [ac|ca].
+    -   classic_case (a ≤ c) as [ac|ca].
         +   exists (open_closed_interval c d).
             split.
             2: split.
@@ -312,7 +312,7 @@ Next Obligation.
             *   split.
                 --  apply c_min.
                 --  apply y_in.
-    -   classic_case (b <= d) as [bd|db].
+    -   classic_case (b ≤ d) as [bd|db].
         +   exists (open_interval c b).
             split.
             2: split.
@@ -363,7 +363,7 @@ Next Obligation.
             *   split.
                 --  apply y_in.
                 --  apply d_max.
-    -   classic_case (b <= d) as [bd|db].
+    -   classic_case (b ≤ d) as [bd|db].
         +   exists (closed_open_interval a b).
             split.
             2: split.
@@ -419,7 +419,7 @@ Qed.
 Theorem open_inf_interval_open : ∀ a, open (open_inf_interval a).
 Proof.
     intros a.
-    classic_case (∃ b, ∀ x, x <= b) as [b_max|no_max].
+    classic_case (∃ b, ∀ x, x ≤ b) as [b_max|no_max].
     -   destruct b_max as [b b_max].
         intros x x_in.
         exists (open_closed_interval a b).
@@ -468,7 +468,7 @@ Qed.
 Theorem inf_open_interval_open : ∀ a, open (inf_open_interval a).
 Proof.
     intros b.
-    classic_case (∃ a, ∀ x, a <= x) as [a_min|no_min].
+    classic_case (∃ a, ∀ x, a ≤ x) as [a_min|no_min].
     -   destruct a_min as [a a_min].
         intros x x_in.
         exists (closed_open_interval a b).

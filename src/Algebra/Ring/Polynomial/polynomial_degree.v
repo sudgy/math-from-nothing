@@ -267,7 +267,7 @@ Proof.
 Qed.
 
 Theorem polynomial_degree_leq :
-    ∀ f n, (∀ m, n < m → 0 = co f m) → polynomial_degree f <= n.
+    ∀ f n, (∀ m, n < m → 0 = co f m) → polynomial_degree f ≤ n.
 Proof.
     intros f m m_gt.
     unfold polynomial_degree.
@@ -276,7 +276,7 @@ Proof.
     exact m_gt.
 Qed.
 
-Theorem polynomial_degree_geq : ∀ f n, 0 ≠ co f n → n <= polynomial_degree f.
+Theorem polynomial_degree_geq : ∀ f n, 0 ≠ co f n → n ≤ polynomial_degree f.
 Proof.
     intros f n fn_nz.
     classic_contradiction contr.
@@ -339,10 +339,10 @@ Proof.
 Qed.
 
 Theorem polynomial_degree_plus : ∀ f g,
-    polynomial_degree (f+g) <= max (polynomial_degree f) (polynomial_degree g).
+    polynomial_degree (f+g) ≤ max (polynomial_degree f) (polynomial_degree g).
 Proof.
-    assert (∀ f g, polynomial_degree f <= polynomial_degree g →
-        polynomial_degree (f + g) <= polynomial_degree g) as wlog.
+    assert (∀ f g, polynomial_degree f ≤ polynomial_degree g →
+        polynomial_degree (f + g) ≤ polynomial_degree g) as wlog.
     {
         intros f g leq.
         apply polynomial_degree_leq.

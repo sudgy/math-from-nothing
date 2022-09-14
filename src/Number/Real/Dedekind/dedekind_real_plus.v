@@ -228,7 +228,7 @@ Global Instance real_neg : Neg real := {
 Lemma real_plus_linv_pos : ∀ a, 0 < a → -a + a = 0.
 Proof.
     intros [a a_cut] a_pos'.
-    assert (∀ x, x <= 0 → a x) as a_pos.
+    assert (∀ x, x ≤ 0 → a x) as a_pos.
     {
         destruct a_pos' as [a_pos a_neq].
         unfold zero in a_pos; cbn in a_pos.
@@ -462,7 +462,7 @@ Global Instance real_plus_linv : PlusLinv real := {
     plus_linv := real_plus_linv_;
 }.
 
-Lemma real_le_lplus_ : ∀ a b c, a <= b → c + a <= c + b.
+Lemma real_le_lplus_ : ∀ a b c, a ≤ b → c + a ≤ c + b.
 Proof.
     intros [a a_cut] [b b_cut] [c c_cut].
     unfold le, plus; cbn.

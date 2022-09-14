@@ -5,12 +5,12 @@ Require Import analysis_topology.
 Require Import order_minmax.
 
 Definition cauchy_seq {U} `{Metric U} (f : sequence U) :=
-    ∀ ε, 0 < ε → ∃ N, ∀ i j, N <= i → N <= j → d (f i) (f j) < ε.
+    ∀ ε, 0 < ε → ∃ N, ∀ i j, N ≤ i → N ≤ j → d (f i) (f j) < ε.
 
 Definition complete U `{Metric U} := ∀ f, cauchy_seq f → seq_converges f.
 
 Definition seq_bounded {U} `{Metric U} (f : nat → U)
-    := ∃ M, ∀ m n, d (f m) (f n) <= M.
+    := ∃ M, ∀ m n, d (f m) (f n) ≤ M.
 (* begin hide *)
 
 Section AnalysisSequence.
@@ -19,7 +19,7 @@ Context {U} `{Metric U}.
 (* end hide *)
 
 Theorem metric_seq_lim : ∀ f x, seq_lim f x ↔
-    ∀ ε, 0 < ε → ∃ N, ∀ n, N <= n → d x (f n) < ε.
+    ∀ ε, 0 < ε → ∃ N, ∀ n, N ≤ n → d x (f n) < ε.
 Proof.
     intros f x.
     rewrite basis_seq_lim.
@@ -258,12 +258,12 @@ Proof.
         -   exact j_lt.
         -   reflexivity.
     }
-    assert (∀ i j, 1 + N <= i → j < 1 + N → d (a i) (a j) < M + 1) as lem2.
+    assert (∀ i j, 1 + N ≤ i → j < 1 + N → d (a i) (a j) < M + 1) as lem2.
     {
         intros i j i_ge j_lt.
         pose proof (trans (nat_le_suc N) i_ge) as i_ge2.
         specialize (a_cauchy _ _ i_ge2 (refl N)).
-        assert (d (a N) (a j) <= M) as leq.
+        assert (d (a N) (a j) ≤ M) as leq.
         {
             apply M_greatest.
             exists N, j.
@@ -279,15 +279,15 @@ Proof.
         rewrite plus_comm.
         apply d_tri.
     }
-    assert (∀ i j, 1 + N <= i → 1 + N <= j → d (a i) (a j) < M + 1) as lem3.
+    assert (∀ i j, 1 + N ≤ i → 1 + N ≤ j → d (a i) (a j) < M + 1) as lem3.
     {
         intros i j i_ge j_ge.
-        assert (N <= i) as i_ge2.
+        assert (N ≤ i) as i_ge2.
         {
             apply (trans2 i_ge).
             apply nat_le_suc.
         }
-        assert (N <= j) as j_ge2.
+        assert (N ≤ j) as j_ge2.
         {
             apply (trans2 j_ge).
             apply nat_le_suc.

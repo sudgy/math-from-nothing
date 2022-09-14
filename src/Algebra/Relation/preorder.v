@@ -14,7 +14,7 @@ Context `{
 
 Local Instance preorder_order : Order U := {le := op}.
 
-Definition preorder_eq (a b : U) := a <= b ∧ b <= a.
+Definition preorder_eq (a b : U) := a ≤ b ∧ b ≤ a.
 Local Infix "~" := preorder_eq.
 
 Local Program Instance preorder_eq_reflexive : Reflexive preorder_eq.
@@ -43,7 +43,7 @@ Qed.
 Definition preorder_equiv := make_equiv _
     preorder_eq_reflexive preorder_eq_symmetric preorder_eq_transitive.
 
-Lemma preorder_le_wd_1 : ∀ a b c d : U, a ~ b → c ~ d → a <= c → b <= d.
+Lemma preorder_le_wd_1 : ∀ a b c d : U, a ~ b → c ~ d → a ≤ c → b ≤ d.
 Proof.
     intros a b c d ab cd ac.
     unfold preorder_eq in *.
@@ -54,7 +54,7 @@ Proof.
     exact cd.
 Qed.
 
-Lemma preorder_le_wd : ∀ a b c d : U, a ~ b → c ~ d → (a <= c) = (b <= d).
+Lemma preorder_le_wd : ∀ a b c d : U, a ~ b → c ~ d → (a ≤ c) = (b ≤ d).
 Proof.
     intros a b c d ab cd.
     apply propositional_ext.
@@ -96,7 +96,7 @@ Next Obligation.
 Qed.
 
 Theorem preorder_zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
-    ∃ a : U, ∀ x : U, a <= x → x <= a.
+    ∃ a : U, ∀ x : U, a ≤ x → x ≤ a.
 Proof.
     intros chain_ub.
     pose proof (zorn (U := equiv_type preorder_equiv) le) as a_ex.

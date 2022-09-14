@@ -73,7 +73,7 @@ Proof.
     -   reflexivity.
 Qed.
 
-Definition A x := M x ∧ a <= x.
+Definition A x := M x ∧ a ≤ x.
 Lemma A_sub : A ⊆ M.
 Proof.
     intros x x_in.
@@ -116,9 +116,9 @@ Proof.
         apply y_in.
 Qed.
 
-Definition P x := ∀ y, M y → y < x → f y <= x.
+Definition P x := ∀ y, M y → y < x → f y ≤ x.
 
-Definition B x z := M z ∧ (z <= x ∨ f x <= z).
+Definition B x z := M z ∧ (z ≤ x ∨ f x ≤ z).
 Lemma B_sub : ∀ x, B x ⊆ M.
 Proof.
     intros x y y_in.
@@ -154,7 +154,7 @@ Proof.
         split.
         +   apply (rand (rand M_admissable) F); try assumption.
             apply (trans F_sub (B_sub x)).
-        +   classic_case (∀ z, F z → z <= x).
+        +   classic_case (∀ z, F z → z ≤ x).
             *   destruct w_lub as [w_ub w_lub].
                 specialize (w_lub _ l).
                 left; exact w_lub.
@@ -177,7 +177,7 @@ Proof.
     -   apply B_sub.
     -   apply B_admissable; assumption.
 Qed.
-Lemma z_P : ∀ x, M x → P x → ∀ z, M z → z <= x ∨ f x <= z.
+Lemma z_P : ∀ x, M x → P x → ∀ z, M z → z ≤ x ∨ f x ≤ z.
 Proof.
     intros x Mx Px z Mz.
     rewrite <- (BM x) in Mz; try assumption.
@@ -223,7 +223,7 @@ Proof.
         }
         split; try exact Mw.
         intros y My eq.
-        assert (∃ z, F z ∧ y <= z) as [z [Fz z_eq]].
+        assert (∃ z, F z ∧ y ≤ z) as [z [Fz z_eq]].
         {
             classic_contradiction contr.
             rewrite not_ex in contr.
@@ -264,7 +264,7 @@ Lemma M_chain : is_chain le M.
 Proof.
     change op with le in *.
     intros x y Mx My.
-    classic_case (y <= x).
+    classic_case (y ≤ x).
     -   right; exact l.
     -   left.
         apply (trans (f_ge _)).

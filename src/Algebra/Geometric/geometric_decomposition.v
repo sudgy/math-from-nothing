@@ -189,7 +189,7 @@ Remove Hints EG EGA : typeclass_instances.
 
 (* end hide *)
 Lemma geo_grade_decompose1 : ∀ (a b : geo B) (r s n : nat),
-    of_grade r a → of_grade s b → r <= s →
+    of_grade r a → of_grade s b → r ≤ s →
     (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
     grade_project (a * b) n = 0.
 Proof.

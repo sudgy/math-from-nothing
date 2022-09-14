@@ -583,13 +583,13 @@ Hypothesis U_inhab : U.
 (* begin hide *)
 Existing Instance order_topology.
 (* end hide *)
-Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c <= f x ∧ f x <= f d.
+Theorem evt : ∀ f : U → V, continuous f → ∃ c d, ∀ x, f c ≤ f x ∧ f x ≤ f d.
 Proof.
     intros f f_cont.
     pose (A := image f).
     pose proof (continuous_compact_image f f_cont com) as A_compact.
     fold A in A_compact.
-    classic_case (∃ M : set_type A, ∀ x, x <= M) as [M_ex|M_nex].
+    classic_case (∃ M : set_type A, ∀ x, x ≤ M) as [M_ex|M_nex].
     2: {
         exfalso.
         rewrite not_ex in M_nex.
@@ -626,7 +626,7 @@ Proof.
             apply set_type_eq; cbn.
             reflexivity.
         }
-        assert (∃ a : set_type A', ∀ a', A' a' → a' <= [a|]) as a_ex.
+        assert (∃ a : set_type A', ∀ a', A' a' → a' ≤ [a|]) as a_ex.
         {
             assert (∃ x, A' x) as A'_ex.
             {
@@ -662,7 +662,7 @@ Proof.
         unfold le in a_max; cbn in a_max.
         destruct (lt_le_trans Ba a_max); contradiction.
     }
-    classic_case (∃ m : set_type A, ∀ x, m <= x) as [m_ex|m_nex].
+    classic_case (∃ m : set_type A, ∀ x, m ≤ x) as [m_ex|m_nex].
     2: {
         exfalso.
         rewrite not_ex in m_nex.
@@ -699,7 +699,7 @@ Proof.
             apply set_type_eq; cbn.
             reflexivity.
         }
-        assert (∃ a : set_type A', ∀ a', A' a' → [a|] <= a') as a_ex.
+        assert (∃ a : set_type A', ∀ a', A' a' → [a|] ≤ a') as a_ex.
         {
             assert (∃ x, A' x) as A'_ex.
             {

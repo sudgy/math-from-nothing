@@ -15,7 +15,7 @@ Proof.
         exists (nat_suc a).
         unfold S.
         rewrite nat_mult_rsuc.
-        assert (a <= b * a) as eq.
+        assert (a ≤ b * a) as eq.
         {
             rewrite <- (mult_lid a) at 1.
             apply nat_le_rmult.
@@ -36,7 +36,7 @@ Proof.
         rewrite mult_ranni in Sq.
         contradiction (nat_neg2 Sq).
     }
-    assert (b * q <= a) as leq.
+    assert (b * q ≤ a) as leq.
     {
         classic_contradiction contr.
         rewrite nle_lt in contr.
@@ -162,7 +162,7 @@ Proof.
         contradiction.
 Qed.
 
-Theorem nat_div_le : ∀ a b, 0 ≠ b → a ∣ b → a <= b.
+Theorem nat_div_le : ∀ a b, 0 ≠ b → a ∣ b → a ≤ b.
 Proof.
     intros a b b_nz [c c_eq].
     rewrite <- c_eq.

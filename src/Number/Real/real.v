@@ -77,14 +77,14 @@ Proof.
 Qed.
 
 Theorem real_nested_interval : ∀ I : nat → real → Prop,
-    (∀ n, ∃ a b, a <= b ∧ I n = closed_interval a b) →
+    (∀ n, ∃ a b, a ≤ b ∧ I n = closed_interval a b) →
     (∀ n, I (1 + n) ⊆ I n) →
     ∃ x, ∀ n, I n x.
 Proof.
     intros I I_closed I_sub.
     pose (an n := ex_val (I_closed n)).
     pose (bn n := ex_val (ex_proof (I_closed n))).
-    assert (∀ m n, m <= n → I n ⊆ I m) as I_sub2.
+    assert (∀ m n, m ≤ n → I n ⊆ I m) as I_sub2.
     {
         intros m n leq.
         apply nat_le_ex in leq as [c c_eq].
@@ -95,7 +95,7 @@ Proof.
         -   rewrite nat_plus_lsuc.
             exact (trans (I_sub _) IHc).
     }
-    assert (∀ m n, an m <= bn n) as abn_leq.
+    assert (∀ m n, an m ≤ bn n) as abn_leq.
     {
         intros m n.
         unfold an, bn.
@@ -133,7 +133,7 @@ Proof.
         exists 0.
         reflexivity.
     }
-    assert (∃ x, ∀ y, (∃ n, an n = y) → y <= x) as S_upper.
+    assert (∃ x, ∀ y, (∃ n, an n = y) → y ≤ x) as S_upper.
     {
         exists (bn 0).
         intros y [n n_eq].

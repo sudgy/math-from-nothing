@@ -6,7 +6,7 @@ Require Import mult_pow.
 Open Scope nat_scope.
 
 Lemma real_lt : ∀ a b, to_equiv_type real_equiv a < to_equiv_type real_equiv b →
-    ∃ ε N, 0 < ε ∧ ∀ i, N <= i → r_seq a i + ε < r_seq b i.
+    ∃ ε N, 0 < ε ∧ ∀ i, N ≤ i → r_seq a i + ε < r_seq b i.
 Proof.
     intros a b ltq.
     destruct ltq as [leq neq].
@@ -196,7 +196,7 @@ Proof.
     assert (cauchy_seq a) as a_cauchy.
     {
         intros ε ε_pos.
-        assert (∀ n, |a n - a (nat_suc n)| <= d 0 / 2^(nat_suc n)) as a_gap.
+        assert (∀ n, |a n - a (nat_suc n)| ≤ d 0 / 2^(nat_suc n)) as a_gap.
         {
             intros n.
             rewrite <- d_eq.
@@ -236,7 +236,7 @@ Proof.
         pose proof (lt_mult ε_pos (div_pos (d_pos 0))) as ε'_pos.
         pose proof (arch_pow2 _ ε'_pos) as [N N_lt].
         exists N.
-        assert (∀ i j, N <= i → i <= j → |a i - a j| < ε) as wlog.
+        assert (∀ i j, N ≤ i → i ≤ j → |a i - a j| < ε) as wlog.
         {
             intros i j i_ge leq.
             apply nat_le_ex in leq as [c c_eq]; subst.
@@ -283,7 +283,7 @@ Proof.
     assert (cauchy_seq b) as b_cauchy.
     {
         intros ε ε_pos.
-        assert (∀ n, |b n - b (nat_suc n)| <= d 0 / 2^(nat_suc n)) as b_gap.
+        assert (∀ n, |b n - b (nat_suc n)| ≤ d 0 / 2^(nat_suc n)) as b_gap.
         {
             intros n.
             rewrite <- d_eq.
@@ -318,7 +318,7 @@ Proof.
         pose proof (lt_mult ε_pos (div_pos (d_pos 0))) as ε'_pos.
         pose proof (arch_pow2 _ ε'_pos) as [N N_lt].
         exists N.
-        assert (∀ i j, N <= i → i <= j → |b i - b j| < ε) as wlog.
+        assert (∀ i j, N ≤ i → i ≤ j → |b i - b j| < ε) as wlog.
         {
             intros i j i_ge leq.
             apply nat_le_ex in leq as [c c_eq]; subst.

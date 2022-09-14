@@ -13,7 +13,7 @@ Section EquivCard.
 
 Context {U : Type}.
 (* end hide *)
-Theorem equiv_card_le : ∀ E : equivalence U, |equiv_type E| <= |U|.
+Theorem equiv_card_le : ∀ E : equivalence U, |equiv_type E| ≤ |U|.
 Proof.
     intros E.
     unfold le; equiv_simpl.
@@ -201,13 +201,13 @@ Context {U} `{
 
 Local Open Scope card_scope.
 
-Theorem arch_ordered_size : |U| <= 2 ^ |nat|.
+Theorem arch_ordered_size : |U| ≤ 2 ^ |nat|.
 Proof.
     rewrite <- rat_size.
     rewrite <- power_set_size.
     unfold le; equiv_simpl.
     exists (λ x, (λ q, rat_to_abstract q < x)).
-    cut (∀ a b, a <= b →
+    cut (∀ a b, a ≤ b →
         ((λ q : rat, rat_to_abstract q < a) = (λ q : rat, rat_to_abstract q < b)
         → a = b)).
     {

@@ -178,7 +178,7 @@ Proof.
         apply func_to_list2_base_eq.
 Qed.
 
-Theorem func_to_list_nth_ge {A} : ∀ f m n (a : A), n <= m →
+Theorem func_to_list_nth_ge {A} : ∀ f m n (a : A), n ≤ m →
     list_nth (func_to_list f n) m a = a.
 Proof.
     intros f m n a leq.

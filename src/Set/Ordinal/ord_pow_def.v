@@ -93,7 +93,7 @@ Proof.
     {
         pose (N (O : ord_pow_type A B) x :=
             ord_pow_f O x ≠ ord_zero (ord_pow_f O x)).
-        assert (|set_type S| <= |set_type (N C)| + |set_type (N D)|) as leq.
+        assert (|set_type S| ≤ |set_type (N C)| + |set_type (N D)|) as leq.
         {
             unfold le, plus; equiv_simpl.
             assert (∀ x : set_type S, {N C [x|]} + {N D [x|]}) as x_in.
@@ -252,7 +252,7 @@ Proof.
     )|)) as F_fin.
     {
         intros C.
-        assert (|set_type (λ x, F_base C x ≠ ord_zero (F_base C x))| <=
+        assert (|set_type (λ x, F_base C x ≠ ord_zero (F_base C x))| ≤
                 |set_type (λ x, ord_pow_f C x ≠ ord_zero (ord_pow_f C x))|)
             as ltq.
         {

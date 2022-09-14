@@ -84,7 +84,7 @@ Definition ord_to_card := unary_op ord_to_card_wd.
 
 (* begin hide *)
 Lemma card_to_initial_ord_ex :
-    ∀ κ, ∃ α, ord_to_card α = κ ∧ ∀ β, ord_to_card β = κ → α <= β.
+    ∀ κ, ∃ α, ord_to_card α = κ ∧ ∀ β, ord_to_card β = κ → α ≤ β.
 Proof.
     intros κ.
     assert (∃ δ, ord_to_card δ = κ) as α_ex.
@@ -118,7 +118,7 @@ Proof.
 Qed.
 
 Theorem card_to_initial_ord_le :
-    ∀ κ α, ord_to_card α = κ → card_to_initial_ord κ <= α.
+    ∀ κ α, ord_to_card α = κ → card_to_initial_ord κ ≤ α.
 Proof.
     intros κ α eq.
     unfold card_to_initial_ord.
@@ -137,7 +137,7 @@ Proof.
 Qed.
 
 Theorem ord_to_card_to_initial_ord_le :
-    ∀ α, card_to_initial_ord (ord_to_card α) <= α.
+    ∀ α, card_to_initial_ord (ord_to_card α) ≤ α.
 Proof.
     intros α.
     apply card_to_initial_ord_le.

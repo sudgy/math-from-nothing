@@ -35,9 +35,9 @@ Context {V} `{
 
 Existing Instance abs_metric.
 (* end hide *)
-Definition seq_norm_bounded (f : nat → V) := ∃ M, ∀ n, |f n| <= M.
+Definition seq_norm_bounded (f : nat → V) := ∃ M, ∀ n, |f n| ≤ M.
 
-Theorem abs_reverse_tri : ∀ u v, | |u| - |v| | <= |u - v|.
+Theorem abs_reverse_tri : ∀ u v, | |u| - |v| | ≤ |u - v|.
 Proof.
     intros u v.
     pose proof (d_reverse_tri 0 u v) as eq.

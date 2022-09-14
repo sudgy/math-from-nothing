@@ -61,7 +61,7 @@ Proof.
     intros x.
     equiv_get_value x.
     destruct x as [a [b b_nz]].
-    classic_case (0 <= b) as [b_pos|b_neg].
+    classic_case (0 ≤ b) as [b_pos|b_neg].
     -   exists a, [b|b_nz].
         split.
         +   split; assumption.
@@ -101,7 +101,7 @@ Proof.
         reflexivity.
 Qed.
 
-Let frac_pos_base (a : frac_base U) := 0 <= fst a * [snd a|].
+Let frac_pos_base (a : frac_base U) := 0 ≤ fst a * [snd a|].
 
 Lemma frac_pos_wd_1 : ∀ a b, a ~ b → frac_pos_base a → frac_pos_base b.
 Proof.
@@ -142,7 +142,7 @@ Local Instance frac_order : Order (frac U) := {
     le a b := frac_pos (b - a)
 }.
 
-Theorem frac_pos_zero : ∀ a, 0 <= a ↔ frac_pos a.
+Theorem frac_pos_zero : ∀ a, 0 ≤ a ↔ frac_pos a.
 Proof.
     intros a.
     equiv_get_value a.
@@ -152,9 +152,9 @@ Proof.
 Qed.
 
 Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-    (to_equiv_type (frac_equiv U) (a1, a2) <=
+    (to_equiv_type (frac_equiv U) (a1, a2) ≤
      to_equiv_type (frac_equiv U) (b1, b2)) ↔
-    (a1 * [b2|] <= b1 * [a2|]).
+    (a1 * [b2|] ≤ b1 * [a2|]).
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
     unfold le at 1; cbn.
@@ -276,7 +276,7 @@ Next Obligation.
     exact leq.
 Qed.
 
-Theorem to_frac_le : ∀ a b, to_frac U a <= to_frac U b ↔ a <= b.
+Theorem to_frac_le : ∀ a b, to_frac U a ≤ to_frac U b ↔ a ≤ b.
 Proof.
     intros a b.
     unfold to_frac.

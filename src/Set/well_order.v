@@ -21,11 +21,11 @@ Local Instance bin_order : Order (bin_set_function_type U Prop):= {
 }.
 Local Instance S_order : Order (set_type S) := {
     le A B :=
-        ∃ sub : ([A|] <= [B|]),
+        ∃ sub : ([A|] ≤ [B|]),
         ∀ (a : set_type (bin_domain [A|])) (b : set_type (bin_domain [B|])),
             ¬bin_domain [A|] [b|] → [B|]⟨[_|ex_val sub [a|] [|a]], b⟩
 }.
-Lemma S_order_refl : ∀ A, A <= A.
+Lemma S_order_refl : ∀ A, A ≤ A.
 Proof.
     intros [A [[A_con] [[A_antisym] [[A_trans] [[A_well]]]]]].
     exists (refl A).
@@ -37,7 +37,7 @@ Qed.
 Local Instance S_order_refl_class : Reflexive le := {
     refl := S_order_refl
 }.
-Lemma S_order_antisym : ∀ A B, A <= B → B <= A → A = B.
+Lemma S_order_antisym : ∀ A B, A ≤ B → B ≤ A → A = B.
 Proof.
     intros [A A_wo] [B B_wo] [AB AB2] [BA BA2].
     apply set_type_eq; cbn in *.
@@ -46,7 +46,7 @@ Qed.
 Local Instance S_order_antisym_class : Antisymmetric le := {
     antisym := S_order_antisym
 }.
-Lemma S_order_trans : ∀ A B C, A <= B → B <= C → A <= C.
+Lemma S_order_trans : ∀ A B C, A ≤ B → B ≤ C → A ≤ C.
 Proof.
     intros [A A_wo] [B B_wo] [C C_wo] [AB AB2] [BC BC2].
     unfold le in *; cbn in *.
@@ -176,7 +176,7 @@ Ltac make_definitions a b PF F CF Fa Fb :=
     change (ex_type_val (ex_to_type PF)) with F in FX';
     destruct FX' as [CF [Fa Fb]].
 
-Lemma S_union_le_connex : ∀ a b, {a <= b} + {b <= a}.
+Lemma S_union_le_connex : ∀ a b, {a ≤ b} + {b ≤ a}.
 Proof.
     intros a b.
     apply or_to_strong.
@@ -196,7 +196,7 @@ Proof.
     exact leq.
 Qed.
 
-Lemma S_union_le_antisym : ∀ a b, a <= b → b <= a → a = b.
+Lemma S_union_le_antisym : ∀ a b, a ≤ b → b ≤ a → a = b.
 Proof.
     intros a b ab ba.
     unfold le in ab, ba; cbn in ab, ba; unfold S_union_le in *; cbn in ab, ba.
@@ -215,7 +215,7 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma S_union_le_trans : ∀ a b c, a <= b → b <= c → a <= c.
+Lemma S_union_le_trans : ∀ a b c, a ≤ b → b ≤ c → a ≤ c.
 Proof.
     intros a b c ab bc.
     unfold le; unfold le in ab, bc; cbn in *.
@@ -327,7 +327,7 @@ Lemma S_all_upper : has_upper_bound le C.
 Proof.
     exists [_|S_union_le_func_wo].
     intros F CF.
-    assert ([F|] <= S_union_le_func) as sub.
+    assert ([F|] ≤ S_union_le_func) as sub.
     {
         assert (bin_domain [F|] ⊆ S_union_set) as sub.
         {
@@ -396,7 +396,7 @@ Local Instance A'_order : Order (set_type A'_set) := {
     le := A'_func
 }.
 
-Lemma A'_connex : ∀ a b, {a <= b} + {b <= a}.
+Lemma A'_connex : ∀ a b, {a ≤ b} + {b ≤ a}.
 Proof.
     intros a b.
     unfold le; cbn; unfold A'_func; cbn.
@@ -411,7 +411,7 @@ Proof.
     -   left; trivial.
 Qed.
 
-Lemma A'_antisym : ∀ a b, a <= b → b <= a → a = b.
+Lemma A'_antisym : ∀ a b, a ≤ b → b ≤ a → a = b.
 Proof.
     intros a b ab ba.
     unfold le in *; cbn in *; unfold A'_func in *; cbn in *.
@@ -432,7 +432,7 @@ Local Instance A'_antisym_class : Antisymmetric le := {
     antisym := A'_antisym
 }.
 
-Lemma A'_trans : ∀ a b c, a <= b → b <= c → a <= c.
+Lemma A'_trans : ∀ a b c, a ≤ b → b ≤ c → a ≤ c.
 Proof.
     intros a b c ab bc.
     unfold le in *; cbn in *; unfold A'_func in *; cbn in *.
@@ -526,7 +526,7 @@ Proof.
     assert (∀ X, ¬A < X) as A_max by apply (ex_proof (zorn le S_all_upper)).
     apply (A_max [A'|A'_S]).
     split.
-    -   assert ([A|] <= A') as sub.
+    -   assert ([A|] ≤ A') as sub.
         {
             exists A'_sub.
             intros a b.

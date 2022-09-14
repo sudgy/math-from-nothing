@@ -386,7 +386,7 @@ Proof.
                 unfold C_le.
                 reflexivity.
 Qed.
-Theorem ord_le_ex : ∀ α β, α <= β → ∃ γ, α + γ = β.
+Theorem ord_le_ex : ∀ α β, α ≤ β → ∃ γ, α + γ = β.
 Proof.
     intros α β leq.
     classic_case (α = β) as [eq|neq].
@@ -447,7 +447,7 @@ Proof.
         contradiction (no_m [a|] [|a]).
 Qed.
 
-Theorem ord_le_zero : ∀ α, 0 <= α.
+Theorem ord_le_zero : ∀ α, 0 ≤ α.
 Proof.
     intros α.
     classic_case (0 = α) as [eq|neq].
@@ -470,7 +470,7 @@ Proof.
     exact δ_nz.
 Qed.
 
-Lemma ord_le_lplus : ∀ α β γ, α <= β → γ + α <= γ + β.
+Lemma ord_le_lplus : ∀ α β γ, α ≤ β → γ + α ≤ γ + β.
 Proof.
     intros α β γ leq.
     classic_case (α = β) as [eq|neq].
@@ -485,7 +485,7 @@ Global Instance ord_le_lplus_class : OrderLplus ord := {
     le_lplus := ord_le_lplus
 }.
 (* end hide *)
-Lemma ord_le_plus_lcancel : ∀ α β γ, γ + α <= γ + β → α <= β.
+Lemma ord_le_plus_lcancel : ∀ α β γ, γ + α ≤ γ + β → α ≤ β.
 Proof.
     intros α β γ leq.
     classic_case (γ + α = γ + β) as [eq|neq].
@@ -502,7 +502,7 @@ Global Instance ord_le_plus_lcancel_class : OrderPlusLcancel ord := {
 }.
 (* end hide *)
 
-Theorem ord_le_self_rplus : ∀ α β, α <= α + β.
+Theorem ord_le_self_rplus : ∀ α β, α ≤ α + β.
 Proof.
     intros α β.
     rewrite <- plus_rid at 1.
@@ -510,7 +510,7 @@ Proof.
     apply ord_le_zero.
 Qed.
 
-Theorem ord_le_self_lplus : ∀ α β, α <= β + α.
+Theorem ord_le_self_lplus : ∀ α β, α ≤ β + α.
 Proof.
     intros α β.
     classic_contradiction ltq.
@@ -544,7 +544,7 @@ Proof.
     contradiction.
 Qed.
 
-Theorem ord_lt_rplus : ∀ {α β} γ, α < β → α + γ <= β + γ.
+Theorem ord_lt_rplus : ∀ {α β} γ, α < β → α + γ ≤ β + γ.
 Proof.
     intros α β γ eq.
     apply ord_lt_ex in eq as [δ [δ_nz δ_eq]].
@@ -567,7 +567,7 @@ Proof.
         destruct H; contradiction.
 Qed.
 
-Lemma ord_le_rplus : ∀ α β γ, α <= β → α + γ <= β + γ.
+Lemma ord_le_rplus : ∀ α β γ, α ≤ β → α + γ ≤ β + γ.
 Proof.
     intros α β γ leq.
     classic_case (α = β) as [eq|neq].

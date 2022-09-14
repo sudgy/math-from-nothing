@@ -133,7 +133,7 @@ Definition real_div_base (a : real_base) :=
     else λ n, /(r_seq a n).
 
 Lemma cauchy_nz : ∀ a : real_base, 0 ≠ to_equiv_type real_equiv a →
-    ∃ ε N, 0 < ε ∧ (∀ i, N <= i → ε <= |r_seq a i|).
+    ∃ ε N, 0 < ε ∧ (∀ i, N ≤ i → ε ≤ |r_seq a i|).
 Proof.
     intros [a a_cauchy] a_neq; cbn in *.
     rewrite neq_sym in a_neq.

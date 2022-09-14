@@ -15,7 +15,7 @@ Global Instance real_order : Order real := {
 }.
 
 (* begin hide *)
-Lemma real_le_connex_ : ∀ a b, {a <= b} + {b <= a}.
+Lemma real_le_connex_ : ∀ a b, {a ≤ b} + {b ≤ a}.
 Proof.
     intros [a a_cut] [b b_cut].
     unfold le; cbn.
@@ -34,7 +34,7 @@ Global Instance real_le_connex : Connex le := {
     connex := real_le_connex_
 }.
 
-Lemma real_le_antisymmetric : ∀ a b, a <= b → b <= a → a = b.
+Lemma real_le_antisymmetric : ∀ a b, a ≤ b → b ≤ a → a = b.
 Proof.
     intros [a a_cut] [b b_cut].
     unfold le; cbn.
@@ -46,7 +46,7 @@ Global Instance real_le_antisym : Antisymmetric le := {
     antisym := real_le_antisymmetric
 }.
 
-Lemma real_le_transitive : ∀ a b c, a <= b → b <= c → a <= c.
+Lemma real_le_transitive : ∀ a b c, a ≤ b → b ≤ c → a ≤ c.
 Proof.
     intros a b c.
     unfold le; cbn.
@@ -109,7 +109,7 @@ Global Instance real_sup_complete : SupremumComplete le := {
 }.
 (* end hide *)
 
-Theorem rat_to_real_le : ∀ a b, rat_to_real a <= rat_to_real b ↔ a <= b.
+Theorem rat_to_real_le : ∀ a b, rat_to_real a ≤ rat_to_real b ↔ a ≤ b.
 Proof.
     intros a b; split; intro leq.
     -   unfold le in leq; cbn in leq.

@@ -138,7 +138,7 @@ Definition plus_linear_map (f g : linear_map)
         (plus_linear_map_scalar f g) (plus_linear_map_plus f g).
 
 Definition bounded_linear_map (f : linear_map)
-    := ∃ M : real, ∀ x : U, |linear_map_f f x| <= M * |x|.
+    := ∃ M : real, ∀ x : U, |linear_map_f f x| ≤ M * |x|.
 
 Theorem zero_linear_bounded : bounded_linear_map zero_linear_map.
 Proof.
@@ -214,7 +214,7 @@ Definition operator_norm (f : linear_map) (H : bounded_linear_map f)
     := ex_val (operator_norm_ex f H).
 
 Theorem operator_norm_bound : ∀ f H, ∀ x,
-    |linear_map_f f x| <= operator_norm f H * |x|.
+    |linear_map_f f x| ≤ operator_norm f H * |x|.
 Proof.
     intros f f_bound x.
     unfold operator_norm.
@@ -256,7 +256,7 @@ Proof.
     exact A_bound.
 Qed.
 
-Theorem operator_norm_pos : ∀ f H, 0 <= operator_norm f H.
+Theorem operator_norm_pos : ∀ f H, 0 ≤ operator_norm f H.
 Proof.
     intros f f_bound.
     unfold operator_norm.

@@ -32,7 +32,7 @@ Proof.
     rewrite not_ex in contr.
     assert (infinite (|set_type A|)) as A_inf.
     {
-        pose (op x y := x = y ∨ ∃ n, (∀ n', a n' = x → n' <= n) ∧ a n = y).
+        pose (op x y := x = y ∨ ∃ n, (∀ n', a n' = x → n' ≤ n) ∧ a n = y).
         assert (Reflexive op).
         {
             split.
@@ -130,7 +130,7 @@ Proof.
     pose proof x_inf as x_inf.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    assert (|set_type X| <= nat_to_card (nat_suc n)) as leq.
+    assert (|set_type X| ≤ nat_to_card (nat_suc n)) as leq.
     {
         unfold nat_to_card, le; equiv_simpl.
         assert (∀ x : set_type X, (λ x, x < nat_suc n) [x|]) as x_in.
@@ -266,7 +266,7 @@ Proof.
     apply ε_sub.
 
     pose proof (n_pos N) as N_pos.
-    assert ([_|N_pos] <= [_|ε_pos]) as leq.
+    assert ([_|N_pos] ≤ [_|ε_pos]) as leq.
     {
         unfold le; cbn.
         exact (land ltq).
@@ -369,7 +369,7 @@ Proof.
     apply (trans2 ε_sub).
     intros z z_lt.
     unfold open_ball in *; cbn in *.
-    assert (/from_nat (nat_suc (f N)) <= /from_nat (nat_suc N1))
+    assert (/from_nat (nat_suc (f N)) ≤ /from_nat (nat_suc N1))
         as N_ltq.
     {
         apply le_div_pos.
@@ -450,7 +450,7 @@ Proof.
     }
     pose (h e := ex_val (x_ex2 e)).
     pose proof (strong_recursion U c h) as [f [f0 f_gt]].
-    assert (∀ m n, m < n → [ε|] <= d (f m) (f n)) as ε_le_wlog.
+    assert (∀ m n, m < n → [ε|] ≤ d (f m) (f n)) as ε_le_wlog.
     {
         intros m n mn.
         nat_destruct n.
@@ -474,7 +474,7 @@ Proof.
             rewrite nlt_le in x_H.
             exact x_H.
     }
-    assert (∀ m n, m ≠ n → [ε|] <= d (f m) (f n)) as ε_le.
+    assert (∀ m n, m ≠ n → [ε|] ≤ d (f m) (f n)) as ε_le.
     {
         intros m n mn.
         destruct (trichotomy m n) as [[mn'|mn']|mn'].
@@ -822,7 +822,7 @@ Proof.
         apply inter_rsub.
 Qed.
 
-Lemma S_sub2 : ∀ m n, m <= n → [S n|] ⊆ [S m|].
+Lemma S_sub2 : ∀ m n, m ≤ n → [S n|] ⊆ [S m|].
 Proof.
     intros m n leq.
     apply nat_le_ex in leq.
@@ -836,7 +836,7 @@ Proof.
 Qed.
 
 Lemma S_bound : ∀ n x y, [S n|] x → [S n|] y →
-    d x y <= 2 / from_nat (nat_suc n).
+    d x y ≤ 2 / from_nat (nat_suc n).
 Proof.
     intros n x y Snx Sny.
     pose (ε := [_|real_n_div_pos n]).
@@ -886,7 +886,7 @@ Proof.
     pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (archimedean2 (ε / 2) ε2_pos) as [N N_lt].
     exists N.
-    assert (∀ i j, N <= i → i <= j → d (xn i) (xn j) < ε) as wlog.
+    assert (∀ i j, N ≤ i → i ≤ j → d (xn i) (xn j) < ε) as wlog.
     {
         intros i j i_ge ij.
         pose proof (ex_proof (x_ex i)) as Si; cbn in Si.

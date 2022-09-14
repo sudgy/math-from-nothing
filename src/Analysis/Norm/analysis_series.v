@@ -8,7 +8,7 @@ Require Export analysis_norm.
 Definition series {V} `{Plus V, Zero V} (a : nat → V) (n : nat) := sum a 0 n.
 
 Definition cauchy_series {V} `{Plus V, Zero V, AbsoluteValue V} (a : nat → V)
-    := ∀ ε, 0 < ε → ∃ N, ∀ i j, N <= i → |sum a i j| < ε.
+    := ∀ ε, 0 < ε → ∃ N, ∀ i j, N ≤ i → |sum a i j| < ε.
 (* begin hide *)
 
 Section AnalysisSeries.
@@ -99,7 +99,7 @@ Proof.
     specialize (af_conv ε ε_pos) as [N af_conv].
     exists N.
     intros i j i_ge.
-    assert (N <= i + j) as j_ge.
+    assert (N ≤ i + j) as j_ge.
     {
         apply (trans i_ge).
         rewrite <- (plus_rid i) at 1.
@@ -180,7 +180,7 @@ Proof.
     specialize (af_conv i j i_geq) as ltq.
     apply (le_lt_trans2 ltq).
     clear ε ε_pos N af_conv i_geq ltq.
-    assert (0 <= sum (λ n, |af n|) i j) as sum_pos.
+    assert (0 ≤ sum (λ n, |af n|) i j) as sum_pos.
     {
         nat_induction j.
         -   unfold zero at 2; cbn.

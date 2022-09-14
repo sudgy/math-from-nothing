@@ -8,7 +8,7 @@ Section Abs.
 Context {U} `{OrderedField U}.
 (* end hide *)
 
-Definition abs (a : U) := If 0 <= a then a else -a.
+Definition abs (a : U) := If 0 ≤ a then a else -a.
 Notation "| a |" := (abs a) (at level 30).
 
 Theorem abs_zero : 0 = |0|.
@@ -42,7 +42,7 @@ Proof.
         contradiction.
 Qed.
 
-Theorem abs_pos : ∀ x, 0 <= |x|.
+Theorem abs_pos : ∀ x, 0 ≤ |x|.
 Proof.
     intros x.
     unfold abs; case_if [leq|leq].
@@ -61,7 +61,7 @@ Proof.
         exact x_nz.
 Qed.
 
-Theorem abs_pos_eq : ∀ x, 0 <= x → |x| = x.
+Theorem abs_pos_eq : ∀ x, 0 ≤ x → |x| = x.
 Proof.
     intros x x_pos.
     unfold abs; case_if [leq|leq].
@@ -89,7 +89,7 @@ Proof.
         destruct (trans leq1 leq2); contradiction.
 Qed.
 
-Theorem abs_neg_eq : ∀ x, x <= 0 → |x| = -x.
+Theorem abs_neg_eq : ∀ x, x ≤ 0 → |x| = -x.
 Proof.
     intros x x_neg.
     rewrite <- abs_neg.
@@ -108,7 +108,7 @@ Qed.
 
 Theorem abs_mult : ∀ a b, |a * b| = |a| * |b|.
 Proof.
-    assert (∀ a b, 0 <= a → |a * b| = a * |b|) as lem.
+    assert (∀ a b, 0 ≤ a → |a * b| = a * |b|) as lem.
     {
         intros a b a_pos.
         unfold abs at 2; case_if [leq|leq].
@@ -134,7 +134,7 @@ Proof.
         apply n.
 Qed.
 
-Theorem abs_le : ∀ a b, |a| <= b ↔ -b <= a ∧ a <= b.
+Theorem abs_le : ∀ a b, |a| ≤ b ↔ -b ≤ a ∧ a ≤ b.
 Proof.
     intros a b.
     split.
@@ -180,7 +180,7 @@ Proof.
             exact ba.
 Qed.
 
-Theorem abs_le_pos : ∀ x, x <= |x|.
+Theorem abs_le_pos : ∀ x, x ≤ |x|.
 Proof.
     intros x.
     unfold abs; case_if [leq|leq].
@@ -190,14 +190,14 @@ Proof.
         apply (trans leq ltq).
 Qed.
 
-Theorem abs_le_neg : ∀ x, -x <= |x|.
+Theorem abs_le_neg : ∀ x, -x ≤ |x|.
 Proof.
     intros x.
     rewrite <- abs_neg.
     apply abs_le_pos.
 Qed.
 
-Theorem abs_tri : ∀ a b, |a + b| <= |a| + |b|.
+Theorem abs_tri : ∀ a b, |a + b| ≤ |a| + |b|.
 Proof.
     intros a b.
     apply abs_le; split.
@@ -207,7 +207,7 @@ Proof.
     -   apply le_lrplus; apply abs_le_pos.
 Qed.
 
-Theorem abs_reverse_tri : ∀ a b, | |a| - |b| | <= |a - b|.
+Theorem abs_reverse_tri : ∀ a b, | |a| - |b| | ≤ |a - b|.
 Proof.
     intros a b.
     apply abs_le; split.
@@ -223,7 +223,7 @@ Proof.
         exact leq.
 Qed.
 
-Theorem abs_reverse_tri2 : ∀ a b, |a| - |b| <= |a - b|.
+Theorem abs_reverse_tri2 : ∀ a b, |a| - |b| ≤ |a - b|.
 Proof.
     intros a b.
     apply (trans2 (abs_reverse_tri _ _)).

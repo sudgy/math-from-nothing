@@ -40,9 +40,9 @@ Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
 Variable cut : real → Prop.
 Hypothesis cut_in : ∃ a, cut a.
 Hypothesis cut_out : ∃ a, ¬cut a.
-Hypothesis cut_lt : ∀ l u, cut u → l <= u → cut l.
+Hypothesis cut_lt : ∀ l u, cut u → l ≤ u → cut l.
 
-Theorem cut_gt : ∀ l u, ¬cut l → l <= u → ¬cut u.
+Theorem cut_gt : ∀ l u, ¬cut l → l ≤ u → ¬cut u.
 Proof.
     intros l u l_nin lu u_in.
     apply l_nin.
@@ -60,7 +60,7 @@ Qed.
 
 Let top_of_cut δ x := cut x ∧ ¬cut (x + δ).
 
-Theorem top_of_cut_in : ∀ a b x, a <= b → top_of_cut a x → top_of_cut b x.
+Theorem top_of_cut_in : ∀ a b x, a ≤ b → top_of_cut a x → top_of_cut b x.
 Proof.
     intros a b x lt [x_in x_nin].
     split; [>exact x_in|].
@@ -71,11 +71,11 @@ Qed.
 Notation "| a |" := (abs a) (at level 30).
 
 Lemma polynomial_bounded_xn : ∀ n a b,
-    ∃ M, ∀ x, a <= x → x <= b →
-    |polynomial_eval (polynomial_xn real_cring n) x| <= M.
+    ∃ M, ∀ x, a ≤ x → x ≤ b →
+    |polynomial_eval (polynomial_xn real_cring n) x| ≤ M.
 Proof.
     intros n a b.
-    classic_case (|a| <= |b|) as [leq|leq].
+    classic_case (|a| ≤ |b|) as [leq|leq].
     -   exists (|b|^n)%nat.
         intros x ax xb.
         rewrite polynomial_eval_xn.
@@ -135,7 +135,7 @@ Proof.
 Qed.
 
 Theorem polynomial_bounded : ∀ (f : polynomial real_cring) a b,
-    ∃ M, ∀ x, a <= x → x <= b → |polynomial_eval f x| <= M.
+    ∃ M, ∀ x, a ≤ x → x ≤ b → |polynomial_eval f x| ≤ M.
 Proof.
     intros f a b.
     induction f as [|f f' n fn fn' IHf] using grade_induction.
@@ -226,7 +226,7 @@ Proof.
         rewrite <- le_plus_0_a_b_ab.
         apply abs_pos.
     }
-    assert (∀ x, a - 1 <= x → x <= b → |(x^n)%nat| < M) as M_max.
+    assert (∀ x, a - 1 ≤ x → x ≤ b → |(x^n)%nat| < M) as M_max.
     {
         intros x ax xb.
         specialize (M'_max x ax xb).
@@ -260,7 +260,7 @@ Proof.
         split.
         -   destruct z_in as [z_in z_nin].
             pose proof (cut_inout _ _ a_in z_nin) as ltq.
-            assert (δ <= 1) as leq.
+            assert (δ ≤ 1) as leq.
             {
                 apply (trans (rmin _ _)).
                 apply (rmin _ _).

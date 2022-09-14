@@ -466,7 +466,7 @@ Proof.
 Qed.
 
 Theorem inter_le {U} : ∀ (SS : (U → Prop) → Prop) S μ,
-    SS S → |set_type S| <= μ → |set_type (⋂ SS)| <= μ.
+    SS S → |set_type S| ≤ μ → |set_type (⋂ SS)| ≤ μ.
 Proof.
     intros SS S μ SS_S eq.
     apply (trans2 eq); clear eq μ.
@@ -492,8 +492,8 @@ Proof.
 Qed.
 
 Theorem union_size_mult {U} : ∀ (SS : (U → Prop) → Prop) κ μ,
-    |set_type SS| <= κ → (∀ S, SS S → |set_type S| <= μ) →
-    |set_type (⋃ SS)| <= κ * μ.
+    |set_type SS| ≤ κ → (∀ S, SS S → |set_type S| ≤ μ) →
+    |set_type (⋃ SS)| ≤ κ * μ.
 Proof.
     intros SS A B A_eq B_ge'.
     classic_case (0 = B) as [B_z|B_nz].

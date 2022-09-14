@@ -20,7 +20,7 @@ Definition limit_point {U} `{Topology U} A x := ∀ S, open S → S x →
     intersects (A - singleton x) S.
 
 Definition seq_lim {U} `{Topology U} (f : sequence U) x :=
-    ∀ S, open S → S x → ∃ N, ∀ n, N <= n → S (f n).
+    ∀ S, open S → S x → ∃ N, ∀ n, N ≤ n → S (f n).
 Definition seq_converges {U} `{Topology U} (f : sequence U) := ∃ x, seq_lim f x.
 
 Definition f_seq_lim {U V} `{Topology U, Topology V} (fn : sequence (U → V)) f:=
@@ -355,7 +355,7 @@ Section BasisLimit.
 Context {U} `{TopologyBasis U}.
 (* end hide *)
 Theorem basis_seq_lim : ∀ f x, seq_lim f x ↔
-    ∀ S, top_basis S → S x → ∃ N, ∀ n, N <= n → S (f n).
+    ∀ S, top_basis S → S x → ∃ N, ∀ n, N ≤ n → S (f n).
 Proof.
     intros f x.
     split.

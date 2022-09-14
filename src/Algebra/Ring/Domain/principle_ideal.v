@@ -123,10 +123,10 @@ Context {U} `{
 (* end hide *)
 Theorem pid_noetherian : ∀ I : nat → Ideal U,
     (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) →
-    ∃ n0, ∀ n, n0 <= n → I n0 = I n.
+    ∃ n0, ∀ n, n0 ≤ n → I n0 = I n.
 Proof.
     intros In I_sub.
-    assert (∀ m n, m <= n → ideal_set (In m) ⊆ ideal_set (In n)) as I_sub2.
+    assert (∀ m n, m ≤ n → ideal_set (In m) ⊆ ideal_set (In n)) as I_sub2.
     {
         intros m n leq.
         apply nat_le_ex in leq as [c eq].

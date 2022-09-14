@@ -63,7 +63,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem sum_zero : ∀ f a b, (∀ n, a <= n → n < a + b → f n = 0) → sum f a b = 0.
+Theorem sum_zero : ∀ f a b, (∀ n, a ≤ n → n < a + b → f n = 0) → sum f a b = 0.
 Proof.
     intros f a b n_zero.
     nat_induction b.
@@ -273,7 +273,7 @@ Proof.
     intros a n.
     remember n as m.
     rewrite Heqm at 1.
-    assert (m <= m) as leq by apply refl.
+    assert (m ≤ m) as leq by apply refl.
     rewrite Heqm in leq at 1.
     clear Heqm.
     nat_induction n.
