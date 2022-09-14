@@ -920,19 +920,19 @@ Proof.
     exact a_ltq.
 Qed.
 
-(* TODO: Get rid of requiring division *)
 Theorem square_one_one_pos : ∀ a, 0 < a → a * a = 1 → a = 1.
 Proof.
     intros a a_pos eq.
-    symmetry in eq.
-    rewrite mult_1_ab_a_db in eq by apply a_pos.
-    destruct (connex 1 a) as [leq|leq].
-    +   pose proof (inv_ge_one _ leq) as leq2.
-        rewrite <- eq in leq2.
-        exact (antisym leq2 leq).
-    +   pose proof (inv_le_one _ a_pos leq) as leq2.
-        rewrite <- eq in leq2.
-        exact (antisym leq leq2).
+    rewrite <- (mult_lid 1) in eq.
+    rewrite <- plus_0_anb_a_b in eq.
+    rewrite dif_squares in eq.
+    rewrite <- plus_0_anb_a_b.
+    classic_contradiction contr.
+    apply mult_zero in eq as [eq|eq]; [>|contradiction].
+    rewrite plus_0_ab_a_nb in eq.
+    rewrite eq in a_pos.
+    apply neg_pos2 in a_pos.
+    destruct (trans a_pos one_pos); contradiction.
 Qed.
 Theorem square_one_one : ∀ a, a * a = 1 → a = 1 ∨ a = -(1).
 Proof.
