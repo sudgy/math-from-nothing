@@ -262,7 +262,7 @@ Proof.
     intros [U1 morphism1 compose1 id1 assoc1 lid1 rid1]
            [U2 morphism2 compose2 id2 assoc2 lid2 rid2] H H' eq1 eq2.
     cbn in *.
-    subst U2.
+    destruct H.
     assert (morphism1 = morphism2) as eq.
     {
         apply functional_ext.
