@@ -236,10 +236,9 @@ Qed.
 Theorem prop_split : ∀ P, {P = True} + {P = False}.
 Proof.
     intros P.
-    classic_case (P = True) as [eq|neq]; [>left|right].
-    -   exact eq.
-    -   rewrite neq_true_false in neq.
-        exact neq.
+    rewrite <- prop_eq_true.
+    rewrite <- prop_eq_false.
+    apply strong_excluded_middle.
 Qed.
 
 Theorem prop_neq : True ≠ False.
