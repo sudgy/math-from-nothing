@@ -12,7 +12,7 @@ Infix "^" := pow_nat : nat_scope.
 (* begin hide *)
 Section Pow.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedField U, @Archimedean U UP UZ UO}.
 
 Local Open Scope nat_scope.
 (* end hide *)
@@ -187,6 +187,41 @@ Proof.
         +   exact a_gt.
         +   apply pow_pos2.
             exact (trans one_pos a_gt).
+Qed.
+
+Theorem arch_pow2 : ∀ ε, 0 < ε → ∃ n, /(2^n) < ε.
+Proof.
+    intros ε ε_pos.
+    pose proof (archimedean2 ε ε_pos) as [n ltq].
+    exists (nat_suc n).
+    apply (trans2 ltq).
+    apply lt_div_pos; [>apply from_nat_pos|].
+    clear ltq.
+    nat_induction n.
+    -   rewrite from_nat_one.
+        rewrite pow_1_nat.
+        rewrite <- lt_plus_0_a_b_ba.
+        exact one_pos.
+    -   rewrite from_nat_suc.
+        apply lt_lplus with 1 in IHn.
+        apply (trans IHn).
+        rewrite (pow_simpl _ (nat_suc n)).
+        rewrite ldist.
+        rewrite mult_rid.
+        apply lt_rplus.
+        clear IHn.
+        nat_induction n.
+        +   rewrite pow_1_nat.
+            rewrite <- lt_plus_0_a_b_ba.
+            exact one_pos.
+        +   apply (trans IHn).
+            rewrite (pow_simpl _ (nat_suc n)).
+            rewrite <- (mult_rid (2^nat_suc n)) at 1.
+            apply lt_lmult_pos.
+            *   apply pow_pos2.
+                exact two_pos.
+            *   rewrite <- lt_plus_0_a_b_ba.
+                exact one_pos.
 Qed.
 (* begin hide *)
 End Pow.

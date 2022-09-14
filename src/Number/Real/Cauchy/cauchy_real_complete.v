@@ -5,9 +5,6 @@ Require Import mult_pow.
 
 Open Scope nat_scope.
 
-(* There are several things I can do to make this proof much simpler, but for
-now it works. *)
-
 Lemma real_lt : ∀ a b, to_equiv_type real_equiv a < to_equiv_type real_equiv b →
     ∃ ε N, 0 < ε ∧ ∀ i, N <= i → r_seq a i + ε < r_seq b i.
 Proof.
@@ -176,40 +173,6 @@ Proof.
             rewrite <- plus_rrmove.
             symmetry; apply plus_half.
     }
-    assert (∀ ε : rat, 0 < ε → ∃ n, /(2^n) < ε) as arch_pow.
-    {
-        intros ε ε_pos.
-        pose proof (archimedean2 ε ε_pos) as [n ltq].
-        exists (nat_suc n).
-        apply (trans2 ltq).
-        apply lt_div_pos; [>apply from_nat_pos|].
-        clear ltq.
-        nat_induction n.
-        -   rewrite from_nat_one.
-            rewrite pow_1_nat.
-            rewrite <- lt_plus_0_a_b_ba.
-            exact one_pos.
-        -   rewrite from_nat_suc.
-            apply lt_lplus with 1 in IHn.
-            apply (trans IHn).
-            rewrite (pow_simpl _ (nat_suc n)).
-            rewrite ldist.
-            rewrite mult_rid.
-            apply lt_rplus.
-            clear IHn.
-            nat_induction n.
-            +   rewrite pow_1_nat.
-                rewrite <- lt_plus_0_a_b_ba.
-                exact one_pos.
-            +   apply (trans IHn).
-                rewrite (pow_simpl _ (nat_suc n)).
-                rewrite <- (mult_rid (2^nat_suc n)) at 1.
-                apply lt_lmult_pos.
-                *   apply pow_pos2.
-                    exact two_pos.
-                *   rewrite <- lt_plus_0_a_b_ba.
-                    exact one_pos.
-    }
     assert (∀ n, 0 < d n) as d_pos.
     {
         intros n.
@@ -271,7 +234,7 @@ Proof.
                 apply ltq.
         }
         pose proof (lt_mult ε_pos (div_pos (d_pos 0))) as ε'_pos.
-        pose proof (arch_pow _ ε'_pos) as [N N_lt].
+        pose proof (arch_pow2 _ ε'_pos) as [N N_lt].
         exists N.
         assert (∀ i j, N <= i → i <= j → |a i - a j| < ε) as wlog.
         {
@@ -353,7 +316,7 @@ Proof.
                 apply d_pos.
         }
         pose proof (lt_mult ε_pos (div_pos (d_pos 0))) as ε'_pos.
-        pose proof (arch_pow _ ε'_pos) as [N N_lt].
+        pose proof (arch_pow2 _ ε'_pos) as [N N_lt].
         exists N.
         assert (∀ i j, N <= i → i <= j → |b i - b j| < ε) as wlog.
         {
@@ -405,7 +368,7 @@ Proof.
     {
         unfold a1, b1; equiv_simpl.
         intros ε ε_pos.
-        pose proof (arch_pow _ (lt_mult ε_pos (div_pos (d_pos 0))))
+        pose proof (arch_pow2 _ (lt_mult ε_pos (div_pos (d_pos 0))))
             as [N N_ltq].
         exists N.
         intros i i_ge.
