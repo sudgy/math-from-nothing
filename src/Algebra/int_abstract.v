@@ -55,6 +55,35 @@ Proof.
     apply plus_comm.
 Qed.
 
+Theorem int_to_abstract_le : ∀ a b,
+    int_to_abstract a <= int_to_abstract b ↔ a <= b.
+Proof.
+    intros a b.
+    equiv_get_value a b.
+    unfold int_to_abstract; equiv_simpl.
+    unfold le at 2; equiv_simpl.
+    destruct a as [a1 a2], b as [b1 b2]; cbn.
+    unfold int_to_abstract_base; cbn.
+    rewrite <- le_plus_lrmove.
+    rewrite plus_comm, plus_assoc.
+    rewrite <- le_plus_rrmove.
+    do 2 rewrite <- from_nat_plus.
+    rewrite from_nat_le.
+    rewrite plus_comm.
+    rewrite (plus_comm b1).
+    reflexivity.
+Qed.
+
+Theorem int_to_abstract_lt : ∀ a b,
+    int_to_abstract a < int_to_abstract b ↔ a < b.
+Proof.
+    intros a b.
+    unfold strict.
+    rewrite int_to_abstract_le.
+    rewrite (f_eq_iff int_to_abstract_eq).
+    reflexivity.
+Qed.
+
 Theorem int_to_abstract_zero : int_to_abstract 0 = 0.
 Proof.
     unfold zero at 1, int_to_abstract; equiv_simpl.

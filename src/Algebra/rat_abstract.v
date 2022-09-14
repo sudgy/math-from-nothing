@@ -6,6 +6,7 @@ Require Import mult_characteristic.
 
 Require Export rat.
 Require Import set.
+Require Import fraction_order.
 
 Section RatAbstract.
 
@@ -67,6 +68,39 @@ Proof.
     apply int_to_abstract_eq in eq.
     rewrite <- eq.
     apply mult_comm.
+Qed.
+
+Theorem rat_to_abstract_le : ∀ a b,
+    rat_to_abstract a <= rat_to_abstract b ↔ a <= b.
+Proof.
+    intros a b.
+    pose proof (frac_pos_ex int a) as [a1 [a2 [a2_pos a_eq]]].
+    pose proof (frac_pos_ex int b) as [b1 [b2 [b2_pos b_eq]]].
+    subst a b.
+    unfold rat_to_abstract; equiv_simpl.
+    pose proof (frac_le int a1 a2 b1 b2 a2_pos b2_pos) as stupid.
+    rewrite stupid; clear stupid.
+    unfold rat_to_abstract_base; cbn.
+    rewrite <- int_to_abstract_lt in a2_pos, b2_pos.
+    rewrite int_to_abstract_zero in a2_pos, b2_pos.
+    rewrite <- le_mult_lrmove_pos by exact b2_pos.
+    rewrite mult_comm, mult_assoc.
+    rewrite <- le_mult_rrmove_pos by exact a2_pos.
+    do 2 rewrite <- int_to_abstract_mult.
+    rewrite int_to_abstract_le.
+    rewrite mult_comm.
+    rewrite (mult_comm b1).
+    reflexivity.
+Qed.
+
+Theorem rat_to_abstract_lt : ∀ a b,
+    rat_to_abstract a < rat_to_abstract b ↔ a < b.
+Proof.
+    intros a b.
+    unfold strict.
+    rewrite rat_to_abstract_le.
+    rewrite (f_eq_iff rat_to_abstract_eq).
+    reflexivity.
 Qed.
 
 Theorem rat_to_abstract_zero : rat_to_abstract 0 = 0.
