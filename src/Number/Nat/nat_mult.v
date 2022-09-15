@@ -64,24 +64,6 @@ Proof.
         reflexivity.
 Qed.
 
-Global Instance nat_mult_comm : MultComm nat.
-Proof.
-    split.
-    intros a b.
-    nat_induction a.
-    -   rewrite nat_mult_lanni_tmp.
-        nat_induction b.
-        +   rewrite nat_mult_lanni_tmp.
-            reflexivity.
-        +   rewrite nat_mult_lsuc.
-            rewrite plus_lid.
-            exact IHb.
-    -   rewrite nat_mult_lsuc.
-        rewrite nat_mult_rsuc.
-        rewrite IHa.
-        reflexivity.
-Qed.
-
 Global Instance nat_ldist : Ldist nat.
 Proof.
     split.
@@ -97,6 +79,20 @@ Proof.
         do 2 rewrite plus_assoc.
         apply rplus.
         apply plus_comm.
+Qed.
+
+Global Instance nat_mult_comm : MultComm nat.
+Proof.
+    split.
+    intros a b.
+    nat_induction a.
+    -   rewrite nat_mult_lanni_tmp.
+        rewrite mult_ranni.
+        reflexivity.
+    -   rewrite nat_mult_lsuc.
+        rewrite nat_mult_rsuc.
+        rewrite IHa.
+        reflexivity.
 Qed.
 
 Global Instance nat_mult_assoc : MultAssoc nat.
