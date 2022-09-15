@@ -64,15 +64,10 @@ Qed.
 Theorem nat_sucs_lt : ∀ a b, nat_suc a < nat_suc b ↔ a < b.
 Proof.
     intros a b.
-    split.
-    -   intros [leq neq].
-        split; [>exact leq|].
-        rewrite nat_suc_eq in neq.
-        exact neq.
-    -   intros [leq neq].
-        split; [>exact leq|].
-        rewrite nat_suc_eq.
-        exact neq.
+    unfold strict.
+    rewrite nat_sucs_le.
+    rewrite nat_suc_eq.
+    reflexivity.
 Qed.
 
 Global Instance nat_le_connex : Connex le.
@@ -261,22 +256,14 @@ Proof.
     -   revert b.
         nat_induction a; intros b eq.
         +   apply nat_pos.
-        +   nat_destruct b.
+        +   rewrite nat_sucs_lt in eq.
+            nat_destruct b.
             *   exfalso.
-                unfold one in eq; cbn in eq.
-                rewrite nat_sucs_lt in eq.
                 exact (nat_neg2 eq).
             *   apply IHa.
-                rewrite nat_sucs_lt in eq.
                 exact eq.
     -   intro eq.
-        split.
-        +   apply (trans eq).
-            apply nat_le_suc.
-        +   intro contr.
-            subst.
-            rewrite <- nlt_le in eq.
-            exact (eq (nat_lt_suc b)).
+        exact (le_lt_trans eq (nat_lt_suc b)).
 Qed.
 Theorem nat_le_suc_lt : ∀ {a b}, nat_suc a ≤ b ↔ a < b.
 Proof.
