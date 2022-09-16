@@ -4,6 +4,7 @@ Require Export nat_base.
 Require Export nat_plus.
 Require Export nat_mult.
 Require Export nat_order.
+Require Export nat_binom.
 
 Fixpoint nat_mult {U} `{Plus U, Zero U} (a : nat) (b : U) :=
     match a with
@@ -14,15 +15,12 @@ Arguments nat_mult : simpl never.
 
 Infix "×" := nat_mult (at level 40, left associativity).
 
-Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
-    match a with
-    | nat_zero => 0
-    | nat_suc a' => 1 + from_nat a'
+Fixpoint pow_nat {U} `{Mult U} `{One U} a b :=
+    match b with
+    | nat_zero => 1
+    | nat_suc b' => pow_nat a b' * a
     end.
-
-Class Archimedean U `{Plus U, Zero U, Order U} := {
-    archimedean : ∀ x y, 0 < x → 0 < y → ∃ n, x < n × y
-}.
+Infix "^" := pow_nat : nat_scope.
 
 (* begin hide *)
 Section NatAbstract.
@@ -39,183 +37,12 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem from_nat_suc : ∀ n, from_nat (nat_suc n) = 1 + from_nat n.
-Proof.
-    reflexivity.
-Qed.
-
-Theorem from_nat_eq_nat : ∀ a, from_nat a = a.
-Proof.
-    nat_induction a.
-    -   reflexivity.
-    -   cbn.
-        rewrite IHa.
-        reflexivity.
-Qed.
-
-Theorem from_nat_zero : from_nat 0 = (zero (U := U)).
-Proof.
-    reflexivity.
-Qed.
-
-Global Arguments from_nat : simpl never.
-
-Theorem from_nat_one : from_nat 1 = (one (U := U)).
-Proof.
-    rewrite <- nat_one_eq.
-    rewrite from_nat_suc.
-    rewrite from_nat_zero.
-    apply plus_rid.
-Qed.
-
-Theorem from_nat_plus : ∀ a b,
-    from_nat (a + b) = from_nat a + from_nat b.
-Proof.
-    intros a b.
-    nat_induction a.
-    -   rewrite from_nat_zero.
-        do 2 rewrite plus_lid.
-        reflexivity.
-    -   rewrite nat_plus_lsuc.
-        do 2 rewrite from_nat_suc.
-        rewrite IHa.
-        apply plus_assoc.
-Qed.
-
-Theorem from_nat_mult : ∀ a b,
-    from_nat (a * b) = from_nat a * from_nat b.
-Proof.
-    intros a b.
-    nat_induction a.
-    -   rewrite mult_lanni.
-        rewrite from_nat_zero.
-        rewrite mult_lanni.
-        reflexivity.
-    -   rewrite nat_mult_lsuc.
-        rewrite from_nat_suc.
-        rewrite rdist.
-        rewrite mult_lid.
-        rewrite from_nat_plus.
-        rewrite IHa.
-        reflexivity.
-Qed.
-
-Theorem from_nat_nat_mult : ∀ a b, from_nat a * b = a × b.
-Proof.
-    intros a b.
-    nat_induction a.
-    -   rewrite from_nat_zero.
-        rewrite nat_mult_zero.
-        apply mult_lanni.
-    -   rewrite from_nat_suc.
-        rewrite rdist, mult_lid.
-        rewrite IHa.
-        rewrite nat_mult_suc.
-        reflexivity.
-Qed.
-
 Theorem nat_mult_one : ∀ a, 1 × a = a.
 Proof.
     intros a.
     rewrite <- nat_one_eq.
     rewrite nat_mult_suc, nat_mult_zero.
     apply plus_rid.
-Qed.
-
-Theorem from_nat_mult_one : ∀ a, a × (one (U := U)) = from_nat a.
-Proof.
-    nat_induction a.
-    -   rewrite nat_mult_zero.
-        rewrite from_nat_zero.
-        reflexivity.
-    -   rewrite nat_mult_suc.
-        rewrite IHa.
-        rewrite from_nat_suc.
-        reflexivity.
-Qed.
-
-Theorem from_nat_pos : ∀ a, 0 < from_nat (nat_suc a).
-Proof.
-    nat_induction a.
-    -   rewrite from_nat_one.
-        exact one_pos.
-    -   rewrite from_nat_suc.
-        apply lt_pos_plus; [>exact one_pos|exact IHa].
-Qed.
-
-Theorem from_nat_pos2 : ∀ a, 0 ≤ from_nat a.
-Proof.
-    nat_induction a.
-    -   rewrite from_nat_zero.
-        apply refl.
-    -   rewrite from_nat_suc.
-        apply le_pos_plus; [>apply one_pos|exact IHa].
-Qed.
-
-Theorem from_nat_eq : ∀ a b, from_nat a = from_nat b → a = b.
-Proof.
-    nat_induction a.
-    -   intros b b_eq.
-        rewrite from_nat_zero in b_eq.
-        nat_destruct b; [>reflexivity|].
-        apply from_nat_pos in b_eq.
-        contradiction b_eq.
-    -   intros b eq.
-        nat_destruct b.
-        +   rewrite from_nat_zero in eq.
-            symmetry in eq.
-            apply from_nat_pos in eq.
-            contradiction eq.
-        +   apply f_equal.
-            apply IHa.
-            do 2 rewrite from_nat_suc in eq.
-            apply plus_lcancel in eq.
-            exact eq.
-Qed.
-
-Theorem from_nat_le : ∀ a b, from_nat a ≤ from_nat b ↔ a ≤ b.
-Proof.
-    intros a b.
-    split.
-    -   revert b.
-        nat_induction a.
-        +   intros b b_ge.
-            apply nat_pos.
-        +   nat_destruct b.
-            *   intros contr.
-                rewrite from_nat_zero in contr.
-                pose proof (from_nat_pos a) as ltq.
-                destruct (lt_le_trans ltq contr); contradiction.
-            *   intros leq.
-                rewrite nat_sucs_le.
-                apply IHa.
-                do 2 rewrite from_nat_suc in leq.
-                apply le_plus_lcancel in leq.
-                exact leq.
-    -   revert b.
-        nat_induction a.
-        +   intros b b_ge.
-            rewrite from_nat_zero.
-            apply from_nat_pos2.
-        +   intros b b_ge.
-            nat_destruct b.
-            *   pose proof (nat_pos2 a) as a_pos.
-                destruct (lt_le_trans a_pos b_ge); contradiction.
-            *   do 2 rewrite from_nat_suc.
-                apply le_lplus.
-                apply IHa.
-                rewrite nat_sucs_le in b_ge.
-                exact b_ge.
-Qed.
-
-Theorem from_nat_lt : ∀ a b,
-    from_nat a < from_nat b ↔ a < b.
-Proof.
-    intros a b.
-    unfold strict.
-    rewrite from_nat_le.
-    rewrite (f_eq_iff from_nat_eq).
-    reflexivity.
 Qed.
 
 Theorem nat_mult_rneg : ∀ a b, -(a × b) = a × (-b).
@@ -229,73 +56,189 @@ Proof.
         rewrite IHa.
         reflexivity.
 Qed.
-
-Let a1 := ∀ x : U, ∃ n, x < from_nat n.
-Let a2 := ∀ ε, 0 < ε → ∃ n, /from_nat (nat_suc n) < ε.
-
-Theorem field_impl_arch1 : a1 → Archimedean U.
-Proof.
-    intros arch.
-    split.
-    unfold a1 in arch; clear a1 a2.
-    intros x y x_pos y_pos.
-    pose proof (arch (x / y)) as [n n_lt].
-    rewrite <- lt_mult_rrmove_pos in n_lt by exact y_pos.
-    rewrite from_nat_nat_mult in n_lt.
-    exists n.
-    exact n_lt.
-Qed.
-
-Theorem field_impl_arch2 : a2 → Archimedean U.
-Proof.
-    intros arch.
-    split.
-    unfold a2 in arch; clear a1 a2.
-    intros x y x_pos y_pos.
-    pose proof (div_pos x_pos) as x'_pos.
-    pose proof (lt_mult x'_pos y_pos) as ε_pos.
-    specialize (arch _ ε_pos) as [n eq].
-    rewrite <- lt_mult_llmove_pos in eq by exact x_pos.
-    rewrite <- lt_mult_rrmove_pos in eq by apply from_nat_pos.
-    rewrite mult_comm in eq.
-    rewrite from_nat_nat_mult in eq.
-    exists (nat_suc n).
-    exact eq.
-Qed.
-
-Context `{@Archimedean U UP UZ UO}.
-
-Theorem archimedean1 : a1.
-Proof.
-    unfold a1; clear a1 a2.
-    intros x.
-    classic_case (0 < x) as [x_pos|x_neg].
-    -   pose proof (archimedean x 1 x_pos one_pos) as [n eq].
-        exists n.
-        rewrite from_nat_mult_one in eq.
-        exact eq.
-    -   rewrite nlt_le in x_neg.
-        exists 1.
-        apply (le_lt_trans x_neg).
-        apply from_nat_pos.
-Qed.
-
-Theorem archimedean2 : a2.
-Proof.
-    pose proof (archimedean1) as arch.
-    unfold a1, a2 in *; clear a1 a2.
-    intros ε ε_pos.
-    specialize (arch (/ε)) as [n eq].
-    nat_destruct n.
-    -   rewrite from_nat_zero in eq.
-        apply div_pos in ε_pos.
-        destruct (trans ε_pos eq); contradiction.
-    -   rewrite <- lt_mult_1_ab_da_b_pos in eq by exact ε_pos.
-        rewrite lt_mult_1_ab_db_a_pos in eq by apply from_nat_pos.
-        exists n.
-        exact eq.
-Qed.
-
 (* begin hide *)
 End NatAbstract.
+(* end hide *)
+
+(* begin hide *)
+Section Pow.
+
+Context {U} `{OrderedField U}.
+
+Local Open Scope nat_scope.
+(* end hide *)
+Theorem pow_simpl : ∀ a n, a ^ (nat_suc n) = a^n * a.
+Proof.
+    intros; reflexivity.
+Qed.
+
+Theorem pow_0_nat : ∀ a, a ^ 0 = 1.
+Proof.
+    intros a.
+    unfold zero; cbn.
+    reflexivity.
+Qed.
+
+Theorem pow_1_nat : ∀ a, a ^ 1 = a.
+Proof.
+    intros a.
+    unfold one; cbn.
+    apply mult_lid.
+Qed.
+
+Theorem one_pow_nat : ∀ n, 1 ^ n = 1.
+Proof.
+    nat_induction n.
+    -   apply pow_0_nat.
+    -   cbn.
+        rewrite IHn.
+        apply mult_lid.
+Qed.
+
+Theorem pow_mult_nat : ∀ a m n, a ^ m * a ^ n = a ^ (m + n).
+Proof.
+    intros a m n.
+    nat_induction n.
+    -   rewrite pow_0_nat, mult_rid.
+        rewrite plus_rid.
+        reflexivity.
+    -   rewrite nat_plus_rsuc.
+        cbn.
+        rewrite mult_assoc.
+        rewrite IHn.
+        reflexivity.
+Qed.
+
+Theorem pow_mult_mult_nat : ∀ a m n, (a ^ m) ^ n = a ^ (m * n).
+Proof.
+    intros a m n.
+    nat_induction n.
+    -   rewrite mult_ranni.
+        do 2 rewrite pow_0_nat.
+        reflexivity.
+    -   cbn.
+        rewrite IHn.
+        rewrite pow_mult_nat.
+        rewrite nat_mult_rsuc.
+        rewrite plus_comm.
+        reflexivity.
+Qed.
+
+Theorem pow_not_zero_nat : ∀ a n, 0 ≠ a → 0 ≠ a ^ n.
+Proof.
+    intros a n a_nz eq.
+    nat_induction n.
+    -   rewrite pow_0_nat in eq.
+        apply not_trivial_one.
+        exact eq.
+    -   apply IHn.
+        cbn in eq.
+        rewrite <- (mult_lanni a) in eq.
+        apply mult_rcancel in eq; auto.
+Qed.
+
+Theorem pow_neg_one_even : ∀ n, (-(1)) ^ (2*n) = 1.
+Proof.
+    intros n.
+    nat_induction n.
+    -   rewrite mult_ranni.
+        apply pow_0_nat.
+    -   rewrite nat_mult_rsuc.
+        rewrite <- pow_mult_nat.
+        rewrite IHn.
+        rewrite mult_rid.
+        unfold one at 2 3, plus; cbn.
+        rewrite mult_lid.
+        rewrite mult_neg_one.
+        apply neg_neg.
+Qed.
+
+Theorem pow_neg_one_odd : ∀ n, (-(1)) ^ (2*n + 1) = -(1).
+Proof.
+    intros n.
+    rewrite <- pow_mult_nat.
+    rewrite pow_neg_one_even.
+    rewrite mult_lid.
+    apply pow_1_nat.
+Qed.
+
+Theorem pow_neg_one_binom2 : ∀ n,
+        (-(1)) ^ binom (nat_suc (nat_suc n)) 2 = -(-(1)) ^ binom n 2.
+Proof.
+    intros n.
+    change 2 with (nat_suc (nat_suc 0)) at 1.
+    do 3 rewrite binom_suc.
+    rewrite binom_zero.
+    rewrite binom_one.
+    rewrite <- plus_assoc.
+    rewrite <- pow_mult_nat.
+    rewrite pow_1_nat.
+    rewrite mult_neg_one.
+    rewrite plus_assoc.
+    rewrite <- (mult_lid n) at 1 2.
+    rewrite <- rdist.
+    rewrite <- pow_mult_nat.
+    rewrite pow_neg_one_even.
+    rewrite mult_lid.
+    reflexivity.
+Qed.
+
+Theorem pow_pos : ∀ a n, 0 ≤ a → 0 ≤ a^n.
+Proof.
+    intros a n a_pos.
+    nat_induction n.
+    -   rewrite pow_0_nat.
+        apply one_pos.
+    -   cbn.
+        apply le_mult; assumption.
+Qed.
+
+Theorem pow_pos2 : ∀ a n, 0 < a → 0 < a^n.
+Proof.
+    intros a n a_pos.
+    nat_induction n.
+    -   rewrite pow_0_nat.
+        exact one_pos.
+    -   cbn.
+        apply lt_mult; assumption.
+Qed.
+
+Theorem pow_le : ∀ a m n, 1 ≤ a → m ≤ n → a^m ≤ a^n.
+Proof.
+    intros a m n a_ge mn.
+    apply nat_le_ex in mn as [c eq]; subst.
+    nat_induction c; [>rewrite plus_rid; apply refl|].
+    rewrite nat_plus_rsuc.
+    cbn.
+    apply (trans IHc).
+    rewrite <- le_mult_1_a_b_ba_pos.
+    +   exact a_ge.
+    +   apply pow_pos2.
+        exact (lt_le_trans one_pos a_ge).
+Qed.
+
+Theorem pow_lt : ∀ a m n, 1 < a → m < n → a^m < a^n.
+Proof.
+    intros a m n a_gt mn.
+    apply nat_lt_ex in mn as [c [c_nz eq]]; subst.
+    nat_destruct c; [>contradiction|].
+    clear c_nz.
+    rewrite nat_plus_rsuc.
+    nat_induction c.
+    -   rewrite plus_rid.
+        cbn.
+        rewrite <- lt_mult_1_a_b_ba_pos.
+        +   exact a_gt.
+        +   apply pow_pos2.
+            exact (trans one_pos a_gt).
+    -   cbn.
+        apply (trans IHc).
+        rewrite nat_plus_rsuc.
+        rewrite <- lt_mult_1_a_b_ba_pos.
+        +   exact a_gt.
+        +   apply pow_pos2.
+            exact (trans one_pos a_gt).
+Qed.
+(* begin hide *)
+End Pow.
 (* end hide *)

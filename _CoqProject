@@ -49,9 +49,7 @@
 
 ./src/Algebra/Mult/mult_ring.v
 ./src/Algebra/Mult/mult_field.v
-./src/Algebra/Mult/mult_pow.v
 ./src/Algebra/Mult/mult_product.v
-./src/Algebra/Mult/mult_characteristic.v
 ./src/Algebra/Mult/mult.v
 
 ./src/Algebra/Relation/relation.v
@@ -75,6 +73,7 @@
 ./src/Number/Nat/nat_minus.v
 ./src/Number/Nat/nat_binom.v
 ./src/Number/Nat/nat_abstract.v
+./src/Number/Nat/nat_from.v
 ./src/Number/Nat/nat.v
 
 ./src/Set/set_base.v

@@ -2,7 +2,6 @@ Require Import init.
 
 Require Import order_minmax.
 Require Import plus_sum.
-Require Import mult_pow.
 
 Require Export analysis_norm.
 Require Import analysis_series.

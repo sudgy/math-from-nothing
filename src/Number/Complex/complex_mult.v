@@ -2,10 +2,10 @@ Require Import init.
 
 Require Export complex_base.
 Require Export complex_plus.
+Require Import nat.
 Require Import rat.
 Require Import real.
 
-Require Import nat_abstract.
 Require Import int_abstract.
 Require Import rat_abstract.
 

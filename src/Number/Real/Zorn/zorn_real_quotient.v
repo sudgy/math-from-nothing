@@ -11,7 +11,6 @@ Require Import order_def.
 Require Import order_self_abs.
 Require Import order_minmax.
 Require Import set.
-Require Import mult_pow.
 Require Import nat_abstract.
 
 Section Quotient.

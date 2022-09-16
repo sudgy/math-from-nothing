@@ -1,9 +1,9 @@
 Require Import init.
 
+Require Import nat.
 Require Import rat.
 Require Import real.
 
-Require Import nat_abstract.
 Require Import int_abstract.
 Require Import rat_abstract.
 

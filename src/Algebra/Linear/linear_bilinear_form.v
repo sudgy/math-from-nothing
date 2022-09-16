@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Import set.
-Require Import mult_characteristic.
+Require Import nat.
 
 Require Import linear_base.
 

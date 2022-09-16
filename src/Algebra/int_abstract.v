@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import nat_abstract.
-Require Import mult_characteristic.
 
 Require Export int.
 Require Import set.

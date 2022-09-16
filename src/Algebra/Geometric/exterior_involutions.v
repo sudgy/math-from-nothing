@@ -4,7 +4,6 @@ Require Import mult_product.
 Require Import card.
 Require Import set.
 Require Import unordered_list.
-Require Import mult_pow.
 
 Require Import linear_grade.
 Require Import module_category.

@@ -10,7 +10,6 @@ Require Import function.
 Require Import nat.
 Require Import mult_div.
 Require Import nat_domain.
-Require Import mult_pow.
 
 (* begin hide *)
 Open Scope card_scope.

@@ -2,7 +2,6 @@ Require Import init.
 
 Require Import int_abstract.
 Require Import fraction_base.
-Require Import mult_characteristic.
 
 Require Export rat.
 Require Import set.

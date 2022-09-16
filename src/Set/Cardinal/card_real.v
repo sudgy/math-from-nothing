@@ -5,7 +5,6 @@ Require Import card.
 Require Import card_types.
 Require Import set.
 Require Import analysis_geometric.
-Require Import mult_pow.
 Require Import analysis_topology.
 Require Import analysis_order.
 Require Import analysis_series.

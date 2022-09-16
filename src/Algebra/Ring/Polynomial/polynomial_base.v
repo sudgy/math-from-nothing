@@ -7,7 +7,6 @@ Require Import algebra_category.
 Require Import nat.
 Require Import set.
 Require Import unordered_list.
-Require Import mult_pow.
 Require Import linear_grade_sum.
 
 Section Polynomial.
