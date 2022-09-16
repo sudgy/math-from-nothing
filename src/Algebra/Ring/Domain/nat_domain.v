@@ -15,14 +15,7 @@ Proof.
         exists (nat_suc a).
         unfold S.
         rewrite nat_mult_rsuc.
-        assert (a ≤ b * a) as eq.
-        {
-            rewrite <- (mult_lid a) at 1.
-            apply nat_le_rmult.
-            nat_destruct b; try contradiction.
-            unfold one; cbn; rewrite nat_sucs_le.
-            apply nat_pos.
-        }
+        pose proof (nat_le_self_lmult a b b_nz) as eq.
         assert (0 < b) as b_pos by (split; try assumption; apply nat_pos).
         apply le_lplus with b in eq.
         apply lt_rplus with a in b_pos.
