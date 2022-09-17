@@ -307,14 +307,8 @@ Proof.
             *   rewrite <- lt_plus_0_a_b_ba.
                 exact one_pos.
 Qed.
-(* begin hide *)
-End FromNat.
-(* end hide *)
 
-Section Characteristic.
-
-Context {U} `{
-    Field U,
+Context `{
     @CharacteristicNot U 2 UP UZ UE,
     @CharacteristicZero U UP UZ UE
 }.
@@ -336,16 +330,12 @@ Next Obligation.
     apply characteristic_zero.
 Qed.
 
-End Characteristic.
-Section Characteristic.
-
-Context {U} `{OrderedField U}.
-
 Global Program Instance not_trivial_char : CharacteristicZero U.
 Next Obligation.
     apply from_nat_pos.
 Qed.
+(* begin hide *)
 
-End Characteristic.
-
+End FromNat.
 Close Scope nat_scope.
+(* end hide *)

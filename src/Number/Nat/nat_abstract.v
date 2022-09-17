@@ -26,6 +26,7 @@ Infix "^" := pow_nat : nat_scope.
 Section NatAbstract.
 
 Context {U} `{OrderedField U}.
+Local Open Scope nat_scope.
 (* end hide *)
 Theorem nat_mult_zero : ∀ a, 0 × a = 0.
 Proof.
@@ -56,17 +57,7 @@ Proof.
         rewrite IHa.
         reflexivity.
 Qed.
-(* begin hide *)
-End NatAbstract.
-(* end hide *)
 
-(* begin hide *)
-Section Pow.
-
-Context {U} `{OrderedField U}.
-
-Local Open Scope nat_scope.
-(* end hide *)
 Theorem pow_simpl : ∀ a n, a ^ (nat_suc n) = a^n * a.
 Proof.
     intros; reflexivity.
@@ -240,5 +231,5 @@ Proof.
             exact (trans one_pos a_gt).
 Qed.
 (* begin hide *)
-End Pow.
+End NatAbstract.
 (* end hide *)
