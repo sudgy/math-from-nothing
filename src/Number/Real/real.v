@@ -50,13 +50,13 @@ Proof.
         destruct Aa as [n eq]; subst a.
         apply lt_plus_lrmove in nup.
         rewrite neg_neg in nup.
-        rewrite <- from_nat_nat_mult in nup.
+        rewrite nat_mult_from in nup.
         rewrite <- (mult_lid y) in nup at 2.
         rewrite <- rdist in nup.
         assert (A ((from_nat n + 1) * y)) as n_in.
         {
             exists (n + 1).
-            rewrite <- from_nat_nat_mult.
+            rewrite nat_mult_from.
             rewrite from_nat_plus.
             rewrite from_nat_one.
             reflexivity.

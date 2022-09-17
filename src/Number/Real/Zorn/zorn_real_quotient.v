@@ -915,7 +915,7 @@ Proof.
     specialize (g_gt y (top_of_cut_in _ _ _ δ_le1 y_in)).
     specialize (g_pos y (top_of_cut_in _ _ _ δ_le3 y_in)).
     rewrite abs_pos_eq in g_gt by apply g_pos.
-    rewrite <- from_nat_nat_mult in n_ltq.
+    rewrite nat_mult_from in n_ltq.
     destruct g_gt as [g_ge g_neq]; clear g_neq.
     apply (le_lmult_pos (from_nat n)) in g_ge.
     2: {
@@ -929,7 +929,7 @@ Proof.
     rewrite polynomial_eval_plus, polynomial_eval_neg.
     rewrite lt_plus_0_anb_b_a.
     applys_eq n_ltq.
-    rewrite <- from_nat_nat_mult.
+    rewrite nat_mult_from.
     rewrite polynomial_eval_mult.
     apply rmult.
     clear.

@@ -337,7 +337,7 @@ Proof.
                 destruct (le_lt_trans m_least (nat_lt_suc m)); contradiction.
             }
             clear m_least.
-            rewrite <- from_nat_nat_mult in am.
+            rewrite nat_mult_from in am.
             rewrite from_nat_rat in am.
             rename m into m'; remember (nat_to_rat m') as m.
             assert (x < m / (m + 1)) as m_eq.
@@ -390,7 +390,7 @@ Proof.
                     rewrite mult_assoc, mult_rid in contr.
                     pose proof (lt_le_trans q_lt contr) as ltq.
                     pose proof (land (rand (rand a_cut)) _ _ au ltq).
-                    rewrite <- from_nat_nat_mult in nam.
+                    rewrite nat_mult_from in nam.
                     rewrite from_nat_rat in nam.
                     change (nat_suc m') with (1 + m') in nam.
                     rewrite plus_comm in nam.
@@ -459,7 +459,7 @@ Proof.
             exists (x / (m * q)), (m * q).
             repeat split.
             *   right.
-                rewrite <- from_nat_nat_mult in nam.
+                rewrite nat_mult_from in nam.
                 rewrite from_nat_rat in nam.
                 change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
                 rewrite nat_to_rat_plus in nam.

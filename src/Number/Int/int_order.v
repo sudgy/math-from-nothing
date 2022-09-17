@@ -380,7 +380,7 @@ Next Obligation.
     replace (nat_suc a × y) with (nat_to_int (nat_suc a) * y).
     2: {
         clear x_eq.
-        rewrite <- from_nat_nat_mult.
+        rewrite nat_mult_from.
         apply rmult.
         (* TODO: Make this a separate theorem *)
         remember (nat_suc a) as n; clear a Heqn.

@@ -13,7 +13,7 @@ Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     end.
 
 Class Characteristic U n `{Plus U, Zero U, One U} := {
-    characteristic : 0 = from_nat n
+    characteristic : 0 = from_nat n ∧ ∀ m, m < n → 0 ≠ from_nat m
 }.
 
 Class CharacteristicNot U n `{Plus U, Zero U, One U} := {
@@ -27,16 +27,21 @@ Class CharacteristicZero U `{Plus U, Zero U, One U} := {
 Class Archimedean U `{Plus U, Zero U, Order U} := {
     archimedean : ∀ x y, 0 < x → 0 < y → ∃ n, x < n × y
 }.
+(* begin hide *)
 
 Open Scope nat_scope.
 
-(* begin hide *)
 Section FromNat.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedField U, @CharacteristicZero U UP UZ UE}.
 (* end hide *)
 
 Theorem from_nat_suc : ∀ n, from_nat (nat_suc n) = 1 + from_nat n.
+Proof.
+    reflexivity.
+Qed.
+
+Theorem from_nat_zero : from_nat 0 = (zero (U := U)).
 Proof.
     reflexivity.
 Qed.
@@ -49,13 +54,28 @@ Proof.
         rewrite IHa.
         reflexivity.
 Qed.
+Global Arguments from_nat : simpl never.
 
-Theorem from_nat_zero : from_nat 0 = (zero (U := U)).
+Theorem from_nat_eq : ∀ a b, from_nat a = from_nat b → a = b.
 Proof.
-    reflexivity.
+    nat_induction a.
+    -   intros b b_eq.
+        rewrite from_nat_zero in b_eq.
+        nat_destruct b; [>reflexivity|].
+        contradiction (characteristic_zero _ b_eq).
+    -   intros b eq.
+        nat_destruct b.
+        +   rewrite from_nat_zero in eq.
+            symmetry in eq.
+            contradiction (characteristic_zero _ eq).
+        +   apply f_equal.
+            apply IHa.
+            do 2 rewrite from_nat_suc in eq.
+            apply plus_lcancel in eq.
+            exact eq.
 Qed.
 
-Theorem from_nat_mult_one : ∀ a, a × (one (U := U)) = from_nat a.
+Theorem nat_mult_rid : ∀ a, a × (one (U := U)) = from_nat a.
 Proof.
     nat_induction a.
     -   rewrite nat_mult_lanni.
@@ -67,9 +87,7 @@ Proof.
         reflexivity.
 Qed.
 
-Global Arguments from_nat : simpl never.
-
-Theorem from_nat_one : from_nat 1 = (one (U := U)).
+Theorem from_nat_one : from_nat (U := U) 1 = 1.
 Proof.
     rewrite <- nat_one_eq.
     rewrite from_nat_suc.
@@ -91,6 +109,27 @@ Proof.
         apply plus_assoc.
 Qed.
 
+Theorem from_nat_two : from_nat (U := U) 2 = 2.
+Proof.
+    rewrite from_nat_plus.
+    rewrite from_nat_one.
+    reflexivity.
+Qed.
+
+Theorem from_nat_three : from_nat (U := U) 3 = 3.
+Proof.
+    rewrite from_nat_plus.
+    rewrite from_nat_one, from_nat_two.
+    reflexivity.
+Qed.
+
+Theorem from_nat_four : from_nat (U := U) 4 = 4.
+Proof.
+    rewrite from_nat_plus.
+    rewrite from_nat_one, from_nat_three.
+    reflexivity.
+Qed.
+
 Theorem from_nat_mult : ∀ a b,
     from_nat (a * b) = from_nat a * from_nat b.
 Proof.
@@ -109,17 +148,17 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem from_nat_nat_mult : ∀ a b, from_nat a * b = a × b.
+Theorem nat_mult_from : ∀ a b, a × b = from_nat a * b.
 Proof.
     intros a b.
     nat_induction a.
     -   rewrite from_nat_zero.
-        rewrite nat_mult_lanni.
-        apply mult_lanni.
-    -   rewrite from_nat_suc.
-        rewrite rdist, mult_lid.
+        rewrite mult_lanni.
+        apply nat_mult_lanni.
+    -   rewrite nat_mult_suc.
         rewrite IHa.
-        rewrite nat_mult_suc.
+        rewrite from_nat_suc.
+        rewrite rdist, mult_lid.
         reflexivity.
 Qed.
 
@@ -139,27 +178,6 @@ Proof.
         apply refl.
     -   rewrite from_nat_suc.
         apply le_pos_plus; [>apply one_pos|exact IHa].
-Qed.
-
-Theorem from_nat_eq : ∀ a b, from_nat a = from_nat b → a = b.
-Proof.
-    nat_induction a.
-    -   intros b b_eq.
-        rewrite from_nat_zero in b_eq.
-        nat_destruct b; [>reflexivity|].
-        apply from_nat_pos in b_eq.
-        contradiction b_eq.
-    -   intros b eq.
-        nat_destruct b.
-        +   rewrite from_nat_zero in eq.
-            symmetry in eq.
-            apply from_nat_pos in eq.
-            contradiction eq.
-        +   apply f_equal.
-            apply IHa.
-            do 2 rewrite from_nat_suc in eq.
-            apply plus_lcancel in eq.
-            exact eq.
 Qed.
 
 Theorem from_nat_le : ∀ a b, from_nat a ≤ from_nat b ↔ a ≤ b.
@@ -207,6 +225,98 @@ Proof.
     reflexivity.
 Qed.
 
+(* begin hide *)
+End FromNat.
+
+(* end hide *)
+Section CharacteristicImply.
+
+Context {U} `{OrderedField U, @CharacteristicZero U UP UZ UE}.
+
+#[refine]
+Local Instance characteristic_zero_not_trivial : NotTrivial U := {
+    not_trivial_a := 0;
+    not_trivial_b := 1;
+}.
+Proof.
+    rewrite <- from_nat_one.
+    apply characteristic_zero.
+Qed.
+
+Global Instance characteristic_zero_two : CharacteristicNot U 2.
+Proof.
+    split.
+    rewrite nat_plus_lsuc.
+    apply characteristic_zero.
+Qed.
+Global Instance characteristic_zero_three : CharacteristicNot U 3.
+Proof.
+    split.
+    rewrite nat_plus_lsuc.
+    apply characteristic_zero.
+Qed.
+Global Instance characteristic_zero_four : CharacteristicNot U 4.
+Proof.
+    split.
+    rewrite nat_plus_lsuc.
+    apply characteristic_zero.
+Qed.
+
+Variable n : nat.
+
+Local Instance characteristic_zero_not : CharacteristicNot U (nat_suc n).
+Proof.
+    split.
+    apply characteristic_zero.
+Qed.
+
+End CharacteristicImply.
+Section CharacteristicSpecific.
+
+Context {U} `{
+    OrderedField U,
+    @CharacteristicNot U 2 UP UZ UE,
+    @CharacteristicNot U 3 UP UZ UE,
+    @CharacteristicNot U 4 UP UZ UE
+}.
+
+Theorem two_nz : 0 ≠ 2.
+Proof.
+    rewrite <- from_nat_two.
+    apply characteristic_not.
+Qed.
+
+Theorem three_nz : 0 ≠ 3.
+Proof.
+    rewrite <- from_nat_three.
+    apply characteristic_not.
+Qed.
+
+Theorem four_nz : 0 ≠ 4.
+Proof.
+    rewrite <- from_nat_four.
+    apply characteristic_not.
+Qed.
+
+End CharacteristicSpecific.
+Section OrderedFieldCharacteristic.
+
+Context {U} `{OrderedField U, @CharacteristicZero U UP UZ UE}.
+
+Global Instance ordered_field_char : CharacteristicZero U.
+Proof.
+    split.
+    apply from_nat_pos.
+Qed.
+
+End OrderedFieldCharacteristic.
+
+(* begin hide *)
+Section Archimedean.
+
+Context {U} `{OrderedField U}.
+
+(* end hide *)
 Let a1 := ∀ x : U, ∃ n, x < from_nat n.
 Let a2 := ∀ ε, 0 < ε → ∃ n, /from_nat (nat_suc n) < ε.
 
@@ -218,7 +328,7 @@ Proof.
     intros x y x_pos y_pos.
     pose proof (arch (x / y)) as [n n_lt].
     rewrite <- lt_mult_rrmove_pos in n_lt by exact y_pos.
-    rewrite from_nat_nat_mult in n_lt.
+    rewrite <- nat_mult_from in n_lt.
     exists n.
     exact n_lt.
 Qed.
@@ -235,7 +345,7 @@ Proof.
     rewrite <- lt_mult_llmove_pos in eq by exact x_pos.
     rewrite <- lt_mult_rrmove_pos in eq by apply from_nat_pos.
     rewrite mult_comm in eq.
-    rewrite from_nat_nat_mult in eq.
+    rewrite <- nat_mult_from in eq.
     exists (nat_suc n).
     exact eq.
 Qed.
@@ -249,7 +359,7 @@ Proof.
     classic_case (0 < x) as [x_pos|x_neg].
     -   pose proof (archimedean x 1 x_pos one_pos) as [n eq].
         exists n.
-        rewrite from_nat_mult_one in eq.
+        rewrite nat_mult_rid in eq.
         exact eq.
     -   rewrite nlt_le in x_neg.
         exists 1.
@@ -307,35 +417,8 @@ Proof.
             *   rewrite <- lt_plus_0_a_b_ba.
                 exact one_pos.
 Qed.
-
-Context `{
-    @CharacteristicNot U 2 UP UZ UE,
-    @CharacteristicZero U UP UZ UE
-}.
-
-Theorem two_nz : 0 ≠ 2.
-Proof.
-    pose proof characteristic_not as neq.
-    rewrite from_nat_plus in neq.
-    rewrite from_nat_one in neq.
-    exact neq.
-Qed.
-
-Local Program Instance characteristic_zero_not_trivial : NotTrivial U := {
-    not_trivial_a := 0;
-    not_trivial_b := 1;
-}.
-Next Obligation.
-    rewrite <- from_nat_one.
-    apply characteristic_zero.
-Qed.
-
-Global Program Instance not_trivial_char : CharacteristicZero U.
-Next Obligation.
-    apply from_nat_pos.
-Qed.
 (* begin hide *)
 
-End FromNat.
+End Archimedean.
 Close Scope nat_scope.
 (* end hide *)
