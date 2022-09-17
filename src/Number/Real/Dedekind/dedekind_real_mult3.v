@@ -412,7 +412,7 @@ Proof.
             }
             nat_destruct m'.
             {
-                rewrite nat_mult_one in nam.
+                rewrite nat_mult_lid in nam.
                 pose proof (dedekind_lt a a_cut _ _ au nam) as ltq1.
                 pose proof (trans ltq1 q_lt) as ltq.
                 exfalso.

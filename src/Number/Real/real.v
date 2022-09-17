@@ -24,7 +24,7 @@ Proof.
     {
         exists y.
         exists 1.
-        symmetry; apply nat_mult_one.
+        symmetry; apply nat_mult_lid.
     }
     assert (has_upper_bound le A) as A_upper.
     {

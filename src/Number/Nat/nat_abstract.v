@@ -11,9 +11,8 @@ Fixpoint nat_mult {U} `{Plus U, Zero U} (a : nat) (b : U) :=
     | nat_zero => 0
     | nat_suc a' => b + nat_mult a' b
     end.
-Arguments nat_mult : simpl never.
-
 Infix "×" := nat_mult (at level 40, left associativity).
+Arguments nat_mult : simpl never.
 
 Fixpoint pow_nat {U} `{Mult U} `{One U} a b :=
     match b with
@@ -28,7 +27,7 @@ Section NatAbstract.
 Context {U} `{OrderedField U}.
 Local Open Scope nat_scope.
 (* end hide *)
-Theorem nat_mult_zero : ∀ a, 0 × a = 0.
+Theorem nat_mult_lanni : ∀ a, 0 × a = 0.
 Proof.
     reflexivity.
 Qed.
@@ -38,19 +37,73 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem nat_mult_one : ∀ a, 1 × a = a.
+Theorem nat_mult_ranni : ∀ a, a × 0 = 0.
+Proof.
+    intros a.
+    nat_induction a.
+    -   apply nat_mult_lanni.
+    -   rewrite nat_mult_suc.
+        rewrite plus_lid.
+        exact IHa.
+Qed.
+
+Theorem nat_mult_lid : ∀ a, 1 × a = a.
 Proof.
     intros a.
     rewrite <- nat_one_eq.
-    rewrite nat_mult_suc, nat_mult_zero.
+    rewrite nat_mult_suc, nat_mult_lanni.
     apply plus_rid.
+Qed.
+
+Theorem nat_mult_ldist : ∀ a b c, a × (b + c) = a × b + a × c.
+Proof.
+    intros a b c.
+    nat_induction a.
+    -   do 3 rewrite nat_mult_lanni.
+        rewrite plus_lid.
+        reflexivity.
+    -   do 3 rewrite nat_mult_suc.
+        do 2 rewrite <- plus_assoc.
+        apply lplus.
+        rewrite plus_assoc.
+        rewrite (plus_comm (a × b) c).
+        rewrite <- plus_assoc.
+        apply lplus.
+        exact IHa.
+Qed.
+
+Theorem nat_mult_rdist : ∀ a b c, (a + b) × c = a × c + b × c.
+Proof.
+    intros a b c.
+    nat_induction a.
+    -   rewrite nat_mult_lanni.
+        do 2 rewrite plus_lid.
+        reflexivity.
+    -   rewrite nat_plus_lsuc.
+        do 2 rewrite nat_mult_suc.
+        rewrite IHa.
+        apply plus_assoc.
+Qed.
+
+Theorem nat_mult_mult : ∀ a b c, a × (b × c) = (a * b) × c.
+Proof.
+    intros a b c.
+    nat_induction a.
+    -   rewrite mult_lanni.
+        do 2 rewrite nat_mult_lanni.
+        reflexivity.
+    -   rewrite nat_mult_suc.
+        rewrite nat_mult_lsuc.
+        rewrite IHa.
+        rewrite nat_mult_rdist.
+        reflexivity.
 Qed.
 
 Theorem nat_mult_rneg : ∀ a b, -(a × b) = a × (-b).
 Proof.
     intros a b.
     nat_induction a.
-    -   do 2 rewrite nat_mult_zero.
+    -   do 2 rewrite nat_mult_lanni.
         apply neg_zero.
     -   do 2 rewrite nat_mult_suc.
         rewrite neg_plus.

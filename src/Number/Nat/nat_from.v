@@ -58,7 +58,7 @@ Qed.
 Theorem from_nat_mult_one : ∀ a, a × (one (U := U)) = from_nat a.
 Proof.
     nat_induction a.
-    -   rewrite nat_mult_zero.
+    -   rewrite nat_mult_lanni.
         rewrite from_nat_zero.
         reflexivity.
     -   rewrite nat_mult_suc.
@@ -114,7 +114,7 @@ Proof.
     intros a b.
     nat_induction a.
     -   rewrite from_nat_zero.
-        rewrite nat_mult_zero.
+        rewrite nat_mult_lanni.
         apply mult_lanni.
     -   rewrite from_nat_suc.
         rewrite rdist, mult_lid.

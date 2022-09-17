@@ -261,7 +261,7 @@ Next Obligation.
     {
         clear n_gt.
         nat_induction n.
-        -   do 2 rewrite nat_mult_zero.
+        -   do 2 rewrite nat_mult_lanni.
             unfold zero at 1; cbn.
             apply aof_ex_f_eq1.
         -   do 2 rewrite nat_mult_suc.
