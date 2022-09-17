@@ -79,7 +79,7 @@ Proof.
             rewrite abs_abs.
             apply r_bound.
         -   intros n.
-            cbn.
+            rewrite nat_pow_suc.
             apply (trans (abs_cs _ _)).
             rewrite <- (mult_rid (|r^n|)) at 2.
             apply le_lmult_pos.
@@ -108,7 +108,7 @@ Proof.
     {
         intros n.
         unfold f, g.
-        rewrite <- pow_mult_nat.
+        rewrite nat_pow_plus.
         apply abs_cs.
     }
     pose proof (seq_lim_le _ _ _ _ fg_leq L_lim2 L2_lim) as leq.
@@ -154,11 +154,10 @@ Proof.
             rewrite <- nle_lt in L_lim.
             apply L_lim; clear L_lim.
             nat_induction N.
-            +   unfold zero; cbn.
-                rewrite mult_lid.
+            +   rewrite nat_pow_one.
                 apply abs_le_pos.
             +   apply (trans IHN).
-                cbn.
+                do 3 rewrite nat_pow_suc.
                 apply (trans2 (abs_le_pos _)).
                 unfold abs at 1; cbn; case_if.
                 *   apply le_lplus.
@@ -375,7 +374,7 @@ Proof.
     {
         intros n.
         nat_induction n.
-        -   rewrite pow_0_nat.
+        -   rewrite nat_pow_zero.
             rewrite mult_rid.
             apply refl.
         -   apply (trans (bn_leq n)).

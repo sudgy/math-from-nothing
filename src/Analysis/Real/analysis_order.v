@@ -420,7 +420,7 @@ Proof.
         cbn.
         rewrite plus_lid.
         unfold an' at 2.
-        rewrite pow_neg_one_even.
+        rewrite nat_pow_neg_even.
         rewrite mult_lid.
         reflexivity.
     }
@@ -477,8 +477,8 @@ Proof.
             unfold an'.
             change (nat_suc (2*n)) with (1 + 2*n).
             rewrite (plus_comm 1 (2*n)).
-            rewrite pow_neg_one_even.
-            rewrite pow_neg_one_odd.
+            rewrite nat_pow_neg_even.
+            rewrite nat_pow_neg_odd.
             rewrite mult_lid.
             rewrite mult_neg_one.
             apply le_plus_0_anb_b_a.
@@ -525,7 +525,7 @@ Proof.
                 rewrite <- plus_assoc.
                 rewrite <- (mult_rid 2) at 4.
                 rewrite <- ldist.
-                rewrite pow_neg_one_even, pow_neg_one_odd.
+                rewrite nat_pow_neg_even, nat_pow_neg_odd.
                 rewrite mult_lid, mult_neg_one.
                 apply le_plus_nab_0_b_a.
                 apply an_dec.
@@ -539,8 +539,9 @@ Proof.
             rewrite <- plus_assoc.
             apply le_lplus.
             do 2 rewrite plus_lid.
-            unfold an'; cbn.
-            rewrite pow_neg_one_odd.
+            unfold an'.
+            rewrite nat_pow_suc.
+            rewrite nat_pow_neg_odd.
             do 2 rewrite mult_neg_one.
             rewrite neg_neg.
             rewrite mult_lid.

@@ -79,19 +79,19 @@ Proof.
         intros x ax xb.
         rewrite polynomial_eval_xn.
         nat_induction n.
-        +   do 2 rewrite pow_0_nat.
+        +   do 2 rewrite nat_pow_zero.
             rewrite abs_one.
             apply refl.
-        +   cbn.
+        +   do 2 rewrite nat_pow_suc.
             rewrite abs_mult.
             apply (le_rmult_pos (|x|) (abs_pos _)) in IHn.
             apply (trans IHn).
             apply le_lmult_pos.
             *   clear.
                 nat_induction n.
-                --  rewrite pow_0_nat.
+                --  rewrite nat_pow_zero.
                     apply one_pos.
-                --  cbn.
+                --  rewrite nat_pow_suc.
                     apply le_mult; [>exact IHn|apply abs_pos].
             *   apply abs_le.
                 split.
@@ -108,17 +108,17 @@ Proof.
         intros x ax xb.
         rewrite polynomial_eval_xn.
         nat_induction n.
-        +   do 2 rewrite pow_0_nat.
+        +   do 2 rewrite nat_pow_zero.
             rewrite abs_one.
             apply refl.
-        +   cbn.
+        +   do 2 rewrite nat_pow_suc.
             rewrite abs_mult.
             apply (le_rmult_pos (|x|) (abs_pos _)) in IHn.
             apply (trans IHn).
             apply le_lmult_pos.
             *   clear.
                 nat_induction n.
-                --  rewrite pow_0_nat.
+                --  rewrite nat_pow_zero.
                     apply one_pos.
                 --  cbn.
                     apply le_mult; [>exact IHn|apply abs_pos].
@@ -172,7 +172,7 @@ Proof.
         exists 1.
         split; [>exact one_pos|].
         intros x y x_in y_in.
-        do 2 rewrite pow_0_nat.
+        do 2 rewrite nat_pow_zero.
         rewrite plus_rinv.
         rewrite <- abs_zero.
         exact ε_pos.
@@ -252,7 +252,7 @@ Proof.
     exists δ.
     split; [>exact δ_pos|].
     intros x y x_in y_in.
-    cbn.
+    do 2 rewrite nat_pow_suc.
     assert (∀ z, top_of_cut δ z → a - 1 < z ∧ z < b) as cut_ab.
     {
         intros z z_in.

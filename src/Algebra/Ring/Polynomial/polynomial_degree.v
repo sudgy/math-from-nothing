@@ -179,13 +179,13 @@ Proof.
     apply f_equal.
     rewrite polynomial_eval_xn.
     nat_destruct n.
-    -   rewrite pow_0_nat.
+    -   rewrite nat_pow_zero.
         change (polynomial_xn F 0) with 1.
         rewrite <- to_polynomial_one.
         rewrite to_polynomial_coefficient_zero.
         reflexivity.
-    -   cbn.
-        rewrite mult_ranni.
+    -   rewrite zero_nat_pow by apply nat_zero_suc.
+        cbn.
         unfold single_to_grade_sum_base; cbn.
         destruct (strong_excluded_middle (nat_suc n = 0)) as [eq|neq];
             [>inversion eq|].

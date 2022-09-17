@@ -111,7 +111,7 @@ Proof.
     pose proof (grade_project_grade A 0) as A0.
     rewrite (geo_reverse_grade _ _ _ A0).
     unfold zero at 1, one at 2 3, plus, binom; cbn.
-    rewrite pow_0_nat.
+    rewrite nat_pow_zero.
     apply scalar_id.
 Qed.
 
@@ -145,10 +145,10 @@ Proof.
         rewrite (geo_reverse_grade _ _ _ bn).
         rewrite scalar_lmult, scalar_rmult.
         rewrite scalar_comp.
-        rewrite pow_mult_nat.
+        rewrite <- nat_pow_plus.
         rewrite <- (mult_lid (binom n 2)).
         rewrite <- rdist.
-        rewrite pow_neg_one_even.
+        rewrite nat_pow_neg_even.
         rewrite scalar_id.
         reflexivity.
     -   apply (scalar_to_geo_eq B).

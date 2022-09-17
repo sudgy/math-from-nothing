@@ -409,7 +409,7 @@ Proof.
         unfold f in eq; cbn in eq.
         apply mult_zero in eq.
         destruct eq as [eq|eq].
-        -   apply pow_not_zero_nat in eq; try contradiction.
+        -   apply nat_pow_not_zero in eq; try contradiction.
             intro contr; inversion contr.
         -   apply nat_plus_zero in eq.
             destruct eq as [C0 C1]; inversion C1.
@@ -424,13 +424,13 @@ Proof.
         revert b1 eq2.
         nat_induction a1.
         +   intros b1 eq.
-            rewrite pow_0_nat, mult_lid in eq.
+            rewrite nat_pow_zero, mult_lid in eq.
             nat_destruct b1.
-            *   rewrite pow_0_nat, mult_lid in eq.
+            *   rewrite nat_pow_zero, mult_lid in eq.
                 apply plus_rcancel in eq.
                 apply nat_mult_lcancel in eq; try exact two_nz.
                 rewrite eq; reflexivity.
-            *   cbn in eq.
+            *   rewrite nat_pow_suc in eq.
                 rewrite (mult_comm _ 2) in eq.
                 rewrite <- mult_assoc in eq.
                 do 2 rewrite (mult_comm 2) in eq.
@@ -439,14 +439,14 @@ Proof.
                 contradiction.
         +   intros b1 eq.
             nat_destruct b1.
-            *   rewrite pow_0_nat, mult_lid in eq.
-                cbn in eq.
+            *   rewrite nat_pow_zero, mult_lid in eq.
+                rewrite nat_pow_suc in eq.
                 rewrite (mult_comm _ 2) in eq.
                 rewrite <- mult_assoc in eq.
                 do 3 rewrite (mult_comm 2) in eq.
                 apply nat_even_neq_odd in eq.
                 contradiction.
-            *   cbn in eq.
+            *   do 2 rewrite nat_pow_suc in eq.
                 do 2 rewrite (mult_comm _ 2) in eq.
                 do 2 rewrite <- mult_assoc in eq.
                 apply mult_lcancel in eq; try exact two_nz.
@@ -465,12 +465,12 @@ Proof.
             {
                 clear.
                 nat_induction n.
-                -   rewrite pow_1_nat.
+                -   rewrite nat_pow_one.
                     split.
                     +   unfold le, one, plus; cbn.
                         exact true.
                     +   intro contr; inversion contr.
-                -   rewrite pow_simpl.
+                -   rewrite nat_pow_suc.
                     apply lt_lplus with 1 in IHn.
                     change (1 + nat_suc n) with (nat_suc (nat_suc n)) in IHn.
                     apply (trans IHn).
@@ -479,13 +479,13 @@ Proof.
                     apply lt_rplus.
                     clear IHn.
                     nat_induction n.
-                    +   rewrite pow_1_nat.
+                    +   rewrite nat_pow_one.
                         split.
                         *   unfold one, plus, le; cbn.
                             exact true.
                         *   intro contr; inversion contr.
                     +   apply (trans IHn).
-                        rewrite (pow_simpl _ (nat_suc n)).
+                        rewrite (nat_pow_suc _ (nat_suc n)).
                         rewrite ldist.
                         rewrite mult_rid.
                         rewrite <- plus_lid at 1.
@@ -497,7 +497,7 @@ Proof.
                             as [C0 C1]; contradiction.
             }
             nat_destruct y.
-            -   rewrite pow_0_nat in div.
+            -   rewrite nat_pow_zero in div.
                 pose proof (le_lt_trans div (make_and (nat_pos 1) not_trivial_one))
                     as [C0 C1]; contradiction.
             -   specialize (ltq y).
@@ -507,7 +507,7 @@ Proof.
         nat_destruct x1.
         {
             unfold S in Sx1.
-            rewrite pow_0_nat in Sx1.
+            rewrite nat_pow_zero in Sx1.
             pose proof (one_divides y).
             contradiction.
         }
@@ -525,9 +525,9 @@ Proof.
         {
             intros [d d_eq].
             subst c.
-            rewrite <- (pow_1_nat 2) in c_eq at 1.
+            rewrite <- (nat_pow_one 2) in c_eq at 1.
             rewrite <- mult_assoc in c_eq.
-            rewrite pow_mult_nat in c_eq.
+            rewrite <- nat_pow_plus in c_eq.
             change (1 + x1) with (nat_suc x1) in c_eq.
             unfold divides in Sx1.
             rewrite not_ex in Sx1.

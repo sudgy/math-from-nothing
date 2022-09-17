@@ -340,7 +340,7 @@ Let USMO := module_scalar_id (cring_module F).
 Local Existing Instances USM USML USMR USMC USMO.
 
 Definition polynomial_eval (f : polynomial) (x : U)
-    := free_extend F nat (pow_nat x) f : U.
+    := free_extend F nat (nat_pow x) f : U.
 
 Theorem polynomial_eval_constant :
     ∀ a x : U, polynomial_eval (to_polynomial a) x = a.
@@ -375,7 +375,7 @@ Proof.
     intros x.
     unfold polynomial_x.
     rewrite polynomial_eval_xn.
-    apply pow_1_nat.
+    apply nat_pow_one.
 Qed.
 
 Theorem polynomial_eval_plus : ∀ f g x,
@@ -451,7 +451,7 @@ Proof.
     rewrite (free_bilinear_free F nat).
     unfold polynomial_eval.
     do 3 rewrite (free_extend_free F nat).
-    rewrite pow_mult_nat.
+    rewrite <- nat_pow_plus.
     reflexivity.
 Qed.
 

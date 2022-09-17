@@ -172,7 +172,7 @@ Close Scope card_scope.
                 unfold f', F.
                 case_if.
                 -   unfold scalar_mult; cbn.
-                    rewrite pow_mult_nat.
+                    rewrite <- nat_pow_plus.
                     reflexivity.
                 -   exfalso; apply n0; exact true.
             }
@@ -301,7 +301,7 @@ Close Scope card_scope.
                     do 2 rewrite plus_lid.
                     unfold f', F; case_if.
                     +   rewrite (plus_comm m 1), (plus_assoc n 1 m).
-                        rewrite pow_mult_nat.
+                        rewrite <- nat_pow_plus.
                         reflexivity.
                     +   exfalso; apply n0.
                         rewrite <- (plus_rid n) at 1.

@@ -454,7 +454,7 @@ Proof.
             rewrite <- lt_plus_0_a_b_ba.
             exact nat_one_pos.
         }
-        rewrite pow_0_nat.
+        rewrite nat_pow_zero.
         do 2 rewrite scalar_id.
         apply scalar_to_geo_comm.
     }
@@ -464,7 +464,7 @@ Proof.
     rewrite (ext_reverse_grade _ _ aXn').
     rewrite ext_to_geo_scalar.
     rewrite ext_to_geo_inner.
-    rewrite (pow_neg_one_binom2 n).
+    rewrite (nat_pow_neg_binom2 n).
     pose proof (geo_mult_inner_swap a (G X)) as eq.
     rewrite <- plus_lrmove in eq.
     rewrite <- eq; clear eq.
@@ -486,9 +486,9 @@ Proof.
     rewrite binom_one.
     rewrite plus_comm.
     rewrite mult_lneg.
-    rewrite pow_mult_nat.
+    rewrite <- nat_pow_plus.
     rewrite nat_plus_rsuc.
-    rewrite pow_simpl.
+    rewrite nat_pow_suc.
     rewrite mult_comm.
     rewrite mult_neg_one.
     rewrite neg_neg.

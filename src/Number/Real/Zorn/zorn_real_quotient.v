@@ -839,7 +839,7 @@ Next Obligation.
     pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
     specialize (contr x x_in).
     rewrite polynomial_eval_xn in contr.
-    rewrite pow_0_nat in contr.
+    rewrite nat_pow_zero in contr.
     rewrite abs_one in contr.
     destruct contr; contradiction.
 Qed.
@@ -939,7 +939,7 @@ Proof.
     -   cbn.
         rewrite polynomial_eval_plus.
         rewrite polynomial_eval_xn.
-        rewrite pow_0_nat.
+        rewrite nat_pow_zero.
         rewrite IHn.
         reflexivity.
 Qed.

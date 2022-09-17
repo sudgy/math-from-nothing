@@ -283,26 +283,26 @@ Proof.
     clear ltq.
     nat_induction n.
     -   rewrite from_nat_one.
-        rewrite pow_1_nat.
+        rewrite nat_pow_one.
         rewrite <- lt_plus_0_a_b_ba.
         exact one_pos.
     -   rewrite from_nat_suc.
         apply lt_lplus with 1 in IHn.
         apply (trans IHn).
-        rewrite (pow_simpl _ (nat_suc n)).
+        rewrite (nat_pow_suc _ (nat_suc n)).
         rewrite ldist.
         rewrite mult_rid.
         apply lt_rplus.
         clear IHn.
         nat_induction n.
-        +   rewrite pow_1_nat.
+        +   rewrite nat_pow_one.
             rewrite <- lt_plus_0_a_b_ba.
             exact one_pos.
         +   apply (trans IHn).
-            rewrite (pow_simpl _ (nat_suc n)).
+            rewrite (nat_pow_suc _ (nat_suc n)).
             rewrite <- (mult_rid (2^nat_suc n)) at 1.
             apply lt_lmult_pos.
-            *   apply pow_pos2.
+            *   apply nat_pow_pos2.
                 exact two_pos.
             *   rewrite <- lt_plus_0_a_b_ba.
                 exact one_pos.

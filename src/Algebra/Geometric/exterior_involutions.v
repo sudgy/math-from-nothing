@@ -416,7 +416,7 @@ Proof.
     subst n.
     induction l.
     -   cbn.
-        rewrite pow_0_nat.
+        rewrite nat_pow_zero.
         rewrite scalar_id.
         apply ext_involute_one.
     -   cbn.
@@ -490,7 +490,7 @@ Proof.
     subst n.
     induction l.
     -   cbn.
-        rewrite pow_0_nat.
+        rewrite nat_pow_zero.
         rewrite scalar_id.
         apply ext_reverse_one.
     -   rewrite list_image_add; cbn.
@@ -510,15 +510,15 @@ Proof.
         rewrite nat_plus_lsuc.
         unfold plus at 2; cbn.
         rewrite binom_suc.
-        rewrite pow_mult_nat.
+        rewrite <- nat_pow_plus.
         change (nat_suc 1) with (one (U := nat) + 1).
         rewrite binom_one.
         rewrite (plus_comm n).
         rewrite <- plus_assoc.
-        rewrite <- pow_mult_nat.
+        rewrite nat_pow_plus.
         rewrite <- (mult_lid n) at 3 4.
         rewrite <- rdist.
-        rewrite pow_neg_one_even.
+        rewrite nat_pow_neg_even.
         rewrite mult_rid.
         reflexivity.
 Qed.
