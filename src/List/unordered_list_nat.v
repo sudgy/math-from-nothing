@@ -47,10 +47,8 @@ Theorem func_to_ulist_in {U} : ∀ (f : nat → U) n m, m < n →
     in_ulist (func_to_ulist f n) (f m).
 Proof.
     intros f n m ltq.
-    apply nat_lt_ex in ltq as [c [neq eq]].
+    apply nat_lt_ex in ltq as [c eq].
     subst n.
-    nat_destruct c; try contradiction.
-    clear neq.
     unfold in_ulist, func_to_ulist; equiv_simpl.
     nat_induction c.
     -   change 1 with (nat_suc 0).

@@ -295,9 +295,7 @@ Proof.
         +   apply nat_pow_pos2.
             exact (trans one_pos a_gt).
     }
-    apply nat_lt_ex in mn as [c [c_nz eq]]; subst.
-    nat_destruct c; [>contradiction|].
-    clear c_nz.
+    apply nat_lt_ex in mn as [c eq]; subst.
     rewrite nat_plus_rsuc.
     nat_induction c.
     -   rewrite plus_rid.

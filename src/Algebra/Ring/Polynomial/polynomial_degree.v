@@ -687,7 +687,7 @@ Next Obligation.
             rewrite polynomial_coefficient_scalar.
             rewrite <- (polynomial_degree_gt _ _ z_gt).
             rewrite plus_lid.
-            apply nat_lt_ex in z_gt as [d [d_nz d_eq]].
+            apply nat_lt_ex in z_gt as [d d_eq].
             rewrite <- d_eq.
             rewrite <- Heqn.
             rewrite <- c_eq at 2.
@@ -695,11 +695,11 @@ Next Obligation.
             rewrite (plus_comm m c).
             rewrite <- plus_assoc.
             rewrite polynomial_coefficient_xn.
-            assert (m < m + d) as d_gt.
+            assert (m < m + nat_suc d) as d_gt.
             {
                 rewrite <- (plus_rid m) at 1.
                 apply lt_lplus.
-                split; [>apply nat_pos|exact d_nz].
+                apply nat_pos2.
             }
             rewrite <- (polynomial_degree_gt _ _ d_gt).
             rewrite mult_ranni.

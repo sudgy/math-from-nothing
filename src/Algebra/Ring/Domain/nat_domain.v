@@ -63,13 +63,14 @@ Proof.
     rewrite <- c_eq in d_eq.
     destruct (trichotomy d c) as [[ltq|eq]|ltq].
     -   apply nat_lt_ex in ltq.
-        destruct ltq as [x [x_nz x_eq]].
+        destruct ltq as [x x_eq].
         rewrite <- x_eq in d_eq.
         rewrite rdist, <- plus_assoc in d_eq.
         rewrite <- (plus_rid (d * p)) in d_eq at 1.
         apply plus_lcancel in d_eq.
         apply nat_plus_zero in d_eq as [eq1 eq2].
-        apply mult_zero in eq1 as [x_z|p_z]; try contradiction.
+        apply mult_zero in eq1 as [x_z|p_z];
+            [>contradiction (nat_zero_suc x_z)|].
         subst.
         apply not.
         apply refl.
@@ -80,13 +81,13 @@ Proof.
         apply not.
         apply divides_zero.
     -   apply nat_lt_ex in ltq.
-        destruct ltq as [x [x_nz x_eq]].
+        destruct ltq as [x x_eq].
         rewrite <- x_eq in d_eq.
         rewrite rdist in d_eq.
         apply plus_lcancel in d_eq.
         subst.
         apply not.
-        exists x.
+        exists (nat_suc x).
         reflexivity.
 Qed.
 

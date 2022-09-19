@@ -39,9 +39,8 @@ Qed.
 Theorem nat_minus_lt : ∀ a b, a < b → a ¯ b = opt_nil nat.
 Proof.
     intros a b ltq.
-    apply nat_lt_ex in ltq as [c [c_nz eq]].
+    apply nat_lt_ex in ltq as [c eq].
     subst b.
-    nat_destruct c; [>contradiction|]; clear c_nz.
     rewrite nat_plus_rsuc.
     nat_induction a.
     -   unfold zero at 1; cbn.
@@ -125,7 +124,7 @@ Proof.
         rewrite nat_abs_minus_plus.
         apply plus_comm.
     -   rewrite nle_lt in leq.
-        apply nat_lt_ex in leq as [c [c_nz eq]]; subst.
+        apply nat_lt_ex in leq as [c eq]; subst.
         rewrite nat_abs_minus_plus.
         apply plus_comm.
 Qed.

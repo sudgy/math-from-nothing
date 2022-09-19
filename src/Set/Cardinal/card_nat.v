@@ -314,33 +314,33 @@ Proof.
         unfold f in eq2; cbn in eq2.
         destruct (trichotomy m1 m2) as [[leq|eq]|leq].
         +   exfalso.
-            apply nat_lt_ex in leq as [c [c_nz c_eq]].
+            apply nat_lt_ex in leq as [c c_eq].
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- plus_assoc in eq2.
             apply plus_lcancel in eq2.
             rewrite eq2 in n1_lt.
-            pose proof (nat_le_self_rplus (c * b) n2) as eq3.
-            pose proof (nat_le_self_lmult b c c_nz) as eq4.
-            pose proof (trans eq4 eq3) as eq5.
-            pose proof (le_lt_trans eq5 n1_lt) as eq6.
-            destruct eq6; contradiction.
+            rewrite nat_mult_lsuc in n1_lt.
+            rewrite <- plus_assoc in n1_lt.
+            rewrite <- (plus_rid b) in n1_lt at 3.
+            apply lt_plus_lcancel in n1_lt.
+            contradiction (nat_neg2 n1_lt).
         +   subst.
             apply plus_lcancel in eq2.
             subst.
             apply f_equal2; apply set_type_eq; reflexivity.
         +   exfalso.
-            apply nat_lt_ex in leq as [c [c_nz c_eq]].
+            apply nat_lt_ex in leq as [c c_eq].
             rewrite <- c_eq in eq2.
             rewrite rdist in eq2.
             rewrite <- plus_assoc in eq2.
             apply plus_lcancel in eq2.
             rewrite <- eq2 in n2_lt.
-            pose proof (nat_le_self_rplus (c * b) n1) as eq3.
-            pose proof (nat_le_self_lmult b c c_nz) as eq4.
-            pose proof (trans eq4 eq3) as eq5.
-            pose proof (le_lt_trans eq5 n2_lt) as eq6.
-            destruct eq6; contradiction.
+            rewrite nat_mult_lsuc in n2_lt.
+            rewrite <- plus_assoc in n2_lt.
+            rewrite <- (plus_rid b) in n2_lt at 3.
+            apply lt_plus_lcancel in n2_lt.
+            contradiction (nat_neg2 n2_lt).
     -   intros [n n_lt].
         nat_destruct b.
         {

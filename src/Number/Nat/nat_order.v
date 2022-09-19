@@ -147,16 +147,15 @@ Proof.
             exact IHa.
 Qed.
 
-Theorem nat_lt_ex : ∀ {a b}, a < b → ∃ c, 0 ≠ c ∧ a + c = b.
+Theorem nat_lt_ex : ∀ {a b}, a < b → ∃ c, a + nat_suc c = b.
 Proof.
     intros a b [ab ab_neq].
     pose proof (nat_le_ex ab) as [c eq].
-    exists c; split.
-    -   intro contr.
-        subst c.
-        rewrite plus_rid in eq.
+    nat_destruct c.
+    -   rewrite plus_rid in eq.
         contradiction.
-    -   exact eq.
+    -   exists c.
+        exact eq.
 Qed.
 
 Global Instance nat_le_lplus : OrderLplus nat.

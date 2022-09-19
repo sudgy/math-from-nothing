@@ -156,11 +156,8 @@ Theorem func_to_list_nth_lt {A} : ∀ f m n (a : A), m < n →
 Proof.
     intros f m n a ltq.
     rewrite func_to_list2_eq.
-    apply nat_lt_ex in ltq as [c [c_nz c_eq]].
+    apply nat_lt_ex in ltq as [c c_eq].
     subst n.
-    nat_destruct c.
-    1: contradiction.
-    clear c_nz.
     rewrite nat_plus_rsuc.
     cbn.
     revert f c a.

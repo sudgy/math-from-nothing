@@ -135,27 +135,29 @@ Proof.
     destruct comps as [comps|comp].
     destruct comps as [comp|comp].
     { (* a1 < a2 *)
-        apply nat_lt_ex in comp as [c [c_neq_0 c_eq]].
+        apply nat_lt_ex in comp as [c c_eq].
         rewrite <- c_eq in eq.
         do 2 rewrite rdist in eq.
-        plus_cancel_left (a1 * b1) in eq.
-        plus_cancel_left (a1 * b2) in eq.
-        apply mult_lcancel in eq.
+        do 2 rewrite plus_assoc in eq.
+        rewrite (plus_comm (a1 * b2)) in eq.
+        apply plus_lcancel in eq.
+        apply mult_lcancel in eq; [>|apply nat_zero_suc].
         right; symmetry; exact eq.
-        exact c_neq_0.
     }
     { (* a1 = a2 *)
         left; symmetry; exact comp.
     }
     { (* a1 > a2 *)
-        apply nat_lt_ex in comp as [c [c_neq_0 c_eq]].
+        apply nat_lt_ex in comp as [c c_eq].
         rewrite <- c_eq in eq.
         do 2 rewrite rdist in eq.
-        plus_cancel_left (a2 * b1)%nat in eq.
-        plus_cancel_left (a2 * b2)%nat in eq.
-        apply mult_lcancel in eq.
+        rewrite plus_comm in eq.
+        rewrite (plus_comm _ (a2 * b2)) in eq.
+        do 2 rewrite plus_assoc in eq.
+        rewrite (plus_comm (a2 * b1)) in eq.
+        apply plus_lcancel in eq.
+        apply mult_lcancel in eq; [>|apply nat_zero_suc].
         right; exact eq.
-        exact c_neq_0.
     }
 Qed.
 

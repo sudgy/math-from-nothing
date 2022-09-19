@@ -301,11 +301,8 @@ Theorem list_sum_func_single : ∀ a m n, m < n →
 Proof.
     intros a m n ltq.
     rewrite func_to_list2_eq.
-    apply nat_lt_ex in ltq as [c [c_nz n_eq]].
+    apply nat_lt_ex in ltq as [c n_eq].
     subst n.
-    nat_destruct c.
-    1: contradiction.
-    clear c_nz.
     unfold func_to_list2.
     rewrite plus_comm.
     rewrite func_to_list2_base_conc.

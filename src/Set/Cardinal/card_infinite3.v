@@ -60,10 +60,8 @@ Lemma create_greater_lt :
     ∀ a b, a < b → strict op (create_greater a) (create_greater b).
 Proof.
     intros a b ltq.
-    apply nat_lt_ex in ltq as [c [c_nz c_eq]].
+    apply nat_lt_ex in ltq as [c c_eq].
     subst b.
-    nat_destruct c; try contradiction.
-    clear c_nz.
     nat_induction c.
     -   rewrite plus_comm.
         unfold one, plus; cbn.
