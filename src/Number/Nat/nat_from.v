@@ -12,16 +12,23 @@ Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     | nat_suc a' => 1 + from_nat a'
     end.
 
-Class Characteristic U n `{Plus U, Zero U, One U} := {
-    characteristic : 0 = from_nat n ∧ ∀ m, m < n → 0 ≠ from_nat m
-}.
+Definition from_nat_kernel {U} `{Plus U, Zero U, One U} (n : nat) :=
+    0 = from_nat (U := U) n ∧ 0 ≠ n.
 
-Class CharacteristicNot U n `{Plus U, Zero U, One U} := {
-    characteristic_not : 0 ≠ from_nat n
+Class Characteristic U n `{Plus U, Zero U, One U} := {
+    characteristic : is_least le from_nat_kernel n
 }.
 
 Class CharacteristicZero U `{Plus U, Zero U, One U} := {
     characteristic_zero : ∀ n, 0 ≠ from_nat (nat_suc n)
+}.
+
+Class FromNatZ U n `{Plus U, Zero U, One U} := {
+    from_nat_z : 0 = from_nat n
+}.
+
+Class FromNatNZ U n `{Plus U, Zero U, One U} := {
+    from_nat_nz : 0 ≠ from_nat n
 }.
 
 Class Archimedean U `{Plus U, Zero U, Order U} := {
@@ -243,19 +250,19 @@ Proof.
     apply characteristic_zero.
 Qed.
 
-Global Instance characteristic_zero_two : CharacteristicNot U 2.
+Global Instance characteristic_zero_two : FromNatNZ U 2.
 Proof.
     split.
     rewrite nat_plus_lsuc.
     apply characteristic_zero.
 Qed.
-Global Instance characteristic_zero_three : CharacteristicNot U 3.
+Global Instance characteristic_zero_three : FromNatNZ U 3.
 Proof.
     split.
     rewrite nat_plus_lsuc.
     apply characteristic_zero.
 Qed.
-Global Instance characteristic_zero_four : CharacteristicNot U 4.
+Global Instance characteristic_zero_four : FromNatNZ U 4.
 Proof.
     split.
     rewrite nat_plus_lsuc.
@@ -264,7 +271,7 @@ Qed.
 
 Variable n : nat.
 
-Local Instance characteristic_zero_not : CharacteristicNot U (nat_suc n).
+Local Instance characteristic_zero_not : FromNatNZ U (nat_suc n).
 Proof.
     split.
     apply characteristic_zero.
@@ -275,27 +282,27 @@ Section CharacteristicSpecific.
 
 Context {U} `{
     OrderedField U,
-    @CharacteristicNot U 2 UP UZ UE,
-    @CharacteristicNot U 3 UP UZ UE,
-    @CharacteristicNot U 4 UP UZ UE
+    @FromNatNZ U 2 UP UZ UE,
+    @FromNatNZ U 3 UP UZ UE,
+    @FromNatNZ U 4 UP UZ UE
 }.
 
 Theorem two_nz : 0 ≠ 2.
 Proof.
     rewrite <- from_nat_two.
-    apply characteristic_not.
+    apply from_nat_nz.
 Qed.
 
 Theorem three_nz : 0 ≠ 3.
 Proof.
     rewrite <- from_nat_three.
-    apply characteristic_not.
+    apply from_nat_nz.
 Qed.
 
 Theorem four_nz : 0 ≠ 4.
 Proof.
     rewrite <- from_nat_four.
-    apply characteristic_not.
+    apply from_nat_nz.
 Qed.
 
 End CharacteristicSpecific.

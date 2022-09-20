@@ -39,7 +39,7 @@ Context {U V} `{
     @MultAssoc U UM,
     @MultLid U UM UO,
     @MultLcancel U UZ UM,
-    @CharacteristicNot U 2 UP UZ UO,
+    @FromNatNZ U 2 UP UZ UO,
     Plus V,
     Zero V,
     ScalarMult U V
