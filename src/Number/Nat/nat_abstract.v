@@ -305,6 +305,38 @@ Proof.
         rewrite nat_plus_rsuc.
         apply lemma.
 Qed.
+
+Theorem nat_pow_le_one : ∀ a n, 1 ≤ a → 1 ≤ a^n.
+Proof.
+    intros a n a_one.
+    nat_induction n.
+    -   rewrite nat_pow_zero.
+        apply refl.
+    -   rewrite nat_pow_suc.
+        rewrite <- (mult_lid 1).
+        apply le_lrmult_pos; [>
+            apply one_pos|
+            apply one_pos|
+            exact IHn|
+            exact a_one
+        ].
+Qed.
+
+Theorem nat_pow_lt_one : ∀ a n, 1 < a → 1 < a^(nat_suc n).
+Proof.
+    intros a n a_one.
+    nat_induction n.
+    -   rewrite nat_pow_one.
+        exact a_one.
+    -   rewrite nat_pow_suc.
+        rewrite <- (mult_lid 1).
+        apply lt_lrmult_pos; [>
+            apply one_pos|
+            apply one_pos|
+            exact IHn|
+            exact a_one
+        ].
+Qed.
 (* begin hide *)
 End NatAbstract.
 (* end hide *)

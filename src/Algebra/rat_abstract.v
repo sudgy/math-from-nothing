@@ -267,7 +267,7 @@ Proof.
     apply lt_plus_rrmove in ltq.
     rewrite mult_lneg in ltq.
     rewrite neg_neg in ltq.
-    pose proof (archimedean1 (a * n')) as [m' m'_ltq].
+    pose proof (archimedean1' (a * n')) as [m' m'_ltq].
     assert (∃ m, a * n' < from_nat m) as S_ex
         by (exists m'; exact m'_ltq).
     pose proof (well_ordered _ S_ex) as [m [m_ltq m_least]].

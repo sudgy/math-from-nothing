@@ -324,7 +324,7 @@ Section Archimedean.
 Context {U} `{OrderedField U}.
 
 (* end hide *)
-Let a1 := ∀ x : U, ∃ n, x < from_nat n.
+Let a1 := ∀ x : U, 0 < x → ∃ n, x < from_nat n.
 Let a2 := ∀ ε, 0 < ε → ∃ n, /from_nat (nat_suc n) < ε.
 
 Theorem field_impl_arch1 : a1 → Archimedean U.
@@ -333,7 +333,7 @@ Proof.
     split.
     unfold a1 in arch; clear a1 a2.
     intros x y x_pos y_pos.
-    pose proof (arch (x / y)) as [n n_lt].
+    pose proof (arch (x / y) (lt_mult x_pos (div_pos y_pos))) as [n n_lt].
     rewrite <- lt_mult_rrmove_pos in n_lt by exact y_pos.
     rewrite <- nat_mult_from in n_lt.
     exists n.
@@ -343,18 +343,15 @@ Qed.
 Theorem field_impl_arch2 : a2 → Archimedean U.
 Proof.
     intros arch.
-    split.
-    unfold a2 in arch; clear a1 a2.
-    intros x y x_pos y_pos.
-    pose proof (div_pos x_pos) as x'_pos.
-    pose proof (lt_mult x'_pos y_pos) as ε_pos.
-    specialize (arch _ ε_pos) as [n eq].
-    rewrite <- lt_mult_llmove_pos in eq by exact x_pos.
-    rewrite <- lt_mult_rrmove_pos in eq by apply from_nat_pos.
-    rewrite mult_comm in eq.
-    rewrite <- nat_mult_from in eq.
+    apply field_impl_arch1.
+    unfold a1; unfold a2 in arch; clear a1 a2.
+    intros x x_pos.
+    specialize (arch _ (div_pos x_pos)) as [n n_ltq].
     exists (nat_suc n).
-    exact eq.
+    apply lt_div_pos in n_ltq; [>|apply div_pos; apply from_nat_pos].
+    rewrite div_div in n_ltq by apply x_pos.
+    rewrite div_div in n_ltq by apply from_nat_pos.
+    exact n_ltq.
 Qed.
 
 Context `{@Archimedean U UP UZ UO}.
@@ -362,16 +359,11 @@ Context `{@Archimedean U UP UZ UO}.
 Theorem archimedean1 : a1.
 Proof.
     unfold a1; clear a1 a2.
-    intros x.
-    classic_case (0 < x) as [x_pos|x_neg].
-    -   pose proof (archimedean x 1 x_pos one_pos) as [n eq].
-        exists n.
-        rewrite nat_mult_rid in eq.
-        exact eq.
-    -   rewrite nlt_le in x_neg.
-        exists 1.
-        apply (le_lt_trans x_neg).
-        apply from_nat_pos.
+    intros x x_pos.
+    pose proof (archimedean x 1 x_pos one_pos) as [n eq].
+    exists n.
+    rewrite nat_mult_rid in eq.
+    exact eq.
 Qed.
 
 Theorem archimedean2 : a2.
@@ -379,7 +371,7 @@ Proof.
     pose proof (archimedean1) as arch.
     unfold a1, a2 in *; clear a1 a2.
     intros ε ε_pos.
-    specialize (arch (/ε)) as [n eq].
+    specialize (arch (/ε) (div_pos ε_pos)) as [n eq].
     nat_destruct n.
     -   rewrite from_nat_zero in eq.
         apply div_pos in ε_pos.
@@ -390,6 +382,18 @@ Proof.
         exact eq.
 Qed.
 
+Theorem archimedean1' : ∀ x : U, ∃ n, x < from_nat n.
+Proof.
+    intros x.
+    classic_case (0 < x) as [x_pos|x_neg].
+    -   apply archimedean1.
+        exact x_pos.
+    -   rewrite nlt_le in x_neg.
+        exists 1.
+        rewrite from_nat_one.
+        exact (le_lt_trans x_neg one_pos).
+Qed.
+
 Theorem arch_pow2 : ∀ ε, 0 < ε → ∃ n, /(2^n) < ε.
 Proof.
     intros ε ε_pos.
@@ -398,31 +402,22 @@ Proof.
     apply (trans2 ltq).
     apply lt_div_pos; [>apply from_nat_pos|].
     clear ltq.
+    remember (nat_suc n) as n'.
+    clear n Heqn'; rename n' into n.
     nat_induction n.
-    -   rewrite from_nat_one.
-        rewrite nat_pow_one.
-        rewrite <- lt_plus_0_a_b_ba.
+    -   rewrite from_nat_zero.
+        rewrite nat_pow_zero.
         exact one_pos.
     -   rewrite from_nat_suc.
         apply lt_lplus with 1 in IHn.
-        apply (trans IHn).
-        rewrite (nat_pow_suc _ (nat_suc n)).
-        rewrite ldist.
-        rewrite mult_rid.
-        apply lt_rplus.
+        apply (lt_le_trans IHn).
+        rewrite nat_pow_suc.
+        rewrite mult_comm, <- plus_two.
+        apply le_rplus.
         clear IHn.
-        nat_induction n.
-        +   rewrite nat_pow_one.
-            rewrite <- lt_plus_0_a_b_ba.
-            exact one_pos.
-        +   apply (trans IHn).
-            rewrite (nat_pow_suc _ (nat_suc n)).
-            rewrite <- (mult_rid (2^nat_suc n)) at 1.
-            apply lt_lmult_pos.
-            *   apply nat_pow_pos2.
-                exact two_pos.
-            *   rewrite <- lt_plus_0_a_b_ba.
-                exact one_pos.
+        apply nat_pow_le_one.
+        rewrite <- le_plus_0_a_b_ba.
+        apply one_pos.
 Qed.
 (* begin hide *)
 

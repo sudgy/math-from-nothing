@@ -302,63 +302,57 @@ Proof.
 Qed.
 
 (* begin hide *)
-Theorem frac_archimedean : ∀ x : frac U, ∃ n, x < from_nat n.
+Theorem frac_archimedean : ∀ x : frac U, 0 < x → ∃ n, x < from_nat n.
 Proof.
-    intros x.
-    classic_case (0 < x) as [x_pos|x_neg].
-    -   pose proof (frac_pos_ex x) as [a [b [b_pos x_eq]]].
-        destruct x_pos as [x_pos x_neq].
-        rewrite (frac_pos_zero x) in x_pos.
-        subst x.
-        unfold frac_pos in x_pos; equiv_simpl in x_pos.
-        unfold frac_pos_base in x_pos; cbn in x_pos.
-        rewrite <- (mult_lanni [b|]) in x_pos at 1.
-        apply le_mult_rcancel_pos in x_pos; [>|exact b_pos].
-        unfold zero in x_neq; cbn in x_neq.
-        unfold to_frac in x_neq; equiv_simpl in x_neq.
-        unfold frac_eq in x_neq; cbn in x_neq.
-        rewrite mult_lanni, mult_rid in x_neq.
-        pose proof (archimedean a [b|] (make_and x_pos x_neq) b_pos)
-            as [n n_ltq].
-        exists n.
-        apply (lt_mult_rcancel_pos (to_frac U [b|])).
-        1: {
-            unfold zero; cbn.
-            rewrite to_frac_lt.
-            exact b_pos.
-        }
-        assert (to_equiv_type (frac_equiv U) (a, b) * to_frac U [b|] =
-            to_frac U a) as eq.
-        {
-            unfold to_frac, mult at 1; equiv_simpl.
-            unfold frac_eq; cbn.
-            do 2 rewrite mult_rid.
-            reflexivity.
-        }
-        rewrite eq; clear eq.
-        assert (from_nat n * to_frac U [b|] = to_frac U (n × [b|]))as eq.
-        {
-            clear n_ltq.
-            nat_induction n.
-            -   rewrite from_nat_zero.
-                unfold zero at 3; cbn.
-                rewrite mult_lanni.
-                reflexivity.
-            -   cbn.
-                rewrite rdist.
-                rewrite mult_lid.
-                rewrite to_frac_plus.
-                apply lplus.
-                exact IHn.
-        }
-        rewrite eq; clear eq.
+    intros x x_pos.
+    pose proof (frac_pos_ex x) as [a [b [b_pos x_eq]]].
+    destruct x_pos as [x_pos x_neq].
+    rewrite (frac_pos_zero x) in x_pos.
+    subst x.
+    unfold frac_pos in x_pos; equiv_simpl in x_pos.
+    unfold frac_pos_base in x_pos; cbn in x_pos.
+    rewrite <- (mult_lanni [b|]) in x_pos at 1.
+    apply le_mult_rcancel_pos in x_pos; [>|exact b_pos].
+    unfold zero in x_neq; cbn in x_neq.
+    unfold to_frac in x_neq; equiv_simpl in x_neq.
+    unfold frac_eq in x_neq; cbn in x_neq.
+    rewrite mult_lanni, mult_rid in x_neq.
+    pose proof (archimedean a [b|] (make_and x_pos x_neq) b_pos)
+        as [n n_ltq].
+    exists n.
+    apply (lt_mult_rcancel_pos (to_frac U [b|])).
+    1: {
+        unfold zero; cbn.
         rewrite to_frac_lt.
-        exact n_ltq.
-    -   exists 1.
-        rewrite nlt_le in x_neg.
-        apply (le_lt_trans x_neg).
-        rewrite from_nat_one.
-        exact one_pos.
+        exact b_pos.
+    }
+    assert (to_equiv_type (frac_equiv U) (a, b) * to_frac U [b|] =
+        to_frac U a) as eq.
+    {
+        unfold to_frac, mult at 1; equiv_simpl.
+        unfold frac_eq; cbn.
+        do 2 rewrite mult_rid.
+        reflexivity.
+    }
+    rewrite eq; clear eq.
+    assert (from_nat n * to_frac U [b|] = to_frac U (n × [b|]))as eq.
+    {
+        clear n_ltq.
+        nat_induction n.
+        -   rewrite from_nat_zero.
+            unfold zero at 3; cbn.
+            rewrite mult_lanni.
+            reflexivity.
+        -   cbn.
+            rewrite rdist.
+            rewrite mult_lid.
+            rewrite to_frac_plus.
+            apply lplus.
+            exact IHn.
+    }
+    rewrite eq; clear eq.
+    rewrite to_frac_lt.
+    exact n_ltq.
 Qed.
 
 Definition frac_arch := field_impl_arch1 frac_archimedean.

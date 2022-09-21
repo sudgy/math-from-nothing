@@ -779,7 +779,7 @@ Local Instance ub_arch : Archimedean ub.
     pose (xOM := aof_le_mult [ub_A x|]).
     pose (xNT := aof_not_trivial [ub_A x|]).
     pose (xA := aof_arch [ub_A x|]).
-    pose proof (archimedean1 (ub_x x)) as [n [leq neq]].
+    pose proof (archimedean1' (ub_x x)) as [n [leq neq]].
     exists n.
     assert (from_nat n = to_equiv_type ub_equiv
         (make_ub_base (ub_A x) (from_nat n))) as eq.
