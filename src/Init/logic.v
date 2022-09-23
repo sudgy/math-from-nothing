@@ -92,6 +92,30 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem and_assoc : ∀ A B C, A ∧ (B ∧ C) ↔ (A ∧ B) ∧ C.
+Proof.
+    intros A B C.
+    split.
+    -   intros [P1 [P2 P3]].
+        split; [>split|]; assumption.
+    -   intros [[P1 P2] P3].
+        split; [>|split]; assumption.
+Qed.
+
+Theorem or_assoc : ∀ A B C, A ∨ (B ∨ C) ↔ (A ∨ B) ∨ C.
+Proof.
+    intros A B C.
+    split.
+    -   intros [P1|[P2|P3]].
+        +   left; left; exact P1.
+        +   left; right; exact P2.
+        +   right; exact P3.
+    -   intros [[P1|P2]|P3].
+        +   left; exact P1.
+        +   right; left; exact P2.
+        +   right; right; exact P3.
+Qed.
+
 Theorem and_comm : ∀ A B, (A ∧ B) ↔ (B ∧ A).
 Proof.
     intros A B.
@@ -159,9 +183,115 @@ Proof.
         exact PQ.
 Qed.
 Theorem or_from_strong : ∀ P Q, {P} + {Q} → P ∨ Q.
+Proof.
     intros P Q [PQ|PQ].
     -   left; exact PQ.
     -   right; exact PQ.
+Qed.
+
+Theorem or_lfalse : ∀ P, False ∨ P ↔ P.
+Proof.
+    intros P.
+    split.
+    -   intros [H|H].
+        +   contradiction H.
+        +   exact H.
+    -   intros H.
+        right.
+        exact H.
+Qed.
+
+Theorem or_rfalse : ∀ P, P ∨ False ↔ P.
+Proof.
+    intros P.
+    rewrite or_comm.
+    apply or_lfalse.
+Qed.
+
+Theorem or_ltrue : ∀ P, True ∨ P ↔ True.
+Proof.
+    intros P.
+    split.
+    -   intro; exact true.
+    -   intros; left; exact true.
+Qed.
+
+Theorem or_rtrue : ∀ P, P ∨ True ↔ True.
+Proof.
+    intros P.
+    rewrite or_comm.
+    apply or_ltrue.
+Qed.
+
+Theorem and_lfalse : ∀ P, False ∧ P ↔ False.
+Proof.
+    intros P.
+    split.
+    -   intros [H PH].
+        exact H.
+    -   intros H.
+        contradiction H.
+Qed.
+
+Theorem and_rfalse : ∀ P, P ∧ False ↔ False.
+Proof.
+    intros P.
+    rewrite and_comm.
+    apply and_lfalse.
+Qed.
+
+Theorem and_ltrue : ∀ P, True ∧ P ↔ P.
+Proof.
+    intros P.
+    split.
+    -   intros [H PH].
+        exact PH.
+    -   intros H.
+        split.
+        +   exact true.
+        +   exact H.
+Qed.
+
+Theorem and_rtrue : ∀ P, P ∧ True ↔ P.
+Proof.
+    intros P.
+    rewrite and_comm.
+    apply and_ltrue.
+Qed.
+
+Theorem or_idemp : ∀ P, P ∨ P ↔ P.
+Proof.
+    intros P.
+    split.
+    -   intros [H|H]; exact H.
+    -   intros H.
+        left; exact H.
+Qed.
+
+Theorem and_idemp : ∀ P, P ∧ P ↔ P.
+Proof.
+    intros P.
+    split.
+    -   intros [H H'].
+        exact H.
+    -   intros H.
+        split; exact H.
+Qed.
+
+Theorem or_both : ∀ P, (P ∨ ¬P) ↔ True.
+Proof.
+    intros P.
+    split; [>intro; exact true|].
+    intros I.
+    apply excluded_middle.
+Qed.
+
+Theorem and_both : ∀ P, (P ∧ ¬P) ↔ False.
+Proof.
+    intros P.
+    split; [>|intro; contradiction].
+    intros [H nH].
+    contradiction.
 Qed.
 
 Theorem not_true : (¬True) = False.
