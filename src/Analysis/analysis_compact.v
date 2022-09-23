@@ -997,7 +997,7 @@ Proof.
     intros T T_open Tx.
     pose proof (x2_lim T T_open Tx) as [N x2_lim].
     specialize (x2_lim N (refl _)).
-    apply ex_not_empty.
+    apply empty_neq.
     exists (xn2 N).
     revert x2_lim.
     unfold xn2.

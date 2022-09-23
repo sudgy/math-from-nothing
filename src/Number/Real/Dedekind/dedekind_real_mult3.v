@@ -37,7 +37,7 @@ Proof.
             apply lt_plus_0_a_b_ba in ltq.
             apply pos_neg2 in r_pos.
             destruct (trans r_pos ltq); contradiction.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         exists (-(1)).
         left.
         rewrite <- pos_neg.
@@ -60,7 +60,7 @@ Proof.
     -   intros l al.
         classic_case (l ≤ 0) as [l_neg|l_pos].
         +   pose proof (land a_cut) as u_ex.
-            apply not_all_not_ex in u_ex.
+            apply all_neq in u_ex.
             destruct u_ex as [u nau].
             assert (0 < u + 1) as u1_pos.
             {
@@ -312,7 +312,7 @@ Proof.
             {
                 clear - a_cut q_pos a_pos.
                 pose proof (land a_cut) as u_ex.
-                apply not_all_not_ex in u_ex as [u nau].
+                apply all_neq in u_ex as [u nau].
                 pose proof (gt_rat_to_real_in _ _ a_pos) as a0; cbn in a0.
                 pose proof (dedekind_lt a a_cut _ _ a0 nau) as u_pos.
                 pose proof (archimedean u q u_pos q_pos) as [m eq].

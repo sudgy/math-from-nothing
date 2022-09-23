@@ -100,7 +100,7 @@ Proof.
             *   apply (trans F_sub).
                 exact A_sub.
             *   exact w_sup.
-        +   apply not_empty_ex in F_nempty as [x x_in].
+        +   apply empty_neq in F_nempty as [x x_in].
             specialize (F_sub _ x_in).
             apply (trans (rand F_sub)).
             apply w_sup.

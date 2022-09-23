@@ -22,7 +22,7 @@ Proof.
     -   intros contr.
         pose proof (land a_cut) as a_n.
         pose proof (land b_cut) as b_n.
-        apply not_all_not_ex in a_n as [x nax], b_n as [y nby].
+        apply all_neq in a_n as [x nax], b_n as [y nby].
         assert (all (x + y)) as eq by exact true.
         rewrite <- contr in eq.
         destruct eq as [r [s [ar [bs eq]]]].
@@ -31,11 +31,11 @@ Proof.
         pose proof (lt_lrplus ltq1 ltq2) as ltq.
         symmetry in eq.
         destruct ltq; contradiction.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         pose proof (land (rand a_cut)) as a_n.
         pose proof (land (rand b_cut)) as b_n.
-        apply not_empty_ex in a_n as [r ar].
-        apply not_empty_ex in b_n as [s bs].
+        apply empty_neq in a_n as [r ar].
+        apply empty_neq in b_n as [s bs].
         exists (r + s), r, s.
         repeat split; trivial.
     -   intros l u [r [s [ar [bs eq]]]] lu.
@@ -169,7 +169,7 @@ Proof.
     3: split.
     -   intro contr.
         pose proof (land (rand a_cut)) as x_ex.
-        apply not_empty_ex in x_ex as [x ax].
+        apply empty_neq in x_ex as [x ax].
         assert (all (-x)) as x_in by exact true.
         rewrite <- contr in x_in.
         destruct x_in as [r [r_pos nin]].
@@ -180,9 +180,9 @@ Proof.
         apply lt_lplus.
         apply pos_neg2.
         exact r_pos.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         pose proof (land a_cut) as x_ex.
-        apply not_all_not_ex in x_ex.
+        apply all_neq in x_ex.
         destruct x_ex as [x nax].
         exists (-x + -(1)), 1.
         split; try exact one_pos.
@@ -264,7 +264,7 @@ Proof.
         exact (trans ltq t_pos).
     -   intros x_neg.
         pose proof (land a_cut) as u_ex.
-        apply not_all_not_ex in u_ex.
+        apply all_neq in u_ex.
         destruct u_ex as [u nau].
         assert (0 < u) as u_pos.
         {

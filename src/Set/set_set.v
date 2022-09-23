@@ -68,7 +68,7 @@ Qed.
 
 Theorem union_empty {U} : ⋃ (empty (U := U → Prop)) = ∅.
 Proof.
-    apply not_ex_empty.
+    apply empty_eq.
     intros x [A [C Ax]].
     exact C.
 Qed.
@@ -101,7 +101,7 @@ Proof.
 Qed.
 
 Theorem big_union_compl {U} : ∀ SS : (U → Prop) → Prop,
-    complement (⋃ SS) = ⋂ (λ S, SS (complement S)).
+    𝐂 (⋃ SS) = ⋂ (λ S, SS (𝐂 S)).
 Proof.
     intros SS.
     apply predicate_ext.
@@ -109,17 +109,17 @@ Proof.
     -   intros A SSA.
         classic_contradiction nAx.
         apply x_in.
-        exists (complement A).
+        exists (𝐂 A).
         split; assumption.
     -   intros [A [SSA Ax]].
-        specialize (x_in (complement A)).
+        specialize (x_in (𝐂 A)).
         rewrite compl_compl in x_in.
         specialize (x_in SSA).
         contradiction.
 Qed.
 
 Theorem big_inter_compl {U} : ∀ SS : (U → Prop) → Prop,
-    complement (⋂ SS) = ⋃ (λ S, SS (complement S)).
+    𝐂 (⋂ SS) = ⋃ (λ S, SS (𝐂 S)).
 Proof.
     intros SS.
     apply predicate_ext.
@@ -129,7 +129,7 @@ Proof.
         intros A SSA.
         classic_contradiction nAx.
         apply contr; clear contr.
-        exists (complement A).
+        exists (𝐂 A).
         rewrite compl_compl.
         split; assumption.
     -   intros contr.

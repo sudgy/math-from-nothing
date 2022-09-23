@@ -373,7 +373,7 @@ Theorem zero_is_empty {U} : ∀ S : U → Prop, 0 = |set_type S| → S = empty.
 Proof.
     intros S S_0.
     symmetry in S_0.
-    apply not_ex_empty.
+    apply empty_eq.
     intros x Sx.
     unfold zero in S_0; cbn in S_0.
     unfold nat_to_card in S_0; equiv_simpl in S_0.

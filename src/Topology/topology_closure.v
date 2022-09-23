@@ -52,7 +52,7 @@ Proof.
     intros x A.
     split.
     -   intros A'x S S_open Sx eq.
-        apply (A'x (complement S)); try exact Sx.
+        apply (A'x (𝐂 S)); try exact Sx.
         split.
         +   unfold closed.
             rewrite compl_compl.
@@ -62,7 +62,7 @@ Proof.
             assert ((A ∩ S) y) as contr.
             {
                 split; try exact Ay.
-                unfold complement in Sy.
+                unfold 𝐂 in Sy.
                 rewrite not_not in Sy.
                 exact Sy.
             }
@@ -71,11 +71,11 @@ Proof.
     -   intros all_S.
         intros B [B_closed sub].
         classic_contradiction Bx.
-        assert (open (complement B)) as B'_open by exact B_closed.
-        specialize (all_S (complement B) B_closed Bx).
+        assert (open (𝐂 B)) as B'_open by exact B_closed.
+        specialize (all_S (𝐂 B) B_closed Bx).
         unfold intersects in all_S.
         apply all_S.
-        apply not_ex_empty.
+        apply empty_eq.
         intros y [Ay B'y].
         apply sub in Ay.
         contradiction.
@@ -212,13 +212,13 @@ Proof.
         classic_contradiction Ax.
         unfold closed in A'_closed.
         rewrite <- (compl_compl A') in Ax.
-        unfold complement in Ax at 1.
+        unfold 𝐂 in Ax at 1.
         rewrite not_not in Ax.
         unfold open in A'_closed; cbn in A'_closed.
         specialize (A'_closed x Ax) as [B [B_basis [Bx B_sub]]].
         specialize (all_B B B_basis Bx).
         apply all_B.
-        apply not_ex_empty.
+        apply empty_eq.
         intros y [Ay By].
         apply B_sub in By.
         apply sub in Ay.
@@ -253,7 +253,7 @@ Proof.
         assert ((S1 ∩ S2) x) as x_in.
         {
             split; try exact S1x.
-            apply not_empty_ex in y_closure.
+            apply empty_neq in y_closure.
             destruct y_closure as [x' [x'_eq S2x']].
             unfold singleton in x'_eq; subst.
             exact S2x'.

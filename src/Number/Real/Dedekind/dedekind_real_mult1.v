@@ -28,8 +28,8 @@ Proof.
     3: split.
     -   pose proof (land a_cut) as u_ex.
         pose proof (land b_cut) as v_ex.
-        apply not_all_not_ex in u_ex as [u nau].
-        apply not_all_not_ex in v_ex as [v nbv].
+        apply all_neq in u_ex as [u nau].
+        apply all_neq in v_ex as [v nbv].
         intro contr.
         assert (all (u * v)) as eq by exact true.
         rewrite <- contr in eq.
@@ -77,7 +77,7 @@ Proof.
                         apply lt_mult_lcancel_pos in ur; try exact u_pos.
                         pose proof (land (rand (rand b_cut)) _ _ bs ur).
                         contradiction.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         exists (-(1)).
         left.
         apply pos_neg2.

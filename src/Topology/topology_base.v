@@ -16,7 +16,7 @@ Class Topology U := {
 }.
 Arguments open: simpl never.
 
-Definition closed {U} `{Topology U} S := open (complement S).
+Definition closed {U} `{Topology U} S := open (𝐂 S).
 Definition clopen {U} `{Topology U} S := open S ∧ closed S.
 Definition neighborhood {U} `{Topology U} x S := open S ∧ S x.
 
@@ -188,14 +188,14 @@ Qed.
 
 Theorem empty_closed : closed ∅.
 Proof.
-    unfold closed, complement, empty; cbn.
+    unfold closed, 𝐂, empty; cbn.
     rewrite not_false.
     exact all_open.
 Qed.
 
 Theorem all_closed : closed all.
 Proof.
-    unfold closed, complement, all; cbn.
+    unfold closed, 𝐂, all; cbn.
     rewrite not_true.
     exact empty_open.
 Qed.
@@ -203,8 +203,8 @@ Qed.
 Theorem union_closed : ∀ S, S ⊆ closed → finite (|set_type S|) → closed (⋃ S).
 Proof.
     intros S sub S_fin.
-    unfold closed, complement.
-    pose (S' s := ∃ t, S t ∧ s = complement t).
+    unfold closed, 𝐂.
+    pose (S' s := ∃ t, S t ∧ s = 𝐂 t).
     assert ((λ x, ¬(∃ A, S A ∧ A x)) = ⋂ S') as eq.
     {
         apply predicate_ext; intro x; split.
@@ -215,16 +215,16 @@ Proof.
             specialize (not_A SA').
             rewrite <- (compl_compl A') in not_A.
             rewrite <- A'_eq in not_A.
-            unfold complement in not_A.
+            unfold 𝐂 in not_A.
             rewrite not_not in not_A.
             exact not_A.
         -   intros all_A [A [SA Ax]].
-            assert (S' (complement A)) as S'A'.
+            assert (S' (𝐂 A)) as S'A'.
             {
                 exists A.
                 split; auto.
             }
-            specialize (all_A (complement A) S'A').
+            specialize (all_A (𝐂 A) S'A').
             contradiction.
     }
     rewrite eq.
@@ -235,7 +235,7 @@ Proof.
         exact SA'.
     -   apply (le_lt_trans2 S_fin).
         unfold le; equiv_simpl.
-        assert (∀ A : set_type S', S (complement [A|])) as f_in.
+        assert (∀ A : set_type S', S (𝐂 [A|])) as f_in.
         {
             intros [A [A' [SA' A_eq]]]; cbn.
             rewrite A_eq.
@@ -254,8 +254,8 @@ Qed.
 Theorem inter_closed : ∀ S, S ⊆ closed → closed (⋂ S).
 Proof.
     intros S sub.
-    unfold closed, complement.
-    pose (S' s := ∃ t, S t ∧ s = complement t).
+    unfold closed, 𝐂.
+    pose (S' s := ∃ t, S t ∧ s = 𝐂 t).
     assert ((λ x, ¬(∀ A, S A → A x)) = ⋃ S') as eq.
     {
         apply predicate_ext; intro x; split.
@@ -264,7 +264,7 @@ Proof.
             destruct not_A as [A not_A].
             rewrite not_impl in not_A.
             destruct not_A as [SA nAx].
-            exists (complement A).
+            exists (𝐂 A).
             split.
             +   exists A.
                 split; auto.
@@ -298,7 +298,7 @@ Proof.
     apply union_open2; assumption.
 Qed.
 
-Theorem open_complement_closed : ∀ A, open A → closed (complement A).
+Theorem open_complement_closed : ∀ A, open A → closed (𝐂 A).
 Proof.
     intros A A_open.
     unfold closed.

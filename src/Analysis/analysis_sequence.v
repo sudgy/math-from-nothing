@@ -67,7 +67,7 @@ Proof.
             }
             assert (B n x) as Bnx by apply open_ball_self.
             specialize (Ax (B n) B_open Bnx).
-            apply not_empty_ex in Ax as [a a_in].
+            apply empty_neq in Ax as [a a_in].
             rewrite inter_comm in a_in.
             exists a.
             exact a_in.
@@ -137,7 +137,7 @@ Proof.
         unfold limit_point in x_lim.
         specialize (x_lim (open_ball x [_|real_n_div_pos n])).
         specialize (x_lim (open_ball_open _ _) (open_ball_self _ _)).
-        apply not_empty_ex in x_lim.
+        apply empty_neq in x_lim.
         destruct x_lim as [a [[Xa nxa] a_in]].
         exists a.
         unfold singleton in nxa.

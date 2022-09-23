@@ -145,7 +145,7 @@ Proof.
     pose proof (open_ball_open a [_|contr]) as a_open.
     pose proof (open_ball_self a [_|contr]) as a_in.
     specialize (a_lim _ a_open a_in).
-    apply not_empty_ex in a_lim.
+    apply empty_neq in a_lim.
     destruct a_lim as [b [[b_in1 b_na] b_in2]].
     unfold open_ball, closed_ball in *; cbn in *.
     clear - b_in1 b_in2.
@@ -215,7 +215,7 @@ Proof.
     -   apply open_ball_self.
     -   apply open_ball_self.
     -   unfold disjoint.
-        apply not_ex_empty.
+        apply empty_eq.
         intros x [x_in1 x_in2].
         unfold open_ball in *.
         cbn in *.

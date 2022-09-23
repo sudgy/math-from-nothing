@@ -101,7 +101,7 @@ Proof.
         apply x_lt.
     }
     pose proof (sup_complete A'' A'_ex A'_upper) as [α [α_upper α_least]].
-    assert (A = complement B) as A_compl.
+    assert (A = 𝐂 B) as A_compl.
     {
         apply antisym.
         -   intros x Ax Bx.
@@ -116,7 +116,7 @@ Proof.
             +   exact Ax.
             +   contradiction.
     }
-    assert (B = complement A) as B_compl.
+    assert (B = 𝐂 A) as B_compl.
     {
         rewrite A_compl.
         rewrite compl_compl.
@@ -171,7 +171,7 @@ Proof.
         rewrite closed_limit_points in A_closed.
         apply A_closed.
         intros SC SC_open SCα.
-        apply ex_not_empty.
+        apply empty_neq.
         destruct SC_open as [UC [UC_open C_eq]].
         rewrite C_eq in SCα.
         specialize (UC_open _ SCα) as [BC [BC_basis [BCα BC_sub]]].
@@ -330,7 +330,7 @@ Proof.
         rewrite closed_limit_points in B_closed.
         apply B_closed.
         intros SC SC_open SCα.
-        apply ex_not_empty.
+        apply empty_neq.
         destruct SC_open as [UC [UC_open C_eq]].
         rewrite C_eq in SCα.
         specialize (UC_open _ SCα) as [BC [BC_basis [BCα BC_sub]]].
@@ -411,7 +411,7 @@ Proof.
     intros S S_convex A B AB_sep.
     pose proof (land AB_sep) as A_ex.
     pose proof (land (rand AB_sep)) as B_ex.
-    apply not_empty_ex in A_ex, B_ex.
+    apply empty_neq in A_ex, B_ex.
     destruct A_ex as [a Aa].
     destruct B_ex as [b Bb].
     destruct (trichotomy a b) as [[ab|ab]|ab].

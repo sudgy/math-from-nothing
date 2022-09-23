@@ -373,7 +373,7 @@ Proof.
     {
         assert (⋃ SS = ∅) as eq.
         {
-            apply not_ex_empty.
+            apply empty_eq.
             intros x [A [SS_A Ax]].
             exact (U_nex x).
         }
@@ -387,7 +387,7 @@ Proof.
     -   intros SS SS_empty S_fin.
         assert (⋃ SS = ∅) as eq.
         {
-            apply not_ex_empty.
+            apply empty_eq.
             intros x [A [SS_A Ax]].
             apply zero_is_empty in SS_empty.
             rewrite SS_empty in SS_A.

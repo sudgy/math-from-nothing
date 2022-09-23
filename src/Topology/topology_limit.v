@@ -61,8 +61,8 @@ Proof.
         +   rewrite in_closure.
             intros S S_open Sx.
             specialize (x_lim S S_open Sx).
-            apply not_empty_ex in x_lim.
-            apply ex_not_empty.
+            apply empty_neq in x_lim.
+            apply empty_neq.
             destruct x_lim as [y y_in].
             exists y.
             split; apply y_in.
@@ -94,7 +94,7 @@ Proof.
     intros S S_open Sx.
     specialize (lim S S_open Sx) as [N lim].
     specialize (lim N (refl _)).
-    apply ex_not_empty.
+    apply empty_neq.
     exists (f N).
     split.
     -   apply Af.
@@ -114,9 +114,9 @@ Theorem limit_point_sub : ∀ A B x,
 Proof.
     intros A B x sub A_lim S S_open Sx.
     specialize (A_lim S S_open Sx).
-    apply not_empty_ex in A_lim.
+    apply empty_neq in A_lim.
     destruct A_lim as [y [[Ay yx] Sy]].
-    apply ex_not_empty.
+    apply empty_neq.
     exists y.
     repeat split.
     -   exact (sub y (make_and Ay yx)).
@@ -135,9 +135,9 @@ Proof.
     pose proof Sx as Tx.
     rewrite S_eq in Tx.
     specialize (lim _ T_open Tx).
-    apply not_empty_ex in lim.
+    apply empty_neq in lim.
     destruct lim as [y [[Ay y_neq] Ty]].
-    apply ex_not_empty.
+    apply empty_neq.
     exists [y|sub y Ay].
     repeat split.
     -   exact Ay.
@@ -278,7 +278,7 @@ Proof.
         apply finite_point_closed in X_fin.
         unfold closed in X_fin.
         rename X_fin into X'_open.
-        pose (Y := S ∩ complement X).
+        pose (Y := S ∩ 𝐂 X).
         assert (open Y) as Y_open.
         {
             unfold Y.
@@ -293,14 +293,14 @@ Proof.
                 contradiction.
         }
         specialize (x_lim Y Y_open Yx).
-        apply not_empty_ex in x_lim.
+        apply empty_neq in x_lim.
         destruct x_lim as [a [[Aa nax] Ya]].
         unfold Y, X in Ya.
-        unfold complement, intersection, set_minus, singleton in Ya.
+        unfold 𝐂, intersection, set_minus, singleton in Ya.
         rewrite not_and, not_and, not_not in Ya.
         destruct Ya as [Sa [[Aa'|ax]|Sa']]; contradiction.
     -   intros all_S S S_open Sx.
-        apply ex_not_empty.
+        apply empty_neq.
         specialize (all_S S S_open Sx).
         unfold infinite in all_S.
         apply (lt_le_trans (nat_is_finite 2)) in all_S as [all_S C0]; clear C0.
@@ -343,7 +343,7 @@ Proof.
     specialize (y_lim S2 S2_open S2y) as [N2 y_lim].
     specialize (x_lim (max N1 N2) (lmax N1 N2)).
     specialize (y_lim (max N1 N2) (rmax N1 N2)).
-    apply (empty_not_ex _ dis (f (max N1 N2))).
+    apply (land (empty_eq _) dis (f (max N1 N2))).
     split; assumption.
 Qed.
 

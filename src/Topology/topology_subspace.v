@@ -156,10 +156,10 @@ Theorem subspace_inter_closed : ∀ A B, closed B → A = B ∩ X →
 Proof.
     intros A B B_closed A_eq.
     unfold closed in B_closed.
-    assert (open (λ x : set_type X, (complement B) [x|])) as B'_open.
+    assert (open (λ x : set_type X, (𝐂 B) [x|])) as B'_open.
     {
         unfold open; cbn.
-        exists (complement B).
+        exists (𝐂 B).
         split.
         -   exact B_closed.
         -   apply antisym; cbn.
@@ -169,8 +169,8 @@ Proof.
                 exact nBx.
     }
     unfold closed.
-    assert (complement (to_set_type X A) =
-        (λ x : set_type X, complement B [x|])) as eq.
+    assert (𝐂 (to_set_type X A) =
+        (λ x : set_type X, 𝐂 B [x|])) as eq.
     {
         apply antisym.
         -   intros [x Xx] nAx Bx; cbn in *.
@@ -190,13 +190,13 @@ Proof.
     intros A sub A'_closed.
     unfold closed in A'_closed.
     destruct A'_closed as [S [S_open S_eq]].
-    exists (complement S).
+    exists (𝐂 S).
     split.
     +   apply open_complement_closed.
         exact S_open.
-    +   apply (f_equal complement) in S_eq.
+    +   apply (f_equal 𝐂) in S_eq.
         rewrite compl_compl in S_eq.
-        unfold complement in S_eq.
+        unfold 𝐂 in S_eq.
         apply antisym.
         *   intros x Ax.
             assert (to_set_type X A [x|sub x Ax]) as x_in.
@@ -221,12 +221,12 @@ Proof.
     unfold closed, open in S_closed; cbn in S_closed.
     destruct S_closed as [T [T_open T_eq]].
     unfold closed.
-    assert (complement S = T ∪ (complement X)) as eq.
+    assert (𝐂 S = T ∪ (𝐂 X)) as eq.
     {
         apply antisym.
         -   intros x nSx.
             classic_case (X x) as [Xx|nXx].
-            +   assert ((complement (to_set_type X S)) [x|Xx]) as x_in
+            +   assert ((𝐂 (to_set_type X S)) [x|Xx]) as x_in
                     by exact nSx.
                 rewrite T_eq in x_in.
                 left; apply x_in.
@@ -330,9 +330,9 @@ Next Obligation.
             reflexivity.
     -   exact S1x.
     -   exact S2x.
-    -   apply not_ex_empty.
+    -   apply empty_eq.
         intros [y y_in] [S1y S2y]; cbn in *.
-        apply (empty_not_ex _ dis y).
+        apply (land (empty_eq _) dis y).
         split; assumption.
 Qed.
 

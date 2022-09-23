@@ -579,7 +579,7 @@ Proof.
             intros T T_empty.
             contradiction T_empty.
         }
-        apply not_empty_ex in F_nempty as [A F_A].
+        apply empty_neq in F_nempty as [A F_A].
         pose (M x := ∃ T, F T ∧ [T|] x).
         assert (SS M) as SS_M.
         {

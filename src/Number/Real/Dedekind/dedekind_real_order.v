@@ -68,16 +68,16 @@ Proof.
         3: split.
         -   intro contr.
             pose proof (land u_cut) as u'_ex.
-            apply not_all_not_ex in u'_ex as [u' u'u].
+            apply all_neq in u'_ex as [u' u'u].
             assert (α u') as αu' by (rewrite contr; exact true).
             destruct αu' as [x [Sx xu']].
             apply u_upper in Sx.
             apply Sx in xu'.
             contradiction.
-        -   apply ex_not_empty.
+        -   apply empty_neq.
             unfold α.
             pose proof (land (rand l_cut)) as l'_ex.
-            apply not_empty_ex in l'_ex.
+            apply empty_neq in l'_ex.
             destruct l'_ex as [l' l'l].
             exists l', [l|l_cut].
             split; assumption.

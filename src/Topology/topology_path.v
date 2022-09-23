@@ -32,7 +32,7 @@ Proof.
     pose proof (land (rand AB_sep)) as B_empty.
     pose proof (land (rand (rand (rand (rand AB_sep))))) as AB_dis.
     unfold disjoint in AB_dis.
-    apply not_empty_ex in A_empty, B_empty.
+    apply empty_neq in A_empty, B_empty.
     destruct A_empty as [a Aa], B_empty as [b Bb].
     specialize (U_path a b) as [f [f_cont [fa fb]]].
     apply continuous_connected_image in f_cont.

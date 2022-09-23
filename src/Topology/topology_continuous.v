@@ -42,8 +42,8 @@ Proof.
     specialize (all_open B B_open).
     rewrite in_closure in Ax.
     specialize (Ax _ all_open Bfx).
-    apply not_empty_ex in Ax as [y [Ay By]].
-    apply ex_not_empty.
+    apply empty_neq in Ax as [y [Ay By]].
+    apply empty_neq.
     exists (f y).
     split.
     -   exists y.
@@ -82,7 +82,7 @@ Lemma c3c1 : ∀ f, c3 f → c1 f.
 Proof.
     unfold c1, c3; clear c1 c2 c3.
     intros f all_closed B B_open.
-    specialize (all_closed (complement B) (open_complement_closed _ B_open)).
+    specialize (all_closed (𝐂 B) (open_complement_closed _ B_open)).
     rewrite inverse_complement in all_closed.
     unfold closed in all_closed.
     rewrite compl_compl in all_closed.
@@ -237,16 +237,16 @@ Proof.
         [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
     apply (f_con (inverse_image f A) (inverse_image f B)).
     repeat split.
-    -   apply ex_not_empty.
-        apply not_empty_ex in A_empty.
+    -   apply empty_neq.
+        apply empty_neq in A_empty.
         destruct A_empty as [y Ay].
         destruct (f_sur y) as [x eq].
         exists x.
         unfold inverse_image.
         rewrite eq.
         exact Ay.
-    -   apply ex_not_empty.
-        apply not_empty_ex in B_empty.
+    -   apply empty_neq.
+        apply empty_neq in B_empty.
         destruct B_empty as [y By].
         destruct (f_sur y) as [x eq].
         exists x.
@@ -257,13 +257,13 @@ Proof.
         apply continuous_open; assumption.
     -   apply continuous_open; assumption.
     -   unfold disjoint.
-        apply not_ex_empty.
+        apply empty_eq.
         intros x [Ax Bx].
         unfold disjoint in AB_dis.
         assert ((A ∩ B) (f x)) as ABfx by (split; assumption).
         rewrite AB_dis in ABfx.
         exact ABfx.
-    -   apply antisym; try apply sub_all.
+    -   apply antisym; try apply all_sub.
         intros x C0; clear C0.
         assert ((A ∪ B) (f x)) as [Afx|Bfx].
         {
@@ -523,10 +523,10 @@ Proof.
     apply (f_cont (to_set_type _ A) (to_set_type _ B)).
     assert (∀ x, (image f) (f x)) as f_in by (intros x; exists x; reflexivity).
     repeat split.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         exists [f a|f_in a].
         exact r_gt.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         exists [f b|f_in b].
         exact r_lt.
     -   exists A.
@@ -545,13 +545,13 @@ Proof.
                 assumption.
             *   intros x Bx.
                 exact Bx.
-    -   apply not_ex_empty.
+    -   apply empty_eq.
         intros [y [x eq]] [Ay By].
         unfold to_set_type in Ay, By; cbn in *.
         unfold A, B in Ay, By.
         unfold inf_open_interval, open_inf_interval in Ay, By.
         destruct (trans Ay By); contradiction.
-    -   apply antisym; try apply sub_all.
+    -   apply antisym; try apply all_sub.
         intros [y [x eq]] C0; clear C0.
         subst.
         destruct (trichotomy (f x) r) as [[leq|neq]|leq].

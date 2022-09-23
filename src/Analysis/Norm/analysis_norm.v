@@ -133,7 +133,7 @@ Proof.
         destruct ε_pos; contradiction.
     }
     unfold intersects.
-    apply ex_not_empty.
+    apply empty_neq.
     pose proof (inter_open2 S T S_open T_open) as ST_open.
     rewrite open_all_balls in ST_open.
     classic_case (0 = x) as [x_z|x_nz].

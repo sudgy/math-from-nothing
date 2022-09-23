@@ -47,7 +47,7 @@ Proof.
         assert (all a) as contr by exact true.
         rewrite <- eq in contr.
         destruct contr; contradiction.
-    -   apply ex_not_empty.
+    -   apply empty_neq.
         exists (a + -(1)).
         rewrite <- (plus_rid a) at 2.
         apply lt_lplus.

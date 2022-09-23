@@ -68,9 +68,9 @@ Proof.
         -   apply S2c.
     }
     unfold intersects in c_lim.
-    apply not_empty_ex in c_lim as [x [[Ax xc] [S1x S2x]]].
+    apply empty_neq in c_lim as [x [[Ax xc] [S1x S2x]]].
     unfold disjoint in T12.
-    apply (empty_not_ex _ T12 (f [x|Ax])).
+    apply (land (empty_eq _) T12 (f [x|Ax])).
     split.
     -   apply S1_sub.
         exists [x|Ax]; cbn.

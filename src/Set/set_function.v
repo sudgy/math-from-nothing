@@ -30,7 +30,7 @@ Proof.
 Qed.
 
 Theorem inverse_complement {U V} : ∀ (f : U → V) S,
-    inverse_image f (complement S) = complement (inverse_image f S).
+    inverse_image f (𝐂 S) = 𝐂 (inverse_image f S).
 Proof.
     intros f S.
     reflexivity.

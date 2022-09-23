@@ -164,7 +164,7 @@ Proof.
     intros X U_compact X_closed.
     apply compact_subspace.
     intros XSS [XSS_sub XSS_open].
-    pose (USS := XSS ∪ singleton (complement X)).
+    pose (USS := XSS ∪ singleton (𝐂 X)).
     assert (open_covering USS) as USS_cover.
     {
         split.
@@ -175,7 +175,7 @@ Proof.
                 split; try exact Sx.
                 left.
                 exact XSS_S.
-            +   exists (complement X).
+            +   exists (𝐂 X).
                 split; try exact nXx.
                 right.
                 reflexivity.
@@ -186,7 +186,7 @@ Proof.
                 exact X_closed.
     }
     specialize (U_compact USS USS_cover) as [SS' [SS'_sub [SS'_fin sub_SS']]].
-    exists (SS' - singleton (complement X)).
+    exists (SS' - singleton (𝐂 X)).
     split.
     2: split.
     -   intros S [SS'_S nX_S].
@@ -312,7 +312,7 @@ Proof.
     exists x.
     intros A A_open Ax.
     specialize (g_lim A A_open Ax) as [N all_gt].
-    apply ex_not_empty.
+    apply empty_neq.
     classic_case (g N = x) as [x_eq|x_neq].
     -   exists (g (nat_suc N)).
         repeat split.
@@ -417,7 +417,7 @@ Proof.
         apply B_cover.
         apply B_sub.
         exact B_B.
-    -   apply not_ex_empty.
+    -   apply empty_eq.
         intros c [Ac Bc].
         destruct Bc as [B [B_B Bc]].
         pose proof B_B as B_B2.

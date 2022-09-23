@@ -81,9 +81,9 @@ Next Obligation.
             exact all_open.
         +   exact S1v1.
         +   exact S2v2.
-        +   apply not_ex_empty.
+        +   apply empty_eq.
             intros [x1 x2] [[C0 S1x] [C1 S2x]]; clear C0 C1; cbn in *.
-            apply (empty_not_ex _ dis x2).
+            apply ((land (empty_eq _)) dis x2).
             split; assumption.
     -   pose proof (hausdorff_space u1 u2 u_neq)
             as [S1 [S2 [S1_open [S2_open [S1u1 [S2u2 dis]]]]]].
@@ -95,9 +95,9 @@ Next Obligation.
             exact all_open.
         +   exact S1u1.
         +   exact S2u2.
-        +   apply not_ex_empty.
+        +   apply empty_eq.
             intros [x1 x2] [[S1x C0] [S2x C1]]; clear C0 C1; cbn in *.
-            apply (empty_not_ex _ dis x1).
+            apply ((land (empty_eq _)) dis x1).
             split; assumption.
 Qed.
 

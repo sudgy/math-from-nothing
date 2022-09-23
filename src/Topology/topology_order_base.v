@@ -518,10 +518,10 @@ Theorem closed_interval_closed : ∀ a b, closed (closed_interval a b).
 Proof.
     intros a b.
     unfold closed.
-    assert (complement (closed_interval a b) =
+    assert (𝐂 (closed_interval a b) =
         inf_open_interval a ∪ open_inf_interval b) as eq.
     {
-        unfold complement, closed_interval, inf_open_interval,
+        unfold 𝐂, closed_interval, inf_open_interval,
             open_inf_interval, union.
         apply predicate_ext; intros x.
         rewrite not_and.
@@ -538,9 +538,9 @@ Theorem closed_inf_interval_closed : ∀ a, closed (closed_inf_interval a).
 Proof.
     intros a.
     unfold closed.
-    assert (complement (closed_inf_interval a) = inf_open_interval a) as eq.
+    assert (𝐂 (closed_inf_interval a) = inf_open_interval a) as eq.
     {
-        unfold complement, closed_inf_interval, inf_open_interval.
+        unfold 𝐂, closed_inf_interval, inf_open_interval.
         apply predicate_ext; intros x.
         rewrite nle_lt.
         reflexivity.
@@ -553,9 +553,9 @@ Theorem inf_closed_interval_closed : ∀ a, closed (inf_closed_interval a).
 Proof.
     intros a.
     unfold closed.
-    assert (complement (inf_closed_interval a) = open_inf_interval a) as eq.
+    assert (𝐂 (inf_closed_interval a) = open_inf_interval a) as eq.
     {
-        unfold complement, inf_closed_interval, open_inf_interval.
+        unfold 𝐂, inf_closed_interval, open_inf_interval.
         apply predicate_ext; intros x.
         rewrite nle_lt.
         reflexivity.
@@ -577,7 +577,7 @@ Proof.
         +   apply open_inf_interval_open.
         +   exact ac.
         +   exact cb.
-        +   apply not_ex_empty.
+        +   apply empty_eq.
             intros x [cx xc].
             unfold inf_open_interval in cx.
             unfold open_inf_interval in cx.
@@ -590,7 +590,7 @@ Proof.
         +   apply open_inf_interval_open.
         +   exact ab.
         +   exact ab.
-        +   apply not_ex_empty.
+        +   apply empty_eq.
             intros x [bx ax].
             unfold inf_open_interval in bx.
             unfold open_inf_interval in ax.

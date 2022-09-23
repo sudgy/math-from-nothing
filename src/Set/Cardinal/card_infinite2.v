@@ -292,7 +292,7 @@ Proof.
         unfold fs_le; cbn.
         assert (X = ∅)%set as X_empty.
         {
-            apply not_ex_empty.
+            apply empty_eq.
             intros x Xx.
             unfold zero in contr; cbn in contr.
             unfold nat_to_card in contr; equiv_simpl in contr.

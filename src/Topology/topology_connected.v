@@ -42,26 +42,26 @@ Proof.
         rewrite not_or in contr.
         destruct contr as [S_all S_empty].
         unfold connected in connect.
-        apply (connect S (complement S)).
+        apply (connect S (𝐂 S)).
         repeat split.
         +   exact S_empty.
-        +   apply ex_not_empty.
-            apply not_all_not_ex in S_all.
+        +   apply empty_neq.
+            apply all_neq in S_all.
             exact S_all.
         +   exact S_open.
         +   exact S_closed.
-        +   apply not_ex_empty.
+        +   apply empty_eq.
             intros x [Sx nSx].
             contradiction.
         +   apply (antisym (op := subset)).
-            *   apply sub_all.
+            *   apply all_sub.
             *   intros x C0; clear C0.
                 classic_case (S x) as [Sx|nSx].
                 --  left; exact Sx.
                 --  right; exact nSx.
     -   intros all_clopen.
         intros A B [A_nempty [B_nempty [A_open [B_open [AB_dis AB_all]]]]].
-        assert (A = complement B) as A_eq.
+        assert (A = 𝐂 B) as A_eq.
         {
             apply (antisym (op := subset)).
             -   intros x Ax Bx.
@@ -106,7 +106,7 @@ Proof.
     -   intros X A B [A_empty [B_empty [AB_dis [AB_X [A_lim B_lim]]]]].
         assert (closure A ∩ B = ∅) as cAB_empty.
         {
-            apply not_ex_empty.
+            apply empty_eq.
             intros x [Ax Bx].
             rewrite closure_limit_points in Ax.
             destruct Ax as [Ax|lim].
@@ -118,7 +118,7 @@ Proof.
         }
         assert (A ∩ closure B = ∅) as AcB_empty.
         {
-            apply not_ex_empty.
+            apply empty_eq.
             intros x [Ax Bx].
             rewrite closure_limit_points in Bx.
             destruct Bx as [Bx|lim].
@@ -164,7 +164,7 @@ Proof.
             rewrite <- (subspace_closure _ _ BX).
             apply closure_closed.
         }
-        assert (to_set_type X A = complement (to_set_type X B)) as A'_eq.
+        assert (to_set_type X A = 𝐂 (to_set_type X B)) as A'_eq.
         {
             apply (antisym (op := subset)).
             -   intros x Ax Bx.
@@ -179,20 +179,20 @@ Proof.
                 +   exact Ax.
                 +   contradiction.
         }
-        assert ((to_set_type X B) = complement (to_set_type X A)) as B'_eq.
+        assert ((to_set_type X B) = 𝐂 (to_set_type X A)) as B'_eq.
         {
             rewrite A'_eq.
             rewrite compl_compl.
             reflexivity.
         }
         repeat split.
-        +   apply ex_not_empty.
-            apply not_empty_ex in A_empty.
+        +   apply empty_neq.
+            apply empty_neq in A_empty.
             destruct A_empty as [x Ax].
             exists [x|AX x Ax].
             exact Ax.
-        +   apply ex_not_empty.
-            apply not_empty_ex in B_empty.
+        +   apply empty_neq.
+            apply empty_neq in B_empty.
             destruct B_empty as [x Bx].
             exists [x|BX x Bx].
             exact Bx.
@@ -201,7 +201,7 @@ Proof.
         +   rewrite B'_eq.
             exact A'_closed.
         +   rewrite A'_eq.
-            apply not_ex_empty.
+            apply empty_eq.
             intros x [nBx Bx]; contradiction.
         +   rewrite B'_eq.
             apply union_compl_all.
@@ -211,7 +211,7 @@ Theorem sub_connected2 : ∀ (X : U → Prop) (A B : set_type X → Prop),
     separation A B → sub_separation X (from_set_type A) (from_set_type B).
 Proof.
     intros X A B [A_empty [B_empty [A_open [B_open [AB_dis AB_all]]]]].
-    assert (A = complement B) as A_eq.
+    assert (A = 𝐂 B) as A_eq.
     {
         apply antisym.
         -   intros x Ax Bx.
@@ -226,7 +226,7 @@ Proof.
             +   exact Ax.
             +   contradiction.
     }
-    assert (B = complement A) as B_eq.
+    assert (B = 𝐂 A) as B_eq.
     {
         rewrite A_eq.
         rewrite compl_compl.
@@ -246,19 +246,19 @@ Proof.
     }
     unfold disjoint in AB_dis.
     repeat split.
-    -   apply ex_not_empty.
-        apply not_empty_ex in A_empty.
+    -   apply empty_neq.
+        apply empty_neq in A_empty.
         destruct A_empty as [x Ax].
         exists [x|].
         exists x.
         split; trivial.
-    -   apply ex_not_empty.
-        apply not_empty_ex in B_empty.
+    -   apply empty_neq.
+        apply empty_neq in B_empty.
         destruct B_empty as [x Bx].
         exists [x|].
         exists x.
         split; trivial.
-    -   apply not_ex_empty.
+    -   apply empty_eq.
         intros x [[[x1 Xx1] [x1_eq Ax]] [[x2 Xx2] [x2_eq Bx]]].
         cbn in *.
         subst x1 x2.
@@ -363,13 +363,13 @@ Proof.
         contradiction.
     -   pose proof (subspace_open X B B_open).
         contradiction.
-    -   apply not_empty_ex in AB'_disjoint.
+    -   apply empty_neq in AB'_disjoint.
         destruct AB'_disjoint as [[x Xx] [Ax Bx]].
         assert ((A ∩ B) x) as x_in by (split; assumption).
         unfold disjoint in AB_dis.
         rewrite AB_dis in x_in.
         contradiction x_in.
-    -   apply not_all_not_ex in AB'_all.
+    -   apply all_neq in AB'_all.
         destruct AB'_all as [[x Xx] ABx].
         unfold union in ABx.
         rewrite not_or in ABx.
@@ -387,8 +387,8 @@ Proof.
     apply (A_con (to_set_type A (from_set_type (from_set_type C)))
                  (to_set_type A (from_set_type (from_set_type D)))).
     repeat split.
-    -   apply ex_not_empty.
-        apply not_empty_ex in C_empty.
+    -   apply empty_neq.
+        apply empty_neq in C_empty.
         destruct C_empty as [x Cx].
         pose proof [|x] as Ax.
         unfold to_set_type in Ax.
@@ -397,8 +397,8 @@ Proof.
         split; try reflexivity.
         exists x.
         split; trivial.
-    -   apply ex_not_empty.
-        apply not_empty_ex in D_empty.
+    -   apply empty_neq.
+        apply empty_neq in D_empty.
         destruct D_empty as [x Dx].
         pose proof [|x] as Ax.
         unfold to_set_type in Ax.
@@ -447,7 +447,7 @@ Proof.
             assert (to_set_type B A [_|sub _ Ax]) as Ax' by exact Ax.
             exists [_|Ax']; cbn.
             split; trivial.
-    -   apply not_ex_empty.
+    -   apply empty_eq.
         intros [x Ax] [Cx Dx].
         unfold disjoint in CD_dis.
         assert (to_set_type B A [x|sub x Ax]) as Ax' by exact Ax.
@@ -471,7 +471,7 @@ Proof.
         }
         rewrite CD_dis in x_in.
         exact x_in.
-    -   apply antisym; try apply sub_all.
+    -   apply antisym; try apply all_sub.
         intros x C0; clear C0.
         assert (to_set_type B A [_|sub _ [|x]]) as Ax by exact [|x].
         assert (all [_|Ax]) as x_in by exact true.
@@ -501,7 +501,7 @@ Existing Instance subspace_topology.
 Theorem empty_connected : connected (set_type ∅).
 Proof.
     intros A B [A_empty AB].
-    apply not_empty_ex in A_empty.
+    apply empty_neq in A_empty.
     destruct A_empty as [[x x_in]].
     exact x_in.
 Qed.
@@ -515,7 +515,7 @@ Proof.
         rewrite SS_empty.
         exact empty_connected.
     }
-    apply not_empty_ex in SS_nempty.
+    apply empty_neq in SS_nempty.
     destruct SS_nempty as [x' [E [SSE Ex']]].
     pose proof (all_SS E SSE) as [E_con Ex].
     assert ((⋃ SS) x) as x_in.
@@ -555,7 +555,7 @@ Proof.
                 contradiction x_in2.
         }
         apply (land (rand AB_sep)).
-        apply not_ex_empty.
+        apply empty_eq.
         intros a Ba.
         pose proof [|a] as [S [SS_S Sa]].
         specialize (sub _ SS_S _ Sa).
@@ -593,7 +593,7 @@ Proof.
     unfold disjoint.
     rewrite closure_limit_points.
     rewrite inter_rdist.
-    apply not_ex_empty.
+    apply empty_eq.
     intros x [ABx|[Ax Bx]].
     -   unfold disjoint in AB_dis.
         rewrite AB_dis in ABx.
@@ -619,7 +619,7 @@ Proof.
         apply from_set_type_union in eq.
         rewrite <- eq in leq at 1; clear eq.
         pose proof (land (rand CD_sep)) as D_empty.
-        apply not_empty_ex in D_empty.
+        apply empty_neq in D_empty.
         destruct D_empty as [[x Bx] Dx].
         assert (from_set_type D x) as x_in.
         {
