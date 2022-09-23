@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export linear_base.
+Require Export linear_combination.
 Require Import set.
 Require Import unordered_list.
 

@@ -166,6 +166,7 @@
 ./src/Algebra/Ring/Polynomial/polynomial_degree.v
 
 ./src/Algebra/Linear/linear_base.v
+./src/Algebra/Linear/linear_combination.v
 ./src/Algebra/Linear/linear_transformation_space.v
 ./src/Algebra/Linear/linear_bilinear.v
 ./src/Algebra/Linear/linear_quadratic.v
