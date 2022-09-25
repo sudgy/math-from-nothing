@@ -399,7 +399,7 @@ Proof.
         end).
     split.
     -   intros [[a1 Aa1]|[b1 Bb1]] [[a2 Aa2]|[b2 Bb2]] eq.
-        all: apply eq_set_type in eq; cbn in eq; subst.
+        all: apply set_type_eq in eq; cbn in eq; subst.
         +   apply f_equal.
             apply set_type_eq; reflexivity.
         +   assert ((A ∩ B) b2) as b2_in by (split; assumption).

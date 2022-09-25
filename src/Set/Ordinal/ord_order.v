@@ -1004,7 +1004,7 @@ Lemma f'_inj : injective f'.
 Proof.
     intros a b eq.
     unfold f' in eq.
-    apply eq_set_type in eq; cbn in eq.
+    apply set_type_eq in eq; cbn in eq.
     equiv_simpl in eq.
     apply ord_init_iso_eq in eq.
     exact eq.
@@ -1111,7 +1111,7 @@ Proof.
             1: split.
             -   intros a b eq.
                 apply set_type_eq.
-                apply set_type_eq.
+                apply (land set_type_eq).
                 inversion eq.
                 reflexivity.
             -   intros [b b_z].
@@ -1198,7 +1198,7 @@ Proof.
             apply f_iso.
             split; try assumption.
             intro contr.
-            apply set_type_eq in contr.
+            apply (land set_type_eq) in contr.
             contradiction.
 Qed.
 
@@ -1301,7 +1301,7 @@ Proof.
             reflexivity.
         }
         exists [n|make_and n_lt2 n_neq2].
-        do 2 apply set_type_eq.
+        do 2 apply (land set_type_eq).
         reflexivity.
     -   intros [m m_lt] [n n_lt].
         unfold le; cbn.

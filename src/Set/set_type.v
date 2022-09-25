@@ -1,9 +1,7 @@
 Require Import init.
 
 Require Import set_base.
-Require Import relation.
 Require Import order_def.
-Require Import nat.
 
 #[universes(template)]
 Record set_type {U} (S : U → Prop) := make_set_type_val {
@@ -18,29 +16,38 @@ Notation "[ x | P ]" := (make_set_type_val x P).
 Notation "[ a | ]" := (set_value a).
 Notation "[ | a ]" := (set_proof a).
 
-Theorem set_type_eq {U} {S : U → Prop} : ∀ (a b : set_type S),
-    [a|] = [b|] → a = b.
+Theorem set_value_simpl : ∀ {U} {S : U → Prop} x (P : S x), [[x|P]|] = x.
 Proof.
-    intros a b eq.
-    destruct a as [a a_in], b as [b b_in].
-    cbn in *.
-    subst.
-    rewrite (proof_irrelevance a_in b_in).
     reflexivity.
 Qed.
 
-Theorem eq_set_type {U} {S : U → Prop} : ∀ (a b : set_type S),
-    a = b → [a|] = [b|].
+Theorem set_proof_simpl : ∀ {U} {S : U → Prop} x (P : S x), [|[x|P]] = P.
 Proof.
-    intros a b eq.
-    subst.
     reflexivity.
 Qed.
 
-Theorem set_type_simpl {U} {S : U → Prop} : ∀ a (P : S a), [[a|P]|] = a.
+Theorem set_type_simpl : ∀ {U} {S : U → Prop} (x : set_type S) (H : S [x|]),
+    [[x|] | H] = x.
 Proof.
-    intros a P.
+    intros U S x H.
+    destruct x as [x Sx].
+    cbn.
+    rewrite (proof_irrelevance Sx H).
     reflexivity.
+Qed.
+
+Theorem set_type_eq {U} {S : U → Prop} : ∀ {a b : set_type S},
+    [a|] = [b|] ↔ a = b.
+Proof.
+    intros a b.
+    split; intros eq.
+    -   destruct a as [a a_in], b as [b b_in].
+        do 2 rewrite set_value_simpl in eq.
+        subst b.
+        apply f_equal.
+        apply proof_irrelevance.
+    -   rewrite eq.
+        reflexivity.
 Qed.
 
 Theorem ex_set_type {U} {S : U → Prop} : (∃ x, S x) → set_type S.
@@ -52,10 +59,12 @@ Proof.
     exact [x|Sx].
 Qed.
 
+(** This converts a set S : U → Prop to a set S : set_type X → Prop *)
 Definition to_set_type {U} (X : U → Prop) (S : U → Prop) :=
     λ x : set_type X, S [x|].
+(** This converts a set S : set_type X → Prop to a set S : U → Prop *)
 Definition from_set_type {U} {X : U → Prop} (S : set_type X → Prop) :=
-    λ x, ∃ x', x = [x'|] ∧ S x'.
+    λ x, X x ⋏ λ H, S [x|H].
 
 Theorem to_set_type_in {U} : ∀ (X A : U → Prop) (sub : A ⊆ X),
     ∀ x (Ax : A x), to_set_type X A [x|sub x Ax].
@@ -68,8 +77,10 @@ Theorem from_set_type_in {U} {X : U → Prop} : ∀ (A : set_type X → Prop),
     ∀ x, A x → from_set_type A [x|].
 Proof.
     intros A x Ax.
-    exists x.
-    split; trivial.
+    unfold from_set_type.
+    split with [|x].
+    rewrite set_type_simpl.
+    exact Ax.
 Qed.
 
 Theorem to_from_set_type {U} (X : U → Prop) : ∀ A : set_type X → Prop,
@@ -77,13 +88,12 @@ Theorem to_from_set_type {U} (X : U → Prop) : ∀ A : set_type X → Prop,
 Proof.
     intros A.
     apply antisym.
-    -   intros x [x' [eq Ax']].
-        apply set_type_eq in eq.
-        rewrite eq.
-        exact Ax'.
+    -   intros x [Xx' Ax].
+        applys_eq Ax.
+        symmetry; apply set_type_simpl.
     -   intros x Ax.
-        exists x.
-        split; trivial.
+        apply from_set_type_in.
+        exact Ax.
 Qed.
 
 Theorem from_to_set_type {U} : ∀ X A : U → Prop, A ⊆ X →
@@ -91,12 +101,11 @@ Theorem from_to_set_type {U} : ∀ X A : U → Prop, A ⊆ X →
 Proof.
     intros X A sub.
     apply antisym.
-    -   intros x [x' [eq x_in]].
-        rewrite eq.
-        exact x_in.
+    -   intros x [Xx Ax].
+        exact Ax.
     -   intros x Ax.
-        exists [x|sub x Ax].
-        split; trivial.
+        split with (sub x Ax).
+        exact Ax.
 Qed.
 
 Theorem to_set_type_inter {U} : ∀ (X A : U → Prop),
@@ -124,19 +133,16 @@ Theorem to_from_set_type_sub {U} : ∀ (X A : U → Prop) (B : set_type X → Pr
     A ⊆ X → to_set_type X A ⊆ B → A ⊆ from_set_type B.
 Proof.
     intros X A B sub sub2 x Ax.
-    exists [x|sub x Ax].
-    split.
-    -   reflexivity.
-    -   apply sub2.
-        exact Ax.
+    split with (sub x Ax).
+    apply sub2.
+    exact Ax.
 Qed.
 
 Theorem from_set_type_sub_X {U} : ∀ (X : U → Prop) (A : set_type X → Prop),
     from_set_type A ⊆ X.
 Proof.
-    intros X A x [[x' Xx'] [x_eq Ax]].
-    rewrite x_eq.
-    exact Xx'.
+    intros X A x [Xx Ax].
+    exact Xx.
 Qed.
 
 Theorem from_set_type_union {U} : ∀ (X : U → Prop) (A B : set_type X → Prop),
@@ -144,32 +150,24 @@ Theorem from_set_type_union {U} : ∀ (X : U → Prop) (A B : set_type X → Pro
 Proof.
     intros X A B eq.
     apply antisym.
-    -   intros x [Cx|Dx].
-        +   destruct Cx as [x' [x'_eq Cx']]; subst.
-            apply x'.
-        +   destruct Dx as [x' [x'_eq Dx']]; subst.
-            apply x'.
-    -   intros x Bx.
-        assert (all [x|Bx]) as x_in by exact true.
+    -   intros x [Xx|Xx]; apply Xx.
+    -   intros x Xx.
+        assert (all [x|Xx]) as x_in by exact true.
         rewrite <- eq in x_in.
-        destruct x_in as [Cx|Dx].
+        destruct x_in as [Ax|Bx].
         +   left.
-            exists [x|Bx].
-            split; trivial.
+            split with Xx.
+            exact Ax.
         +   right.
-            exists [x|Bx].
-            split; trivial.
+            split with Xx.
+            exact Bx.
 Qed.
 (* begin hide *)
 Section SetTypeOrder.
 
 Context {U} {S : U → Prop}.
 Context `{
-    Order U,
-    Connex U le,
-    Antisymmetric U le,
-    Transitive U le,
-    Reflexive U le,
+    TotalOrder U,
     WellFounded U le,
     SupremumComplete U le
 }.
@@ -178,75 +176,65 @@ Global Instance set_type_order : Order (set_type S) := {
     le a b := [a|] ≤ [b|]
 }.
 
-Lemma set_type_le_connex : ∀ a b : set_type S, {a ≤ b} + {b ≤ a}.
+Global Instance set_type_le_connex_class : Connex le.
 Proof.
+    split.
     intros a b.
     unfold le; cbn.
     apply connex.
 Qed.
-Global Instance set_type_le_connex_class : Connex le := {
-    connex := set_type_le_connex
-}.
 
-Lemma set_type_le_antisym : ∀ a b : set_type S, a ≤ b → b ≤ a → a = b.
+Global Instance set_type_le_antisym_class : Antisymmetric le.
 Proof.
+    split.
     intros a b ab ba.
     apply set_type_eq.
     apply antisym; assumption.
 Qed.
-Global Instance set_type_le_antisym_class : Antisymmetric le := {
-    antisym := set_type_le_antisym
-}.
 
-Lemma set_type_le_trans : ∀ a b c : set_type S, a ≤ b → b ≤ c → a ≤ c.
+Global Instance set_type_le_trans_class : Transitive le.
 Proof.
+    split.
     intros a b c.
     unfold le; cbn.
     apply trans.
 Qed.
-Global Instance set_type_le_trans_class : Transitive le := {
-    trans := set_type_le_trans
-}.
 
-Lemma set_type_le_refl : ∀ a : set_type S, a ≤ a.
+Global Instance set_type_le_refl_class : Reflexive le.
 Proof.
+    split.
     intros a.
     unfold le; cbn.
     apply refl.
 Qed.
-Global Instance set_type_le_refl_class : Reflexive le := {
-    refl := set_type_le_refl
-}.
 
-Lemma set_type_le_wf : ∀ S' : set_type S → Prop, (∃x, S' x) → has_minimal le S'.
+Global Instance set_type_le_wf_class : WellFounded le.
 Proof.
-    intros S' [[x Sx] S'x].
-    pose (S'' x := ∃ y, [y|] = x ∧ S' y).
-    assert (∃ x, S'' x) as S''_nempty.
+    split.
+    intros T T_ex.
+    assert (∃ x, from_set_type T x) as T'_nempty.
     {
+        destruct T_ex as [[x Sx] Tx].
         exists x.
-        exists [x|Sx].
-        split; auto.
+        split with Sx.
+        exact Tx.
     }
-    pose proof (well_founded _ S''_nempty) as [y [[x' [x'_eq S'x']] y_min]].
-    exists x'.
-    split; try assumption.
-    intros y' S'y' y'_eq y'_leq.
-    apply (y_min [y'|]).
-    -   exists y'.
-        split; try assumption.
-        reflexivity.
+    pose proof (well_founded _ T'_nempty) as [x [[Sx Tx] x_min]].
+    exists [x|Sx].
+    split; [>exact Tx|].
+    intros y Ty y_neq y_leq.
+    apply (x_min [y|]).
+    -   split with [|y].
+        rewrite set_type_simpl.
+        exact Ty.
     -   intro contr.
-        subst y.
-        apply set_type_eq in contr.
-        contradiction.
-    -   subst y.
-        unfold le in y'_leq; cbn in y'_leq.
-        exact y'_leq.
+        subst x.
+        apply y_neq.
+        apply set_type_eq.
+        reflexivity.
+    -   unfold le in y_leq; cbn in y_leq.
+        exact y_leq.
 Qed.
-Global Instance set_type_le_wf_class : WellFounded le := {
-    well_founded := set_type_le_wf
-}.
 
 End SetTypeOrder.
 (* end hide *)

@@ -267,7 +267,7 @@ Proof.
             exists (λ x, [[[x|]|]|f_in [x|] [|x]]).
             intros x y eq.
             inversion eq as [eq2].
-            do 2 apply set_type_eq in eq2.
+            do 2 apply (land set_type_eq) in eq2.
             exact eq2.
         }
         apply (le_lt_trans ltq).

@@ -65,7 +65,7 @@ Proof.
         }
         exists (λ x, [[x|]|x_in x]).
         intros x y eq.
-        apply eq_set_type in eq; cbn in eq.
+        apply set_type_eq in eq; cbn in eq.
         apply set_type_eq in eq.
         exact eq.
     }
@@ -116,7 +116,7 @@ Proof.
     }
     exists (λ x, [[x|]|x_in x]).
     intros x y eq.
-    apply eq_set_type in eq; cbn in eq.
+    apply set_type_eq in eq; cbn in eq.
     apply set_type_eq in eq.
     exact eq.
 Qed.

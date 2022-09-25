@@ -436,7 +436,7 @@ Proof.
         apply R_sub.
         exists y.
         split; [>exact Ry|].
-        apply eq_set_type.
+        apply set_type_eq.
         exact z_eq.
 Qed.
 

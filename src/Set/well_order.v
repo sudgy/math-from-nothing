@@ -285,7 +285,7 @@ Proof.
         +   specialize (a_min [_|Fy]).
             apply a_min.
             *   unfold BA; cbn.
-                rewrite (set_type_eq _ y) by reflexivity.
+                rewrite set_type_simpl.
                 exact Ay.
             *   intro contr2.
                 subst a.

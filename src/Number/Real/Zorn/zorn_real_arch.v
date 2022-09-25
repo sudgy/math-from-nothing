@@ -61,7 +61,7 @@ Definition aof_ex_f (x : U)
 Theorem aof_ex_f_inj : injective aof_ex_f.
 Proof.
     intros a b eq.
-    apply eq_set_type in eq; cbn in eq.
+    apply set_type_eq in eq; cbn in eq.
     apply (ex_proof aof_ex_ex) in eq.
     exact eq.
 Qed.
@@ -177,7 +177,7 @@ Next Obligation.
     unfold zero; cbn.
     apply (f_equal aof_ex_f) in contr.
     rewrite aof_ex_f_eq2 in contr.
-    apply eq_set_type in contr; cbn in contr.
+    apply set_type_eq in contr; cbn in contr.
     exact contr.
 Qed.
 Global Instance aof_ex_le : Order (set_type aof_ex_set) := {

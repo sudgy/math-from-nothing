@@ -309,7 +309,10 @@ Proof.
                 apply set_type_eq; reflexivity.
             }
             exists [_|b_x2].
-            do 2 apply set_type_eq; reflexivity.
+            apply set_type_eq.
+            do 2 rewrite set_value_simpl.
+            apply set_type_eq.
+            reflexivity.
         -   intros a b.
             unfold initial_segment_le; cbn.
             reflexivity.

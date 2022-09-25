@@ -149,28 +149,23 @@ Theorem card_from_set_type_eq {U} : ∀ (X : U → Prop) (B : set_type X → Pro
 Proof.
     intros X B.
     equiv_simpl.
-    exists (λ x, [ex_val [|x] | rand (ex_proof [|x])]).
+    exists (λ x : set_type (from_set_type B),
+        [[[x|] | ldand [|x]] | rdand [|x]]).
     split.
     -   intros [a a_in] [b b_in] eq.
         inversion eq as [eq2]; clear eq.
         apply set_type_eq; cbn.
-        rewrite_ex_val x xH.
-        rewrite_ex_val y yH.
-        destruct xH as [a_eq Bx], yH as [b_eq By].
-        subst.
-        reflexivity.
+        exact eq2.
     -   intros [y By].
         assert (from_set_type B [y|]) as y_in.
         {
-            exists y.
-            split; trivial.
+            split with [|y].
+            applys_eq By.
+            apply set_type_simpl.
         }
         exists [_|y_in].
         apply set_type_eq; cbn.
-        rewrite_ex_val x x_H.
-        destruct x_H as [eq Bx].
-        apply set_type_eq in eq.
-        symmetry; exact eq.
+        apply set_type_simpl.
 Qed.
 (* begin hide *)
 Close Scope card_scope.

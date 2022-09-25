@@ -772,7 +772,7 @@ Proof.
         unfold le; cbn.
         apply union_lsub.
     -   intros contr2.
-        apply eq_set_type in contr2; cbn in contr2.
+        apply set_type_eq in contr2; cbn in contr2.
         subst B'.
         apply contr.
         pose (l := (1, v) ::: ulist_end).

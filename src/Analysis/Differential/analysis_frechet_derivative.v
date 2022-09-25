@@ -212,7 +212,7 @@ Proof.
     2: {
         intros [t [t_nz t_lt]] contr.
         unfold g, g' in contr; cbn in contr.
-        apply eq_set_type in contr; cbn in contr.
+        apply set_type_eq in contr; cbn in contr.
         rewrite <- plus_0_a_b_ba in contr.
         rewrite <- (scalar_lanni x) in contr.
         apply scalar_rcancel in contr; [>|exact x_nz].

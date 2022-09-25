@@ -248,7 +248,7 @@ Proof.
         exists (λ m, [[f (inr m)|] | T'_neq m]).
         split.
         -   intros a b eq.
-            apply eq_set_type in eq; cbn in eq.
+            apply set_type_eq in eq; cbn in eq.
             apply set_type_eq in eq; cbn in eq.
             apply f_inj in eq.
             inversion eq.
@@ -262,7 +262,7 @@ Proof.
                 exact b_neq.
             }
             specialize (f_sur [b|b_neq2]) as [a a_eq].
-            apply eq_set_type in a_eq; cbn in a_eq.
+            apply set_type_eq in a_eq; cbn in a_eq.
             destruct a as [a|a].
             +   unfold T' in b_neq.
                 exfalso.
@@ -270,7 +270,7 @@ Proof.
                 1: contradiction.
                 rewrite <- a_eq in n0.
                 apply n0.
-                apply eq_set_type.
+                apply set_type_eq.
                 unfold x.
                 apply f_equal.
                 apply f_equal.

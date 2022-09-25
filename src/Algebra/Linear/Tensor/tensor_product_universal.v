@@ -481,8 +481,8 @@ Proof.
         tensor_product_universal tensor_product_ex_base) as [g [h [gh hg]]].
     destruct g as [g g_in], h as [h h_in].
     cbn in *.
-    apply eq_set_type in gh; cbn in gh.
-    apply eq_set_type in hg; cbn in hg.
+    apply set_type_eq in gh; cbn in gh.
+    apply set_type_eq in hg; cbn in hg.
     unfold module_homo_compose, module_homo_id in gh, hg.
     inversion gh as [gh']; clear gh.
     inversion hg as [hg']; clear hg.

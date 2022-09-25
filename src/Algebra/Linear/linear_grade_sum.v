@@ -75,7 +75,7 @@ Theorem single_to_grade_sum_eq : ∀ k, ∀ (A B : module_V (V k)),
     single_to_grade_sum A = single_to_grade_sum B → A = B.
 Proof.
     intros k A B eq.
-    apply eq_set_type in eq.
+    apply set_type_eq in eq.
     assert (∀ x, [single_to_grade_sum A|] x = [single_to_grade_sum B|] x) as eq2.
     {
         rewrite eq.
@@ -191,7 +191,7 @@ Proof.
     }
     exists (λ n, [[n|]|n_in n]).
     intros a b eq.
-    apply eq_set_type in eq; cbn in eq.
+    apply set_type_eq in eq; cbn in eq.
     apply set_type_eq in eq; cbn in eq.
     exact eq.
 Qed.
@@ -242,7 +242,7 @@ Proof.
     }
     exists (λ n, [[n|]|n_in n]).
     intros a b eq.
-    apply eq_set_type in eq; cbn in eq.
+    apply set_type_eq in eq; cbn in eq.
     apply set_type_eq in eq; cbn in eq.
     exact eq.
 Qed.
@@ -373,7 +373,7 @@ Next Obligation.
     destruct H1 as [v2 v2_eq].
     rewrite <- v2_eq in v1_eq.
     unfold single_to_grade_sum_base in v1_eq; cbn in v1_eq.
-    apply eq_set_type in v1_eq; cbn in v1_eq.
+    apply set_type_eq in v1_eq; cbn in v1_eq.
     unfold single_to_grade_sum_base in v1_eq.
     (* I don't know why Coq is being so finicky about this *)
     assert (∀ n,
@@ -532,16 +532,16 @@ Next Obligation.
                     subst; cbn.
                 5: case_if; subst.
                 1, 4, 6: reflexivity.
-                -   apply eq_set_type in vn_eq; cbn in vn_eq.
+                -   apply set_type_eq in vn_eq; cbn in vn_eq.
                     subst m.
                     exfalso; apply n0.
-                    apply eq_set_type; cbn.
+                    apply set_type_eq; cbn.
                     apply f_equal.
                     apply set_type_eq; reflexivity.
-                -   apply eq_set_type in vn_eq; cbn in vn_eq.
+                -   apply set_type_eq in vn_eq; cbn in vn_eq.
                     apply set_type_eq in vn_eq; cbn in vn_eq.
                     apply g_inj in vn_eq.
-                    apply eq_set_type in vn_eq; cbn in vn_eq.
+                    apply set_type_eq in vn_eq; cbn in vn_eq.
                     symmetry in vn_eq; contradiction.
                 -   destruct vn; contradiction.
             }
@@ -587,7 +587,7 @@ Next Obligation.
         clear l_uni.
         rewrite ulist_sum_add in l_zero.
         unfold zero, plus in l_zero; cbn in l_zero.
-        apply eq_set_type in l_zero; cbn in l_zero.
+        apply set_type_eq in l_zero; cbn in l_zero.
         assert (∀ k, 0 = single_to_grade_sum_base v k +
             [ulist_sum (ulist_image l sub_vector_v)|] k) as eq2.
         {

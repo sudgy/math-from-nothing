@@ -89,15 +89,14 @@ Proof.
     assert (∃ x, A'' x) as A'_ex.
     {
         exists [a|].
-        exists a.
-        split; try reflexivity.
+        split with [|a].
+        rewrite set_type_simpl.
         split; assumption.
     }
     assert (has_upper_bound le A'') as A'_upper.
     {
         exists [b|].
-        intros x' [[x Sx] [x'_eq [Ax x_lt]]].
-        rewrite x'_eq.
+        intros x' [Sx' [Ax' x_lt]].
         apply x_lt.
     }
     pose proof (sup_complete A'' A'_ex A'_upper) as [α [α_upper α_least]].
@@ -139,14 +138,12 @@ Proof.
         apply (S_convex [a|] [b|] [|a] [|b]).
         split.
         -   apply α_upper.
-            exists a.
-            split; try reflexivity.
+            split with [|a].
+            rewrite set_type_simpl.
             split; assumption.
         -   apply α_least.
             intros x [x' [x_eq Ax]].
-            subst x.
-            destruct Ax as [Ax x_lt].
-            apply x_lt.
+            apply Ax.
     }
     assert (A [α|Sα]) as Aα.
     {
@@ -160,8 +157,8 @@ Proof.
         {
             split.
             -   apply α_upper.
-                exists a.
-                split; try reflexivity.
+                split with [|a].
+                rewrite set_type_simpl.
                 split; assumption.
             -   intro; subst.
                 apply a_neq.
@@ -208,10 +205,10 @@ Proof.
             +   rewrite not_ex in m_max'.
                 assert (is_upper_bound le A'' m) as m_max.
                 {
-                    intros x' A''x.
-                    pose proof (α_upper x' A''x) as x_le.
-                    destruct A''x as [x [x'_eq [Ax x_lt]]]; subst x'.
-                    specialize (m_max' x).
+                    intros x A''x.
+                    pose proof (α_upper x A''x) as x_le.
+                    destruct A''x as [Sx [Ax x_lt]].
+                    specialize (m_max' [x|Sx]).
                     do 2 rewrite not_and in m_max'.
                     destruct m_max' as [leq|[leq|nAx]].
                     -   rewrite nlt_le in leq.
@@ -219,7 +216,7 @@ Proof.
                     -   rewrite nlt_le in leq.
                         pose proof (antisym leq x_le).
                         subst α.
-                        destruct x as [x Sx]; cbn in *.
+                        cbn in *.
                         rewrite (proof_irrelevance Sx Sα) in Ax.
                         contradiction.
                     -   contradiction.
@@ -283,8 +280,7 @@ Proof.
         {
             split.
             -   apply α_least.
-                intros x' [x [x_eq [Ax x_lt]]].
-                rewrite x_eq.
+                intros x [Sx [Ax x_lt]].
                 apply x_lt.
             -   intro; subst.
                 apply b_neq.
@@ -303,26 +299,24 @@ Proof.
             B [x|in_S x x_lt1 x_lt2]) as in_B.
         {
             intros x x_lt1 x_lt2.
-            remember [x |in_S x x_lt1 x_lt2] as x'.
+            pose proof (in_S x x_lt1 x_lt2) as Sx.
+            rewrite (proof_irrelevance _ Sx).
             classic_contradiction contr.
-            assert (all x') as x'_in by exact true.
-            rewrite <- AB_all in x'_in.
-            destruct x'_in as [Ax|Bx]; try contradiction.
+            assert (all [x|Sx]) as x_in by exact true.
+            rewrite <- AB_all in x_in.
+            destruct x_in as [Ax|Bx]; try contradiction.
             assert (A'' x) as Ax'.
             {
-                exists x'.
+                split with Sx.
                 split.
-                -   rewrite Heqx'; reflexivity.
+                -   exact Ax.
                 -   split.
-                    +   exact Ax.
-                    +   rewrite Heqx'.
-                        split.
-                        *   apply x_lt2.
-                        *   intros contr2.
-                            pose proof x_lt2 as x_lt2'.
-                            rewrite <- contr2 in x_lt2'.
-                            cbn in x_lt2'.
-                            destruct x_lt2'; contradiction.
+                    +   apply x_lt2.
+                    +   intros contr2.
+                        pose proof x_lt2 as x_lt2'.
+                        rewrite <- contr2 in x_lt2'.
+                        cbn in x_lt2'.
+                        destruct x_lt2'; contradiction.
             }
             specialize (α_upper _ Ax').
             destruct (lt_le_trans x_lt1 α_upper); contradiction.

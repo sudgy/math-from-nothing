@@ -200,7 +200,7 @@ Proof.
     unfold to_set_type; cbn.
     apply S_sub.
     exists [x|Ax]; cbn.
-    apply eq_set_type in y_eq.
+    apply set_type_eq in y_eq.
     repeat split; assumption.
 Qed.
 

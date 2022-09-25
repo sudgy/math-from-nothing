@@ -250,18 +250,18 @@ Proof.
         apply empty_neq in A_empty.
         destruct A_empty as [x Ax].
         exists [x|].
-        exists x.
-        split; trivial.
+        split with [|x].
+        rewrite set_type_simpl.
+        exact Ax.
     -   apply empty_neq.
         apply empty_neq in B_empty.
         destruct B_empty as [x Bx].
         exists [x|].
-        exists x.
-        split; trivial.
+        split with [|x].
+        rewrite set_type_simpl.
+        exact Bx.
     -   apply empty_eq.
-        intros x [[[x1 Xx1] [x1_eq Ax]] [[x2 Xx2] [x2_eq Bx]]].
-        cbn in *.
-        subst x1 x2.
+        intros x [[Xx1 Ax] [Xx2 Bx]].
         rewrite (proof_irrelevance Xx1 Xx2) in Ax.
         assert (∅ [x|Xx2]) as x_in.
         {
@@ -272,7 +272,7 @@ Proof.
     -   rewrite from_set_type_union; trivial.
     -   assert (from_set_type A ⊆ X) as sub.
         {
-            intros x' [[x Xx] [x_eq Ax]]; subst x'.
+            intros x [Xx Ax].
             exact Xx.
         }
         pose proof (subspace_closure X (from_set_type A) sub) as eq.
@@ -282,20 +282,23 @@ Proof.
             rewrite <- (closure_eq_if_closed _ A_closed).
             exact AB_dis.
         }
-        intros x' x_lim [x [x'_eq Bx]]; subst x'.
-        assert ((closure A ∩ B) x) as x_in.
+        intros x x_lim [Xx Bx].
+        assert ((closure A ∩ B) [x|Xx]) as x_in.
         {
             split; try exact Bx.
             rewrite closure_limit_points.
             right.
             rewrite <- (to_from_set_type X A).
-            exact (subspace_limit_point _ _ _ sub x_lim).
+            apply subspace_limit_point.
+            -   exact sub.
+            -   rewrite set_value_simpl.
+                exact x_lim.
         }
         rewrite AB_eq in x_in.
         contradiction x_in.
     -   assert (from_set_type B ⊆ X) as sub.
         {
-            intros x' [[x Xx] [x_eq Bx]]; subst x'.
+            intros x [Xx Bx].
             exact Xx.
         }
         pose proof (subspace_closure X (from_set_type B) sub) as eq.
@@ -305,14 +308,17 @@ Proof.
             rewrite <- (closure_eq_if_closed _ B_closed).
             exact AB_dis.
         }
-        intros x' x_lim [x [x'_eq Ax]]; subst x'.
-        assert ((A ∩ closure B) x) as x_in.
+        intros x x_lim [Xx Ax].
+        assert ((A ∩ closure B) [x|Xx]) as x_in.
         {
             split; try exact Ax.
             rewrite closure_limit_points.
             right.
             rewrite <- (to_from_set_type X B).
-            exact (subspace_limit_point _ _ _ sub x_lim).
+            apply subspace_limit_point.
+            -   exact sub.
+            -   rewrite set_value_simpl.
+                exact x_lim.
         }
         rewrite AB_eq in x_in.
         contradiction x_in.
@@ -390,23 +396,23 @@ Proof.
     -   apply empty_neq.
         apply empty_neq in C_empty.
         destruct C_empty as [x Cx].
-        pose proof [|x] as Ax.
+        destruct x as [x Ax]; cbn in *.
+        destruct x as [x Bx]; cbn in *.
         unfold to_set_type in Ax.
         exists [_|Ax].
-        exists [x|].
-        split; try reflexivity.
-        exists x.
-        split; trivial.
+        split with Bx.
+        split with Ax.
+        exact Cx.
     -   apply empty_neq.
         apply empty_neq in D_empty.
         destruct D_empty as [x Dx].
-        pose proof [|x] as Ax.
+        destruct x as [x Ax]; cbn in *.
+        destruct x as [x Bx]; cbn in *.
         unfold to_set_type in Ax.
         exists [_|Ax].
-        exists [x|].
-        split; try reflexivity.
-        exists x.
-        split; trivial.
+        split with Bx.
+        split with Ax.
+        exact Dx.
     -   destruct C_open as [C' [C'_open C_eq]].
         destruct C'_open as [C'' [C''_open C'_eq]].
         exists C''.
@@ -414,19 +420,14 @@ Proof.
         rewrite C_eq.
         rewrite C'_eq.
         apply antisym.
-        +   intros x [x' [x'_eq [x'' [x''_eq Cx]]]].
-            unfold to_set_type.
-            rewrite x'_eq.
-            rewrite x''_eq.
+        +   intros x [Bx [Ax Cx]].
             exact Cx.
         +   intros [x Ax] Cx.
             unfold to_set_type at 1.
-            exists [_|sub _ Ax].
-            split; try reflexivity.
-            unfold from_set_type at 1.
+            split with (sub _ Ax).
             assert (to_set_type B A [_|sub _ Ax]) as Ax' by exact Ax.
-            exists [_|Ax']; cbn.
-            split; trivial.
+            split with Ax'.
+            trivial.
     -   destruct D_open as [D' [D'_open D_eq]].
         destruct D'_open as [D'' [D''_open D'_eq]].
         exists D''.
@@ -434,19 +435,14 @@ Proof.
         rewrite D_eq.
         rewrite D'_eq.
         apply antisym.
-        +   intros x [x' [x'_eq [x'' [x''_eq Dx]]]].
-            unfold to_set_type.
-            rewrite x'_eq.
-            rewrite x''_eq.
+        +   intros x [Bx [Ax Dx]].
             exact Dx.
         +   intros [x Ax] Dx.
             unfold to_set_type at 1.
-            exists [_|sub _ Ax].
-            split; try reflexivity.
-            unfold from_set_type at 1.
+            split with (sub _ Ax).
             assert (to_set_type B A [_|sub _ Ax]) as Ax' by exact Ax.
-            exists [_|Ax']; cbn.
-            split; trivial.
+            split with Ax'.
+            trivial.
     -   apply empty_eq.
         intros [x Ax] [Cx Dx].
         unfold disjoint in CD_dis.
@@ -454,20 +450,14 @@ Proof.
         assert ((C ∩ D) [_|Ax']) as x_in.
         {
             split.
-            -   destruct Cx as [x' [eq1 [x'' [eq2 Cx'']]]]; cbn in *.
-                subst.
-                destruct x'' as [[x'' Bx'] Ax''].
-                cbn.
-                rewrite (proof_irrelevance _ Bx').
+            -   destruct Cx as [Bx [Ax'' Cx]]; cbn in *.
+                rewrite (proof_irrelevance _ Bx).
                 rewrite (proof_irrelevance _ Ax'').
-                exact Cx''.
-            -   destruct Dx as [x' [eq1 [x'' [eq2 Dx'']]]]; cbn in *.
-                subst.
-                destruct x'' as [[x'' Bx'] Ax''].
-                cbn.
-                rewrite (proof_irrelevance _ Bx').
+                exact Cx.
+            -   destruct Dx as [Bx [Ax'' Dx]]; cbn in *.
+                rewrite (proof_irrelevance _ Bx).
                 rewrite (proof_irrelevance _ Ax'').
-                exact Dx''.
+                exact Dx.
         }
         rewrite CD_dis in x_in.
         exact x_in.
@@ -478,17 +468,15 @@ Proof.
         rewrite <- CD_all in x_in.
         destruct x_in as [Cx|Dx].
         +   left.
-            exists [_ | sub _ [|x]].
-            split; try reflexivity.
+            split with (sub _ [|x]).
             destruct x as [x Ax']; cbn in *.
-            exists [_|Ax].
-            split; trivial.
+            split with Ax.
+            trivial.
         +   right.
-            exists [_ | sub _ [|x]].
-            split; try reflexivity.
+            split with (sub _ [|x]).
             destruct x as [x Ax']; cbn in *.
-            exists [_|Ax].
-            split; trivial.
+            split with Ax.
+            trivial.
 Qed.
 
 (* begin hide *)
@@ -623,8 +611,8 @@ Proof.
         destruct D_empty as [[x Bx] Dx].
         assert (from_set_type D x) as x_in.
         {
-            exists [x|Bx].
-            split; trivial.
+            split with Bx.
+            trivial.
         }
         assert ((from_set_type C ∪ from_set_type D) x) as x_in2
             by (right; exact x_in).

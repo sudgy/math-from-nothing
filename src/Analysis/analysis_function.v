@@ -224,7 +224,7 @@ Proof.
         2: {
             apply f_equal.
             apply set_type_eq; cbn.
-            apply eq_set_type.
+            apply set_type_eq.
             symmetry; exact x_eq.
         }
         clear x_eq.

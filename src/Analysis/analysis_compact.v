@@ -615,15 +615,11 @@ Proof.
     -   apply (le_lt_trans2 A_fin).
         unfold le; equiv_simpl.
         exists (λ a : set_type (from_set_type A),
-            [ex_val [|a] | rand (ex_proof [|a])]).
+            [[[a|] | ldand [|a]] | rdand [|a]]).
         intros a b eq.
         inversion eq as [eq2]; clear eq.
-        rewrite_ex_val a' [a'_eq Aa'].
-        rewrite_ex_val b' [b'_eq Ab'].
-        subst.
-        rewrite <- b'_eq in a'_eq.
         apply set_type_eq.
-        exact a'_eq.
+        exact eq2.
     -   intros a Xa.
         specialize (sub_A [a|Xa] true).
         destruct sub_A as [S [[x [Ax S_eq]] Sa]].
@@ -633,8 +629,9 @@ Proof.
         +   unfold image_under.
             exists [x|].
             split; try reflexivity.
-            exists x.
-            split; trivial.
+            split with [|x].
+            rewrite set_type_simpl.
+            exact Ax.
         +   exact Sa.
 Qed.
 
@@ -756,7 +753,7 @@ Proof.
         unfold le; equiv_simpl.
         exists (λ x : set_type B, [ex_val [|x]|]).
         intros a b eq.
-        apply set_type_eq in eq.
+        apply (land set_type_eq) in eq.
         rewrite_ex_val x a_eq.
         rewrite_ex_val_with [|b] y b_eq.
         subst.
@@ -938,7 +935,7 @@ Proof.
         +   exact [|f 1].
         +   intro contr.
             rewrite <- contr in x_eq.
-            apply set_type_eq in x_eq.
+            rewrite set_type_eq in x_eq.
             assert ((zero (U := nat)) ≠ 1) as neq by (intro C; inversion C).
             exact (f_neq 0 1 neq x_eq).
     -   exists [f 0|].

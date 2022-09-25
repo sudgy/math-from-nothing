@@ -391,7 +391,7 @@ Proof.
     exists (λ x, [f x|f_in x]).
     split.
     -   intros [x [x_gt x_lt]] [y [y_gt y_lt]] eq.
-        apply eq_set_type in eq; cbn in eq.
+        apply set_type_eq in eq; cbn in eq.
         unfold f in eq; cbn in eq.
         apply set_type_eq; cbn.
         apply plus_rcancel in eq.
@@ -489,25 +489,25 @@ Proof.
         end).
         split.
         -   intros [x|x] [y|y] eq.
-            +   apply eq_set_type in eq; cbn in eq.
+            +   apply set_type_eq in eq; cbn in eq.
                 apply set_type_eq in eq.
                 rewrite eq.
                 reflexivity.
             +   nat_destruct [y|].
-                *   apply eq_set_type in eq; cbn in eq.
+                *   apply set_type_eq in eq; cbn in eq.
                     destruct x as [x [x_gt x_lt]]; cbn in *.
                     exfalso; rewrite <- eq in x_gt.
                     destruct x_gt; contradiction.
-                *   apply eq_set_type in eq; cbn in eq.
+                *   apply set_type_eq in eq; cbn in eq.
                     destruct x as [x [x_gt x_lt]]; cbn in *.
                     exfalso; rewrite <- eq in x_lt.
                     destruct x_lt; contradiction.
             +   nat_destruct [x|].
-                *   apply eq_set_type in eq; cbn in eq.
+                *   apply set_type_eq in eq; cbn in eq.
                     destruct y as [y [y_gt y_lt]]; cbn in *.
                     exfalso; rewrite <- eq in y_gt.
                     destruct y_gt; contradiction.
-                *   apply eq_set_type in eq; cbn in eq.
+                *   apply set_type_eq in eq; cbn in eq.
                     destruct y as [y [y_gt y_lt]]; cbn in *.
                     exfalso; rewrite <- eq in y_lt.
                     destruct y_lt; contradiction.
@@ -515,7 +515,7 @@ Proof.
                 apply f_equal.
                 apply set_type_eq; cbn.
                 nat_destruct x; nat_destruct y.
-                all: apply eq_set_type in eq; cbn in eq.
+                all: apply set_type_eq in eq; cbn in eq.
                 *   reflexivity.
                 *   subst.
                     destruct ab; contradiction.
