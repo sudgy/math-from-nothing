@@ -1,6 +1,7 @@
 (** This file reserves a few basic notations. *)
 
 Reserved Notation "x ∧ y" (at level 80, right associativity).
+Reserved Notation "x ⋏ y" (at level 80, right associativity).
 Reserved Notation "x ∨ y" (at level 85, right associativity).
 Reserved Notation "x ↔ y" (at level 95, no associativity).
 Reserved Notation "¬ x" (at level 75, right associativity).

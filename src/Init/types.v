@@ -3,6 +3,30 @@ standard library, I prefer defining as much as I can on my own. *)
 
 Require Import base_logic.
 
+Inductive dand (A : Prop) (B : A → Prop) : Prop :=
+    make_dand : ∀ a : A, B a → dand A B.
+Arguments make_dand {A B}.
+Notation "A ⋏ B" := (dand A B).
+Definition ldand {A : Prop} {B : A → Prop} (H : A ⋏ B) : A :=
+    match H with
+    | make_dand a b => a
+    end.
+Definition rdand {A : Prop} {B : A → Prop} (H : A ⋏ B) : B (ldand H) :=
+    match H with
+    | make_dand a b => b
+    end.
+
+Theorem rdand_all {A : Prop} {B : A → Prop} : ∀ H : A ⋏ B, ∀ a, B a.
+Proof.
+    intros [a b] a'.
+    rewrite (proof_irrelevance a' a).
+    exact b.
+Qed.
+
+Tactic Notation "dand_split" simple_intropattern(H) :=
+    match goal with | [ |- ?A ⋏ ?B ] => assert (A) as H; [>|split with H] end.
+Tactic Notation "dand_split" := let H := fresh in dand_split H.
+
 Set Implicit Arguments.
 
 #[universes(template)]
