@@ -97,15 +97,9 @@ Qed.
 Theorem empty_neq : ∀ S : U → Prop, S ≠ ∅ ↔ (∃ x, S x).
 Proof.
     intros S.
-    split.
-    -   intros S_neq.
-        rewrite empty_eq in S_neq.
-        classic_contradiction contr.
-        rewrite not_ex in contr.
-        contradiction.
-    -   intros [x Sx] contr.
-        rewrite contr in Sx.
-        exact Sx.
+    apply not_eq_iff.
+    rewrite not_not, not_ex.
+    apply empty_eq.
 Qed.
 
 Theorem all_eq : ∀ S : U → Prop, S = all ↔ (∀ x, S x).
@@ -125,14 +119,9 @@ Qed.
 Theorem all_neq : ∀ S : U → Prop, S ≠ all ↔ (∃ x, ¬S x).
 Proof.
     intros S.
-    split.
-    -   intros S_neq.
-        rewrite all_eq in S_neq.
-        rewrite not_all in S_neq.
-        exact S_neq.
-    -   intros [x Sx] eq.
-        rewrite eq in Sx.
-        exact (Sx true).
+    rewrite <- not_all.
+    rewrite <- not_eq_iff.
+    apply all_eq.
 Qed.
 
 Theorem not_in_empty : ∀ x : U, ¬∅ x.
@@ -196,12 +185,9 @@ Qed.
 Theorem union_compl_all : ∀ S : U → Prop, S ∪ 𝐂 S = all.
 Proof.
     intros S.
-    apply predicate_ext; intros x.
-    unfold union, 𝐂.
-    pose proof (excluded_middle (S x)) as H.
-    rewrite (prop_eq_true (S x ∨ ¬S x)) in H.
-    rewrite H.
-    reflexivity.
+    apply all_eq.
+    intros x.
+    apply excluded_middle.
 Qed.
 
 Theorem union_idemp : ∀ S : U → Prop, S ∪ S = S.

@@ -398,6 +398,21 @@ Proof.
     exact eq.
 Qed.
 
+Theorem not_eq_iff : ∀ A B, (A ↔ B) ↔ (¬A ↔ ¬B).
+Proof.
+    intros A B.
+    split.
+    -   intros AB.
+        apply propositional_ext in AB.
+        rewrite AB.
+        reflexivity.
+    -   intros AB.
+        apply propositional_ext in AB.
+        apply not_eq_eq in AB.
+        rewrite AB.
+        reflexivity.
+Qed.
+
 Theorem eq_iff {U} : ∀ a b : U, a = b ↔ b = a.
     intros a b.
     split; intro eq; symmetry; exact eq.
