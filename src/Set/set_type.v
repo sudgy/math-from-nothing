@@ -216,22 +216,19 @@ Proof.
     {
         destruct T_ex as [[x Sx] Tx].
         exists x.
-        split with Sx.
-        exact Tx.
+        apply (from_set_type_in _ _ Tx).
     }
     pose proof (well_founded _ T'_nempty) as [x [[Sx Tx] x_min]].
     exists [x|Sx].
     split; [>exact Tx|].
     intros y Ty y_neq y_leq.
     apply (x_min [y|]).
-    -   split with [|y].
-        rewrite set_type_simpl.
+    -   apply from_set_type_in.
         exact Ty.
     -   intro contr.
         subst x.
-        apply y_neq.
-        apply set_type_eq.
-        reflexivity.
+        rewrite set_type_simpl in y_neq.
+        contradiction.
     -   unfold le in y_leq; cbn in y_leq.
         exact y_leq.
 Qed.
