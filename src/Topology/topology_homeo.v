@@ -28,7 +28,7 @@ Proof.
             exact inv_cont.
         +   intros A_open.
             specialize (cont _ A_open).
-            rewrite inverse_image_bij in cont by apply bij.
+            rewrite inj_inverse_image in cont by apply bij.
             exact cont.
     -   intros [bij opens].
         split.

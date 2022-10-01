@@ -8,6 +8,12 @@ Inductive nat : Set :=
     | nat_suc : nat → nat.
 Bind Scope nat_scope with nat.
 
+Fixpoint iterate_func {U} (f : U → U) n :=
+    match n with
+    | nat_zero => identity
+    | nat_suc n' => λ x, f (iterate_func f n' x)
+    end.
+
 Theorem nat_zero_suc : ∀ {n}, nat_zero ≠ nat_suc n.
 Proof.
     intros n eq.

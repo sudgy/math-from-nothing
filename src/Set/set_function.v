@@ -3,7 +3,6 @@ Require Import init.
 Require Import set_base.
 Require Import set_type.
 Require Export relation.
-Require Import nat.
 
 Definition image {U V} (f : U → V) := λ y, ∃ x, y = f x.
 Definition image_under {U V} (f : U → V) (S : U → Prop)
@@ -11,8 +10,18 @@ Definition image_under {U V} (f : U → V) (S : U → Prop)
 Definition inverse_image {U V} (f : U → V) (T : V → Prop)
     := λ x, T (f x).
 
-Theorem image_inverse_sub {U V} : ∀ (f : U → V) S,
-    subset (image_under f (inverse_image f S)) S.
+Theorem image_under_in {U V} : ∀ (f : U → V) (S : U → Prop) x,
+    S x → image_under f S (f x).
+Proof.
+    intros f S x Sx.
+    exists x.
+    split.
+    -   exact Sx.
+    -   reflexivity.
+Qed.
+
+Theorem image_inverse_sub {U V} : ∀ (f : U → V) (S : V → Prop),
+    image_under f (inverse_image f S) ⊆ S.
 Proof.
     intros f S y [x [x_in eq]].
     subst y.
@@ -25,8 +34,8 @@ Proof.
     intros f S T sub y [x [Sx y_eq]].
     subst y.
     apply sub in Sx.
-    exists x.
-    split; trivial.
+    apply image_under_in.
+    exact Sx.
 Qed.
 
 Theorem inverse_complement {U V} : ∀ (f : U → V) S,
@@ -36,12 +45,6 @@ Proof.
     reflexivity.
 Qed.
 
-Fixpoint iterate_func {U} (f : U → U) n :=
-    match n with
-    | nat_zero => identity
-    | nat_suc n' => λ x, f (iterate_func f n' x)
-    end.
-
 Theorem inverse_image_bij_inv {U V} : ∀ S (f : U → V) f_bij,
     (inverse_image (bij_inv f f_bij) S) = image_under f S.
 Proof.
@@ -50,9 +53,9 @@ Proof.
     -   intros y y_in.
         unfold inverse_image in y_in.
         exists (bij_inv f f_bij y).
-        split; try exact y_in.
-        rewrite inverse_eq2 by apply bij_inv_inv.
-        reflexivity.
+        split; [>exact y_in|].
+        symmetry; apply inverse_eq2.
+        apply bij_inv_inv.
     -   intros y [x [Sx y_eq]]; subst y.
         unfold inverse_image.
         rewrite inverse_eq1 by apply bij_inv_inv.
@@ -63,28 +66,28 @@ Theorem bij_inverse_image {U V} : ∀ S (f : U → V),
     bijective f → image_under f (inverse_image f S) = S.
 Proof.
     intros S f f_bij.
-    apply antisym.
-    -   intros y [x [Sfx y_eq]]; subst y.
-        exact Sfx.
-    -   intros y Sy.
-        exists (bij_inv f f_bij y).
-        unfold inverse_image.
-        rewrite inverse_eq2 by apply bij_inv_inv.
-        split; trivial.
+    apply antisym; [>apply image_inverse_sub|].
+    intros y Sy.
+    exists (bij_inv f f_bij y).
+    unfold inverse_image.
+    rewrite inverse_eq2 by apply bij_inv_inv.
+    split.
+    -   exact Sy.
+    -   reflexivity.
 Qed.
 
-Theorem inverse_image_bij {U V} : ∀ S (f : U → V),
+Theorem inj_inverse_image {U V} : ∀ S (f : U → V),
     injective f → inverse_image f (image_under f S) = S.
 Proof.
-    intros S f f_bij.
+    intros S f f_inj.
     apply antisym.
     -   intros x [y [Sy eq]].
-        apply f_bij in eq.
+        apply f_inj in eq.
         subst.
         exact Sy.
     -   intros x Sx.
-        exists x.
-        split; trivial.
+        apply image_under_in.
+        exact Sx.
 Qed.
 
 
