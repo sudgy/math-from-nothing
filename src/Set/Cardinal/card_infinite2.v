@@ -7,6 +7,7 @@ Require Import card_mult.
 Require Import card_nat.
 Require Import set.
 Require Import zorn.
+Require Import zorn_function.
 Require Import function.
 Require Import nat.
 Require Import order_minmax.

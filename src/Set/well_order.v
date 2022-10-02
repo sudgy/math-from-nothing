@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Import zorn.
+Require Import zorn_function.
 Require Export order_def.
 Require Import set_base.
 Require Import set_type.

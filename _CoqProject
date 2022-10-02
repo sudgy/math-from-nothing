@@ -82,6 +82,7 @@
 ./src/Set/set_function.v
 ./src/Set/equivalence.v
 ./src/Set/zorn.v
+./src/Set/zorn_function.v
 ./src/Set/well_order.v
 ./src/Set/set.v
 ./src/Set/nat_set.v
