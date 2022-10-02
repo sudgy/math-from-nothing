@@ -1,521 +1,9 @@
 Require Import init.
+
 Require Export order_def.
 Require Import set_base.
-Require Import set_type.
-Require Import set_function.
+Require Import set_set.
 
-(* begin hide *)
-Module BourbakiModule.
-Section Bourbaki.
-
-Local Open Scope set_scope.
-
-Context {U : Type}.
-Variable (op : U → U → Prop).
-Context `{
-    Reflexive U op,
-    Antisymmetric U op,
-    Transitive U op
-}.
-
-Local Instance op_le : Order U := {
-    le := op
-}.
-
-Variable a : U.
-Hypothesis chain_sup : ∀ S : U → Prop, is_chain op S → has_supremum op S.
-Variable f : U → U.
-Hypothesis f_ge : ∀ x, op x (f x).
-
-Definition admissable (A : U → Prop) :=
-    A a ∧
-    (λ y, ∃ x, A x ∧ f x = y) ⊆ A ∧
-    ∀ F, F ≠ ∅ → is_chain op F → F ⊆ A → (∀ x, is_supremum le F x → A x).
-
-Definition M (x : U) := ∀ A : U → Prop, admissable A → A x.
-
-Lemma M_admissable : admissable M.
-Proof.
-    repeat split.
-    -   intros A [A_a C].
-        apply A_a.
-    -   intros y [x [x_in eq]] A A_ad.
-        apply A_ad.
-        exists x.
-        split; try assumption.
-        apply x_in.
-        exact A_ad.
-    -   intros F F_nempty F_chain F_sub x x_sup A A_ad.
-        apply (rand (rand A_ad) F F_nempty F_chain).
-        +   apply (trans F_sub).
-            intros y y_in.
-            apply y_in.
-            exact A_ad.
-        +   exact x_sup.
-Qed.
-
-Lemma M_sub_admissable : ∀ M0, M0 ⊆ M → admissable M0 → M0 = M.
-Proof.
-    intros M0 M0_sub M0_admissable.
-    apply antisym; try assumption.
-    intros x x_in.
-    apply x_in.
-    exact M0_admissable.
-Qed.
-
-Lemma MfM : ∀ x, M x → M (f x).
-Proof.
-    intros x Mx.
-    apply M_admissable.
-    exists x.
-    split.
-    -   exact Mx.
-    -   reflexivity.
-Qed.
-
-Definition A x := M x ∧ a ≤ x.
-Lemma A_sub : A ⊆ M.
-Proof.
-    intros x x_in.
-    apply x_in.
-Qed.
-Lemma A_admissable : admissable A.
-Proof.
-    split.
-    2: split.
-    -   split; try apply refl.
-        apply (land M_admissable).
-    -   intros y [x [x_in x_eq]].
-        split.
-        +   rewrite <- x_eq.
-            apply MfM.
-            apply x_in.
-        +   destruct x_in as [Mx eq].
-            apply (trans eq).
-            rewrite <- x_eq.
-            apply f_ge.
-    -   intros F F_nempty F_chain F_sub w w_sup.
-        split.
-        +   apply (rand (rand M_admissable) F F_nempty F_chain).
-            *   apply (trans F_sub).
-                exact A_sub.
-            *   exact w_sup.
-        +   apply empty_neq in F_nempty as [x x_in].
-            specialize (F_sub _ x_in).
-            apply (trans (rand F_sub)).
-            apply w_sup.
-            exact x_in.
-Qed.
-Lemma a_first : is_least le M a.
-Proof.
-    pose proof (M_sub_admissable _ A_sub A_admissable) as AM.
-    rewrite <- AM.
-    split.
-    -   exact (land A_admissable).
-    -   intros y y_in.
-        apply y_in.
-Qed.
-
-Definition P x := ∀ y, M y → y < x → f y ≤ x.
-
-Definition B x z := M z ∧ (z ≤ x ∨ f x ≤ z).
-Lemma B_sub : ∀ x, B x ⊆ M.
-Proof.
-    intros x y y_in.
-    apply y_in.
-Qed.
-Lemma B_admissable : ∀ x, M x → P x → admissable (B x).
-Proof.
-    change op with le in *.
-    intros x Mx Px.
-    split.
-    2: split.
-    -   split.
-        +   apply (land M_admissable).
-        +   left.
-            apply a_first.
-            exact Mx.
-    -   intros fz [z [Bz z_eq]].
-        destruct Bz as [Mz eqs].
-        rewrite <- z_eq; clear z_eq.
-        split.
-        +   apply MfM.
-            exact Mz.
-        +   destruct eqs as [eq|eq].
-            *   classic_case (z = x).
-                --  right.
-                    rewrite e.
-                    apply refl.
-                --  left.
-                    exact (Px z Mz (make_and eq n)).
-            *   right.
-                apply (trans eq (f_ge _)).
-    -   intros F F_nempty F_chain F_sub w w_lub.
-        split.
-        +   apply (rand (rand M_admissable) F); try assumption.
-            apply (trans F_sub (B_sub x)).
-        +   classic_case (∀ z, F z → z ≤ x).
-            *   destruct w_lub as [w_ub w_lub].
-                specialize (w_lub _ l).
-                left; exact w_lub.
-            *   rewrite not_all in n.
-                (* TODO: MORE EXTENSIONAL REWRITING *)
-                destruct n as [z n].
-                rewrite not_impl in n.
-                destruct n as [Fz n].
-                pose proof (F_sub _ Fz) as Bz.
-                destruct Bz as [Mz [eq|eq]]; try contradiction.
-                right.
-                apply (trans eq).
-                apply w_lub.
-                exact Fz.
-Qed.
-Lemma BM : ∀ x, M x → P x → B x = M.
-Proof.
-    intros x Mx Px.
-    apply M_sub_admissable.
-    -   apply B_sub.
-    -   apply B_admissable; assumption.
-Qed.
-Lemma z_P : ∀ x, M x → P x → ∀ z, M z → z ≤ x ∨ f x ≤ z.
-Proof.
-    intros x Mx Px z Mz.
-    rewrite <- (BM x) in Mz; try assumption.
-    apply Mz.
-Qed.
-
-Definition C x := M x ∧ P x.
-Lemma C_sub : C ⊆ M.
-Proof.
-    intros x x_in.
-    apply x_in.
-Qed.
-Lemma C_admissable : admissable C.
-Proof.
-    change op with le in *.
-    split.
-    2: split.
-    -   split.
-        +   apply (land M_admissable).
-        +   intros z Mz [eq1 neq].
-            pose proof (rand a_first z Mz) as eq2.
-            pose proof (antisym eq1 eq2).
-            contradiction.
-    -   intros y [x [Cx x_eq]].
-        rewrite <- x_eq; clear x_eq y.
-        split.
-        +   apply MfM.
-            apply Cx.
-        +   intros y My y_lt.
-            destruct Cx as [Mx Px].
-            destruct (z_P x Mx Px y My) as [eq|eq].
-            *   classic_case (y = x); try (subst; apply refl).
-                specialize (Px y My (make_and eq n)).
-                exact (trans Px (f_ge _)).
-            *   pose proof (lt_le_trans y_lt eq) as contr.
-                destruct contr; contradiction.
-    -   intros F F_nempty F_cahin F_sub w w_sup.
-        assert (M w) as Mw.
-        {
-            apply (rand (rand M_admissable) F); try assumption.
-            apply (trans F_sub).
-            apply C_sub.
-        }
-        split; try exact Mw.
-        intros y My eq.
-        assert (∃ z, F z ∧ y ≤ z) as [z [Fz z_eq]].
-        {
-            classic_contradiction contr.
-            rewrite not_ex in contr.
-            assert (is_upper_bound le F y) as y_upper.
-            {
-                intros z Fz.
-                specialize (contr z).
-                rewrite not_and in contr.
-                destruct contr as [C0|leq]; [>contradiction|].
-                pose proof (F_sub _ Fz) as [Mz Pz].
-                pose proof (z_P z Mz Pz y My) as [C|leq2];try contradiction.
-                exact (trans (f_ge _) leq2).
-            }
-            pose proof (rand w_sup _ y_upper) as leq.
-            pose proof (lt_le_trans eq leq) as neq.
-            destruct neq; contradiction.
-        }
-        pose proof (F_sub _ Fz) as [Mz Pz].
-        classic_case (y = z).
-        +   subst.
-            pose proof (z_P z Mz Pz w Mw) as [leq|leq].
-            *   pose proof (lt_le_trans eq leq) as contr.
-                destruct contr; contradiction.
-            *   exact leq.
-        +   specialize (Pz y My (make_and z_eq n)).
-            apply (trans Pz).
-            apply w_sup.
-            exact Fz.
-Qed.
-Lemma all_P : M ⊆ P.
-Proof.
-    pose proof (M_sub_admissable _ C_sub C_admissable) as CM.
-    rewrite <- CM.
-    apply inter_rsub.
-Qed.
-
-Lemma M_chain : is_chain le M.
-Proof.
-    change op with le in *.
-    intros x y Mx My.
-    classic_case (y ≤ x).
-    -   right; exact l.
-    -   left.
-        apply (trans (f_ge _)).
-        pose proof Mx as Px; apply all_P in Px.
-        pose proof My as By; rewrite <- (BM x Mx Px) in By.
-        destruct By as [C [eq|eq]]; clear C.
-        +   contradiction.
-        +   exact eq.
-Qed.
-
-Theorem bourbaki : ∃ x, f x = x.
-Proof.
-    change op with le in *.
-    assert (M ≠ ∅) as M_nempty.
-    {
-        intros contr.
-        pose proof (land M_admissable) as a_in.
-        rewrite contr in a_in.
-        contradiction a_in.
-    }
-    pose proof (rand (rand M_admissable) M M_nempty M_chain (refl _))
-        as sup_in.
-    specialize (chain_sup M M_chain) as [x x_lub].
-    exists x.
-    apply antisym; try apply f_ge.
-    specialize (sup_in x x_lub).
-    apply x_lub.
-    apply M_admissable.
-    exists x.
-    split; try assumption.
-    reflexivity.
-Qed.
-
-End Bourbaki.
-End BourbakiModule.
-Section Bourbaki.
-
-Context {U : Type}.
-Variable (op : U → U → Prop).
-Context `{
-    Reflexive U op,
-    Antisymmetric U op,
-    Transitive U op
-}.
-(* end hide *)
-Theorem bourbaki : U → (∀ S, is_chain op S → has_supremum op S) →
-    ∀ f, (∀ x, op x (f x)) → ∃ x, f x = x.
-Proof.
-    apply BourbakiModule.bourbaki; assumption.
-Qed.
-
-(* begin hide *)
-End Bourbaki.
-
-
-
-Module HausdorffModule.
-Section Hausdorff.
-
-Local Open Scope set_scope.
-
-Context {U : Type}.
-Variable (op : U → U → Prop).
-Context `{
-    Reflexive U op,
-    Antisymmetric U op,
-    Transitive U op
-}.
-
-Local Instance op_le : Order U := {
-    le := op
-}.
-
-Hypothesis not_hausdorff
-        : ∀ G : U → Prop, is_chain le G → ∃ F, is_chain le F ∧ G ⊂ F.
-
-Definition A F := is_chain le F.
-Local Instance sub_le : Order (U → Prop) := {
-    le := subset
-}.
-
-Definition g := make_set_function A (λ X, ex_val (not_hausdorff [X|] [|X])).
-Lemma g_in_A : ∀ X, A (g⟨X⟩).
-Proof.
-    intros X.
-    unfold g; cbn.
-    unpack_ex_val Y Y_ex HY; rewrite Y_ex.
-    apply HY.
-Qed.
-Definition g2 X := [_|g_in_A X].
-
-Lemma g_in : ∀ X, X < g2 X.
-Proof.
-    intros X.
-    unfold g2, g; cbn.
-    split.
-    -   intros x Xx; cbn.
-        unpack_ex_val Y Y_ex HY; rewrite Y_ex.
-        destruct HY as [Y_chain X_sub_Y].
-        apply X_sub_Y.
-        exact Xx.
-    -   intros contr.
-        destruct X as [X X_chain].
-        inversion contr as [eq]; clear contr.
-        rewrite_ex_val X' X_eq.
-        subst X'.
-        apply X_eq.
-        reflexivity.
-Qed.
-
-Lemma chain_supremum : ∀ S : set_type A → Prop,
-    is_chain le S → has_supremum le S.
-Proof.
-    intros S S_chain.
-    pose (W x := ∃ X, S X ∧ [X|] x).
-    assert (is_chain le W) as W_chain.
-    {
-        intros a b Wa Wb.
-        destruct Wa as [Y [SY Ya]].
-        destruct Wb as [Z [SZ Za]].
-        specialize (S_chain Y Z SY SZ) as [YZ|ZY].
-        -   apply YZ in Ya.
-            exact ([|Z] a b Ya Za).
-        -   apply ZY in Za.
-            exact ([|Y] a b Ya Za).
-    }
-    exists [W|W_chain].
-    split.
-    -   intros X SX x Xx; cbn.
-        exists X.
-        split; assumption.
-    -   intros Y Y_ub x Wx.
-        destruct Wx as [X [SX Xx]].
-        specialize (Y_ub X SX).
-        apply Y_ub.
-        exact Xx.
-Qed.
-
-Theorem hausdorff : False.
-Proof.
-    assert (A ∅) as empty_in.
-    {
-        intros a b a_in b_in.
-        contradiction a_in.
-    }
-    pose proof (bourbaki le [∅|empty_in] chain_supremum g2 (λ X, land (g_in X)))
-        as [[X X_chain] X_eq].
-    pose proof (g_in [X|X_chain]) as eq.
-    rewrite X_eq in eq.
-    apply eq.
-    reflexivity.
-Qed.
-
-End Hausdorff.
-End HausdorffModule.
-Section Hausdorff.
-
-Context {U : Type}.
-Variable (op : U → U → Prop).
-Context `{
-    Reflexive U op,
-    Antisymmetric U op,
-    Transitive U op
-}.
-
-Local Open Scope set_scope.
-(* end hide *)
-Theorem hausdorff : ∃ M : U → Prop,
-    is_chain op M ∧ (∀ F : U → Prop, is_chain op F → ¬(M ⊂ F)).
-Proof.
-    classic_contradiction contr.
-    apply (HausdorffModule.hausdorff op).
-    intros G G_chain.
-    rewrite not_ex in contr.
-    specialize (contr G).
-    rewrite not_and_impl in contr.
-    specialize (contr G_chain).
-    rewrite not_all in contr.
-    destruct contr as [F contr].
-    exists F.
-    rewrite not_impl in contr.
-    rewrite not_not in contr.
-    exact contr.
-Qed.
-
-(* begin hide *)
-End Hausdorff.
-
-
-
-Module ZornModule.
-Section Zorn.
-
-Context {U : Type}.
-Variable (op : U → U → Prop).
-Context `{
-    Reflexive U op,
-    Antisymmetric U op,
-    Transitive U op
-}.
-
-Local Instance op_le : Order U := {
-    le := op
-}.
-
-Hypothesis all_upper : ∀ F : U → Prop, is_chain le F → has_upper_bound le F.
-
-Theorem zorn : ∃ a, ∀ x, ¬(a < x).
-Proof.
-    pose proof (hausdorff le) as [A [A_chain A_max]].
-    pose proof (all_upper A A_chain) as [a a_upper].
-    exists a.
-    intros x contr.
-    assert (¬A x) as Ax.
-    {
-        intro Ax.
-        specialize (a_upper _ Ax).
-        pose proof (le_lt_trans a_upper contr) as [C1 C2].
-        contradiction.
-    }
-    pose (B y := A y ∨ x = y).
-    assert (is_chain le B) as B_chain.
-    {
-        intros m n Bm Bn.
-        destruct Bm as [Am|mx]; destruct Bn as [An|nx].
-        -   apply A_chain; assumption.
-        -   subst n.
-            left.
-            apply (trans (a_upper _ Am)).
-            apply contr.
-        -   subst m.
-            right.
-            apply (trans (a_upper _ An)).
-            apply contr.
-        -   subst m n.
-            left; apply refl.
-    }
-    apply (A_max _ B_chain).
-    split.
-    -   intros y Ay.
-        left; exact Ay.
-    -   intros eq.
-        rewrite eq in Ax.
-        unfold B in Ax.
-        rewrite not_or in Ax.
-        destruct Ax.
-        contradiction.
-Qed.
-
-End Zorn.
-End ZornModule.
 Section Zorn.
 
 Context {U : Type}.
@@ -527,13 +15,446 @@ Context `{
 }.
 
 Local Instance zorn_order : Order U := {le := op}.
-(* end hide *)
+
+Section NotZorn.
+
+Hypothesis not_zorn : ¬((∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
+    ∃ a : U, ∀ x : U, ¬ a < x).
+
+Lemma zorn_sub_ex : ∀ C : U → Prop, is_chain le C → ∃ x, ∀ a, C a → a < x.
+Proof.
+    intros C C_chain.
+    rewrite not_impl in not_zorn.
+    destruct not_zorn as [ub gt].
+    specialize (ub C C_chain) as [u u_upper].
+    rewrite not_ex in gt.
+    specialize (gt u).
+    rewrite not_all in gt.
+    destruct gt as [x x_gt].
+    rewrite not_not in x_gt.
+    exists x.
+    intros a Ca.
+    specialize (u_upper a Ca).
+    exact (le_lt_trans u_upper x_gt).
+Qed.
+
+Let f (C : U → Prop) (H : is_chain le C) := ex_val (zorn_sub_ex C H).
+
+Lemma zorn_f_lt : ∀ (C : U → Prop) (H : is_chain le C), ∀ x, C x → x < f C H.
+Proof.
+    intros C CH x Cx.
+    unfold f.
+    rewrite_ex_val z z_gt.
+    apply z_gt.
+    exact Cx.
+Qed.
+
+Lemma zorn_f_eq : ∀ A B H1 H2, A = B → f A H1 = f B H2.
+Proof.
+    intros A B AH BH eq.
+    subst.
+    apply f_equal.
+    apply proof_irrelevance.
+Qed.
+
+Let P (C : U → Prop) (x : U) := λ y, C y ∧ y < x.
+
+Let well_orders (S : U → Prop) := ∀ A : U → Prop, A ⊆ S → (∃ x, A x) →
+    ∃ a, is_least le A a.
+
+Lemma well_orders_chain : ∀ A : U → Prop, well_orders A → is_chain le A.
+Proof.
+    intros A A_wo a b Aa Ab.
+    specialize (A_wo (singleton a ∪ singleton b)).
+    prove_parts A_wo.
+    {
+        intros x [xa|xb].
+        -   unfold singleton in xa.
+            rewrite <- xa.
+            exact Aa.
+        -   unfold singleton in xb.
+            rewrite <- xb.
+            exact Ab.
+    }
+    {
+        exists a.
+        left.
+        reflexivity.
+    }
+    destruct A_wo as [x [[xa|xb] x_least]].
+    -   unfold singleton in xa; subst x.
+        left.
+        apply x_least.
+        right.
+        reflexivity.
+    -   unfold singleton in xb; subst x.
+        right.
+        apply x_least.
+        left.
+        reflexivity.
+Qed.
+
+Lemma zorn_wo_chain : ∀ (A : U → Prop) x, well_orders A → is_chain le (P A x).
+Proof.
+    intros A x A_wo.
+    apply well_orders_chain in A_wo.
+    intros a b [Aa a_lt] [Ab b_lt].
+    apply A_wo; assumption.
+Qed.
+
+Let conforming (A : U → Prop) :=
+    well_orders A ⋏
+    λ H, (∀ x, A x → x = f (P A x) (zorn_wo_chain A x H)).
+
+Let initial_segment (A : U → Prop) (B : U → Prop) := ∃ x, B x ∧ A = P B x.
+
+Local Open Scope set_scope.
+
+Lemma zorn_initial1 : ∀ A B, conforming A → conforming B → A - B ≠ ∅ →
+    initial_segment B A.
+Proof.
+    intros A B [A_wo A_conf] [B_wo B_conf] AB.
+    pose proof (A_wo (A - B)) as AB_ex.
+    prove_parts AB_ex; [>apply inter_lsub| apply empty_neq; exact AB|].
+    destruct AB_ex as [x [[Ax Bx] x_least]].
+    exists x.
+    split; [>exact Ax|].
+    apply antisym.
+    2: {
+        intros c [Ac c_lt].
+        classic_contradiction Bc.
+        specialize (x_least c (make_and Ac Bc)).
+        destruct (le_lt_trans x_least c_lt); contradiction.
+    }
+    classic_contradiction contr.
+    pose proof (B_wo (B - P A x)) as BA_ex.
+    prove_parts BA_ex; [>apply inter_lsub| |].
+    {
+        unfold subset in contr.
+        rewrite not_all in contr.
+        destruct contr as [a contr].
+        rewrite not_impl in contr.
+        exists a.
+        split; apply contr.
+    }
+    destruct BA_ex as [y [[By PAy] y_least]].
+    pose proof (A_wo (A - P B y)) as z_ex.
+    prove_parts z_ex; [>apply inter_lsub| |].
+    {
+        exists x.
+        split; [>exact Ax|].
+        unfold P.
+        rewrite not_and.
+        left.
+        exact Bx.
+    }
+    destruct z_ex as [z [[Az PBz] z_least]].
+    assert (z ≤ x) as zx.
+    {
+        apply z_least.
+        split; [>exact Ax|].
+        unfold P.
+        rewrite not_and.
+        left.
+        exact Bx.
+    }
+    assert (P A z = P B y) as eq.
+    {
+        apply antisym.
+        -   intros c [Ac c_lt].
+            classic_contradiction PBc.
+            specialize (z_least c (make_and Ac PBc)).
+            destruct (le_lt_trans z_least c_lt); contradiction.
+        -   intros c [Bc c_lt].
+            split.
+            +   classic_contradiction contr2.
+                assert (y ≤ c) as leq.
+                {
+                    apply y_least.
+                    split; [>exact Bc|].
+                    unfold P.
+                    rewrite not_and.
+                    left.
+                    exact contr2.
+                }
+                destruct (lt_le_trans c_lt leq); contradiction.
+            +   unfold P in PBz.
+                rewrite not_and in PBz.
+                classic_case (B z) as [Bz|Bz].
+                2: {
+                    pose proof (x_least z (make_and Az Bz)) as xz.
+                    pose proof (antisym xz zx) as eq; subst z.
+                    classic_contradiction contr2.
+                    assert (y ≤ c) as leq.
+                    {
+                        apply y_least.
+                        split; [>exact Bc|].
+                        unfold P.
+                        rewrite not_and.
+                        right.
+                        exact contr2.
+                    }
+                    destruct (lt_le_trans c_lt leq); contradiction.
+                }
+                destruct PBz as [Bz'|zy]; [>contradiction|].
+                apply (lt_le_trans c_lt).
+                unfold strict in zy.
+                rewrite not_and in zy.
+                rewrite not_not in zy.
+                destruct zy as [leq|eq].
+                --  destruct (well_orders_chain B B_wo y z By Bz) as [yz|yz].
+                    ++  exact yz.
+                    ++  contradiction.
+                --  subst; apply refl.
+    }
+    specialize (A_conf z Az).
+    specialize (B_conf y By).
+    pose proof (zorn_f_eq _ _ (zorn_wo_chain A z A_wo)
+        (zorn_wo_chain B y B_wo) eq) as eq2.
+    rewrite <- A_conf, <- B_conf in eq2.
+    subst z.
+    unfold P in PAy.
+    rewrite not_and in PAy.
+    destruct PAy as [Ay|yx]; [>contradiction|].
+    apply yx.
+    split; [>exact zx|].
+    intro; subst y.
+    contradiction.
+Qed.
+
+Lemma zorn_initial2 : ∀ A B, conforming A → conforming B → A ≠ B →
+    initial_segment A B ∨ initial_segment B A.
+Proof.
+    intros A B A_conf B_conf AB_neq.
+    classic_case (A - B = ∅) as [AB|AB].
+    1: classic_case (B - A = ∅) as [BA|BA].
+    -   exfalso.
+        apply AB_neq.
+        apply antisym.
+        +   intros x Ax.
+            classic_contradiction Bx.
+            assert ((A - B) x) as x_in by (split; assumption).
+            rewrite AB in x_in.
+            exact x_in.
+        +   intros x Bx.
+            classic_contradiction Ax.
+            assert ((B - A) x) as x_in by (split; assumption).
+            rewrite BA in x_in.
+            exact x_in.
+    -   left.
+        apply zorn_initial1; assumption.
+    -   right.
+        apply zorn_initial1; assumption.
+Qed.
+
+Lemma zorn_conforming_union : conforming (⋃ conforming).
+Proof.
+    assert (well_orders (⋃ conforming)) as conf_wo.
+    {
+        intros S S_sub [x Sx].
+        pose proof Sx as Sx'.
+        apply S_sub in Sx'.
+        destruct Sx' as [A [A_conf Ax]].
+        pose proof (ldand A_conf) as A_wo.
+        specialize (A_wo (A ∩ S) (inter_lsub _ _)
+            (ex_intro _ x (make_and Ax Sx))) as [a [Aa a_le]].
+        exists a.
+        split; [>apply Aa|].
+        intros y Sy.
+        pose proof Sy as Sy'.
+        apply S_sub in Sy'.
+        destruct Sy' as [B [B_conf By]].
+        classic_case (A = B) as [AB_eq|AB_neq].
+        {
+            subst B.
+            apply a_le.
+            split; assumption.
+        }
+        pose proof (zorn_initial2 A B A_conf B_conf AB_neq) as [AB|BA].
+        -   destruct AB as [c [Bc A_eq]].
+            subst A.
+            classic_case (P B c y) as [y_in|y_nin].
+            +   apply a_le.
+                split; assumption.
+            +   unfold P in y_nin.
+                rewrite not_and_impl in y_nin.
+                specialize (y_nin By).
+                specialize (a_le x (make_and Ax Sx)).
+                destruct Ax as [Bx xc].
+                apply (trans a_le).
+                apply (lt_le_trans xc).
+                pose proof (well_orders_chain B (ldand B_conf) y c By Bc)
+                    as [leq|leq].
+                *   unfold strict in y_nin.
+                    rewrite not_and, not_not in y_nin.
+                    destruct y_nin as [nleq|eq].
+                    --  contradiction.
+                    --  rewrite eq; apply refl.
+                *   exact leq.
+        -   destruct BA as [c [Ac B_eq]].
+            subst B.
+            apply a_le.
+            split; [>|exact Sy].
+            apply By.
+    }
+    split with conf_wo.
+    intros x [A [A_conf Ax]].
+    pose proof A_conf as [A_wo x_eq].
+    specialize (x_eq x Ax).
+    rewrite x_eq at 1; clear x_eq.
+    apply zorn_f_eq.
+    apply antisym.
+    -   intros c [Ac c_lt].
+        split; [>|exact c_lt].
+        exists A.
+        split; assumption.
+    -   intros c [[B [B_conf Bc]] c_lt].
+        split; [>|exact c_lt].
+        classic_case (A = B) as [AB_eq|AB_neq].
+        {
+            subst B.
+            exact Bc.
+        }
+        pose proof (zorn_initial2 A B A_conf B_conf AB_neq) as [AB|BA].
+        +   destruct AB as [z [Bz A_eq]].
+            subst A.
+            split; [>exact Bc|].
+            destruct Ax as [Bx xz].
+            exact (trans c_lt xz).
+        +   destruct BA as [z [Az B_eq]].
+            subst B.
+            apply Bc.
+Qed.
+
+Theorem zorn_contr : False.
+Proof.
+    pose (x := f _ (well_orders_chain _ (ldand zorn_conforming_union))).
+    assert (conforming (⋃ conforming ∪ singleton x)) as conf.
+    {
+        assert (well_orders (⋃ conforming ∪ singleton x)) as wo.
+        {
+            intros S S_sub S_ex.
+            classic_case (⋃ conforming ∩ S = ∅) as [S_empty|S_nempty].
+            {
+                assert (S = singleton x) as S_eq.
+                {
+                    apply antisym.
+                    -   intros y Sy.
+                        specialize (S_sub _ Sy) as [y_in|y_eq].
+                        +   assert (∅ y) as y_in'.
+                            {
+                                rewrite <- S_empty.
+                                split; assumption.
+                            }
+                            contradiction y_in'.
+                        +   exact y_eq.
+                    -   intros y y_eq.
+                        unfold singleton in y_eq; subst y.
+                        destruct S_ex as [y Sy].
+                        specialize (S_sub _ Sy) as [y_in|y_eq].
+                        +   assert (∅ y) as y_in'.
+                            {
+                                rewrite <- S_empty.
+                                split; assumption.
+                            }
+                            contradiction y_in'.
+                        +   unfold singleton in y_eq; subst.
+                            exact Sy.
+                }
+                exists x.
+                subst S.
+                split; unfold singleton; [>reflexivity|].
+                intros y y_eq; subst.
+                apply refl.
+            }
+            rewrite empty_neq in S_nempty.
+            pose proof (ldand zorn_conforming_union (⋃ conforming ∩ S)) as a_ex.
+            prove_parts a_ex; [>apply inter_lsub|exact S_nempty|].
+            destruct a_ex as [a [[a_in Sa] a_least]].
+            exists a.
+            split; [>exact Sa|].
+            intros y Sy.
+            specialize (S_sub y Sy) as [y_in|y_eq].
+            -   apply a_least.
+                split; assumption.
+            -   unfold singleton in y_eq; subst y.
+                unfold x.
+                apply zorn_f_lt.
+                exact a_in.
+        }
+        split with wo.
+        intros y [y_in|y_eq].
+        -   destruct y_in as [A [A_conf Ay]].
+            pose proof A_conf as [A_wo A_conf'].
+            rewrite (A_conf' y Ay) at 1.
+            apply zorn_f_eq.
+            apply antisym.
+            +   intros a [Aa a_lt].
+                split; [>|exact a_lt].
+                left.
+                exists A.
+                split; assumption.
+            +   intros a [[a_in|a_eq] a_lt].
+                *   split; [>|exact a_lt].
+                    destruct a_in as [B [B_conf Ba]].
+                    classic_contradiction Aa.
+                    assert (A ≠ B) as AB_neq by (intro; subst; contradiction).
+                    pose proof (zorn_initial2 A B A_conf B_conf AB_neq)
+                        as [AB|BA].
+                    --  destruct AB as [z [Bz A_eq]]; subst A.
+                        unfold P in Aa, Ay.
+                        rewrite not_and_impl in Aa.
+                        specialize (Aa Ba).
+                        pose proof (trans a_lt (rand Ay)).
+                        contradiction.
+                    --  destruct BA as [z [Az B_eq]]; subst B.
+                        unfold P in Ba.
+                        destruct Ba; contradiction.
+                *   unfold singleton in a_eq.
+                    subst a.
+                    assert (y < x) as ltq.
+                    {
+                        apply zorn_f_lt.
+                        exists A.
+                        split; assumption.
+                    }
+                    destruct (trans a_lt ltq); contradiction.
+        -   unfold singleton in y_eq; subst y.
+            unfold x at 1.
+            apply zorn_f_eq.
+            apply antisym.
+            +   intros a a_in.
+                split.
+                *   left.
+                    exact a_in.
+                *   apply zorn_f_lt.
+                    exact a_in.
+            +   intros a [a_in a_lt].
+                destruct a_in as [a_in|a_eq].
+                *   exact a_in.
+                *   unfold singleton in a_eq; subst a.
+                    destruct a_lt; contradiction.
+    }
+    assert ((⋃ conforming ∪ singleton x) x) as x_in1 by (right; reflexivity).
+    assert ((⋃ conforming) x) as x_in2.
+    {
+        exists (⋃ conforming ∪ singleton x).
+        split; [>exact conf|exact x_in1].
+    }
+    unfold x in x_in2.
+    unfold f in x_in2.
+    rewrite_ex_val x' x'_lt.
+    specialize (x'_lt _ x_in2).
+    destruct x'_lt; contradiction.
+Qed.
+
+End NotZorn.
+
 Theorem zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
     ∃ a : U, ∀ x : U, ¬ a < x.
 Proof.
-    apply ZornModule.zorn; assumption.
+    classic_contradiction contr.
+    exact (zorn_contr contr).
 Qed.
 
-(* begin hide *)
 End Zorn.
-(* end hide *)
