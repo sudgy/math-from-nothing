@@ -27,7 +27,7 @@ Proof.
 Qed.
 
 Theorem image_sub {U V} :
-    ∀ (f : U → V) S T, (S ⊆ T → image_under f S ⊆ image_under f T)%set.
+    ∀ (f : U → V) S T, S ⊆ T → image_under f S ⊆ image_under f T.
 Proof.
     intros f S T sub y [x [Sx y_eq]].
     subst y.
