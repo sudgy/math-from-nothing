@@ -17,7 +17,7 @@ Proof.
     intros A xf c l Ac xf_pos x_lim.
     rewrite metric_func_seq_lim in x_lim.
     pose proof (limit_point_seq_ex _ _ Ac) as [xn [xn_eq xn_lim]].
-    pose (xn' n := [xn n | xn_eq n] : set_type (A - singleton c)%set).
+    pose (xn' n := [xn n | xn_eq n] : set_type (A - ❴c❵)%set).
     specialize (x_lim xn' xn_lim).
     apply seq_lim_pos in x_lim; [>exact x_lim|].
     intros n.
@@ -31,7 +31,7 @@ Proof.
     intros A xf yf c x y Ac leq cx cy.
     rewrite metric_func_seq_lim in cx, cy.
     pose proof (limit_point_seq_ex _ _ Ac) as [xn [xn_eq xn_lim]].
-    pose (xn' n := [xn n | xn_eq n] : set_type (A - singleton c)%set).
+    pose (xn' n := [xn n | xn_eq n] : set_type (A - ❴c❵)%set).
     specialize (cx xn' xn_lim).
     specialize (cy xn' xn_lim).
     eapply (seq_lim_le _ _ _ _ _ cx cy).

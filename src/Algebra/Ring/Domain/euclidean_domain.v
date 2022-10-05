@@ -58,7 +58,7 @@ Next Obligation.
                     rewrite <- IHl.
                     rewrite plus_rid.
                     destruct a as [[a1 a2] [a3 a3_eq]].
-                    unfold singleton in a3_eq.
+                    unfold list_to_set in a3_eq.
                     rewrite <- a3_eq; cbn.
                     rewrite mult_ranni, mult_lanni.
                     reflexivity.
@@ -119,7 +119,7 @@ Next Obligation.
         +   rewrite ulist_image_add, ulist_sum_add.
             apply ideal_plus; [>clear IHl|exact IHl].
             destruct c as [[c1 c2] [c3 c3_eq]]; cbn.
-            unfold singleton in c3_eq.
+            rewrite singleton_eq in c3_eq.
             rewrite <- c3_eq.
             apply ideal_rmult.
             apply ideal_lmult.

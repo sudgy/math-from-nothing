@@ -17,7 +17,7 @@ Open Scope set_scope.
 
 (* end hide *)
 Definition limit_point {U} `{Topology U} A x := ∀ S, open S → S x →
-    intersects (A - singleton x) S.
+    intersects (A - ❴x❵) S.
 
 Definition seq_lim {U} `{Topology U} (f : sequence U) x :=
     ∀ S, open S → S x → ∃ N, ∀ n, N ≤ n → S (f n).
@@ -44,13 +44,13 @@ Proof.
             intros S S_open Sx.
             rewrite in_closure in CAx.
             specialize (CAx S S_open Sx).
-            assert (A - singleton x = A) as eq.
+            assert (A - ❴x❵ = A) as eq.
             {
                 apply predicate_ext; intros y; split.
                 -   intros [Ay C0]; exact Ay.
                 -   intros Ay.
                     split; try exact Ay.
-                    unfold singleton; intro contr; subst.
+                    rewrite singleton_eq; intro contr; subst.
                     contradiction.
             }
             rewrite eq.
@@ -110,7 +110,7 @@ Proof.
 Qed.
 
 Theorem limit_point_sub : ∀ A B x,
-    (A - singleton x) ⊆ B → limit_point A x → limit_point B x.
+    (A - ❴x❵) ⊆ B → limit_point A x → limit_point B x.
 Proof.
     intros A B x sub A_lim S S_open Sx.
     specialize (A_lim S S_open Sx).
@@ -141,7 +141,8 @@ Proof.
     exists [y|sub y Ay].
     repeat split.
     -   exact Ay.
-    -   unfold singleton in *; cbn in *.
+    -   rewrite singleton_eq; cbn.
+        rewrite singleton_eq in y_neq; cbn in y_neq.
         intro contr.
         subst x.
         contradiction.
@@ -261,13 +262,13 @@ Proof.
         classic_contradiction fin.
         unfold infinite in fin.
         rewrite nle_lt in fin.
-        pose (X := (A - singleton x) ∩ S).
+        pose (X := (A - ❴x❵) ∩ S).
         assert (finite (|set_type X|)) as X_fin.
         {
             apply (le_lt_trans2 fin).
             unfold X.
             unfold le; equiv_simpl.
-            pose (f (a : set_type ((A - singleton x) ∩ S)) := [[a|] |
+            pose (f (a : set_type ((A - ❴x❵) ∩ S)) := [[a|] |
                 make_and (land (land [|a])) (rand [|a])] : set_type (A ∩ S)).
             exists f.
             unfold f; clear f.
@@ -289,14 +290,15 @@ Proof.
             split.
             -   exact Sx.
             -   intros [[C0 contr] C1].
-                unfold singleton in contr.
+                rewrite singleton_eq in contr.
                 contradiction.
         }
         specialize (x_lim Y Y_open Yx).
         apply empty_neq in x_lim.
         destruct x_lim as [a [[Aa nax] Ya]].
         unfold Y, X in Ya.
-        unfold 𝐂, intersection, set_minus, singleton in Ya.
+        unfold 𝐂, intersection, set_minus in Ya.
+        rewrite singleton_eq in Ya.
         rewrite not_and, not_and, not_not in Ya.
         destruct Ya as [Sa [[Aa'|ax]|Sa']]; contradiction.
     -   intros all_S S S_open Sx.
@@ -320,7 +322,7 @@ Proof.
         classic_case ([f n0|] = x) as [eq|neq].
         +   exists [f n1|].
             repeat split; try apply [|f n1].
-            unfold singleton; intros contr.
+            rewrite singleton_eq; intros contr.
             subst.
             apply set_type_eq in contr.
             apply f_inj in contr.
@@ -328,7 +330,7 @@ Proof.
             inversion contr.
         +   exists [f n0|].
             repeat split; try apply [|f n0].
-            unfold singleton; intros contr.
+            rewrite singleton_eq; intros contr.
             subst.
             contradiction.
 Qed.

@@ -230,7 +230,7 @@ Proof.
     apply card_le_zero.
 Qed.
 
-Theorem singleton_size {U} : ∀ a : U, |set_type (singleton a)| = 1.
+Theorem singleton_size {U} : ∀ a : U, |set_type ❴a❵| = 1.
 Proof.
     intros a.
     unfold one; cbn.

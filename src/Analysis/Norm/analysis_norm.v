@@ -153,7 +153,8 @@ Proof.
         exists x'.
         repeat split.
         +   exact Sx'.
-        +   unfold singleton, x'.
+        +   rewrite singleton_eq.
+            unfold x'.
             apply lem2; assumption.
         +   exact Tx'.
     -   specialize (ST_open x (make_and Sx Tx)) as [[ε ε_pos] sub].
@@ -170,7 +171,8 @@ Proof.
         exists x'.
         repeat split.
         +   exact Sx'.
-        +   unfold singleton, x'.
+        +   rewrite singleton_eq.
+            unfold x'.
             rewrite <- plus_0_a_b_ba.
             apply lem2; assumption.
         +   exact Tx'.

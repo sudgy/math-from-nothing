@@ -213,14 +213,14 @@ Qed.
 
 Theorem card_plus_one_nat {U} : ∀ (S : U → Prop) n (a : set_type S),
     |set_type S| = nat_to_card (nat_suc n) →
-    |set_type (S - singleton [a|])%set| = nat_to_card n.
+    |set_type (S - ❴[a|]❵)%set| = nat_to_card n.
 Proof.
     intros S n a S_eq.
     unfold nat_to_card; equiv_simpl.
     unfold nat_to_card in S_eq; equiv_simpl in S_eq.
     destruct S_eq as [f [f_inj f_sur]].
     classic_case ([f a|] = n) as [fa_eq|fa_neq].
-    -   pose (f' (x : set_type (S - singleton [a|])%set)
+    -   pose (f' (x : set_type (S - ❴[a|]❵)%set)
             := f [[x|] | land [|x]]).
         assert (∀ x, [f' x|] < n) as f'_lt.
         {
@@ -236,7 +236,7 @@ Proof.
                 destruct x as [x [Sx xa]].
                 destruct a as [a Sa].
                 cbn in contr.
-                unfold singleton in xa.
+                unfold list_to_set in xa.
                 cbn in xa.
                 inversion contr.
                 symmetry in H0.
@@ -277,7 +277,7 @@ Proof.
             rewrite (proof_irrelevance _ Sx).
             rewrite x_eq.
             reflexivity.
-    -   pose (f' (x : set_type (S - singleton [a|])%set) :=
+    -   pose (f' (x : set_type (S - ❴[a|]❵)%set) :=
             let x' := [[x|] | land [|x]] in
             If [f x'|] = n then [f a|]
             else [f x'|]).
@@ -308,14 +308,14 @@ Proof.
             *   apply set_type_eq in eq2.
                 apply f_inj in eq2.
                 destruct y as [y [Sy y_neq]].
-                unfold singleton in y_neq; cbn in eq2.
+                unfold list_to_set in y_neq; cbn in eq2.
                 destruct a as [a Sa].
                 inversion eq2.
                 contradiction.
             *   apply set_type_eq in eq2.
                 apply f_inj in eq2.
                 destruct x as [x [Sx x_neq]].
-                unfold singleton in x_neq; cbn in eq2.
+                unfold list_to_set in x_neq; cbn in eq2.
                 destruct a as [a Sa].
                 inversion eq2.
                 symmetry in H0.

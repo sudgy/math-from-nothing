@@ -237,14 +237,14 @@ Local Open Scope set_scope.
 (* end hide *)
 Context {U} `{HausdorffSpace U}.
 
-Theorem point_closed : ∀ x, closed (singleton x).
+Theorem point_closed : ∀ x, closed ❴x❵.
 Proof.
     intros x.
     rewrite closed_if_closure.
     apply (antisym (op := subset)).
     -   apply closure_sub.
     -   intros y y_closure.
-        unfold singleton.
+        apply singleton_eq.
         classic_contradiction contr.
         pose proof (hausdorff_space x y contr)
             as [S1 [S2 [S1_open [S2_open [S1x [S2y S1S2]]]]]].
@@ -255,7 +255,7 @@ Proof.
             split; try exact S1x.
             apply empty_neq in y_closure.
             destruct y_closure as [x' [x'_eq S2x']].
-            unfold singleton in x'_eq; subst.
+            rewrite singleton_eq in x'_eq; subst.
             exact S2x'.
         }
         unfold disjoint in S1S2.
@@ -285,8 +285,8 @@ Proof.
         }
         symmetry in A_fin.
         pose proof (card_plus_one_nat A n [x|Ax] A_fin) as A'_fin; cbn in *.
-        remember (A - singleton x) as A'.
-        assert (A = A' ∪ singleton x) as eq.
+        remember (A - ❴x❵) as A'.
+        assert (A = A' ∪ ❴x❵) as eq.
         {
             apply predicate_ext; intros y; split.
             -   intros Ay.
@@ -300,7 +300,7 @@ Proof.
             -   intros [A'y|xy].
                 +   rewrite HeqA' in A'y.
                     apply A'y.
-                +   unfold singleton in xy; rewrite <- xy.
+                +   rewrite singleton_eq in xy; rewrite <- xy.
                     exact Ax.
         }
         rewrite eq.

@@ -1004,7 +1004,7 @@ Proof.
     repeat split.
     -   apply S_sub in Sa.
         exact Sa.
-    -   unfold singleton.
+    -   rewrite singleton_eq.
         rewrite neq_sym.
         exact a_neq.
     -   exact x2_lim.

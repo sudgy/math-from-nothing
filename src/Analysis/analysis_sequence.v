@@ -140,7 +140,7 @@ Proof.
         apply empty_neq in x_lim.
         destruct x_lim as [a [[Xa nxa] a_in]].
         exists a.
-        unfold singleton in nxa.
+        rewrite singleton_eq in nxa.
         split; [>|split]; assumption.
     }
     exists (λ n, ex_val (f_ex n)).

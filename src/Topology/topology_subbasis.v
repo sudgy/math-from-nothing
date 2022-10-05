@@ -23,7 +23,7 @@ Next Obligation.
     destruct x_in as [B [B_sub Bx]].
     exists B.
     split; try exact Bx.
-    exists (singleton B).
+    exists ❴B❵.
     split.
     2: split.
     -   intros S SB.

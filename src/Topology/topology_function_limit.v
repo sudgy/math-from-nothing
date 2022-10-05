@@ -110,7 +110,7 @@ Proof.
 Qed.
 
 Theorem func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
-    func_lim_base f c l → ∀ xn : nat → set_type (A - singleton c),
+    func_lim_base f c l → ∀ xn : nat → set_type (A - ❴c❵),
     seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l.
 Proof.
     intros A f c l cl xn xn_lim.

@@ -65,14 +65,14 @@ Let well_orders (S : U → Prop) := ∀ A : U → Prop, A ⊆ S → (∃ x, A x)
 Lemma well_orders_chain : ∀ A : U → Prop, well_orders A → is_chain le A.
 Proof.
     intros A A_wo a b Aa Ab.
-    specialize (A_wo (singleton a ∪ singleton b)).
+    specialize (A_wo (❴a❵ ∪ ❴b❵)).
     prove_parts A_wo.
     {
         intros x [xa|xb].
-        -   unfold singleton in xa.
+        -   rewrite singleton_eq in xa.
             rewrite <- xa.
             exact Aa.
-        -   unfold singleton in xb.
+        -   rewrite singleton_eq in xb.
             rewrite <- xb.
             exact Ab.
     }
@@ -82,12 +82,12 @@ Proof.
         reflexivity.
     }
     destruct A_wo as [x [[xa|xb] x_least]].
-    -   unfold singleton in xa; subst x.
+    -   rewrite singleton_eq in xa; subst x.
         left.
         apply x_least.
         right.
         reflexivity.
-    -   unfold singleton in xb; subst x.
+    -   rewrite singleton_eq in xb; subst x.
         right.
         apply x_least.
         left.
@@ -329,14 +329,14 @@ Qed.
 Theorem zorn_contr : False.
 Proof.
     pose (x := f _ (well_orders_chain _ (ldand zorn_conforming_union))).
-    assert (conforming (⋃ conforming ∪ singleton x)) as conf.
+    assert (conforming (⋃ conforming ∪ ❴x❵)) as conf.
     {
-        assert (well_orders (⋃ conforming ∪ singleton x)) as wo.
+        assert (well_orders (⋃ conforming ∪ ❴x❵)) as wo.
         {
             intros S S_sub S_ex.
             classic_case (⋃ conforming ∩ S = ∅) as [S_empty|S_nempty].
             {
-                assert (S = singleton x) as S_eq.
+                assert (S = ❴x❵) as S_eq.
                 {
                     apply antisym.
                     -   intros y Sy.
@@ -349,7 +349,7 @@ Proof.
                             contradiction y_in'.
                         +   exact y_eq.
                     -   intros y y_eq.
-                        unfold singleton in y_eq; subst y.
+                        rewrite singleton_eq in y_eq; subst y.
                         destruct S_ex as [y Sy].
                         specialize (S_sub _ Sy) as [y_in|y_eq].
                         +   assert (∅ y) as y_in'.
@@ -358,13 +358,13 @@ Proof.
                                 split; assumption.
                             }
                             contradiction y_in'.
-                        +   unfold singleton in y_eq; subst.
+                        +   rewrite singleton_eq in y_eq; subst.
                             exact Sy.
                 }
                 exists x.
                 subst S.
-                split; unfold singleton; [>reflexivity|].
-                intros y y_eq; subst.
+                split; [>rewrite singleton_eq; reflexivity|].
+                intros y y_eq; rewrite singleton_eq in y_eq; subst.
                 apply refl.
             }
             rewrite empty_neq in S_nempty.
@@ -377,7 +377,7 @@ Proof.
             specialize (S_sub y Sy) as [y_in|y_eq].
             -   apply a_least.
                 split; assumption.
-            -   unfold singleton in y_eq; subst y.
+            -   rewrite singleton_eq in y_eq; subst y.
                 unfold x.
                 apply zorn_f_lt.
                 exact a_in.
@@ -410,7 +410,7 @@ Proof.
                     --  destruct BA as [z [Az B_eq]]; subst B.
                         unfold P in Ba.
                         destruct Ba; contradiction.
-                *   unfold singleton in a_eq.
+                *   rewrite singleton_eq in a_eq.
                     subst a.
                     assert (y < x) as ltq.
                     {
@@ -419,7 +419,7 @@ Proof.
                         split; assumption.
                     }
                     destruct (trans a_lt ltq); contradiction.
-        -   unfold singleton in y_eq; subst y.
+        -   rewrite singleton_eq in y_eq; subst y.
             unfold x at 1.
             apply zorn_f_eq.
             apply antisym.
@@ -432,13 +432,13 @@ Proof.
             +   intros a [a_in a_lt].
                 destruct a_in as [a_in|a_eq].
                 *   exact a_in.
-                *   unfold singleton in a_eq; subst a.
+                *   rewrite singleton_eq in a_eq; subst a.
                     destruct a_lt; contradiction.
     }
-    assert ((⋃ conforming ∪ singleton x) x) as x_in1 by (right; reflexivity).
+    assert ((⋃ conforming ∪ ❴x❵) x) as x_in1 by (right; reflexivity).
     assert ((⋃ conforming) x) as x_in2.
     {
-        exists (⋃ conforming ∪ singleton x).
+        exists (⋃ conforming ∪ ❴x❵).
         split; [>exact conf|exact x_in1].
     }
     unfold x in x_in2.

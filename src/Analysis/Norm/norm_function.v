@@ -125,12 +125,12 @@ Proof.
         apply abs_reverse_tri.
     }
     pose (a' n := ex_val (contr' [_|real_n_div_pos n] 1)).
-    assert (∀ n, (A - singleton c)%set [a' n|]) as a_in.
+    assert (∀ n, (A - ❴c❵)%set [a' n|]) as a_in.
     {
         intros n.
         split.
         -   exact [|a' n].
-        -   unfold singleton; intros eq.
+        -   rewrite singleton_eq; intros eq.
             unfold a' in eq.
             rewrite_ex_val x [x_neq xH].
             contradiction.

@@ -258,9 +258,9 @@ Proof.
     intros A.
     split.
     -   unfold le; equiv_simpl.
-        exists (λ a, singleton a).
+        exists (λ a, ❴a❵).
         intros a b eq.
-        unfold singleton in eq.
+        unfold list_to_set in eq.
         pose proof (func_eq _ _ eq) as eq2.
         specialize (eq2 b).
         cbn in eq2.

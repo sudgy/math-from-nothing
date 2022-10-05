@@ -76,7 +76,7 @@ Proof.
 Qed.
 
 Theorem singleton_linearly_independent :
-    ∀ v, 0 ≠ v → linearly_independent (singleton v).
+    ∀ v, 0 ≠ v → linearly_independent ❴v❵.
 Proof.
     intros v v_neq [l uni] in_l eq.
 
@@ -92,7 +92,7 @@ Proof.
         unfold linear_list_in in in_l; cbn in in_l.
         rewrite ulist_prop_add in in_l.
         destruct in_l as [v_eq in_l]; clear in_l.
-        unfold singleton in v_eq.
+        rewrite singleton_eq in v_eq.
         subst v.
         classic_contradiction contr.
         apply lscalar with (/fst a) in eq.
@@ -110,7 +110,7 @@ Proof.
         rewrite not_or in uni.
         apply (land (land uni)).
         do 2 rewrite ulist_prop_add in in_l.
-        unfold singleton in in_l.
+        rewrite singleton_eq in in_l.
         rewrite <- (land in_l), <- (land (rand in_l)).
         reflexivity.
 Qed.
@@ -206,7 +206,7 @@ Proof.
     change [[bl'|bl'_comb]|] with bl' in *.
     classic_contradiction bl_x.
     assert (∃ a l,
-            0 ≠ a ∧ linear_list_in (S - singleton (snd x))%set l ∧
+            0 ≠ a ∧ linear_list_in (S - ❴snd x❵)%set l ∧
             0 = a · snd x + linear_combination l) as [a [l [a_nz [l_in eq]]]].
     {
         apply in_ulist_split in al_x as [al al_eq].
@@ -219,7 +219,7 @@ Proof.
             rewrite ulist_image_add, ulist_unique_add in al'_comb.
             apply al'_comb.
         }
-        assert (linear_list_in (S - singleton (snd x))%set [al'|al_comb'])
+        assert (linear_list_in (S - ❴snd x❵)%set [al'|al_comb'])
             as Sxal'.
         {
             unfold linear_list_in in Sal'; cbn in Sal'.
@@ -230,7 +230,7 @@ Proof.
             split.
             -   rewrite ulist_prop_add in Sal'.
                 apply Sal'.
-            -   unfold singleton.
+            -   rewrite singleton_eq.
                 clear - al'_comb.
                 unfold linear_combination_set in al'_comb.
                 do 2 rewrite ulist_image_add, ulist_unique_add in al'_comb.
@@ -252,7 +252,7 @@ Proof.
                 rewrite ulist_image_add, ulist_unique_add in bl'_comb.
                 apply bl'_comb.
             }
-            assert (linear_list_in (S - singleton (snd x))%set [bl'|bl_comb'])
+            assert (linear_list_in (S - ❴snd x❵)%set [bl'|bl_comb'])
                 as Sxbl'.
             {
                 apply ulist_prop_split; cbn.
@@ -263,7 +263,7 @@ Proof.
                     rewrite ulist_swap in Sbl'.
                     rewrite ulist_prop_add in Sbl'.
                     apply Sbl'.
-                -   unfold singleton.
+                -   rewrite singleton_eq.
                     clear - bl'_comb.
                     unfold linear_combination_set in bl'_comb.
                     do 2 rewrite ulist_image_add, ulist_unique_add in bl'_comb.
@@ -285,7 +285,7 @@ Proof.
             rewrite plus_assoc in v_eq.
             rewrite <- scalar_lneg in v_eq.
             rewrite <- scalar_rdist in v_eq.
-            assert (linear_combination_of (S - singleton (snd x))%set
+            assert (linear_combination_of (S - ❴snd x❵)%set
                 (linear_combination [al' | al_comb'] -
                  linear_combination [bl' | bl_comb'])) as eq.
             {
@@ -317,7 +317,7 @@ Proof.
                 rewrite l_eq in v_eq.
                 exact v_eq.
         -   exists (fst x).
-            assert (linear_list_in (S - singleton (snd x))%set [bl'|bl'_comb])
+            assert (linear_list_in (S - ❴snd x❵)%set [bl'|bl'_comb])
                 as Sxbl'.
             {
                 apply ulist_prop_split; cbn.
@@ -327,7 +327,7 @@ Proof.
                 -   unfold linear_list_in in Sbl'; cbn in Sbl'.
                     rewrite ulist_prop_add in Sbl'.
                     apply Sbl'.
-                -   unfold singleton.
+                -   rewrite singleton_eq.
                     rewrite not_ex in n.
                     specialize (n (fst a)).
                     rewrite in_ulist_add in n.
@@ -342,7 +342,7 @@ Proof.
             pose proof (lrplus v_eq1' v_eq2') as v_eq.
             rewrite plus_rinv in v_eq.
             rewrite (linear_combination_add _ _ _ al_comb') in v_eq.
-            assert (linear_combination_of (S - singleton (snd x))%set
+            assert (linear_combination_of (S - ❴snd x❵)%set
                 (linear_combination [al' | al_comb'] -
                  linear_combination [bl' | bl'_comb])) as eq.
             {
@@ -663,7 +663,7 @@ Proof.
         apply linear_combination_of_zero.
     }
     classic_contradiction contr.
-    pose (B' := B ∪ singleton v).
+    pose (B' := B ∪ ❴v❵).
     assert (SS B') as SS_B'.
     {
         split.
@@ -697,7 +697,7 @@ Proof.
                         split.
                         +   destruct B'a0 as [Ba0|va0].
                             *   exact Ba0.
-                            *   unfold singleton in va0.
+                            *   rewrite singleton_eq in va0.
                                 subst v.
                                 unfold linear_combination_set in l_comb.
                                 do 2 rewrite ulist_image_add, ulist_unique_add
@@ -750,7 +750,7 @@ Proof.
                         destruct B'l as [B'a B'l].
                         split.
                         +   destruct B'a as [Ba|av]; [>exact Ba|].
-                            unfold singleton in av.
+                            rewrite singleton_eq in av.
                             subst v.
                             exfalso; apply v_nin.
                             exists (fst a).

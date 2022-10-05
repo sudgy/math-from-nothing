@@ -116,7 +116,7 @@ Qed.
 Theorem inter_open2 : ∀ A B, open A → open B → open (A ∩ B).
 Proof.
     intros A B A_open B_open.
-    pose (S := singleton A ∪ singleton B).
+    pose (S := ❴A❵ ∪ ❴B❵).
     assert (⋂ S = A ∩ B) as eq.
     {
         apply predicate_ext.
@@ -155,7 +155,7 @@ Qed.
 Theorem union_open2 : ∀ A B, open A → open B → open (A ∪ B).
 Proof.
     intros A B A_open B_open.
-    pose (S := singleton A ∪ singleton B).
+    pose (S := ❴A❵ ∪ ❴B❵).
     assert (⋃ S = A ∪ B) as eq.
     {
         apply predicate_ext.
@@ -389,7 +389,7 @@ Section SingleOpenDiscrete.
 Context {U} `{T : Topology U}.
 (* end hide *)
 Theorem single_open_discrete :
-    (∀ x, open (singleton x)) → T = discrete_topology.
+    (∀ x, open ❴x❵) → T = discrete_topology.
 Proof.
     intros single_open.
     apply topology_equal.
@@ -397,12 +397,12 @@ Proof.
     split; intros S_open.
     -   exact true.
     -   clear S_open.
-        pose (SS A := ∃ a : U, S a ∧ A = singleton a).
+        pose (SS A := ∃ a : U, S a ∧ A = ❴a❵).
         assert (S = ⋃ SS) as eq.
         {
             apply antisym.
             -   intros x Sx.
-                exists (singleton x).
+                exists ❴x❵.
                 split.
                 +   exists x.
                     split.

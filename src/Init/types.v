@@ -32,7 +32,7 @@ Set Implicit Arguments.
 #[universes(template)]
 Inductive singleton_type : Type := Single.
 
-Theorem singleton_eq : ∀ a b : singleton_type, a = b.
+Theorem singleton_type_eq : ∀ a b : singleton_type, a = b.
 Proof.
     intros [] [].
     reflexivity.

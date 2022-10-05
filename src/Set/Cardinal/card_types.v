@@ -53,7 +53,7 @@ Proof.
     rewrite nle_lt in contr.
     pose proof (finite_well_ordered_set _ contr (dense a b ab)) as
         [m [[m_gt m_lt] m_min]].
-    pose (S := (open_interval a b - singleton m)%set).
+    pose (S := (open_interval a b - ❴m❵)%set).
     assert (finite (|set_type S|)) as S_fin.
     {
         apply (le_lt_trans2 contr).

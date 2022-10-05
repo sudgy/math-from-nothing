@@ -164,7 +164,7 @@ Proof.
     intros X U_compact X_closed.
     apply compact_subspace.
     intros XSS [XSS_sub XSS_open].
-    pose (USS := XSS ∪ singleton (𝐂 X)).
+    pose (USS := XSS ∪ ❴𝐂 X❵).
     assert (open_covering USS) as USS_cover.
     {
         split.
@@ -186,7 +186,7 @@ Proof.
                 exact X_closed.
     }
     specialize (U_compact USS USS_cover) as [SS' [SS'_sub [SS'_fin sub_SS']]].
-    exists (SS' - singleton (𝐂 X)).
+    exists (SS' - ❴𝐂 X❵).
     split.
     2: split.
     -   intros S [SS'_S nX_S].
@@ -219,7 +219,7 @@ Proof.
         contradiction (no_lim x x_lim).
     }
     unfold limit_point in no_lim.
-    assert (∀ a, ∃ S, open S ∧ S a ∧ ¬intersects (A - singleton a) S)
+    assert (∀ a, ∃ S, open S ∧ S a ∧ ¬intersects (A - ❴a❵) S)
         as no_lim'.
     {
         intros a.
@@ -272,7 +272,7 @@ Proof.
         {
             intros a Aa Sa.
             classic_contradiction contr.
-            assert (((A - singleton z) ∩ S) a) as a_in.
+            assert (((A - ❴z❵) ∩ S) a) as a_in.
             {
                 repeat split; assumption.
             }
@@ -318,7 +318,7 @@ Proof.
         repeat split.
         +   rewrite <- fg_eq.
             apply f_in.
-        +   unfold singleton; intro contr.
+        +   rewrite singleton_eq; intro contr.
             subst x.
             do 2 rewrite <- fg_eq in contr.
             destruct (ns_lt N) as [C0 neq]; clear C0.
@@ -329,7 +329,7 @@ Proof.
         repeat split.
         +   rewrite <- fg_eq.
             apply f_in.
-        +   unfold singleton.
+        +   rewrite singleton_eq.
             rewrite neq_sym.
             exact x_neq.
         +   apply all_gt.

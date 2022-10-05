@@ -47,8 +47,8 @@ Local Program Instance SINGLETON : Category := {
 }.
 (* end show *)
 Next Obligation.
-    apply singleton_eq.
+    apply singleton_type_eq.
 Qed.
 Next Obligation.
-    apply singleton_eq.
+    apply singleton_type_eq.
 Qed.

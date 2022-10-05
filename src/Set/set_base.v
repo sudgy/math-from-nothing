@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export relation.
+Require Import list_base.
 
 Declare Scope set_scope.
 Delimit Scope set_scope with set.
@@ -17,7 +18,20 @@ Definition empty {U : Type} := λ x : U, False.
 Definition all {U : Type} := λ x : U, True.
 Notation "∅" := empty.
 
-Definition singleton {U : Type} (x : U) := λ y, x = y.
+(** This is used for purely notational purposes and should never be used
+directly. *)
+Fixpoint list_to_set {U} l (a : U) :=
+    match l with
+    | list_end => False (* Not actually ever used *)
+    | list_add x list_end => x = a
+    | list_add x l' => x = a ∨ list_to_set l' a
+    end.
+Arguments list_to_set : simpl never.
+(** Note that is not curly brackets!  That gets Coq confused with notations
+like {A} + {B}.  Instead, these are U+2774 and U+2775, MEDIUM LEFT/RIGHT CURLY
+BRACKET ORNAMENT *)
+Notation "❴ x , .. , y ❵"
+    := (list_to_set (list_add x .. (list_add y list_end) ..)).
 
 Definition union {U : Type} (S T : U → Prop) := λ x, S x ∨ T x.
 Infix "∪" := union.
@@ -41,6 +55,11 @@ Definition intersects {U : Type} (S T : U → Prop) := S ∩ T ≠ ∅.
 Section SetBase.
 
 Context {U : Type}.
+
+Theorem singleton_eq : ∀ a b : U, ❴a❵ b ↔ a = b.
+Proof.
+    reflexivity.
+Qed.
 
 (* end hide *)
 Global Instance subset_refl : Reflexive (subset (U := U)).

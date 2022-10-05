@@ -173,7 +173,7 @@ Proof.
         rewrite C_eq in SCα.
         specialize (UC_open _ SCα) as [BC [BC_basis [BCα BC_sub]]].
         assert (∀ c d, open_closed_interval c d α → open_interval c d ⊆ UC →
-            ∃ x, ((A - singleton [α | Sα])%set ∩ SC) x) as wlog.
+            ∃ x, ((A - ❴[α | Sα]❵)%set ∩ SC) x) as wlog.
         {
             clear BCα BC_sub.
             intros c d BCα BC_sub.
@@ -192,7 +192,7 @@ Proof.
                 exists n.
                 repeat split.
                 *   exact An.
-                *   unfold singleton; intro; subst n.
+                *   rewrite singleton_eq; intro; subst n.
                     destruct nα; contradiction.
                 *   rewrite C_eq.
                     unfold to_set_type.
@@ -329,7 +329,7 @@ Proof.
         rewrite C_eq in SCα.
         specialize (UC_open _ SCα) as [BC [BC_basis [BCα BC_sub]]].
         assert (∀ c d, closed_open_interval c d α → open_interval c d ⊆ UC →
-            ∃ x, ((B - singleton [α | Sα])%set ∩ SC) x) as wlog.
+            ∃ x, ((B - ❴[α | Sα]❵)%set ∩ SC) x) as wlog.
         {
             clear BCα BC_sub.
             intros c d BCα BC_sub.
@@ -345,7 +345,7 @@ Proof.
             exists [n|in_S n αn nb].
             repeat split.
             +   apply in_B.
-            +   unfold singleton; intro contr.
+            +   rewrite singleton_eq; intro contr.
                 inversion contr.
                 subst.
                 destruct αn; contradiction.

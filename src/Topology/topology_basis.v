@@ -72,7 +72,7 @@ Next Obligation.
         }
         symmetry in S_fin.
         pose proof (card_plus_one_nat S n T S_fin) as S'_fin.
-        remember (S - singleton [T|]) as S'.
+        remember (S - ❴[T|]❵) as S'.
         symmetry in S'_fin.
         assert (S' ⊆ (λ S0, ∀ x, S0 x → ∃ B, top_basis B ∧ B x ∧ B ⊆ S0))
             as sub2.

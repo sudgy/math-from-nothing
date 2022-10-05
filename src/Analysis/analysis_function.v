@@ -171,7 +171,7 @@ Local Open Scope set_scope.
 (* end hide *)
 Theorem metric_func_seq_lim : ∀ (A : U → Prop) (f : set_type A → V) c l,
     func_lim_base f c l ↔
-    (∀ xn : nat → set_type (A - singleton c),
+    (∀ xn : nat → set_type (A - ❴c❵),
     seq_lim (λ n, [xn n|]) c → seq_lim (λ n, f [[xn n|] | land [|xn n]]) l).
 Proof.
     intros A f c l.
@@ -196,14 +196,14 @@ Proof.
         exact contr.
     }
     pose (xn' n := ex_val (contr' _ (real_n_div_pos n))).
-    assert (∀ n, (A - singleton c) [xn' n|]) as xn_in.
+    assert (∀ n, (A - ❴c❵) [xn' n|]) as xn_in.
     {
         intros n.
         split.
         -   apply [|xn' n].
         -   unfold xn'.
             rewrite_ex_val x x_eq.
-            unfold singleton.
+            rewrite singleton_eq.
             rewrite neq_sym.
             apply x_eq.
     }

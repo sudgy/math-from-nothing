@@ -73,7 +73,7 @@ Proof.
     exact C.
 Qed.
 
-Theorem union_singleton {U} : ∀ S : U → Prop, S = ⋃ singleton S.
+Theorem union_singleton {U} : ∀ S : U → Prop, S = ⋃ ❴S❵.
 Proof.
     intros S.
     apply predicate_ext.
@@ -88,7 +88,7 @@ Proof.
         exact Ax.
 Qed.
 
-Theorem inter_singleton {U} : ∀ S : U → Prop, S = ⋂ singleton S.
+Theorem inter_singleton {U} : ∀ S : U → Prop, S = ⋂ ❴S❵.
 Proof.
     intros S.
     apply antisym.

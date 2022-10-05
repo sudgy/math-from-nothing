@@ -325,7 +325,7 @@ Proof.
     apply nat_is_finite.
 Qed.
 
-Theorem singleton_finite {U} : ∀ a : U, finite (|set_type (singleton a)|).
+Theorem singleton_finite {U} : ∀ a : U, finite (|set_type ❴a❵|).
 Proof.
     intros a.
     rewrite singleton_size.
@@ -415,7 +415,7 @@ Proof.
         pose proof (card_plus_one_nat _ _ S SS_size) as SS_size2.
         destruct S as [S SS_S]; cbn in *.
         symmetry in SS_size2.
-        assert (∀ T, (SS - singleton S)%set T → finite (|set_type T|))as S_fin2.
+        assert (∀ T, (SS - ❴S❵)%set T → finite (|set_type T|))as S_fin2.
         {
             intros T [SS_T ST].
             apply S_fin.
@@ -434,7 +434,7 @@ Proof.
         apply (le_lt_trans2 SS_fin).
         unfold le; equiv_simpl.
         assert (∀ x : set_type (⋃ SS),
-            ¬S [x|] → (⋃ (SS - singleton S)%set) [x|]) as f_in.
+            ¬S [x|] → (⋃ (SS - ❴S❵)%set) [x|]) as f_in.
         {
             intros [y [T [SS_T Ty]]] nSy; cbn in nSy.
             exists T.

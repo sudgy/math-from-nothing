@@ -32,7 +32,7 @@ Context {U} `{
 }.
 
 (* end hide *)
-Definition principle_ideal_by x := ideal_generated_by (singleton x).
+Definition principle_ideal_by x := ideal_generated_by ❴x❵.
 
 Definition principle_ideal (I : Ideal U)
     := ∃ x, I = principle_ideal_by x.
@@ -49,7 +49,7 @@ Proof.
         +   rewrite ulist_image_add, ulist_sum_add.
             apply plus_stays_divides.
             *   destruct b as [[b1 b2] [b3 b3_eq]]; cbn.
-                unfold singleton in b3_eq; subst b3.
+                rewrite singleton_eq in b3_eq; subst b3.
                 exists (b1 * b2).
                 do 2 rewrite <- mult_assoc.
                 apply f_equal.
@@ -207,13 +207,13 @@ Proof.
         destruct a as [[a1 a2] [a3 a3_eq]]; cbn.
         apply ideal_rmult.
         apply ideal_lmult.
-        unfold singleton in a3_eq; subst.
+        rewrite singleton_eq in a3_eq; subst.
         exact Ia0.
 Qed.
 
 Program Instance pid_gcd : GCDDomain U := {
     gcd a b := ex_val (ideal_principle
-        (ideal_generated_by (singleton a ∪ singleton b)))
+        (ideal_generated_by (❴a❵ ∪ ❴b❵)))
 }.
 Next Obligation.
     rewrite_ex_val d d_eq.
@@ -258,7 +258,7 @@ Next Obligation.
         apply mult_factors_extend.
         rewrite mult_comm.
         apply mult_factors_extend.
-        unfold singleton, union in c3_eq; cbn in c3_eq.
+        unfold list_to_set, union in c3_eq; cbn in c3_eq.
         destruct c3_eq; subst c3; assumption.
 Qed.
 

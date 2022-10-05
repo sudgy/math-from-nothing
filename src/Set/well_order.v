@@ -377,9 +377,9 @@ Section All.
 Variable x : U.
 Hypothesis not_max : ¬bin_domain [A|] x.
 
-Definition A'_set := bin_domain [A|] ∪ singleton x.
+Definition A'_set := bin_domain [A|] ∪ ❴x❵.
 Definition A'_set_proof (a : set_type A'_set) :
-        {bin_domain [A|] [a|]} + {singleton x [a|]}.
+        {bin_domain [A|] [a|]} + { ❴x❵ [a|]}.
     apply or_to_strong.
     exact [|a].
 Qed.
@@ -424,7 +424,7 @@ Proof.
         reflexivity.
     -   contradiction.
     -   contradiction.
-    -   unfold singleton in xa, xb.
+    -   rewrite singleton_eq in xa, xb.
         rewrite xa in xb.
         apply set_type_eq.
         exact xb.
@@ -486,7 +486,7 @@ Proof.
                         rewrite (proof_irrelevance _ b).
                         exact y_leq.
                 --  contradiction.
-            *   unfold singleton in s.
+            *   rewrite singleton_eq in l.
                 destruct m as [m Am]; cbn in *.
                 subst m.
                 contradiction.
@@ -500,7 +500,8 @@ Proof.
             cbn in nexM.
             rewrite (proof_irrelevance _ (A'_sub y Ay)) in Sy.
             contradiction.
-        +   unfold singleton in xy.
+        +   pose proof xy as xy'.
+            rewrite singleton_eq in xy'.
             subst.
             assert (A'_set x) as Ax by (right; reflexivity).
             rewrite (proof_irrelevance _ Ax) in y_leq, y_neq, Sy.
@@ -543,12 +544,12 @@ Proof.
                 rewrite (proof_irrelevance b1 Aa).
                 rewrite (proof_irrelevance b0 Ab).
                 reflexivity.
-            -   unfold singleton in s; cbn in s.
-                rewrite s in not_max.
+            -   rewrite singleton_eq in l; cbn in l.
+                rewrite l in not_max.
                 contradiction not_max.
                 exact [|a].
-            -   unfold singleton in s; cbn in s.
-                rewrite s in not_max.
+            -   rewrite singleton_eq in l; cbn in l.
+                rewrite l in not_max.
                 contradiction not_max.
                 exact [|b].
         }
