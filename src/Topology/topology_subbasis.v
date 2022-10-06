@@ -30,7 +30,7 @@ Next Obligation.
         rewrite <- SB.
         exact B_sub.
     -   apply singleton_finite.
-    -   apply inter_singleton.
+    -   symmetry; apply inter_singleton.
 Qed.
 Next Obligation.
     rename H0 into SS1, H1 into SS2, H8 into SS1_fin, H5 into SS2_fin.

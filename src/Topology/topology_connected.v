@@ -569,7 +569,7 @@ Theorem connected_union_connected2 : ∀ (A B : U → Prop) x,
     connected (set_type (A ∪ B)).
 Proof.
     intros A B x Ax Bx a_con B_con.
-    rewrite collection2_union.
+    rewrite <- union_pair.
     apply (connected_union_connected _ x).
     intros S [SA|SB]; subst; split; assumption.
 Qed.
