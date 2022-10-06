@@ -61,6 +61,11 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem pair_union : ∀ a b : U, ❴a, b❵ = ❴a❵ ∪ ❴b❵.
+Proof.
+    reflexivity.
+Qed.
+
 (* end hide *)
 Global Instance subset_refl : Reflexive (subset (U := U)).
 Proof.

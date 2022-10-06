@@ -25,40 +25,20 @@ Proof.
     contradiction A_in.
 Qed.
 
-Theorem union_singleton {U} : ∀ S : U → Prop, ⋃ ❴S❵ = S.
+Theorem union_rec {U} : ∀ (A : U → Prop) (S : (U → Prop) → Prop),
+    ⋃ (❴A❵ ∪ S) = A ∪ (⋃ S).
 Proof.
-    intros S.
+    intros A S.
     apply antisym.
-    -   intros x [A [AS Ax]].
-        rewrite AS.
-        exact Ax.
-    -   intros x Sx.
-        exists S.
-        split.
-        +   reflexivity.
-        +   exact Sx.
-Qed.
-
-Theorem inter_singleton {U} : ∀ S : U → Prop, ⋂ ❴S❵ = S.
-Proof.
-    intros S.
-    apply antisym.
-    -   intros x Ax.
-        apply Ax.
-        reflexivity.
-    -   intros x Sx A AS.
-        rewrite <- AS.
-        exact Sx.
-Qed.
-
-Theorem union_pair {U} : ∀ A B : U → Prop, ⋃ ❴A, B❵ = A ∪ B.
-Proof.
-    intros A B.
-    apply antisym.
-    -   intros x [S [[SA|SB] Sx]]; subst S.
-        +   left; exact Sx.
-        +   right; exact Sx.
-    -   intros x [Ax|Bx].
+    -   intros x [B [B_in Bx]].
+        destruct B_in as [AB|SB].
+        +   left.
+            rewrite AB.
+            exact Bx.
+        +   right.
+            exists B.
+            split; assumption.
+    -   intros x [Ax|[B [SB Bx]]].
         +   exists A.
             split; [>|exact Ax].
             left.
@@ -66,23 +46,64 @@ Proof.
         +   exists B.
             split; [>|exact Bx].
             right.
+            exact SB.
+Qed.
+
+Theorem inter_rec {U} : ∀ (A : U → Prop) (S : (U → Prop) → Prop),
+    ⋂ (❴A❵ ∪ S) = A ∩ (⋂ S).
+Proof.
+    intros A S.
+    apply antisym.
+    -   intros x x_in.
+        split.
+        +   apply x_in.
+            left.
             reflexivity.
+        +   intros B SB.
+            apply x_in.
+            right.
+            exact SB.
+    -   intros x [Ax x_in] B [AB|SB].
+        +   rewrite <- AB.
+            exact Ax.
+        +   apply x_in.
+            exact SB.
+Qed.
+
+Theorem union_singleton {U} : ∀ S : U → Prop, ⋃ ❴S❵ = S.
+Proof.
+    intros S.
+    rewrite <- (union_rid ❴S❵).
+    rewrite union_rec.
+    rewrite union_empty.
+    apply union_rid.
+Qed.
+
+Theorem inter_singleton {U} : ∀ S : U → Prop, ⋂ ❴S❵ = S.
+Proof.
+    intros S.
+    rewrite <- (union_rid ❴S❵).
+    rewrite inter_rec.
+    rewrite inter_empty.
+    apply inter_rid.
+Qed.
+
+Theorem union_pair {U} : ∀ A B : U → Prop, ⋃ ❴A, B❵ = A ∪ B.
+Proof.
+    intros A B.
+    rewrite pair_union.
+    rewrite union_rec.
+    rewrite union_singleton.
+    reflexivity.
 Qed.
 
 Theorem inter_pair {U} : ∀ A B : U → Prop, ⋂ ❴A, B❵ = A ∩ B.
 Proof.
     intros A B.
-    apply antisym.
-    -   intros x x_in.
-        split; apply x_in.
-        +   left.
-            reflexivity.
-        +   right.
-            reflexivity.
-    -   intros x [Ax Bx].
-        intros S [SA|SB]; subst.
-        +   exact Ax.
-        +   exact Bx.
+    rewrite pair_union.
+    rewrite inter_rec.
+    rewrite inter_singleton.
+    reflexivity.
 Qed.
 
 Theorem big_union_compl {U} : ∀ SS : (U → Prop) → Prop,
