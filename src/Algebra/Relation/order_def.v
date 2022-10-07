@@ -49,9 +49,13 @@ Class WellFounded {U} (op : U → U → Prop) := {
     well_founded : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x
 }.
 
+Class WellOrdered {U} (op : U → U → Prop) := {
+    well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x
+}.
+
 Class WellOrder U `{
     WOT : TotalOrder U,
-    WOW : WellFounded U le
+    WOW : WellOrdered U le
 }.
 
 Class SupremumComplete {U} (op : U → U → Prop) := {
@@ -75,7 +79,8 @@ Context {U : Type} {op : U → U → Prop} `{
     Connex U op,
     Antisymmetric U op,
     Transitive U op,
-    WellFounded U op
+    WellFounded U op,
+    WellOrdered U op
 }.
 
 Theorem wo_wo : well_orders op.
@@ -83,8 +88,9 @@ Proof.
     repeat (split; try assumption).
 Qed.
 
-Theorem well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x.
+Global Instance well_founded_ordered : WellOrdered op.
 Proof.
+    split.
     intros S S_ex.
     destruct (well_founded S S_ex) as [x [Sx x_min]].
     exists x.
@@ -100,14 +106,11 @@ Proof.
         +   exact yx.
 Qed.
 
-Theorem well_ordered_founded :
-    (∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x) →
-    WellFounded op.
+Global Instance well_ordered_founded : WellFounded op.
 Proof.
-    intros wf.
     split.
     intros S S_ex.
-    specialize (wf S S_ex) as [x [Sx x_least]].
+    pose proof (well_ordered (WellOrdered := H3) S S_ex) as [x [Sx x_least]].
     exists x.
     split; [>exact Sx|].
     intros y Sy y_neq leq.

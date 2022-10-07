@@ -344,9 +344,9 @@ Proof.
     apply all_T.
 Qed.
 
-Global Instance nat_wo : WellFounded le.
+Global Instance nat_wo : WellOrdered le.
 Proof.
-    apply well_ordered_founded.
+    split.
     intros S [x Sx].
     classic_contradiction no_least.
     rewrite not_ex in no_least.

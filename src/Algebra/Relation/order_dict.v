@@ -74,9 +74,9 @@ Proof.
         exact (trans leq1 leq2).
 Qed.
 
-Global Instance dict_order_well_founded : @WellFounded (U * V) le.
+Global Instance dict_order_well_founded : @WellOrdered (U * V) le.
 Proof.
-    apply well_ordered_founded.
+    split.
     intros S [[a b] Sx].
     pose (SV (b : V) := ∃ a, S (a, b)).
     pose proof (well_ordered SV) as SV_wo.
