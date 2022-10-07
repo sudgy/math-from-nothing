@@ -366,3 +366,21 @@ Proof.
     }
     exact (none _ Sx).
 Qed.
+
+Definition subsequence_seq (f : sequence nat) := ∀ n, f n < f (nat_suc n).
+Definition subsequence {U} (a b : sequence U) :=
+    ∃ f : sequence nat,
+        subsequence_seq f ∧
+        (∀ n, a (f n) = b n).
+
+Theorem subsequence_seq_leq : ∀ f, subsequence_seq f → ∀ n, n ≤ f n.
+Proof.
+    intros f f_sub.
+    unfold subsequence_seq in f_sub.
+    intros n.
+    nat_induction n.
+    -   apply nat_pos.
+    -   rewrite <- nat_lt_suc_le.
+        rewrite nat_sucs_lt.
+        exact (le_lt_trans IHn (f_sub n)).
+Qed.

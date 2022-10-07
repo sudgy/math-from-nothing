@@ -6,29 +6,10 @@ Require Export set_type.
 Definition nat_to_set n := λ x, x < n.
 Definition nat_to_set_type n := set_type (nat_to_set n).
 
-Definition sequence (U : Type) := nat → U.
-Definition subsequence_seq (f : sequence nat) := ∀ n, f n < f (nat_suc n).
-Definition subsequence {U} (a b : sequence U) :=
-    ∃ f : sequence nat,
-        subsequence_seq f ∧
-        (∀ n, a (f n) = b n).
-
 Theorem nat_lt_0_false : nat_to_set_type 0 → False.
 Proof.
     intros [x x_lt].
     contradiction (nat_neg2 x_lt).
-Qed.
-
-Theorem subsequence_seq_leq : ∀ f, subsequence_seq f → ∀ n, n ≤ f n.
-Proof.
-    intros f f_sub.
-    unfold subsequence_seq in f_sub.
-    intros n.
-    nat_induction n.
-    -   apply nat_pos.
-    -   rewrite <- nat_lt_suc_le.
-        rewrite nat_sucs_lt.
-        exact (le_lt_trans IHn (f_sub n)).
 Qed.
 
 #[universes(template)]

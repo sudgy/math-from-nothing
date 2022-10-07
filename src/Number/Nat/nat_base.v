@@ -14,6 +14,8 @@ Fixpoint iterate_func {U} (f : U → U) n :=
     | nat_suc n' => λ x, f (iterate_func f n' x)
     end.
 
+Definition sequence (U : Type) := nat → U.
+
 Theorem nat_zero_suc : ∀ {n}, nat_zero ≠ nat_suc n.
 Proof.
     intros n eq.
