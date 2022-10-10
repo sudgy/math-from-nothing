@@ -45,15 +45,6 @@ Definition closed_inf_interval {U} `{Order U} a := λ x, a ≤ x.
 Definition inf_open_interval {U} `{Order U} a := λ x, x < a.
 Definition inf_closed_interval {U} `{Order U} a := λ x, x ≤ a.
 
-Class WellOrdered {U} (op : U → U → Prop) := {
-    well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x
-}.
-
-Class WellOrder U `{
-    WOT : TotalOrder U,
-    WOW : WellOrdered U le
-}.
-
 Class SupremumComplete {U} (op : U → U → Prop) := {
     sup_complete : ∀ S : U → Prop, (∃ x, S x) →
         has_upper_bound op S → has_supremum op S

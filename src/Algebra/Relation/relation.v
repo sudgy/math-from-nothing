@@ -29,6 +29,11 @@ Class Connex {U} (op : U → U → Prop) := {
 Class Trichotomy {U} (op : U → U → Prop) := {
     trichotomy : ∀ x y, {op x y} + {x = y} + {op y x};
 }.
+
+Class WellOrdered {U} (op : U → U → Prop) := {
+    well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, S x ∧ ∀ y, S y → op x y
+}.
+
 Arguments refl: simpl never.
 Arguments irrefl: simpl never.
 Arguments sym: simpl never.
@@ -77,6 +82,11 @@ Class PartialOrder U `{
 Class TotalOrder U `{
     TOP : PartialOrder U,
     UOC : Connex U le
+}.
+
+Class WellOrder U `{
+    WOT : TotalOrder U,
+    WOW : WellOrdered U le
 }.
 
 (* begin hide *)
