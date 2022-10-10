@@ -45,10 +45,6 @@ Definition closed_inf_interval {U} `{Order U} a := λ x, a ≤ x.
 Definition inf_open_interval {U} `{Order U} a := λ x, x < a.
 Definition inf_closed_interval {U} `{Order U} a := λ x, x ≤ a.
 
-Class WellFounded {U} (op : U → U → Prop) := {
-    well_founded : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal op S x
-}.
-
 Class WellOrdered {U} (op : U → U → Prop) := {
     well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least op S x
 }.
@@ -70,7 +66,7 @@ Definition well_orders {U} (op : U → U → Prop) :=
     inhabited (Connex op) ∧
     inhabited (Antisymmetric op) ∧
     inhabited (Transitive op) ∧
-    inhabited (WellFounded op).
+    inhabited (WellOrdered op).
 
 (* begin hide *)
 Section WellOrders.
@@ -79,44 +75,12 @@ Context {U : Type} {op : U → U → Prop} `{
     Connex U op,
     Antisymmetric U op,
     Transitive U op,
-    WellFounded U op,
     WellOrdered U op
 }.
 
 Theorem wo_wo : well_orders op.
 Proof.
     repeat (split; try assumption).
-Qed.
-
-Global Instance well_founded_ordered : WellOrdered op.
-Proof.
-    split.
-    intros S S_ex.
-    destruct (well_founded S S_ex) as [x [Sx x_min]].
-    exists x.
-    split; [>exact Sx|].
-    intros y Sy.
-    classic_contradiction contr.
-    apply (x_min y Sy).
-    -   intro; subst.
-        apply contr.
-        apply refl.
-    -   destruct (connex x y) as [xy|yx].
-        +   contradiction.
-        +   exact yx.
-Qed.
-
-Global Instance well_ordered_founded : WellFounded op.
-Proof.
-    split.
-    intros S S_ex.
-    pose proof (well_ordered (WellOrdered := H3) S S_ex) as [x [Sx x_least]].
-    exists x.
-    split; [>exact Sx|].
-    intros y Sy y_neq leq.
-    specialize (x_least y Sy).
-    pose proof (antisym leq x_least).
-    contradiction.
 Qed.
 
 Theorem upper_bound_leq : ∀ S a b,

@@ -93,19 +93,10 @@ Proof.
         exists [_|Am].
         split.
         +   exact Sm.
-        +   intros z Sz z_neq contr.
-            assert (S' [z|]) as S'z.
-            {
-                exists [|z].
-                destruct z; exact Sz.
-            }
-            assert ([z|] ≠ m) as neq.
-            {
-                intro contr2; subst m.
-                destruct z; contradiction z_neq; apply set_type_eq; reflexivity.
-            }
-            specialize (m_minimal [z|] S'z neq).
-            contradiction.
+        +   intros z Sz.
+            apply m_minimal.
+            exists [|z].
+            destruct z; exact Sz.
 Qed.
 Definition initial_segment (A : ord_type) (x : ord_U A)
     := make_ord_type _ _ (initial_segment_wo A x).
@@ -116,29 +107,21 @@ Theorem ord_iso_le : ∀ (A : ord_type) f, injective f →
 Proof.
     intros A f f_inj f_iso x.
     pose proof (ord_wo A)
-        as [[A_connex] [[[A_antisym]] [[[A_trans]] [[A_wo]]]]].
+        as [[A_connex] [[A_antisym] [[A_trans] [A_wo]]]].
     classic_contradiction x_gt.
-    pose (S x := ord_le A (f x) x ∧ (f x) ≠ x).
+    pose (S x := ¬ord_le A x (f x)).
     assert (∃ x, S x) as S_nempty.
     {
         exists x.
         unfold S.
-        split.
-        -   destruct (connex x (f x)); try assumption; try contradiction.
-        -   intro contr.
-            apply x_gt.
-            rewrite contr.
-            destruct (connex x x); assumption.
+        exact x_gt.
     }
-    specialize (A_wo S S_nempty) as [b [Sb b_min]].
-    destruct Sb as [leq neq].
-    apply (b_min (f b)); try assumption.
-    split.
-    -   rewrite <- f_iso.
-        exact leq.
-    -   intro contr.
-        apply f_inj in contr.
-        contradiction.
+    specialize (well_ordered S S_nempty) as [b [Sb b_min]].
+    apply Sb.
+    apply b_min.
+    unfold S.
+    rewrite <- f_iso.
+    exact Sb.
 Qed.
 
 (* begin hide *)

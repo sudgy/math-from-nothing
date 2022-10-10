@@ -96,14 +96,12 @@ Proof.
         exists identity.
         exact identity_bijective.
     }
-    pose proof (well_founded _ α_ex) as [α [Sα α_min]].
+    pose proof (well_ordered _ α_ex) as [α [Sα α_min]].
     exists α.
     split; try exact Sα.
     intros β eq.
-    classic_contradiction contr.
-    rewrite nle_lt in contr.
-    destruct contr.
-    apply (α_min _ eq); assumption.
+    apply α_min.
+    exact eq.
 Qed.
 (* end hide *)
 Definition card_to_initial_ord κ := ex_val (card_to_initial_ord_ex κ).

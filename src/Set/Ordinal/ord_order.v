@@ -376,14 +376,7 @@ Proof.
     pose proof (ord_wo A) as [[A_connex] [C1 [C2 [[A_wo]]]]]; clear C1 C2.
     specialize (A_wo Sa Sa_nempty) as [a [a_in a_min]].
     exists a.
-    split; try assumption.
-    intros x x_in.
-    classic_case (x = a).
-    -   subst x.
-        destruct (connex a a); assumption.
-    -   destruct (connex a x); try assumption.
-        exfalso.
-        apply (a_min x x_in); assumption.
+    split; assumption.
 Qed.
 Definition a := ex_val a_ex.
 Lemma not_in : ¬domain (piece_f f) a.
@@ -408,7 +401,7 @@ Proof.
     rewrite ord_lt_initial.
     pose (S y := ¬domain (piece_f f) y).
     assert (∃ x, S x) as S_nempty by (exists a; exact not_in).
-    pose proof (ord_wo A) as [C0 [C1 [C2 [[A_wo]]]]]; clear C0 C1 C2.
+    pose proof (ord_wo A) as [C0 [[A_anti] [C2 [[A_wo]]]]]; clear C0 C2.
     specialize (A_wo S S_nempty) as [x [Sx x_min]].
     exists x.
     clear AB BA.
@@ -418,7 +411,8 @@ Proof.
         intros [a [a_leq a_neq]]; cbn in *.
         pose proof (piece_bot1 f).
         classic_contradiction contr2.
-        specialize (x_min _ contr2 a_neq).
+        specialize (x_min _ contr2).
+        pose proof (antisym a_leq x_min).
         contradiction.
     }
     pose (f' a := piece_f f⟨[_|sub a]⟩).
@@ -461,13 +455,7 @@ Proof.
     pose proof (ord_wo B) as [[B_connex] [C1 [C2 [[B_wo]]]]]; clear C1 C2.
     specialize (B_wo _ b_ex_base) as [b [Sb b_min]].
     exists b.
-    split; try assumption.
-    intros b' all_neq.
-    classic_case (b' = b).
-    -   subst.
-        destruct (connex b b); assumption.
-    -   specialize (b_min b' all_neq n).
-        destruct (connex b b'); try assumption; contradiction.
+    split; assumption.
 Qed.
 Definition b := ex_val b_ex.
 Lemma b_not : ∀ a, piece_f f⟨a⟩ ≠ b.
@@ -692,10 +680,7 @@ Proof.
         classic_case (a = x) as [eq|neq].
         -   subst.
             destruct (connex x x); assumption.
-        -   specialize (x_min a Sa neq).
-            destruct (connex x a).
-            +   exact o.
-            +   contradiction.
+        -   exact (x_min a Sa).
     }
     clear x_min; rename x_min2 into x_min.
     assert (∀ a, ord_le B x a → S a) as le_S2.
@@ -1180,27 +1165,28 @@ Proof.
             unfold b.
             reflexivity.
         }
-        pose proof (ord_wo A) as [C0 [C1 [C2 [[A_wo]]]]]; clear C0 C1 C2.
+        pose proof (ord_wo A) as [C0 [[A_anti] [C2 [[A_wo]]]]]; clear C0 C2.
         specialize (A_wo S' S'_nempty) as [x [S'x x_min]].
         destruct S'x as [X [SX X_eq]].
         exists X.
         split; try assumption.
-        intros Y SY Y_neq Y_leq.
-        apply (x_min (f Y)).
-        +   unfold S'.
+        intros Y SY.
+        specialize (x_min (f Y)).
+        prove_parts x_min.
+        {
+            unfold S'.
             exists Y.
             split; try assumption; reflexivity.
-        +   intros contr.
-            subst x.
-            apply (bij_inv_bij f' f'_bij) in contr.
-            contradiction.
-        +   rewrite <- X_eq.
-            unfold ords_lt_le in Y_leq.
-            apply f_iso.
-            split; try assumption.
-            intro contr.
-            apply (land set_type_eq) in contr.
-            contradiction.
+        }
+        rewrite <- X_eq in x_min.
+        unfold ords_lt_le.
+        classic_contradiction contr.
+        rewrite nle_lt in contr.
+        pose proof (f_iso _ _ contr) as leq.
+        pose proof (antisym leq x_min) as eq.
+        apply (bij_inv_bij f' f'_bij) in eq.
+        rewrite <- set_type_eq in eq.
+        destruct contr; contradiction.
 Qed.
 
 
@@ -1217,17 +1203,13 @@ End OrdsLtWo.
 
 Open Scope set_scope.
 
-Lemma ord_le_wf : ∀ S : ord → Prop, (∃ α, S α) → ∃ α, is_minimal le S α.
+Lemma ord_le_wo : ∀ S : ord → Prop, (∃ α, S α) → ∃ α, is_least le S α.
 Proof.
     intros S [α Sα].
     classic_case (is_least le S α) as [α_least|α_nleast].
     -   exists α.
         split; try assumption.
-        intros δ Sδ neq.
-        rewrite nle_lt.
-        rewrite neq_sym in neq.
-        split; try assumption.
-        destruct α_least as [C0 α_least]; clear C0.
+        intros δ Sδ.
         apply α_least.
         exact Sδ.
     -   pose proof (OrdsLtWo.ords_lt_wo α) as [C0 [C1 [C2 [[wo]]]]]; clear C0 C1 C2.
@@ -1248,22 +1230,22 @@ Proof.
         specialize (wo S' S'_nempty) as [β [S'β β_min]].
         exists [β|].
         split; try apply S'β.
-        intros δ Sδ δ_neq δ_leq.
-        assert (ords_lt_set α δ) as δ_in.
-        {
-            destruct β as [β β_leq]; cbn in *.
-            unfold ords_lt_set in *.
-            exact (le_lt_trans δ_leq β_leq).
-        }
-        apply (β_min [_|δ_in]).
-        +   exact Sδ.
-        +   intro eq.
-            subst β.
-            contradiction.
-        +   exact δ_leq.
+        intros δ Sδ.
+        classic_case (α ≤ δ) as [δ_leq|δ_ltq].
+        +   apply (trans2 δ_leq).
+            apply [|β].
+        +   rewrite nle_lt in δ_ltq.
+            assert (ords_lt_set α δ) as δ_in.
+            {
+                destruct β as [β β_leq]; cbn in *.
+                unfold ords_lt_set in *.
+                exact δ_ltq.
+            }
+            apply (β_min [_|δ_in]).
+            exact Sδ.
 Qed.
-Global Instance ord_le_wf_class : WellFounded le := {
-    well_founded := ord_le_wf
+Global Instance ord_le_wo_class : WellOrdered le := {
+    well_ordered := ord_le_wo
 }.
 
 Lemma nat_to_ord_lt1 : ∀ a b, a < b → nat_to_ord a < nat_to_ord b.

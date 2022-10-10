@@ -70,24 +70,27 @@ Proof.
             exists xa.
             exact Sx.
         }
-        pose proof (well_founded SB SB_nempty) as [yb [SBy yb_min]].
+        pose proof (well_ordered SB SB_nempty) as [yb [SBy yb_min]].
         pose (SA a := S (a, yb)).
         assert (∃ x, SA x) as SA_nempty by exact SBy.
-        pose proof (well_founded SA SA_nempty) as [ya [SAy ya_min]].
+        pose proof (well_ordered SA SA_nempty) as [ya [SAy ya_min]].
         exists (ya, yb).
         split; try assumption.
-        intros [a b] Sab neq leq.
-        cbn in *.
-        destruct leq as [leq|leq].
-        +   destruct leq.
-            apply (yb_min b); try assumption.
-            exists a; exact Sab.
-        +   destruct leq as [leq eq].
-            subst b.
-            apply (ya_min a); try assumption.
-            intros contr.
-            subst a.
-            contradiction.
+        intros [a b] Sab.
+        cbn.
+        classic_case (yb = b) as [eq|neq].
+        +   subst yb.
+            right.
+            split; [>|reflexivity].
+            apply ya_min.
+            unfold SA.
+            exact Sab.
+        +   left.
+            split; [>|exact neq].
+            apply yb_min.
+            unfold SB.
+            exists a.
+            exact Sab.
 Qed.
 
 Notation "A ⊗ B" :=
@@ -431,15 +434,12 @@ Proof.
         -   intros a.
             contradiction (contr a).
     }
-    pose proof (well_founded _ C_nempty) as [y [C0 y_min']]; clear C0.
+    pose proof (well_ordered _ C_nempty) as [y [C0 y_min']]; clear C0.
     assert (∀ c : ord_U C, ord_le C y c) as y_min.
     {
         intros c.
-        classic_case (c = y).
-        -   subst; destruct (connex y y); assumption.
-        -   destruct (connex y c); try assumption.
-            specialize (y_min' c true n).
-            contradiction.
+        apply y_min'.
+        exact true.
     }
     clear y_min'.
     exists (y, x).

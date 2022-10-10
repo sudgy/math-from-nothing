@@ -297,13 +297,12 @@ Proof.
         exists (2^κ).
         apply card_lt_pow2.
     }
-    pose proof (well_founded _ S_nempty) as [μ [Sμ μ_min]].
+    pose proof (well_ordered _ S_nempty) as [μ [Sμ μ_min]].
     exists μ.
     split; try exact Sμ.
     intros ν Sν.
-    classic_contradiction leq.
-    rewrite nle_lt in leq.
-    exact (μ_min _ Sν (rand leq) (land leq)).
+    apply μ_min.
+    exact Sν.
 Qed.
 (* end hide *)
 Definition card_suc κ := ex_val (card_suc_ex κ).

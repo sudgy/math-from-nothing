@@ -260,7 +260,7 @@ Proof.
 Qed.
 
 (* begin hide *)
-Lemma card_le_wf : ∀ S : card → Prop, (∃ κ, S κ) → ∃ κ, is_minimal le S κ.
+Lemma card_le_wo : ∀ S : card → Prop, (∃ κ, S κ) → ∃ κ, is_least le S κ.
 Proof.
     intros S S_ex.
     pose (f (κ : set_type S) := card_to_initial_ord [κ|]).
@@ -274,21 +274,23 @@ Proof.
         unfold f; cbn.
         reflexivity.
     }
-    pose proof (well_founded S' S'_ex) as [α [[[κ Sκ] κ_eq] α_min]].
+    pose proof (well_ordered S' S'_ex) as [α [[[κ Sκ] κ_eq] α_min]].
     unfold f in κ_eq; cbn in κ_eq.
     exists κ.
     split; try exact Sκ.
-    intros μ Sμ μ_neq μ_leq.
-    assert (μ < κ) as leq by (split; assumption); clear μ_neq μ_leq.
+    intros μ Sμ.
+    classic_contradiction leq.
+    rewrite nle_lt in leq.
     rewrite <- card_to_initial_ord_to_card_eq in leq.
     rewrite <- (card_to_initial_ord_to_card_eq μ) in leq.
     apply ord_to_card_lt in leq.
     rewrite κ_eq in leq.
     assert (S' (card_to_initial_ord μ)) as S'μ by (exists [μ|Sμ]; reflexivity).
-    apply (α_min _ S'μ); apply leq.
+    specialize (α_min _ S'μ).
+    destruct (le_lt_trans α_min leq); contradiction.
 Qed.
-Global Instance card_le_wf_class : WellFounded le := {
-    well_founded := card_le_wf
+Global Instance card_le_wo_class : WellOrdered le := {
+    well_ordered := card_le_wo
 }.
 (* end hide *)
 Theorem card_le_sub : ∀ κ A, κ ≤ |A| → ∃ S : A → Prop, |set_type S| = κ.

@@ -13,13 +13,13 @@ Proof.
     classic_contradiction contr.
     pose (S' α := ¬S α).
     assert (∃ β, S' β) as S'_nempty by (exists α; exact contr).
-    pose proof (well_founded S' S'_nempty) as [β [S'β β_min]].
+    pose proof (well_ordered S' S'_nempty) as [β [S'β β_min]].
     apply S'β.
     apply S_all.
     intros γ γ_lt.
     classic_contradiction S'γ.
     specialize (β_min _ S'γ).
-    apply β_min; apply γ_lt.
+    destruct (lt_le_trans γ_lt β_min); contradiction.
 Qed.
 
 Definition suc_ord α := ∃ β, α = β + 1.

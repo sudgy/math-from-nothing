@@ -247,7 +247,7 @@ Qed.
 
 Lemma S_union_le_wo : ∀ A : set_type (S_union_set) → Prop,
     (∃ M : set_type (S_union_set), A M)
-    → ∃ M : set_type (S_union_set), is_minimal le A M.
+    → ∃ M : set_type (S_union_set), is_least le A M.
 Proof.
     intros A [b Ab].
     destruct [|b] as [F [CF Fb]].
@@ -274,39 +274,31 @@ Proof.
     -   unfold BA in BAa.
         rewrite (proof_irrelevance _ Sa) in BAa.
         exact BAa.
-    -   intros y Ay y_neq contr.
+    -   intros y Ay.
         pose proof [|y] as [G [CG Gy]].
-        unfold le in contr; cbn in contr; unfold S_union_le in contr.
-        cbn in contr.
-        make_definitions y [[a|]|Sa] PH H CH Hy Ha.
-        fold PH H in contr.
-        rewrite (proof_irrelevance _ Hy) in contr.
-        rewrite (proof_irrelevance _ Ha) in contr.
+        make_definitions [[a|]|Sa] y PH H CH Hy Ha.
+        unfold le; cbn; unfold S_union_le; cbn.
+        fold PH.
+        change (ex_val PH) with H.
+        rewrite (proof_irrelevance _ Hy).
+        rewrite (proof_irrelevance _ Ha).
         classic_case (bin_domain [F|] [y|]) as [Fy|Fy].
         +   specialize (a_min [_|Fy]).
-            apply a_min.
-            *   unfold BA; cbn.
+            prove_parts a_min.
+            {
+                unfold BA; cbn.
                 rewrite set_type_simpl.
                 exact Ay.
-            *   intro contr2.
-                subst a.
-                contradiction y_neq.
-                apply set_type_eq; reflexivity.
-            *   destruct a as [a Fa]; cbn in contr.
-                rewrite (S_all_equal _ _ CF CH _ _ _ _ Hy Ha).
-                exact contr.
+            }
+            destruct a as [a Fa].
+            rewrite (S_all_equal _ _ CF CH _ _ _ _ Hy Ha) in a_min.
+            exact a_min.
         +   destruct (C_chain _ _ CF CG) as [FG|GF].
             *   destruct FG as [FG FG_add].
                 specialize (FG_add a [_|Gy] Fy).
-                rewrite (S_all_equal _ _ CG CH _ _ _ _ Ha Hy) in FG_add.
+                rewrite (S_all_equal _ _ CG CH _ _ _ _ Hy Ha) in FG_add.
                 cbn in FG_add.
-                apply y_neq.
-                pose proof [|H] as [C0 [[[antisym]] C1]]; clear C0 C1.
-                specialize (antisym _ _ contr FG_add).
-                apply set_type_eq.
-                inversion antisym as [eq].
-                rewrite eq.
-                reflexivity.
+                exact FG_add.
             *   destruct GF as [GF C0]; clear C0.
                 destruct GF as [sub C0]; clear C0.
                 apply sub in Gy.
@@ -456,7 +448,7 @@ Qed.
 
 Lemma A'_wo : ∀ A : set_type (A'_set) → Prop,
     (∃ M : set_type (A'_set), A M)
-    → ∃ M : set_type (A'_set), is_minimal le A M.
+    → ∃ M : set_type (A'_set), is_least le A M.
 Proof.
     intros S [a Sa].
     destruct [|A] as [C0 [C1 [C2 [[A_wo]]]]]; clear C0 C1 C2.
@@ -466,33 +458,26 @@ Proof.
         exists [_|A'_sub _ [|m]].
         split.
         +   apply S'm.
-        +   intros y Sy y_neq y_leq.
-            unfold le in y_leq; cbn in y_leq;
-                unfold A'_func in y_leq; cbn in y_leq.
+        +   intros y Sy.
+            unfold le; cbn; unfold A'_func; cbn.
             pose proof (A'_sub _ [|m]) as A'm.
-            rewrite (proof_irrelevance _ A'm) in y_leq.
+            rewrite (proof_irrelevance _ A'm).
             destruct (A'_set_proof [_|A'm]); cbn in *.
-            *   destruct (A'_set_proof y); cbn in *.
+            *   rewrite set_type_simpl.
+                destruct (A'_set_proof y); cbn in *.
                 --  apply (m_max [_|b0]).
-                    ++  destruct y as [y A'y]; cbn.
-                        unfold S'; cbn.
-                        rewrite (proof_irrelevance _ A'y).
-                        exact Sy.
-                    ++  intro contr.
-                        subst m.
-                        contradiction y_neq.
-                        apply set_type_eq; reflexivity.
-                    ++  destruct m as [m Am]; cbn in *.
-                        rewrite (proof_irrelevance _ b).
-                        exact y_leq.
-                --  contradiction.
+                    destruct y as [y A'y]; cbn.
+                    unfold S'; cbn.
+                    rewrite (proof_irrelevance _ A'y).
+                    exact Sy.
+                --  exact true.
             *   rewrite singleton_eq in l.
                 destruct m as [m Am]; cbn in *.
                 subst m.
                 contradiction.
     -   exists a.
         split; try assumption.
-        intros [y A'y] Sy y_neq y_leq.
+        intros [y A'y] Sy.
         destruct A'y as [Ay|xy].
         +   rewrite not_ex in nexM.
             specialize (nexM [_|Ay]).
@@ -504,9 +489,8 @@ Proof.
             rewrite singleton_eq in xy'.
             subst.
             assert (A'_set x) as Ax by (right; reflexivity).
-            rewrite (proof_irrelevance _ Ax) in y_leq, y_neq, Sy.
-            apply y_neq.
-            apply (antisym y_leq).
+            rewrite (proof_irrelevance _ Ax) in Sy.
+            rewrite (proof_irrelevance _ Ax).
             unfold le; cbn; unfold A'_func; cbn.
             destruct (A'_set_proof [x | Ax]); try trivial.
             contradiction.
@@ -607,7 +591,7 @@ Proof.
     intros a b c ab bc.
     exact (trans ab bc).
 Qed.
-Lemma wo_well_founded : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_minimal wo_le S x.
+Lemma wo_well_ordered : ∀ S : U → Prop, (∃ x, S x) → ∃ x, is_least wo_le S x.
 Proof.
     intros S [x Sx].
     destruct [|A] as [A_connex [A_antisym [A_trans [[A_wo]]]]].
@@ -618,18 +602,15 @@ Proof.
         unfold S'; cbn.
         exact Sx.
     }
-    specialize (A_wo S' S'_ex) as [[y C0] [y_in y_minimal]].
+    specialize (A_wo S' S'_ex) as [[y C0] [y_in y_least]].
     exists y.
     unfold wo_le; cbn.
     split.
     -   apply y_in.
-    -   intros a Sa a_neq contr.
-        apply (y_minimal [_|A_all a]); try assumption.
-        +   intros eq.
-            inversion eq.
-            contradiction.
-        +   rewrite (proof_irrelevance _ C0) in contr.
-            exact contr.
+    -   intros a Sa.
+        rewrite (proof_irrelevance _ C0).
+        apply (y_least [_|A_all a]).
+        exact Sa.
 Qed.
 
 End WellOrder.
@@ -649,8 +630,8 @@ Instance wo_antisym_class : Antisymmetric wo_le := {
 Instance wo_trans_class : Transitive wo_le := {
     trans := WellOrderModule.wo_trans
 }.
-Instance wo_well_founded_class : WellFounded wo_le := {
-    well_founded := WellOrderModule.wo_well_founded
+Instance wo_well_ordered_class : WellOrdered wo_le := {
+    well_ordered := WellOrderModule.wo_well_ordered
 }.
 
 Theorem wo_le_wo : well_orders wo_le.
@@ -661,7 +642,7 @@ Proof.
     -   exact wo_connex_class.
     -   exact wo_antisym_class.
     -   exact wo_trans_class.
-    -   exact wo_well_founded_class.
+    -   exact wo_well_ordered_class.
 Qed.
 
 (* begin hide *)

@@ -463,11 +463,9 @@ Proof.
         pose proof (ord_pow_wo_wo A B S S_ex) as [M [SM M_min]].
         exists M.
         split; try exact SM.
-        intros C SC C_neq C_leq.
+        intros C SC.
         specialize (M_min C SC).
-        pose proof (ord_pow_wo_antisym A B).
-        pose proof (antisym C_leq M_min).
-        contradiction.
+        exact M_min.
 Qed.
 
 Notation "A ⊙ B" := (make_ord_type _ (ord_pow_le A B) (ord_pow_wo A B)).

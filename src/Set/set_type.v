@@ -167,8 +167,7 @@ Section SetTypeOrder.
 
 Context {U} {S : U → Prop}.
 Context `{
-    TotalOrder U,
-    WellFounded U le,
+    WellOrder U,
     SupremumComplete U le
 }.
 
@@ -208,7 +207,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance set_type_le_wf_class : WellFounded le.
+Global Instance set_type_le_wf_class : WellOrdered le.
 Proof.
     split.
     intros T T_ex.
@@ -218,19 +217,14 @@ Proof.
         exists x.
         apply (from_set_type_in _ _ Tx).
     }
-    pose proof (well_founded _ T'_nempty) as [x [[Sx Tx] x_min]].
+    pose proof (well_ordered _ T'_nempty) as [x [[Sx Tx] x_min]].
     exists [x|Sx].
     split; [>exact Tx|].
-    intros y Ty y_neq y_leq.
-    apply (x_min [y|]).
-    -   apply from_set_type_in.
-        exact Ty.
-    -   intro contr.
-        subst x.
-        rewrite set_type_simpl in y_neq.
-        contradiction.
-    -   unfold le in y_leq; cbn in y_leq.
-        exact y_leq.
+    intros y Ty.
+    apply x_min.
+    split with [|y].
+    rewrite set_type_simpl.
+    exact Ty.
 Qed.
 
 End SetTypeOrder.

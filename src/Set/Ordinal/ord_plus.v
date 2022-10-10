@@ -35,32 +35,30 @@ Proof.
     -   intros [x|x] [y|y] [z|z] xy yz; cbn in *; try contradiction; try exact true.
         +   exact (trans xy yz).
         +   exact (trans xy yz).
-    -   assert (∀ S, (∃ x, S (inl x)) → ∃ x, is_minimal (ord_plus_le A B) S x)
+    -   assert (∀ S, (∃ x, S (inl x)) → ∃ x, is_least (ord_plus_le A B) S x)
             as lemma.
         {
             intros S [x Sx].
             pose (S' x := (S (inl x))).
-            pose proof (well_founded S' (ex_intro _ _ Sx)) as [a [S'a a_min]].
+            pose proof (well_ordered S' (ex_intro _ _ Sx)) as [a [S'a a_min]].
             exists (inl a).
             split; try exact S'a.
-            intros [y|y] Sy y_neq y_leq; try contradiction; cbn in *.
-            apply (a_min y); try assumption.
-            intros contr; subst; contradiction.
+            intros [y|y] Sy; cbn in *; [>|exact true].
+            apply (a_min y); assumption.
         }
         intros S [[x|x] Sx]; try (apply lemma; exists x; exact Sx).
         classic_case (∃ x, S (inl x)) as [A_ex|A_nex].
         +   apply lemma.
             exact A_ex.
         +   pose (S' x := (S (inr x))).
-            pose proof (well_founded S' (ex_intro _ _ Sx)) as [a [S'a a_min]].
+            pose proof (well_ordered S' (ex_intro _ _ Sx)) as [a [S'a a_min]].
             exists (inr a).
             split; try exact S'a.
-            intros [y|y] Sy y_neq y_leq; cbn in *.
+            intros [y|y] Sy; cbn in *.
             *   rewrite not_ex in A_nex.
                 specialize (A_nex y).
                 contradiction.
-            *   apply (a_min y); try assumption.
-                intros contr; subst; contradiction.
+            *   apply (a_min y); assumption.
 Qed.
 
 Notation "A ⊕ B" :=
@@ -297,20 +295,19 @@ Proof.
                 exists a.
                 split; try exact Sa; reflexivity.
             }
-            pose proof (well_founded S' S'_nempty) as [a [S'a a_min]].
+            pose proof (well_ordered S' S'_nempty) as [a [S'a a_min]].
             destruct S'a as [a' [Sa' a'_eq]].
             exists a'.
             split; try assumption.
-            intros y Sy y_neq le.
-            apply (a_min [y|]).
-            +   exists y.
+            intros y Sy.
+            specialize (a_min [y|]).
+            prove_parts a_min.
+            {
+                exists y.
                 split; try exact Sy; reflexivity.
-            +   intros contr.
-                rewrite <- a'_eq in contr.
-                apply set_type_eq in contr.
-                contradiction.
-            +   rewrite a'_eq in le.
-                exact le.
+            }
+            rewrite a'_eq.
+            exact a_min.
     }
     pose (C := make_ord_type _ _ C_wo).
     exists (to_equiv_type ord_equiv C).
@@ -433,8 +430,8 @@ Proof.
         -   intros a b.
             contradiction (no_m [a|] [|a]).
     }
-    pose proof (ord_wo A) as [C0 [C1 [C2 [A_wo]]]]; clear C0 C1 C2.
-    pose proof (well_founded _ ex) as [x [Sx x_min]]; clear Sx.
+    pose proof (ord_wo A) as [C0 [[A_anti] [C2 [A_wo]]]]; clear C0 C2.
+    pose proof (well_ordered _ ex) as [x [Sx x_min]]; clear Sx.
     exists x.
     exists (λ x, False_rect _ (no_m [x|] [|x])).
     split.
@@ -442,7 +439,9 @@ Proof.
     -   intros a b.
         contradiction (no_m [a|] [|a]).
     -   intros [y [y_le y_neq]].
-        contradiction (x_min _ true y_neq y_le).
+        specialize (x_min y true).
+        pose proof (antisym y_le x_min).
+        contradiction.
     -   intros a b.
         contradiction (no_m [a|] [|a]).
 Qed.
@@ -686,7 +685,7 @@ Proof.
     unfold plus; equiv_simpl.
     rewrite ord_lt_initial.
     get_ord_wo B.
-    pose proof (well_founded _ (ex_intro _ b true)) as [x [Sx x_min]]; clear Sx.
+    pose proof (well_ordered _ (ex_intro _ b true)) as [x [Sx x_min]]; clear Sx.
     clear b.
     exists (inr x).
     cbn.
@@ -709,8 +708,9 @@ Proof.
         +   destruct eq.
             cbn in o.
             exfalso.
-            apply (x_min b); try assumption; try exact true.
-            intro contr; subst; contradiction.
+            specialize (x_min b true).
+            rewrite (antisym o x_min) in n.
+            contradiction.
     -   cbn.
         reflexivity.
 Qed.
