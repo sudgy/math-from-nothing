@@ -5,6 +5,7 @@ Require Export nat_plus.
 Require Export nat_mult.
 Require Export nat_order.
 Require Export nat_abstract.
+Require Import set_order.
 
 Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     match a with

@@ -3,6 +3,7 @@ Require Import init.
 Require Export order_def.
 Require Import set_base.
 Require Import set_set.
+Require Import set_order.
 
 Section Zorn.
 

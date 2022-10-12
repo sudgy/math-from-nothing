@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export order_def.
+Require Export set_order.
 Require Import function.
 Require Import set.
 Require Import nat.

@@ -350,7 +350,6 @@ Proof.
     intros S [x Sx].
     classic_contradiction no_least.
     rewrite not_ex in no_least.
-    unfold is_least in no_least.
     assert (∀ x, ¬S x) as none.
     {
         clear x Sx.

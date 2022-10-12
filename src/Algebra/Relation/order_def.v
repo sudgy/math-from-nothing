@@ -3,14 +3,6 @@ Require Import init.
 Require Export relation.
 Require Import order_mult.
 
-Definition is_least {U} (op : U → U → Prop) (S : U → Prop) (x : U)
-    := S x ∧ ∀ y, S y → op x y.
-Definition is_greatest {U} (op : U → U → Prop) (S : U → Prop) (x : U)
-    := S x ∧ ∀ y, S y → op y x.
-Definition is_minimal {U} (op : U → U → Prop) (S : U → Prop) (x : U)
-    := S x ∧ ∀ y, S y → y ≠ x → ¬(op y x).
-Definition is_maximal {U} (op : U → U → Prop) (S : U → Prop) (x : U)
-    := S x ∧ ∀ y, S y → y ≠ x → ¬(op x y).
 Definition is_lower_bound {U} (op : U → U → Prop) (S : U → Prop) (x : U)
     := ∀ y, S y → op x y.
 Definition is_upper_bound {U} (op : U → U → Prop) (S : U → Prop) (x : U)
@@ -19,14 +11,6 @@ Definition is_infimum {U} (op : U → U → Prop) (S : U → Prop) (x : U)
     := is_lower_bound op S x ∧ ∀ y, is_lower_bound op S y → op y x.
 Definition is_supremum {U} (op : U → U → Prop) (S : U → Prop) (x : U)
     := is_upper_bound op S x ∧ ∀ y, is_upper_bound op S y → op x y.
-Definition has_least {U} (op : U → U → Prop) (S : U → Prop)
-    := ∃ x, is_least op S x.
-Definition has_greatest {U} (op : U → U → Prop) (S : U → Prop)
-    := ∃ x, is_greatest op S x.
-Definition has_minimal {U} (op : U → U → Prop) (S : U → Prop)
-    := ∃ x, is_minimal op S x.
-Definition has_maximal {U} (op : U → U → Prop) (S : U → Prop)
-    := ∃ x, is_maximal op S x.
 Definition has_lower_bound {U} (op : U → U → Prop) (S : U → Prop)
     := ∃ x, is_lower_bound op S x.
 Definition has_upper_bound {U} (op : U → U → Prop) (S : U → Prop)
@@ -36,28 +20,10 @@ Definition has_infimum {U} (op : U → U → Prop) (S : U → Prop)
 Definition has_supremum {U} (op : U → U → Prop) (S : U → Prop)
     := ∃ x, is_supremum op S x.
 
-Definition open_interval {U} `{Order U} a b := λ x, a < x ∧ x < b.
-Definition open_closed_interval {U} `{Order U} a b := λ x, a < x ∧ x ≤ b.
-Definition closed_open_interval {U} `{Order U} a b := λ x, a ≤ x ∧ x < b.
-Definition closed_interval {U} `{Order U} a b := λ x, a ≤ x ∧ x ≤ b.
-Definition open_inf_interval {U} `{Order U} a := λ x, a < x.
-Definition closed_inf_interval {U} `{Order U} a := λ x, a ≤ x.
-Definition inf_open_interval {U} `{Order U} a := λ x, x < a.
-Definition inf_closed_interval {U} `{Order U} a := λ x, x ≤ a.
-
 Class SupremumComplete {U} (op : U → U → Prop) := {
     sup_complete : ∀ S : U → Prop, (∃ x, S x) →
         has_upper_bound op S → has_supremum op S
 }.
-
-Definition is_chain {U} (op : U → U → Prop) (S : U → Prop)
-    := ∀ a b : U, S a → S b → op a b ∨ op b a.
-
-Definition well_orders {U} (op : U → U → Prop) :=
-    inhabited (Connex op) ∧
-    inhabited (Antisymmetric op) ∧
-    inhabited (Transitive op) ∧
-    inhabited (WellOrdered op).
 
 (* begin hide *)
 Section WellOrders.
@@ -68,11 +34,6 @@ Context {U : Type} {op : U → U → Prop} `{
     Transitive U op,
     WellOrdered U op
 }.
-
-Theorem wo_wo : well_orders op.
-Proof.
-    repeat (split; try assumption).
-Qed.
 
 Theorem upper_bound_leq : ∀ S a b,
     ¬is_upper_bound op S a → is_upper_bound op S b → strict op a b.

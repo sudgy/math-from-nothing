@@ -80,6 +80,7 @@
 ./src/Set/set_set.v
 ./src/Set/set_type.v
 ./src/Set/set_function.v
+./src/Set/set_order.v
 ./src/Set/equivalence.v
 ./src/Set/zorn.v
 ./src/Set/zorn_function.v
