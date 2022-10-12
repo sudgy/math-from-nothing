@@ -26,7 +26,7 @@ Class SupremumComplete {U} (op : U → U → Prop) := {
 }.
 
 (* begin hide *)
-Section WellOrders.
+Section Bounds.
 (* end hide *)
 Context {U : Type} {op : U → U → Prop} `{
     Connex U op,
@@ -66,9 +66,9 @@ Proof.
 Qed.
 
 (* begin hide *)
-End WellOrders.
+End Bounds.
 
-Section SupremumComplete.
+Section Supremum.
 
 Context {U} `{
     OrderedField U,
@@ -181,5 +181,5 @@ Proof.
         exact α_sup.
 Qed.
 (* begin hide *)
-End SupremumComplete.
+End Supremum.
 (* end hide *)

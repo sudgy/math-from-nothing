@@ -5,7 +5,6 @@ Require Import zorn_real_arch.
 Require Import zorn_real_zorn.
 Require Import zorn_real_quotient.
 
-Require Import order_def.
 Require Import fraction_base.
 Require Import fraction_plus.
 Require Import fraction_mult.

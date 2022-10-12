@@ -4,7 +4,6 @@ Require Import zorn_real_base.
 Require Import zorn_real_arch.
 
 Require Import preorder.
-Require Import order_def.
 Require Import set.
 Require Import nat_abstract.
 Require Import ring_category.

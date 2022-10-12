@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export order_def.
+Require Export relation.
 
 (* begin hide *)
 Section OrderDictionary.

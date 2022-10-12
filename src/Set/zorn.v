@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export order_def.
+Require Export order_bounds.
 Require Import set_base.
 Require Import set_set.
 Require Import set_order.

@@ -6,7 +6,7 @@ Require Import nat_mult.
 
 Require Export order_plus.
 Require Export order_mult.
-Require Export order_def.
+Require Export order_bounds.
 
 Global Instance nat_order : Order nat := {
     le := fix le a b :=

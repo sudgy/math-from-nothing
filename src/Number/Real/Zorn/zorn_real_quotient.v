@@ -7,7 +7,6 @@ Require Import polynomial_base.
 Require Import linear_grade.
 Require Import ring_ideal.
 
-Require Import order_def.
 Require Import order_self_abs.
 Require Import order_minmax.
 Require Import set.

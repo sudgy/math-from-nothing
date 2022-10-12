@@ -7,7 +7,7 @@ Require Import dedekind_real.
 
 Require Export order_plus.
 Require Export order_mult.
-Require Export order_def.
+Require Export order_bounds.
 
 Record CompleteOrderedField := make_cof {
     cof_U : Type;

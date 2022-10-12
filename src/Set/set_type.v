@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import set_base.
-Require Import order_def.
 
 #[universes(template)]
 Record set_type {U} (S : U → Prop) := make_set_type_val {
@@ -166,10 +165,7 @@ Qed.
 Section SetTypeOrder.
 
 Context {U} {S : U → Prop}.
-Context `{
-    WellOrder U,
-    SupremumComplete U le
-}.
+Context `{WellOrder U}.
 
 Global Instance set_type_order : Order (set_type S) := {
     le a b := [a|] ≤ [b|]
