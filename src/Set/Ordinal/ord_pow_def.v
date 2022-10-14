@@ -397,78 +397,32 @@ Proof.
             destruct a_lt; contradiction.
 Qed.
 (* end hide *)
-Lemma ord_pow_wo : ∀ A B, well_orders (ord_pow_le A B).
+Lemma ord_pow_antisym : ∀ A B, Antisymmetric (ord_pow_le A B).
 Proof.
     intros A B.
     get_ord_wo A.
     get_ord_wo B.
-    repeat split.
-    -   intros C D.
-        classic_case (C = D) as [eq|neq].
-        +   subst.
-            left; left.
-            reflexivity.
-        +   apply or_to_strong.
-            pose proof (ord_pow_max_dif_ex neq) as [x [x_neq y_eq]].
-            destruct (connex (ord_pow_f C x) (ord_pow_f D x)) as [leq|leq].
-            *   left; right.
-                exists x.
-                repeat split; assumption.
-            *   right; right.
-                exists x.
-                rewrite neq_sym in x_neq.
-                repeat split; try assumption.
-                intros y y_lt.
-                symmetry; apply y_eq.
-                exact y_lt.
-    -   apply ord_pow_wo_antisym.
-    -   intros C D E CD DE.
-        destruct CD as [eq|CD].
-        2: destruct DE as [eq|DE].
-        +   apply ord_pow_eq in eq.
-            subst.
-            exact DE.
-        +   apply ord_pow_eq in eq.
-            subst.
-            right; exact CD.
-        +   right.
-            destruct CD as [a [a_lt a_gt]].
-            destruct DE as [b [b_lt b_gt]].
-            destruct (trichotomy a b) as [[ltq|neq]|ltq].
-            *   exists b.
-                split.
-                --  rewrite a_gt by exact ltq.
-                    exact b_lt.
-                --  intros y y_gt.
-                    rewrite a_gt by exact (trans ltq y_gt).
-                    apply b_gt.
-                    exact y_gt.
-            *   subst.
-                exists b.
-                split.
-                --  exact (trans a_lt b_lt).
-                --  intros y y_gt.
-                    rewrite a_gt by exact y_gt.
-                    apply b_gt.
-                    exact y_gt.
-            *   exists a.
-                split.
-                --  rewrite <- b_gt by exact ltq.
-                    exact a_lt.
-                --  intros y y_gt.
-                    rewrite a_gt by exact y_gt.
-                    apply b_gt.
-                    exact (trans ltq y_gt).
-    -   intros S S_ex.
-        pose proof (ord_pow_wo_wo A B S S_ex) as [M [SM M_min]].
-        exists M.
-        split; try exact SM.
-        intros C SC.
-        specialize (M_min C SC).
-        exact M_min.
+    split.
+    apply ord_pow_wo_antisym.
 Qed.
 
-Notation "A ⊙ B" := (make_ord_type _ (ord_pow_le A B) (ord_pow_wo A B)).
+Lemma ord_pow_wo : ∀ A B, WellOrdered (ord_pow_le A B).
+Proof.
+    intros A B.
+    get_ord_wo A.
+    get_ord_wo B.
+    split.
+    intros S S_ex.
+    pose proof (ord_pow_wo_wo A B S S_ex) as [M [SM M_min]].
+    exists M.
+    split; try exact SM.
+    intros C SC.
+    specialize (M_min C SC).
+    exact M_min.
+Qed.
+
+Notation "A ⊙ B" := (make_ord_type _ (ord_pow_le A B)
+    (ord_pow_antisym A B) (ord_pow_wo A B)).
 
 (* begin hide *)
 Lemma ord_pow_wd_fin : ∀ {A B C D} (F : ord_pow_type A C)

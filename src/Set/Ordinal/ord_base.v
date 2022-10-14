@@ -11,15 +11,13 @@ Delimit Scope ord_scope with ord.
 Record ord_type := make_ord_type {
     ord_U : Type;
     ord_le : ord_U → ord_U → Prop;
-    ord_wo : well_orders ord_le;
+    ord_antisym : Antisymmetric ord_le;
+    ord_wo : WellOrdered ord_le;
 }.
 
 Ltac get_ord_wo A :=
-    let A1 := fresh in let A2 := fresh in let A3 := fresh in let A4 := fresh in
-    let x := fresh in
-    destruct (ord_wo A) as [[A1] [[A2] [[A3] [A4]]]];
-    assert (Reflexive (ord_le A))
-        by (split; intro x; destruct (connex x x); assumption).
+    pose proof (ord_antisym A);
+    pose proof (ord_wo A).
 
 Theorem ord_zero_ex A : ord_U A → ∃ z, ∀ x, ord_le A z x.
 Proof.
@@ -64,50 +62,49 @@ Definition initial_segment_set (A : ord_type) (x : ord_U A) :=
     λ a, ord_le A a x ∧ a ≠ x.
 Definition initial_segment_le (A : ord_type) (x : ord_U A) :=
     λ (a b : set_type (initial_segment_set A x)), ord_le A [a|] [b|].
-Lemma initial_segment_wo : ∀ (A : ord_type) (x : ord_U A),
-    well_orders (initial_segment_le A x).
+Lemma initial_segment_antisym : ∀ (A : ord_type) (x : ord_U A),
+    Antisymmetric (initial_segment_le A x).
 Proof.
     intros A x.
-    destruct (ord_wo A) as [[[connex]] [[[antisym]] [[[trans]] [[wo]]]]].
-    repeat split.
-    -   intros a b.
-        apply or_to_strong.
-        destruct (connex [a|] [b|]) as [eq|eq].
-        +   left; exact eq.
-        +   right; exact eq.
-    -   intros a b ab ba.
-        apply set_type_eq.
-        apply antisym; assumption.
-    -   intros a b c.
-        apply trans.
-    -   intros S [y Sy].
-        pose (S' (a : ord_U A) := ∃ H : (initial_segment_set A x a), S [_|H]).
-        assert (∃ x, S' x) as S'_nempty.
-        {
-            exists [y|].
-            exists [|y].
-            destruct y.
-            exact Sy.
-        }
-        specialize (wo S' S'_nempty) as [m [[Am Sm] m_minimal]].
-        exists [_|Am].
-        split.
-        +   exact Sm.
-        +   intros z Sz.
-            apply m_minimal.
-            exists [|z].
-            destruct z; exact Sz.
+    get_ord_wo A.
+    split.
+    intros a b ab ba.
+    apply set_type_eq.
+    apply antisym; assumption.
+Qed.
+Lemma initial_segment_wo : ∀ (A : ord_type) (x : ord_U A),
+    WellOrdered (initial_segment_le A x).
+Proof.
+    intros A x.
+    get_ord_wo A.
+    split.
+    intros S [y Sy].
+    pose (S' (a : ord_U A) := ∃ H : (initial_segment_set A x a), S [_|H]).
+    assert (∃ x, S' x) as S'_nempty.
+    {
+        exists [y|].
+        exists [|y].
+        destruct y.
+        exact Sy.
+    }
+    pose proof (well_ordered S' S'_nempty) as [m [[Am Sm] m_minimal]].
+    exists [_|Am].
+    split.
+    +   exact Sm.
+    +   intros z Sz.
+        apply m_minimal.
+        exists [|z].
+        destruct z; exact Sz.
 Qed.
 Definition initial_segment (A : ord_type) (x : ord_U A)
-    := make_ord_type _ _ (initial_segment_wo A x).
+    := make_ord_type _ _ (initial_segment_antisym A x) (initial_segment_wo A x).
 
 Theorem ord_iso_le : ∀ (A : ord_type) f, injective f →
     (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
     ∀ x, ord_le A x (f x).
 Proof.
     intros A f f_inj f_iso x.
-    pose proof (ord_wo A)
-        as [[A_connex] [[A_antisym] [[A_trans] [A_wo]]]].
+    get_ord_wo A.
     classic_contradiction x_gt.
     pose (S x := ¬ord_le A x (f x)).
     assert (∃ x, S x) as S_nempty.
@@ -209,7 +206,7 @@ Proof.
     pose proof (ord_iso_le A f' f'_inj f'_iso x) as leq.
     pose proof [|f x] as [fx_leq fx_neq].
     change (f' x) with [f x|] in leq.
-    destruct (ord_wo A) as [C0 [[A_antisym] C1]]; clear C0 C1.
+    get_ord_wo A.
     pose proof (antisym fx_leq leq).
     contradiction.
 Qed.
@@ -236,7 +233,7 @@ Lemma ord_init_iso_eq1 : ∀ A x y,
     initial_segment A x ~ initial_segment A y → ord_le A y x.
 Proof.
     intros A x y eq.
-    destruct (ord_wo A) as [[A_connex] [C0 [[A_trans] C1]]]; clear C0 C1.
+    get_ord_wo A.
     classic_contradiction xy.
     assert (initial_segment_set A y x) as x_in.
     {
@@ -288,7 +285,7 @@ Proof.
                 destruct b_x.
                 intro contr.
                 subst.
-                apply H0.
+                apply H2.
                 apply set_type_eq; reflexivity.
             }
             exists [_|b_x2].
@@ -302,7 +299,7 @@ Proof.
     }
     apply eq_symmetric in eq.
     pose proof (eq_transitive ord_equiv).
-    pose proof (trans eq H) as contr.
+    pose proof (trans eq H1) as contr.
     apply ord_niso_init in contr.
     exact contr.
 Qed.
@@ -311,7 +308,7 @@ Theorem ord_init_iso_eq : ∀ A x y,
     initial_segment A x ~ initial_segment A y → x = y.
 Proof.
     intros A x y eq.
-    pose proof (ord_wo A) as [C0 [[A_antisym] C1]]; clear C1 C0.
+    get_ord_wo A.
     apply antisym.
     -   apply eq_symmetric in eq.
         apply ord_init_iso_eq1.
@@ -357,7 +354,7 @@ Proof.
     intros A B f g f_bij g_bij f_iso g_iso.
     apply functional_ext.
     intros x.
-    pose proof (ord_wo B) as [C0 [[B_antisym] C1]]; clear C0 C1.
+    get_ord_wo B.
     apply antisym; apply ord_iso_unique_le; assumption.
 Qed.
 Theorem ord_iso_id : ∀ A f, bijective f →
@@ -398,6 +395,7 @@ Qed.
 Close Scope ord_scope.
 (* end hide *)
 Definition nat_to_ord_type (n : nat) :=
-    make_ord_type (set_type (λ m, m < n)) le wo_wo.
+    make_ord_type (set_type (λ m, m < n)) le
+    set_type_le_antisym_class set_type_le_wo_class.
 Definition nat_to_ord (n : nat) :=
     to_equiv_type ord_equiv (nat_to_ord_type n).

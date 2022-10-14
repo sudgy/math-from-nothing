@@ -11,6 +11,13 @@ Require Export set_order.
 Module WellOrderModule.
 Section WellOrder.
 
+(* Get rid of this maybe? *)
+Definition well_orders {U} (op : U → U → Prop) :=
+    inhabited (Connex op) ∧
+    inhabited (Antisymmetric op) ∧
+    inhabited (Transitive op) ∧
+    inhabited (WellOrdered op).
+
 Local Open Scope set.
 
 Context {U : Type}.
@@ -633,17 +640,6 @@ Instance wo_trans_class : Transitive wo_le := {
 Instance wo_well_ordered_class : WellOrdered wo_le := {
     well_ordered := WellOrderModule.wo_well_ordered
 }.
-
-Theorem wo_le_wo : well_orders wo_le.
-Proof.
-    split; split.
-    2: split.
-    3: split; split.
-    -   exact wo_connex_class.
-    -   exact wo_antisym_class.
-    -   exact wo_trans_class.
-    -   exact wo_well_ordered_class.
-Qed.
 
 (* begin hide *)
 End WellOrder.

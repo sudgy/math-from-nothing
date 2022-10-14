@@ -13,88 +13,64 @@ Definition ord_mult_le (A B : ord_type) (a b : ord_U A * ord_U B) :=
         (ord_le B b1 b2 ∧ b1 ≠ b2) ∨ (ord_le A a1 a2 ∧ b1 = b2)
     end.
 
-Lemma ord_mult_wo : ∀ A B, well_orders (ord_mult_le A B).
+Lemma ord_mult_antisym : ∀ A B, Antisymmetric (ord_mult_le A B).
 Proof.
     intros A B.
-    destruct (ord_wo A) as [[A_connex] [[A_antisym] [[A_trans] [A_wo]]]].
-    destruct (ord_wo B) as [[B_connex] [[B_antisym] [[B_trans] [B_wo]]]].
-    repeat split.
-    -   intros [a1 b1] [a2 b2].
-        unfold ord_mult_le.
-        classic_case (b1 = b2) as [b_eq|b_neq].
-        +   destruct (connex a1 a2).
-            *   left; right.
-                split; assumption.
-            *   right; right.
-                symmetry in b_eq.
-                split; assumption.
-        +   destruct (connex b1 b2).
-            *   left; left.
-                split; assumption.
-            *   rewrite neq_sym in b_neq.
-                right; left.
-                split; assumption.
-    -   intros [a1 b1] [a2 b2]
-               [[b_eq1 b_neq1]|[a_eq1 b_eq1]] [[b_eq2 b_neq2]|[a_eq2 b_eq2]].
-        +   pose proof (antisym b_eq1 b_eq2).
-            contradiction.
-        +   symmetry in b_eq2.
-            contradiction.
-        +   symmetry in b_eq1.
-            contradiction.
-        +   apply f_equal2; try exact b_eq1.
-            apply antisym; assumption.
-    -   intros [a1 b1] [a2 b2] [a3 b3] [[b_eq1 b_neq1]|[a_eq1 b_eq1]]
-               [[b_eq2 b_neq2]|[a_eq2 b_eq2]].
-        all: cbn.
-        +   classic_case (b1 = b3) as [eq|neq].
-            *   subst.
-                pose proof (antisym b_eq1 b_eq2).
-                contradiction.
-            *   left.
-                split; try assumption.
-                exact (trans b_eq1 b_eq2).
-        +   subst.
-            left; split; assumption.
-        +   subst.
-            left; split; assumption.
-        +   subst.
-            right.
-            split; try reflexivity.
-            exact (trans a_eq1 a_eq2).
-    -   intros S [[xa xb] Sx].
-        pose (SB b := ∃ a, S (a, b)).
-        assert (∃ x, SB x) as SB_nempty.
-        {
-            exists xb.
-            exists xa.
-            exact Sx.
-        }
-        pose proof (well_ordered SB SB_nempty) as [yb [SBy yb_min]].
-        pose (SA a := S (a, yb)).
-        assert (∃ x, SA x) as SA_nempty by exact SBy.
-        pose proof (well_ordered SA SA_nempty) as [ya [SAy ya_min]].
-        exists (ya, yb).
-        split; try assumption.
-        intros [a b] Sab.
-        cbn.
-        classic_case (yb = b) as [eq|neq].
-        +   subst yb.
-            right.
-            split; [>|reflexivity].
-            apply ya_min.
-            unfold SA.
-            exact Sab.
-        +   left.
-            split; [>|exact neq].
-            apply yb_min.
-            unfold SB.
-            exists a.
-            exact Sab.
+    get_ord_wo A.
+    get_ord_wo B.
+    split.
+    intros [a1 b1] [a2 b2]
+           [[b_eq1 b_neq1]|[a_eq1 b_eq1]] [[b_eq2 b_neq2]|[a_eq2 b_eq2]].
+    -   pose proof (antisym b_eq1 b_eq2).
+        contradiction.
+    -   symmetry in b_eq2.
+        contradiction.
+    -   symmetry in b_eq1.
+        contradiction.
+    -   apply f_equal2; try exact b_eq1.
+        apply antisym; assumption.
+Qed.
+
+Lemma ord_mult_wo : ∀ A B, WellOrdered (ord_mult_le A B).
+Proof.
+    intros A B.
+    get_ord_wo A.
+    get_ord_wo B.
+    split.
+    intros S [[xa xb] Sx].
+    pose (SB b := ∃ a, S (a, b)).
+    assert (∃ x, SB x) as SB_nempty.
+    {
+        exists xb.
+        exists xa.
+        exact Sx.
+    }
+    pose proof (well_ordered SB SB_nempty) as [yb [SBy yb_min]].
+    pose (SA a := S (a, yb)).
+    assert (∃ x, SA x) as SA_nempty by exact SBy.
+    pose proof (well_ordered SA SA_nempty) as [ya [SAy ya_min]].
+    exists (ya, yb).
+    split; try assumption.
+    intros [a b] Sab.
+    cbn.
+    classic_case (yb = b) as [eq|neq].
+    -   subst yb.
+        right.
+        split; [>|reflexivity].
+        apply ya_min.
+        unfold SA.
+        exact Sab.
+    -   left.
+        split; [>|exact neq].
+        apply yb_min.
+        unfold SB.
+        exists a.
+        exact Sab.
 Qed.
 
 Notation "A ⊗ B" :=
-    (make_ord_type (ord_U A * ord_U B) (ord_mult_le A B) (ord_mult_wo A B))
+    (make_ord_type (ord_U A * ord_U B) (ord_mult_le A B)
+    (ord_mult_antisym A B) (ord_mult_wo A B))
     : ord_scope.
 
 (* begin hide *)
@@ -346,7 +322,7 @@ Proof.
         +   intros [[c d]|[e f]].
             *   exact c.
             *   rewrite f.
-                destruct (ord_wo A) as [[A_connex] C0]; clear C0.
+                get_ord_wo A.
                 destruct (connex b b); assumption.
 Qed.
 Global Instance ord_mult_lid_class : MultLid ord := {

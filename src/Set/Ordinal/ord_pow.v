@@ -59,7 +59,7 @@ Proof.
         subst.
         split; intro.
         +   apply refl.
-        +   pose proof (ord_pow_wo A (nat_to_ord_type 0)) as [[C]].
+        +   pose proof (ord_pow_wo A (nat_to_ord_type 0)) as C.
             destruct (connex G G); assumption.
 Qed.
 
@@ -72,6 +72,7 @@ Proof.
     pose (AB := {|
         ord_U := ord_U B + set_type (λ m : nat, m < 1);
         ord_le := ord_plus_le B (nat_to_ord_type 1);
+        ord_antisym := ord_plus_antisym B (nat_to_ord_type 1);
         ord_wo := ord_plus_wo B (nat_to_ord_type 1)
     |}).
     fold AB.
@@ -177,12 +178,7 @@ Proof.
         split.
         +   intros [eq|leq].
             *   pose proof (ord_pow_eq eq) as eq2; subst.
-                pose proof (ord_mult_wo (A ⊙ B) A) as [[C]].
-                assert (Reflexive (ord_mult_le (A ⊙ B) A)).
-                {
-                    split; intros x.
-                    destruct (connex x x); assumption.
-                }
+                pose proof (ord_mult_wo (A ⊙ B) A) as C.
                 apply refl.
             *   destruct leq as [x [x_lt x_gt]].
                 unfold ord_mult_le; cbn.

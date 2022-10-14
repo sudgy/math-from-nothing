@@ -203,7 +203,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance set_type_le_wf_class : WellOrdered le.
+Global Instance set_type_le_wo_class : WellOrdered le.
 Proof.
     split.
     intros T T_ex.

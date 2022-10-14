@@ -373,8 +373,8 @@ Proof.
 Qed.
 Lemma a_ex : ∃ a, Sa a ∧ ∀ x, Sa x → ord_le A a x.
 Proof.
-    pose proof (ord_wo A) as [[A_connex] [C1 [C2 [[A_wo]]]]]; clear C1 C2.
-    specialize (A_wo Sa Sa_nempty) as [a [a_in a_min]].
+    get_ord_wo A.
+    pose proof (well_ordered Sa Sa_nempty) as [a [a_in a_min]].
     exists a.
     split; assumption.
 Qed.
@@ -401,8 +401,8 @@ Proof.
     rewrite ord_lt_initial.
     pose (S y := ¬domain (piece_f f) y).
     assert (∃ x, S x) as S_nempty by (exists a; exact not_in).
-    pose proof (ord_wo A) as [C0 [[A_anti] [C2 [[A_wo]]]]]; clear C0 C2.
-    specialize (A_wo S S_nempty) as [x [Sx x_min]].
+    get_ord_wo A.
+    specialize (well_ordered S S_nempty) as [x [Sx x_min]].
     exists x.
     clear AB BA.
     apply ord_eq_symmetric.
@@ -452,8 +452,8 @@ Qed.
 Lemma b_ex : ∃ b, (∀ a, piece_f f⟨a⟩ ≠ b) ∧
            (∀ b', (∀ a, piece_f f⟨a⟩ ≠ b') → ord_le B b b').
 Proof.
-    pose proof (ord_wo B) as [[B_connex] [C1 [C2 [[B_wo]]]]]; clear C1 C2.
-    specialize (B_wo _ b_ex_base) as [b [Sb b_min]].
+    get_ord_wo B.
+    pose proof (well_ordered _ b_ex_base) as [b [Sb b_min]].
     exists b.
     split; assumption.
 Qed.
@@ -490,17 +490,17 @@ Lemma a_ngt : ∀ x : set_type (domain (piece_f f)), ¬ord_le A a [x|].
 Proof.
     intros x gt.
     pose proof (a_gt x).
-    destruct (ord_wo A) as [C0 [[A_antisym] C1]]; clear C0 C1.
+    get_ord_wo A.
     pose proof (antisym gt H).
     pose proof not_in.
-    rewrite H0 in H1.
+    rewrite H2 in H3.
     destruct x; contradiction.
 Qed.
 Lemma b_ngt : ∀ x, ¬ord_le B b (piece_f f⟨x⟩).
 Proof.
     intros x gt.
     pose proof (b_gt x).
-    destruct (ord_wo B) as [C0 [[B_antisym] C1]]; clear C0 C1.
+    get_ord_wo B.
     pose proof (antisym H gt).
     pose proof (b_not x).
     contradiction.
@@ -556,10 +556,10 @@ Proof.
     -   rewrite <- e, <- e0.
         split.
         +   intros.
-            destruct (ord_wo B) as [[B_connex] C0]; clear C0.
+            get_ord_wo B.
             destruct (connex b b); assumption.
         +   intros.
-            destruct (ord_wo A) as [[A_connex] C0]; clear C0.
+            get_ord_wo A.
             destruct (connex a a); assumption.
 Qed.
 
@@ -670,13 +670,12 @@ Proof.
     rewrite ord_lt_initial.
     pose (S y := ¬(∃ x, f' x = y)).
     assert (∃ x, S x) as S_nempty by (exists b; exact no_a).
-    pose proof (ord_wo B) as [C0 [C1 [C2 [[B_wo]]]]]; clear C0 C1 C2.
-    specialize (B_wo S S_nempty) as [x [Sx x_min]].
+    get_ord_wo B.
+    pose proof (well_ordered S S_nempty) as [x [Sx x_min]].
     clear S_nempty b no_a.
     assert (∀ a, S a → ord_le B x a) as x_min2.
     {
         intros a Sa.
-        pose proof (land (ord_wo B)) as [H].
         classic_case (a = x) as [eq|neq].
         -   subst.
             destruct (connex x x); assumption.
@@ -705,7 +704,6 @@ Proof.
             reflexivity.
         }
         pose proof (piece_bot2 f _ _ bot_ex bot_nex) as leq2.
-        destruct (ord_wo B) as [C0 [[B_antisym] C1]]; clear C0 C1.
         pose proof (antisym leq leq2).
         subst.
         unfold S in Sx.
@@ -730,7 +728,6 @@ Proof.
             classic_contradiction contr.
             apply Sa.
             apply le_S2.
-            destruct (ord_wo B) as [[A_connex] C0]; clear C0.
             destruct (connex x (f' a)); try assumption.
             contradiction.
         -   unfold S in Sx.
@@ -745,7 +742,7 @@ Proof.
         unfold g, f' in eq.
         inversion eq as [eq2].
         pose proof (piece_inj f [_|all_in_f a] [_|all_in_f b] eq2).
-        inversion H.
+        inversion H1.
         reflexivity.
     *   intros b.
         classic_contradiction Sb'.
@@ -761,7 +758,6 @@ Proof.
         specialize (x_min _ Sb).
         destruct b as [b b_leq]; cbn in *.
         destruct b_leq as [b_leq b_neq].
-        destruct (ord_wo B) as [C0 [[B_antisym] C1]]; clear C0 C1.
         pose proof (antisym b_leq x_min).
         contradiction.
     *   intros a b.
@@ -865,7 +861,7 @@ Proof.
         exact set_proof.
     }
     destruct leq2 as [leq2 neq].
-    destruct (ord_wo α) as [C0 [[α_antisym] C1]]; clear C0 C1.
+    get_ord_wo α.
     pose proof (antisym leq2 leq1).
     contradiction.
 Qed.
@@ -915,8 +911,7 @@ Proof.
         +   intros z.
             assert (initial_segment_set γ c [z|]) as z_c.
             {
-                pose proof (ord_wo γ) as [C0 [[γ_antisym] [[γ_trans] C1]]];
-                    clear C0 C1.
+                get_ord_wo γ.
                 destruct z as [z [z_leq z_neq]]; cbn in *.
                 destruct (f b) as [fb fb_eq]; cbn in *.
                 split.
@@ -1058,7 +1053,7 @@ Proof.
     destruct X as [X X_lt], Y as [Y Y_lt].
     change [[X|X_lt]|] with X in *.
     change [[Y|Y_lt]|] with Y in *.
-    destruct (ord_wo A) as [[A_connex] [[A_antisym] [[A_trans] [A_wo]]]].
+    get_ord_wo A.
     rewrite <- x_eq, <- y_eq in XY.
     rename XY into eq.
     rewrite ord_lt_initial in eq.
@@ -1131,68 +1126,58 @@ Proof.
         }
         pose proof (eq_transitive ord_equiv).
         pose proof (trans z_eq eq).
-        apply ord_init_iso_eq in H0.
-        symmetry in H0.
+        apply ord_init_iso_eq in H2.
+        symmetry in H2.
         destruct z_x; contradiction.
     }
     destruct z_lt as [z_lt].
     exact (trans leq z_lt).
 Qed.
 
-Lemma ords_lt_wo_base : well_orders (ords_lt_le (to_ord A)).
+Lemma ords_lt_wo_base : WellOrdered (ords_lt_le (to_ord A)).
 Proof.
-    repeat split.
-    -   intros [β β_in] [γ γ_in].
-        unfold ords_lt_le; cbn.
-        apply connex.
-    -   intros [β β_in] [γ γ_in] βγ γβ.
-        unfold ords_lt_le in *; cbn in *.
-        apply set_type_eq.
-        exact (antisym βγ γβ).
-    -   intros [β β_in] [γ γ_in] [δ δ_in] βγ γδ.
-        unfold ords_lt_le in *; cbn in *.
-        exact (trans βγ γδ).
-    -   intros S [[B B_in] SB].
-        unfold ords_lt_set in B_in.
-        pose (b := f [B|B_in]).
-        pose (S' x := ∃ C, S C ∧ f C = x).
-        assert (∃ x, S' x) as S'_nempty.
-        {
-            exists b.
-            unfold S'.
-            exists [B|B_in].
-            split; try assumption.
-            unfold b.
-            reflexivity.
-        }
-        pose proof (ord_wo A) as [C0 [[A_anti] [C2 [[A_wo]]]]]; clear C0 C2.
-        specialize (A_wo S' S'_nempty) as [x [S'x x_min]].
-        destruct S'x as [X [SX X_eq]].
-        exists X.
+    split.
+    intros S [[B B_in] SB].
+    unfold ords_lt_set in B_in.
+    pose (b := f [B|B_in]).
+    pose (S' x := ∃ C, S C ∧ f C = x).
+    assert (∃ x, S' x) as S'_nempty.
+    {
+        exists b.
+        unfold S'.
+        exists [B|B_in].
         split; try assumption.
-        intros Y SY.
-        specialize (x_min (f Y)).
-        prove_parts x_min.
-        {
-            unfold S'.
-            exists Y.
-            split; try assumption; reflexivity.
-        }
-        rewrite <- X_eq in x_min.
-        unfold ords_lt_le.
-        classic_contradiction contr.
-        rewrite nle_lt in contr.
-        pose proof (f_iso _ _ contr) as leq.
-        pose proof (antisym leq x_min) as eq.
-        apply (bij_inv_bij f' f'_bij) in eq.
-        rewrite <- set_type_eq in eq.
-        destruct contr; contradiction.
+        unfold b.
+        reflexivity.
+    }
+    get_ord_wo A.
+    pose proof (well_ordered S' S'_nempty) as [x [S'x x_min]].
+    destruct S'x as [X [SX X_eq]].
+    exists X.
+    split; try assumption.
+    intros Y SY.
+    specialize (x_min (f Y)).
+    prove_parts x_min.
+    {
+        unfold S'.
+        exists Y.
+        split; try assumption; reflexivity.
+    }
+    rewrite <- X_eq in x_min.
+    unfold ords_lt_le.
+    classic_contradiction contr.
+    rewrite nle_lt in contr.
+    pose proof (f_iso _ _ contr) as leq.
+    pose proof (antisym leq x_min) as eq.
+    apply (bij_inv_bij f' f'_bij) in eq.
+    rewrite <- set_type_eq in eq.
+    destruct contr; contradiction.
 Qed.
 
 
 End OrdsLtWo.
 
-Lemma ords_lt_wo : ∀ α, well_orders (ords_lt_le α).
+Lemma ords_lt_wo : ∀ α, WellOrdered (ords_lt_le α).
 Proof.
     intros α.
     equiv_get_value α.
@@ -1212,7 +1197,7 @@ Proof.
         intros δ Sδ.
         apply α_least.
         exact Sδ.
-    -   pose proof (OrdsLtWo.ords_lt_wo α) as [C0 [C1 [C2 [[wo]]]]]; clear C0 C1 C2.
+    -   pose proof (OrdsLtWo.ords_lt_wo α) as wo.
         pose (S' (x : set_type (ords_lt_set α)) := S [x|]).
         assert (∃ β, S' β) as S'_nempty.
         {
@@ -1227,7 +1212,7 @@ Proof.
             exists [β|eq].
             exact Sβ.
         }
-        specialize (wo S' S'_nempty) as [β [S'β β_min]].
+        pose proof (well_ordered S' S'_nempty) as [β [S'β β_min]].
         exists [β|].
         split; try apply S'β.
         intros δ Sδ.

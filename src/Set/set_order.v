@@ -30,28 +30,3 @@ Definition inf_closed_interval {U} `{Order U} a := λ x, x ≤ a.
 
 Definition is_chain {U} (op : U → U → Prop) (S : U → Prop)
     := ∀ a b : U, S a → S b → op a b ∨ op b a.
-
-Definition well_orders {U} (op : U → U → Prop) :=
-    inhabited (Connex op) ∧
-    inhabited (Antisymmetric op) ∧
-    inhabited (Transitive op) ∧
-    inhabited (WellOrdered op).
-
-(* begin hide *)
-Section WellOrders.
-(* end hide *)
-Context {U : Type} {op : U → U → Prop} `{
-    Connex U op,
-    Antisymmetric U op,
-    Transitive U op,
-    WellOrdered U op
-}.
-
-Theorem wo_wo : well_orders op.
-Proof.
-    repeat (split; try assumption).
-Qed.
-(* begin hide *)
-
-End WellOrders.
-(* end hide *)

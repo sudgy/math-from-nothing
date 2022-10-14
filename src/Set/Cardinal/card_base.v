@@ -91,7 +91,8 @@ Proof.
     {
         rename κ into A.
         equiv_get_value A.
-        exists (to_equiv_type ord_equiv (make_ord_type A _ wo_le_wo)).
+        exists (to_equiv_type ord_equiv
+            (make_ord_type A _ wo_antisym_class wo_well_ordered_class)).
         unfold ord_to_card; equiv_simpl.
         exists identity.
         exact identity_bijective.
