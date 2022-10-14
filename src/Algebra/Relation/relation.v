@@ -241,6 +241,51 @@ Proof.
 Qed.
 
 End TotalOrder.
+Section WellOrder.
+
+Context {U} {op : U → U → Prop} `{
+    Antisymmetric U op,
+    WellOrdered U op
+}.
+
+Global Instance well_order_connex : Connex op.
+Proof.
+    split.
+    intros a b.
+    apply or_to_strong.
+    pose proof (well_ordered (λ x, x = a ∨ x = b)) as x_ex.
+    prove_parts x_ex; [>exists a; left; reflexivity|].
+    destruct x_ex as [x [x_eq x_least]].
+    destruct x_eq as [x_eq|x_eq]; subst x.
+    -   left.
+        apply x_least.
+        right; reflexivity.
+    -   right.
+        apply x_least.
+        left; reflexivity.
+Qed.
+
+Global Instance well_order_trans : Transitive op.
+Proof.
+    split.
+    intros a b c ab bc.
+    pose proof (well_ordered (λ x, x = a ∨ x = b ∨ x = c)) as x_ex.
+    prove_parts x_ex; [>exists a; left; reflexivity|].
+    destruct x_ex as [x [x_eq x_least]].
+    destruct x_eq as [x_eq|[x_eq|x_eq]]; subst x.
+    -   apply x_least.
+        right; right; reflexivity.
+    -   applys_eq bc.
+        apply antisym; [>exact ab|].
+        apply x_least.
+        left; reflexivity.
+    -   applys_eq ab.
+        apply antisym; [>|exact bc].
+        apply x_least.
+        right; left; reflexivity.
+Qed.
+
+End WellOrder.
 (* end hide *)
 (* begin show *)
 Ltac make_dual_op op' :=
