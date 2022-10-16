@@ -60,51 +60,17 @@ Qed.
 
 Let P (C : U → Prop) (x : U) := λ y, C y ∧ y < x.
 
-Let well_orders (S : U → Prop) := ∀ A : U → Prop, A ⊆ S → (∃ x, A x) →
-    ∃ a, is_least le A a.
-
-Lemma well_orders_chain : ∀ A : U → Prop, well_orders A → is_chain le A.
-Proof.
-    intros A A_wo a b Aa Ab.
-    specialize (A_wo (❴a❵ ∪ ❴b❵)).
-    prove_parts A_wo.
-    {
-        intros x [xa|xb].
-        -   rewrite singleton_eq in xa.
-            rewrite <- xa.
-            exact Aa.
-        -   rewrite singleton_eq in xb.
-            rewrite <- xb.
-            exact Ab.
-    }
-    {
-        exists a.
-        left.
-        reflexivity.
-    }
-    destruct A_wo as [x [[xa|xb] x_least]].
-    -   rewrite singleton_eq in xa; subst x.
-        left.
-        apply x_least.
-        right.
-        reflexivity.
-    -   rewrite singleton_eq in xb; subst x.
-        right.
-        apply x_least.
-        left.
-        reflexivity.
-Qed.
-
-Lemma zorn_wo_chain : ∀ (A : U → Prop) x, well_orders A → is_chain le (P A x).
+Lemma zorn_wo_chain : ∀ (A : U → Prop) x, well_orders le A → is_chain le (P A x).
 Proof.
     intros A x A_wo.
     apply well_orders_chain in A_wo.
-    intros a b [Aa a_lt] [Ab b_lt].
-    apply A_wo; assumption.
+    apply (chain_subset A A_wo).
+    intros a Pa.
+    apply Pa.
 Qed.
 
 Let conforming (A : U → Prop) :=
-    well_orders A ⋏
+    well_orders le A ⋏
     λ H, (∀ x, A x → x = f (P A x) (zorn_wo_chain A x H)).
 
 Let initial_segment (A : U → Prop) (B : U → Prop) := ∃ x, B x ∧ A = P B x.
@@ -250,7 +216,7 @@ Qed.
 
 Lemma zorn_conforming_union : conforming (⋃ conforming).
 Proof.
-    assert (well_orders (⋃ conforming)) as conf_wo.
+    assert (well_orders le (⋃ conforming)) as conf_wo.
     {
         intros S S_sub [x Sx].
         pose proof Sx as Sx'.
@@ -332,7 +298,7 @@ Proof.
     pose (x := f _ (well_orders_chain _ (ldand zorn_conforming_union))).
     assert (conforming (⋃ conforming ∪ ❴x❵)) as conf.
     {
-        assert (well_orders (⋃ conforming ∪ ❴x❵)) as wo.
+        assert (well_orders le (⋃ conforming ∪ ❴x❵)) as wo.
         {
             intros S S_sub S_ex.
             classic_case (⋃ conforming ∩ S = ∅) as [S_empty|S_nempty].

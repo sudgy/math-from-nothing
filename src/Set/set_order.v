@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export relation.
+Require Export set_base.
 
 Definition is_least {U} (op : U → U → Prop) (S : U → Prop) (x : U)
     := S x ∧ ∀ y, S y → op x y.
@@ -30,3 +31,46 @@ Definition inf_closed_interval {U} `{Order U} a := λ x, x ≤ a.
 
 Definition is_chain {U} (op : U → U → Prop) (S : U → Prop)
     := ∀ a b : U, S a → S b → op a b ∨ op b a.
+
+Definition well_orders {U} (op : U → U → Prop) (S : U → Prop)
+    := ∀ A : U → Prop, A ⊆ S → (∃ x, A x) → ∃ a, is_least op A a.
+
+Section SetOrder.
+
+Context {U} `{PartialOrder U}.
+
+Theorem chain_subset : ∀ S, is_chain le S → ∀ T, T ⊆ S → is_chain le T.
+Proof.
+    intros S S_chain T sub a b Ta Tb.
+    apply S_chain.
+    all: apply sub; assumption.
+Qed.
+
+Theorem well_orders_subset :
+    ∀ S, well_orders le S → ∀ T, T ⊆ S → well_orders le T.
+Proof.
+    intros S S_wo T sub A A_sub A_ex.
+    apply S_wo.
+    -   exact (trans A_sub sub).
+    -   exact A_ex.
+Qed.
+
+Theorem well_orders_chain : ∀ S, well_orders le S → is_chain le S.
+Proof.
+    intros S S_wo a b Sa Sb.
+    specialize (S_wo ❴a, b❵).
+    prove_parts S_wo.
+    -   intros x [|]; subst x; assumption.
+    -   exists a.
+        left; reflexivity.
+    -   destruct S_wo as [x [x_in x_least]].
+        destruct x_in as [|]; subst x.
+        +   left.
+            apply x_least.
+            right; reflexivity.
+        +   right.
+            apply x_least.
+            left; reflexivity.
+Qed.
+
+End SetOrder.
