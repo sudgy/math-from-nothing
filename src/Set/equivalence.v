@@ -33,6 +33,10 @@ Arguments eq_equal {U}.
 Arguments eq_reflexive {U}.
 Arguments eq_symmetric {U}.
 Arguments eq_transitive {U}.
+Ltac unpack_equiv E :=
+    pose proof (eq_reflexive E);
+    pose proof (eq_symmetric E);
+    pose proof (eq_transitive E).
 
 (* begin hide *)
 Definition equiv_class {U} (E : equivalence U) (a : U) := λ x, eq_equal E a x.
@@ -40,15 +44,8 @@ Definition equiv_set {U} (E : equivalence U) := λ S, ∃ x, S = equiv_class E x
 (* end hide *)
 (* begin show *)
 Notation "'equiv_type' E" := (set_type (equiv_set E)) (at level 10).
-Definition to_equiv_type {U} (E : equivalence U) (x : U) : equiv_type E.
-    remember (equiv_class E x) as X.
-    assert (equiv_set E X) as X_in.
-    {
-        exists x.
-        exact HeqX.
-    }
-    exact (make_set_type_val X X_in).
-Defined.
+Definition to_equiv_type {U} (E : equivalence U) (x : U) : equiv_type E
+    := [equiv_class E x | ex_intro _ _ Logic.eq_refl].
 (* end show *)
 
 (* begin hide *)
@@ -80,16 +77,14 @@ Qed.
 
 Theorem equiv_eq : ∀ a b, (to_equiv_type E a = to_equiv_type E b) ↔ (a ~ b).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a b.
+    unfold to_equiv_type.
     split; intros eq.
-    -   unfold to_equiv_type in eq.
-        inversion eq as [eq']; clear eq.
+    -   rewrite set_type_eq2 in eq.
         apply equiv_eq_class.
-        exact eq'.
-    -   apply set_type_eq; cbn.
+        exact eq.
+    -   rewrite set_type_eq2.
         unfold equiv_class.
         apply antisym.
         +   intros x ax.
@@ -110,9 +105,7 @@ Qed.
 Theorem unary_self_op_wd : ∀ (f : U → U), (∀ a b : U, a ~ b → f a ~ f b) →
     ∀ a, equiv_set E (unary_self_op_base E f a).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros f wd [A [x Ax]].
     subst A.
     exists (f x).
@@ -124,18 +117,16 @@ Proof.
         exact (trans wd x'_eq).
     -   intro eq.
         exists x.
+        cbn.
         split.
-        +   cbn.
-            apply refl.
+        +   apply refl.
         +   exact eq.
 Qed.
 Theorem binary_self_op_wd : ∀ (f : U → U → U),
     (∀ a b c d : U, a ~ b → c ~ d → f a c ~ f b d) →
     ∀ a b, equiv_set E (binary_self_op_base E f a b).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros f wd [A [a Aa]] [B [b Bb]].
     subst A B.
     exists (f a b).
@@ -149,16 +140,14 @@ Proof.
     -   intro eq.
         exists a, b.
         cbn.
-        repeat split; try apply refl.
+        do 2 (split; [apply refl|]).
         exact eq.
 Qed.
 Theorem binary_rself_op_wd : ∀ (f : U2 → U → U),
     (∀ a b c, a ~ b → f c a ~ f c b) →
     ∀ a b, equiv_set E (binary_rself_op_base E f a b).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros f wd a [B [b Bb]].
     subst B.
     exists (f a b).
@@ -172,7 +161,7 @@ Proof.
     -   intro eq.
         exists b.
         cbn.
-        split; try apply refl.
+        split; [>apply refl|].
         exact eq.
 Qed.
 
@@ -233,55 +222,43 @@ Local Notation "'rBin'" := (binary_rop rbin_wd).
 
 Theorem equiv_unary_op : ∀ a, Un (to_equiv_type E a) = un a.
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a.
     unfold unary_op.
     apply un_wd.
     rewrite_ex_val b b_eq.
     cbn in b_eq.
     apply sym.
-    apply equiv_eq_class.
-    exact b_eq.
+    exact (equiv_eq_class _ _ b_eq).
 Qed.
 Theorem equiv_binary_op : ∀ a b,
     Bin (to_equiv_type E a) (to_equiv_type E b) = bin a b.
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a b.
     unfold binary_op.
     apply bin_wd.
     -   rewrite_ex_val c c_eq.
         apply sym.
-        apply equiv_eq_class.
-        exact c_eq.
+        exact (equiv_eq_class _ _ c_eq).
     -   rewrite_ex_val c c_eq.
         apply sym.
-        apply equiv_eq_class.
-        exact c_eq.
+        exact (equiv_eq_class _ _ c_eq).
 Qed.
 Theorem equiv_binary_rop : ∀ a b, rBin (to_equiv_type E a) b = rbin a b.
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a b.
     unfold binary_rop.
     apply rbin_wd.
     rewrite_ex_val c c_eq.
     apply sym.
-    apply equiv_eq_class.
-    exact c_eq.
+    exact (equiv_eq_class _ _ c_eq).
 Qed.
 Theorem equiv_unary_self_op : ∀ a,
     sUn (to_equiv_type E a) = to_equiv_type E (sun a).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a.
     apply set_type_eq.
     apply predicate_ext.
@@ -293,17 +270,14 @@ Proof.
         exact (trans sun_wd eq).
     -   intros eq.
         exists a.
-        split.
-        +   apply refl.
-        +   exact eq.
+        split; [>apply refl|].
+        exact eq.
 Qed.
 Theorem equiv_binary_self_op : ∀ a b,
     sBin (to_equiv_type E a) (to_equiv_type E b) =
     to_equiv_type E (sbin a b).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a b.
     apply set_type_eq.
     apply predicate_ext.
@@ -315,16 +289,14 @@ Proof.
         exact (trans sbin_wd eq).
     -   intros eq.
         exists a, b.
-        repeat split; try apply refl.
+        do 2 (split; [>apply refl|]).
         exact eq.
 Qed.
 Theorem equiv_binary_rself_op : ∀ (a : V) (b : U),
     rsBin a (to_equiv_type E b) =
     to_equiv_type E (rsbin a b).
 Proof.
-    pose proof (eq_reflexive E).
-    pose proof (eq_symmetric E).
-    pose proof (eq_transitive E).
+    unpack_equiv E.
     intros a b.
     apply set_type_eq.
     apply predicate_ext.
@@ -336,7 +308,7 @@ Proof.
         exact (trans rsbin_wd eq).
     -   intros eq.
         exists b.
-        split; try apply refl.
+        split; [>apply refl|].
         exact eq.
 Qed.
 
