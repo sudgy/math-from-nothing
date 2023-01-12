@@ -223,5 +223,14 @@ Proof.
     exact Ty.
 Qed.
 
+Theorem set_type_lt : ∀ a b, [a|] < [b|] ↔ a < b.
+Proof.
+    intros a b.
+    unfold strict.
+    unfold le at 2; cbn.
+    rewrite set_type_eq.
+    reflexivity.
+Qed.
+
 End SetTypeOrder.
 (* end hide *)
