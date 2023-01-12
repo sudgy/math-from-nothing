@@ -64,6 +64,7 @@ Theorem transfinite_recursion_unique2 : ∀ X (f : trd X → X),
         (∀ n, g n = f (make_trd X [n|] (λ x, g [[x|] | trans [|x] [|n]]))) →
         (∀ n, h n = f (make_trd X [n|] (λ x, h [[x|] | trans [|x] [|n]]))) →
         g = h.
+Proof.
     intros X f α g h g_ind h_ind.
     apply functional_ext.
     intros [x x_lt].
