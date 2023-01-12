@@ -49,6 +49,13 @@ Proof.
         reflexivity.
 Qed.
 
+Theorem set_type_eq2 {U} {S : U → Prop} : ∀ {a b : U} {H1 : S a} {H2 : S b}, [a|H1] = [b|H2] ↔ a = b.
+Proof.
+    intros a b H1 H2.
+    rewrite <- set_type_eq.
+    reflexivity.
+Qed.
+
 Theorem ex_set_type {U} {S : U → Prop} : (∃ x, S x) → set_type S.
 Proof.
     intros x_ex.
