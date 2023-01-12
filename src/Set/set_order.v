@@ -2,6 +2,7 @@ Require Import init.
 
 Require Export relation.
 Require Export set_base.
+Require Export set_type.
 
 Definition is_least {U} (op : U → U → Prop) (S : U → Prop) (x : U)
     := S x ∧ ∀ y, S y → op x y.
@@ -34,6 +35,8 @@ Definition is_chain {U} (op : U → U → Prop) (S : U → Prop)
 
 Definition well_orders {U} (op : U → U → Prop) (S : U → Prop)
     := ∀ A : U → Prop, A ⊆ S → (∃ x, A x) → ∃ a, is_least op A a.
+
+Definition initial_segment {U} (op : U → U → Prop) x := λ a, strict op a x.
 
 Section SetOrder.
 

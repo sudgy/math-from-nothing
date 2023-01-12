@@ -6,7 +6,7 @@ Require Export order_mult.
 Require Export fraction_base.
 Require Import fraction_plus.
 Require Import fraction_mult.
-Require Import nat_abstract.
+Require Import nat.
 
 Section FractionOrder.
 

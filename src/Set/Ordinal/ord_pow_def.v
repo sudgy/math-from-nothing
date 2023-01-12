@@ -235,7 +235,7 @@ Proof.
             exact x_gt.
     }
     pose proof (well_ordered T' T'_ex) as [a [T'a a_least]].
-    pose (B' := initial_segment B m).
+    pose (B' := ord_initial_segment B m).
     assert (∀ S : ord_pow_type A B' → Prop, (∃ C, S C) →
         ∃ M, is_least (ord_pow_le A B') S M) as B'_wf.
     {

@@ -8,6 +8,7 @@ Require Import linear_grade.
 Require Import order_self_abs.
 Require Import order_minmax.
 Require Import set.
+Require Import nat.
 
 Section Analysis.
 

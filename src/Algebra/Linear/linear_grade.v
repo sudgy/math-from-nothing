@@ -5,6 +5,7 @@ Require Import linear_subspace.
 Require Export linear_grade_base.
 
 Require Import set.
+Require Import nat.
 Require Import unordered_list.
 
 (* begin hide *)

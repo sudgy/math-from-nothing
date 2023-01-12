@@ -4,6 +4,7 @@ Require Import nat_abstract.
 
 Require Export int.
 Require Import set.
+Require Import nat.
 
 Section IntAbstract.
 

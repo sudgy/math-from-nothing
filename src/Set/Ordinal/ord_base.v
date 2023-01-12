@@ -96,7 +96,7 @@ Proof.
         exists [|z].
         destruct z; exact Sz.
 Qed.
-Definition initial_segment (A : ord_type) (x : ord_U A)
+Definition ord_initial_segment (A : ord_type) (x : ord_U A)
     := make_ord_type _ _ (initial_segment_antisym A x) (initial_segment_wo A x).
 
 Theorem ord_iso_le : ∀ (A : ord_type) f, injective f →
@@ -190,7 +190,7 @@ Notation "'ord'" := (equiv_type ord_equiv).
 (* begin hide *)
 Open Scope ord_scope.
 (* end hide *)
-Theorem ord_niso_init : ∀ A x, ¬(A ~ initial_segment A x).
+Theorem ord_niso_init : ∀ A x, ¬(A ~ ord_initial_segment A x).
 Proof.
     intros A x [f [f_bij f_iso]].
     pose (f' a := [f a|]).
@@ -212,7 +212,7 @@ Proof.
 Qed.
 
 Theorem ord_iso_init_eq : ∀ A B C x,
-    B ~ initial_segment A x → C ~ initial_segment A x → B ~ C.
+    B ~ ord_initial_segment A x → C ~ ord_initial_segment A x → B ~ C.
 Proof.
     intros A B C x [f [f_bij f_iso]] [g [g_bij g_iso]].
     pose (g' := bij_inv g g_bij).
@@ -230,7 +230,7 @@ Qed.
 
 (* begin hide *)
 Lemma ord_init_iso_eq1 : ∀ A x y,
-    initial_segment A x ~ initial_segment A y → ord_le A y x.
+    ord_initial_segment A x ~ ord_initial_segment A y → ord_le A y x.
 Proof.
     intros A x y eq.
     get_ord_wo A.
@@ -244,7 +244,7 @@ Proof.
         -   destruct (connex x y); try contradiction.
             split; assumption.
     }
-    assert (initial_segment A x ~ initial_segment (initial_segment A y) [_|x_in]).
+    assert (ord_initial_segment A x ~ ord_initial_segment (ord_initial_segment A y) [_|x_in]).
     {
         assert (∀ a : set_type (initial_segment_set A x),
                 initial_segment_set A y [a|]) as all_in1.
@@ -259,7 +259,7 @@ Proof.
                 contradiction.
         }
         assert (∀ a : set_type (initial_segment_set A x),
-            initial_segment_set (initial_segment A y) [x|x_in] [_|all_in1 a])
+            initial_segment_set (ord_initial_segment A y) [x|x_in] [_|all_in1 a])
         as all_in2.
         {
             intros [a a_eq].
@@ -305,7 +305,7 @@ Proof.
 Qed.
 (* end hide *)
 Theorem ord_init_iso_eq : ∀ A x y,
-    initial_segment A x ~ initial_segment A y → x = y.
+    ord_initial_segment A x ~ ord_initial_segment A y → x = y.
 Proof.
     intros A x y eq.
     get_ord_wo A.

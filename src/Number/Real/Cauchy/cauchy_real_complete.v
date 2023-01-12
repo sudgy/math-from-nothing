@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export cauchy_real_order.
+Require Import nat.
 
 Open Scope nat_scope.
 

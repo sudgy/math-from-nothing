@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Import set.
-Require Export mult_ring.
+Require Export mult_field.
 
 Require Export fraction_base.
 Require Import fraction_plus.

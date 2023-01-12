@@ -12,6 +12,7 @@ Require Import fraction_order.
 Require Import set.
 Require Import polynomial_base.
 Require Import ring_ideal.
+Require Import nat.
 
 Global Program Instance real_sup_complete : SupremumComplete le (U := real).
 Next Obligation.

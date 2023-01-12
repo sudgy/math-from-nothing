@@ -2,6 +2,7 @@ Require Import init.
 
 Require Import rat.
 Require Import set.
+Require Import nat.
 Require Import order_minmax.
 
 Require Export dedekind_real_base.

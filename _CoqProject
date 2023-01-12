@@ -87,7 +87,6 @@
 ./src/Set/zorn_function.v
 ./src/Set/well_order.v
 ./src/Set/set.v
-./src/Set/nat_set.v
 
 ./src/Set/Ordinal/ord_base.v
 ./src/Set/Ordinal/ord_order.v

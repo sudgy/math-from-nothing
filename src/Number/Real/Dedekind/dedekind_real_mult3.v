@@ -2,6 +2,7 @@ Require Import init.
 
 Require Import rat.
 Require Import set.
+Require Import nat.
 
 Require Export dedekind_real_base.
 Require Import dedekind_real_order.

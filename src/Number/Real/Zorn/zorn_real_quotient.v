@@ -10,7 +10,7 @@ Require Import ring_ideal.
 Require Import order_self_abs.
 Require Import order_minmax.
 Require Import set.
-Require Import nat_abstract.
+Require Import nat.
 
 Section Quotient.
 

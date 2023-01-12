@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export topology_base.
+Require Import nat.
 
 (* begin hide *)
 Open Scope card_scope.

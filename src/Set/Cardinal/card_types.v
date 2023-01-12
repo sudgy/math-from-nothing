@@ -2,6 +2,7 @@ Require Import init.
 
 Require Import set.
 Require Import card.
+Require Import nat.
 Require Import int.
 Require Import rat.
 Require Import rat_abstract.

@@ -7,6 +7,7 @@ Require Import nat_mult.
 Require Export order_plus.
 Require Export order_mult.
 Require Export order_bounds.
+Require Export set_order.
 
 Global Instance nat_order : Order nat := {
     le := fix le a b :=
@@ -19,6 +20,8 @@ Global Instance nat_order : Order nat := {
         | nat_zero => True
         end
 }.
+
+Definition nat_to_set_type n := set_type (initial_segment le n).
 
 Theorem nat_neg_eq : ∀ {a}, a ≤ 0 → 0 = a.
 Proof.
@@ -50,6 +53,8 @@ Proof.
     apply nat_neg_eq in leq.
     symmetry in leq; contradiction.
 Qed.
+
+Definition nat_lt_0_false (a : nat_to_set_type 0) := nat_neg2 [|a].
 
 Theorem nat_one_pos : 0 < 1.
 Proof.

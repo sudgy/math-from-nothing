@@ -7,6 +7,7 @@ Require Import linear_subspace.
 
 Require Import set.
 Require Import card.
+Require Import nat.
 Require Import unordered_list.
 
 Section LinearGradeSum.

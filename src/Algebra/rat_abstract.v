@@ -6,6 +6,7 @@ Require Import fraction_base.
 Require Export rat.
 Require Import set.
 Require Import fraction_order.
+Require Import nat.
 
 Section RatAbstract.
 

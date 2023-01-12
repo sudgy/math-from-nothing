@@ -8,7 +8,7 @@ Require Import card_nat.
 Require Import set.
 Require Import set_induction.
 Require Import function.
-Require Import nat.
+Require Export nat.
 Require Import mult_div.
 Require Import nat_domain.
 

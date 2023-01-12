@@ -12,7 +12,7 @@ Section OrdOrder.
 
 Local Open Scope ord_scope.
 
-Let ord_le A B := A ~ B ∨ ∃ x, A ~ (initial_segment B x).
+Let ord_le A B := A ~ B ∨ ∃ x, A ~ (ord_initial_segment B x).
 Local Infix "≦" := ord_le.
 
 Lemma ord_le_wd_one : ∀ A B C D, A ~ B → C ~ D → A ≦ C → B ≦ D.
@@ -28,7 +28,7 @@ Proof.
                  CD as [g [g_bij g_iso]],
                 ACx as [h [h_bij h_iso]].
         exists (g x); cbn.
-        assert (∀ a : ord_U (initial_segment C x),
+        assert (∀ a : ord_U (ord_initial_segment C x),
                 initial_segment_set D (g x) (g [a|])) as Cx_Dx.
         {
             intros [a Ca]; cbn.
@@ -125,7 +125,7 @@ Qed.
 
 Theorem ord_lt_initial : ∀ A B,
     (to_equiv_type ord_equiv A < to_equiv_type ord_equiv B) =
-    (∃ x, A ~ (initial_segment B x)).
+    (∃ x, A ~ (ord_initial_segment B x)).
 Proof.
     intros A B.
     unfold strict, le; equiv_simpl.
@@ -406,7 +406,7 @@ Proof.
     exists x.
     clear AB BA.
     apply ord_eq_symmetric.
-    assert (∀ a : ord_U (initial_segment A x), domain (piece_f f) [a|]) as sub.
+    assert (∀ a : ord_U (ord_initial_segment A x), domain (piece_f f) [a|]) as sub.
     {
         intros [a [a_leq a_neq]]; cbn in *.
         pose proof (piece_bot1 f).
@@ -955,7 +955,7 @@ Global Instance ord_le_trans_class : Transitive le := {
 }.
 (* end hide *)
 Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
-Theorem ord_lt_init : ∀ A x, to_ord (initial_segment A x) < to_ord A.
+Theorem ord_lt_init : ∀ A x, to_ord (ord_initial_segment A x) < to_ord A.
 Proof.
     intros A x.
     rewrite ord_lt_initial.
@@ -973,13 +973,13 @@ Section OrdsLtWo.
 Variable A : ord_type.
 Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
 
-Lemma f'_range_in : ∀ x, ords_lt_set (to_ord A) (to_ord (initial_segment A x)).
+Lemma f'_range_in : ∀ x, ords_lt_set (to_ord A) (to_ord (ord_initial_segment A x)).
 Proof.
     intros x.
     apply ord_lt_init.
 Qed.
 
-Definition f' (x : ord_U A) := [to_ord (initial_segment A x)|f'_range_in x].
+Definition f' (x : ord_U A) := [to_ord (ord_initial_segment A x)|f'_range_in x].
 
 Lemma f'_inj : injective f'.
 Proof.
@@ -1015,7 +1015,7 @@ Proof.
 Qed.
 Definition f := bij_inv f' f'_bij.
 
-Lemma f_ex : ∀ β, ∃ x, to_ord (initial_segment A x) = [β|] ∧ f β = x.
+Lemma f_ex : ∀ β, ∃ x, to_ord (ord_initial_segment A x) = [β|] ∧ f β = x.
 Proof.
     intros β.
     assert (∃ x, f' x = β) as eq.
@@ -1070,11 +1070,11 @@ Proof.
         }
         clear nleq.
         unfold initial_segment_set in *.
-        assert (initial_segment (initial_segment A y) [z|z_lt] ~
-                initial_segment A z) as eq.
+        assert (ord_initial_segment (ord_initial_segment A y) [z|z_lt] ~
+                ord_initial_segment A z) as eq.
         {
             cbn.
-            assert (∀ x : set_type (initial_segment_set (initial_segment A y)
+            assert (∀ x : set_type (initial_segment_set (ord_initial_segment A y)
                 [z|z_lt]), initial_segment_set A z [[x|]|]) as all_in.
             {
                 clear.
@@ -1106,11 +1106,11 @@ Proof.
                         pose proof (antisym yz (land z_lt)).
                         contradiction.
                 }
-                assert (initial_segment_set (initial_segment A y) [z|z_lt]
+                assert (initial_segment_set (ord_initial_segment A y) [z|z_lt]
                     [b|b_y]) as b_in.
                 {
                     unfold initial_segment_set.
-                    unfold initial_segment; cbn; unfold initial_segment_le.
+                    unfold ord_initial_segment; cbn; unfold initial_segment_le.
                     cbn.
                     destruct b_z as [b_z b_neq].
                     split; try assumption.

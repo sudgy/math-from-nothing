@@ -4,6 +4,7 @@ Require Export topology_base.
 Require Import topology_basis.
 Require Import topology_axioms.
 Require Import topology_subspace.
+Require Import nat.
 
 (* begin hide *)
 Section ClosureInterior.
