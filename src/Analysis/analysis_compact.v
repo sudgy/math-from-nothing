@@ -5,6 +5,7 @@ Require Import analysis_topology.
 Require Import analysis_sequence.
 Require Import analysis_subspace.
 Require Import order_minmax.
+Require Import set_induction.
 (* begin hide *)
 
 Module AnalysisCompact1.
@@ -413,27 +414,14 @@ Proof.
         exact contr.
     }
     clear contr.
-    assert U as c.
-    {
-        apply indefinite_description.
-        classic_case (infinite (|set_type (all (U := U))|)) as [inf|fin].
-        -   apply infinite_ex in inf.
-            destruct inf as [x C0].
-            split; exact x.
-        -   unfold infinite in fin.
-            rewrite nle_lt in fin.
-            specialize (x_ex all fin) as [x C0].
-            split.
-            exact x.
-    }
-    assert (∀ e : nat_strong_recursion_domain U,
-        ∃ x, ¬((⋃ to_balls (image (nat_sr_f U e)) ε) x)) as x_ex2.
+    assert (∀ e : transfinite_recursion_domain nat U,
+        ∃ x, ¬((⋃ to_balls (image (trd_f e)) ε) x)) as x_ex2.
     {
         intros [n nf].
         pose (A := image nf).
         assert (finite (|set_type A|)) as A_fin.
         {
-            apply (le_lt_trans2 (nat_is_finite (nat_suc n))).
+            apply (le_lt_trans2 (nat_is_finite n)).
             unfold le, nat_to_card; equiv_simpl.
             exists (λ x : set_type A, ex_val [|x]).
             intros a b eq.
@@ -449,15 +437,11 @@ Proof.
         exact (x_ex A A_fin).
     }
     pose (h e := ex_val (x_ex2 e)).
-    pose proof (strong_recursion U c h) as [f [f0 f_gt]].
+    pose proof (transfinite_recursion U h) as [f f_gt].
     assert (∀ m n, m < n → [ε|] ≤ d (f m) (f n)) as ε_le_wlog.
     {
         intros m n mn.
-        nat_destruct n.
-        {
-            contradiction (nat_neg2 mn).
-        }
-        rewrite f_gt.
+        rewrite (f_gt n).
         unfold h.
         rewrite_ex_val x x_H; cbn in *.
         rewrite not_ex in x_H.

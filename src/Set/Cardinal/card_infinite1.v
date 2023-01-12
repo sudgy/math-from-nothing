@@ -6,6 +6,7 @@ Require Import card_plus.
 Require Import card_mult.
 Require Import card_nat.
 Require Import set.
+Require Import set_induction.
 Require Import function.
 Require Import nat.
 Require Import mult_div.
@@ -128,33 +129,17 @@ Theorem greater_all_nat_inf : ∀ κ, (∀ a, nat_to_card a < κ) → infinite �
 Proof.
     intros A A_gt.
     equiv_get_value A.
-    assert A as c.
-    {
-        classic_contradiction contr.
-        specialize (A_gt 0) as [A_ge A_neq].
-        unfold le, nat_to_card in *; equiv_simpl in A_ge; equiv_simpl in A_neq.
-        destruct A_ge as [f f_inj].
-        rewrite not_ex in A_neq.
-        specialize (A_neq f).
-        unfold bijective in A_neq.
-        rewrite not_and in A_neq.
-        destruct A_neq as [f_inj'|f_sur]; try contradiction.
-        unfold surjective in f_sur.
-        rewrite not_all in f_sur.
-        destruct f_sur as [a f_sur].
-        contradiction.
-    }
-    assert (∀ f : nat_strong_recursion_domain A,
-        ∃ a, ∀ n, nat_sr_f A f n ≠ a) as h_ex.
+    assert (∀ f : transfinite_recursion_domain nat A,
+        ∃ a, ∀ n, trd_f f n ≠ a) as h_ex.
     {
         intros [fp ff]; cbn.
         classic_case (surjective ff).
-        -   assert (|A| ≤ nat_to_card (nat_suc fp)) as leq.
+        -   assert (|A| ≤ nat_to_card fp) as leq.
             {
                 unfold nat_to_card, le; equiv_simpl.
                 apply (partition_principle ff s).
             }
-            pose proof (lt_le_trans (A_gt (nat_suc fp)) leq) as [C0 C1].
+            pose proof (lt_le_trans (A_gt fp) leq) as [C0 C1].
             contradiction.
         -   unfold surjective in n.
             rewrite not_all in n.
@@ -164,7 +149,7 @@ Proof.
             rewrite not_ex in A_nsur.
             apply A_nsur.
     }
-    pose proof (strong_recursion A c (λ f, ex_val (h_ex f))) as [f [f0 f_rec]].
+    pose proof (transfinite_recursion A (λ f, ex_val (h_ex f))) as [f f_rec].
     unfold infinite.
     unfold le; equiv_simpl.
     exists f.
@@ -172,15 +157,12 @@ Proof.
     assert (∀ m n, m < n → f m ≠ f n) as wlog.
     {
         intros m n ltq.
-        nat_destruct n.
-        -   apply nat_neg2 in ltq.
-            contradiction.
-        -   specialize (f_rec n).
-            rewrite_ex_val a a_eq; cbn in *.
-            specialize (a_eq [m|ltq]).
-            cbn in a_eq.
-            rewrite <- f_rec in a_eq.
-            exact a_eq.
+        specialize (f_rec n).
+        rewrite_ex_val a a_eq; cbn in *.
+        specialize (a_eq [m|ltq]).
+        cbn in a_eq.
+        rewrite <- f_rec in a_eq.
+        exact a_eq.
     }
     intros m n eq.
     classic_contradiction contr.
