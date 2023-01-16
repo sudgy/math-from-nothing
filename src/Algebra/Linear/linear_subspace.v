@@ -246,7 +246,7 @@ Proof.
 Qed.
 
 Instance quotient_space_plus : Plus quotient_space := {
-    plus := binary_self_op qspace_plus_wd
+    plus := binary_op (binary_self_wd qspace_plus_wd)
 }.
 
 Lemma qspace_plus_assoc : ∀ a b c, a + (b + c) = (a + b) + c.
@@ -274,7 +274,7 @@ Instance quotient_space_plus_comm : PlusComm quotient_space := {
 }.
 
 Instance quotient_space_zero : Zero quotient_space := {
-    zero := to_equiv_type subspace_equiv 0
+    zero := to_equiv subspace_equiv 0
 }.
 
 Lemma qspace_plus_lid : ∀ a, 0 + a = a.
@@ -299,7 +299,7 @@ Proof.
     exact eq.
 Qed.
 Instance quotient_space_neg : Neg quotient_space := {
-    neg := unary_self_op qspace_neg_wd
+    neg := unary_op (unary_self_wd qspace_neg_wd)
 }.
 
 Lemma qspace_plus_linv : ∀ a, -a + a = 0.
@@ -314,18 +314,18 @@ Instance quotient_space_plus_linv : PlusLinv quotient_space := {
     plus_linv := qspace_plus_linv
 }.
 
-Lemma qspace_scalar_wd : ∀ u v c, u ~ v → c · u ~ c · v.
+Lemma qspace_scalar_wd : ∀ c u v, u ~ v → c · u ~ c · v.
 Proof.
     unfold eq_equal; cbn.
     unfold subspace_eq.
-    intros u v c eq.
+    intros c u v eq.
     apply (subspace_scalar S c) in eq.
     rewrite scalar_ldist in eq.
     rewrite scalar_rneg in eq.
     exact eq.
 Qed.
 Instance quotient_space_scalar_mult : ScalarMult U quotient_space := {
-    scalar_mult := binary_rself_op qspace_scalar_wd
+    scalar_mult c := unary_op (unary_self_wd (qspace_scalar_wd c))
 }.
 
 Lemma qspace_scalar_comp : ∀ a b v, a · (b · v) = (a * b) · v.

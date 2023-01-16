@@ -65,7 +65,7 @@ Definition frac_equiv := make_equiv _
     frac_eq_reflexive frac_eq_symmetric frac_eq_transitive.
 
 Definition to_frac (a : U)
-    := to_equiv_type frac_equiv (a, [1|not_trivial_one]).
+    := to_equiv frac_equiv (a, [1|not_trivial_one]).
 
 Theorem to_frac_eq : ∀ a b, to_frac a = to_frac b → a = b.
 Proof.

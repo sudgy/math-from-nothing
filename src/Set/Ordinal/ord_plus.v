@@ -106,7 +106,7 @@ End OrdPlus.
 Open Scope ord_scope.
 
 Global Instance ord_plus_class : Plus ord := {
-    plus := binary_self_op ord_plus_wd
+    plus := binary_op (binary_self_wd ord_plus_wd)
 }.
 
 Lemma ord_plus_assoc : ∀ α β γ, α + (β + γ) = (α + β) + γ.
@@ -311,7 +311,7 @@ Proof.
         exact a_min.
     }
     pose (C := make_ord_type _ _ C_antisym C_wo).
-    exists (to_equiv_type ord_equiv C).
+    exists (to_equiv ord_equiv C).
     split.
     -   intro contr.
         unfold zero in contr; cbn in contr; unfold nat_to_ord in contr.
@@ -716,7 +716,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem ord_false_0 : ∀ A, (ord_U A → False) → 0 = to_equiv_type ord_equiv A.
+Theorem ord_false_0 : ∀ A, (ord_U A → False) → 0 = to_equiv ord_equiv A.
 Proof.
     intros A A_false.
     symmetry.

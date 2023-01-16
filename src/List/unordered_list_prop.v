@@ -8,15 +8,16 @@ Require Import equivalence.
 
 Unset Keyed Unification.
 
-Lemma in_ulist_wd U : ∀ l1 l2 (a : U), list_permutation l1 l2 →
+Lemma in_ulist_wd U : ∀ (a : U) l1 l2, list_permutation l1 l2 →
     in_list l1 a = in_list l2 a.
 Proof.
-    intros l1 l2 a eq.
+    intros a l1 l2 eq.
     apply propositional_ext.
     revert a.
     exact (list_perm_in eq).
 Qed.
-Definition in_ulist {U} := binary_rop (E := ulist_equiv U) (in_ulist_wd U).
+Definition in_ulist {U} l a
+    := unary_op (E := ulist_equiv U) (in_ulist_wd U a) l.
 
 Lemma ulist_unique_wd U : ∀ l1 l2 : list U, list_permutation l1 l2 →
     list_unique l1 = list_unique l2.
@@ -30,11 +31,11 @@ Qed.
 Definition ulist_unique {U} :=
     unary_op (E := ulist_equiv U) (ulist_unique_wd U).
 
-Lemma ulist_filter_wd U : ∀ l1 l2 (S : U → Prop), list_permutation l1 l2 →
-    to_equiv_type (ulist_equiv U) (list_filter S l1) =
-    to_equiv_type (ulist_equiv U) (list_filter S l2).
+Lemma ulist_filter_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
+    to_equiv (ulist_equiv U) (list_filter S l1) =
+    to_equiv (ulist_equiv U) (list_filter S l2).
 Proof.
-    intros l1 l2 S eq.
+    intros S l1 l2 eq.
     equiv_simpl.
     induction eq.
     -   cbn.
@@ -51,21 +52,21 @@ Proof.
         all: apply list_perm_refl.
     -   exact (list_perm_trans IHeq1 IHeq2).
 Qed.
-Definition ulist_filter {U} S l :=
-    binary_rop (E := ulist_equiv U) (ulist_filter_wd U) l S.
+Definition ulist_filter {U} S :=
+    unary_op (E := ulist_equiv U) (ulist_filter_wd U S).
 
-Lemma ulist_prop_wd U : ∀ l1 l2 (S : U → Prop), list_permutation l1 l2 →
+Lemma ulist_prop_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
     list_prop S l1 = list_prop S l2.
 Proof.
-    intros l1 l2 S eq.
+    intros S l1 l2 eq.
     apply propositional_ext.
     split.
     -   exact (list_prop_perm S eq).
     -   apply list_perm_sym in eq.
         exact (list_prop_perm S eq).
 Qed.
-Definition ulist_prop {U} S l :=
-    binary_rop (E := ulist_equiv U) (ulist_prop_wd U) l S.
+Definition ulist_prop {U} S :=
+    unary_op (E := ulist_equiv U) (ulist_prop_wd U S).
 
 Theorem in_ulist_end {U} : ∀ a : U, ¬in_ulist ulist_end a.
 Proof.
@@ -179,7 +180,7 @@ Proof.
     unfold ulist_prop, ulist_image; equiv_simpl.
     intros Sl.
     pose proof (list_prop_ex l S Sl) as [l' l_eq].
-    exists (to_equiv_type (ulist_equiv (set_type S)) l').
+    exists (to_equiv (ulist_equiv (set_type S)) l').
     equiv_simpl.
     rewrite l_eq.
     apply list_perm_refl.
@@ -243,7 +244,7 @@ Proof.
     equiv_get_value l.
     unfold in_ulist in a_in; equiv_simpl in a_in.
     apply list_split_perm in a_in as [l' eq].
-    exists (to_equiv_type _ l').
+    exists (to_equiv _ l').
     unfold ulist_add; equiv_simpl.
     exact eq.
 Qed.

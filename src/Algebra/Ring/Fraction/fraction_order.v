@@ -56,7 +56,7 @@ Existing Instance frac_mult_linv.
 Existing Instance frac_not_trivial.
 
 Theorem frac_pos_ex : ∀ (x : frac U), ∃ a b,
-    0 < [b|] ∧ x = to_equiv_type (frac_equiv U) (a, b).
+    0 < [b|] ∧ x = to_equiv (frac_equiv U) (a, b).
 Proof.
     intros x.
     equiv_get_value x.
@@ -152,8 +152,8 @@ Proof.
 Qed.
 
 Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-    (to_equiv_type (frac_equiv U) (a1, a2) ≤
-     to_equiv_type (frac_equiv U) (b1, b2)) ↔
+    (to_equiv (frac_equiv U) (a1, a2) ≤
+     to_equiv (frac_equiv U) (b1, b2)) ↔
     (a1 * [b2|] ≤ b1 * [a2|]).
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
@@ -175,8 +175,8 @@ Proof.
         +   apply lt_mult; assumption.
 Qed.
 Theorem frac_lt : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-    (to_equiv_type (frac_equiv U) (a1, a2) <
-     to_equiv_type (frac_equiv U) (b1, b2)) ↔
+    (to_equiv (frac_equiv U) (a1, a2) <
+     to_equiv (frac_equiv U) (b1, b2)) ↔
     (a1 * [b2|] < b1 * [a2|]).
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
@@ -326,7 +326,7 @@ Proof.
         rewrite to_frac_lt.
         exact b_pos.
     }
-    assert (to_equiv_type (frac_equiv U) (a, b) * to_frac U [b|] =
+    assert (to_equiv (frac_equiv U) (a, b) * to_frac U [b|] =
         to_frac U a) as eq.
     {
         unfold to_frac, mult at 1; equiv_simpl.

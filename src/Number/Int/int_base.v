@@ -57,7 +57,7 @@ Notation "a ~ b" := (eq_equal int_equiv a b) : int_scope.
 
 Notation "'int'" := (equiv_type int_equiv).
 
-Definition nat_to_int a := to_equiv_type int_equiv (a, zero).
+Definition nat_to_int a := to_equiv int_equiv (a, zero).
 
 Theorem nat_to_int_eq : ∀ a b, nat_to_int a = nat_to_int b → a = b.
 Proof.

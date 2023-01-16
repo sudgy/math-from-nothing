@@ -64,7 +64,7 @@ Proof.
 Qed.
 
 Local Instance frac_plus : Plus (frac U) := {
-    plus := binary_self_op frac_plus_wd
+    plus := binary_op (binary_self_wd frac_plus_wd)
 }.
 
 Local Program Instance frac_plus_comm : PlusComm (frac U).
@@ -128,7 +128,7 @@ Proof.
 Qed.
 
 Global Instance frac_neg : Neg (frac U) := {
-    neg := unary_self_op frac_neg_wd;
+    neg := unary_op (unary_self_wd frac_neg_wd);
 }.
 
 Local Program Instance frac_plus_linv : PlusLinv (frac U).

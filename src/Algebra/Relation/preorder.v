@@ -103,7 +103,7 @@ Proof.
     prove_parts a_ex.
     {
         intros F F_chain.
-        specialize (chain_ub (λ x, F (to_equiv_type preorder_equiv x))).
+        specialize (chain_ub (λ x, F (to_equiv preorder_equiv x))).
         prove_parts chain_ub.
         {
             intros x y Fx Fy.
@@ -112,7 +112,7 @@ Proof.
             exact F_chain.
         }
         destruct chain_ub as [a a_upper].
-        exists (to_equiv_type preorder_equiv a).
+        exists (to_equiv preorder_equiv a).
         intros x Fx.
         equiv_get_value x.
         unfold le; equiv_simpl.
@@ -123,7 +123,7 @@ Proof.
     equiv_get_value a.
     exists a.
     intros x leq.
-    specialize (a_max (to_equiv_type preorder_equiv x)).
+    specialize (a_max (to_equiv preorder_equiv x)).
     unfold strict in a_max.
     rewrite not_and in a_max.
     rewrite not_not in a_max.

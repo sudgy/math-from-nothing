@@ -31,14 +31,14 @@ Proof.
         reflexivity.
 Qed.
 Global Instance card_mult_class : Mult card := {
-    mult := binary_self_op card_mult_wd
+    mult := binary_op (binary_self_wd (f := prod) (E := card_equiv)card_mult_wd)
 }.
 
 Theorem card_mult_type : ∀ A B, |(A*B)%type| = |A| * |B|.
 Proof.
     intros A B.
     unfold mult; cbn.
-    rewrite equiv_binary_self_op.
+    rewrite binary_op_eq.
     reflexivity.
 Qed.
 

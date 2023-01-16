@@ -5,7 +5,7 @@ Require Import nat.
 
 Open Scope nat_scope.
 
-Lemma real_lt : ∀ a b, to_equiv_type real_equiv a < to_equiv_type real_equiv b →
+Lemma real_lt : ∀ a b, to_equiv real_equiv a < to_equiv real_equiv b →
     ∃ ε N, 0 < ε ∧ ∀ i, N ≤ i → r_seq a i + ε < r_seq b i.
 Proof.
     intros a b ltq.
@@ -362,8 +362,8 @@ Proof.
         -   rewrite abs_minus.
             exact (wlog _ _ j_ge leq).
     }
-    pose (a1 := to_equiv_type real_equiv (make_real a a_cauchy)).
-    pose (b1 := to_equiv_type real_equiv (make_real b b_cauchy)).
+    pose (a1 := to_equiv real_equiv (make_real a a_cauchy)).
+    pose (b1 := to_equiv real_equiv (make_real b b_cauchy)).
     assert (a1 = b1) as ab_eq.
     {
         unfold a1, b1; equiv_simpl.

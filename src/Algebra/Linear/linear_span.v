@@ -81,7 +81,7 @@ Qed.
 
 Definition linear_span_quotient := quotient_space linear_span_subspace.
 Definition to_quotient v :=
-    to_equiv_type (subspace_equiv linear_span_subspace) v.
+    to_equiv (subspace_equiv linear_span_subspace) v.
 Definition linear_span_quotient_plus
     := quotient_space_plus linear_span_subspace.
 Definition linear_span_quotient_plus_assoc

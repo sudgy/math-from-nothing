@@ -37,7 +37,7 @@ Proof.
 Qed.
 
 Global Instance card_plus_class : Plus card := {
-    plus := binary_self_op card_plus_wd
+    plus := binary_op (binary_self_wd card_plus_wd)
 }.
 
 (* begin hide *)

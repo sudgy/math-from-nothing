@@ -198,7 +198,7 @@ Next Obligation.
 Qed.
 Next Obligation.
     equiv_get_value v.
-    change (to_equiv_type (ring_ideal.ideal_equiv (ext_ideal V)) v)
+    change (to_equiv (ring_ideal.ideal_equiv (ext_ideal V)) v)
         with (tensor_to_ext V v).
     pose proof (grade_decompose_ex v) as [l [l_eq l_in]].
     pose (ST := SubspaceVector (cring_U F) (algebra_V (tensor_algebra V))).
@@ -358,7 +358,7 @@ Next Obligation.
         ulist_sum (ulist_image l sub_vector_v)) as [lv lv_eq].
     {
         clear v' l_z v'i Av.
-        pose (l' := ulist_image l (λ x, ex_val [|sub_vector_v x])).
+        pose (l' := ulist_image l (λ x, from_equiv (sub_vector_v x))).
         assert (ulist_sum (ulist_image l sub_vector_v) =
             tensor_to_ext V (ulist_sum l')) as l_eq.
         {
@@ -371,9 +371,9 @@ Next Obligation.
                 rewrite (tensor_to_ext_plus V).
                 rewrite <- IHl; clear IHl.
                 apply rplus; clear l.
-                rewrite_ex_val v v_eq.
-                apply set_type_eq.
-                rewrite v_eq.
+                destruct a as [a_sub a]; cbn.
+                unfold tensor_to_ext.
+                rewrite from_equiv_eq.
                 reflexivity.
         }
         exists (ulist_sum l').
@@ -401,15 +401,13 @@ Next Obligation.
             rewrite (tensor_to_ext_plus V).
             rewrite <- IHl; clear IHl.
             rewrite plus_rid.
-            assert (∃ v, v = ex_val [|sub_vector_v a] ∧
+            assert (∃ v, v = from_equiv (sub_vector_v a) ∧
                 tensor_to_ext V v = sub_vector_v a) as [v [v_eq1 v_eq2]].
             {
-                rewrite_ex_val v v_eq.
-                exists v.
+                exists (from_equiv (sub_vector_v a)).
                 split; [>reflexivity|].
-                apply set_type_eq.
-                rewrite v_eq.
-                reflexivity.
+                unfold tensor_to_ext.
+                apply from_equiv_eq.
             }
             rewrite <- v_eq1; clear v_eq1.
             destruct a_in as [j aj].

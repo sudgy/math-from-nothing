@@ -267,15 +267,15 @@ Proof.
 Qed.
 
 Local Instance ub_plus : Plus ub := {
-    plus := binary_self_op ub_plus_wd
+    plus := binary_op (binary_self_wd ub_plus_wd)
 }.
 
 Local Instance ub_zero : Zero ub := {
-    zero := to_equiv_type ub_equiv (make_ub_base F' (@zero _ (aof_zero [F'|])))
+    zero := to_equiv ub_equiv (make_ub_base F' (@zero _ (aof_zero [F'|])))
 }.
 
 Local Instance ub_neg : Neg ub := {
-    neg := unary_self_op ub_neg_wd
+    neg := unary_op (unary_self_wd ub_neg_wd)
 }.
 
 Lemma ub_plus_homo : ∀ F G f x y,
@@ -393,15 +393,15 @@ Proof.
 Qed.
 
 Local Instance ub_mult : Mult ub := {
-    mult := binary_self_op ub_mult_wd
+    mult := binary_op (binary_self_wd ub_mult_wd)
 }.
 
 Local Instance ub_one : One ub := {
-    one := to_equiv_type ub_equiv (make_ub_base F' (@one _ (aof_one [F'|])))
+    one := to_equiv ub_equiv (make_ub_base F' (@one _ (aof_one [F'|])))
 }.
 
 Local Instance ub_div : Div ub := {
-    div := unary_self_op ub_div_wd
+    div := unary_op (unary_self_wd ub_div_wd)
 }.
 
 Lemma ub_mult_homo : ∀ F G f x y,
@@ -712,7 +712,7 @@ Next Obligation.
     pose proof (aof_le_mult [B|]).
     pose (BZ := aof_zero [B|]).
     pose (BO := aof_le [B|]).
-    assert (∀ x f, arch_ordered_homo _ _ f → 0 ≤ to_equiv_type ub_equiv x →
+    assert (∀ x f, arch_ordered_homo _ _ f → 0 ≤ to_equiv ub_equiv x →
         0 ≤ Bg (f (ub_x x))) as lemma.
     {
         clear - Bg_homo.
@@ -738,8 +738,8 @@ Let F'NT := aof_not_trivial [F'|].
 Local Existing Instance F'NT.
 
 Local Program Instance ub_not_trivial : NotTrivial ub := {
-    not_trivial_a := to_equiv_type ub_equiv (make_ub_base F' not_trivial_a);
-    not_trivial_b := to_equiv_type ub_equiv (make_ub_base F' not_trivial_b);
+    not_trivial_a := to_equiv ub_equiv (make_ub_base F' not_trivial_a);
+    not_trivial_b := to_equiv ub_equiv (make_ub_base F' not_trivial_b);
 }.
 Next Obligation.
     equiv_simpl.
@@ -781,7 +781,7 @@ Local Instance ub_arch : Archimedean ub.
     pose (xA := aof_arch [ub_A x|]).
     pose proof (archimedean1' (ub_x x)) as [n [leq neq]].
     exists n.
-    assert (from_nat n = to_equiv_type ub_equiv
+    assert (from_nat n = to_equiv ub_equiv
         (make_ub_base (ub_A x) (from_nat n))) as eq.
     {
         clear leq neq.
@@ -841,7 +841,7 @@ Proof.
         exists (ub_ex [F'|FF']).
         intros A FA.
         unfold le; cbn.
-        exists (λ x, aof_ex_f (to_equiv_type ub_equiv (make_ub_base [A|FA] x))).
+        exists (λ x, aof_ex_f (to_equiv ub_equiv (make_ub_base [A|FA] x))).
         split; [>|split; [>|split; [>|split]]].
         +   unfold zero at 2; cbn.
             apply f_equal.

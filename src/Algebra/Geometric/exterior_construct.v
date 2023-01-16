@@ -94,12 +94,12 @@ Existing Instances ext_plus ext_plus_assoc ext_plus_comm ext_zero ext_plus_lid
     ext_neg ext_plus_linv ext_mult ext_ldist ext_rdist ext_mult_assoc ext_one
     ext_mult_lid ext_mult_rid.
 
-Lemma ext_scalar_wd : ∀ u v c, eq_equal (ideal_equiv ext_ideal) u v →
+Lemma ext_scalar_wd : ∀ c u v, eq_equal (ideal_equiv ext_ideal) u v →
     eq_equal (ideal_equiv ext_ideal) (c · u) (c · v).
 Proof.
     cbn.
     change (ideal_generated_by_set ext_ideal_base) with (ideal_set ext_ideal).
-    intros u v c eq.
+    intros c u v eq.
     rewrite <- scalar_rneg.
     rewrite <- scalar_ldist.
     rewrite <- (scalar_to_tensor_scalar V).
@@ -108,7 +108,7 @@ Proof.
 Qed.
 
 Instance ext_scalar : ScalarMult (cring_U F) ext := {
-    scalar_mult := binary_rself_op ext_scalar_wd
+    scalar_mult c := unary_op (unary_self_wd (ext_scalar_wd c))
 }.
 
 Program Instance ext_scalar_id : ScalarId (cring_U F) ext.
@@ -185,7 +185,7 @@ Definition exterior_algebra := make_algebra F
     ext_scalar_lmult
     ext_scalar_rmult.
 
-Definition tensor_to_ext v := to_equiv_type (ideal_equiv ext_ideal) v : ext.
+Definition tensor_to_ext v := to_equiv (ideal_equiv ext_ideal) v : ext.
 
 Theorem tensor_to_ext_plus : ∀ u v, tensor_to_ext (u + v) = tensor_to_ext u + tensor_to_ext v.
 Proof.
@@ -504,7 +504,7 @@ Theorem ext_sum : ∀ x : ext, ∃ l : ulist (cring_U F * list (module_V V)),
 Proof.
     intros x.
     equiv_get_value x.
-    change (to_equiv_type _ x) with (tensor_to_ext x).
+    change (to_equiv _ x) with (tensor_to_ext x).
     pose proof (tensor_sum V x) as [l l_eq]; subst x.
     exists l.
     induction l using ulist_induction.

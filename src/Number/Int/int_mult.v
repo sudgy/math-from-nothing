@@ -40,7 +40,7 @@ Proof.
 Qed.
 
 Global Instance int_mult : Mult int := {
-    mult := binary_self_op int_mult_wd;
+    mult := binary_op (binary_self_wd int_mult_wd);
 }.
 
 Lemma int_mult_comm : ∀ a b, a * b = b * a.
@@ -102,7 +102,7 @@ Global Instance int_ldist_class : Ldist int := {
 }.
 
 Global Instance int_one : One int := {
-    one := to_equiv_type int_equiv (1, 0);
+    one := to_equiv int_equiv (1, 0);
 }.
 
 Lemma int_mult_lid : ∀ a, 1 * a = a.

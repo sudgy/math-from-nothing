@@ -120,7 +120,7 @@ Lemma real_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
 Qed.
 
 Global Instance real_mult : Mult real := {
-    mult := binary_self_op real_mult_wd
+    mult := binary_op (binary_self_wd real_mult_wd)
 }.
 
 Global Instance real_one : One real := {
@@ -128,11 +128,11 @@ Global Instance real_one : One real := {
 }.
 
 Definition real_div_base (a : real_base) :=
-    If (0 = to_equiv_type real_equiv a)
+    If (0 = to_equiv real_equiv a)
     then λ _, 0
     else λ n, /(r_seq a n).
 
-Lemma cauchy_nz : ∀ a : real_base, 0 ≠ to_equiv_type real_equiv a →
+Lemma cauchy_nz : ∀ a : real_base, 0 ≠ to_equiv real_equiv a →
     ∃ ε N, 0 < ε ∧ (∀ i, N ≤ i → ε ≤ |r_seq a i|).
 Proof.
     intros [a a_cauchy] a_neq; cbn in *.
@@ -219,7 +219,7 @@ Notation "⊘ a" := (make_real _ (cauchy_div a)) : real_scope.
 Lemma real_div_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
 Proof.
     intros a b ab ε ε_pos; cbn.
-    assert (to_equiv_type real_equiv a = to_equiv_type real_equiv b) as ab'
+    assert (to_equiv real_equiv a = to_equiv real_equiv b) as ab'
         by (equiv_simpl; exact ab).
     unfold real_div_base.
     case_if [a_z|a_nz]; case_if [b_z|b_nz].
@@ -283,7 +283,7 @@ Proof.
 Qed.
 
 Global Instance real_div : Div real := {
-    div := unary_self_op real_div_wd
+    div := unary_op (unary_self_wd real_div_wd)
 }.
 
 Global Instance real_ldist : Ldist real.

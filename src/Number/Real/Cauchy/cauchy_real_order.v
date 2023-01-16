@@ -4,7 +4,7 @@ Require Export cauchy_real_mult.
 Require Export order_cone.
 
 Definition real_pos_base (a : real_base) :=
-    0 = to_equiv_type real_equiv a ∨
+    0 = to_equiv real_equiv a ∨
     ∃ N, ∀ i, N ≤ i → 0 ≤ r_seq a i.
 
 Lemma real_pos_wd1 : ∀ a b, a ~ b → real_pos_base a → real_pos_base b.
@@ -18,7 +18,7 @@ Proof.
     }
     apply or_right.
     intros b_nz.
-    assert (0 ≠ to_equiv_type real_equiv a) as a_nz.
+    assert (0 ≠ to_equiv real_equiv a) as a_nz.
     {
         intros contr.
         rewrite contr in b_nz.

@@ -65,7 +65,7 @@ Notation "a ~ b" := (eq_equal card_equiv a b) : card_scope.
 
 Notation "'card'" := (equiv_type card_equiv).
 
-Notation "| A |" := (to_equiv_type card_equiv A) (at level 30) : card_scope.
+Notation "| A |" := (to_equiv card_equiv A) (at level 30) : card_scope.
 
 (* begin hide *)
 Open Scope card_scope.
@@ -91,7 +91,7 @@ Proof.
     {
         rename κ into A.
         equiv_get_value A.
-        exists (to_equiv_type ord_equiv
+        exists (to_equiv ord_equiv
             (make_ord_type A _ wo_antisym_class wo_well_ordered_class)).
         unfold ord_to_card; equiv_simpl.
         exists identity.

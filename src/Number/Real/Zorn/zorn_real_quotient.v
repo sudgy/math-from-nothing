@@ -364,7 +364,7 @@ Qed.
 Local Program Instance zorn_real_mult_lcancel : MultLcancel zorn_real_quotient.
 Next Obligation.
     rename H into c_nz.
-    assert (c * a = c * b) as eq by (apply set_type_eq; exact H2).
+    rename H0 into eq.
     rewrite <- plus_0_anb_a_b in eq.
     rewrite <- mult_rneg in eq.
     rewrite <- ldist in eq.
@@ -801,7 +801,7 @@ Next Obligation.
         rewrite <- (mult_ranni cx) in cf_pos.
         apply lt_mult_lcancel_pos in cf_pos; assumption.
     -   right.
-        assert (∀ x, 0 = to_equiv_type (ideal_equiv zorn_real_ideal) x ↔ I x)
+        assert (∀ x, 0 = to_equiv (ideal_equiv zorn_real_ideal) x ↔ I x)
             as z_eq.
         {
             intros x.
@@ -816,8 +816,8 @@ Next Obligation.
                 exact eq.
         }
         classic_contradiction contr.
-        apply (mult_nz (to_equiv_type (ideal_equiv zorn_real_ideal) c)
-                       (to_equiv_type (ideal_equiv zorn_real_ideal) f)).
+        apply (mult_nz (to_equiv (ideal_equiv zorn_real_ideal) c)
+                       (to_equiv (ideal_equiv zorn_real_ideal) f)).
         3: unfold mult; equiv_simpl.
         all: rewrite z_eq.
         all: assumption.
@@ -885,8 +885,8 @@ Proof.
     1: exact ε_pos.
     destruct n_ex as [n n_ltq].
     exists n.
-    assert (n × to_equiv_type (ideal_equiv zorn_real_ideal) g =
-        to_equiv_type (ideal_equiv zorn_real_ideal) (n × g)) as n_eq.
+    assert (n × to_equiv (ideal_equiv zorn_real_ideal) g =
+        to_equiv (ideal_equiv zorn_real_ideal) (n × g)) as n_eq.
     {
         clear.
         nat_induction n.
@@ -895,7 +895,7 @@ Proof.
         -   do 2 rewrite nat_mult_suc.
             rewrite IHn.
             unfold plus at 1; cbn.
-            rewrite equiv_binary_self_op.
+            rewrite binary_op_eq.
             reflexivity.
     }
     rewrite n_eq; clear n_eq.

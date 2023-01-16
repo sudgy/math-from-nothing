@@ -130,7 +130,7 @@ Definition ideal_equiv := make_equiv _ ideal_eq_reflexive_class
     ideal_eq_symmetric_class ideal_eq_transitive_class.
 
 Definition quotient_ring := equiv_type ideal_equiv.
-Definition to_qring a := to_equiv_type ideal_equiv a.
+Definition to_qring a := to_equiv ideal_equiv a.
 
 (* begin show *)
 Local Infix "~" := (eq_equal ideal_equiv).
@@ -150,7 +150,7 @@ Proof.
 Qed.
 
 Instance quotient_ring_plus : Plus quotient_ring := {
-    plus := binary_self_op qring_plus_wd
+    plus := binary_op (binary_self_wd qring_plus_wd)
 }.
 
 Program Instance quotient_ring_plus_assoc : PlusAssoc quotient_ring.
@@ -170,7 +170,7 @@ Next Obligation.
 Qed.
 
 Instance quotient_ring_zero : Zero quotient_ring := {
-    zero := to_equiv_type ideal_equiv 0
+    zero := to_equiv ideal_equiv 0
 }.
 
 Program Instance quotient_ring_plus_lid : PlusLid quotient_ring.
@@ -190,7 +190,7 @@ Proof.
     exact eq.
 Qed.
 Instance quotient_ring_neg : Neg quotient_ring := {
-    neg := unary_self_op qring_neg_wd
+    neg := unary_op (unary_self_wd qring_neg_wd)
 }.
 
 Program Instance quotient_ring_plus_linv : PlusLinv quotient_ring.
@@ -219,7 +219,7 @@ Proof.
 Qed.
 
 Instance quotient_ring_mult : Mult quotient_ring := {
-    mult := binary_self_op qring_mult_wd
+    mult := binary_op (binary_self_wd qring_mult_wd)
 }.
 
 Program Instance quotient_ring_ldist : Ldist quotient_ring.
@@ -255,7 +255,7 @@ Next Obligation.
 Qed.
 
 Instance quotient_ring_one : One quotient_ring := {
-    one := to_equiv_type ideal_equiv 1
+    one := to_equiv ideal_equiv 1
 }.
 
 Program Instance quotient_ring_mult_lid : MultLid quotient_ring.

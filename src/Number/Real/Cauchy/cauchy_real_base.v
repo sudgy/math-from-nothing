@@ -86,4 +86,4 @@ Proof.
 Qed.
 
 Definition rat_to_real (q : rat) :=
-    to_equiv_type real_equiv (make_real _ (rat_to_real_cauchy q)).
+    to_equiv real_equiv (make_real _ (rat_to_real_cauchy q)).

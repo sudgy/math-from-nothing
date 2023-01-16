@@ -54,7 +54,7 @@ Proof.
 Qed.
 
 Local Instance frac_mult : Mult (frac U) := {
-    mult := binary_self_op frac_mult_wd;
+    mult := binary_op (binary_self_wd frac_mult_wd);
 }.
 
 Local Program Instance frac_mult_comm : MultComm (frac U).
@@ -153,7 +153,7 @@ Proof.
 Qed.
 
 Local Instance frac_div : Div (frac U) := {
-    div := unary_self_op frac_div_wd;
+    div := unary_op (unary_self_wd frac_div_wd);
 }.
 
 Local Existing Instance frac_zero.

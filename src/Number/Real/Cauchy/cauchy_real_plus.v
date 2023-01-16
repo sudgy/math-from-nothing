@@ -78,7 +78,7 @@ Proof.
 Qed.
 
 Global Instance real_plus : Plus real := {
-    plus := binary_self_op real_plus_wd
+    plus := binary_op (binary_self_wd real_plus_wd)
 }.
 
 Global Instance real_zero : Zero real := {
@@ -86,7 +86,7 @@ Global Instance real_zero : Zero real := {
 }.
 
 Global Instance real_neg : Neg real := {
-    neg := unary_self_op real_neg_wd
+    neg := unary_op (unary_self_wd real_neg_wd)
 }.
 
 Global Instance real_plus_assoc : PlusAssoc real.

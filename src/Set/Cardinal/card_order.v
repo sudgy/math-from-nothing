@@ -80,6 +80,8 @@ Proof.
     {
         subst.
         left.
+        equiv_get_value B.
+        unfold le; equiv_simpl.
         exists identity.
         apply identity_bijective.
     }

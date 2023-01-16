@@ -150,7 +150,7 @@ Lemma ord_pow_wo_wo : ∀ A B,
     ∃ M, is_least (ord_pow_le A B) S M.
 Proof.
     intros A B.
-    remember (to_equiv_type ord_equiv B) as β.
+    remember (to_equiv ord_equiv B) as β.
     revert B Heqβ.
     induction β using transfinite_induction.
     rename H into ind.
@@ -239,7 +239,7 @@ Proof.
     assert (∀ S : ord_pow_type A B' → Prop, (∃ C, S C) →
         ∃ M, is_least (ord_pow_le A B') S M) as B'_wf.
     {
-        apply (ind (to_equiv_type ord_equiv B')); try reflexivity.
+        apply (ind (to_equiv ord_equiv B')); try reflexivity.
         rewrite β_eq.
         rewrite ord_lt_initial.
         exists m.
@@ -577,7 +577,7 @@ Proof.
                     exact x_gt.
 Qed.
 (* end hide *)
-Definition ord_pow := binary_self_op ord_pow_wd.
+Definition ord_pow := binary_op (binary_self_wd ord_pow_wd).
 Infix "^" := ord_pow : ord_scope.
 (* begin hide *)
 Close Scope ord_scope.

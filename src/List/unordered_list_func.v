@@ -7,17 +7,17 @@ Require Import equivalence.
 
 Unset Keyed Unification.
 
-Lemma ulist_image_wd A B : ∀ a b (f : A → B), list_permutation a b →
-    to_equiv_type (ulist_equiv B) (list_image a f) =
-    to_equiv_type (ulist_equiv B) (list_image b f).
+Lemma ulist_image_wd A B : ∀ (f : A → B) a b, list_permutation a b →
+    to_equiv (ulist_equiv B) (list_image a f) =
+    to_equiv (ulist_equiv B) (list_image b f).
 Proof.
     intros a b f ab.
     equiv_simpl.
     apply list_image_perm.
     exact ab.
 Qed.
-Definition ulist_image {A B} :=
-    binary_rop (E := ulist_equiv A) (ulist_image_wd A B).
+Definition ulist_image {A B} (l : ulist A) (f : A → B) :=
+    unary_op (E := ulist_equiv A) (ulist_image_wd A B f) l.
 
 Theorem ulist_image_end {A B : Type} : ∀ f : A → B,
     ulist_image ulist_end f = ulist_end.
@@ -88,8 +88,8 @@ Proof.
 Qed.
 Lemma ulist_prod2_wd A B (op : A → A → B) : ∀ al1 al2 bl1 bl2 : list A,
     list_permutation al1 al2 → list_permutation bl1 bl2 →
-    to_equiv_type (ulist_equiv B) (list_prod2 op al1 bl1) =
-    to_equiv_type (ulist_equiv B) (list_prod2 op al2 bl2).
+    to_equiv (ulist_equiv B) (list_prod2 op al1 bl1) =
+    to_equiv (ulist_equiv B) (list_prod2 op al2 bl2).
 Proof.
     intros al1 al2 bl1 bl2 a_eq b_eq.
     equiv_simpl.

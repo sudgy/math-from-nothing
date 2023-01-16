@@ -103,12 +103,12 @@ Existing Instances geo_plus geo_plus_assoc geo_plus_comm geo_zero geo_plus_lid
     geo_mult_lid geo_mult_rid.
 
 (* end hide *)
-Lemma geo_scalar_wd : ∀ u v c, eq_equal (ideal_equiv geo_ideal) u v →
+Lemma geo_scalar_wd : ∀ c u v, eq_equal (ideal_equiv geo_ideal) u v →
     eq_equal (ideal_equiv geo_ideal) (c · u) (c · v).
 Proof.
     cbn.
     change (ideal_generated_by_set geo_ideal_base) with (ideal_set geo_ideal).
-    intros u v c eq.
+    intros c u v eq.
     rewrite <- scalar_rneg.
     rewrite <- scalar_ldist.
     rewrite <- (scalar_to_tensor_scalar V).
@@ -117,7 +117,7 @@ Proof.
 Qed.
 
 Instance geo_scalar : ScalarMult (cring_U F) geo := {
-    scalar_mult := binary_rself_op geo_scalar_wd
+    scalar_mult c := unary_op (unary_self_wd (geo_scalar_wd c))
 }.
 
 Program Instance geo_scalar_id : ScalarId (cring_U F) geo.
@@ -194,7 +194,7 @@ Definition geometric_algebra := make_algebra F
     geo_scalar_lmult
     geo_scalar_rmult.
 
-Definition tensor_to_geo v := to_equiv_type (ideal_equiv geo_ideal) v : geo.
+Definition tensor_to_geo v := to_equiv (ideal_equiv geo_ideal) v : geo.
 
 Theorem tensor_to_geo_plus : ∀ u v, tensor_to_geo (u + v) = tensor_to_geo u + tensor_to_geo v.
 Proof.
@@ -361,7 +361,7 @@ Theorem geo_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
 Proof.
     intros x.
     equiv_get_value x.
-    change (to_equiv_type _ x) with (tensor_to_geo x).
+    change (to_equiv _ x) with (tensor_to_geo x).
     pose proof (tensor_sum V x) as [l l_eq]; subst x.
     exists l.
     induction l using ulist_induction.

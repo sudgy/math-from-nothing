@@ -18,16 +18,17 @@ Definition ulist_equiv U := make_equiv _
     (list_perm_reflexive U) (list_perm_symmetric U) (list_perm_transitive U).
 Notation "'ulist' U" := (equiv_type (ulist_equiv U)) (at level 1).
 
-Definition ulist_end {U} := to_equiv_type (ulist_equiv U) list_end.
+Definition ulist_end {U} := to_equiv (ulist_equiv U) list_end.
 
-Lemma uadd_wd U : ∀ l1 l2 (a : U),
+Lemma uadd_wd U : ∀ (a : U) l1 l2,
     list_permutation l1 l2 → list_permutation (a :: l1) (a :: l2).
 Proof.
-    intros l1 l2 a l_perm.
+    intros a l1 l2 l_perm.
     apply list_perm_skip.
     exact l_perm.
 Qed.
-Definition ulist_add {U} := binary_rself_op (E := ulist_equiv U) (uadd_wd U).
+Definition ulist_add {U} (a : U)
+    := unary_op (unary_self_wd (E := ulist_equiv U) (uadd_wd U a)).
 Infix ":::" := ulist_add (at level 60, right associativity) : list_scope.
 
 Theorem ulist_induction {U} : ∀ S : ulist U → Prop,
@@ -37,8 +38,8 @@ Proof.
     equiv_get_value l.
     induction l.
     -   exact S_end.
-    -   assert (to_equiv_type (ulist_equiv U) (a :: l) =
-            a ::: (to_equiv_type (ulist_equiv U) l)) as eq.
+    -   assert (to_equiv (ulist_equiv U) (a :: l) =
+            a ::: (to_equiv (ulist_equiv U) l)) as eq.
         {
             unfold ulist_add; equiv_simpl.
             apply list_perm_refl.
@@ -86,7 +87,8 @@ Proof.
     pose proof (list_perm_lpart bl2 eq1).
     exact (list_perm_trans H H0).
 Qed.
-Definition ulist_conc {U} := binary_self_op (E := ulist_equiv U) (uconc_wd U).
+Definition ulist_conc {U}
+    := binary_op (binary_self_wd (E := ulist_equiv U) (uconc_wd U)).
 Infix "+++" := ulist_conc (right associativity, at level 60) : list_scope.
 
 Theorem ulist_add_conc_add {U} : ∀ (a : U) l1 l2,

@@ -398,4 +398,4 @@ Definition nat_to_ord_type (n : nat) :=
     make_ord_type (set_type (λ m, m < n)) le
     set_type_le_antisym_class set_type_le_wo_class.
 Definition nat_to_ord (n : nat) :=
-    to_equiv_type ord_equiv (nat_to_ord_type n).
+    to_equiv ord_equiv (nat_to_ord_type n).

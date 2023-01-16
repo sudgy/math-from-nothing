@@ -124,7 +124,7 @@ Proof.
 Qed.
 
 Theorem ord_lt_initial : ∀ A B,
-    (to_equiv_type ord_equiv A < to_equiv_type ord_equiv B) =
+    (to_equiv ord_equiv A < to_equiv ord_equiv B) =
     (∃ x, A ~ (ord_initial_segment B x)).
 Proof.
     intros A B.
@@ -168,7 +168,7 @@ Qed.
 Module OrdConnex.
 Section OrdConnex.
 
-Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
+Notation "'to_ord' A" := (to_equiv ord_equiv A) (at level 10).
 
 Variables A B : ord_type.
 Hypothesis AB : ¬(to_ord A < to_ord B).
@@ -954,7 +954,7 @@ Global Instance ord_le_trans_class : Transitive le := {
     trans := ord_le_transitive
 }.
 (* end hide *)
-Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
+Local Notation "'to_ord' A" := (to_equiv ord_equiv A) (at level 10).
 Theorem ord_lt_init : ∀ A x, to_ord (ord_initial_segment A x) < to_ord A.
 Proof.
     intros A x.
@@ -971,7 +971,7 @@ Module OrdsLtWo.
 Section OrdsLtWo.
 
 Variable A : ord_type.
-Local Notation "'to_ord' A" := (to_equiv_type ord_equiv A) (at level 10).
+Local Notation "'to_ord' A" := (to_equiv ord_equiv A) (at level 10).
 
 Lemma f'_range_in : ∀ x, ords_lt_set (to_ord A) (to_ord (ord_initial_segment A x)).
 Proof.

@@ -128,7 +128,7 @@ End OrdMult.
 Open Scope ord_scope.
 
 Global Instance ord_mult_class : Mult ord := {
-    mult := binary_self_op ord_mult_wd
+    mult := binary_op (binary_self_wd ord_mult_wd)
 }.
 
 Lemma ord_ldist : ∀ α β γ, α * (β + γ) = α * β + α * γ.

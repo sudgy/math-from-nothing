@@ -25,10 +25,10 @@ Qed.
 Definition ulist_size {U} := unary_op (E := ulist_equiv U) (ulist_size_wd U).
 
 Definition func_to_ulist {U} (f : nat → U) n :=
-    to_equiv_type (ulist_equiv U) (func_to_list_base f n).
+    to_equiv (ulist_equiv U) (func_to_list_base f n).
 
 Theorem func_to_list_ulist {U} : ∀ (f : nat → U) n,
-    func_to_ulist f n = to_equiv_type (ulist_equiv U) (func_to_list f n).
+    func_to_ulist f n = to_equiv (ulist_equiv U) (func_to_list f n).
 Proof.
     intros f n.
     unfold func_to_ulist; equiv_simpl.

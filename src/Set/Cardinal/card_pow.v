@@ -35,7 +35,7 @@ Proof.
         reflexivity.
 Qed.
 
-Definition card_pow := binary_self_op card_pow_wd.
+Definition card_pow := binary_op (binary_self_wd card_pow_wd).
 Infix "^" := card_pow : card_scope.
 
 Theorem func_size : ∀ A B, |A → B| = |B| ^ |A|.

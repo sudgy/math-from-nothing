@@ -28,7 +28,7 @@ Qed.
 End IntPlus.
 
 Global Instance int_plus : Plus int := {
-    plus := binary_self_op int_plus_wd
+    plus := binary_op (binary_self_wd int_plus_wd)
 }.
 
 Lemma int_plus_comm : ∀ a b, a + b = b + a.
@@ -59,7 +59,7 @@ Global Instance int_plus_assoc_class : PlusAssoc int := {
 }.
 
 Global Instance int_zero : Zero int := {
-    zero := to_equiv_type int_equiv (zero, zero);
+    zero := to_equiv int_equiv (zero, zero);
 }.
 
 Lemma int_plus_lid : ∀ a, zero + a = a.
@@ -94,7 +94,7 @@ Qed.
 End IntNeg.
 
 Global Instance int_neg : Neg int := {
-    neg := unary_self_op int_neg_wd;
+    neg := unary_op (unary_self_wd int_neg_wd);
 }.
 
 Lemma int_plus_linv : ∀ a, -a + a = zero.
