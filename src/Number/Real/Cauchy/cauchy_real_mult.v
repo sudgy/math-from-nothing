@@ -7,7 +7,7 @@ Lemma cauchy_bounded : ∀ a : real_base, ∃ M, ∀ n, |r_seq a n| < M.
 Proof.
     intros [a a_cauchy]; cbn.
     specialize (a_cauchy 1 one_pos) as [N a_cauchy].
-    pose (S := image_under (λ n, |a n|) (initial_segment le N)).
+    pose (S := image_under (λ n, |a n|) (initial_segment N)).
     assert (has_upper_bound le S) as [M M_max].
     {
         nat_destruct N.

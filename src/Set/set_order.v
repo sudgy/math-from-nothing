@@ -36,7 +36,7 @@ Definition is_chain {U} (op : U → U → Prop) (S : U → Prop)
 Definition well_orders {U} (op : U → U → Prop) (S : U → Prop)
     := ∀ A : U → Prop, A ⊆ S → (∃ x, A x) → ∃ a, is_least op A a.
 
-Definition initial_segment {U} (op : U → U → Prop) x := λ a, strict op a x.
+Definition initial_segment {U} `{Order U} x := λ a, a < x.
 
 Section SetOrder.
 

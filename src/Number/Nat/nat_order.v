@@ -21,7 +21,7 @@ Global Instance nat_order : Order nat := {
         end
 }.
 
-Definition nat_to_set_type n := set_type (initial_segment le n).
+Definition nat_to_set_type n := set_type (initial_segment n).
 
 Theorem nat_neg_eq : ∀ {a}, a ≤ 0 → 0 = a.
 Proof.
