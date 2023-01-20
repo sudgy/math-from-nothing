@@ -129,10 +129,10 @@ Theorem greater_all_nat_inf : ∀ κ, (∀ a, nat_to_card a < κ) → infinite �
 Proof.
     intros A A_gt.
     equiv_get_value A.
-    assert (∀ f : transfinite_recursion_domain nat A,
-        ∃ a, ∀ n, trd_f f n ≠ a) as h_ex.
+    assert (∀ (p : nat) (f : set_type (λ x, x < p) → A),
+        ∃ a, ∀ n, f n ≠ a) as h_ex.
     {
-        intros [fp ff]; cbn.
+        intros fp ff; cbn.
         classic_case (surjective ff).
         -   assert (|A| ≤ nat_to_card fp) as leq.
             {
@@ -149,7 +149,7 @@ Proof.
             rewrite not_ex in A_nsur.
             apply A_nsur.
     }
-    pose proof (transfinite_recursion A (λ f, ex_val (h_ex f))) as [f f_rec].
+    pose proof (transfinite_recursion A (λ p f, ex_val (h_ex p f))) as [f f_rec].
     unfold infinite.
     unfold le; equiv_simpl.
     exists f.

@@ -414,10 +414,10 @@ Proof.
         exact contr.
     }
     clear contr.
-    assert (∀ e : transfinite_recursion_domain nat U,
-        ∃ x, ¬((⋃ to_balls (image (trd_f e)) ε) x)) as x_ex2.
+    assert (∀ (n : nat) (f : set_type (λ x, x < n) → U),
+        ∃ x, ¬((⋃ to_balls (image f) ε) x)) as x_ex2.
     {
-        intros [n nf].
+        intros n nf.
         pose (A := image nf).
         assert (finite (|set_type A|)) as A_fin.
         {
@@ -436,7 +436,7 @@ Proof.
         }
         exact (x_ex A A_fin).
     }
-    pose (h e := ex_val (x_ex2 e)).
+    pose (h n f := ex_val (x_ex2 n f)).
     pose proof (transfinite_recursion U h) as [f f_gt].
     assert (∀ m n, m < n → [ε|] ≤ d (f m) (f n)) as ε_le_wlog.
     {
