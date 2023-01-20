@@ -25,7 +25,7 @@ Proof.
     apply set_type_eq; cbn.
     rewrite_ex_val a a_eq.
     rewrite_ex_val b b_eq.
-    rewrite a_eq, b_eq.
+    rewrite <- a_eq, <- b_eq.
     rewrite eq.
     reflexivity.
 Qed.
