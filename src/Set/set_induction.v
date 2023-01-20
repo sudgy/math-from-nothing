@@ -13,15 +13,15 @@ Theorem transfinite_induction :
 Proof.
     intros S S_all α.
     classic_contradiction contr.
-    pose (S' α := ¬S α).
-    assert (∃ β, S' β) as S'_nempty by (exists α; exact contr).
-    pose proof (well_ordered S' S'_nempty) as [β [S'β β_min]].
+    pose proof (well_ordered (𝐂 S)) as S'_wo.
+    prove_parts S'_wo; [>exists α; exact contr|].
+    destruct S'_wo as [β [S'β β_min]].
     apply S'β.
     apply S_all.
     intros γ γ_lt.
     classic_contradiction S'γ.
     specialize (β_min _ S'γ).
-    destruct (lt_le_trans γ_lt β_min); contradiction.
+    contradiction (irrefl _ (lt_le_trans γ_lt β_min)).
 Qed.
 
 (* I don't like how most of the proofs relating to transfinite recursion are
@@ -39,109 +39,111 @@ Local Notation "'trd'" := transfinite_recursion_domain.
 Global Arguments trd_p {X}.
 Global Arguments trd_f {X}.
 
-Theorem transfinite_recursion_unique : ∀ X (f : trd X → X),
+Variables (X : Type) (f : trd X → X).
+
+Theorem transfinite_recursion_unique :
     ∀ g h : U → X,
         (∀ n, g n = f (make_trd X n (λ x, g [x|]))) →
         (∀ n, h n = f (make_trd X n (λ x, h [x|]))) →
         g = h.
 Proof.
-    intros X f g h g_ind h_ind.
+    intros g h g_ind h_ind.
     apply functional_ext.
     intros x.
     induction x as [x IHx] using transfinite_induction.
     rewrite g_ind, h_ind.
-    apply f_equal.
-    apply f_equal.
+    do 2 apply f_equal.
     apply functional_ext.
     intros [y y_lt]; cbn.
-    apply IHx.
-    exact y_lt.
+    exact (IHx y y_lt).
 Qed.
 
-Theorem transfinite_recursion_unique2 : ∀ X (f : trd X → X),
-    ∀ α,
+Lemma transfinite_recursion_unique_initial : ∀ α,
     ∀ g h : (set_type (λ x, x < α)) → X,
         (∀ n, g n = f (make_trd X [n|] (λ x, g [[x|] | trans [|x] [|n]]))) →
         (∀ n, h n = f (make_trd X [n|] (λ x, h [[x|] | trans [|x] [|n]]))) →
         g = h.
 Proof.
-    intros X f α g h g_ind h_ind.
+    intros α g h g_ind h_ind.
     apply functional_ext.
     intros [x x_lt].
     induction x as [x IHx] using transfinite_induction.
-    rewrite g_ind, h_ind.
-    apply f_equal.
-    apply f_equal.
+    rewrite g_ind, h_ind; cbn.
+    do 2 apply f_equal.
     apply functional_ext.
     intros [y y_lt]; cbn.
-    apply IHx.
-    exact y_lt.
+    apply (IHx y y_lt).
 Qed.
 
-End TransfiniteInduction.
-Section TransfiniteRecursion.
-
-Context {U} `{WellOrder U}.
-
-Local Notation "'trd'" := transfinite_recursion_domain.
-
-Theorem transfinite_recursion : ∀ X (f : trd X → X),
-    ∃ g : U → X,
-    ∀ n, g n = f (make_trd X n (λ x, g [x|])).
+Lemma transfinite_recursion_part :
+    ∀ (g : ∀ n, set_type (λ x, x < n) → X),
+    (∀ α n, g α n = f (make_trd X [n|] (λ x, g α [[x|] | trans [|x] [|n]]))) →
+    ∀ n, f (make_trd X n (g n)) =
+    f (make_trd X n (λ x, f (make_trd X [x|] (g [x|])))).
 Proof.
-    intros X f.
-    assert (∀ α, ∃ g : set_type (λ x, x < α) → X,
-        ∀ n, g n = f (make_trd X [n|] (λ x, g [[x|] | trans [|x] [|n]])))
-        as part_ex.
-    {
-        intros α.
-        induction α as [α IHα] using transfinite_induction.
-        pose (g (n : set_type (λ x, x < α)) := ex_val (IHα [n|] [|n])).
-        exists (λ n, f (make_trd X [n|] (g n))).
-        intros [n n_lt]; cbn.
-        do 2 apply f_equal.
-        apply functional_ext.
-        intros [x x_lt]; cbn.
-        unfold g at 1.
-        rewrite_ex_val h1 h1_eq.
-        rewrite h1_eq.
-        do 2 apply f_equal.
-        unfold g.
-        rewrite_ex_val h2 h2_eq.
-        apply (transfinite_recursion_unique2 _ f).
-        -   intros a; cbn.
-            rewrite h1_eq; cbn.
-            do 2 apply f_equal.
-            apply functional_ext.
-            intros b.
-            do 2 apply f_equal.
-            apply proof_irrelevance.
-        -   intros a.
-            rewrite h2_eq.
-            reflexivity.
-    }
-    exists (λ α, f (make_trd X α (ex_val (part_ex α)))).
-    intros n.
+    intros g g_ind n.
     do 2 apply f_equal.
     apply functional_ext.
     intros x.
-    rewrite_ex_val h1 h1_eq.
-    rewrite h1_eq.
+    rewrite g_ind.
     do 2 apply f_equal.
-    rewrite_ex_val h2 h2_eq.
-    apply (transfinite_recursion_unique2 _ f).
+    apply transfinite_recursion_unique_initial.
     -   intros a; cbn.
-        rewrite h1_eq; cbn.
+        rewrite g_ind; cbn.
+        do 2 apply f_equal.
+        apply functional_ext.
+        intros b.
+        do 2 apply f_equal.
+        apply proof_irrelevance.
+    -   apply g_ind.
+Qed.
+
+Lemma transfinite_recursion_part_initial : ∀ (a : U)
+    (g : ∀ n : set_type (λ x, x < a), set_type (λ x, x < [n|]) → X),
+    (∀ α n, g α n = f (make_trd X [n|] (λ x, g α [[x|] | trans [|x] [|n]]))) →
+    ∀ n, f (make_trd X [n|] (g n)) =
+    f (make_trd X [n|] (λ x, f (make_trd X [x|] (g [[x|] | trans [|x] [|n]])))).
+Proof.
+    intros α g g_ind [n n_lt]; cbn.
+    do 2 apply f_equal.
+    apply functional_ext.
+    intros x; cbn.
+    rewrite g_ind.
+    do 2 apply f_equal.
+    apply transfinite_recursion_unique_initial.
+    -   intros a; cbn.
+        rewrite g_ind; cbn.
         do 2 apply f_equal.
         apply functional_ext.
         intros b.
         do 2 apply f_equal.
         apply proof_irrelevance.
     -   intros a.
-        rewrite h2_eq.
-        reflexivity.
+        apply g_ind.
 Qed.
 
-End TransfiniteRecursion.
+Theorem transfinite_recursion :
+    ∃ g : U → X, ∀ n, g n = f (make_trd X n (λ x, g [x|])).
+Proof.
+    assert (∀ α, ∃ g : set_type (λ x, x < α) → X,
+        ∀ n, g n = f (make_trd X [n|] (λ x, g [[x|] | trans [|x] [|n]])))
+        as part_ex.
+    {
+        intros α.
+        induction α as [α IHα] using transfinite_induction.
+        exists (λ n, f (make_trd X [n|] (ex_val (IHα [n|] [|n])))).
+        apply transfinite_recursion_part_initial.
+        intros a.
+        rewrite_ex_val h h_eq.
+        exact h_eq.
+    }
+    exists (λ α, f (make_trd X α (ex_val (part_ex α)))).
+    apply transfinite_recursion_part.
+    intros α.
+    rewrite_ex_val h h_eq.
+    exact h_eq.
+Qed.
+
+End TransfiniteInduction.
 
 Arguments transfinite_recursion_domain U {UO}.
