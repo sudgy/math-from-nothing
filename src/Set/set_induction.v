@@ -65,69 +65,70 @@ Proof.
 Qed.
 
 Lemma transfinite_recursion_part :
-    ∀ (g : ∀ n, set_type (λ x, x < n) → X),
-    (∀ α n, g α n = f [n|] (λ x, g α [[x|] | trans [|x] [|n]])) →
-    ∀ n, f n (g n) =
-    f n (λ x, f [x|] (g [x|])).
+    ∀ (g : ∀ n, set_type (λ a, a < n) → X),
+    (∀ n a, g n a = f [a|] (λ x, g n [[x|] | trans [|x] [|a]])) →
+    ∀ n, g n = λ a, f [a|] (g [a|]).
 Proof.
     intros g g_ind n.
-    apply f_equal.
     apply functional_ext.
-    intros x.
+    intros a.
     rewrite g_ind.
     apply f_equal.
     apply transfinite_recursion_unique_initial.
-    -   intros a; cbn.
+    -   intros x; cbn.
         rewrite g_ind; cbn.
         apply f_equal.
         apply functional_ext.
-        intros b.
+        intros y.
         do 2 apply f_equal.
         apply proof_irrelevance.
     -   apply g_ind.
 Qed.
 
-Lemma transfinite_recursion_part_initial : ∀ (a : U)
-    (g : ∀ n : set_type (λ x, x < a), set_type (λ x, x < [n|]) → X),
-    (∀ α n, g α n = f [n|] (λ x, g α [[x|] | trans [|x] [|n]])) →
-    ∀ n, f [n|] (g n) =
-    f [n|] (λ x, f [x|] (g [[x|] | trans [|x] [|n]])).
+Lemma transfinite_recursion_part_initial : ∀ (α : U)
+    (g : ∀ n : set_type (λ n, n < α), set_type (λ a, a < [n|]) → X),
+    (∀ n a, g n a = f [a|] (λ x, g n [[x|] | trans [|x] [|a]])) →
+    ∀ n, g n = λ a, f [a|] (g [[a|] | trans [|a] [|n]]).
 Proof.
     intros α g g_ind [n n_lt]; cbn.
-    apply f_equal.
     apply functional_ext.
-    intros x; cbn.
+    intros a; cbn.
     rewrite g_ind.
     apply f_equal.
     apply transfinite_recursion_unique_initial.
-    -   intros a; cbn.
+    -   intros x; cbn.
         rewrite g_ind; cbn.
         apply f_equal.
         apply functional_ext.
-        intros b.
+        intros y.
         do 2 apply f_equal.
         apply proof_irrelevance.
-    -   intros a.
+    -   intros x.
         apply g_ind.
 Qed.
 
-Theorem transfinite_recursion :
-    ∃ g : U → X, ∀ n, g n = f n (λ x, g [x|]).
+Lemma transfinite_recursion_initial :
+    ∀ α, ∃ g : set_type (λ x, x < α) → X,
+    ∀ n, g n = f [n|] (λ x, g [[x|] | trans [|x] [|n]]).
 Proof.
-    assert (∀ α, ∃ g : set_type (λ x, x < α) → X,
-        ∀ n, g n = f [n|] (λ x, g [[x|] | trans [|x] [|n]]))
-        as part_ex.
-    {
-        intros α.
-        induction α as [α IHα] using transfinite_induction.
-        exists (λ n, f [n|] (ex_val (IHα [n|] [|n]))).
-        apply transfinite_recursion_part_initial.
-        intros a.
-        rewrite_ex_val h h_eq.
-        exact h_eq.
-    }
-    exists (λ α, f α (ex_val (part_ex α))).
-    apply transfinite_recursion_part.
+    intros α.
+    induction α as [α IHα] using transfinite_induction.
+    exists (λ n, f [n|] (ex_val (IHα [n|] [|n]))).
+    intros n.
+    apply f_equal.
+    apply (transfinite_recursion_part_initial _ (λ x, ex_val (IHα [x|] [|x]))).
+    intros a.
+    rewrite_ex_val h h_eq.
+    exact h_eq.
+Qed.
+
+Theorem transfinite_recursion : ∃ g : U → X, ∀ n, g n = f n (λ x, g [x|]).
+Proof.
+    exists (λ α, f α (ex_val (transfinite_recursion_initial α))).
+    intros n.
+    apply f_equal.
+    apply (transfinite_recursion_part
+        (λ x, ex_val (transfinite_recursion_initial x))).
     intros α.
     rewrite_ex_val h h_eq.
     exact h_eq.
