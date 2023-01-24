@@ -77,34 +77,26 @@ Let initial_segment (A : U → Prop) (B : U → Prop) := ∃ x, B x ∧ A = P B 
 
 Local Open Scope set_scope.
 
-Lemma zorn_initial1 : ∀ A B, conforming A → conforming B → A - B ≠ ∅ →
-    initial_segment B A.
+Lemma zorn_initial1 : ∀ A B, conforming A → conforming B →
+    ∀ x y, A y → B x → ¬B y → x < y.
 Proof.
-    intros A B [A_wo A_conf] [B_wo B_conf] AB.
+    intros A B [A_wo A_conf] [B_wo B_conf] a b Ab Ba Bb.
     pose proof (A_wo (A - B)) as AB_ex.
-    prove_parts AB_ex; [>apply inter_lsub| apply empty_neq; exact AB|].
+    prove_parts AB_ex; [>apply inter_lsub|exists b; split; assumption|].
     destruct AB_ex as [x [[Ax Bx] x_least]].
-    exists x.
-    split; [>exact Ax|].
-    apply antisym.
-    2: {
-        intros c [Ac c_lt].
-        classic_contradiction Bc.
-        specialize (x_least c (make_and Ac Bc)).
-        destruct (le_lt_trans x_least c_lt); contradiction.
-    }
+    apply (lt_le_trans2 (x_least b (make_and Ab Bb))).
     classic_contradiction contr.
     pose proof (B_wo (B - P A x)) as BA_ex.
     prove_parts BA_ex; [>apply inter_lsub| |].
     {
-        unfold subset in contr.
-        rewrite not_all in contr.
-        destruct contr as [a contr].
-        rewrite not_impl in contr.
         exists a.
-        split; apply contr.
+        split; [>exact Ba|].
+        unfold P.
+        rewrite not_and.
+        right; exact contr.
     }
     destruct BA_ex as [y [[By PAy] y_least]].
+    clear a b Ba Ab Bb contr.
     pose proof (A_wo (A - P B y)) as z_ex.
     prove_parts z_ex; [>apply inter_lsub| |].
     {
@@ -189,29 +181,13 @@ Proof.
     contradiction.
 Qed.
 
-Lemma zorn_initial2 : ∀ A B, conforming A → conforming B → A ≠ B →
-    initial_segment A B ∨ initial_segment B A.
+Lemma zorn_initial2 : ∀ A B, conforming A → conforming B →
+    ∀ x y, x ≤ y → A x → B y → B x.
 Proof.
-    intros A B A_conf B_conf AB_neq.
-    classic_case (A - B = ∅) as [AB|AB].
-    1: classic_case (B - A = ∅) as [BA|BA].
-    -   exfalso.
-        apply AB_neq.
-        apply antisym.
-        +   intros x Ax.
-            classic_contradiction Bx.
-            assert ((A - B) x) as x_in by (split; assumption).
-            rewrite AB in x_in.
-            exact x_in.
-        +   intros x Bx.
-            classic_contradiction Ax.
-            assert ((B - A) x) as x_in by (split; assumption).
-            rewrite BA in x_in.
-            exact x_in.
-    -   left.
-        apply zorn_initial1; assumption.
-    -   right.
-        apply zorn_initial1; assumption.
+    intros A B A_conf B_conf x y xy Ax By.
+    classic_contradiction Bx.
+    pose proof (zorn_initial1 A B A_conf B_conf y x Ax By Bx) as ltq.
+    contradiction (irrefl _ (le_lt_trans xy ltq)).
 Qed.
 
 Lemma zorn_conforming_union : conforming (⋃ conforming).
@@ -224,45 +200,18 @@ Proof.
         destruct Sx' as [A [A_conf Ax]].
         pose proof (ldand A_conf) as A_wo.
         specialize (A_wo (A ∩ S) (inter_lsub _ _)
-            (ex_intro _ x (make_and Ax Sx))) as [a [Aa a_le]].
+            (ex_intro _ x (make_and Ax Sx))) as [a [[Aa Sa] a_le]].
         exists a.
-        split; [>apply Aa|].
+        split; [>exact Sa|].
         intros y Sy.
         pose proof Sy as Sy'.
         apply S_sub in Sy'.
         destruct Sy' as [B [B_conf By]].
-        classic_case (A = B) as [AB_eq|AB_neq].
-        {
-            subst B.
-            apply a_le.
+        clear x Sx Ax.
+        classic_case (A y) as [Ay|nAy].
+        -   apply a_le.
             split; assumption.
-        }
-        pose proof (zorn_initial2 A B A_conf B_conf AB_neq) as [AB|BA].
-        -   destruct AB as [c [Bc A_eq]].
-            subst A.
-            classic_case (P B c y) as [y_in|y_nin].
-            +   apply a_le.
-                split; assumption.
-            +   unfold P in y_nin.
-                rewrite not_and_impl in y_nin.
-                specialize (y_nin By).
-                specialize (a_le x (make_and Ax Sx)).
-                destruct Ax as [Bx xc].
-                apply (trans a_le).
-                apply (lt_le_trans xc).
-                pose proof (well_orders_chain B (ldand B_conf) y c By Bc)
-                    as [leq|leq].
-                *   unfold strict in y_nin.
-                    rewrite not_and, not_not in y_nin.
-                    destruct y_nin as [nleq|eq].
-                    --  contradiction.
-                    --  rewrite eq; apply refl.
-                *   exact leq.
-        -   destruct BA as [c [Ac B_eq]].
-            subst B.
-            apply a_le.
-            split; [>|exact Sy].
-            apply By.
+        -   apply (zorn_initial1 B A B_conf A_conf _ _ By Aa nAy).
     }
     split with conf_wo.
     intros x [A [A_conf Ax]].
@@ -277,20 +226,7 @@ Proof.
         split; assumption.
     -   intros c [[B [B_conf Bc]] c_lt].
         split; [>|exact c_lt].
-        classic_case (A = B) as [AB_eq|AB_neq].
-        {
-            subst B.
-            exact Bc.
-        }
-        pose proof (zorn_initial2 A B A_conf B_conf AB_neq) as [AB|BA].
-        +   destruct AB as [z [Bz A_eq]].
-            subst A.
-            split; [>exact Bc|].
-            destruct Ax as [Bx xz].
-            exact (trans c_lt xz).
-        +   destruct BA as [z [Az B_eq]].
-            subst B.
-            apply Bc.
+        exact (zorn_initial2 B A B_conf A_conf _ _ (land c_lt) Bc Ax).
 Qed.
 
 Theorem zorn_contr : False.
@@ -364,19 +300,7 @@ Proof.
             +   intros a [[a_in|a_eq] a_lt].
                 *   split; [>|exact a_lt].
                     destruct a_in as [B [B_conf Ba]].
-                    classic_contradiction Aa.
-                    assert (A ≠ B) as AB_neq by (intro; subst; contradiction).
-                    pose proof (zorn_initial2 A B A_conf B_conf AB_neq)
-                        as [AB|BA].
-                    --  destruct AB as [z [Bz A_eq]]; subst A.
-                        unfold P in Aa, Ay.
-                        rewrite not_and_impl in Aa.
-                        specialize (Aa Ba).
-                        pose proof (trans a_lt (rand Ay)).
-                        contradiction.
-                    --  destruct BA as [z [Az B_eq]]; subst B.
-                        unfold P in Ba.
-                        destruct Ba; contradiction.
+                    exact (zorn_initial2 B A B_conf A_conf _ _ (land a_lt) Ba Ay).
                 *   rewrite singleton_eq in a_eq.
                     subst a.
                     assert (y < x) as ltq.
