@@ -104,8 +104,7 @@ Proof.
         split; [>exact Ax|].
         unfold P.
         rewrite not_and.
-        left.
-        exact Bx.
+        left; exact Bx.
     }
     destruct z_ex as [z [[Az PBz] z_least]].
     assert (z ≤ x) as zx.
@@ -114,8 +113,7 @@ Proof.
         split; [>exact Ax|].
         unfold P.
         rewrite not_and.
-        left.
-        exact Bx.
+        left; exact Bx.
     }
     assert (P A z = P B y) as eq.
     {
@@ -124,47 +122,29 @@ Proof.
             classic_contradiction PBc.
             specialize (z_least c (make_and Ac PBc)).
             destruct (le_lt_trans z_least c_lt); contradiction.
-        -   intros c [Bc c_lt].
-            split.
-            +   classic_contradiction contr2.
-                assert (y ≤ c) as leq.
+        -   intros u [Bu u_lt].
+            assert (P A x u) as [Au u_lt2].
+            {
+                classic_contradiction Au.
+                specialize (y_least u (make_and Bu Au)).
+                contradiction (irrefl _ (lt_le_trans u_lt y_least)).
+            }
+            split; [>apply Au|].
+            destruct (well_orders_chain A A_wo u z Au Az) as [uz|uz].
+            +   split; [>exact uz|].
+                intros contr; subst u.
+                apply PBz.
+                split; assumption.
+            +   exfalso; apply PBz.
+                split; [>|exact (le_lt_trans uz u_lt)].
+                assert (P A x z) as z_in.
                 {
-                    apply y_least.
-                    split; [>exact Bc|].
-                    unfold P.
-                    rewrite not_and.
-                    left.
-                    exact contr2.
+                    split; [>exact Az|].
+                    exact (le_lt_trans uz u_lt2).
                 }
-                destruct (lt_le_trans c_lt leq); contradiction.
-            +   unfold P in PBz.
-                rewrite not_and in PBz.
-                classic_case (B z) as [Bz|Bz].
-                2: {
-                    pose proof (x_least z (make_and Az Bz)) as xz.
-                    pose proof (antisym xz zx) as eq; subst z.
-                    classic_contradiction contr2.
-                    assert (y ≤ c) as leq.
-                    {
-                        apply y_least.
-                        split; [>exact Bc|].
-                        unfold P.
-                        rewrite not_and.
-                        right.
-                        exact contr2.
-                    }
-                    destruct (lt_le_trans c_lt leq); contradiction.
-                }
-                destruct PBz as [Bz'|zy]; [>contradiction|].
-                apply (lt_le_trans c_lt).
-                unfold strict in zy.
-                rewrite not_and in zy.
-                rewrite not_not in zy.
-                destruct zy as [leq|eq].
-                --  destruct (well_orders_chain B B_wo y z By Bz) as [yz|yz].
-                    ++  exact yz.
-                    ++  contradiction.
-                --  subst; apply refl.
+                classic_contradiction contr.
+                specialize (x_least z (make_and Az contr)).
+                contradiction (irrefl _ (lt_le_trans (rand z_in) x_least)).
     }
     specialize (A_conf z Az).
     specialize (B_conf y By).
@@ -229,114 +209,89 @@ Proof.
         exact (zorn_initial2 B A B_conf A_conf _ _ (land c_lt) Bc Ax).
 Qed.
 
-Theorem zorn_contr : False.
+Let x := f _ (well_orders_chain _ (ldand zorn_conforming_union)).
+
+Lemma zorn_wo_union_x : well_orders le (⋃ conforming ∪ ❴x❵).
 Proof.
-    pose (x := f _ (well_orders_chain _ (ldand zorn_conforming_union))).
-    assert (conforming (⋃ conforming ∪ ❴x❵)) as conf.
-    {
-        assert (well_orders le (⋃ conforming ∪ ❴x❵)) as wo.
-        {
-            intros S S_sub S_ex.
-            classic_case (⋃ conforming ∩ S = ∅) as [S_empty|S_nempty].
-            {
-                assert (S = ❴x❵) as S_eq.
-                {
-                    apply antisym.
-                    -   intros y Sy.
-                        specialize (S_sub _ Sy) as [y_in|y_eq].
-                        +   assert (∅ y) as y_in'.
-                            {
-                                rewrite <- S_empty.
-                                split; assumption.
-                            }
-                            contradiction y_in'.
-                        +   exact y_eq.
-                    -   intros y y_eq.
-                        rewrite singleton_eq in y_eq; subst y.
-                        destruct S_ex as [y Sy].
-                        specialize (S_sub _ Sy) as [y_in|y_eq].
-                        +   assert (∅ y) as y_in'.
-                            {
-                                rewrite <- S_empty.
-                                split; assumption.
-                            }
-                            contradiction y_in'.
-                        +   rewrite singleton_eq in y_eq; subst.
-                            exact Sy.
-                }
-                exists x.
-                subst S.
-                split; [>rewrite singleton_eq; reflexivity|].
-                intros y y_eq; rewrite singleton_eq in y_eq; subst.
-                apply refl.
-            }
-            rewrite empty_neq in S_nempty.
-            pose proof (ldand zorn_conforming_union (⋃ conforming ∩ S)) as a_ex.
-            prove_parts a_ex; [>apply inter_lsub|exact S_nempty|].
-            destruct a_ex as [a [[a_in Sa] a_least]].
+    intros S S_sub S_ex.
+    classic_case (∃ y, S y ∧ x ≠ y) as [[y [Sy y_neq]]|y_nex].
+    -   pose proof (S_sub _ Sy) as [y_in|y_in]; [>|contradiction].
+        pose proof (ldand zorn_conforming_union (⋃ conforming ∩ S)) as a_ex.
+        prove_parts a_ex; [>apply inter_lsub| |].
+        +   exists y.
+            split; assumption.
+        +   destruct a_ex as [a [[a_in Sa] a_least]].
             exists a.
             split; [>exact Sa|].
-            intros y Sy.
-            specialize (S_sub y Sy) as [y_in|y_eq].
-            -   apply a_least.
+            intros z Sz.
+            pose proof (S_sub _ Sz) as [z_in|zx].
+            *   apply a_least.
                 split; assumption.
-            -   rewrite singleton_eq in y_eq; subst y.
-                unfold x.
+            *   rewrite singleton_eq in zx; subst z.
                 apply zorn_f_lt.
                 exact a_in.
+    -   assert (∀ a, S a → x = a) as S_eq.
+        {
+            intros a Sa.
+            rewrite not_ex in y_nex.
+            specialize (y_nex a).
+            rewrite not_and_impl, not_not in y_nex.
+            exact (y_nex Sa).
         }
-        split with wo.
-        intros y [y_in|y_eq].
-        -   destruct y_in as [A [A_conf Ay]].
-            pose proof A_conf as [A_wo A_conf'].
-            rewrite (A_conf' y Ay) at 1.
-            apply zorn_f_eq.
-            apply antisym.
-            +   intros a [Aa a_lt].
-                split; [>|exact a_lt].
-                left.
-                exists A.
-                split; assumption.
-            +   intros a [[a_in|a_eq] a_lt].
-                *   split; [>|exact a_lt].
-                    destruct a_in as [B [B_conf Ba]].
-                    exact (zorn_initial2 B A B_conf A_conf _ _ (land a_lt) Ba Ay).
-                *   rewrite singleton_eq in a_eq.
-                    subst a.
-                    assert (y < x) as ltq.
-                    {
-                        apply zorn_f_lt.
-                        exists A.
-                        split; assumption.
-                    }
-                    destruct (trans a_lt ltq); contradiction.
-        -   rewrite singleton_eq in y_eq; subst y.
-            unfold x at 1.
-            apply zorn_f_eq.
-            apply antisym.
-            +   intros a a_in.
-                split.
-                *   left.
-                    exact a_in.
-                *   apply zorn_f_lt.
-                    exact a_in.
-            +   intros a [a_in a_lt].
-                destruct a_in as [a_in|a_eq].
-                *   exact a_in.
-                *   rewrite singleton_eq in a_eq; subst a.
-                    destruct a_lt; contradiction.
-    }
+        destruct S_ex as [y Sy].
+        pose proof (S_eq _ Sy); subst y.
+        exists x.
+        split; [>exact Sy|].
+        intros z Sz.
+        apply S_eq in Sz; subst z.
+        apply refl.
+Qed.
+
+Lemma zorn_conforming_union_x : conforming (⋃ conforming ∪ ❴x❵).
+Proof.
+    split with zorn_wo_union_x.
+    intros y [y_in|y_eq].
+    -   pose proof (zorn_conforming_union) as [union_wo union_conf].
+        rewrite (union_conf y y_in) at 1.
+        apply zorn_f_eq.
+        apply antisym.
+        +   intros a [Aa a_lt].
+            split; [>|exact a_lt].
+            left.
+            exact Aa.
+        +   intros a [[a_in|a_eq] a_lt].
+            *   split; assumption.
+            *   rewrite singleton_eq in a_eq; subst a.
+                assert (y < x) as ltq by exact (zorn_f_lt _ _ _ y_in).
+                contradiction (irrefl _ (trans a_lt ltq)).
+    -   rewrite singleton_eq in y_eq; subst y.
+        unfold x at 1.
+        apply zorn_f_eq.
+        apply antisym.
+        +   intros a a_in.
+            split.
+            *   left; exact a_in.
+            *   exact (zorn_f_lt _ _ _ a_in).
+        +   intros a [a_in a_lt].
+            destruct a_in as [a_in|a_eq].
+            *   exact a_in.
+            *   rewrite singleton_eq in a_eq; subst a.
+                contradiction (irrefl _ a_lt).
+Qed.
+
+Lemma zorn_contr : False.
+Proof.
     assert ((⋃ conforming ∪ ❴x❵) x) as x_in1 by (right; reflexivity).
     assert ((⋃ conforming) x) as x_in2.
     {
         exists (⋃ conforming ∪ ❴x❵).
-        split; [>exact conf|exact x_in1].
+        split; [>exact zorn_conforming_union_x|exact x_in1].
     }
     unfold x in x_in2.
     unfold f in x_in2.
     rewrite_ex_val x' x'_lt.
     specialize (x'_lt _ x_in2).
-    destruct x'_lt; contradiction.
+    contradiction (irrefl x' x'_lt).
 Qed.
 
 End NotZorn.
