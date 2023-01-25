@@ -80,7 +80,8 @@ Proof.
             classic_contradiction PBc.
             specialize (z_least c (make_and Ac PBc)).
             contradiction (irrefl _ (le_lt_trans z_least c_lt)).
-        -   intros u [Bu u_lt].
+        -   intros u PBu.
+            pose proof PBu as [Bu u_lt].
             assert (P A x u) as [Au u_lt2].
             {
                 classic_contradiction Au.
@@ -91,8 +92,7 @@ Proof.
             destruct (well_orders_chain A A_wo u z Au Az) as [uz|uz].
             +   split; [>exact uz|].
                 intros contr; subst u.
-                apply PBz.
-                split; assumption.
+                contradiction.
             +   exfalso; apply PBz.
                 split; [>|exact (le_lt_trans uz u_lt)].
                 classic_contradiction contr.
