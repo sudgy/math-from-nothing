@@ -786,7 +786,7 @@ Local Instance ub_arch : Archimedean ub.
     {
         clear leq neq.
         nat_induction n.
-        -   do 2 rewrite from_nat_zero.
+        -   setoid_rewrite homo_zero.
             unfold zero at 1; equiv_simpl.
             intros A f g f_homo g_homo; cbn.
             rewrite (land g_homo).

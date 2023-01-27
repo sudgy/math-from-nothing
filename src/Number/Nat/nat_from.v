@@ -7,6 +7,8 @@ Require Export nat_order.
 Require Export nat_abstract.
 Require Import set_order.
 
+Require Export homomorphism.
+
 Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     match a with
     | nat_zero => 0
@@ -49,11 +51,6 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem from_nat_zero : from_nat 0 = (zero (U := U)).
-Proof.
-    reflexivity.
-Qed.
-
 Theorem from_nat_eq_nat : ∀ a, from_nat a = a.
 Proof.
     nat_induction a.
@@ -64,17 +61,16 @@ Proof.
 Qed.
 Global Arguments from_nat : simpl never.
 
-Theorem from_nat_eq : ∀ a b, from_nat a = from_nat b → a = b.
+Global Instance from_nat_inj : HomomorphismInj (from_nat (U := U)).
 Proof.
+    split.
     nat_induction a.
     -   intros b b_eq.
-        rewrite from_nat_zero in b_eq.
         nat_destruct b; [>reflexivity|].
         contradiction (characteristic_zero _ b_eq).
     -   intros b eq.
         nat_destruct b.
-        +   rewrite from_nat_zero in eq.
-            symmetry in eq.
+        +   symmetry in eq.
             contradiction (characteristic_zero _ eq).
         +   apply f_equal.
             apply IHa.
@@ -87,7 +83,6 @@ Theorem nat_mult_rid : ∀ a, a × (one (U := U)) = from_nat a.
 Proof.
     nat_induction a.
     -   rewrite nat_mult_lanni.
-        rewrite from_nat_zero.
         reflexivity.
     -   rewrite nat_mult_suc.
         rewrite IHa.
@@ -95,21 +90,20 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem from_nat_one : from_nat (U := U) 1 = 1.
+Global Instance from_nat_one : HomomorphismOne (from_nat (U := U)).
 Proof.
+    split.
     rewrite <- nat_one_eq.
     rewrite from_nat_suc.
-    rewrite from_nat_zero.
     apply plus_rid.
 Qed.
 
-Theorem from_nat_plus : ∀ a b,
-    from_nat (a + b) = from_nat a + from_nat b.
+Global Instance from_nat_plus : HomomorphismPlus (from_nat (U := U)).
 Proof.
+    split.
     intros a b.
     nat_induction a.
-    -   rewrite from_nat_zero.
-        do 2 rewrite plus_lid.
+    -   do 2 rewrite plus_lid.
         reflexivity.
     -   rewrite nat_plus_lsuc.
         do 2 rewrite from_nat_suc.
@@ -117,41 +111,20 @@ Proof.
         apply plus_assoc.
 Qed.
 
-Theorem from_nat_two : from_nat (U := U) 2 = 2.
+Global Instance from_nat_mult : HomomorphismMult (from_nat (U := U)).
 Proof.
-    rewrite from_nat_plus.
-    rewrite from_nat_one.
-    reflexivity.
-Qed.
-
-Theorem from_nat_three : from_nat (U := U) 3 = 3.
-Proof.
-    rewrite from_nat_plus.
-    rewrite from_nat_one, from_nat_two.
-    reflexivity.
-Qed.
-
-Theorem from_nat_four : from_nat (U := U) 4 = 4.
-Proof.
-    rewrite from_nat_plus.
-    rewrite from_nat_one, from_nat_three.
-    reflexivity.
-Qed.
-
-Theorem from_nat_mult : ∀ a b,
-    from_nat (a * b) = from_nat a * from_nat b.
-Proof.
+    split.
     intros a b.
     nat_induction a.
     -   rewrite mult_lanni.
-        rewrite from_nat_zero.
+        rewrite homo_zero.
         rewrite mult_lanni.
         reflexivity.
     -   rewrite nat_mult_lsuc.
         rewrite from_nat_suc.
         rewrite rdist.
         rewrite mult_lid.
-        rewrite from_nat_plus.
+        setoid_rewrite homo_plus.
         rewrite IHa.
         reflexivity.
 Qed.
@@ -160,7 +133,7 @@ Theorem nat_mult_from : ∀ a b, a × b = from_nat a * b.
 Proof.
     intros a b.
     nat_induction a.
-    -   rewrite from_nat_zero.
+    -   setoid_rewrite homo_zero.
         rewrite mult_lanni.
         apply nat_mult_lanni.
     -   rewrite nat_mult_suc.
@@ -173,7 +146,7 @@ Qed.
 Theorem from_nat_pos : ∀ a, 0 < from_nat (nat_suc a).
 Proof.
     nat_induction a.
-    -   rewrite from_nat_one.
+    -   rewrite homo_one.
         exact one_pos.
     -   rewrite from_nat_suc.
         apply lt_pos_plus; [>exact one_pos|exact IHa].
@@ -182,55 +155,28 @@ Qed.
 Theorem from_nat_pos2 : ∀ a, 0 ≤ from_nat a.
 Proof.
     nat_induction a.
-    -   rewrite from_nat_zero.
+    -   setoid_rewrite homo_zero.
         apply refl.
     -   rewrite from_nat_suc.
         apply le_pos_plus; [>apply one_pos|exact IHa].
 Qed.
 
-Theorem from_nat_le : ∀ a b, from_nat a ≤ from_nat b ↔ a ≤ b.
+Global Instance from_nat_le : HomomorphismLe (from_nat (U := U)).
 Proof.
-    intros a b.
     split.
-    -   revert b.
-        nat_induction a.
-        +   intros b b_ge.
-            apply nat_pos.
-        +   nat_destruct b.
-            *   intros contr.
-                rewrite from_nat_zero in contr.
-                pose proof (from_nat_pos a) as ltq.
-                destruct (lt_le_trans ltq contr); contradiction.
-            *   intros leq.
-                rewrite nat_sucs_le.
-                apply IHa.
-                do 2 rewrite from_nat_suc in leq.
-                apply le_plus_lcancel in leq.
-                exact leq.
-    -   revert b.
-        nat_induction a.
-        +   intros b b_ge.
-            rewrite from_nat_zero.
-            apply from_nat_pos2.
-        +   intros b b_ge.
-            nat_destruct b.
-            *   pose proof (nat_pos2 a) as a_pos.
-                destruct (lt_le_trans a_pos b_ge); contradiction.
-            *   do 2 rewrite from_nat_suc.
-                apply le_lplus.
-                apply IHa.
-                rewrite nat_sucs_le in b_ge.
-                exact b_ge.
-Qed.
-
-Theorem from_nat_lt : ∀ a b,
-    from_nat a < from_nat b ↔ a < b.
-Proof.
-    intros a b.
-    unfold strict.
-    rewrite from_nat_le.
-    rewrite (f_eq_iff from_nat_eq).
-    reflexivity.
+    nat_induction a.
+    -   intros b b_ge.
+        rewrite homo_zero.
+        apply from_nat_pos2.
+    -   intros b b_ge.
+        nat_destruct b.
+        +   pose proof (nat_pos2 a) as a_pos.
+            destruct (lt_le_trans a_pos b_ge); contradiction.
+        +   do 2 rewrite from_nat_suc.
+            apply le_lplus.
+            apply IHa.
+            rewrite nat_sucs_le in b_ge.
+            exact b_ge.
 Qed.
 
 (* begin hide *)
@@ -247,7 +193,7 @@ Local Instance characteristic_zero_not_trivial : NotTrivial U := {
     not_trivial_b := 1;
 }.
 Proof.
-    rewrite <- from_nat_one.
+    rewrite <- homo_one.
     apply characteristic_zero.
 Qed.
 
@@ -290,19 +236,19 @@ Context {U} `{
 
 Theorem two_nz : 0 ≠ 2.
 Proof.
-    rewrite <- from_nat_two.
+    rewrite <- (homo_two from_nat).
     apply from_nat_nz.
 Qed.
 
 Theorem three_nz : 0 ≠ 3.
 Proof.
-    rewrite <- from_nat_three.
+    rewrite <- (homo_three from_nat).
     apply from_nat_nz.
 Qed.
 
 Theorem four_nz : 0 ≠ 4.
 Proof.
-    rewrite <- from_nat_four.
+    rewrite <- (homo_four from_nat).
     apply from_nat_nz.
 Qed.
 
@@ -374,7 +320,7 @@ Proof.
     intros ε ε_pos.
     specialize (arch (/ε) (div_pos ε_pos)) as [n eq].
     nat_destruct n.
-    -   rewrite from_nat_zero in eq.
+    -   rewrite homo_zero in eq.
         apply div_pos in ε_pos.
         destruct (trans ε_pos eq); contradiction.
     -   rewrite <- lt_mult_1_ab_da_b_pos in eq by exact ε_pos.
@@ -391,7 +337,7 @@ Proof.
         exact x_pos.
     -   rewrite nlt_le in x_neg.
         exists 1.
-        rewrite from_nat_one.
+        rewrite homo_one.
         exact (le_lt_trans x_neg one_pos).
 Qed.
 
@@ -406,7 +352,7 @@ Proof.
     remember (nat_suc n) as n'.
     clear n Heqn'; rename n' into n.
     nat_induction n.
-    -   rewrite from_nat_zero.
+    -   rewrite homo_zero.
         rewrite nat_pow_zero.
         exact one_pos.
     -   rewrite from_nat_suc.

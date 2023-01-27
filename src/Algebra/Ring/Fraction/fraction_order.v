@@ -339,7 +339,7 @@ Proof.
     {
         clear n_ltq.
         nat_induction n.
-        -   rewrite from_nat_zero.
+        -   rewrite homo_zero.
             unfold zero at 3; cbn.
             rewrite mult_lanni.
             reflexivity.

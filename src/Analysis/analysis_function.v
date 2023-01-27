@@ -246,7 +246,7 @@ Proof.
         apply (trans xn_lt).
         apply (le_lt_trans2 n_lt).
         apply le_div_pos; [>apply from_nat_pos|].
-        rewrite from_nat_le.
+        rewrite <- homo_le2.
         rewrite nat_sucs_le.
         exact m_leq.
     }

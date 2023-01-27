@@ -98,7 +98,7 @@ Proof.
             destruct b_eq as [b_lt b_nlt].
             apply (trans b_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite <- from_nat_le in n_gt.
+            rewrite homo_le2 in n_gt.
             apply le_div_pos in n_gt.
             2: apply from_nat_pos.
             apply (le_lt_trans n_gt).

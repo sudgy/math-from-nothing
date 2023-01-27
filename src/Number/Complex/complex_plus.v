@@ -81,6 +81,6 @@ Theorem nat_to_complex_plus : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_complex.
-    rewrite from_nat_plus.
+    setoid_rewrite homo_plus.
     apply real_to_complex_plus.
 Qed.

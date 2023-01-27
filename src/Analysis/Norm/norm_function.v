@@ -153,7 +153,7 @@ Proof.
         apply le_div_pos; [>apply from_nat_pos|].
         cbn.
         apply le_lplus.
-        rewrite from_nat_le.
+        rewrite <- homo_le2.
         exact n_geq.
     }
     specialize (f_lim c_lim).

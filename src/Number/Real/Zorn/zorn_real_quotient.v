@@ -917,13 +917,7 @@ Proof.
     rewrite nat_mult_from in n_ltq.
     destruct g_gt as [g_ge g_neq]; clear g_neq.
     apply (le_lmult_pos (from_nat n)) in g_ge.
-    2: {
-        (* TODO: Make this a new theorem *)
-        nat_destruct n.
-        -   rewrite from_nat_zero.
-            apply refl.
-        -   apply from_nat_pos.
-    }
+    2: apply from_nat_pos2.
     apply (lt_le_trans2 g_ge) in n_ltq.
     rewrite polynomial_eval_plus, polynomial_eval_neg.
     rewrite lt_plus_0_anb_b_a.
@@ -933,7 +927,7 @@ Proof.
     apply rmult.
     clear.
     nat_induction n.
-    -   do 2 rewrite from_nat_zero.
+    -   setoid_rewrite homo_zero.
         apply polynomial_eval_zero.
     -   cbn.
         rewrite polynomial_eval_plus.

@@ -197,7 +197,7 @@ Proof.
     intros f f_homo n.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     nat_induction n.
-    -   do 2 rewrite from_nat_zero.
+    -   setoid_rewrite homo_zero.
         exact f_zero.
     -   cbn.
         rewrite f_plus.

@@ -57,8 +57,8 @@ Proof.
         {
             exists (n + 1).
             rewrite nat_mult_from.
-            rewrite from_nat_plus.
-            rewrite from_nat_one.
+            setoid_rewrite homo_plus.
+            setoid_rewrite homo_one.
             reflexivity.
         }
         specialize (α_upper _ n_in).

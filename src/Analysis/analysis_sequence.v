@@ -51,8 +51,8 @@ Proof.
         {
             intros n.
             apply div_pos.
-            rewrite <- from_nat_zero.
-            rewrite from_nat_lt.
+            rewrite <- homo_zero.
+            rewrite <- homo_lt2.
             apply nat_pos2.
         }
         pose (B n := open_ball x [_|n_pos n]).
@@ -87,7 +87,7 @@ Proof.
             unfold B in Bna.
             apply (trans2 N_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite <- from_nat_le in n_gt.
+            rewrite homo_le2 in n_gt.
             apply le_div_pos in n_gt.
             2: apply from_nat_pos.
             apply (lt_le_trans2 n_gt).
@@ -161,7 +161,7 @@ Proof.
         apply le_div_pos.
         1: apply from_nat_pos.
         change (1 + from_nat m) with (from_nat (U := real) (nat_suc m)).
-        rewrite from_nat_le.
+        rewrite <- homo_le2.
         rewrite nat_sucs_le.
         exact m_geq.
 Qed.

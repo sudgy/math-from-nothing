@@ -285,12 +285,12 @@ Proof.
     Unshelve.
     unfold le; cbn.
     apply le_div_pos.
-    -   rewrite <- from_nat_zero.
+    -   rewrite <- homo_zero.
         change (1 + from_nat N) with (from_nat (U := real) (nat_suc N)).
-        rewrite from_nat_lt.
+        rewrite <- homo_lt2.
         apply nat_pos2.
     -   apply le_lplus.
-        rewrite from_nat_le.
+        rewrite <- homo_le2.
         rewrite <- (plus_rid N) at 1.
         apply le_lplus.
         apply nat_pos.
@@ -375,7 +375,7 @@ Proof.
     {
         apply le_div_pos.
         1:  apply from_nat_pos.
-        rewrite from_nat_le.
+        rewrite <- homo_le2.
         rewrite nat_sucs_le.
         apply (trans (lmax N1 N2)).
         apply subsequence_seq_leq.
@@ -959,7 +959,7 @@ Proof.
     rewrite mult_rlinv in N2_eq by apply two_pos.
     pose proof (trans (rmax N1 N2) n_ge) as n_ge2.
     rewrite <- nat_sucs_le in n_ge2.
-    rewrite <- from_nat_le in n_ge2.
+    rewrite homo_le2 in n_ge2.
     apply le_div_pos in n_ge2.
     2: apply from_nat_pos.
     apply le_lmult_pos with 2 in n_ge2.

@@ -28,7 +28,7 @@ Proof.
     rewrite (plus_comm (_ b1)).
     rewrite <- plus_assoc.
     rewrite <- plus_llmove.
-    do 2 rewrite <- from_nat_plus.
+    do 2 rewrite <- homo_plus.
     rewrite plus_comm.
     rewrite eq.
     reflexivity.
@@ -49,8 +49,8 @@ Proof.
     rewrite <- plus_lrmove in eq.
     rewrite <- plus_assoc in eq.
     rewrite <- plus_rlmove in eq.
-    do 2 rewrite <- from_nat_plus in eq.
-    apply from_nat_eq in eq.
+    do 2 rewrite <- homo_plus in eq.
+    apply homo_inj in eq.
     rewrite eq.
     apply plus_comm.
 Qed.
@@ -67,8 +67,8 @@ Proof.
     rewrite <- le_plus_lrmove.
     rewrite plus_comm, plus_assoc.
     rewrite <- le_plus_rrmove.
-    do 2 rewrite <- from_nat_plus.
-    rewrite from_nat_le.
+    do 2 rewrite <- homo_plus.
+    rewrite <- homo_le2.
     rewrite plus_comm.
     rewrite (plus_comm b1).
     reflexivity.
@@ -88,7 +88,7 @@ Theorem int_to_abstract_zero : int_to_abstract 0 = 0.
 Proof.
     unfold zero at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    rewrite from_nat_zero.
+    setoid_rewrite homo_zero.
     rewrite neg_zero, plus_rid.
     reflexivity.
 Qed.
@@ -97,7 +97,8 @@ Theorem int_to_abstract_one : int_to_abstract 1 = 1.
 Proof.
     unfold one at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    rewrite from_nat_zero, from_nat_one.
+    setoid_rewrite homo_zero.
+    setoid_rewrite homo_one.
     rewrite neg_zero, plus_rid.
     reflexivity.
 Qed.
@@ -109,7 +110,7 @@ Proof.
     equiv_get_value a b.
     unfold plus at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    do 2 rewrite from_nat_plus.
+    setoid_rewrite homo_plus.
     rewrite neg_plus.
     repeat rewrite plus_assoc.
     apply rplus.
@@ -137,8 +138,8 @@ Proof.
     equiv_get_value a b.
     unfold mult at 1, int_to_abstract; equiv_simpl.
     unfold int_to_abstract_base; cbn.
-    do 2 rewrite from_nat_plus.
-    do 4 rewrite from_nat_mult.
+    setoid_rewrite homo_plus.
+    setoid_rewrite homo_mult.
     rewrite ldist.
     do 2 rewrite rdist.
     repeat rewrite <- plus_assoc.
@@ -160,7 +161,7 @@ Proof.
     nat_induction n.
     -   unfold int_to_abstract, nat_to_int; equiv_simpl.
         unfold int_to_abstract_base; cbn.
-        rewrite from_nat_zero.
+        rewrite homo_zero.
         rewrite neg_zero.
         apply plus_lid.
     -   cbn.

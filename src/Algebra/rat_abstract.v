@@ -312,8 +312,8 @@ Proof.
         apply (le_lt_trans2 ltq).
         rewrite Heqm'.
         change (nat_suc m) with (1 + m).
-        rewrite from_nat_plus.
-        rewrite from_nat_one.
+        setoid_rewrite homo_plus.
+        rewrite homo_one.
         apply le_lplus.
         exact m_ltq2.
 Qed.

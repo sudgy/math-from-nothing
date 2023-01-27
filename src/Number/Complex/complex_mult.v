@@ -189,6 +189,6 @@ Theorem nat_to_complex_mult : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_complex.
-    rewrite from_nat_mult.
+    setoid_rewrite homo_mult.
     apply real_to_complex_mult.
 Qed.

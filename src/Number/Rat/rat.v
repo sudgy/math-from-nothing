@@ -124,7 +124,7 @@ Qed.
 Theorem from_nat_rat : ∀ a, from_nat a = nat_to_rat a.
 Proof.
     nat_induction a.
-    -   rewrite from_nat_zero.
+    -   rewrite homo_zero.
         reflexivity.
     -   rewrite from_nat_suc.
         rewrite IHa.
