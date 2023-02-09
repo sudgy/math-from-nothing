@@ -46,6 +46,71 @@ Let conforming (A : U → Prop) :=
 
 Local Open Scope set_scope.
 
+Lemma conforming_add_wo : ∀ A, conforming [A|] → well_orders le ([A|] ∪ ❴f A❵).
+Proof.
+    intros A A_conf S S_sub S_ex.
+    classic_case (∃ y, S y ∧ f A ≠ y) as [[y [Sy y_neq]]|y_nex].
+    -   pose proof (S_sub _ Sy) as [y_in|y_in]; [>|contradiction].
+        pose proof (ldand A_conf ([A|] ∩ S)) as a_ex.
+        prove_parts a_ex; [>apply inter_lsub|exists y; split; assumption|].
+        destruct a_ex as [a [[a_in Sa] a_least]].
+        exists a.
+        split; [>exact Sa|].
+        intros z Sz.
+        pose proof (S_sub _ Sz) as [z_in|zx].
+        +   apply a_least.
+            split; assumption.
+        +   rewrite singleton_eq in zx; subst z.
+            apply (f_lt [_|[|A]] _ a_in).
+    -   assert (∀ a, S a → f A = a) as S_eq.
+        {
+            intros a Sa.
+            rewrite not_ex in y_nex.
+            specialize (y_nex a).
+            rewrite not_and_impl, not_not in y_nex.
+            exact (y_nex Sa).
+        }
+        destruct S_ex as [y Sy].
+        pose proof (S_eq _ Sy); subst y.
+        exists (f A).
+        split; [>exact Sy|].
+        intros z Sz.
+        apply S_eq in Sz; subst z.
+        apply refl.
+Qed.
+
+Lemma conforming_add_conforming :
+    ∀ A, conforming [A|] → conforming ([A|] ∪ ❴f A❵).
+Proof.
+    intros A A_conf.
+    split with (conforming_add_wo A A_conf).
+    intros y [y_in|y_eq].
+    -   rewrite (rdand A_conf y y_in) at 1.
+        apply f_equal.
+        rewrite set_type_eq2.
+        apply antisym.
+        +   intros a [Aa a_lt].
+            split; [>|exact a_lt].
+            left; exact Aa.
+        +   intros a [[a_in|a_eq] a_lt].
+            *   split; assumption.
+            *   rewrite singleton_eq in a_eq; subst a.
+                assert (y < f A) as ltq by exact (f_lt [_|[|A]] _ y_in).
+                contradiction (irrefl _ (trans a_lt ltq)).
+    -   rewrite singleton_eq in y_eq; subst y.
+        apply f_equal.
+        apply set_type_eq; cbn.
+        apply antisym.
+        +   intros a a_in.
+            split.
+            *   left; exact a_in.
+            *   exact (f_lt [_|[|A]] _ a_in).
+        +   intros a [a_in a_lt].
+            destruct a_in as [a_in|a_eq]; [>exact a_in|].
+            rewrite singleton_eq in a_eq; subst a.
+            contradiction (irrefl _ a_lt).
+Qed.
+
 Lemma initial1 : ∀ A B, conforming A → conforming B →
     ∀ x y, A y → B x → ¬B y → x < y.
 Proof.
@@ -171,68 +236,9 @@ Proof.
             exact a_in.
     }
     clear x' x'_gt m m_ub.
+    pose proof (conforming_add_conforming [_|union_f] union_conf)
+        as conforming_union_x.
     pose (x := f [_|union_f]).
-    assert (well_orders le (⋃ conforming ∪ ❴x❵)) as wo_union_x.
-    {
-        intros S S_sub S_ex.
-        classic_case (∃ y, S y ∧ x ≠ y) as [[y [Sy y_neq]]|y_nex].
-        -   pose proof (S_sub _ Sy) as [y_in|y_in]; [>|contradiction].
-            pose proof (ldand union_conf (⋃ conforming ∩ S)) as a_ex.
-            prove_parts a_ex; [>apply inter_lsub|exists y; split; assumption|].
-            destruct a_ex as [a [[a_in Sa] a_least]].
-            exists a.
-            split; [>exact Sa|].
-            intros z Sz.
-            pose proof (S_sub _ Sz) as [z_in|zx].
-            +   apply a_least.
-                split; assumption.
-            +   rewrite singleton_eq in zx; subst z.
-                apply (f_lt [_|union_f] _ a_in).
-        -   assert (∀ a, S a → x = a) as S_eq.
-            {
-                intros a Sa.
-                rewrite not_ex in y_nex.
-                specialize (y_nex a).
-                rewrite not_and_impl, not_not in y_nex.
-                exact (y_nex Sa).
-            }
-            destruct S_ex as [y Sy].
-            pose proof (S_eq _ Sy); subst y.
-            exists x.
-            split; [>exact Sy|].
-            intros z Sz.
-            apply S_eq in Sz; subst z.
-            apply refl.
-    }
-    assert (conforming (⋃ conforming ∪ ❴x❵)) as conforming_union_x.
-    {
-        split with wo_union_x.
-        intros y [y_in|y_eq].
-        -   rewrite (rdand union_conf y y_in) at 1.
-            apply f_equal.
-            rewrite set_type_eq2.
-            apply antisym.
-            +   intros a [Aa a_lt].
-                split; [>|exact a_lt].
-                left; exact Aa.
-            +   intros a [[a_in|a_eq] a_lt].
-                *   split; assumption.
-                *   rewrite singleton_eq in a_eq; subst a.
-                    assert (y < x) as ltq by exact (f_lt [_|union_f] _ y_in).
-                    contradiction (irrefl _ (trans a_lt ltq)).
-        -   rewrite singleton_eq in y_eq; subst y.
-            apply f_equal.
-            rewrite set_type_eq2.
-            apply antisym.
-            +   intros a a_in.
-                split.
-                *   left; exact a_in.
-                *   exact (f_lt [_|union_f] _ a_in).
-            +   intros a [a_in a_lt].
-                destruct a_in as [a_in|a_eq]; [>exact a_in|].
-                rewrite singleton_eq in a_eq; subst a.
-                contradiction (irrefl _ a_lt).
-    }
     assert ((⋃ conforming ∪ ❴x❵) x) as x_in1 by (right; reflexivity).
     assert ((⋃ conforming) x) as x_in2.
     {
