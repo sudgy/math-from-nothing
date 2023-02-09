@@ -4,7 +4,7 @@ Require Export topology_base.
 Require Import topology_continuous.
 
 Definition homeomorphism {U V} `{Topology U, Topology V} (f : U → V) :=
-    continuous f ∧ ∃ H : bijective f, continuous (bij_inv f H).
+    continuous f ∧ ∃ H : Bijective f, continuous (bij_inv f).
 
 (* begin hide *)
 Section Homeomorphism.
@@ -13,7 +13,7 @@ Context {U V} `{Topology U, Topology V}.
 Variable f : U → V.
 (* end hide *)
 Theorem homeomorphism_open :
-   homeomorphism f ↔ (bijective f ∧ (∀ A, open A ↔ open (image_under f A))).
+   homeomorphism f ↔ (Bijective f ∧ (∀ A, open A ↔ open (image_under f A))).
 Proof.
     split.
     -   intros [cont [bij inv_cont]].

@@ -83,7 +83,7 @@ Proof.
     intros A B C D [f [f_bij f_iso]] [g [g_bij g_iso]].
     exists (λ x, (f (fst x), g (snd x))).
     split.
-    split.
+    split; split.
     -   intros [a1 c1] [a2 c2] eq.
         inversion eq as [eq1]; rename H into eq2.
         apply f_bij in eq1.
@@ -91,8 +91,8 @@ Proof.
         subst.
         reflexivity.
     -   intros [b d].
-        pose proof (rand f_bij b) as [a a_eq].
-        pose proof (rand g_bij d) as [c c_eq].
+        pose proof (sur f b) as [a a_eq].
+        pose proof (sur g d) as [c c_eq].
         exists (a, c); cbn.
         rewrite a_eq, c_eq.
         reflexivity.
@@ -141,7 +141,7 @@ Proof.
                  | inr c => inr (fst x, c)
                  end).
     split.
-    split.
+    split; split.
     -   intros [a1 [b1|c1]] [a2 [b2|c2]] eq; cbn in *.
         all: inversion eq.
         all: reflexivity.
@@ -177,7 +177,7 @@ Proof.
     unfold mult; equiv_simpl.
     exists (λ x, ((fst x, fst (snd x)), snd (snd x))).
     split.
-    split.
+    split; split.
     -   intros [a1 [b1 c1]] [a2 [b2 c2]] eq; cbn in *.
         inversion eq.
         reflexivity.
@@ -230,7 +230,7 @@ Proof.
     }
     exists (λ x, False_rect _ (none x)).
     split.
-    split.
+    split; split.
     -   intros a.
         exfalso.
         apply none in a.
@@ -261,7 +261,7 @@ Proof.
     }
     exists (λ x, False_rect _ (none x)).
     split.
-    split.
+    split; split.
     -   intros a.
         exfalso.
         apply none in a.
@@ -296,7 +296,7 @@ Proof.
     }
     exists (λ x, ([0|z_lt], x)).
     split.
-    split.
+    split; split.
     -   intros a b eq.
         inversion eq.
         reflexivity.
@@ -342,7 +342,7 @@ Proof.
     }
     exists (λ x, (x, [0|z_lt])).
     split.
-    split.
+    split; split.
     -   intros a b eq.
         inversion eq.
         reflexivity.
@@ -402,7 +402,7 @@ Proof.
         unfold nat_to_ord; equiv_simpl.
         exists (λ x, False_rect _ (contr x)).
         split.
-        split.
+        split; split.
         -   intros a.
             contradiction (contr a).
         -   intros [b b_eq].
@@ -434,7 +434,7 @@ Proof.
     }
     exists (λ ca, [g ca|g_in ca]).
     split.
-    split.
+    split; split.
     -   intros [c1 a1] [c2 a2] eq.
         unfold g in eq; cbn in eq.
         inversion eq as [[eq1 eq2]].
@@ -453,7 +453,7 @@ Proof.
                 subst c.
                 contradiction.
         }
-        pose proof (rand f_bij [b|b_lt]) as [a a_eq].
+        pose proof (sur f [b|b_lt]) as [a a_eq].
         exists (c, a).
         apply set_type_eq; cbn.
         unfold g; cbn.
@@ -521,8 +521,9 @@ Proof.
     destruct eq as [b [f [f_bij f_iso]]].
     destruct contr as [[a c] [g [g_bij g_iso]]].
     pose (h x := ([f (fst [g x|])|], snd [g x|])).
-    assert (injective h) as h_inj.
+    assert (Injective h) as h_inj.
     {
+        split.
         intros [b1 c1] [b2 c2] eq.
         unfold h in eq.
         inversion eq as [[eq1 eq2]].
@@ -686,7 +687,7 @@ Proof.
                 rewrite not_true in contr.
                 exists (λ x, False_rect _ (contr x)).
                 split.
-                split.
+                split; split.
                 +   intros m.
                     exfalso.
                     contradiction (contr m).
@@ -701,12 +702,12 @@ Proof.
         }
         exists (λ m, False_rect _ (m_empty m)).
         split.
-        split.
+        split; split.
         +   intros m.
             exfalso.
             contradiction (m_empty m).
         +   intros b.
-            pose proof (rand f_bij (a, b)) as [m m_eq].
+            pose proof (sur f (a, b)) as [m m_eq].
             contradiction (m_empty m).
         +   intros m.
             exfalso.
@@ -748,7 +749,7 @@ Proof.
     }
     exists (λ m, False_rect _ (m_empty m)).
     split.
-    split.
+    split; split.
     +   intros m.
         exfalso.
         contradiction (m_empty m).
@@ -806,7 +807,7 @@ Proof.
     }
     exists (λ x, [f x|f_in x]).
     split.
-    split.
+    split; split.
     -   intros [[m1 m1_lt] [n1 n1_lt]] [[m2 m2_lt] [n2 n2_lt]] eq.
         inversion eq as [eq2]; clear eq.
         unfold f in eq2; cbn in eq2.
@@ -866,7 +867,7 @@ Proof.
     pose proof (nat_lt_one_eq z z_lt); subst z.
     exists (λ x, False_rect _ (nat_lt_0_false x)).
     split.
-    1: split.
+    1: split; split.
     -   intros a.
         contradiction (nat_lt_0_false a).
     -   intros a.

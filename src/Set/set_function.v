@@ -43,14 +43,14 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem inverse_image_bij_inv {U V} : ∀ S (f : U → V) f_bij,
-    (inverse_image (bij_inv f f_bij) S) = image_under f S.
+Theorem inverse_image_bij_inv {U V} : ∀ S (f : U → V) `{@Bijective U V f},
+    (inverse_image (bij_inv f) S) = image_under f S.
 Proof.
     intros S f f_bij.
     apply antisym.
     -   intros y y_in.
         unfold inverse_image in y_in.
-        exists (bij_inv f f_bij y).
+        exists (bij_inv f y).
         split; [>exact y_in|].
         symmetry; apply inverse_eq2.
         apply bij_inv_inv.
@@ -61,12 +61,12 @@ Proof.
 Qed.
 
 Theorem bij_inverse_image {U V} : ∀ S (f : U → V),
-    bijective f → image_under f (inverse_image f S) = S.
+    Bijective f → image_under f (inverse_image f S) = S.
 Proof.
     intros S f f_bij.
     apply antisym; [>apply image_inverse_sub|].
     intros y Sy.
-    exists (bij_inv f f_bij y).
+    exists (bij_inv f y).
     unfold inverse_image.
     rewrite inverse_eq2 by apply bij_inv_inv.
     split.
@@ -75,12 +75,12 @@ Proof.
 Qed.
 
 Theorem inj_inverse_image {U V} : ∀ S (f : U → V),
-    injective f → inverse_image f (image_under f S) = S.
+    Injective f → inverse_image f (image_under f S) = S.
 Proof.
     intros S f f_inj.
     apply antisym.
     -   intros x [y [Sy eq]].
-        apply f_inj in eq.
+        apply inj in eq.
         subst.
         exact Sy.
     -   intros x Sx.

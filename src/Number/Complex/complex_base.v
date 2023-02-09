@@ -44,7 +44,7 @@ Qed.
 Theorem nat_to_complex_eq : ∀ a b, nat_to_complex a = nat_to_complex b → a = b.
 Proof.
     intros a b eq.
-    apply homo_inj.
+    apply (inj (f := from_nat)).
     apply real_to_complex_eq.
     exact eq.
 Qed.

@@ -811,7 +811,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem sum_grade_project_single : ∀ f A n a b, injective f →
+Theorem sum_grade_project_single : ∀ f A n a b, Injective f →
     ∀ m, f m = n → a ≤ m → m < a + b →
     sum (λ m, grade_project (grade_project A (f m)) n) a b =
     grade_project A n.

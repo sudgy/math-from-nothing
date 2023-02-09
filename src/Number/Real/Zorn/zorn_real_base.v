@@ -115,9 +115,10 @@ Proof.
     exact f_zero.
 Qed.
 
-Theorem arch_ordered_homo_inj : ∀ f, arch_ordered_homo f → injective f.
+Theorem arch_ordered_homo_inj : ∀ f, arch_ordered_homo f → Injective f.
 Proof.
     intros f f_homo.
+    split.
     intros a b eq.
     rewrite <- plus_0_anb_b_a.
     rewrite <- plus_0_anb_b_a in eq.

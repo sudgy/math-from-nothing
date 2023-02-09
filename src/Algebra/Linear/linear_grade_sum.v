@@ -60,6 +60,7 @@ Proof.
     apply (le_lt_trans2 (nat_is_finite 1)).
     unfold nat_to_card, le at 1; equiv_simpl.
     exists (λ _, [0|nat_one_pos]).
+    split.
     intros [a a_neq] [b b_neq] eq; clear eq.
     unfold single_to_grade_sum_base in *.
     apply set_type_eq; cbn.
@@ -121,6 +122,7 @@ Proof.
         | strong_or_left  H => inl [[n|]|H]
         | strong_or_right H => inr [[n|]|H]
     end).
+    split.
     intros a b eq.
     destruct (n_in a) as [neq1|neq1]; destruct (n_in b) as [neq2|neq2].
     all: inversion eq as [eq2].
@@ -191,6 +193,7 @@ Proof.
         contradiction.
     }
     exists (λ n, [[n|]|n_in n]).
+    split.
     intros a b eq.
     apply set_type_eq in eq; cbn in eq.
     apply set_type_eq in eq; cbn in eq.
@@ -242,6 +245,7 @@ Proof.
         contradiction.
     }
     exists (λ n, [[n|]|n_in n]).
+    split.
     intros a b eq.
     apply set_type_eq in eq; cbn in eq.
     apply set_type_eq in eq; cbn in eq.
@@ -506,7 +510,7 @@ Next Obligation.
                 rewrite plus_lid.
                 exact IHn.
         *   rewrite neq_sym in fv_nz.
-            pose proof (g_sur [m|fv_nz]) as [vn vn_eq].
+            pose proof (sur g [m|fv_nz]) as [vn vn_eq].
             pose (h' m := If m < n then h m else 0).
             assert (∀ m, m < n → h m = h' m) as h'_eq.
             {

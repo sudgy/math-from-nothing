@@ -53,6 +53,7 @@ Proof.
         intros n.
         unfold nat_to_card, le; equiv_simpl.
         exists (λ x, [x|]).
+        split.
         intros a b eq.
         apply set_type_eq.
         exact eq.
@@ -63,7 +64,7 @@ Proof.
     -   intro contr.
         unfold nat_to_card in contr; equiv_simpl in contr.
         destruct contr as [f f_bij].
-        pose proof (rand f_bij 0) as [x x_eq].
+        pose proof (sur f 0) as [x x_eq].
         exact (nat_lt_0_false x).
     -   intro eq.
         apply IHn; clear IHn.
@@ -73,7 +74,7 @@ Proof.
         unfold nat_to_card in eq; unfold nat_to_card, le.
         equiv_simpl; equiv_simpl in eq.
         destruct eq as [f f_bij].
-        pose proof (rand f_bij [n|nat_lt_suc n]) as [m m_eq].
+        pose proof (sur f [n|nat_lt_suc n]) as [m m_eq].
         pose (g x := If x < m then f x else f (nat_suc x)).
         assert (∀ x, [g x|] < n) as g_lt.
         {
@@ -105,6 +106,7 @@ Proof.
                 contradiction.
         }
         exists (λ x, [[g x|] | g_lt x]).
+        split.
         intros a b eq.
         unfold g in eq.
         inversion eq as [eq2].
@@ -133,7 +135,7 @@ Proof.
         ∃ a, ∀ n, f n ≠ a) as h_ex.
     {
         intros fp ff; cbn.
-        classic_case (surjective ff).
+        classic_case (Surjective ff).
         -   assert (|A| ≤ nat_to_card fp) as leq.
             {
                 unfold nat_to_card, le; equiv_simpl.
@@ -141,12 +143,21 @@ Proof.
             }
             pose proof (lt_le_trans (A_gt fp) leq) as [C0 C1].
             contradiction.
-        -   unfold surjective in n.
-            rewrite not_all in n.
-            destruct n as [a A_nsur].
-            exists a.
+        -   assert (∃ a, ∀ x, ff x ≠ a) as [a A_nsur].
+            {
+                classic_contradiction contr.
+                apply n; split.
+                rewrite not_ex in contr.
+                intros y.
+                specialize (contr y).
+                rewrite not_all in contr.
+                destruct contr as [a neq].
+                exists a.
+                rewrite not_not in neq.
+                exact neq.
+            }
+            exists a; clear n.
             intros n.
-            rewrite not_ex in A_nsur.
             apply A_nsur.
     }
     pose proof (transfinite_recursion A (λ p f, ex_val (h_ex p f))) as [f f_rec].
@@ -164,6 +175,7 @@ Proof.
         rewrite <- f_rec in a_eq.
         exact a_eq.
     }
+    split.
     intros m n eq.
     classic_contradiction contr.
     destruct (trichotomy m n) as [[ltq|eq2]|ltq]; try contradiction.
@@ -206,13 +218,22 @@ Proof.
             unfold nat_to_card in contr; equiv_simpl in contr.
             rewrite not_ex in contr.
             specialize (contr f).
-            unfold bijective in contr.
-            rewrite not_and in contr.
-            destruct contr as [contr|contr]; try contradiction.
-            unfold surjective in contr.
-            rewrite not_all in contr.
-            destruct contr as [y no_x].
-            rewrite not_ex in no_x.
+            assert (∃ y, ∀ x, f x ≠ y) as [y no_x].
+            {
+                classic_contradiction contr2.
+                apply contr.
+                split; [>exact f_inj|].
+                split.
+                intros y.
+                rewrite not_ex in contr2.
+                specialize (contr2 y).
+                rewrite not_all in contr2.
+                destruct contr2 as [a neq].
+                exists a.
+                rewrite not_not in neq.
+                exact neq.
+            }
+            clear contr.
             classic_case ([y|] = m) as [eq|neq].
             -   assert (∀ x, [f x|] < m) as f_lt.
                 {
@@ -226,6 +247,7 @@ Proof.
                     exact (no_x _ contr).
                 }
                 exists (λ x, [[f x|]|f_lt x]).
+                split.
                 intros a b eq2.
                 inversion eq2 as [eq3].
                 apply set_type_eq in eq3.
@@ -246,6 +268,7 @@ Proof.
                         exact fx_lt.
                 }
                 exists (λ x, [g x|g_lt x]).
+                split.
                 intros a b eq.
                 inversion eq as [eq2].
                 unfold g in eq2.
@@ -294,7 +317,7 @@ Proof.
         | inr n => f [n|]
         end
     ).
-    split.
+    split; split.
     -   intros [a|[a a_lt]] [b|[b b_lt]] eq.
         +   do 2 destruct (strong_excluded_middle _).
             *   apply f_inj in eq.
@@ -373,7 +396,7 @@ Proof.
         assert (∀ n, 0 ≠ nat_suc n) as suc_neq by (intros n c; inversion c).
         equiv_simpl.
         exists (λ n, [nat_suc n | suc_neq n]).
-        split.
+        split; split.
         -   intros a b eq.
             inversion eq.
             reflexivity.
@@ -398,7 +421,7 @@ Proof.
     }
     exists (λ x, [f x|f_in x]).
     assert ((zero (U := nat)) ≠ 2) as two_nz by (intro C; inversion C).
-    split.
+    split; split.
     -   intros [a1 a2] [b1 b2] eq.
         unfold f in eq; cbn in eq.
         inversion eq as [eq2].

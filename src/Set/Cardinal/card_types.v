@@ -19,6 +19,7 @@ Proof.
     intros E.
     unfold le; equiv_simpl.
     exists (λ (x : equiv_type E), ex_val [|x]).
+    split.
     intros a b eq.
     destruct a as [a_set a_in], b as [b_set b_in].
     cbn in eq.
@@ -65,6 +66,7 @@ Proof.
             split; assumption.
         }
         exists (λ x, [[x|]|x_in x]).
+        split.
         intros x y eq.
         apply set_type_eq in eq; cbn in eq.
         apply set_type_eq in eq.
@@ -116,6 +118,7 @@ Proof.
         -   apply x_lt.
     }
     exists (λ x, [[x|]|x_in x]).
+    split.
     intros x y eq.
     apply set_type_eq in eq; cbn in eq.
     apply set_type_eq in eq.
@@ -134,6 +137,7 @@ Proof.
         apply refl.
     -   unfold le; equiv_simpl.
         exists nat_to_int.
+        split.
         intros a b eq.
         apply nat_to_int_eq.
         exact eq.
@@ -151,6 +155,7 @@ Proof.
         exact leq.
     -   unfold le; equiv_simpl.
         exists nat_to_rat.
+        split.
         intros a b eq.
         apply nat_to_rat_eq.
         exact eq.
@@ -212,7 +217,9 @@ Proof.
         ((λ q : rat, rat_to_abstract q < a) = (λ q : rat, rat_to_abstract q < b)
         → a = b)).
     {
-        intros wlog a b eq.
+        intros wlog.
+        split.
+        intros a b eq.
         destruct (connex a b) as [leq|leq].
         +   apply wlog; assumption.
         +   symmetry in eq.

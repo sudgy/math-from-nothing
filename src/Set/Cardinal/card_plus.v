@@ -17,7 +17,7 @@ Proof.
                  | inl a => inl (f a)
                  | inr c => inr (g c)
                  end).
-    split.
+    split; split.
     -   intros [a1|c1] [a2|c2] eq.
         all: inversion eq as [eq2].
         all: apply f_equal.
@@ -26,11 +26,11 @@ Proof.
         +   apply g_bij.
             exact eq2.
     -   intros [b|d].
-        +   pose proof (rand f_bij b) as [a eq].
+        +   pose proof (sur f b) as [a eq].
             exists (inl a).
             apply f_equal.
             exact eq.
-        +   pose proof (rand g_bij d) as [c eq].
+        +   pose proof (sur g d) as [c eq].
             exists (inr c).
             apply f_equal.
             exact eq.
@@ -54,7 +54,7 @@ Proof.
                     | inr c => inr c
                     end
         end).
-    split.
+    split; split.
     -   intros [a1|[b1|c1]] [a2|[b2|c2]] eq.
         all: inversion eq.
         all: reflexivity.
@@ -79,7 +79,7 @@ Proof.
                  | inl a => inr a
                  | inr b => inl b
                  end).
-    split.
+    split; split.
     -   intros [a1|b1] [a2|b2] eq.
         all: inversion eq.
         all: reflexivity.
@@ -112,7 +112,7 @@ Proof.
                  | inl y => False_rect _ (xf y)
                  | inr a => a
                  end).
-    split.
+    split; split.
     -   intros [x|a1]; try contradiction (xf x).
         intros [x|a2]; try contradiction (xf x).
         intro eq.
@@ -135,6 +135,7 @@ Proof.
                  | inl c => inl c
                  | inr a => inr (f a)
                  end).
+    split.
     intros [c1|a1] [c2|a2] eq.
     all: inversion eq as [eq2].
     -   reflexivity.
@@ -166,6 +167,7 @@ Proof.
     intros S T.
     unfold le; equiv_simpl.
     exists (λ (x : set_type S), [[x|] | make_lor [|x]]).
+    split.
     intros a b eq.
     inversion eq as [eq2].
     apply set_type_eq in eq2.
@@ -190,6 +192,7 @@ Proof.
         | strong_or_left H => inl [[x|] | H]
         | strong_or_right H => inr [[x|] | H]
         end).
+    split.
     intros [a a_in] [b b_in] eq.
     destruct (or_to_strong _ _ _) as [Sa|Ta].
     all: destruct (or_to_strong _ _ _) as [Sb|Tb].
@@ -204,7 +207,7 @@ Proof.
     unfold zero; cbn.
     unfold nat_to_card; equiv_simpl.
     exists (λ x, False_rect _ (A_false x)).
-    split.
+    split; split.
     -   intros a b eq.
         contradiction (A_false a).
     -   intros a.
@@ -243,7 +246,7 @@ Proof.
                 contradiction.
         }
         exists (λ x, [[f' x|]|f'_lt x]).
-        split.
+        split; split.
         +   intros x y eq.
             unfold f' in eq.
             inversion eq as [eq2].
@@ -258,7 +261,7 @@ Proof.
                 apply (trans y_lt).
                 apply nat_lt_suc.
             }
-            pose proof (f_sur [y|y_lt2]) as [x x_eq].
+            pose proof (sur f [y|y_lt2]) as [x x_eq].
             assert ([a|] ≠ [x|]) as x_neq.
             {
                 intros eq.
@@ -294,7 +297,7 @@ Proof.
                 exact [|f [[x|] | land [|x]]].
         }
         exists (λ x, [f' x|f'_lt x]).
-        split.
+        split; split.
         +   intros x y eq.
             unfold f' in eq.
             inversion eq as [eq2]; clear eq.
@@ -327,7 +330,7 @@ Proof.
                 exact eq3.
         +   intros [y y_lt].
             classic_case ([f a|] = y) as [fay|fay].
-            *   pose proof (f_sur [n|nat_lt_suc n]) as [x x_eq].
+            *   pose proof (sur f [n|nat_lt_suc n]) as [x x_eq].
                 assert ([a|] ≠ [x|]) as neq.
                 {
                     intros contr.
@@ -345,7 +348,7 @@ Proof.
                     rewrite (proof_irrelevance _ Sx) in n0.
                     rewrite x_eq in n0.
                     contradiction.
-            *   pose proof (f_sur [y|trans y_lt (nat_lt_suc n)]) as [x x_eq].
+            *   pose proof (sur f [y|trans y_lt (nat_lt_suc n)]) as [x x_eq].
                 assert ([a|] ≠ [x|]) as neq.
                 {
                     intros contr.
@@ -397,7 +400,7 @@ Proof.
         | inl a => [[a|]|make_lor [|a]]
         | inr b => [[b|]|make_ror [|b]]
         end).
-    split.
+    split; split.
     -   intros [[a1 Aa1]|[b1 Bb1]] [[a2 Aa2]|[b2 Bb2]] eq.
         all: apply set_type_eq in eq; cbn in eq; subst.
         +   apply f_equal.

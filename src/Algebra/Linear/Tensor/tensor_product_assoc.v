@@ -446,7 +446,7 @@ Proof.
     apply (ex_proof tensor_product_assoc).
 Qed.
 
-Theorem tensor_product_assoc_bij : bijective af.
+Theorem tensor_product_assoc_bij : Bijective af.
 Proof.
     pose proof (land (ex_proof tensor_product_assoc))
         as [[g g_plus g_scalar] [fg gf]].
@@ -503,7 +503,7 @@ Proof.
     split; apply fg.
 Qed.
 
-Theorem tensor_product_assoc_inv_bij : bijective af'.
+Theorem tensor_product_assoc_inv_bij : Bijective af'.
 Proof.
     pose proof tensor_product_assoc_inv_iso as [[g g_plus g_scalar] [fg gf]].
     unfold module_homo_compose, module_homo_id in *; cbn in *.

@@ -259,6 +259,7 @@ Proof.
             unfold le, nat_to_card, mult; equiv_simpl.
             exists (λ aa,
                 (f [fst [aa|] | land [|aa]], f [snd [aa|] | rand [|aa]])).
+            split.
             intros [[a1 a2] [Aa1 Aa2]] [[a3 a4] [Aa3 Aa4]] eq; cbn in *.
             inversion eq as [[eq1 eq2]]; clear eq.
             apply f_bij in eq1, eq2.
@@ -278,6 +279,7 @@ Proof.
             let a1 := ex_val [|M] in
             let  a2 := ex_val (ex_proof [|M]) in
             [([a1|], [a2|]) | make_and [|a1] [|a2]]).
+        split.
         intros x y eq; cbn in eq.
         inversion eq as [[eq1 eq2]]; clear eq.
         apply set_type_eq in eq1, eq2.

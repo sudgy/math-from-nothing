@@ -115,6 +115,7 @@ Proof.
                          | strong_or_left H => inl ([[x|]|H])
                          | strong_or_right H => inr ([[x|]|H])
                          end).
+            split.
             intros a b eq.
             destruct (x_in a); destruct (x_in b).
             all: inversion eq as [eq2].
@@ -265,6 +266,7 @@ Proof.
                 exact x_neq.
             }
             exists (λ x, [[[x|]|]|f_in [x|] [|x]]).
+            split.
             intros x y eq.
             inversion eq as [eq2].
             do 2 apply (land set_type_eq) in eq2.
@@ -427,7 +429,7 @@ Notation "A ⊙ B" := (make_ord_type _ (ord_pow_le A B)
 (* begin hide *)
 Lemma ord_pow_wd_fin : ∀ {A B C D} (F : ord_pow_type A C)
     (f : ord_U A → ord_U B) (g : ord_U D → ord_U C),
-    bijective f → bijective g →
+    Bijective f → Bijective g →
     (∀ a b, ord_le A a b ↔ ord_le B (f a) (f b)) →
     (∀ a b, ord_le D a b ↔ ord_le C (g a) (g b)) →
     ord_fin_support (λ x : ord_U D, f (ord_pow_f F (g x))).
@@ -436,7 +438,7 @@ Proof.
     get_ord_wo A.
     get_ord_wo B.
     pose (F E := (λ x, f (ord_pow_f E (g x)))).
-    pose (g' := bij_inv g g_bij).
+    pose (g' := bij_inv g).
     unfold ord_fin_support in *.
     assert (|set_type (λ x, ord_pow_f E x ≠ ord_zero (ord_pow_f E x))| =
             |set_type (λ x, F E x ≠ ord_zero (F E x))|) as eq.
@@ -447,7 +449,8 @@ Proof.
         {
             unfold F.
             intros x x_neq x_eq.
-            rewrite (inverse_eq2 _ _ (bij_inv_inv _ g_bij)) in x_eq.
+            unfold g' in x_eq.
+            rewrite (inverse_eq2 _ _ (bij_inv_inv g)) in x_eq.
             apply x_neq; clear x_neq.
             apply antisym; try apply ord_zero_le.
             rewrite f_iso.
@@ -455,14 +458,15 @@ Proof.
             apply ord_zero_le.
         }
         exists (λ x, [g' [x|] | nz [x|] [|x]]).
-        split.
+        split; split.
         -   intros a b eq.
             inversion eq as [eq2].
-            apply (bij_inv_bij _ g_bij) in eq2.
+            apply (bij_inv_bij _) in eq2.
             apply set_type_eq in eq2.
             exact eq2.
         -   intros [y y_nz].
-            pose proof (rand (bij_inv_bij _ g_bij) y) as [x x_eq].
+            pose proof (bij_inv_bij g).
+            pose proof (sur g' y) as [x x_eq].
             assert (ord_pow_f E x ≠ ord_zero (ord_pow_f E x)) as x_in.
             {
                 intro eq.
@@ -470,7 +474,8 @@ Proof.
                 subst y.
                 apply antisym; try apply ord_zero_le.
                 unfold F.
-                rewrite (inverse_eq2 _ _ (bij_inv_inv _ g_bij)).
+                unfold g'.
+                rewrite (inverse_eq2 _ _ (bij_inv_inv g)).
                 rewrite <- (ord_zero_iso _ f f_bij f_iso).
                 rewrite <- f_iso.
                 rewrite eq.
@@ -490,21 +495,23 @@ Proof.
     intros A B C D [f [f_bij f_iso]] [g [g_bij g_iso]].
     get_ord_wo A.
     get_ord_wo B.
-    pose (g' := bij_inv g g_bij).
+    pose (g' := bij_inv g).
+    pose proof (bij_inv_bij g) as g'_bij.
+    fold g' in g'_bij.
     pose (F E := (λ x, f (ord_pow_f E (g' x)))).
     assert (∀ E, ord_fin_support (F E)) as F_fin.
     {
         intros E.
         apply ord_pow_wd_fin; try assumption.
-        -   apply bij_inv_bij.
-        -   intros a b.
-            rewrite g_iso.
-            do 2 rewrite (inverse_eq2 _ _ (bij_inv_inv _ g_bij)).
-            reflexivity.
+        intros a b.
+        rewrite g_iso.
+        unfold g'.
+        do 2 rewrite (inverse_eq2 g _ (bij_inv_inv g)).
+        reflexivity.
     }
     exists (λ E, make_ord_pow (F E) (F_fin E)).
     split.
-    1: split.
+    1: split; split.
     -   intros [Xf X_fin] [Yf Y_fin] eq; cbn in *.
         apply ord_pow_eq; cbn.
         inversion eq as [eq2].
@@ -513,10 +520,11 @@ Proof.
         pose proof (func_eq _ _ eq2 (g x)) as eq3.
         cbn in eq3.
         apply f_bij in eq3.
-        rewrite (inverse_eq1 _ _ (bij_inv_inv _ g_bij)) in eq3.
+        unfold g' in eq3.
+        rewrite (inverse_eq1 _ _ (bij_inv_inv g)) in eq3.
         exact eq3.
     -   intros Y.
-        pose (f' := bij_inv f f_bij).
+        pose (f' := bij_inv f).
         pose (F' (x : ord_U C) := f' (ord_pow_f Y (g x))).
         assert (ord_fin_support F') as F'_fin.
         {
@@ -524,7 +532,8 @@ Proof.
             -   apply bij_inv_bij.
             -   intros a b.
                 rewrite f_iso.
-                do 2 rewrite (inverse_eq2 _ _ (bij_inv_inv _ f_bij)).
+                unfold f'.
+                do 2 rewrite (inverse_eq2 _ _ (bij_inv_inv _)).
                 reflexivity.
         }
         exists (make_ord_pow F' F'_fin).
@@ -532,8 +541,9 @@ Proof.
         intros x.
         unfold F'; cbn.
         unfold F; cbn.
-        rewrite (inverse_eq2 _ _ (bij_inv_inv _ f_bij)).
-        rewrite (inverse_eq2 _ _ (bij_inv_inv _ g_bij)).
+        unfold f', g'.
+        rewrite (inverse_eq2 _ _ (bij_inv_inv _)).
+        rewrite (inverse_eq2 _ _ (bij_inv_inv _)).
         reflexivity.
     -   intros X Y.
         cbn.
@@ -547,11 +557,13 @@ Proof.
             *   right; cbn.
                 exists (g x).
                 split.
-                --  rewrite (inverse_eq1 _ _ (bij_inv_inv _ g_bij)).
+                --  unfold g'.
+                    rewrite (inverse_eq1 _ _ (bij_inv_inv _)).
                     rewrite <- (ord_iso_strict f_bij f_iso).
                     exact x_lt.
-                --  intros y y_lt.
-                    rewrite <- (inverse_eq2 _ g' (bij_inv_inv _ g_bij) y) in y_lt.
+                --  unfold g'.
+                    intros y y_lt.
+                    rewrite <- (inverse_eq2 _ g' (bij_inv_inv _) y) in y_lt.
                     rewrite <- (ord_iso_strict g_bij g_iso) in y_lt.
                     apply f_equal.
                     exact (x_gt _ y_lt).
@@ -561,7 +573,8 @@ Proof.
                 intros x.
                 specialize (eq (g x)).
                 apply f_bij in eq.
-                rewrite (inverse_eq1 _ _ (bij_inv_inv _ g_bij)) in eq.
+                unfold g' in eq.
+                rewrite (inverse_eq1 _ _ (bij_inv_inv _)) in eq.
                 exact eq.
             *   right; cbn in *.
                 exists (g' x).
@@ -570,10 +583,11 @@ Proof.
                     exact x_lt.
                 --  intros y y_lt.
                     rewrite (ord_iso_strict g_bij g_iso) in y_lt.
-                    rewrite (inverse_eq2 _ _ (bij_inv_inv _ g_bij)) in y_lt.
+                    unfold g' in y_lt, x_gt.
+                    rewrite (inverse_eq2 _ _ (bij_inv_inv _)) in y_lt.
                     specialize (x_gt _ y_lt).
                     apply f_bij in x_gt.
-                    rewrite (inverse_eq1 _ _ (bij_inv_inv _ g_bij)) in x_gt.
+                    rewrite (inverse_eq1 _ _ (bij_inv_inv _)) in x_gt.
                     exact x_gt.
 Qed.
 (* end hide *)

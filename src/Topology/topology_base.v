@@ -244,6 +244,7 @@ Proof.
         }
         exists (λ A, [_|f_in A]).
         clear eq.
+        split.
         intros [A [A' [SA' A_eq]]] [B [B' [SB' B_eq]]] eq; cbn in *.
         apply set_type_eq; cbn.
         inversion eq as [eq2]; clear eq.

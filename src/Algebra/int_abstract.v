@@ -50,7 +50,7 @@ Proof.
     rewrite <- plus_assoc in eq.
     rewrite <- plus_rlmove in eq.
     do 2 rewrite <- homo_plus in eq.
-    apply homo_inj in eq.
+    apply inj in eq.
     rewrite eq.
     apply plus_comm.
 Qed.

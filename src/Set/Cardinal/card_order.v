@@ -16,18 +16,19 @@ Section CardOrder.
 
 Local Open Scope card_scope.
 
-Let card_le A B := ∃ f : A → B, injective f.
+Let card_le A B := ∃ f : A → B, Injective f.
 Local Infix "≦" := card_le.
 
 Lemma card_le_wd_one : ∀ A B C D, A ~ B → C ~ D → A ≦ C → B ≦ D.
 Proof.
     intros A B C D [f f_bij] [g g_bij] [h h_inj].
-    pose (f' := bij_inv f f_bij).
+    pose (f' := bij_inv f).
     exists (λ x, g (h (f' x))).
+    split.
     intros a b eq.
     apply g_bij in eq.
     apply h_inj in eq.
-    apply (bij_inv_bij f f_bij) in eq.
+    apply (bij_inv_bij f) in eq.
     exact eq.
 Qed.
 
@@ -66,6 +67,7 @@ Proof.
     equiv_get_value κ μ.
     unfold le; equiv_simpl.
     exists (λ a, [f a|]).
+    split.
     intros a b eq.
     apply f_bij.
     apply set_type_eq.
@@ -147,7 +149,7 @@ Proof.
         end
     ).
     exists h.
-    split.
+    split; split.
     -   assert (∀ (a1 a2 : A) (P : (∃ b, lonely b ∧ descendent_of (f a1) b)),
                                   ¬(∃ b, lonely b ∧ descendent_of (f a2) b) →
                                     ex_val (h_ex a1 P) = f a2 → a1 = a2) as wlog.
@@ -252,6 +254,7 @@ Proof.
             unfold le, ord_to_card; equiv_simpl.
             destruct contr as [x [f [f_bij f_iso]]]; clear f_iso.
             exists (λ x, [f x|]).
+            split.
             intros a b eq.
             apply f_bij.
             apply set_type_eq.
@@ -304,7 +307,7 @@ Proof.
     exists (λ y, ∃ x, f x = y).
     equiv_simpl.
     exists (λ (y : set_type (λ y, ∃ x, f x = y)), ex_val [|y]).
-    split.
+    split; split.
     -   intros [a a_ex] [b b_ex] eq; cbn in *.
         apply set_type_eq; cbn.
         rewrite <- (ex_proof a_ex).
@@ -326,6 +329,7 @@ Proof.
     intros A S.
     unfold le; equiv_simpl.
     exists (λ x, [x|]).
+    split.
     intros a b eq.
     apply set_type_eq.
     exact eq.
@@ -340,6 +344,7 @@ Proof.
     intros A B.
     unfold le; equiv_simpl.
     exists (λ x, [[x|]|land [|x]]).
+    split.
     intros a b eq.
     inversion eq as [eq2].
     apply set_type_eq.
@@ -352,6 +357,7 @@ Proof.
     intros A f.
     unfold le; equiv_simpl.
     exists (λ x, [ex_val [|x] | land (ex_proof [|x])]).
+    split.
     intros a b eq.
     inversion eq as [eq2]; clear eq.
     rewrite_ex_val x xH.

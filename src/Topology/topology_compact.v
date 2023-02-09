@@ -72,6 +72,7 @@ Proof.
         +   apply (le_lt_trans2 XSS'_fin).
             unfold le; equiv_simpl.
             exists (λ S : set_type SS', ex_val [|S]).
+            split.
             intros [S1 SS'_S1] [S2 SS'_S2] eq.
             apply set_type_eq; cbn in *.
             rewrite_ex_val XS1 XS1_eq.
@@ -135,6 +136,7 @@ Proof.
             unfold le; equiv_simpl.
             exists (λ XS : set_type XSS',
                 [ex_val [|XS] | rand (ex_proof [|XS])]).
+            split.
             intros XS1 XS2 eq.
             inversion eq as [eq2]; clear eq.
             rewrite_ex_val S1 [S1_eq SS'_S1].
@@ -254,6 +256,7 @@ Proof.
         apply (le_lt_trans2 SS'_fin).
         unfold le; equiv_simpl.
         exists (λ x, [ex_val (sub_SS' [x|]) | land (ex_proof (sub_SS' [x|]))]).
+        split.
         intros [x Ax] [y Ay] eq.
         apply set_type_eq; cbn.
         rename eq into eq2; inversion eq2 as [eq]; clear eq2.
@@ -403,6 +406,7 @@ Proof.
         +   apply (le_lt_trans2 B_fin).
             unfold le; equiv_simpl.
             exists (λ A : set_type A_small, ex_val [|A]).
+            split.
             intros [A1 A_A1] [A2 A_A2] eq.
             rewrite_ex_val [B1 B_B1] B1_eq.
             rewrite_ex_val_with [|[A2|A_A2]] [B2 B_B2] B2_eq.

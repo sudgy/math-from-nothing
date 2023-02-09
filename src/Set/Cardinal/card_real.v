@@ -68,6 +68,7 @@ Close Scope card_scope.
             +   apply n3_pos.
     }
     exists (λ f, ex_val (F_conv f)).
+    split.
     intros a b eq.
     rewrite_ex_val x a_lim.
     rewrite_ex_val y b_lim.

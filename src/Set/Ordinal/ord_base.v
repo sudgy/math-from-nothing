@@ -45,15 +45,15 @@ Proof.
 Qed.
 
 Theorem ord_zero_iso {A} {B} (H : ord_U A) :
-    ∀ f : ord_U A → ord_U B, bijective f →
+    ∀ f : ord_U A → ord_U B, Bijective f →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
     f (ord_zero H) = ord_zero (f H).
 Proof.
     intros f f_bij f_iso.
     get_ord_wo B.
     apply antisym; try apply ord_zero_le.
-    pose (f' := bij_inv f f_bij).
-    rewrite <- (inverse_eq2 _ _ (bij_inv_inv _ f_bij) (ord_zero (f H))).
+    pose (f' := bij_inv f).
+    rewrite <- (inverse_eq2 _ _ (bij_inv_inv _) (ord_zero (f H))).
     rewrite <- f_iso.
     apply ord_zero_le.
 Qed.
@@ -99,7 +99,7 @@ Qed.
 Definition ord_initial_segment (A : ord_type) (x : ord_U A)
     := make_ord_type _ _ (initial_segment_antisym A x) (initial_segment_wo A x).
 
-Theorem ord_iso_le : ∀ (A : ord_type) f, injective f →
+Theorem ord_iso_le : ∀ (A : ord_type) f, Injective f →
     (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
     ∀ x, ord_le A x (f x).
 Proof.
@@ -124,7 +124,7 @@ Qed.
 (* begin hide *)
 Section OrdEquiv.
 
-Let ord_eq A B := ∃ f, bijective f ∧
+Let ord_eq A B := ∃ f, Bijective f ∧
                        ∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b).
 Local Infix "~" := ord_eq.
 
@@ -144,11 +144,11 @@ Instance ord_eq_reflexive_class : Reflexive _ := {
 Lemma ord_eq_symmetric : ∀ A B, A ~ B → B ~ A.
 Proof.
     intros A B [f [f_bij f_iso]].
-    exists (bij_inv f f_bij).
+    exists (bij_inv f).
     split.
     -   apply bij_inv_bij.
     -   intros a b.
-        pose proof (bij_inv_inv f f_bij) as inv.
+        pose proof (bij_inv_inv f) as inv.
         apply inverse_symmetric in inv.
         split.
         +   intros ab.
@@ -194,8 +194,9 @@ Theorem ord_niso_init : ∀ A x, ¬(A ~ ord_initial_segment A x).
 Proof.
     intros A x [f [f_bij f_iso]].
     pose (f' a := [f a|]).
-    assert (injective f') as f'_inj.
+    assert (Injective f') as f'_inj.
     {
+        split.
         intros a b eq.
         apply f_bij.
         apply set_type_eq.
@@ -215,7 +216,7 @@ Theorem ord_iso_init_eq : ∀ A B C x,
     B ~ ord_initial_segment A x → C ~ ord_initial_segment A x → B ~ C.
 Proof.
     intros A B C x [f [f_bij f_iso]] [g [g_bij g_iso]].
-    pose (g' := bij_inv g g_bij).
+    pose (g' := bij_inv g).
     exists (λ x, g' (f x)).
     split.
     -   apply bij_comp; try assumption.
@@ -223,7 +224,7 @@ Proof.
     -   intros a b.
         rewrite f_iso.
         rewrite g_iso.
-        pose proof (bij_inv_inv g g_bij) as g_inv.
+        pose proof (bij_inv_inv g) as g_inv.
         do 2 rewrite (inverse_eq2 _ _ g_inv).
         reflexivity.
 Qed.
@@ -273,7 +274,7 @@ Proof.
         }
         exists (λ x, [_|all_in2 x]); cbn.
         split.
-        1: split.
+        1: split; split.
         -   intros a b ab.
             apply set_type_eq; inversion ab; reflexivity.
         -   intros [[b b_y] b_x].
@@ -318,35 +319,36 @@ Proof.
 Qed.
 
 (* begin hide *)
-Lemma ord_iso_unique_le : ∀ (A B : ord_type) f g, bijective f → bijective g →
+Lemma ord_iso_unique_le : ∀ (A B : ord_type) f g, Bijective f → Bijective g →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
     ∀ x, ord_le B (f x) (g x).
 Proof.
     intros A B f g f_bij g_bij f_iso g_iso x.
-    pose (f' := bij_inv f f_bij).
+    pose (f' := bij_inv f).
     pose (h x := f' (g x)).
     assert (ord_le A x (h x)) as leq.
     {
         apply ord_iso_le.
-        -   intros a b eq.
+        -   split.
+            intros a b eq.
             unfold h in eq.
-            apply (bij_inv_bij f f_bij) in eq.
+            apply (bij_inv_bij f) in eq.
             apply g_bij in eq.
             exact eq.
         -   intros a b.
             unfold h.
             rewrite (f_iso (f' (g a))).
-            do 2 rewrite (inverse_eq2 _ _ (bij_inv_inv f f_bij)).
+            do 2 rewrite (inverse_eq2 _ _ (bij_inv_inv f)).
             apply g_iso.
     }
     unfold h in leq.
     apply f_iso in leq.
-    rewrite (inverse_eq2 _ _ (bij_inv_inv f f_bij)) in leq.
+    rewrite (inverse_eq2 _ _ (bij_inv_inv f)) in leq.
     exact leq.
 Qed.
 (* end hide *)
-Theorem ord_iso_unique : ∀ (A B : ord_type) f g, bijective f → bijective g →
+Theorem ord_iso_unique : ∀ (A B : ord_type) f g, Bijective f → Bijective g →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
     f = g.
@@ -357,7 +359,7 @@ Proof.
     get_ord_wo B.
     apply antisym; apply ord_iso_unique_le; assumption.
 Qed.
-Theorem ord_iso_id : ∀ A f, bijective f →
+Theorem ord_iso_id : ∀ A f, Bijective f →
     (∀ a b, (ord_le A) a b ↔ (ord_le A) (f a) (f b)) →
     f = identity.
 Proof.
@@ -368,7 +370,7 @@ Proof.
 Qed.
 
 Theorem ord_iso_strict :
-   ∀ {A B f}, bijective f →
+   ∀ {A B f}, Bijective f →
    (∀ a b : ord_U A, ord_le A a b ↔ ord_le B (f a) (f b)) →
    (∀ a b : ord_U A, strict (ord_le A) a b ↔ strict (ord_le B) (f a) (f b)).
 Proof.

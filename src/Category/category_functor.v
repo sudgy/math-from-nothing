@@ -59,17 +59,21 @@ Local Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
 Global Remove Hints id_functor compose_functor inclusion_functor : typeclass_instances.
 
 Definition faithful_functor `(F : Functor) := ∀ A B,
-    injective (functor_morphism F (A:=A) (B:=B)).
+    Injective (functor_morphism F (A:=A) (B:=B)).
 Definition full_functor `(F : Functor) := ∀ A B,
-    surjective (functor_morphism F (A:=A) (B:=B)).
+    Surjective (functor_morphism F (A:=A) (B:=B)).
 
 Theorem id_functor_faithful : ∀ C, faithful_functor (id_functor C).
-    intros C0 A B f g eq.
+    intros C0 A B.
+    split.
+    intros f g eq.
     cbn in eq.
     exact eq.
 Qed.
 Theorem id_functor_full : ∀ C, full_functor (id_functor C).
-    intros C0 A B f.
+    intros C0 A B.
+    split.
+    intros f.
     cbn in f.
     exists f.
     cbn.
@@ -78,14 +82,18 @@ Qed.
 
 Theorem inclusion_functor_faithful : ∀ `(S : SubCategory),
         faithful_functor (inclusion_functor S).
-    intros C0 S A B f g eq.
+    intros C0 S A B.
+    split.
+    intros f g eq.
     cbn in eq.
     apply set_type_eq in eq.
     exact eq.
 Qed.
 Theorem inclusion_functor_full : ∀ `(S : SubCategory), full_subcategory S →
         full_functor (inclusion_functor S).
-    intros H S S_full A B f.
+    intros H S S_full A B.
+    split.
+    intros f.
     cbn in *.
     unfold full_subcategory in S_full.
     specialize (S_full [A|] [B|]).

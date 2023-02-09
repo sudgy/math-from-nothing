@@ -143,6 +143,7 @@ Proof.
             apply contr.
         }
         exists (λ x, [_|x_in x]).
+        split.
         intros x y eq.
         inversion eq as [eq2].
         apply set_type_eq in eq2.
@@ -221,6 +222,7 @@ Proof.
             destruct (le_lt_trans contr x_lt); contradiction.
     }
     exists (λ x, ex_val (f_ex x)).
+    split.
     intros x y eq.
     rewrite_ex_val n1 x_eq.
     rewrite_ex_val n2 y_eq.
@@ -424,6 +426,7 @@ Proof.
             apply (le_lt_trans2 (nat_is_finite n)).
             unfold le, nat_to_card; equiv_simpl.
             exists (λ x : set_type A, ex_val [|x]).
+            split.
             intros a b eq.
             revert eq.
             rewrite_ex_val m1 m1_eq.
@@ -507,6 +510,7 @@ Proof.
         unfold le; equiv_simpl.
         exists (λ S : set_type (λ S, ∃ B, S = ex_val (S_ex [B|] [|B])),
             [ex_val [|ex_val [|S]] | land (ex_proof [|ex_val [|S]])]).
+        split.
         intros [S B1_ex] [T B2_ex] eq; cbn in *.
         inversion eq as [eq2]; clear eq.
         apply set_type_eq; cbn.
@@ -600,6 +604,7 @@ Proof.
         unfold le; equiv_simpl.
         exists (λ a : set_type (from_set_type A),
             [[[a|] | ldand [|a]] | rdand [|a]]).
+        split.
         intros a b eq.
         inversion eq as [eq2]; clear eq.
         apply set_type_eq.
@@ -736,6 +741,7 @@ Proof.
         apply (le_lt_trans2 A_fin).
         unfold le; equiv_simpl.
         exists (λ x : set_type B, [ex_val [|x]|]).
+        split.
         intros a b eq.
         apply (land set_type_eq) in eq.
         rewrite_ex_val x a_eq.
@@ -959,7 +965,7 @@ Proof.
     rewrite mult_rlinv in N2_eq by apply two_pos.
     pose proof (trans (rmax N1 N2) n_ge) as n_ge2.
     rewrite <- nat_sucs_le in n_ge2.
-    rewrite homo_le2 in n_ge2.
+    rewrite (homo_le2 (f := from_nat)) in n_ge2.
     apply le_div_pos in n_ge2.
     2: apply from_nat_pos.
     apply le_lmult_pos with 2 in n_ge2.

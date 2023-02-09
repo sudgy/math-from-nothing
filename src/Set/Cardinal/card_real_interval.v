@@ -24,7 +24,7 @@ Proof.
     }
     equiv_simpl.
     exists (λ x, [x|] / (1 - [x|]*[x|])).
-    split.
+    split; split.
     -   intros a b eq.
         destruct a as [a [a_gt a_lt]], b as [b [b_gt b_lt]].
         apply set_type_eq.
@@ -389,7 +389,7 @@ Proof.
             exact x_lt.
     }
     exists (λ x, [f x|f_in x]).
-    split.
+    split; split.
     -   intros [x [x_gt x_lt]] [y [y_gt y_lt]] eq.
         apply set_type_eq in eq; cbn in eq.
         unfold f in eq; cbn in eq.
@@ -487,7 +487,7 @@ Proof.
             | _ => [b|b_in]
             end
         end).
-        split.
+        split; split.
         -   intros [x|x] [y|y] eq.
             +   apply set_type_eq in eq; cbn in eq.
                 apply set_type_eq in eq.

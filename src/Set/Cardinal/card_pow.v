@@ -14,9 +14,9 @@ Open Scope card_scope.
 Lemma card_pow_wd : ∀ A B C D, A ~ B → C ~ D → (C → A) ~ (D → B).
 Proof.
     intros A B C D [f f_bij] [g g_bij].
-    pose (g' := bij_inv g g_bij).
+    pose (g' := bij_inv g).
     exists (λ h, (λ x, f (h (g' x)))).
-    split.
+    split; split.
     -   intros h1 h2 eq.
         apply functional_ext.
         intros c.
@@ -27,7 +27,7 @@ Proof.
         apply f_bij in eq2.
         exact eq2.
     -   intros h.
-        pose (f' := bij_inv f f_bij).
+        pose (f' := bij_inv f).
         exists (λ c, f' (h (g c))).
         apply functional_ext.
         intros d.
@@ -58,7 +58,7 @@ Proof.
         intros [x x_lt].
         contradiction (nat_neg2 x_lt).
     }
-    split.
+    split; split.
     -   intros f g eq; clear eq.
         apply functional_ext.
         intros x.
@@ -96,7 +96,7 @@ Proof.
     unfold one; cbn.
     unfold nat_to_card, card_pow; equiv_simpl.
     exists (λ x, [0|nat_one_pos]).
-    split.
+    split; split.
     -   intros f g eq; clear eq.
         apply functional_ext.
         intros a.
@@ -122,7 +122,7 @@ Proof.
     unfold one; cbn.
     unfold nat_to_card, card_pow; equiv_simpl.
     exists (λ a, (λ x, a)).
-    split.
+    split; split.
     -   intros a b eq.
         apply func_eq in eq; try exact eq.
         exact [0|nat_one_pos].
@@ -142,7 +142,7 @@ Proof.
     equiv_get_value A B C.
     unfold plus, mult, card_pow; equiv_simpl.
     exists (λ f, ((λ b, f (inl b)), (λ c, f (inr c)))).
-    split.
+    split; split.
     -   intros f g eq.
         apply functional_ext.
         inversion eq as [[eq1' eq2']].
@@ -171,7 +171,7 @@ Proof.
     equiv_get_value A B C.
     unfold mult, card_pow; equiv_simpl.
     exists (λ f, (λ c, (λ b, f (b, c)))).
-    split.
+    split; split.
     -   intros f g eq.
         apply functional_ext.
         intros [b c].
@@ -192,7 +192,7 @@ Proof.
     equiv_get_value A B C.
     unfold mult, card_pow; equiv_simpl.
     exists (λ f, ((λ c, fst (f c)), (λ c, snd (f c)))).
-    split.
+    split; split.
     -   intros f g eq.
         apply functional_ext.
         intros c.
@@ -221,7 +221,7 @@ Proof.
     unfold nat_to_card, plus; equiv_simpl.
     exists (λ P, If (P = True) then (inl [0|nat_one_pos])
                                else (inr [0|nat_one_pos])).
-    split.
+    split; split.
     -   intros A B eq.
         repeat case_if.
         all: inversion eq.
@@ -259,6 +259,7 @@ Proof.
     split.
     -   unfold le; equiv_simpl.
         exists (λ a, ❴a❵).
+        split.
         intros a b eq.
         unfold list_to_set in eq.
         pose proof (func_eq _ _ eq) as eq2.
@@ -270,7 +271,7 @@ Proof.
         equiv_simpl in eq.
         destruct eq as [f f_bij].
         pose (B x := ¬f x x).
-        pose proof (rand f_bij B) as [x x_eq].
+        pose proof (sur f B) as [x x_eq].
         unfold B in x_eq.
         pose proof (func_eq _ _ x_eq) as eq.
         specialize (eq x).

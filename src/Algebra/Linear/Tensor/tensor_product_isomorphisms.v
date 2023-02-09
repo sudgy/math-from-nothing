@@ -148,7 +148,7 @@ Proof.
     apply (ex_proof tensor_product_lid).
 Qed.
 
-Theorem tensor_product_lid_bij : bijective lf.
+Theorem tensor_product_lid_bij : Bijective lf.
 Proof.
     pose proof (land (ex_proof tensor_product_lid))
         as [[g g_plus g_scalar] [fg gf]].
@@ -284,7 +284,7 @@ Proof.
     apply (ex_proof tensor_product_comm).
 Qed.
 
-Theorem tensor_product_comm_bij : bijective cf.
+Theorem tensor_product_comm_bij : Bijective cf.
 Proof.
     pose proof (land (ex_proof tensor_product_comm))
         as [[g g_plus g_scalar] [fg gf]].
@@ -400,7 +400,7 @@ Proof.
     -   apply tensor_product_comm_iso.
 Qed.
 
-Theorem tensor_product_rid_bij : bijective f.
+Theorem tensor_product_rid_bij : Bijective f.
 Proof.
     unfold f, tensor_product_rid_f.
     cbn.
@@ -630,7 +630,7 @@ Proof.
 Qed.
 
 Theorem tensor_product_lriso_bij : isomorphism f1 → isomorphism f2 →
-        bijective lrf.
+        Bijective lrf.
 Proof.
     intros f1_iso f2_iso.
     pose proof (tensor_product_lriso_iso f1_iso f2_iso)
@@ -765,7 +765,7 @@ Proof.
     apply (ex_proof (tensor_product_liso f)).
 Qed.
 
-Theorem tensor_product_liso_bij : isomorphism f → bijective lf.
+Theorem tensor_product_liso_bij : isomorphism f → Bijective lf.
 Proof.
     intros f_iso.
     pose proof (tensor_product_liso_iso f_iso) as [[g g_plus g_scalar] [fg gf]].
@@ -899,7 +899,7 @@ Proof.
     apply (ex_proof (tensor_product_riso f)).
 Qed.
 
-Theorem tensor_product_riso_bij : isomorphism f → bijective rf.
+Theorem tensor_product_riso_bij : isomorphism f → Bijective rf.
 Proof.
     intros f_iso.
     pose proof (tensor_product_riso_iso f_iso) as [[g g_plus g_scalar] [fg gf]].

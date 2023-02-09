@@ -230,7 +230,7 @@ Proof.
     split; trivial.
 Qed.
 
-Theorem continuous_connected : ∀ (f : U → V), continuous f → surjective f →
+Theorem continuous_connected : ∀ (f : U → V), continuous f → Surjective f →
     connected U → connected V.
 Proof.
     intros f f_cont f_sur f_con A B
@@ -240,7 +240,7 @@ Proof.
     -   apply empty_neq.
         apply empty_neq in A_empty.
         destruct A_empty as [y Ay].
-        destruct (f_sur y) as [x eq].
+        destruct (sur f y) as [x eq].
         exists x.
         unfold inverse_image.
         rewrite eq.
@@ -248,7 +248,7 @@ Proof.
     -   apply empty_neq.
         apply empty_neq in B_empty.
         destruct B_empty as [y By].
-        destruct (f_sur y) as [x eq].
+        destruct (sur f y) as [x eq].
         exists x.
         unfold inverse_image.
         rewrite eq.
@@ -343,6 +343,7 @@ Proof.
         rewrite <- eq.
         exact f_cont.
     -   unfold f'.
+        split.
         intros [y [x eq]].
         exists x.
         apply set_type_eq; cbn.
@@ -388,6 +389,7 @@ Proof.
     -   apply (le_lt_trans2 SS'_fin).
         unfold le; equiv_simpl.
         exists (λ VS : set_type VSS', ex_val [|VS]).
+        split.
         intros [VS1 VS1_in] [VS2 VS2_in] eq; cbn in *.
         rewrite_ex_val S1 VS1_eq.
         rewrite_ex_val_with VS2_in S2 VS2_eq.
@@ -619,6 +621,7 @@ Proof.
             apply (le_lt_trans2 SS'_fin).
             unfold le; equiv_simpl.
             exists (λ a : set_type A', ex_val [|a]).
+            split.
             intros [a A'a] [b A'b] eq; cbn in *.
             rewrite_ex_val S1 a_eq.
             rewrite_ex_val_with A'b S2 b_eq.
@@ -692,6 +695,7 @@ Proof.
             apply (le_lt_trans2 SS'_fin).
             unfold le; equiv_simpl.
             exists (λ a : set_type A', ex_val [|a]).
+            split.
             intros [a A'a] [b A'b] eq; cbn in *.
             rewrite_ex_val S1 a_eq.
             rewrite_ex_val_with A'b S2 b_eq.

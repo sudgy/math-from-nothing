@@ -32,7 +32,7 @@ Proof.
             exact x_lt.
     }
     exists (λ x, [f x|f_in x]).
-    split.
+    split; split.
     -   intros [[m m_lt]|[m m_lt]] [[n n_lt]|[n n_lt]] eq'.
         all: inversion eq' as [eq]; clear eq'.
         all: subst.
@@ -104,6 +104,7 @@ Proof.
             exact [|f [x | trans x_lt (nat_lt_suc a)]].
     }
     exists (λ x, [[g x|] | g_lt x]).
+    split.
     intros [m m_lt] [n n_lt] eq.
     unfold g in eq; cbn in eq.
     inversion eq as [eq2].
@@ -138,7 +139,7 @@ Proof.
         nat_destruct b; try reflexivity.
         unfold nat_to_card in eq; equiv_simpl in eq.
         destruct eq as [f f_bij].
-        pose proof (rand f_bij [b|nat_lt_suc b]) as [x x_eq].
+        pose proof (sur f [b|nat_lt_suc b]) as [x x_eq].
         contradiction (nat_lt_0_false x).
     -   nat_destruct b.
         +   intros eq.
@@ -308,7 +309,7 @@ Proof.
             exact (le_lt_trans m_lt n_lt).
     }
     exists (λ x, [f x|f_in x]).
-    split.
+    split; split.
     -   intros [[m1 m1_lt] [n1 n1_lt]] [[m2 m2_lt] [n2 n2_lt]] eq.
         inversion eq as [eq2]; clear eq.
         unfold f in eq2; cbn in eq2.

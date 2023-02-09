@@ -87,7 +87,7 @@ Proof.
             unfold B in Bna.
             apply (trans2 N_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite homo_le2 in n_gt.
+            rewrite (homo_le2 (f := from_nat)) in n_gt.
             apply le_div_pos in n_gt.
             2: apply from_nat_pos.
             apply (lt_le_trans2 n_gt).
@@ -217,6 +217,7 @@ Proof.
         pose (to_j_lt (x : set_type S)
             := land (rand (ex_proof (ex_proof [|x])))).
         exists (λ x : set_type S, ([to_i x|to_i_lt x], [to_j x|to_j_lt x])).
+        split.
         intros x y eq.
         inversion eq as [[eq1 eq2]].
         clear eq to_i_lt to_j_lt.

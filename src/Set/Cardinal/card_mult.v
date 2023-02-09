@@ -15,7 +15,7 @@ Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → prod A C ~ prod B D.
 Proof.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, (f (fst x), g (snd x))).
-    split.
+    split; split.
     -   intros [a1 c1] [a2 c2] eq.
         inversion eq as [[eq1 eq2]].
         apply f_bij in eq1.
@@ -23,8 +23,8 @@ Proof.
         rewrite eq1, eq2.
         reflexivity.
     -   intros [b d].
-        pose proof (rand f_bij b) as [a a_eq].
-        pose proof (rand g_bij d) as [c c_eq].
+        pose proof (sur f b) as [a a_eq].
+        pose proof (sur g d) as [c c_eq].
         exists (a, c).
         cbn.
         rewrite a_eq, c_eq.
@@ -49,7 +49,7 @@ Proof.
     equiv_get_value A B C.
     unfold mult; equiv_simpl.
     exists (λ x, ((fst x, fst (snd x)), snd (snd x))).
-    split.
+    split; split.
     -   intros [a1 [b1 c1]] [a2 [b2 c2]] eq.
         cbn in eq.
         inversion eq.
@@ -69,7 +69,7 @@ Proof.
     equiv_get_value A B.
     unfold mult; equiv_simpl.
     exists (λ x, (snd x, fst x)).
-    split.
+    split; split.
     -   intros [a1 b1] [a2 b2] eq.
         cbn in eq.
         inversion eq.
@@ -95,7 +95,7 @@ Proof.
         exact (nat_neg2 x_lt).
     }
     exists (λ x, False_rect _ (xf (fst x))).
-    split.
+    split; split.
     -   intros [x a].
         contradiction (xf x).
     -   intros x.
@@ -116,7 +116,7 @@ Proof.
     unfold one; cbn.
     unfold nat_to_card, mult; equiv_simpl.
     exists (λ x, snd x).
-    split.
+    split; split.
     -   intros [[x x_lt] a] [[y y_lt] b] eq.
         cbn in eq.
         rewrite eq; clear eq.
@@ -152,7 +152,7 @@ Proof.
                  | inl b => inl (fst x, b)
                  | inr c => inr (fst x, c)
                  end).
-    split.
+    split; split.
     -   intros [a1 [b1|c1]] [a2 [b2|c2]] eq; cbn in eq.
         all: inversion eq.
         all: reflexivity.
@@ -206,6 +206,7 @@ Proof.
     unfold le, mult; equiv_simpl.
     intros [f f_inj].
     exists (λ x, (fst x, f (snd x))).
+    split.
     intros [c1 a1] [c2 a2] eq.
     cbn in eq.
     inversion eq as [[eq1 eq2]].
@@ -237,7 +238,7 @@ Proof.
     unfold nat_to_card; equiv_simpl.
     pose proof (nat_lt_suc 0) as one_pos.
     exists (λ x, [0|one_pos]).
-    split.
+    split; split.
     -   intros [x x_eq] [y y_eq] eq; clear eq.
         apply set_type_eq; cbn.
         rewrite <- x_eq, <- y_eq.
@@ -283,7 +284,7 @@ Proof.
     unfold one; cbn.
     unfold nat_to_card; equiv_simpl.
     exists (λ _, [0|nat_one_pos]).
-    split.
+    split; split.
     -   intros x y eq'.
         apply eq.
     -   intros z.

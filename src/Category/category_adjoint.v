@@ -7,8 +7,8 @@ Require Import category_natural_transformation.
 Class Adjunction `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C2 C1) := {
     adj_a : ∀ {A B}, cat_morphism C2 (F ⌈A⌉) B → cat_morphism C1 A (G ⌈B⌉);
-    adj_bij : ∀ A B, bijective (@adj_a A B);
-    adj_b {A B} := bij_inv _ (adj_bij A B);
+    adj_bij : ∀ A B, Bijective (@adj_a A B);
+    adj_b {A B} := bij_inv _ (f_bij := adj_bij A B);
     adj_nat1 : ∀ {A B C} (g : cat_morphism C2 (F ⌈A⌉) B)
                          (q : cat_morphism C2 B C),
         adj_a (q ∘ g) = (G ⋄ q) ∘ adj_a g;

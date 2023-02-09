@@ -75,6 +75,7 @@ Theorem all_greater_inf_base : infinite (|U|).
 Proof.
     unfold infinite, le; equiv_simpl.
     exists create_greater.
+    split.
     intros a.
     nat_induction a; intros b eq.
     -   nat_destruct b; try reflexivity.
@@ -448,6 +449,7 @@ Proof.
             | strong_or_right nSx => inl [_|f_in _ nSx]
             end).
         clear.
+        split.
         intros a b.
         destruct (strong_excluded_middle _) as [Sa|nSa];
         destruct (strong_excluded_middle _) as [Sb|nSb].
@@ -470,6 +472,7 @@ Proof.
     apply (trans2 eq); clear eq μ.
     unfold le; equiv_simpl.
     exists (λ x : set_type (⋂ SS), [[x|] | [|x] S SS_S]).
+    split.
     intros a b eq.
     inversion eq as [eq2].
     apply set_type_eq; exact eq2.
@@ -483,6 +486,7 @@ Proof.
     apply (le_lt_trans2 S_fin).
     unfold le; equiv_simpl.
     exists (λ x : set_type (⋂ SS), [[x|] | [|x] S SS_S]).
+    split.
     intros a b eq.
     inversion eq as [eq2].
     apply set_type_eq in eq2.
@@ -511,7 +515,7 @@ Proof.
     }
     equiv_get_value A B.
     apply card_pos_ex in B_nz as b_val.
-    assert (∀ S : set_type SS, ∃ f : set_type [S|] → B, injective f) as B_ge.
+    assert (∀ S : set_type SS, ∃ f : set_type [S|] → B, Injective f) as B_ge.
     {
         intros [S SS_S].
         specialize (B_ge' S SS_S).
@@ -546,6 +550,7 @@ Proof.
         f [x_to_S x | S_in_SS x],
         x_to_g x [x|]
     )).
+    split.
     intros a b eq.
     inversion eq as [[eq1 eq2]]; clear eq.
     apply f_inj in eq1.

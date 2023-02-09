@@ -14,7 +14,7 @@ Local Program Instance TYPE : Category := {
 (* end show *)
 
 Theorem set_category_isomorphism : ∀ {A B} (f : cat_morphism TYPE A B),
-    isomorphism f → bijective f.
+    isomorphism f → Bijective f.
 Proof.
     intros A B f [g [g_eq1 g_eq2]].
     cbn in *.
@@ -28,7 +28,7 @@ Proof.
         intros x.
         exact (func_eq _ _ g_eq2 x).
     }
-    split.
+    split; split.
     -   intros a b eq.
         apply (f_equal g) in eq.
         do 2 rewrite f_eq2 in eq.

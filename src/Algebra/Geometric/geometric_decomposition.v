@@ -518,8 +518,9 @@ Proof.
         }
         rewrite mult_comm in m_eq.
         subst c.
-        assert (injective (λ m, r ⊖ s + 2 * m)) as f_inj.
+        assert (Injective (λ m, r ⊖ s + 2 * m)) as f_inj.
         {
+            split.
             intros i j eq.
             apply plus_lcancel in eq.
             apply mult_lcancel in eq.

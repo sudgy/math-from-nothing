@@ -36,7 +36,7 @@ Context {U} `{
     @Archimedean U UP UZ UO
 }.
 
-Lemma aof_ex_ex : ∃ f : U → (nat → Prop), injective f.
+Lemma aof_ex_ex : ∃ f : U → (nat → Prop), Injective f.
 Proof.
     pose proof arch_ordered_size as f_ex.
     rewrite <- power_set_size in f_ex.
@@ -58,28 +58,30 @@ Qed.
 Definition aof_ex_f (x : U)
     := [aof_ex_f_base x|aof_ex_f_in x] : set_type aof_ex_set.
 
-Theorem aof_ex_f_inj : injective aof_ex_f.
+Theorem aof_ex_f_inj : Injective aof_ex_f.
 Proof.
+    split.
     intros a b eq.
     apply set_type_eq in eq; cbn in eq.
     apply (ex_proof aof_ex_ex) in eq.
     exact eq.
 Qed.
 
-Theorem aof_ex_f_sur : surjective aof_ex_f.
+Theorem aof_ex_f_sur : Surjective aof_ex_f.
 Proof.
+    split.
     intros [y [x eq]].
     exists x.
     apply set_type_eq; cbn.
     symmetry; exact eq.
 Qed.
 
-Theorem aof_ex_f_bij : bijective aof_ex_f.
+Theorem aof_ex_f_bij : Bijective aof_ex_f.
 Proof.
     split; [>exact aof_ex_f_inj|exact aof_ex_f_sur].
 Qed.
 
-Definition aof_ex_f_inv := bij_inv aof_ex_f aof_ex_f_bij.
+Definition aof_ex_f_inv := bij_inv aof_ex_f (f_bij := aof_ex_f_bij).
 
 Theorem aof_ex_f_eq1 : ∀ x, aof_ex_f_inv (aof_ex_f x) = x.
 Proof.

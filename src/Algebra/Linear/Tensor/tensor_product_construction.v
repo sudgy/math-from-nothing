@@ -246,7 +246,7 @@ Proof.
                 exact fm_neq.
         }
         exists (λ m, [[f (inr m)|] | T'_neq m]).
-        split.
+        split; split.
         -   intros a b eq.
             apply set_type_eq in eq; cbn in eq.
             apply set_type_eq in eq; cbn in eq.
@@ -261,7 +261,7 @@ Proof.
                 1: contradiction.
                 exact b_neq.
             }
-            specialize (f_sur [b|b_neq2]) as [a a_eq].
+            pose proof (sur f [b|b_neq2]) as [a a_eq].
             apply set_type_eq in a_eq; cbn in a_eq.
             destruct a as [a|a].
             +   unfold T' in b_neq.

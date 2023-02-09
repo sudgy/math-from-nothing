@@ -272,6 +272,7 @@ Proof.
                 make_and (land (land [|a])) (rand [|a])] : set_type (A ∩ S)).
             exists f.
             unfold f; clear f.
+            split.
             intros a b eq.
             inversion eq as [eq2].
             apply set_type_eq; exact eq2.

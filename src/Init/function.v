@@ -20,65 +20,84 @@ Qed.
 Definition identity {U} (x : U) := x.
 Definition empty_function A B (H : A → False) := λ x : A, False_rect B (H x).
 
-Definition injective {U V} (f : U → V) := ∀ a b, f a = f b → a = b.
-Definition surjective {U V} (f : U → V) := ∀ y, ∃ x, f x = y.
-Definition bijective {U V} (f : U → V) := injective f ∧ surjective f.
+Class Injective {U V} (f : U → V) := {
+    inj : ∀ a b, f a = f b → a = b
+}.
+Class Surjective {U V} (f : U → V) := {
+    sur : ∀ y, ∃ x, f x = y
+}.
+Arguments sur {U V} f {Surjective}.
+Class Bijective {U V} (f : U → V) := {
+    bij_inj : Injective f;
+    bij_sur : Surjective f;
+}.
 
-Theorem identity_injective {U} : injective (@identity U).
+Global Instance bijective_injective {U V} (f : U → V) `{@Bijective U V f}
+    : Injective f.
 Proof.
-    intros a b eq.
-    exact eq.
+    apply H.
 Qed.
-Theorem identity_surjective {U} : surjective (@identity U).
+Global Instance bijective_surjective {U V} (f : U → V) `{@Bijective U V f}
+    : Surjective f.
 Proof.
-    intros x.
-    exists x.
-    reflexivity.
+    apply H.
 Qed.
-Theorem identity_bijective {U} : bijective (@identity U).
+
+Global Instance identity_bijective {U} : Bijective (@identity U).
+Proof.
+    split; split.
+    -   intros a b eq.
+        exact eq.
+    -   intros x.
+        exists x.
+        reflexivity.
+Qed.
+
+Global Instance inj_comp {U V W} (f : U → V) (g : V → W)
+    `{@Injective U V f, @Injective V W g}
+    : Injective (λ x, g (f x)).
 Proof.
     split.
-    -   exact identity_injective.
-    -   exact identity_surjective.
-Qed.
-
-Theorem inj_comp {U V W} : ∀ (f : U → V) (g : V → W),
-    injective f → injective g → injective (λ x, g (f x)).
-Proof.
-    intros f g f_inj g_inj a b eq.
-    apply g_inj in eq.
-    apply f_inj in eq.
+    intros a b eq.
+    do 2 apply inj in eq.
     exact eq.
 Qed.
-Theorem sur_comp {U V W} : ∀ (f : U → V) (g : V → W),
-    surjective f → surjective g → surjective (λ x, g (f x)).
+Global Instance sur_comp {U V W} (f : U → V) (g : V → W)
+    `{@Surjective U V f, @Surjective V W g}
+    : Surjective (λ x, g (f x)).
 Proof.
-    intros f g f_sur g_sur z.
-    destruct (g_sur z) as [y y_eq].
-    destruct (f_sur y) as [x x_eq].
+    split.
+    intros z.
+    destruct (sur g z) as [y y_eq].
+    destruct (sur f y) as [x x_eq].
     exists x.
     rewrite x_eq.
     exact y_eq.
 Qed.
-Theorem bij_comp {U V W} : ∀ (f : U → V) (g : V → W),
-    bijective f → bijective g → bijective (λ x, g (f x)).
+Global Instance bij_comp {U V W} (f : U → V) (g : V → W)
+    `{f_bij : @Bijective U V f, g_bij : @Bijective V W g}
+    : Bijective (λ x, g (f x)).
 Proof.
-    intros f g [f_inj f_sur] [g_inj g_sur].
+    destruct f_bij as [f_inj f_sur].
+    destruct g_bij as [g_inj g_sur].
     split.
     -   apply inj_comp; assumption.
     -   apply sur_comp; assumption.
 Qed.
 
-Theorem empty_inj {A B H} : injective (empty_function A B H).
+Theorem empty_inj {A B H} : Injective (empty_function A B H).
 Proof.
+    split.
     intros a.
     contradiction (H a).
 Qed.
-Theorem empty_sur {A B} : ∀ f : A → B, (B → False) → surjective f.
-    intros f BH y.
+Theorem empty_sur {A B} : ∀ f : A → B, (B → False) → Surjective f.
+    intros f BH.
+    split.
+    intros y.
     contradiction (BH y).
 Qed.
-Theorem empty_bij {A B H} : (B → False) → bijective (empty_function A B H).
+Theorem empty_bij {A B H} : (B → False) → Bijective (empty_function A B H).
 Proof.
     intros BH.
     split.
@@ -87,11 +106,11 @@ Proof.
 Qed.
 
 Theorem partition_principle {A B} :
-    ∀ f : A → B, surjective f → ∃ g : B → A, injective g.
+    ∀ f : A → B, Surjective f → ∃ g : B → A, Injective g.
 Proof.
     intros f f_sur.
-    unfold surjective in f_sur.
-    exists (λ b, ex_val (f_sur b)).
+    exists (λ b, ex_val (sur f b)).
+    split.
     intros x y eq.
     rewrite_ex_val a a_eq.
     rewrite_ex_val b b_eq.
@@ -121,24 +140,23 @@ Proof.
     apply inv.
 Qed.
 
-Theorem bijective_inverse_ex {U V} : ∀ f : U → V, bijective f →
+Theorem bijective_inverse_ex {U V} (f : U → V) `{Bijective (U := U) (V := V) f}:
     ∃ g, is_inverse f g.
 Proof.
-    intros f [f_inj f_sur].
-    exists (λ y, ex_val (f_sur y)).
+    exists (λ y, ex_val (sur f y)).
     split; intros eq.
     -   rewrite_ex_val a a_eq.
         exact a_eq.
     -   rewrite_ex_val a a_eq.
-        apply f_inj in a_eq.
+        apply inj in a_eq.
         exact a_eq.
 Qed.
 
 Theorem inverse_ex_bijective {A B} : ∀ (f : A → B) (g : B → A),
-    is_inverse f g → bijective f.
+    is_inverse f g → Bijective f.
 Proof.
     intros f g [fg gf].
-    split.
+    split; split.
     -   intros a b eq.
         apply (f_equal g) in eq.
         do 2 rewrite gf in eq.
@@ -148,10 +166,11 @@ Proof.
         apply fg.
 Qed.
 
-Definition bij_inv {U V} (f : U → V) (f_bij : bijective f) :=
-    ex_val (bijective_inverse_ex f f_bij).
+Definition bij_inv {U V} (f : U → V) `{f_bij : @Bijective U V f} :=
+    ex_val (bijective_inverse_ex f).
 
-Theorem bij_inv_inv {U V} : ∀ (f : U → V) f_bij, is_inverse f (bij_inv f f_bij).
+Theorem bij_inv_inv {U V} : ∀ (f : U → V) `{@Bijective U V f},
+    is_inverse f (bij_inv f).
 Proof.
     intros f f_bij.
     unfold bij_inv.
@@ -159,11 +178,12 @@ Proof.
     exact g_inv.
 Qed.
 
-Theorem bij_inv_bij {U V} : ∀ (f : U → V) f_bij, bijective (bij_inv f f_bij).
+Theorem bij_inv_bij {U V} : ∀ (f : U → V) `{f_bij : @Bijective U V f},
+    Bijective (bij_inv f).
 Proof.
     intros f f_bij.
-    pose proof (bij_inv_inv f f_bij) as g_inv.
-    split.
+    pose proof (bij_inv_inv f) as g_inv.
+    split; split.
     -   intros a b eq.
         unfold is_inverse in g_inv.
         rewrite <- (land g_inv a).

@@ -24,7 +24,7 @@ Proof.
     pose proof (nat_lt_suc 0) as z_gt.
     exists (λ _, [0|z_gt]).
     split.
-    1: split.
+    1: split; split.
     -   intros a b eq.
         apply ord_pow_eq.
         intros x.
@@ -92,6 +92,7 @@ Proof.
             exact a_neq.
         }
         exists (λ x, [inl [x|]|g_in x]).
+        split.
         intros a b eq.
         inversion eq as [eq2].
         apply set_type_eq; exact eq2.
@@ -99,7 +100,7 @@ Proof.
     pose proof (nat_lt_suc 0) as z_gt.
     exists (λ f, (make_ord_pow (F f) (F_fin f), ord_pow_f f (inr [0|z_gt]))).
     split.
-    1: split.
+    1: split; split.
     -   intros C D eq.
         inversion eq as [[eq1 eq2]].
         unfold F in eq1.
@@ -148,6 +149,7 @@ Proof.
                 | make_set_type_val (inr _) _ =>
                     make_set_type_val (S := (λ x, x < nat_suc n)) n n_lt
                 end).
+            split.
             intros [[a|a] a_eq] [[b|b] b_eq] eq; cbn in *.
             all: apply set_type_eq; cbn.
             all: try apply f_equal.
@@ -280,7 +282,7 @@ Proof.
     assert ((zero (U := nat)) < 1) as one_pos by apply nat_pos2.
     exists (λ f, [0|one_pos]).
     split.
-    split.
+    split; split.
     -   intros [f f_fin] [g g_fin] eq; clear eq.
         assert (f = g) as eq.
         {

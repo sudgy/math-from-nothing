@@ -2,10 +2,6 @@ Require Import init.
 
 Require Export order_mult.
 
-Class HomomorphismInj {U V} (f : U → V) := {
-    homo_inj : ∀ a b, f a = f b → a = b
-}.
-
 Class HomomorphismPlus {U V} `{Plus U, Plus V} (f : U → V) := {
     homo_plus : ∀ a b, f (a + b) = f a + f b
 }.
@@ -50,7 +46,7 @@ Section Homomorphisms.
 
 Context {U V} `{OrderedField U, OrderedField V}.
 Context (f : U → V) `{
-    @HomomorphismInj U V f,
+    @Injective U V f,
     @HomomorphismPlus U V UP UP0 f,
     @HomomorphismZero U V UZ UZ0 f,
     @HomomorphismNeg U V UN UN0 f,
@@ -63,7 +59,7 @@ Context (f : U → V) `{
     @HomomorphismLt2 U V UO UO0 f
 }.
 
-Theorem homo_zero_inj : (∀ a, 0 = f a → 0 = a) → HomomorphismInj f.
+Theorem homo_zero_inj : (∀ a, 0 = f a → 0 = a) → Injective f.
 Proof.
     intros inj.
     split.
@@ -74,11 +70,11 @@ Proof.
     apply inj.
 Qed.
 
-Theorem homo_inj_zero : ∀ {a}, 0 ≠ a → 0 ≠ f a.
+Theorem inj_zero : ∀ {a}, 0 ≠ a → 0 ≠ f a.
 Proof.
     intros a a_nz contr.
     rewrite <- homo_zero in contr.
-    apply homo_inj in contr.
+    apply inj in contr.
     contradiction.
 Qed.
 
@@ -124,7 +120,7 @@ Proof.
 Qed.
 Local Remove Hints group_homo_neg : typeclass_instances.
 
-Global Instance field_homo_inj : HomomorphismInj f.
+Global Instance field_inj : Injective f.
 Proof.
     apply homo_zero_inj.
     intros a eq.
@@ -136,13 +132,13 @@ Proof.
     rewrite homo_one in eq.
     contradiction (not_trivial_one eq).
 Qed.
-Local Remove Hints field_homo_inj : typeclass_instances.
+Local Remove Hints field_inj : typeclass_instances.
 
 Global Instance field_homo_div : HomomorphismDiv f.
 Proof.
     split.
     intros a a_nz.
-    pose proof (homo_inj_zero a_nz) as fa_nz.
+    pose proof (inj_zero a_nz) as fa_nz.
     apply (mult_lcancel (f a) fa_nz).
     rewrite <- homo_mult.
     do 2 rewrite mult_rinv by assumption.
@@ -158,7 +154,7 @@ Proof.
     -   apply homo_le.
         exact leq.
     -   intros contr.
-        apply homo_inj in contr.
+        apply inj in contr.
         contradiction.
 Qed.
 Local Remove Hints homo_le_lt : typeclass_instances.
@@ -174,7 +170,7 @@ Proof.
     destruct ltq as [leq2 neq].
     apply homo_le in leq2.
     pose proof (antisym leq2 leq) as eq.
-    apply homo_inj in eq.
+    apply inj in eq.
     contradiction.
 Qed.
 Local Remove Hints homo_le_le2 : typeclass_instances.

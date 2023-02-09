@@ -39,7 +39,8 @@ Proof.
             *   exact Tfx.
         +   intros y [y' [Ty eq]].
             rewrite eq; exact Ty.
-    -   intros y.
+    -   split.
+        intros y.
         exists [y|true].
         reflexivity.
     -   apply convex_connected.

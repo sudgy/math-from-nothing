@@ -41,9 +41,9 @@ Proof.
                 destruct Ca; contradiction.
         }
         pose (g' x := [_|Cx_Dx x]).
-        assert (bijective g') as g'_bij.
+        assert (Bijective g') as g'_bij.
         {
-            split.
+            split; split.
             -   intros a b ab.
                 apply set_type_eq.
                 apply g_bij.
@@ -51,7 +51,7 @@ Proof.
                 inversion ab.
                 reflexivity.
             -   intros [b bx].
-                pose proof (rand g_bij b) as [a a_eq].
+                pose proof (sur g b) as [a a_eq].
                 pose proof bx as ax.
                 rewrite <- a_eq in ax.
                 destruct ax as [ax anx].
@@ -138,25 +138,25 @@ Proof.
         +   right; exact leq.
         +   destruct leq as [x [f [f_bij f_iso]]].
             intros [g [g_bij g_iso]].
-            pose (g' := bij_inv g g_bij).
-            pose proof (bij_inv_bij g g_bij) as g'_bij.
+            pose (g' := bij_inv g).
+            pose proof (bij_inv_bij g) as g'_bij.
             pose (h x := f (g' x)).
             apply (ord_niso_init B x).
             exists h.
             split.
-            1: split.
+            1: split; split.
             *   intros a b eq.
                 apply g'_bij.
                 apply f_bij.
                 exact eq.
             *   intros c.
-                pose proof (rand f_bij c) as [b b_eq].
-                pose proof (rand g'_bij b) as [a a_eq].
+                pose proof (sur f c) as [b b_eq].
+                pose proof (sur (bij_inv g) b) as [a a_eq].
                 exists a.
                 rewrite <- b_eq, <- a_eq.
                 reflexivity.
             *   intros a b.
-                pose proof (bij_inv_inv g g_bij) as g'_inv.
+                pose proof (bij_inv_inv g) as g'_inv.
                 rewrite <- (inverse_eq2 _ _ g'_inv a) at 1.
                 rewrite <- (inverse_eq2 _ _ g'_inv b) at 1.
                 rewrite <- g_iso.
@@ -176,7 +176,7 @@ Hypothesis BA : ¬(to_ord B < to_ord A).
 
 Record piece := make_piece {
     piece_f : set_function_type (ord_U A) (ord_U B);
-    piece_inj : injective (set_function piece_f);
+    piece_inj : Injective (set_function piece_f);
     piece_iso : ∀ a b, (ord_le A) [a|] [b|] ↔
                 (ord_le B) (piece_f⟨a⟩) (piece_f⟨b⟩);
     piece_bot1 : ∀ a b, domain piece_f a → ¬domain piece_f b → ord_le A a b;
@@ -229,8 +229,9 @@ Definition F_union_set x := ∃ f, F f ∧ domain (piece_f f) x.
 Definition F_union_f (x : set_type (F_union_set)) :=
     piece_f (ex_val [|x])⟨[_|rand (ex_proof [|x])]⟩.
 
-Lemma F_union_inj : injective F_union_f.
+Lemma F_union_inj : Injective F_union_f.
 Proof.
+    split.
     intros a b ab.
     unfold F_union_f in ab.
     unfold ex_val, ex_proof in ab.
@@ -418,7 +419,7 @@ Proof.
     pose (f' a := piece_f f⟨[_|sub a]⟩).
     exists f'.
     split.
-    1: split.
+    1: split; split.
     -   intros a b eq.
         apply (piece_inj f) in eq.
         apply set_type_eq; inversion eq.
@@ -515,8 +516,9 @@ Defined.
 
 Local Ltac or_case a := destruct (or_to_strong (domain (piece_f f) [a|])).
 
-Lemma Sf_inj : injective Sf.
+Lemma Sf_inj : Injective Sf.
 Proof.
+    split.
     intros x y eq.
     unfold Sf in eq.
     or_case x; or_case y; cbn in *.
@@ -662,8 +664,9 @@ Qed.
 
 Definition f' x := (piece_f f) ⟨[_|all_in_f x]⟩.
 
-Lemma f'_sur : surjective f'.
+Lemma f'_sur : Surjective f'.
 Proof.
+    split.
     intros b.
     classic_contradiction no_a.
     apply AB.
@@ -737,12 +740,13 @@ Proof.
     pose (g x := [_|f'_lt x]).
     exists g.
     split.
-    1: split.
+    1: split; split.
     *   intros a b eq.
         unfold g, f' in eq.
         inversion eq as [eq2].
-        pose proof (piece_inj f [_|all_in_f a] [_|all_in_f b] eq2).
-        inversion H1.
+        pose proof (piece_inj f).
+        pose proof (inj [_|all_in_f a] [_|all_in_f b] eq2).
+        inversion H2.
         reflexivity.
     *   intros b.
         classic_contradiction Sb'.
@@ -773,12 +777,12 @@ Proof.
     equiv_simpl.
     exists f'.
     split.
-    -   split.
+    -   split; split.
         +   intros a b ab.
             apply (piece_inj f) in ab.
             inversion ab.
             reflexivity.
-        +   exact f'_sur.
+        +   apply f'_sur.
     -   intros a b.
         unfold f'.
         exact (piece_iso f [_|all_in_f a] [_|all_in_f b]).
@@ -830,8 +834,9 @@ Proof.
     destruct αβ as [a [f [f_bij f_iso]]].
     destruct βα as [b [g [g_bij g_iso]]].
     pose (h x := [g [f x|]|]).
-    assert (injective h) as h_inj.
+    assert (Injective h) as h_inj.
     {
+        split.
         intros x y eq.
         apply f_bij.
         apply set_type_eq.
@@ -900,7 +905,7 @@ Proof.
         }
         exists (λ x, [_|fg_in x]).
         split.
-        1: split.
+        1: split; split.
         +   intros x y eq; cbn in *.
             inversion eq as [eq2].
             apply set_type_eq in eq2.
@@ -923,7 +928,7 @@ Proof.
                     pose proof (antisym z_leq fb_leq).
                     contradiction.
             }
-            pose proof (rand f_bij [_|z_c]) as [y y_eq].
+            pose proof (sur f [_|z_c]) as [y y_eq].
             assert (initial_segment_set β b y) as y_b.
             {
                 split.
@@ -938,7 +943,7 @@ Proof.
                     rewrite y_eq.
                     reflexivity.
             }
-            pose proof (rand g_bij [_|y_b]) as [x x_eq].
+            pose proof (sur g [_|y_b]) as [x x_eq].
             exists x.
             destruct z as [z z_in]; cbn in *.
             apply set_type_eq; cbn.
@@ -981,8 +986,9 @@ Qed.
 
 Definition f' (x : ord_U A) := [to_ord (ord_initial_segment A x)|f'_range_in x].
 
-Lemma f'_inj : injective f'.
+Lemma f'_inj : Injective f'.
 Proof.
+    split.
     intros a b eq.
     unfold f' in eq.
     apply set_type_eq in eq; cbn in eq.
@@ -991,8 +997,9 @@ Proof.
     exact eq.
 Qed.
 
-Lemma f'_sur : surjective f'.
+Lemma f'_sur : Surjective f'.
 Proof.
+    split.
     intros [β β_lt].
     equiv_get_value β.
     unfold ords_lt_set in β_lt.
@@ -1007,13 +1014,13 @@ Proof.
     exact x_eq.
 Qed.
 
-Lemma f'_bij : bijective f'.
+Lemma f'_bij : Bijective f'.
 Proof.
     split.
     -   exact f'_inj.
     -   exact f'_sur.
 Qed.
-Definition f := bij_inv f' f'_bij.
+Definition f := bij_inv f' (f_bij := f'_bij).
 
 Lemma f_ex : ∀ β, ∃ x, to_ord (ord_initial_segment A x) = [β|] ∧ f β = x.
 Proof.
@@ -1089,7 +1096,7 @@ Proof.
             }
             exists (λ x, [_|all_in x]).
             split.
-            1: split.
+            1: split; split.
             -   intros a b eq.
                 apply set_type_eq.
                 apply (land set_type_eq).
@@ -1169,7 +1176,7 @@ Proof.
     rewrite nle_lt in contr.
     pose proof (f_iso _ _ contr) as leq.
     pose proof (antisym leq x_min) as eq.
-    apply (bij_inv_bij f' f'_bij) in eq.
+    apply (bij_inv_bij f') in eq.
     rewrite <- set_type_eq in eq.
     destruct contr; contradiction.
 Qed.
@@ -1252,7 +1259,7 @@ Proof.
     }
     exists (λ x, [_|n_in x]); cbn.
     split.
-    split.
+    split; split.
     -   intros m n eq.
         apply set_type_eq.
         inversion eq.

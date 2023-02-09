@@ -240,7 +240,7 @@ Lemma X_mult_idemp : |set_type X| * |set_type X| = |set_type X|.
 Proof.
     unfold mult; equiv_simpl.
     exists (λ x, [fs_f f⟨fst x, snd x⟩ | fs_range f (fst x) (snd x)]).
-    split.
+    split; split.
     -   intros [a b] [c d] eq; cbn in *.
         inversion eq as [eq2].
         pose proof (fs_inj f a b c d eq2) as [eq3 eq4].
@@ -277,7 +277,7 @@ Proof.
     assert (∀ c, A' c → ∃ a b, [g (a, b)|] = c) as g_sur.
     {
         intros c A'c.
-        pose proof (rand g_bij [c|A'c]) as [[a b] eq].
+        pose proof (sur g [c|A'c]) as [[a b] eq].
         exists a, b.
         rewrite eq.
         reflexivity.
@@ -364,8 +364,8 @@ Proof.
         unfold one in contr; cbn in contr.
         unfold nat_to_card in contr; equiv_simpl in contr.
         destruct contr as [f f_bij].
-        pose proof (rand f_bij [x|Xx]) as [[m m_lt] m_eq].
-        pose proof (rand f_bij [y|Xy]) as [[n n_lt] n_eq].
+        pose proof (sur f [x|Xx]) as [[m m_lt] m_eq].
+        pose proof (sur f [y|Xy]) as [[n n_lt] n_eq].
         pose proof m_lt as m_lt2.
         pose proof n_lt as n_lt2.
         apply nat_lt_one_eq in m_lt2.
@@ -474,7 +474,7 @@ Proof.
             +   exfalso; apply n.
                 split; reflexivity.
         -   subst c.
-            pose proof (rand g_bij [x|make_ror Xx]) as [[a b] eq].
+            pose proof (sur g [x|make_ror Xx]) as [[a b] eq].
             exists a, b.
             unfold g'; case_if.
             +   destruct a0; subst.
@@ -482,7 +482,7 @@ Proof.
                 contradiction.
             +   case_if; try reflexivity.
                 contradiction.
-        -   pose proof (rand g_bij [c|A'xc]) as [[a b] eq].
+        -   pose proof (sur g [c|A'xc]) as [[a b] eq].
             exists a, b.
             unfold g'.
             case_if.
@@ -623,6 +623,7 @@ Lemma X_le : |set_type X| ≤ |A|.
 Proof.
     unfold le; equiv_simpl.
     exists (λ x, [x|]).
+    split.
     intros a b eq.
     apply set_type_eq in eq.
     exact eq.
@@ -638,7 +639,7 @@ Lemma XX'_eq : |set_type X| + |set_type X'| = |A|.
 Proof.
     unfold plus; equiv_simpl.
     exists (λ x, match x with | inl x' => [x'|] | inr x' => [x'|] end).
-    split.
+    split; split.
     -   intros [[a Xa]|[a X'a]] [[b Xb]|[b X'b]] eq; cbn in eq; subst.
         +   apply f_equal.
             apply set_type_eq; reflexivity.
@@ -670,7 +671,7 @@ Proof.
     rewrite nat_to_card_plus.
     apply (trans (land (nat_is_finite 2)) X_inf).
 Qed.
-Lemma f0_ex : ∃ f : set_type X → set_type X', injective f.
+Lemma f0_ex : ∃ f : set_type X → set_type X', Injective f.
 Proof.
     pose proof X'_ge.
     unfold le in H; equiv_simpl in H.
@@ -685,7 +686,7 @@ Proof.
     equiv_simpl.
     assert (∀ x, Y [f0 x|]) as f_in by (intro x; exists x; reflexivity).
     exists (λ x, [_|f_in x]).
-    split.
+    split; split.
     -   intros a b eq.
         inversion eq as [eq2].
         apply set_type_eq in eq2.
@@ -724,6 +725,7 @@ Proof.
         unfold nat_to_card, le; equiv_simpl.
         exists (λ (x : set_type (λ x, x < 1)),
             [[x|]|trans (trans [|x] (nat_lt_suc _)) (nat_lt_suc _)]).
+        split.
         intros a b eq.
         apply set_type_eq.
         inversion eq.
@@ -734,7 +736,7 @@ Lemma f1_ex : ∃ f :
     set_type X * set_type Y +
     set_type Y * set_type X +
     set_type Y * set_type Y →
-    set_type Y, bijective f.
+    set_type Y, Bijective f.
 Proof.
     pose proof Y_eq2 as H.
     unfold plus, mult in H; equiv_simpl in H.
@@ -742,7 +744,7 @@ Proof.
 Qed.
 
 Definition f1 := ex_val f1_ex.
-Lemma f1_bij : bijective f1.
+Local Instance f1_bij : Bijective f1.
 Proof.
     apply (ex_proof f1_ex).
 Qed.
@@ -832,37 +834,37 @@ Proof.
         apply XY_not in Xf.
         pose proof [|f1 (inl (inl ([a|Xa], [b|Yb])))].
         contradiction.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
         subst.
         split; apply set_type_eq; reflexivity.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
     -   pose proof (fs_range f [c|Xc] [d|Xd]) as Xf.
         rewrite <- eq in Xf.
         apply XY_not in Xf.
         pose proof [|f1 (inl (inr ([a|Ya], [b|Xb])))].
         contradiction.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
         subst.
         split; apply set_type_eq; reflexivity.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
     -   pose proof (fs_range f [c|Xc] [d|Xd]) as Xf.
         rewrite <- eq in Xf.
         apply XY_not in Xf.
         pose proof [|f1 (inr ([a|Ya], [b|Yb]))].
         contradiction.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
-    -   apply set_type_eq in eq; apply (land f1_bij) in eq.
+    -   apply set_type_eq in eq; apply inj in eq.
         inversion eq.
         subst.
         split; apply set_type_eq; reflexivity.
@@ -884,7 +886,7 @@ Proof.
         +   clear eq.
             apply XY_not in Xa.
             contradiction.
-    -   pose proof (rand f1_bij [c|Yc])
+    -   pose proof (sur f1 [c|Yc])
             as [[[[[a Xa] [b Yb]] | [[a Ya] [b Xb]]] | [[a Ya] [b Yb]]] eq].
         +   exists [a|make_lor Xa], [b|make_ror Yb].
             unfold f'; cbn.
@@ -1044,7 +1046,7 @@ Proof.
             apply μ_nz; clear μ_nz.
             unfold zero; cbn; unfold nat_to_card; equiv_simpl.
             exists (λ x, (False_rect _ (nat_lt_0_false x))).
-            split.
+            split; split.
             -   intros a b eq.
                 contradiction (nat_lt_0_false a).
             -   intros b.
@@ -1053,6 +1055,7 @@ Proof.
         unfold one; cbn.
         unfold le, nat_to_card; equiv_simpl.
         exists (λ a, x).
+        split.
         intros [a a_lt] [b b_lt] eq.
         apply set_type_eq; cbn.
         apply nat_lt_one_eq in a_lt.

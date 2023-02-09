@@ -147,7 +147,9 @@ Qed.
 
 Theorem functor_equiv_faithful1 : faithful_functor F.
 Proof.
-    intros A B f g eq.
+    intros A B.
+    split.
+    intros f g eq.
     apply (f_equal (functor_morphism G)) in eq.
     pose proof (nat_trans_commute η f) as eq2.
     pose proof (nat_trans_commute η g) as eq3.
@@ -212,7 +214,9 @@ Qed.
 
 Theorem functor_equiv_full1 : full_functor F.
 Proof.
-    intros A B f.
+    intros A B.
+    split.
+    intros f.
     destruct equiv as [η_iso ε_iso].
     rewrite nat_isomorphism_A in η_iso.
     rewrite nat_isomorphism_A in ε_iso.
@@ -279,7 +283,7 @@ Proof.
     pose (g B := ex_val (ex_proof (ex_proof (F_sur B)))).
     pose (h A := ex_val (ex_proof (F_sur A))).
     pose (G_morphism A B (f : cat_morphism C2 A B) :=
-        ex_val (F_full _ _ (g B ∘ f ∘ h A))
+        ex_val (sur _ (Surjective := F_full _ _) (g B ∘ f ∘ h A))
     ).
     assert (∀ A, g A ∘ h A = 𝟙) as gh_id.
     {
@@ -346,7 +350,7 @@ Proof.
         functor_compose := G_compose;
         functor_id := G_id;
     |}).
-    pose (η_f A := ex_val (F_full _ _ (g (F ⌈A⌉)))
+    pose (η_f A := ex_val (sur _ (Surjective := F_full _ _) (g (F ⌈A⌉)))
         : cat_morphism C1 (𝟏 ⌈A⌉) (G ○ F ⌈A⌉)).
     assert (∀ {A B} (f : cat_morphism C1 A B),
         η_f B ∘ (𝟏 ⋄ f) = (G ○ F ⋄ f) ∘ η_f A) as η_commute.
@@ -393,7 +397,7 @@ Proof.
     split; rewrite nat_isomorphism_A.
     -   intros A.
         unfold isomorphism.
-        exists (ex_val (F_full _ _ (h (F ⌈A⌉)))).
+        exists (ex_val (sur _ (Surjective := F_full _ _) (h (F ⌈A⌉)))).
         cbn.
         unfold η_f.
         change (ex_type_val (ex_to_type (F_sur (F ⌈A⌉)))) with (G ⌈F ⌈A⌉⌉).

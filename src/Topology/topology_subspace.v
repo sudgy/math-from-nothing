@@ -81,6 +81,7 @@ Next Obligation.
             clear S_fin.
             unfold le; equiv_simpl.
             exists (λ (A : set_type S'), ex_val [|A]).
+            split.
             intros [A [[A' SA'] A_eq]] [B [[B' SB'] B_eq]] eq; cbn in *.
             apply set_type_eq; cbn.
             subst A B.

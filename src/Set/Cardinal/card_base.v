@@ -12,7 +12,7 @@ Delimit Scope card_scope with card.
 (* begin hide *)
 Section CardEquiv.
 
-Let card_eq A B := ∃ f : A → B, bijective f.
+Let card_eq A B := ∃ f : A → B, Bijective f.
 
 Local Infix "~" := card_eq.
 
@@ -29,7 +29,7 @@ Instance card_eq_reflexive_class : Reflexive _ := {
 Lemma card_eq_symmetric : ∀ A B, A ~ B → B ~ A.
 Proof.
     intros A B [f f_bij].
-    exists (bij_inv f f_bij).
+    exists (bij_inv f).
     apply bij_inv_bij.
 Qed.
 Instance card_eq_symmetric_class : Symmetric _ := {
@@ -40,14 +40,14 @@ Lemma card_eq_transitive : ∀ A B C, A ~ B → B ~ C → A ~ C.
 Proof.
     intros A B C [f f_bij] [g g_bij].
     exists (λ x, g (f x)).
-    split.
+    split; split.
     -   intros a b eq.
         apply g_bij in eq.
         apply f_bij in eq.
         exact eq.
     -   intros c.
-        pose proof (rand g_bij c) as [b b_eq].
-        pose proof (rand f_bij b) as [a a_eq].
+        pose proof (sur g c) as [b b_eq].
+        pose proof (sur f b) as [a a_eq].
         exists a.
         subst.
         reflexivity.
@@ -150,7 +150,7 @@ Proof.
     equiv_simpl.
     exists (λ x : set_type (from_set_type B),
         [[[x|] | ldand [|x]] | rdand [|x]]).
-    split.
+    split; split.
     -   intros [a a_in] [b b_in] eq.
         inversion eq as [eq2]; clear eq.
         apply set_type_eq; cbn.

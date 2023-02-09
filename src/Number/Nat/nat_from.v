@@ -61,7 +61,7 @@ Proof.
 Qed.
 Global Arguments from_nat : simpl never.
 
-Global Instance from_nat_inj : HomomorphismInj (from_nat (U := U)).
+Global Instance from_nat_inj : Injective (from_nat (U := U)).
 Proof.
     split.
     nat_induction a.
