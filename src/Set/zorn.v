@@ -218,24 +218,19 @@ Proof.
         exact (initial2 B A B_conf A_conf _ _ (land c_lt) Bc Ax).
 Qed.
 
-Theorem zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
-    ∃ a : U, ∀ x : U, ¬ a < x.
+Lemma union_no_sub : ∀ x, ¬(∀ a, (⋃ conforming) a → a < x).
 Proof.
-    intros ub_ex.
-    specialize (ub_ex _ (well_orders_chain _ (ldand union_conf))) as [m m_ub].
-    exists m.
-    intros x' x'_gt.
+    intros x' x'_sub.
     assert (f_domain (⋃ conforming)) as union_f.
     {
         split.
         -   apply union_conf.
         -   exists x'.
             intros a a_in.
-            apply (le_lt_trans2 x'_gt).
-            apply m_ub.
+            apply x'_sub.
             exact a_in.
     }
-    clear x' x'_gt m m_ub.
+    clear x' x'_sub.
     pose proof (conforming_add_conforming [_|union_f] union_conf)
         as conforming_union_x.
     pose (x := f [_|union_f]).
@@ -247,6 +242,20 @@ Proof.
     }
     pose proof (f_lt [_|union_f] _ x_in2) as ltq.
     contradiction (irrefl _ ltq).
+Qed.
+
+Theorem zorn : (∀ F : U → Prop, is_chain le F → has_upper_bound le F) →
+    ∃ a : U, ∀ x : U, ¬ a < x.
+Proof.
+    intros ub_ex.
+    specialize (ub_ex _ (well_orders_chain _ (ldand union_conf))) as [m m_ub].
+    exists m.
+    intros x x_gt.
+    apply (union_no_sub x).
+    intros a a_in.
+    apply (le_lt_trans2 x_gt).
+    apply m_ub.
+    exact a_in.
 Qed.
 
 End Zorn.
