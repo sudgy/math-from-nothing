@@ -17,7 +17,7 @@ Context `{
 }.
 Local Instance zorn_order : Order U := {le := op}.
 
-Definition f_domain (C : U → Prop) := is_chain le C ∧ ∃ x, ∀ a, C a → a < x.
+Definition f_domain (C : U → Prop) := well_orders le C ∧ ∃ x, ∀ a, C a → a < x.
 
 Let f (C : set_type f_domain) := ex_val (rand [|C]).
 
@@ -33,10 +33,9 @@ Lemma P_wo_domain : ∀ (A : U → Prop) x, well_orders le A → f_domain (P A x
 Proof.
     intros A x A_wo.
     split.
-    -   apply well_orders_chain in A_wo.
-        apply (chain_subset A A_wo).
-        intros a Pa.
-        apply Pa.
+    -   apply (well_orders_subset A A_wo).
+        intros a Sa.
+        apply Sa.
     -   exists x.
         intros a Pa.
         apply Pa.
@@ -164,8 +163,7 @@ Proof.
     assert (f_domain (⋃ conforming)) as union_f.
     {
         split.
-        -   apply well_orders_chain.
-            apply union_conf.
+        -   apply union_conf.
         -   exists x'.
             intros a a_in.
             apply (le_lt_trans2 x'_gt).
