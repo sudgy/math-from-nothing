@@ -63,8 +63,6 @@
 ./src/Algebra/Relation/order_cone.v
 ./src/Algebra/Relation/preorder.v
 
-./src/Algebra/homomorphism.v
-
 ./src/Algebra/int_abstract.v
 ./src/Algebra/rat_abstract.v
 

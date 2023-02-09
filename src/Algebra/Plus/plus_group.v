@@ -70,6 +70,18 @@ Class AllPlus U `{
     UPR : @PlusRcancel U UP
 }.
 
+Class HomomorphismPlus {U V} `{Plus U, Plus V} (f : U → V) := {
+    homo_plus : ∀ a b, f (a + b) = f a + f b
+}.
+
+Class HomomorphismZero {U V} `{Zero U, Zero V} (f : U → V) := {
+    homo_zero : f 0 = 0
+}.
+
+Class HomomorphismNeg {U V} `{Neg U, Neg V} (f : U → V) := {
+    homo_neg : ∀ a, f (-a) = -f a
+}.
+
 
 (* begin hide *)
 Section PlusGroupImply.
@@ -369,6 +381,60 @@ Qed.
 
 (* begin hide *)
 End PlusGroup2.
+
+Section PlusHomo.
+
+Context {U V} `{AllPlus U, AllPlus V}.
+(* end hide *)
+Context (f : U → V) `{
+    @Injective U V f,
+    @HomomorphismPlus U V UP UP0 f,
+    @HomomorphismZero U V UZ UZ0 f,
+    @HomomorphismNeg U V UN UN0 f
+}.
+
+Theorem homo_zero_inj : (∀ a, 0 = f a → 0 = a) → Injective f.
+Proof.
+    intros inj.
+    split.
+    intros a b.
+    rewrite <- plus_0_anb_a_b.
+    rewrite <- (plus_0_anb_a_b a b).
+    rewrite <- homo_neg, <- homo_plus.
+    apply inj.
+Qed.
+
+Theorem inj_zero : ∀ {a}, 0 ≠ a → 0 ≠ f a.
+Proof.
+    intros a a_nz contr.
+    rewrite <- homo_zero in contr.
+    apply inj in contr.
+    contradiction.
+Qed.
+
+Global Instance group_homo_zero : HomomorphismZero f.
+Proof.
+    split.
+    apply (plus_lcancel (f 0)).
+    rewrite <- homo_plus.
+    do 2 rewrite plus_rid.
+    reflexivity.
+Qed.
+Local Remove Hints group_homo_zero : typeclass_instances.
+
+Global Instance group_homo_neg : HomomorphismNeg f.
+Proof.
+    split.
+    intros a.
+    apply (plus_lcancel (f a)).
+    rewrite <- homo_plus.
+    do 2 rewrite plus_rinv.
+    apply homo_zero.
+Qed.
+Local Remove Hints group_homo_neg : typeclass_instances.
+
+(* begin hide *)
+End PlusHomo.
 (* end hide *)
 Tactic Notation "plus_bring_left" constr(x) :=
     repeat rewrite plus_assoc;

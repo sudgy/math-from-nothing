@@ -89,6 +89,22 @@ Class WellOrder U `{
     WOW : WellOrdered U le
 }.
 
+Class HomomorphismLe {U V} `{Order U, Order V} (f : U → V) := {
+    homo_le : ∀ a b, a ≤ b → f a ≤ f b
+}.
+
+Class HomomorphismLt {U V} `{Order U, Order V} (f : U → V) := {
+    homo_lt : ∀ a b, a < b → f a < f b
+}.
+
+Class HomomorphismLe2 {U V} `{Order U, Order V} (f : U → V) := {
+    homo_le2 : ∀ a b, a ≤ b ↔ f a ≤ f b
+}.
+
+Class HomomorphismLt2 {U V} `{Order U, Order V} (f : U → V) := {
+    homo_lt2 : ∀ a b, a < b ↔ f a < f b
+}.
+
 (* begin hide *)
 Section TotalOrder.
 
@@ -286,6 +302,66 @@ Proof.
 Qed.
 
 End WellOrder.
+
+Section HomoLe.
+
+Context {U V} `{TotalOrder U, TotalOrder V}.
+(* end hide *)
+Context (f : U → V) `{
+    @Injective U V f,
+    @HomomorphismLe U V UO UO0 f,
+    @HomomorphismLt U V UO UO0 f,
+    @HomomorphismLe2 U V UO UO0 f,
+    @HomomorphismLt2 U V UO UO0 f
+}.
+
+Global Instance homo_le_lt : HomomorphismLt f.
+Proof.
+    split.
+    intros a b [leq neq].
+    split.
+    -   apply homo_le.
+        exact leq.
+    -   intros contr.
+        apply inj in contr.
+        contradiction.
+Qed.
+Local Remove Hints homo_le_lt : typeclass_instances.
+
+Global Instance homo_le_le2 : HomomorphismLe2 f.
+Proof.
+    split.
+    intros a b.
+    split; [>apply homo_le|].
+    intros leq.
+    classic_contradiction ltq.
+    rewrite nle_lt in ltq.
+    destruct ltq as [leq2 neq].
+    apply homo_le in leq2.
+    pose proof (antisym leq2 leq) as eq.
+    apply inj in eq.
+    contradiction.
+Qed.
+Local Remove Hints homo_le_le2 : typeclass_instances.
+
+Global Instance homo_lt_lt2 : HomomorphismLt2 f.
+Proof.
+    split.
+    intros a b.
+    split; [>apply homo_lt|].
+    intros ltq.
+    classic_contradiction leq.
+    rewrite nlt_le in leq.
+    classic_case (b = a) as [eq|neq].
+    -   subst b.
+        contradiction (irrefl _ ltq).
+    -   pose proof (homo_lt _ _ (make_and leq neq)) as ltq2.
+        contradiction (irrefl _ (trans ltq ltq2)).
+Qed.
+Local Remove Hints homo_lt_lt2 : typeclass_instances.
+
+(* begin hide *)
+End HomoLe.
 (* end hide *)
 (* begin show *)
 Ltac make_dual_op op' :=

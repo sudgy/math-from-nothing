@@ -29,6 +29,10 @@ Class Field U `{
     NotTrivial U
 }.
 
+Class HomomorphismDiv {U V} `{Zero U, Div U, Div V} (f : U → V) := {
+    homo_div : ∀ a, 0 ≠ a → f (/a) = /f a
+}.
+
 (* begin hide *)
 Arguments div : simpl never.
 
@@ -295,8 +299,50 @@ Qed.
 
 (* begin hide *)
 End Field.
-(* end hide *)
 
+Section MultHomo.
+
+Context {U V} `{Field U, Field V}.
+(* end hide *)
+Context (f : U → V) `{
+    @Injective U V f,
+    @HomomorphismPlus U V UP UP0 f,
+    @HomomorphismZero U V UZ UZ0 f,
+    @HomomorphismNeg U V UN UN0 f,
+    @HomomorphismMult U V UM UM0 f,
+    @HomomorphismOne U V UE UE0 f,
+    @HomomorphismDiv U V UZ UD UD0 f
+}.
+
+Global Instance field_inj : Injective f.
+Proof.
+    apply (homo_zero_inj _).
+    intros a eq.
+    classic_contradiction a_nz.
+    apply (lmult (f (/a))) in eq.
+    rewrite mult_ranni in eq.
+    rewrite <- homo_mult in eq.
+    rewrite mult_linv in eq by exact a_nz.
+    rewrite homo_one in eq.
+    contradiction (not_trivial_one eq).
+Qed.
+Local Remove Hints field_inj : typeclass_instances.
+
+Global Instance field_homo_div : HomomorphismDiv f.
+Proof.
+    split.
+    intros a a_nz.
+    pose proof (inj_zero _ a_nz) as fa_nz.
+    apply (mult_lcancel (f a) fa_nz).
+    rewrite <- homo_mult.
+    do 2 rewrite mult_rinv by assumption.
+    apply homo_one.
+Qed.
+Local Remove Hints field_homo_div : typeclass_instances.
+
+(* begin hide *)
+End MultHomo.
+(* end hide *)
 Tactic Notation "mult_cancel_left" constr(x) :=
     mult_bring_left x;
     apply lmult.

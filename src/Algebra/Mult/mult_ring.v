@@ -81,6 +81,14 @@ Class AllMult U `{
     UZR : @MultRanni U UZ UM
 }.
 
+Class HomomorphismMult {U V} `{Mult U, Mult V} (f : U → V) := {
+    homo_mult : ∀ a b, f (a * b) = f a * f b
+}.
+
+Class HomomorphismOne {U V} `{One U, One V} (f : U → V) := {
+    homo_one : f 1 = 1
+}.
+
 Arguments mult : simpl never.
 Arguments one : simpl never.
 
@@ -292,8 +300,44 @@ Qed.
 
 (* begin hide *)
 End MultRing.
-(* end hide *)
 
+Section MultHomo.
+
+Context {U V} `{AllMult U, AllMult V}.
+(* end hide *)
+Context (f : U → V) `{
+    @Injective U V f,
+    @HomomorphismPlus U V UP UP0 f,
+    @HomomorphismZero U V UZ UZ0 f,
+    @HomomorphismNeg U V UN UN0 f,
+    @HomomorphismMult U V UM UM0 f,
+    @HomomorphismOne U V UE UE0 f
+}.
+
+Theorem homo_two : f 2 = 2.
+Proof.
+    setoid_rewrite homo_plus.
+    rewrite homo_one.
+    reflexivity.
+Qed.
+
+Theorem homo_three : f 3 = 3.
+Proof.
+    setoid_rewrite homo_plus.
+    rewrite homo_one, homo_two.
+    reflexivity.
+Qed.
+
+Theorem homo_four : f 4 = 4.
+Proof.
+    setoid_rewrite homo_plus.
+    rewrite homo_one, homo_three.
+    reflexivity.
+Qed.
+
+(* begin hide *)
+End MultHomo.
+(* end hide *)
 Tactic Notation "mult_bring_left" constr(x) :=
     repeat rewrite mult_assoc;
     repeat rewrite (mult_comm _ x);

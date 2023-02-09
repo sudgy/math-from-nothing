@@ -7,8 +7,6 @@ Require Export nat_order.
 Require Export nat_abstract.
 Require Import set_order.
 
-Require Export homomorphism.
-
 Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     match a with
     | nat_zero => 0
