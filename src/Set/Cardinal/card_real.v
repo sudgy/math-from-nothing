@@ -4,6 +4,7 @@ Require Import real.
 Require Import card.
 Require Import card_types.
 Require Import set.
+Require Import rat_abstract.
 Require Import analysis_geometric.
 Require Import analysis_topology.
 Require Import analysis_order.
@@ -392,6 +393,13 @@ Proof.
     apply antisym.
     -   exact real_size_leq1.
     -   exact real_size_leq2.
+Qed.
+
+Theorem irrational_ex : ∃ x : real, ∀ q : rat, rat_to_abstract q ≠ x.
+Proof.
+    apply card_lt_ex.
+    rewrite real_size, rat_size.
+    apply card_lt_pow2.
 Qed.
 (* begin hide *)
 End CardReal.

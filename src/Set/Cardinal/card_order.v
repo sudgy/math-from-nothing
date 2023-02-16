@@ -368,6 +368,25 @@ Proof.
     rewrite a_eq, b_eq.
     reflexivity.
 Qed.
+
+Theorem card_lt_ex : ∀ U V, |U| < |V| → ∀ f : U → V, ∃ y, ∀ x, f x ≠ y.
+Proof.
+    intros U V ltq f.
+    classic_contradiction f_sur.
+    rewrite <- nle_lt in ltq.
+    apply ltq.
+    unfold le; equiv_simpl.
+    apply (partition_principle f).
+    split.
+    intros y.
+    rewrite not_ex in f_sur.
+    specialize (f_sur y).
+    rewrite not_all in f_sur.
+    destruct f_sur as [x eq].
+    rewrite not_not in eq.
+    exists x.
+    exact eq.
+Qed.
 (* begin hide *)
 Close Scope set_scope.
 Close Scope card_scope.
