@@ -48,6 +48,43 @@ Proof.
     apply complete_connected.
 Qed.
 
+Global Instance real_hausdorff : HausdorffSpace real.
+Proof.
+    split.
+    assert (∀ a b, a < b → ∃ S1 S2, open S1 ∧ open S2 ∧ S1 a ∧ S2 b
+        ∧ disjoint S1 S2) as wlog.
+    {
+        intros a b ltq.
+        exists (open_interval (a - 1) ((a + b)/2)),
+               (open_interval ((a + b)/2) (b + 1)).
+        split; [>|split; [>|split; [>|split]]].
+        -   apply open_interval_open.
+        -   apply open_interval_open.
+        -   split.
+            +   apply lt_minus_one.
+            +   apply average_leq1.
+                exact ltq.
+        -   split.
+            +   apply average_leq2.
+                exact ltq.
+            +   apply lt_plus_one.
+        -   apply empty_eq.
+            intros x [[lt1 lt2] [lt3 lt4]].
+            pose proof (trans lt2 lt3) as lt.
+            contradiction (irrefl _ lt).
+    }
+    intros a b neq.
+    destruct (trichotomy a b) as [[leq|eq]|leq]; [>|contradiction|].
+    -   exact (wlog a b leq).
+    -   specialize (wlog b a leq)
+            as [S1 [S2 [S1_open [S2_open [S1a [S2a dis]]]]]].
+        exists S2, S1.
+        repeat split; try assumption.
+        unfold disjoint.
+        rewrite inter_comm.
+        exact dis.
+Qed.
+
 (* begin hide *)
 End RealOrderTopology.
 
