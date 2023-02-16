@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export analysis_base.
-Require Export topology.
+Require Export all_topology_single.
 
 Require Import order_minmax.
 Require Import order_abs.

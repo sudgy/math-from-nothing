@@ -240,7 +240,9 @@
 ./src/Topology/topology_path.v
 ./src/Topology/topology_compact.v
 ./src/Topology/topology_function_limit.v
-./src/Topology/topology.v
+./src/Topology/all_topology_base.v
+./src/Topology/all_topology_single.v
+./src/Topology/all_topology_topologies.v
 
 ./src/Analysis/analysis_base.v
 ./src/Analysis/analysis_topology.v
