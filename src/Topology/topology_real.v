@@ -5,7 +5,10 @@ Require Export topology_order.
 Require Export topology_order2.
 Require Export topology_connected.
 Require Export real.
+Require Import rat.
+Require Import rat_abstract.
 Require Import order_minmax.
+Require Import card_types.
 
 Definition real_order_topology := order_topology (U := real).
 
@@ -84,6 +87,65 @@ Proof.
         rewrite inter_comm.
         exact dis.
 Qed.
+
+Definition real_rat_basis (S : real → Prop) := ∃ a b : rat,
+    a < b ∧ S = open_interval (rat_to_abstract a) (rat_to_abstract b).
+
+Theorem real_rat_basis_countable : countable (|set_type real_rat_basis|)%card.
+Proof.
+    unfold countable.
+    rewrite <- nat_mult_nat.
+    rewrite <- rat_size.
+    unfold le, mult; equiv_simpl.
+    exists (λ S, (ex_val [|S], ex_val (ex_proof [|S]))).
+    split.
+    intros A B.
+    unfold ex_val at 1 3, ex_proof.
+    destruct (ex_to_type [|A]) as [a C0]; cbn.
+    destruct (ex_to_type [|B]) as [a2 C1]; cbn.
+    rewrite_ex_val b [ab A_eq].
+    rewrite_ex_val b2 [ab2 B_eq].
+    clear C0 C1.
+    intros eq.
+    inversion eq; clear eq.
+    subst a2 b2.
+    rewrite <- B_eq in A_eq.
+    rewrite set_type_eq in A_eq.
+    exact A_eq.
+Qed.
+
+Theorem real_rat_basis_open : real_rat_basis ⊆ open.
+Proof.
+    intros S [a [b [ab S_eq]]]; subst S.
+    apply open_interval_open.
+Qed.
+
+Theorem real_rat_basis_contains :
+    ∀ S x, open S → S x → ∃ B, real_rat_basis B ∧ B ⊆ S ∧ B x.
+Proof.
+    intros S x S_open Sx.
+    rewrite <- open_all_basis in S_open.
+    specialize (S_open x Sx) as [B [B_basis [Bx B_sub]]].
+    apply real_open_interval in B_basis as [a [b B_eq]]; subst B.
+    destruct Bx as [ax xb].
+    pose proof (rat_dense_in_arch a x ax) as [a' [a'_gt a'_lt]].
+    pose proof (rat_dense_in_arch x b xb) as [b' [b'_gt b'_lt]].
+    exists (open_interval (rat_to_abstract a') (rat_to_abstract b')).
+    split; [>|split].
+    -   exists a', b'.
+        split; [>|reflexivity].
+        rewrite <- rat_to_abstract_lt.
+        exact (trans a'_lt b'_gt).
+    -   intros y [y_gt y_lt].
+        apply B_sub.
+        split.
+        +   exact (trans a'_gt y_gt).
+        +   exact (trans y_lt b'_lt).
+    -   split; assumption.
+Qed.
+
+Definition real_rat_topology := make_basis_topology
+    real_rat_basis real_rat_basis_open real_rat_basis_contains.
 
 (* begin hide *)
 End RealOrderTopology.

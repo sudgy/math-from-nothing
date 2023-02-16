@@ -208,6 +208,7 @@ End Basis.
 
 Section MakeBasis.
 
+(* end hide *)
 Context {U} `{top : Topology U}.
 Variable C : (U → Prop) → Prop.
 Hypothesis C_open : C ⊆ open.
