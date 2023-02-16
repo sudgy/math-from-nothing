@@ -5,6 +5,7 @@ Require Import nat_abstract.
 Require Export int.
 Require Import set.
 Require Import nat.
+Require Import order_minmax.
 
 Section IntAbstract.
 
@@ -170,6 +171,36 @@ Proof.
         rewrite int_to_abstract_plus.
         rewrite IHn.
         rewrite int_to_abstract_one.
+        reflexivity.
+Qed.
+
+Theorem int_to_abstract_min : ∀ a b,
+    int_to_abstract (min a b) = min (int_to_abstract a) (int_to_abstract b).
+Proof.
+    intros a b.
+    destruct (connex a b) as [leq|leq].
+    -   rewrite (min_leq _ _ leq).
+        rewrite <- int_to_abstract_le in leq.
+        rewrite (min_leq _ _ leq).
+        reflexivity.
+    -   rewrite (min_req _ _ leq).
+        rewrite <- int_to_abstract_le in leq.
+        rewrite (min_req _ _ leq).
+        reflexivity.
+Qed.
+
+Theorem int_to_abstract_max : ∀ a b,
+    int_to_abstract (max a b) = max (int_to_abstract a) (int_to_abstract b).
+Proof.
+    intros a b.
+    destruct (connex a b) as [leq|leq].
+    -   rewrite (max_req _ _ leq).
+        rewrite <- int_to_abstract_le in leq.
+        rewrite (max_req _ _ leq).
+        reflexivity.
+    -   rewrite (max_leq _ _ leq).
+        rewrite <- int_to_abstract_le in leq.
+        rewrite (max_leq _ _ leq).
         reflexivity.
 Qed.
 

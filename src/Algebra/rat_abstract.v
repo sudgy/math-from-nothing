@@ -7,6 +7,7 @@ Require Export rat.
 Require Import set.
 Require Import fraction_order.
 Require Import nat.
+Require Import order_minmax.
 
 Section RatAbstract.
 
@@ -210,6 +211,36 @@ Proof.
     unfold nat_to_rat.
     rewrite int_to_rat_to_abstract.
     apply nat_to_int_to_abstract.
+Qed.
+
+Theorem rat_to_abstract_min : ∀ a b,
+    rat_to_abstract (min a b) = min (rat_to_abstract a) (rat_to_abstract b).
+Proof.
+    intros a b.
+    destruct (connex a b) as [leq|leq].
+    -   rewrite (min_leq _ _ leq).
+        rewrite <- rat_to_abstract_le in leq.
+        rewrite (min_leq _ _ leq).
+        reflexivity.
+    -   rewrite (min_req _ _ leq).
+        rewrite <- rat_to_abstract_le in leq.
+        rewrite (min_req _ _ leq).
+        reflexivity.
+Qed.
+
+Theorem rat_to_abstract_max : ∀ a b,
+    rat_to_abstract (max a b) = max (rat_to_abstract a) (rat_to_abstract b).
+Proof.
+    intros a b.
+    destruct (connex a b) as [leq|leq].
+    -   rewrite (max_req _ _ leq).
+        rewrite <- rat_to_abstract_le in leq.
+        rewrite (max_req _ _ leq).
+        reflexivity.
+    -   rewrite (max_leq _ _ leq).
+        rewrite <- rat_to_abstract_le in leq.
+        rewrite (max_leq _ _ leq).
+        reflexivity.
 Qed.
 
 End RatAbstract.
