@@ -100,5 +100,40 @@ Proof.
         split; assumption.
 Qed.
 
+Theorem dict_order_lt : ∀ a b,
+    a < b ↔ ((snd a < snd b) ∨ (fst a < fst b ∧ snd a = snd b)).
+Proof.
+    intros [a1 a2] [b1 b2].
+    cbn.
+    split.
+    -   intros [leq neq].
+        destruct leq as [ltq|[leq eq]].
+        +   left.
+            exact ltq.
+        +   subst b2.
+            right.
+            split; [>|reflexivity].
+            split; [>exact leq|].
+            intro; subst b1; contradiction.
+    -   intros ltq.
+        unfold strict.
+        unfold le; cbn.
+        destruct ltq as [ltq|[ltq eq]].
+        +   split.
+            *   left.
+                exact ltq.
+            *   intros contr.
+                inversion contr; subst.
+                exact (irrefl _ ltq).
+        +   subst b2.
+            split.
+            *   right.
+                split; [>|reflexivity].
+                apply ltq.
+            *   intros contr.
+                inversion contr; subst.
+                exact (irrefl _ ltq).
+Qed.
+
 End OrderDictionary.
 (* end hide *)
