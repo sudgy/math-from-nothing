@@ -52,9 +52,62 @@ Proof.
     -   exact ABx.
     -   apply refl.
 Qed.
+(* begin hide *)
+
+End ProductTopology.
+
+Section BasisProduct.
+
+Context {U V} `{TopologyBasis U, TopologyBasis V}.
+
+Local Existing Instance product_topology.
+Local Open Scope set_scope.
+(* end hide *)
+
+Definition product_basis (S : U * V → Prop) :=
+    ∃ A B, top_basis A ∧ top_basis B ∧ S = (A * B).
+
+Theorem product_basis_open : product_basis ⊆ open.
+Proof.
+    intros S [A [B [A_basis [B_basis S_eq]]]]; subst S.
+    apply basis_open.
+    exists A, B.
+    split; [>|split].
+    -   exact (basis_open _ A_basis).
+    -   exact (basis_open _ B_basis).
+    -   reflexivity.
+Qed.
+
+Theorem product_basis_contains :
+    ∀ S x, open S → S x → ∃ B, product_basis B ∧ B ⊆ S ∧ B x.
+Proof.
+    intros S x S_open Sx.
+    specialize (S_open x Sx).
+    destruct S_open as [B [B_basis [Bx B_sub]]].
+    destruct B_basis as [A1 [A2 [A1_open [A2_open B_eq]]]]; subst B.
+    destruct Bx as [A1x A2x].
+    specialize (A1_open _ A1x) as [B1 [B1_basis [B1x B1_sub]]].
+    specialize (A2_open _ A2x) as [B2 [B2_basis [B2x B2_sub]]].
+    exists (B1 * B2).
+    split; [>|split].
+    -   exists B1, B2.
+        split; [>|split]; trivial.
+    -   apply (trans2 B_sub).
+        apply cartesian_product_sub; assumption.
+    -   split; assumption.
+Qed.
+
+Definition product_basis_topology :=
+    make_basis_topology product_basis product_basis_open product_basis_contains.
+
+Theorem product_basis_eq : @basis_topology _ product_basis_topology =
+                           @basis_topology _ product_topology.
+Proof.
+    apply make_basis_equal.
+Qed.
 
 (* begin hide *)
-End ProductTopology.
+End BasisProduct.
 (* end hide *)
 Section ProductHausdorff.
 
