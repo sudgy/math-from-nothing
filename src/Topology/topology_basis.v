@@ -295,6 +295,27 @@ Proof.
         +   exact B1x.
         +   exact (trans B1_sub B2'_sub).
 Qed.
+
+Theorem basis_finer {U} : ∀ (T : Topology U) (BT : TopologyBasis U),
+    (∀ S, @top_basis U BT S → @open U T S) ↔
+    topology_finer T (@basis_topology U BT).
+Proof.
+    intros T BT.
+    split.
+    -   intros sub S S_open.
+        rewrite basis_open_unions in S_open.
+        destruct S_open as [SS [SS_basis S_eq]]; subst S.
+        apply union_open.
+        intros S S_basis.
+        apply SS_basis in S_basis.
+        clear SS SS_basis.
+        apply sub in S_basis.
+        exact S_basis.
+    -   intros sub S S_basis.
+        apply sub.
+        apply basis_open.
+        exact S_basis.
+Qed.
 (* begin hide *)
 Close Scope set_scope.
 Close Scope card_scope.

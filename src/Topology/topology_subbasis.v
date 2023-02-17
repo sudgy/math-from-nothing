@@ -93,5 +93,25 @@ Proof.
     exact S_sub.
 Qed.
 
+Theorem subbasis_finer {U} : ∀ (T : Topology U) (ST : TopologySubbasis U),
+    (∀ S, @top_subbasis U ST S → @open U T S) ↔
+    topology_finer T (@basis_topology U (@subbasis_topology U ST)).
+Proof.
+    intros T ST.
+    rewrite <- basis_finer.
+    split.
+    -   intros sub S S_basis.
+        destruct S_basis as [SS [SS_sub [SS_fin S_eq]]]; subst S.
+        apply inter_open; [>|exact SS_fin].
+        intros S S_open.
+        apply SS_sub in S_open.
+        apply sub in S_open.
+        exact S_open.
+    -   intros sub S S_basis.
+        apply sub.
+        apply subbasis_basis.
+        exact S_basis.
+Qed.
+
 Close Scope card_scope.
 (* end hide *)
