@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export topology_basis.
+Require Export topology_subbasis.
 Require Export topology_axioms.
 
 (* begin hide *)
@@ -53,6 +54,84 @@ Proof.
     -   apply refl.
 Qed.
 (* begin hide *)
+
+Program Instance subbasis_product_topology : TopologySubbasis (U * V) := {
+    top_subbasis S := (∃ A, S = inverse_image fst A ∧ open A) ∨
+                      (∃ A, S = inverse_image snd A ∧ open A)
+}.
+Next Obligation.
+    apply all_eq.
+    intros x.
+    exists all.
+    split; [>|exact true].
+    left.
+    exists all.
+    split; [>|apply all_open].
+    symmetry; apply all_eq.
+    clear x.
+    intros x.
+    unfold inverse_image.
+    exact true.
+Qed.
+
+Theorem subbasis_product_topology_eq :
+    @basis_topology _ product_topology =
+    @basis_topology _ (@subbasis_topology _ subbasis_product_topology).
+Proof.
+    apply topology_finer_antisym.
+    -   apply subbasis_finer.
+        intros S [S_basis|S_basis].
+        +   destruct S_basis as [A [S_eq A_open]]; subst S.
+            apply basis_open.
+            exists A, all.
+            split; [>|split].
+            *   exact A_open.
+            *   apply all_open.
+            *   apply antisym.
+                --  intros x Ax.
+                    split; [>exact Ax|exact true].
+                --  intros x [Ax Bx].
+                    exact Ax.
+        +   destruct S_basis as [A [S_eq A_open]]; subst S.
+            apply basis_open.
+            exists all, A.
+            split; [>|split].
+            *   apply all_open.
+            *   exact A_open.
+            *   apply antisym.
+                --  intros x Ax.
+                    split; [>exact true|exact Ax].
+                --  intros x [Bx Ax].
+                    exact Ax.
+    -   apply basis_finer.
+        intros S [A [B [A_open [B_open S_eq]]]]; subst S.
+        assert (A * B = (A * all) ∩ (all * B)) as AB_eq.
+        {
+            apply antisym.
+            -   intros [a b] [Aa Bb].
+                repeat split; trivial.
+            -   intros [a b] [[Aa C0] [C1 Bb]].
+                split; assumption.
+        }
+        rewrite AB_eq.
+        apply inter_open2; apply subbasis_open.
+        +   left.
+            exists A.
+            split; [>|exact A_open].
+            apply antisym.
+            *   intros x [Ax Bx].
+                exact Ax.
+            *   intros x Ax.
+                split; [>exact Ax|exact true].
+        +   right.
+            exists B.
+            split; [>|exact B_open].
+            apply antisym.
+            *   intros x [Bx Ax].
+                exact Ax.
+            *   intros x Ax.
+                split; [>exact true|exact Ax].
+Qed.
 
 End ProductTopology.
 
