@@ -517,6 +517,18 @@ Proof.
     rewrite set_minus_inv.
     apply union_lid.
 Qed.
+
+Context {V : Type}.
+
+Theorem cartesian_product_sub : ∀ (A B : U → Prop) (C D : V → Prop),
+    A ⊆ B → C ⊆ D → A * C ⊆ B * D.
+Proof.
+    intros A B C D AB CD.
+    intros x [Ax Cx].
+    apply AB in Ax.
+    apply CD in Cx.
+    split; assumption.
+Qed.
 (* begin hide *)
 
 End SetBase.
