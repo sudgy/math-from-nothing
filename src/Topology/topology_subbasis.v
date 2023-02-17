@@ -69,6 +69,29 @@ Next Obligation.
         +   intros A SS2_A.
             exact (S_in A (make_ror SS2_A)).
 Qed.
-(* begin hide *)
+
+Theorem subbasis_basis {U} `{TopologySubbasis U} :
+    ∀ S, top_subbasis S → top_basis S.
+Proof.
+    intros S S_sub.
+    exists ❴S❵.
+    split; [>|split].
+    -   intros T T_eq.
+        rewrite singleton_eq in T_eq.
+        subst T.
+        exact S_sub.
+    -   apply singleton_finite.
+    -   rewrite inter_singleton.
+        reflexivity.
+Qed.
+
+Theorem subbasis_open {U} `{TopologySubbasis U} : ∀ S, top_subbasis S → open S.
+Proof.
+    intros S S_sub.
+    apply basis_open.
+    apply subbasis_basis.
+    exact S_sub.
+Qed.
+
 Close Scope card_scope.
 (* end hide *)
