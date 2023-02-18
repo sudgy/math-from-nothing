@@ -130,6 +130,19 @@ Proof.
         contradiction (irrefl _ b2_lt).
 Qed.
 
+Lemma simple_finite_in {U} : ∀ {n} {f : U → nat_to_set_type (nat_suc n)},
+    ¬(∃ a, [f a|] = n) → ∀ x, initial_segment n [f x|].
+Proof.
+    intros n f a_nex x.
+    split.
+    -   rewrite <- nat_lt_suc_le.
+        exact [|f x].
+    -   intros eq.
+        apply a_nex.
+        exists x.
+        exact eq.
+Qed.
+
 Theorem simple_finite_bij : ∀ U, simple_finite U →
     ∃ n (f : U → nat_to_set_type n), Bijective f.
 Proof.
@@ -230,18 +243,7 @@ Proof.
                 apply f_equal.
                 apply set_type_eq.
                 reflexivity.
-    -   assert (∀ a, initial_segment n [f a|]) as f_in.
-        {
-            intros a.
-            split.
-            -   rewrite <- nat_lt_suc_le.
-                exact [|f a].
-            -   intros eq.
-                apply a_nex.
-                exists a.
-                exact eq.
-        }
-        specialize (IHn U (λ a, [_|f_in a])).
+    -   specialize (IHn U (λ a, [_|simple_finite_in a_nex a])).
         apply IHn.
         split.
         intros a b.
@@ -299,18 +301,7 @@ Proof.
             contradiction (ltq (nat_le_suc x)).
         +   rewrite nat_suc_eq in eq.
             exact eq.
-    -   assert (∀ a, initial_segment n [f a|]) as f_in.
-        {
-            intros a.
-            split.
-            -   rewrite <- nat_lt_suc_le.
-                exact [|f a].
-            -   intros contr.
-                apply a_nex.
-                exists a.
-                exact contr.
-        }
-        apply (IHn (λ x, [_|f_in x])).
+    -   apply (IHn (λ x, [_|simple_finite_in a_nex x])).
         split.
         intros a b eq.
         setoid_rewrite set_type_eq2 in eq.
@@ -349,51 +340,45 @@ Proof.
         | nat_zero => z
         | nat_suc n' => ex_val (lt_ex (build n'))
         end).
-    apply simple_finite_bij in U_fin as [n [g g_bij]].
+    destruct U_fin as [n [g g_inj]].
     pose (h x := g (f x)).
-    assert (Injective h) as h_inj.
-    {
-        unfold h.
-        apply inj_comp; [>|apply g_bij].
-        split.
-        assert (∀ n, f (nat_suc n) < f n) as lt.
-        {
-            intros m.
-            unfold f at 1; fold f.
-            rewrite_ex_val a a_lt.
-            exact a_lt.
-        }
-        assert (∀ a b, a < b → f a ≠ f b) as wlog.
-        {
-            intros a b ltq eq.
-            assert (f b < f a) as ltq'.
-            {
-                clear eq.
-                apply nat_lt_ex in ltq as [c c_eq]; subst b.
-                nat_induction c.
-                -   rewrite plus_comm.
-                    apply lt.
-                -   rewrite nat_plus_rsuc.
-                    apply (trans (lt _)).
-                    exact IHc.
-            }
-            rewrite eq in ltq'.
-            contradiction (irrefl _ ltq').
-        }
-        intros a b eq.
-        destruct (trichotomy a b) as [[ltq|eq']|ltq].
-        -   apply wlog in ltq.
-            contradiction.
-        -   exact eq'.
-        -   apply wlog in ltq.
-            symmetry in eq.
-            contradiction.
-    }
-    clearbody h.
-    clear - h_inj.
     apply nat_not_finite.
     exists n, h.
-    exact h_inj.
+    unfold h.
+    apply inj_comp; [>|apply g_inj].
+    split.
+    assert (∀ n, f (nat_suc n) < f n) as lt.
+    {
+        intros m.
+        unfold f at 1; fold f.
+        rewrite_ex_val a a_lt.
+        exact a_lt.
+    }
+    assert (∀ a b, a < b → f a ≠ f b) as wlog.
+    {
+        intros a b ltq eq.
+        assert (f b < f a) as ltq'.
+        {
+            clear eq.
+            apply nat_lt_ex in ltq as [c c_eq]; subst b.
+            nat_induction c.
+            -   rewrite plus_comm.
+                apply lt.
+            -   rewrite nat_plus_rsuc.
+                apply (trans (lt _)).
+                exact IHc.
+        }
+        rewrite eq in ltq'.
+        contradiction (irrefl _ ltq').
+    }
+    intros a b eq.
+    destruct (trichotomy a b) as [[ltq|eq']|ltq].
+    -   apply wlog in ltq.
+        contradiction.
+    -   exact eq'.
+    -   apply wlog in ltq.
+        symmetry in eq.
+        contradiction.
 Qed.
 
 End Min.
