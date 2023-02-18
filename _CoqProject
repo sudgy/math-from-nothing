@@ -61,7 +61,6 @@
 ./src/Algebra/Relation/order_self_abs.v
 ./src/Algebra/Relation/order_dict.v
 ./src/Algebra/Relation/order_cone.v
-./src/Algebra/Relation/preorder.v
 
 ./src/Algebra/int_abstract.v
 ./src/Algebra/rat_abstract.v
@@ -85,6 +84,7 @@
 ./src/Set/equivalence.v
 ./src/Set/set_finite.v
 ./src/Set/zorn.v
+./src/Set/zorn_preorder.v
 ./src/Set/zorn_function.v
 ./src/Set/well_order.v
 ./src/Set/set.v

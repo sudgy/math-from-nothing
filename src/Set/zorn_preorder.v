@@ -17,22 +17,26 @@ Local Instance preorder_order : Order U := {le := op}.
 Definition preorder_eq (a b : U) := a ≤ b ∧ b ≤ a.
 Local Infix "~" := preorder_eq.
 
-Local Program Instance preorder_eq_reflexive : Reflexive preorder_eq.
-Next Obligation.
+Local Instance preorder_eq_reflexive : Reflexive preorder_eq.
+Proof.
+    split.
+    intros x.
     unfold preorder_eq.
     split; apply refl.
 Qed.
 
-Local Program Instance preorder_eq_symmetric : Symmetric preorder_eq.
-Next Obligation.
-    rename H1 into eq.
+Local Instance preorder_eq_symmetric : Symmetric preorder_eq.
+Proof.
+    split.
+    intros x y eq.
     unfold preorder_eq in *.
     split; apply eq.
 Qed.
 
-Local Program Instance preorder_eq_transitive : Transitive preorder_eq.
-Next Obligation.
-    rename H1 into xy, H2 into yz.
+Local Instance preorder_eq_transitive : Transitive preorder_eq.
+Proof.
+    split.
+    intros x y z xy yz.
     unfold preorder_eq in *.
     destruct xy as [xy yx], yz as [yz zy].
     split.
@@ -59,37 +63,37 @@ Proof.
     intros a b c d ab cd.
     apply propositional_ext.
     split; apply preorder_le_wd_1.
-    -   exact ab.
-    -   exact cd.
-    -   apply preorder_eq_symmetric.
-        exact ab.
-    -   apply preorder_eq_symmetric.
-        exact cd.
+    3, 4: apply preorder_eq_symmetric.
+    all: assumption.
 Qed.
 
 Local Instance preorder_le : Order (equiv_type preorder_equiv) := {
     le := binary_op preorder_le_wd (E := preorder_equiv)
 }.
 
-Local Program Instance preorder_le_refl : Reflexive le.
-Next Obligation.
+Local Instance preorder_le_refl : Reflexive le.
+Proof.
+    split.
+    intros x.
     equiv_get_value x.
     unfold le; equiv_simpl.
     apply refl.
 Qed.
 
-Local Program Instance preorder_le_antisym : Antisymmetric le.
-Next Obligation.
-    revert H1 H2.
+Local Instance preorder_le_antisym : Antisymmetric le.
+Proof.
+    split.
+    intros x y.
     equiv_get_value x y.
     unfold le; equiv_simpl.
     unfold preorder_eq.
     split; assumption.
 Qed.
 
-Local Program Instance preorder_le_trans : Transitive le.
-Next Obligation.
-    revert H1 H2.
+Local Instance preorder_le_trans : Transitive le.
+Proof.
+    split.
+    intros x y z.
     equiv_get_value x y z.
     unfold le; equiv_simpl.
     apply trans.
@@ -116,8 +120,8 @@ Proof.
         intros x Fx.
         equiv_get_value x.
         unfold le; equiv_simpl.
-        specialize (a_upper x Fx).
-        exact a_upper.
+        apply a_upper.
+        exact Fx.
     }
     destruct a_ex as [a a_max].
     equiv_get_value a.
@@ -125,12 +129,10 @@ Proof.
     intros x leq.
     specialize (a_max (to_equiv preorder_equiv x)).
     unfold strict in a_max.
-    rewrite not_and in a_max.
-    rewrite not_not in a_max.
+    rewrite not_and, not_not in a_max.
     unfold le in a_max; equiv_simpl in a_max.
-    destruct a_max as [nleq|eq].
-    -   contradiction.
-    -   apply eq.
+    destruct a_max as [nleq|eq]; [>contradiction|].
+    apply eq.
 Qed.
 
 End Preorder.

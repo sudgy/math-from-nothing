@@ -3,7 +3,7 @@ Require Import init.
 Require Import zorn_real_base.
 Require Import zorn_real_arch.
 
-Require Import preorder.
+Require Import zorn_preorder.
 Require Import set.
 Require Import nat.
 Require Import nat_abstract.
