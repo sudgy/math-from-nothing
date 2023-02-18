@@ -7,7 +7,6 @@ Require Import linear_bilinear.
 Require Import tensor_product_construction.
 
 Require Import set.
-Require Import card.
 
 Require Import unordered_list.
 Require Import plus_sum.
@@ -204,13 +203,13 @@ Proof.
     pose (gSO := module_scalar_id (bilinear_from_module g)).
     pose (gSL := module_scalar_ldist (bilinear_from_module g)).
     pose (gSR := module_scalar_rdist (bilinear_from_module g)).
-    apply card_unique_one.
+    apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 x := bilinear_from_f g (fst x) (snd x)).
         pose (h2 := make_free_from F (V1 * V2) (bilinear_from_module g) h1).
         pose proof (free_module_universal F (V1 * V2) h2) as uni.
         cbn in uni.
-        apply card_one_ex in uni as [h3 h3_free_from].
+        destruct uni as [[[h3 h3_free_from]] h3_uni]; clear h3_uni.
         unfold free_from_set in h3_free_from.
         cbn in h3_free_from.
         pose (h4 := module_homo_f h3).

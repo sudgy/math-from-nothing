@@ -1,19 +1,15 @@
 Require Import init.
-Require Import card.
 
 Require Export category_base.
 
-(* begin hide *)
-Open Scope card_scope.
-(* end hide *)
 (* begin show *)
 Set Universe Polymorphism.
 (* end show *)
 
 Definition initial `{C0 : Category} (I : cat_U C0)
-    := ∀ A, |cat_morphism C0 I A| = 1.
+    := ∀ A, Singleton (cat_morphism C0 I A).
 Definition terminal `{C0 : Category} (T : cat_U C0)
-    := ∀ A, |cat_morphism C0 A T| = 1.
+    := ∀ A, Singleton (cat_morphism C0 A T).
 
 (* begin hide *)
 Section InitTerm1.
@@ -28,10 +24,10 @@ Proof.
     pose proof (I1_init I1) as I1_self.
     pose proof (I2_init I2) as I2_self.
     specialize (I2_init I1).
-    apply card_one_ex in I2_init as g.
+    destruct I2_init as [[g] g_uni].
     exists g.
-    rewrite (card_one_eq I2_self (f ∘ g) 𝟙).
-    rewrite (card_one_eq I1_self (g ∘ f) 𝟙).
+    rewrite (singleton_unique2 (f ∘ g) 𝟙).
+    rewrite (singleton_unique2 (g ∘ f) 𝟙).
     split; reflexivity.
 Qed.
 
@@ -39,7 +35,7 @@ Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
 Proof.
     intros I1 I2 I1_init I2_init.
     pose proof (I1_init I2) as I1_init'.
-    apply card_one_ex in I1_init' as f.
+    destruct I1_init' as [[f] f_uni].
     exists f.
     apply initial_all_iso; assumption.
 Qed.
@@ -48,8 +44,8 @@ Theorem initial_iso_unique : ∀ I1 I2, initial I1 → initial I2 →
     ∀ f g : cat_morphism C0 I1 I2, f = g.
 Proof.
     intros I1 I2 I1_init I2_init f g.
-    apply card_one_eq.
-    exact (I1_init I2).
+    specialize (I1_init I2).
+    apply singleton_unique2.
 Qed.
 
 Theorem initial_dual_terminal :
@@ -96,8 +92,8 @@ Theorem terminal_iso_unique : ∀ T1 T2, terminal T1 → terminal T2 →
     ∀ f g : cat_morphism C0 T1 T2, f = g.
 Proof.
     intros T1 T2 T1_term T2_term f g.
-    apply card_one_eq.
-    exact (T2_term T1).
+    specialize (T2_term T1).
+    apply singleton_unique2.
 Qed.
 
 (* begin hide *)
@@ -107,7 +103,3 @@ End InitTerm2.
 (* begin show *)
 Unset Universe Polymorphism.
 (* end show *)
-(* begin hide *)
-
-Close Scope card_scope.
-(* end hide *)

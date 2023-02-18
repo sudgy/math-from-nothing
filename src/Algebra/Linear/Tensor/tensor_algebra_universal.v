@@ -140,7 +140,7 @@ Proof.
     pose (ASML := algebra_scalar_lmult A).
     pose (ASMR := algebra_scalar_rmult A).
     unfold to_algebra_set; cbn.
-    apply card_unique_one.
+    apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 n (l : list (module_V V)) (eq : list_size l = n)
             := rfold mult 1 (list_image l (module_homo_f g))).
@@ -181,7 +181,7 @@ Proof.
                 apply scalar_rmult.
         }
         pose (h2 n := make_multilinear _ n _ (h1 n) (h1_plus n) (h1_scalar n)).
-        pose (h3 n := card_one_ex (tensor_power_universal V n (h2 n))).
+        pose (h3 n := ex_singleton (tensor_power_universal V n (h2 n))).
         cbn in h3.
         pose (h4 i v (H : of_grade i v) := module_homo_f [h3 i|] (ex_val H)).
         assert (∀ n, ∀ l eq li,
@@ -191,7 +191,7 @@ Proof.
             intros n l eq li.
             unfold h4.
             unfold h3.
-            pose proof [|card_one_ex (tensor_power_universal V n (h2 n))]
+            pose proof [|ex_singleton (tensor_power_universal V n (h2 n))]
                 as h2_eq.
             unfold multilinear_from_set in h2_eq; cbn in h2_eq.
             specialize (h2_eq _ eq).

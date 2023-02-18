@@ -201,7 +201,7 @@ Proof.
     unfold tensor_multilinear_from, initial; cbn.
     intros g.
     unfold multilinear_from_set; cbn.
-    apply card_unique_one.
+    apply singleton_ex; [>split|].
     -   apply ex_set_type.
         nat_induction n.
         +   destruct g as [M g g_plus g_scalar]; cbn.
@@ -360,7 +360,7 @@ Proof.
             }
             pose (f_base := make_bilinear V (tensor_power V n) _ f3 f_bil).
             pose proof (tensor_product_universal _ _ f_base) as f_ex.
-            apply card_one_ex in f_ex as [f f_in].
+            apply ex_singleton in f_ex as [f f_in].
             cbn in f, f_in.
             exists f.
             unfold bilinear_from_set in f_in; cbn in f_in.

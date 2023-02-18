@@ -106,7 +106,7 @@ Definition geo_involute_base3 := make_to_geo
     geo_involute_base_contract.
 
 Definition geo_involute_base
-    := card_one_ex (geometric_universal B geo_involute_base3).
+    := ex_singleton (geometric_universal B geo_involute_base3).
 
 Definition geo_involute_homo := [geo_involute_base|].
 Definition geo_involute := algebra_homo_f geo_involute_homo : geo B → geo B.
@@ -295,7 +295,7 @@ Definition geo_reverse_base3 := make_to_geo
     geo_reverse_base_contract.
 
 Definition geo_reverse_base
-    := card_one_ex (geometric_universal B geo_reverse_base3).
+    := ex_singleton (geometric_universal B geo_reverse_base3).
 
 Definition geo_reverse_homo := [geo_reverse_base|].
 Definition geo_reverse := algebra_homo_f geo_reverse_homo : geo B → geo B.

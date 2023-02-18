@@ -75,7 +75,7 @@ Proof.
     }
     pose (f_base := make_bilinear (cring_module F) M _ (λ a (v : V1), a · v) f_bil).
     pose proof (tensor_product_universal _ _ f_base) as f_ex.
-    apply card_one_ex in f_ex as [f f_in].
+    apply ex_singleton in f_ex as [f f_in].
     cbn in *.
     unfold bilinear_from_set in f_in; cbn in f_in.
     clear f_base.
@@ -200,7 +200,7 @@ Proof.
         by (repeat split; intros; apply tensor_bilinear).
     pose (f_base := make_bilinear M N _ _ f_bil).
     pose proof (tensor_product_universal M N f_base) as f_ex.
-    apply card_one_ex in f_ex as [f f_in].
+    apply ex_singleton in f_ex as [f f_in].
     cbn in *.
     unfold bilinear_from_set in f_in; cbn in f_in.
     clear f_base.
@@ -210,7 +210,7 @@ Proof.
             by (repeat split; intros; apply tensor_bilinear).
         pose (g_base := make_bilinear N M _ _ g_bil).
         pose proof (tensor_product_universal N M g_base) as g_ex.
-        apply card_one_ex in g_ex as [g g_in].
+        apply ex_singleton in g_ex as [g g_in].
         cbn in *.
         unfold bilinear_from_set in g_in; cbn in g_in.
         clear g_base.
@@ -525,7 +525,7 @@ Proof.
     }
     pose (h1_base := make_bilinear _ _ _ _ h_bil).
     pose proof (tensor_product_universal _ _ h1_base) as h1_ex.
-    apply card_one_ex in h1_ex as [h1 h1_in].
+    apply ex_singleton in h1_ex as [h1 h1_in].
     cbn in *.
     unfold bilinear_from_set in h1_in; cbn in h1_in.
     clear h1_base.
@@ -585,7 +585,7 @@ Proof.
     }
     pose (h2_base := make_bilinear _ _ _ _ h'_bil).
     pose proof (tensor_product_universal _ _ h2_base) as h2_ex.
-    apply card_one_ex in h2_ex as [h2 h2_in].
+    apply ex_singleton in h2_ex as [h2 h2_in].
     cbn in *.
     unfold bilinear_from_set in h2_in; cbn in h2_in.
     clear h2_base.

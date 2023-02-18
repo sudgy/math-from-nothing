@@ -217,7 +217,7 @@ Definition ext_inner_base4 a := make_to_ext
     (ext_inner_base_alternating a).
 
 Definition ext_inner_base a
-    := card_one_ex (exterior_universal V (ext_inner_base4 a)).
+    := ex_singleton (exterior_universal V (ext_inner_base4 a)).
 
 Definition ext_inner_f_homo a := [ext_inner_base a|].
 Definition ext_inner_f a := algebra_homo_f (ext_inner_f_homo a).
@@ -632,7 +632,7 @@ Definition geo_to_ext_base3 := make_to_geo
     B EE geo_to_ext_base2 geo_to_ext_base_contract.
 
 Definition geo_to_ext_base :=
-    card_one_ex (geometric_universal B geo_to_ext_base3).
+    ex_singleton (geometric_universal B geo_to_ext_base3).
 Definition geo_to_ext_f_homo := [geo_to_ext_base|].
 Definition geo_to_ext_f := algebra_homo_f geo_to_ext_f_homo.
 

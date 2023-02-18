@@ -118,7 +118,7 @@ Definition ext_involute_base3 := make_to_ext
     ext_involute_base_alternating.
 
 Definition ext_involute_base
-    := card_one_ex (exterior_universal V ext_involute_base3).
+    := ex_singleton (exterior_universal V ext_involute_base3).
 
 Definition ext_involute_homo := [ext_involute_base|].
 Definition ext_involute := algebra_homo_f ext_involute_homo : ext V → ext V.
@@ -307,7 +307,7 @@ Definition ext_reverse_base3 := make_to_ext
     ext_reverse_base_alternating.
 
 Definition ext_reverse_base
-    := card_one_ex (exterior_universal V ext_reverse_base3).
+    := ex_singleton (exterior_universal V ext_reverse_base3).
 
 Definition ext_reverse_homo := [ext_reverse_base|].
 Definition ext_reverse := algebra_homo_f ext_reverse_homo : ext V → ext V.

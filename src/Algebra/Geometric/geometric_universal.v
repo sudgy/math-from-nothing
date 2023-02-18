@@ -154,10 +154,10 @@ Proof.
     pose (AO := algebra_one A).
     pose (AL := algebra_ldist A).
     pose (AR := algebra_rdist A).
-    apply card_unique_one.
+    apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose proof (tensor_algebra_universal V (make_to_algebra V A f)) as g_ex.
-        apply card_one_ex in g_ex as [g g_eq]; cbn in *.
+        apply ex_singleton in g_ex as [g g_eq]; cbn in *.
         unfold to_algebra_set in g_eq; cbn in g_eq.
         change (to_algebra_algebra V (to_tensor_algebra V))
             with (tensor_algebra V) in g.

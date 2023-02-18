@@ -7,7 +7,6 @@ Require Import linear_transformation_space.
 Require Import module_category.
 
 Require Import set.
-Require Import card.
 Require Import unordered_list.
 Require Import plus_sum.
 Require Import category_initterm.
@@ -425,7 +424,7 @@ Proof.
     pose (gSMR := module_scalar_rdist gM).
     pose (gSMC := module_scalar_comp gM).
     cbn.
-    apply card_unique_one.
+    apply singleton_ex; [>split|].
     -   apply ex_set_type.
         exists (make_module_homomorphism _ free_module _
             (free_extend g) (free_extend_plus g) (free_extend_scalar g)).
@@ -465,6 +464,4 @@ Qed.
 (* begin hide *)
 
 End LinearFree.
-
-Close Scope card_scope.
 (* end hide *)

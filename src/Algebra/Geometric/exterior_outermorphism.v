@@ -85,7 +85,7 @@ Definition outermorphism_base3 := make_to_ext
     outermorphism_base2_alternating.
 
 Definition outermorphism_base
-    := card_one_ex (exterior_universal V1 outermorphism_base3).
+    := ex_singleton (exterior_universal V1 outermorphism_base3).
 
 Definition outermorphism_homo := [outermorphism_base|].
 (* end hide *)

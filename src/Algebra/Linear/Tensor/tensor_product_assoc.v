@@ -164,7 +164,7 @@ Proof.
             reflexivity.
     }
     pose (f2_base a := make_bilinear _ _ _ _ (f1_bil a)).
-    pose (f2 a := card_one_ex (tensor_product_universal _ _ (f2_base a))).
+    pose (f2 a := ex_singleton (tensor_product_universal _ _ (f2_base a))).
     cbn in f2.
     pose (f3 a b := module_homo_f [f2 a|] b).
     assert (bilinear f3) as f3_bil.
@@ -172,8 +172,8 @@ Proof.
         repeat split; intros.
         -   unfold f3.
             unfold f2.
-            destruct (card_one_ex _) as [fav fav_in].
-            destruct (card_one_ex _) as [fv fv_in]; cbn.
+            destruct (ex_singleton _) as [fav fav_in].
+            destruct (ex_singleton _) as [fv fv_in]; cbn.
             unfold bilinear_from_set in fav_in, fv_in.
             cbn in fav, fav_in, fv, fv_in.
             pose proof (tensor_sum _ _ v2) as [l v2_eq]; subst v2.
@@ -199,9 +199,9 @@ Proof.
             apply (@module_homo_scalar _ _ _ [f2 v1|]).
         -   unfold f3.
             unfold f2.
-            destruct (card_one_ex _) as [fv12 fv12_in].
-            destruct (card_one_ex _) as [fv1 fv1_in].
-            destruct (card_one_ex _) as [fv2 fv2_in].
+            destruct (ex_singleton _) as [fv12 fv12_in].
+            destruct (ex_singleton _) as [fv1 fv1_in].
+            destruct (ex_singleton _) as [fv2 fv2_in].
             cbn.
             unfold bilinear_from_set in fv12_in, fv1_in, fv2_in.
             cbn in fv12, fv12_in, fv1, fv1_in, fv2, fv2_in.
@@ -233,7 +233,7 @@ Proof.
     }
     pose (f_base := make_bilinear _ _ _ _ f3_bil).
     pose proof (tensor_product_universal _ _ f_base) as f_ex.
-    apply card_one_ex in f_ex as [f f_in].
+    apply ex_singleton in f_ex as [f f_in].
     cbn in f.
     unfold bilinear_from_set in f_in; cbn in f_in.
     clear f_base.
@@ -255,7 +255,7 @@ Proof.
                 reflexivity.
         }
         pose (g2_base c := make_bilinear _ _ _ _ (g1_bil c)).
-        pose (g2 c := card_one_ex (tensor_product_universal _ _ (g2_base c))).
+        pose (g2 c := ex_singleton (tensor_product_universal _ _ (g2_base c))).
         cbn in g2.
         pose (g3 b a := module_homo_f [g2 a|] b).
         assert (bilinear g3) as g3_bil.
@@ -265,8 +265,8 @@ Proof.
                 apply (@module_homo_scalar _ _ _ [g2 v2|]).
             -   unfold g3.
                 unfold g2.
-                destruct (card_one_ex _) as [gav gav_in].
-                destruct (card_one_ex _) as [gv gv_in]; cbn.
+                destruct (ex_singleton _) as [gav gav_in].
+                destruct (ex_singleton _) as [gv gv_in]; cbn.
                 unfold bilinear_from_set in gav_in, gv_in.
                 cbn in gav, gav_in, gv, gv_in.
                 pose proof (tensor_sum _ _ v1) as [l v1_eq]; subst v1.
@@ -292,9 +292,9 @@ Proof.
                 apply (@module_homo_plus _ _ _ [g2 v3|]).
             -   unfold g3.
                 unfold g2.
-                destruct (card_one_ex _) as [gv12 gv12_in].
-                destruct (card_one_ex _) as [gv1 gv1_in].
-                destruct (card_one_ex _) as [gv2 gv2_in].
+                destruct (ex_singleton _) as [gv12 gv12_in].
+                destruct (ex_singleton _) as [gv1 gv1_in].
+                destruct (ex_singleton _) as [gv2 gv2_in].
                 cbn.
                 unfold bilinear_from_set in gv12_in, gv1_in, gv2_in.
                 cbn in gv12, gv12_in, gv1, gv1_in, gv2, gv2_in.
@@ -323,7 +323,7 @@ Proof.
         }
         pose (g_base := make_bilinear _ _ _ _ g3_bil).
         pose proof (tensor_product_universal _ _ g_base) as g_ex.
-        apply card_one_ex in g_ex as [g g_in].
+        apply ex_singleton in g_ex as [g g_in].
         cbn in g.
         unfold bilinear_from_set in g_in; cbn in g_in.
         clear g_base.
@@ -346,7 +346,7 @@ Proof.
                 unfold tensor_mult at 1; rewrite g_in.
                 unfold g3.
                 unfold g2.
-                destruct (card_one_ex _) as [h h_in]; cbn.
+                destruct (ex_singleton _) as [h h_in]; cbn.
                 unfold bilinear_from_set in h_in.
                 pose proof (tensor_sum _ _ u) as [l2 u_eq]; subst u.
                 induction l2 using ulist_induction.
@@ -367,7 +367,7 @@ Proof.
                     unfold g1.
                     unfold tensor_mult at 1 2; rewrite f_in.
                     unfold f3, f2.
-                    destruct (card_one_ex _) as [h' h'_in]; cbn.
+                    destruct (ex_singleton _) as [h' h'_in]; cbn.
                     unfold bilinear_from_set in h'_in; cbn in h', h'_in.
                     rewrite h'_in.
                     unfold f1.
@@ -386,7 +386,7 @@ Proof.
                 destruct a as [a [u [v a_eq]]]; subst a; cbn.
                 unfold tensor_mult at 1; rewrite f_in.
                 unfold f3, f2.
-                destruct (card_one_ex _) as [h h_in]; cbn.
+                destruct (ex_singleton _) as [h h_in]; cbn.
                 unfold bilinear_from_set in h_in.
                 pose proof (tensor_sum _ _ v) as [l2 v_eq]; subst v.
                 induction l2 using ulist_induction.
@@ -407,7 +407,7 @@ Proof.
                     unfold f1.
                     unfold tensor_mult at 1 2; rewrite g_in.
                     unfold g3, g2.
-                    destruct (card_one_ex _) as [h' h'_in]; cbn.
+                    destruct (ex_singleton _) as [h' h'_in]; cbn.
                     unfold bilinear_from_set in h'_in; cbn in h'_in.
                     rewrite h'_in.
                     unfold g1.
@@ -416,7 +416,7 @@ Proof.
         unfold tensor_mult at 1 2.
         rewrite f_in.
         unfold f3, f2.
-        destruct (card_one_ex _) as [fa fa_in]; cbn.
+        destruct (ex_singleton _) as [fa fa_in]; cbn.
         unfold bilinear_from_set in fa_in.
         rewrite fa_in.
         reflexivity.

@@ -219,7 +219,7 @@ Definition geo_mult_inner_base4 a := make_to_geo
     (geo_mult_inner_base_contract a).
 
 Definition geo_mult_inner_base a
-    := card_one_ex (geometric_universal B (geo_mult_inner_base4 a)).
+    := ex_singleton (geometric_universal B (geo_mult_inner_base4 a)).
 
 Definition geo_mult_inner_f_homo a := [geo_mult_inner_base a|].
 Definition geo_mult_inner_f a := algebra_homo_f (geo_mult_inner_f_homo a).
@@ -661,7 +661,7 @@ Definition ext_to_geo_base3 := make_to_ext
     V GG ext_to_geo_base2 ext_to_geo_base_alternating.
 
 Definition ext_to_geo_base :=
-    card_one_ex (exterior_universal V ext_to_geo_base3).
+    ex_singleton (exterior_universal V ext_to_geo_base3).
 Definition ext_to_geo_f_homo := [ext_to_geo_base|].
 Definition ext_to_geo_f := algebra_homo_f ext_to_geo_f_homo.
 
