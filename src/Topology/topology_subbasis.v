@@ -6,7 +6,6 @@ Require Export topology_basis.
 #[universes(template)]
 Class TopologySubbasis U := {
     top_subbasis : (U → Prop) → Prop;
-    top_subbasis_union : ⋃ top_subbasis = all
 }.
 
 (* begin hide *)
@@ -18,19 +17,13 @@ Global Program Instance subbasis_topology {U} `{TopologySubbasis U}
     top_basis S := ∃ SS, SS ⊆ top_subbasis ∧ finite (|set_type SS|) ∧ S = ⋂ SS
 }.
 Next Obligation.
-    assert (all x) as x_in by exact true.
-    rewrite <- top_subbasis_union in x_in.
-    destruct x_in as [B [B_sub Bx]].
-    exists B.
-    split; try exact Bx.
-    exists ❴B❵.
-    split.
-    2: split.
-    -   intros S SB.
-        rewrite <- SB.
-        exact B_sub.
-    -   apply singleton_finite.
-    -   symmetry; apply inter_singleton.
+    exists all.
+    split; [>|exact true].
+    exists ∅.
+    split; [>|split].
+    -   apply empty_sub.
+    -   apply empty_finite.
+    -   symmetry; apply inter_empty.
 Qed.
 Next Obligation.
     rename H0 into SS1, H1 into SS2, H8 into SS1_fin, H5 into SS2_fin.

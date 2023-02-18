@@ -59,20 +59,6 @@ Program Instance subbasis_product_topology : TopologySubbasis (U * V) := {
     top_subbasis S := (∃ A, S = inverse_image fst A ∧ open A) ∨
                       (∃ A, S = inverse_image snd A ∧ open A)
 }.
-Next Obligation.
-    apply all_eq.
-    intros x.
-    exists all.
-    split; [>|exact true].
-    left.
-    exists all.
-    split; [>|apply all_open].
-    symmetry; apply all_eq.
-    clear x.
-    intros x.
-    unfold inverse_image.
-    exact true.
-Qed.
 
 Theorem subbasis_product_topology_eq :
     @basis_topology _ product_topology =

@@ -53,24 +53,6 @@ Qed.
 Local Program Instance order_subbasis : TopologySubbasis U := {
     top_subbasis S := ∃ a, ❴inf_open_interval a, open_inf_interval a❵ S
 }.
-Next Obligation.
-    apply all_eq.
-    intros x.
-    pose proof (not_trivial2 x) as [y neq].
-    destruct (trichotomy x y) as [[ltq|eq]|ltq]; [>|contradiction|].
-    -   exists (inf_open_interval y).
-        split.
-        +   exists y.
-            left.
-            reflexivity.
-        +   exact ltq.
-    -   exists (open_inf_interval y).
-        split.
-        +   exists y.
-            right.
-            reflexivity.
-        +   exact ltq.
-Qed.
 
 Theorem order_subbasis_eq :
     @basis_topology U order_topology = @basis_topology U subbasis_topology.
