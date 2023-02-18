@@ -21,6 +21,7 @@ Export Coq.Init.Logic (ex).
 Export Coq.Init.Logic (ex_intro).
 Export Coq.Init.Logic (iff).
 Export Coq.Init.Logic (not).
+Export Coq.Init.Logic (inhabits).
 Export Coq.Init.Logic (inhabited).
 Export Coq.Init.Logic (all).
 Export Coq.Init.Logic (f_equal).

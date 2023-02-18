@@ -156,6 +156,37 @@ Proof.
         exact neq.
 Qed.
 
+#[universes(template)]
+Class Singleton U : Prop:= {
+    singleton_U : inhabited U;
+    singleton_unique : ∀ a, a = indefinite_description singleton_U;
+}.
+
+Theorem singleton_unique2 {U} `{Singleton U} : ∀ a b : U, a = b.
+Proof.
+    intros a b.
+    rewrite (singleton_unique b).
+    apply singleton_unique.
+Qed.
+
+Theorem singleton_ex {U} : inhabited U → (∀ a b : U, a = b) → Singleton U.
+Proof.
+    intros x unique.
+    apply indefinite_description.
+    destruct x as [x].
+    split.
+    split with (inhabits x).
+    intros a.
+    apply unique.
+Qed.
+
+Theorem ex_singleton {U} : Singleton U → U.
+Proof.
+    intros S.
+    apply indefinite_description.
+    apply S.
+Qed.
+
 Declare Scope algebra_scope.
 Delimit Scope algebra_scope with alg.
 Open Scope algebra_scope.
