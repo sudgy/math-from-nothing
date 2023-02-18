@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Export cauchy_real_plus.
-Require Import card.
 
 Lemma cauchy_bounded : ∀ a : real_base, ∃ M, ∀ n, |r_seq a n| < M.
 Proof.
@@ -16,21 +15,32 @@ Proof.
             intros x [n [n_lt n_eq]].
             contradiction (nat_neg2 n_lt).
         }
-        pose proof (finite_well_ordered_set_max S) as x_ex.
-        prove_parts x_ex.
+        assert (simple_finite (set_type S)) as S_fin.
         {
-            apply (le_lt_trans (image_under_le _ _)).
-            apply nat_is_finite.
+            apply (simple_finite_trans _ _ (simple_finite_nat (nat_suc N))).
+            exists (λ x : set_type S, [ex_val [|x] | land (ex_proof [|x])]).
+            split.
+            intros x y.
+            rewrite set_type_eq2.
+            rewrite_ex_val m [m_lt x_eq].
+            rewrite_ex_val n [n_lt y_eq].
+            intros eq; subst n.
+            rewrite <- y_eq in x_eq.
+            rewrite set_type_eq in x_eq.
+            exact x_eq.
         }
+        pose proof (simple_finite_max S_fin) as x_ex.
+        prove_parts x_ex.
         {
             exists (|a 0|).
             exists 0.
             split; [>|reflexivity].
             apply nat_pos2.
         }
-        destruct x_ex as [x [Sx x_greatest]].
+        destruct x_ex as [[x Sx] x_greatest].
         exists x.
-        exact x_greatest.
+        intros m Sm.
+        exact (x_greatest [m|Sm]).
     }
     exists (max (M + 1) (|a N| + 1)).
     intros n.

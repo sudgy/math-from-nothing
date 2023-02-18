@@ -15,6 +15,14 @@ Proof.
     apply inj_comp; assumption.
 Qed.
 
+Theorem simple_finite_nat : ∀ n, simple_finite (set_type (initial_segment n)).
+Proof.
+    intros n.
+    exists n.
+    exists identity.
+    apply identity_bijective.
+Qed.
+
 Theorem simple_finite_sum : ∀ U V,
     simple_finite U → simple_finite V → simple_finite (U + V).
 Proof.
