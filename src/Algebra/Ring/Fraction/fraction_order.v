@@ -95,8 +95,7 @@ Proof.
     -   rewrite x_eq.
         unfold mult, div; equiv_simpl.
         unfold frac_eq; cbn.
-        destruct (strong_excluded_middle (0 = b)) as [b_z|b_nz'];
-            [>contradiction|]; cbn.
+        destruct (sem (0 = b)) as [b_z|b_nz']; [>contradiction|]; cbn.
         rewrite mult_lid, mult_rid.
         reflexivity.
 Qed.

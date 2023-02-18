@@ -178,8 +178,7 @@ Proof.
     unfold to_frac, rat in a_nz; equiv_simpl in a_nz.
     unfold frac_eq in a_nz; cbn in a_nz.
     rewrite mult_rid, mult_lanni in a_nz.
-    destruct (strong_excluded_middle (0 = fst a)) as [contr|a_nz'];
-        [>contradiction|].
+    destruct (sem (0 = fst a)) as [contr|a_nz']; [>contradiction|].
     unfold rat_to_abstract_base; cbn.
     rewrite div_mult.
     -   rewrite div_div by apply int_to_abstract_nz.

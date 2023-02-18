@@ -211,7 +211,7 @@ Proof.
     intros S.
     apply all_eq.
     intros x.
-    apply excluded_middle.
+    apply em.
 Qed.
 
 Theorem union_idemp : ∀ S : U → Prop, S ∪ S = S.

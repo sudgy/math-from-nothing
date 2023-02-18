@@ -104,7 +104,7 @@ Proof.
     unfold co, polynomial_coefficient.
     unfold one, PO, polynomial_one at 1; cbn.
     unfold single_to_grade_sum_base; cbn.
-    destruct (strong_excluded_middle (0 = 0)) as [eq|neq]; [>|contradiction].
+    destruct (sem (0 = 0)) as [eq|neq]; [>|contradiction].
     destruct eq; cbn.
     reflexivity.
 Qed.
@@ -135,8 +135,8 @@ Proof.
     unfold polynomial_xn; cbn.
     unfold single_to_grade_sum_base; cbn.
     unfold grade_I, PG, polynomial_grade in i; cbn in i.
-    destruct (strong_excluded_middle (i + m = n + m)) as [eq1|neq1]; cbn.
-    all: destruct (strong_excluded_middle (i = n)) as [eq2|neq2]; cbn.
+    destruct (sem (i + m = n + m)) as [eq1|neq1]; cbn.
+    all: destruct (sem (i = n)) as [eq2|neq2]; cbn.
     -   destruct eq1, eq2; cbn.
         reflexivity.
     -   exfalso.
@@ -187,8 +187,7 @@ Proof.
     -   rewrite zero_nat_pow by apply nat_zero_suc.
         cbn.
         unfold single_to_grade_sum_base; cbn.
-        destruct (strong_excluded_middle (nat_suc n = 0)) as [eq|neq];
-            [>inversion eq|].
+        destruct (sem (nat_suc n = 0)) as [eq|neq]; [>inversion eq|].
         reflexivity.
 Qed.
 
@@ -293,13 +292,13 @@ Proof.
         intros m m_gt.
         unfold polynomial_xn; cbn.
         unfold single_to_grade_sum_base; cbn.
-        destruct (strong_excluded_middle (n = m)) as [eq|neq].
+        destruct (sem (n = m)) as [eq|neq].
         +   destruct m_gt; contradiction.
         +   reflexivity.
     -   apply polynomial_degree_geq.
         unfold polynomial_xn; cbn.
         unfold single_to_grade_sum_base; cbn.
-        destruct (strong_excluded_middle (n = n)) as [eq|neq].
+        destruct (sem (n = n)) as [eq|neq].
         +   destruct eq; cbn.
             apply not_trivial_one.
         +   contradiction.
@@ -325,7 +324,7 @@ Proof.
     unfold scalar_mult, polynomial_scalar; cbn.
     unfold one, polynomial_one; cbn.
     unfold single_to_grade_sum_base; cbn.
-    destruct (strong_excluded_middle (0 = n)) as [n_z|n_nz]; cbn.
+    destruct (sem (0 = n)) as [n_z|n_nz]; cbn.
     -   destruct n_z; cbn.
         unfold scalar_mult; cbn.
         rewrite mult_rid.
@@ -459,7 +458,7 @@ Proof.
             unfold co, polynomial_coefficient.
             unfold polynomial_xn; cbn.
             unfold single_to_grade_sum_base; cbn.
-            destruct (strong_excluded_middle (nat_suc n = nat_suc n)) as
+            destruct (sem (nat_suc n = nat_suc n)) as
                 [eq'|neq]; [>destruct eq'; cbn|contradiction].
             rewrite mult_rid.
             rewrite plus_rinv.
@@ -484,7 +483,7 @@ Proof.
             unfold polynomial_xn; cbn.
             unfold single_to_grade_sum_base; cbn.
             rewrite neq_sym in neq.
-            destruct (strong_excluded_middle (nat_suc n = m)) as [eq|neq'];
+            destruct (sem (nat_suc n = m)) as [eq|neq'];
                 [>contradiction|clear neq'].
             rewrite mult_ranni.
             reflexivity.

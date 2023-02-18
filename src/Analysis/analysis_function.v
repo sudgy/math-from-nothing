@@ -23,12 +23,11 @@ Existing Instance real_metric.
 Theorem uniform_converge_sup : U → ∀ fn (f : U → V),
     f_seq_lim_uniform fn f ↔
     (seq_lim
-        (λ n, match (strong_excluded_middle
-                (has_supremum le (λ m, ∃ x, m = d (fn n x) (f x))))
-            with
-            | strong_or_left H => ex_val H
-            | _ => 1
-            end)
+        (λ n, match (sem (has_supremum le (λ m, ∃ x, m = d (fn n x) (f x))))
+              with
+              | strong_or_left H => ex_val H
+              | _ => 1
+              end)
         0
     ).
 Proof.
@@ -48,7 +47,7 @@ Proof.
         exists N.
         intros n n_ge.
         specialize (f_uni n n_ge).
-        destruct (strong_excluded_middle _) as [sup|nsup].
+        destruct (sem _) as [sup|nsup].
         +   rewrite_ex_val m m_sup.
             destruct m_sup as [m_upper m_least].
             assert (m ≤ ε / 2) as leq.
@@ -94,7 +93,7 @@ Proof.
         exists N.
         intros n n_ge x.
         specialize (f_conv n n_ge).
-        destruct (strong_excluded_middle _) as [sup|nsup].
+        destruct (sem _) as [sup|nsup].
         +   rewrite_ex_val m [m_upper m_least].
             cbn in *.
             unfold is_upper_bound in *.

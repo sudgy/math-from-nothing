@@ -83,7 +83,7 @@ Proof.
     unfold single_to_grade_sum, single_to_grade_sum_base in eq2.
     cbn in eq2.
     specialize (eq2 k).
-    destruct (strong_excluded_middle (k = k)) as [eq|neq]; try contradiction.
+    destruct (sem (k = k)) as [eq|neq]; try contradiction.
     destruct eq; cbn in eq2.
     exact eq2.
 Qed.
@@ -203,7 +203,7 @@ Proof.
     apply functional_ext; intros x.
     unfold plus at 2; cbn.
     unfold single_to_grade_sum_base.
-    destruct (strong_excluded_middle (k = x)) as [eq|neq].
+    destruct (sem (k = x)) as [eq|neq].
     2: symmetry; apply plus_rid.
     destruct eq; cbn.
     reflexivity.
@@ -278,7 +278,7 @@ Proof.
     apply functional_ext; intros x.
     unfold scalar_mult at 2; cbn.
     unfold single_to_grade_sum_base.
-    destruct (strong_excluded_middle (k = x)) as [eq|neq].
+    destruct (sem (k = x)) as [eq|neq].
     -   destruct eq; cbn.
         reflexivity.
     -   rewrite scalar_ranni.
@@ -292,7 +292,7 @@ Proof.
     unfold single_to_grade_sum_base.
     apply functional_ext.
     intros x.
-    destruct (strong_excluded_middle (k = x)) as [eq|neq].
+    destruct (sem (k = x)) as [eq|neq].
     -   destruct eq; cbn.
         reflexivity.
     -   reflexivity.
@@ -360,13 +360,13 @@ Next Obligation.
     unfold single_to_grade_sum_base in v1_eq.
     (* I don't know why Coq is being so finicky about this *)
     assert (∀ n,
-           match strong_excluded_middle (i = n) with
+           match sem (i = n) with
            | strong_or_left a =>
                Logic.eq_rect_r (λ k : I, module_V (V k) → module_V (V n))
                  (λ A : module_V (V n), A) a v1
            | strong_or_right _ => 0
            end =
-           match strong_excluded_middle (j = n) with
+           match sem (j = n) with
            | strong_or_left a =>
                Logic.eq_rect_r (λ k : I, module_V (V k) → module_V (V n))
                  (λ A : module_V (V n), A) a v2
@@ -375,14 +375,14 @@ Next Obligation.
     {
         intros m.
         change
-            match strong_excluded_middle (i = m) with
+            match sem (i = m) with
             | strong_or_left a =>
                 Logic.eq_rect_r (λ k : I, module_V (V k) → module_V (V m))
                   (λ A : module_V (V m), A) a v1
             | strong_or_right _ => 0
             end
             with
-            ((λ n, match strong_excluded_middle (i = n) with
+            ((λ n, match sem (i = n) with
             | strong_or_left a =>
                 Logic.eq_rect_r (λ k : I, module_V (V k) → module_V (V n))
                   (λ A : module_V (V n), A) a v1
@@ -393,8 +393,8 @@ Next Obligation.
     }
     clear v1_eq.
     specialize (v1_eq' j).
-    destruct (strong_excluded_middle (i = j)) as [ij_eq|ij_neq];
-    destruct (strong_excluded_middle (j = j)) as [jj_eq|jj_neq];
+    destruct (sem (i = j)) as [ij_eq|ij_neq];
+    destruct (sem (j = j)) as [jj_eq|jj_neq];
     try contradiction.
     destruct jj_eq; cbn in v1_eq'.
     subst v2.
@@ -422,7 +422,7 @@ Next Obligation.
         -   apply ulist_prop_end.
     }
     destruct i as [i].
-    pose (g' m := match (strong_excluded_middle (m < n)) with
+    pose (g' m := match (sem (m < n)) with
         | strong_or_left ltq => [g [m|ltq]|]
         | strong_or_right _ => i
         end).
@@ -475,7 +475,7 @@ Next Obligation.
                 intros a.
                 unfold h.
                 unfold single_to_grade_sum_base.
-                destruct (strong_excluded_middle (g' a = m)).
+                destruct (sem (g' a = m)).
                 -   destruct e; cbn.
                     exact fv_z.
                 -   reflexivity.
@@ -510,12 +510,10 @@ Next Obligation.
                 unfold h; clear h.
                 unfold single_to_grade_sum_base.
                 unfold g'.
-                destruct (strong_excluded_middle (m' < n)).
+                destruct (sem (m' < n)).
                 case_if; subst.
-                1: destruct (strong_excluded_middle ([g [[vn|]|s]|] = m));
-                    subst; cbn.
-                3: destruct (strong_excluded_middle ([g [m'|s]|] = m));
-                    subst; cbn.
+                1: destruct (sem ([g [[vn|]|s]|] = m)); subst; cbn.
+                3: destruct (sem ([g [m'|s]|] = m)); subst; cbn.
                 5: case_if; subst.
                 1, 4, 6: reflexivity.
                 -   apply set_type_eq in vn_eq; cbn in vn_eq.
@@ -587,7 +585,7 @@ Next Obligation.
         clear l_zero.
         specialize (eq2 i).
         unfold single_to_grade_sum_base in eq2.
-        destruct (strong_excluded_middle (i = i)) as [eq|];
+        destruct (sem (i = i)) as [eq|];
             [>destruct eq; cbn in eq2|contradiction].
         induction l as [|a l] using ulist_induction.
         1: {
@@ -626,7 +624,7 @@ Next Obligation.
             rename a' into a.
             unfold single_to_grade_sum; cbn.
             unfold single_to_grade_sum_base.
-            destruct (strong_excluded_middle (j = i)) as [ij_eq|ij_neq].
+            destruct (sem (j = i)) as [ij_eq|ij_neq].
             +   rewrite in_ulist_add in v_nin.
                 rewrite not_or in v_nin.
                 subst.

@@ -98,11 +98,7 @@ Module ProofIrrelevance.
     Qed.
 End ProofIrrelevance.
 (* end hide *)
-Theorem proof_irrelevance : ∀ {P : Prop} (a b : P), a = b.
-Proof.
-    intros P.
-    apply ProofIrrelevance.proof_irrelevance.
-Qed.
+Export ProofIrrelevance (proof_irrelevance).
 
 Theorem predicate_ext : ∀ {U : Type} (P Q : U → Prop),
     (∀ x, P x ↔ Q x) → P = Q.
@@ -172,7 +168,7 @@ Module ExcludedMiddle.
     Inductive bool : Set :=
         | true : bool
         | false : bool.
-    Theorem excluded_middle : ∀ (P : Prop), P ∨ ¬P.
+    Theorem em : ∀ (P : Prop), P ∨ ¬P.
     Proof.
         intros P.
         set (B1 b := b = true ∨ P).
@@ -193,36 +189,30 @@ Module ExcludedMiddle.
         rewrite HB in HA.
         inversion HA.
     Qed.
-    Theorem strong_excluded_middle : ∀ P, {P} + {¬P}.
+    Theorem sem : ∀ P, {P} + {¬P}.
     Proof.
         intros P.
         apply indefinite_description.
-        destruct (excluded_middle P) as [PH|PH].
+        destruct (em P) as [PH|PH].
         -   split; left; exact PH.
         -   split; right; exact PH.
     Qed.
 End ExcludedMiddle.
 (* end hide *)
-Theorem excluded_middle : ∀ (P : Prop), P ∨ ¬P.
-Proof.
-    apply ExcludedMiddle.excluded_middle.
-Qed.
-Theorem strong_excluded_middle : ∀ (P : Prop), {P} + {¬P}.
-Proof.
-    apply ExcludedMiddle.strong_excluded_middle.
-Qed.
+Export ExcludedMiddle (em).
+Export ExcludedMiddle (sem).
 
-Tactic Notation "classic_case" constr(P) := destruct (strong_excluded_middle P).
+Tactic Notation "classic_case" constr(P) := destruct (sem P).
 Tactic Notation "classic_case" constr(P)
     "as" "[" simple_intropattern(H1) "|" simple_intropattern(H2) "]"
-    := destruct (strong_excluded_middle P) as [H1|H2].
+    := destruct (sem P) as [H1|H2].
 
 Notation "'If' P 'then' v1 'else' v2" :=
-    (if (strong_excluded_middle P) then v1 else v2)
+    (if (sem P) then v1 else v2)
     (at level 200, right associativity).
 
 Notation "'IfH' P 'then' v1 'else' v2" :=
-    match (strong_excluded_middle P) with
+    match (sem P) with
     | strong_or_left H => v1 H
     | strong_or_right H => v2 H
     end

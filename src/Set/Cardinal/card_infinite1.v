@@ -332,7 +332,7 @@ Proof.
     destruct A_inf as [f f_inj].
     exists (λ x, match x with
         | inl a =>
-            match (strong_excluded_middle (∃ n, f n = a)) with
+            match (sem (∃ n, f n = a)) with
                 | strong_or_left H => f (ex_val H + n)
                 | strong_or_right _ => a
                 end
@@ -341,7 +341,7 @@ Proof.
     ).
     split; split.
     -   intros [a|[a a_lt]] [b|[b b_lt]] eq.
-        +   do 2 destruct (strong_excluded_middle _).
+        +   do 2 destruct (sem _).
             *   apply f_inj in eq.
                 apply plus_rcancel in eq.
                 rewrite_ex_val aa aaa.
@@ -359,7 +359,7 @@ Proof.
                 specialize (n0 (x + n)).
                 contradiction.
             *   rewrite eq; reflexivity.
-        +   destruct (strong_excluded_middle _).
+        +   destruct (sem _).
             *   cbn in eq.
                 apply f_inj in eq.
                 exfalso.
@@ -372,7 +372,7 @@ Proof.
                 specialize (n0 b).
                 symmetry in eq; contradiction.
         +   cbn in eq.
-            destruct (strong_excluded_middle _).
+            destruct (sem _).
             *   apply f_inj in eq.
                 exfalso.
                 rewrite eq in a_lt.
@@ -396,7 +396,7 @@ Proof.
             *   rewrite nlt_le in nltq.
                 apply nat_le_ex in nltq as [c c_eq].
                 exists (inl (f c)).
-                destruct (strong_excluded_middle _) as [ex|nex].
+                destruct (sem _) as [ex|nex].
                 --  rewrite_ex_val x xH.
                     apply f_inj in xH.
                     subst.
@@ -407,7 +407,7 @@ Proof.
                     specialize (nex c).
                     contradiction.
         +   exists (inl y).
-            destruct (strong_excluded_middle _) as [ex|nex]; try contradiction.
+            destruct (sem _) as [ex|nex]; try contradiction.
             reflexivity.
 Qed.
 

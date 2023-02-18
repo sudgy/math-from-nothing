@@ -143,7 +143,7 @@ Proof.
             symmetry; exact descendent.
     }
     pose (h a :=
-        match (strong_excluded_middle (∃ b, lonely b ∧ descendent_of (f a) b)) with
+        match (sem (∃ b, lonely b ∧ descendent_of (f a) b)) with
         |   strong_or_left H => ex_val (h_ex a H)
         |   strong_or_right _ => f a
         end

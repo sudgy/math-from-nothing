@@ -118,7 +118,7 @@ Proof.
 Qed.
 
 Definition grade_project v i :=
-    match (strong_excluded_middle (
+    match (sem (
         ∃ a : set_type homogeneous, ex_val [|a] = i ∧
              in_ulist (grade_decomposition v) a
         )) with
@@ -128,14 +128,14 @@ Definition grade_project v i :=
 
 Ltac case_grade_project v i vi vi_eq vi_in v_nin := let X := fresh in
     change (grade_project v i) with
-        (match (strong_excluded_middle (
+        (match (sem (
             ∃ a : set_type homogeneous, ex_val [|a] = i ∧
                  in_ulist (grade_decomposition v) a
             )) with
         | strong_or_left H => [ex_val H|]
         | strong_or_right H => 0
         end) in *;
-    destruct (strong_excluded_middle (∃ a,
+    destruct (sem (∃ a,
         ex_val [|a] = i ∧ in_ulist (grade_decomposition v) a)) as [X|v_nin];
     [>
         change (ex_val X) with (ex_type_val (ex_to_type X)) in *;

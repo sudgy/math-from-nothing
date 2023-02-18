@@ -444,15 +444,15 @@ Proof.
             rewrite contr in nSy.
             contradiction.
         }
-        exists (λ x, match strong_excluded_middle (S [x|]) with
+        exists (λ x, match sem (S [x|]) with
             | strong_or_left Sx => inr [[x|] | Sx]
             | strong_or_right nSx => inl [_|f_in _ nSx]
             end).
         clear.
         split.
         intros a b.
-        destruct (strong_excluded_middle _) as [Sa|nSa];
-        destruct (strong_excluded_middle _) as [Sb|nSb].
+        destruct (sem _) as [Sa|nSa];
+        destruct (sem _) as [Sb|nSb].
         +   intros eq.
             inversion eq as [eq2].
             apply set_type_eq.
@@ -532,12 +532,12 @@ Proof.
     {
         intros S.
         specialize (B_ge S) as [g g_inj].
-        exists (λ x, match (strong_excluded_middle ([S|] x)) with
+        exists (λ x, match (sem ([S|] x)) with
         | strong_or_left H => g [x|H]
         | strong_or_right _ => b_val
         end).
         intros a b Sa Sb.
-        do 2 destruct (strong_excluded_middle _); try contradiction.
+        do 2 destruct (sem _); try contradiction.
         intros eq.
         apply g_inj in eq.
         inversion eq.

@@ -101,7 +101,7 @@ Proof.
     apply functional_ext.
     intros x.
     unfold single_to_grade_sum_base.
-    destruct (strong_excluded_middle (0 = x)) as [x_z|x_nz].
+    destruct (sem (0 = x)) as [x_z|x_nz].
     -   subst.
         cbn.
         reflexivity.

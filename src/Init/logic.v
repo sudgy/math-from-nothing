@@ -283,7 +283,7 @@ Proof.
     intros P.
     split; [>intro; exact true|].
     intros I.
-    apply excluded_middle.
+    apply em.
 Qed.
 
 Theorem and_both : ∀ P, (P ∧ ¬P) ↔ False.
@@ -368,7 +368,7 @@ Proof.
     intros P.
     rewrite <- prop_eq_true.
     rewrite <- prop_eq_false.
-    apply strong_excluded_middle.
+    apply sem.
 Qed.
 
 Theorem prop_neq : True ≠ False.

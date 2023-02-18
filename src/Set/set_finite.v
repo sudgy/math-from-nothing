@@ -186,8 +186,8 @@ Proof.
             else (λ H, [_|g_in [_|H]])).
         split; split.
         +   intros x y.
-            destruct (strong_excluded_middle (x = a)) as [x_eq|x_neq];
-            destruct (strong_excluded_middle (y = a)) as [y_eq|y_neq].
+            destruct (sem (x = a)) as [x_eq|x_neq];
+            destruct (sem (y = a)) as [y_eq|y_neq].
             *   subst.
                 reflexivity.
             *   intros eq.
@@ -215,13 +215,13 @@ Proof.
             classic_case (y = m) as [eq|neq].
             *   subst y.
                 exists a.
-                destruct (strong_excluded_middle (a = a)); [>|contradiction].
+                destruct (sem (a = a)); [>|contradiction].
                 apply set_type_eq2.
                 reflexivity.
             *   assert (initial_segment m y) as y_in by (split; assumption).
                 pose proof (sur g [y|y_in]) as [[x x_neq] x_eq].
                 exists x.
-                destruct (strong_excluded_middle (x = a)); [>contradiction|].
+                destruct (sem (x = a)); [>contradiction|].
                 setoid_rewrite set_type_eq2.
                 apply set_type_eq in x_eq.
                 cbn in x_eq.

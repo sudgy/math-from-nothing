@@ -119,7 +119,7 @@ Next Obligation.
 Qed.
 
 Let frac_div_base (a : frac_base U) :=
-    match (strong_excluded_middle (0 = fst a)) with
+    match (sem (0 = fst a)) with
     | strong_or_left _ => a
     | strong_or_right H => ([snd a|], [fst a | H])
     end.
@@ -133,8 +133,8 @@ Proof.
     cbn in *.
     unfold frac_eq in *; cbn in *.
     unfold frac_div_base; cbn.
-    destruct (strong_excluded_middle (0 = a1)) as [a1_z|a1_nz].
-    all: destruct (strong_excluded_middle (0 = b1)) as [b1_z|b1_nz].
+    destruct (sem (0 = a1)) as [a1_z|a1_nz].
+    all: destruct (sem (0 = b1)) as [b1_z|b1_nz].
     all: cbn.
     -   exact eq.
     -   subst a1.
@@ -171,7 +171,7 @@ Next Obligation.
     unfold to_frac, div, mult; equiv_simpl.
     unfold frac_eq; cbn.
     unfold frac_div_base; cbn.
-    destruct (strong_excluded_middle (0 = a1)) as [C0|C0]; [>contradiction|].
+    destruct (sem (0 = a1)) as [C0|C0]; [>contradiction|].
     cbn; clear C0.
     rewrite mult_lid, mult_rid.
     apply mult_comm.
