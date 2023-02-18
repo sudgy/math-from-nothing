@@ -529,6 +529,19 @@ Proof.
     apply CD in Cx.
     split; assumption.
 Qed.
+
+Theorem cartesian_product_inter : ∀ (A B : U → Prop) (C D : V → Prop),
+    (A ∩ B) * (C ∩ D) = (A * C) ∩ (B * D).
+Proof.
+    intros A B C D.
+    apply predicate_ext.
+    intros [a b].
+    unfold intersection, cartesian_product; cbn.
+    do 2 rewrite and_assoc.
+    do 4 rewrite <- (and_assoc (A a)).
+    rewrite (and_comm (B a) (C b)).
+    reflexivity.
+Qed.
 (* begin hide *)
 
 End SetBase.
