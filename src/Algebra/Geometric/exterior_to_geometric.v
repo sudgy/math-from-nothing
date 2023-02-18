@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import set.
-Require Import card.
 Require Import unordered_list.
 
 Require Import module_category.

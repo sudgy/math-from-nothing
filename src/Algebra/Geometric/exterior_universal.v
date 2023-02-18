@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import set.
-Require Import card.
 Require Import ring_ideal.
 Require Import unordered_list.
 

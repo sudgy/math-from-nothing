@@ -1,9 +1,9 @@
 Require Import init.
 
 Require Import mult_product.
-Require Import card.
 Require Import set.
 Require Import unordered_list.
+Require Export nat.
 
 Require Import linear_grade.
 Require Import module_category.

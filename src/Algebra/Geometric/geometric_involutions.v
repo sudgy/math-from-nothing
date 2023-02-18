@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import mult_product.
-Require Import card.
 
 Require Export geometric_construct.
 Require Import geometric_universal.

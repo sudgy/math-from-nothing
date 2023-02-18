@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import set.
-Require Import card.
 
 Require Export exterior_construct.
 Require Import exterior_universal.

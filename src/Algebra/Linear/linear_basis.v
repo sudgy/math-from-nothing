@@ -8,7 +8,6 @@ Require Import linear_subspace.
 Require Import unordered_list.
 Require Import set.
 Require Import zorn.
-Require Import card.
 Require Import plus_sum.
 
 Definition linearly_independent {U V} `{Zero U}
@@ -554,10 +553,7 @@ Qed.
 Local Instance subset_order : Order (V → Prop) := {
     le A B := A ⊆ B
 }.
-(* begin hide *)
-Local Open Scope card_scope.
 
-(* end hide *)
 Theorem basis_extend_ex : ∀ S, linearly_independent S → ∃ B, S ⊆ B ∧ basis B.
 Proof.
     intros S S_ind.

@@ -10,7 +10,6 @@ Require Import linear_grade.
 Require Import linear_extend.
 
 Require Import nat.
-Require Import card.
 Require Import set.
 Require Import unordered_list.
 Require Import plus_sum.

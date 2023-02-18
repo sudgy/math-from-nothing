@@ -10,7 +10,6 @@ Require Import linear_grade.
 Require Import linear_grade_sum.
 Require Import nat.
 Require Import set.
-Require Import card.
 Require Import order_minmax.
 
 Section Polynomial.

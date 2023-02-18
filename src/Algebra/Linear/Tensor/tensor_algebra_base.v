@@ -46,8 +46,6 @@ Let TSMR k := module_scalar_rdist (tensor_power V k).
 Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
     TPA TPZ TPN TSM TSMC TSMO TSML TSMR.
 
-Local Open Scope card_scope.
-
 (* end hide *)
 Definition tensor_algebra_base := module_V (grade_sum nat (tensor_power V)).
 Definition tensor_algebra_plus := grade_sum_plus nat (tensor_power V).

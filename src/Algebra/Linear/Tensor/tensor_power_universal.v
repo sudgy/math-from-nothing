@@ -9,7 +9,7 @@ Require Import category_initterm.
 Require Import list.
 Require Import unordered_list.
 Require Import set.
-Require Import card.
+Require Import nat.
 
 (* begin hide *)
 Section TensorPowerCategory.

@@ -15,7 +15,6 @@ Require Import algebra_category.
 Require Import category_initterm.
 
 Require Import set.
-Require Import card.
 Require Import list.
 Require Import unordered_list.
 Require Import mult_product.

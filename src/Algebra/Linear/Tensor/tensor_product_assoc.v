@@ -6,7 +6,6 @@ Require Import plus_sum.
 
 Require Import set.
 Require Import unordered_list.
-Require Import card.
 
 Require Import module_category.
 
