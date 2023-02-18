@@ -209,7 +209,7 @@ Proof.
         pose (h2 := make_free_from F (V1 * V2) (bilinear_from_module g) h1).
         pose proof (free_module_universal F (V1 * V2) h2) as uni.
         cbn in uni.
-        destruct uni as [[[h3 h3_free_from]] h3_uni]; clear h3_uni.
+        apply ex_singleton in uni as [h3 h3_free_from].
         unfold free_from_set in h3_free_from.
         cbn in h3_free_from.
         pose (h4 := module_homo_f h3).
