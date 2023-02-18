@@ -9,8 +9,6 @@ Open Scope set_scope.
 #[universes(template)]
 Class Topology U := {
     open : (U → Prop) → Prop;
-    empty_open : open ∅;
-    all_open : open all;
     union_open : ∀ S, S ⊆ open → open (⋃ S);
     inter_open : ∀ S, S ⊆ open → (finite (|set_type S|)) → open (⋂ S);
 }.
@@ -36,12 +34,6 @@ Context {U : Type}.
 Program Instance discrete_topology : Topology U := {
     open := @all (U → Prop)
 }.
-Next Obligation.
-    exact true.
-Qed.
-Next Obligation.
-    exact true.
-Qed.
 Next Obligation.
     exact true.
 Qed.
@@ -107,6 +99,21 @@ Section Topology.
 
 Context {U} `{Top : Topology U}.
 (* end hide *)
+Theorem empty_open : open ∅.
+Proof.
+    rewrite <- union_empty.
+    apply union_open.
+    apply empty_sub.
+Qed.
+
+Theorem all_open : open all.
+Proof.
+    rewrite <- inter_empty.
+    apply inter_open.
+    -   apply empty_sub.
+    -   apply empty_finite.
+Qed.
+
 Theorem discrete_finer : topology_finer discrete_topology Top.
 Proof.
     intros S S_open.
@@ -341,13 +348,11 @@ End Topology.
 Theorem topology_equal : ∀ U (T1 : Topology U) (T2 : Topology U),
     (∀ S, @open U T1 S ↔ @open U T2 S) → T1 = T2.
 Proof.
-    intros U [open1 empty1 all1 union1 inter1]
-             [open2 empty2 all2 union2 inter2] all_open.
+    intros U [open1 union1 inter1]
+             [open2 union2 inter2] all_open.
     apply predicate_ext in all_open.
     unfold open in all_open; cbn in all_open.
     subst.
-    rewrite (proof_irrelevance empty1 empty2).
-    rewrite (proof_irrelevance all1 all2).
     rewrite (proof_irrelevance union1 union2).
     rewrite (proof_irrelevance inter1 inter2).
     reflexivity.

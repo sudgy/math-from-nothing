@@ -19,15 +19,6 @@ Global Program Instance basis_topology {U} `{b:TopologyBasis U} : Topology U :={
     open S := ∀ x, S x → ∃ B, top_basis B ∧ B x ∧ B ⊆ S
 }.
 Next Obligation.
-    contradiction H.
-Qed.
-Next Obligation.
-    clear H.
-    pose proof (top_basis_in x) as [B [B_basis Bx]].
-    exists B.
-    repeat split; assumption.
-Qed.
-Next Obligation.
     rename H into sub.
     rename H0 into s.
     rename H1 into Ss.

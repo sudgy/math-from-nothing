@@ -17,22 +17,6 @@ Program Instance subspace_topology : Topology (set_type X) := {
     open S := ∃ T, open T ∧ S = to_set_type X T
 }.
 Next Obligation.
-    exists ∅.
-    split.
-    -   apply empty_open.
-    -   apply predicate_ext.
-        intros x.
-        split; contradiction.
-Qed.
-Next Obligation.
-    exists all.
-    split.
-    -   apply all_open.
-    -   apply predicate_ext.
-        intros x.
-        repeat split; exact I.
-Qed.
-Next Obligation.
     rename H0 into sub.
     unfold subset in sub.
     pose (S' A := ∃ s, A = ex_val (sub [s|] [|s])).

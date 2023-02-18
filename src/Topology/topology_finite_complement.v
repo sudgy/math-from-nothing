@@ -12,15 +12,6 @@ Program Instance finite_complement_topology : Topology U := {
     open S := finite (|set_type (𝐂 S)|) ∨ 𝐂 S = all
 }.
 Next Obligation.
-    right.
-    exact compl_empty.
-Qed.
-Next Obligation.
-    left.
-    rewrite compl_all.
-    exact empty_finite.
-Qed.
-Next Obligation.
     rename S into SS.
     rename H into SS_sub.
     classic_case (⋃ SS = ∅) as [SS_empty|SS_nempty].
