@@ -290,6 +290,28 @@ Proof.
         apply nat_lt_suc.
 Qed.
 
+Theorem simple_finite_finite : ∀ U, simple_finite U ↔ finite (|U|).
+Proof.
+    intros U.
+    split; intros fin.
+    -   apply simple_finite_bij in fin as [n [f f_bij]].
+        assert (|U| = nat_to_card n) as eq.
+        {
+            unfold nat_to_card; equiv_simpl.
+            exists f.
+            exact f_bij.
+        }
+        rewrite eq.
+        apply nat_is_finite.
+    -   apply fin_nat_ex in fin.
+        destruct fin as [n n_eq].
+        symmetry in n_eq.
+        unfold nat_to_card in n_eq; equiv_simpl in n_eq.
+        destruct n_eq as [f f_bij].
+        exists n, f.
+        apply f_bij.
+Qed.
+
 Theorem inf_not_nat : ∀ κ, infinite κ → ∀ n, nat_to_card n ≠ κ.
 Proof.
     intros κ κ_inf n eq.

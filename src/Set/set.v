@@ -6,3 +6,4 @@ Require Export equivalence.
 Require Export set_set.
 Require Export set_function.
 Require Export set_order.
+Require Export set_finite.
