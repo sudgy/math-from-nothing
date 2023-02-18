@@ -24,7 +24,7 @@ Proof.
     pose proof (I1_init I1) as I1_self.
     pose proof (I2_init I2) as I2_self.
     specialize (I2_init I1).
-    destruct I2_init as [[g] g_uni].
+    destruct I2_init as [[g g_uni]].
     exists g.
     rewrite (singleton_unique2 (f ∘ g) 𝟙).
     rewrite (singleton_unique2 (g ∘ f) 𝟙).
@@ -35,7 +35,7 @@ Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
 Proof.
     intros I1 I2 I1_init I2_init.
     pose proof (I1_init I2) as I1_init'.
-    destruct I1_init' as [[f] f_uni].
+    destruct I1_init' as [[f f_uni]].
     exists f.
     apply initial_all_iso; assumption.
 Qed.
