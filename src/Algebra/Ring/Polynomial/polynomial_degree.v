@@ -206,12 +206,12 @@ Proof.
         apply f_z.
     }
     rewrite not_all in f_nz.
-    pose proof (finite_well_ordered_set_max _ f_fin f_nz)
-        as [n [n_nz n_greatest]].
+    pose proof (simple_finite_max f_fin (ex_set_type f_nz))
+        as [[n n_nz] n_greatest].
     exists n.
     intros m m_gt.
     classic_contradiction contr.
-    specialize (n_greatest m contr).
+    specialize (n_greatest [m|contr]).
     destruct (lt_le_trans m_gt n_greatest); contradiction.
 Qed.
 

@@ -6,7 +6,6 @@ Require Import module_category.
 Require Import linear_subspace.
 
 Require Import set.
-Require Import card.
 Require Import nat.
 Require Import unordered_list.
 
@@ -38,11 +37,9 @@ Let VSR k := module_scalar_rdist (V k).
 
 Local Existing Instances VP VZ VN VPC VPA VPZ VPN VS VSC VSE VSL VSR.
 
-Local Open Scope card_scope.
-
 Definition grade_sum_base := (∀ k, module_V (V k)).
 Definition grade_sum_finite (A : grade_sum_base) :=
-    finite (|set_type (λ k, 0 ≠ A k)|).
+    simple_finite (set_type (λ k, 0 ≠ A k)).
 Definition grade_sum_type := set_type grade_sum_finite.
 
 Definition single_to_grade_sum_base {k} (A : module_V (V k)) : grade_sum_base.
@@ -57,8 +54,7 @@ Lemma single_to_grade_sum_finite {k} : ∀ A : module_V (V k),
     grade_sum_finite (single_to_grade_sum_base A).
 Proof.
     intros A.
-    apply (le_lt_trans2 (nat_is_finite 1)).
-    unfold nat_to_card, le at 1; equiv_simpl.
+    exists 1.
     exists (λ _, [0|nat_one_pos]).
     split.
     intros [a a_neq] [b b_neq] eq; clear eq.
@@ -96,17 +92,7 @@ Lemma grade_sum_plus_finite : ∀ A B : grade_sum_type,
     grade_sum_finite (λ k, [A|] k + [B|] k).
 Proof.
     intros [A A_fin] [B B_fin]; cbn.
-    apply fin_nat_ex in A_fin as [m m_eq].
-    apply fin_nat_ex in B_fin as [n n_eq].
-    assert (finite (nat_to_card m + nat_to_card n)) as mn_fin.
-    {
-        rewrite nat_to_card_plus.
-        apply nat_is_finite.
-    }
-    apply (le_lt_trans2 mn_fin).
-    rewrite m_eq, n_eq.
-    clear m m_eq n n_eq mn_fin.
-    unfold plus at 2, le; equiv_simpl.
+    apply (simple_finite_trans _ _ (simple_finite_sum _ _ A_fin B_fin)).
     assert (∀ (n : set_type (λ k, 0 ≠ A k + B k)), {0 ≠ A [n|]} + {0 ≠ B [n|]})
         as n_in.
     {
@@ -154,14 +140,12 @@ Qed.
 Lemma grade_sum_zero_finite : grade_sum_finite (λ k, 0).
 Proof.
     unfold grade_sum_finite.
-    assert (|set_type (λ k : I, (zero (U := module_V (V k))) ≠ 0)| = 0) as eq.
-    {
-        apply card_false_0.
-        intros [a neq].
-        contradiction.
-    }
-    rewrite eq.
-    apply nat_is_finite.
+    exists 0.
+    exists (λ x : set_type (λ k : I, (zero (U := module_V (V k))) ≠ 0),
+        False_rect _ ([|x] Logic.eq_refl)).
+    split.
+    intros [a neq].
+    contradiction.
 Qed.
 
 Instance grade_sum_zero : Zero grade_sum_type := {
@@ -180,10 +164,7 @@ Qed.
 Lemma grade_sum_neg_finite : ∀ A : grade_sum_type, grade_sum_finite (λ k, -[A|] k).
 Proof.
     intros [A A_fin]; cbn.
-    apply fin_nat_ex in A_fin as [n n_eq].
-    apply (le_lt_trans2 (nat_is_finite n)).
-    rewrite n_eq; clear n n_eq.
-    unfold le; equiv_simpl.
+    apply (simple_finite_trans _ _ A_fin).
     assert (∀ (n : set_type (λ k, 0 ≠ - A k)), 0 ≠ A [n|]) as n_in.
     {
         intros [n n_neq]; cbn.
@@ -232,10 +213,7 @@ Lemma grade_sum_scalar_finite : ∀ α (A : grade_sum_type),
     grade_sum_finite (λ k, α · [A|] k).
 Proof.
     intros α [A A_fin]; cbn.
-    apply fin_nat_ex in A_fin as [n n_eq].
-    apply (le_lt_trans2 (nat_is_finite n)).
-    rewrite n_eq; clear n n_eq.
-    unfold le; equiv_simpl.
+    apply (simple_finite_trans _ _ A_fin).
     assert (∀ (n : set_type (λ k, 0 ≠ α · A k)), 0 ≠ A [n|]) as n_in.
     {
         intros [n n_neq]; cbn.
@@ -424,9 +402,12 @@ Next Obligation.
     exact v2_eq.
 Qed.
 Next Obligation.
-    pose proof (fin_nat_ex _ [|v]) as [n n_eq].
-    unfold nat_to_card in n_eq; equiv_simpl in n_eq.
-    destruct n_eq as [g [g_inj g_sur]].
+    pose proof (simple_finite_bij _ [|v]) as [n [f f_bij]].
+    pose (g := bij_inv f).
+    pose proof (bij_inv_bij f) as [g_inj g_sur].
+    fold g in g_inj, g_sur.
+    clearbody g.
+    clear f f_bij.
     classic_case (inhabited I) as [i|ni].
     2: {
         exists ulist_end.

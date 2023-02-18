@@ -199,7 +199,10 @@ Proof.
     intros T.
     equiv_get_value T.
     destruct T as [T T_fin'].
+    unfold grade_sum_finite in T_fin'.
     pose proof T_fin' as T_fin.
+    (* TODO: Get rid of the use of cardinals here *)
+    rewrite simple_finite_finite in T_fin.
     apply fin_nat_ex in T_fin as [n n_eq].
     revert T T_fin' n_eq.
     unfold grade_sum_finite.
@@ -289,6 +292,7 @@ Proof.
         rewrite <- T'n.
         apply nat_is_finite.
     }
+    rewrite <- simple_finite_finite in T'_fin.
     specialize (IHn T' T'_fin T'n) as [l l_eq].
     pose (x' := T [x|] · (fst [x|] ⊗ snd [x|])).
     assert (simple_tensor_base x') as x'_simple.
