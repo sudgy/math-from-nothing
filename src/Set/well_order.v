@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Import zorn.
-Require Import zorn_function.
+Require Import zorn_binary_function.
 Require Import set_base.
 Require Import set_type.
 Require Import set_function.

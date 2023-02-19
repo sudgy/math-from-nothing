@@ -85,7 +85,8 @@
 ./src/Set/set_finite.v
 ./src/Set/zorn.v
 ./src/Set/zorn_preorder.v
-./src/Set/zorn_function.v
+./src/Set/zorn_unary_function.v
+./src/Set/zorn_binary_function.v
 ./src/Set/well_order.v
 ./src/Set/set.v
 

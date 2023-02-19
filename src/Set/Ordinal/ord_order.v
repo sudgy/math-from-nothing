@@ -4,7 +4,7 @@ Require Export ord_base.
 Require Import set_function.
 Require Import equivalence.
 Require Import zorn.
-Require Import zorn_function.
+Require Import zorn_unary_function.
 Require Import nat.
 
 (* begin hide *)
