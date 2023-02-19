@@ -32,111 +32,89 @@ Open Scope set_scope.
 (* end hide *)
 Context {U V : Type}.
 Definition func_le (f g : set_function_type U V) :=
-    ∃ sub : (domain f ⊆ domain g),
+    domain f ⊆ domain g ⋏ λ sub,
         ∀ x : set_type (domain f),
             f⟨x⟩ = g⟨[[x|]|sub [x|] [|x]]⟩.
 
-Lemma func_le_refl : ∀ f, func_le f f.
+Global Instance func_le_refl : Reflexive func_le.
 Proof.
+    split.
     intros f.
-    exists (@refl (U → Prop) subset _ (domain f)).
-    intros [x x_in].
+    split with (refl _).
+    intros [x x_in]; cbn.
     apply f_equal.
-    apply set_type_eq.
+    rewrite set_type_eq2.
     reflexivity.
 Qed.
-Global Instance func_le_refl_class : Reflexive func_le := {
-    refl := func_le_refl
-}.
 
-Lemma func_le_antisym : ∀ f g, func_le f g → func_le g f → f = g.
+Global Instance func_le_antisym : Antisymmetric func_le.
 Proof.
+    split.
     intros f g [f_sub_g fg] [g_sub_f gf]; cbn in *.
-    assert (domain f = domain g) as sets_eq.
-    {
-        apply antisym; assumption.
-    }
+    pose proof (antisym f_sub_g g_sub_f) as set_eq.
     destruct f as [f_dom f], g as [g_dom g]; cbn in *.
-    subst.
+    subst g_dom.
     apply f_equal.
     apply functional_ext.
     intros x.
     rewrite fg.
     apply f_equal.
-    apply set_type_eq.
-    reflexivity.
+    apply set_type_simpl.
 Qed.
-Global Instance func_le_antisym_class : Antisymmetric func_le := {
-    antisym := func_le_antisym
-}.
 
-Lemma func_le_trans : ∀ f g h, func_le f g → func_le g h → func_le f h.
+Global Instance func_le_trans : Transitive func_le.
 Proof.
+    split.
     intros f g h [f_sub_g fg] [g_sub_h gh]; cbn in *.
-    exists (trans f_sub_g g_sub_h); cbn.
+    split with (trans f_sub_g g_sub_h); cbn.
     intros x.
-    specialize (fg x).
-    rewrite gh in fg.
     rewrite fg.
+    rewrite gh; cbn.
     apply f_equal.
-    apply set_type_eq.
+    rewrite set_type_eq2.
     reflexivity.
 Qed.
-Global Instance func_le_trans_class : Transitive func_le := {
-    trans := func_le_trans
-}.
 
 Definition bin_func_le (f g : bin_set_function_type U V) :=
-    ∃ sub : (bin_domain f ⊆ bin_domain g),
+    bin_domain f ⊆ bin_domain g ⋏ λ sub,
         ∀ x y : set_type (bin_domain f),
             f⟨x, y⟩ = g⟨[[x|]|sub [x|] [|x]], [[y|]|sub [y|] [|y]]⟩.
 
-Lemma bin_func_le_refl : ∀ f, bin_func_le f f.
+Global Instance bin_func_le_refl : Reflexive bin_func_le.
 Proof.
+    split.
     intros f.
-    exists (refl _).
+    split with (refl _).
     intros x y.
-    apply f_equal2; apply set_type_eq; reflexivity.
+    apply f_equal2; symmetry; apply set_type_simpl.
 Qed.
-Global Instance bin_func_le_refl_class : Reflexive bin_func_le := {
-    refl := bin_func_le_refl
-}.
 
-Lemma bin_func_le_antisym : ∀ f g, bin_func_le f g → bin_func_le g f → f = g.
+Global Instance bin_func_le_antisym : Antisymmetric bin_func_le.
 Proof.
+    split.
     intros f g [f_sub_g fg] [g_sub_f gf]; cbn in *.
-    assert (bin_domain f = bin_domain g) as sets_eq.
-    {
-        apply antisym; assumption.
-    }
+    pose proof (antisym f_sub_g g_sub_f) as sets_eq.
     destruct f as [f_dom f], g as [g_dom g]; cbn in *.
-    subst.
+    subst g_dom.
     apply f_equal.
     apply functional_ext.
     intros x.
     apply functional_ext.
     intros y.
     rewrite fg.
-    apply f_equal2; apply set_type_eq; reflexivity.
+    apply f_equal2; apply set_type_simpl.
 Qed.
-Global Instance bin_func_le_antisym_class : Antisymmetric bin_func_le := {
-    antisym := bin_func_le_antisym
-}.
 
-Lemma bin_func_le_trans :
-    ∀ f g h, bin_func_le f g → bin_func_le g h → bin_func_le f h.
+Global Instance bin_func_le_trans : Transitive bin_func_le.
 Proof.
+    split.
     intros g f h [f_sub_g fg] [g_sub_h gh]; cbn in *.
-    exists (trans f_sub_g g_sub_h); cbn.
+    split with (trans f_sub_g g_sub_h); cbn.
     intros x y.
-    specialize (fg x y).
-    rewrite gh in fg.
-    rewrite fg; cbn.
-    apply f_equal2; apply set_type_eq; reflexivity.
+    rewrite (fg x y).
+    rewrite gh; cbn.
+    apply f_equal2; rewrite set_type_eq2; reflexivity.
 Qed.
-Global Instance bin_func_le_trans_class : Transitive bin_func_le := {
-    trans := bin_func_le_trans
-}.
 (* begin hide *)
 End FunctionOrder.
 (* end hide *)

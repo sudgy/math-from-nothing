@@ -31,7 +31,7 @@ Local Instance S_order : Order (set_type S) := {
     le A B :=
         ∃ sub : ([A|] ≤ [B|]),
         ∀ (a : set_type (bin_domain [A|])) (b : set_type (bin_domain [B|])),
-            ¬bin_domain [A|] [b|] → [B|]⟨[_|ex_val sub [a|] [|a]], b⟩
+            ¬bin_domain [A|] [b|] → [B|]⟨[_|ldand sub [a|] [|a]], b⟩
 }.
 Lemma S_order_refl : ∀ A, A ≤ A.
 Proof.
@@ -70,7 +70,7 @@ Proof.
         specialize (AB2 a [_|Bc] Ac).
         destruct BC as [BC_sub BC].
         rewrite BC in AB2; cbn in *.
-        pose proof (BC_sub [a|] (ex_val AB [a|] [|a])) as Ca.
+        pose proof (BC_sub [a|] (ldand AB [a|] [|a])) as Ca.
         rewrite (proof_irrelevance _ Ca).
         rewrite (proof_irrelevance _ Ca) in AB2.
         assert (c = [[c|]|BC_sub [c|] Bc]) as eq
@@ -108,9 +108,9 @@ Proof.
         clear BC_neq.
         specialize (AB2 a b Ab).
         specialize (BC2 b c Bc).
-        remember (ex_val (trans AB BC) [a|] [|a]) as Ca; clear HeqCa.
-        remember (ex_val AB [a|] [|a]) as Ba; clear HeqBa.
-        remember (ex_val BC [b|] [|b]) as Cb; clear HeqCb.
+        remember (ldand (trans AB BC) [a|] [|a]) as Ca; clear HeqCa.
+        remember (ldand AB [a|] [|a]) as Ba; clear HeqBa.
+        remember (ldand BC [b|] [|b]) as Cb; clear HeqCb.
         destruct BC as [C0 BC].
         rewrite BC in AB2; cbn in *.
         rewrite (proof_irrelevance _ Ca) in AB2.
@@ -351,7 +351,7 @@ Proof.
     exists sub.
     intros a b Fb; cbn in *.
     unfold S_union_le; cbn.
-    pose proof (ex_val sub [a|] [|a]) as Sa.
+    pose proof (ldand sub [a|] [|a]) as Sa.
     rewrite (proof_irrelevance _ Sa).
     make_definitions [[a|]|Sa] b PG G CG Ga Gb.
     cbn in *.
