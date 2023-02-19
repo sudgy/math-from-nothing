@@ -84,6 +84,7 @@
 ./src/Set/equivalence.v
 ./src/Set/set_finite.v
 ./src/Set/zorn.v
+./src/Set/zorn_set.v
 ./src/Set/zorn_preorder.v
 ./src/Set/zorn_unary_function.v
 ./src/Set/zorn_binary_function.v
