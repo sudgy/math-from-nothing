@@ -4,117 +4,130 @@ Require Import zorn.
 Require Import zorn_set.
 Require Import set.
 
+Theorem strict_subset_ex {U} : ∀ (S T : U → Prop), S ⊂ T → ∃ x, ¬S x ∧ T x.
+Proof.
+    intros S T sub.
+    classic_contradiction contr.
+    apply sub.
+    apply antisym; [>apply sub|].
+    intros x Tx.
+    rewrite not_ex in contr.
+    specialize (contr x).
+    rewrite and_comm, not_and_impl, not_not in contr.
+    exact (contr Tx).
+Qed.
+
 Section WellOrderingTheorem.
 
 Context {U : Type}.
 
-Let UO := (subset_order (U := U)).
-Local Existing Instance UO.
+Local Existing Instance subset_order.
 Local Open Scope set_scope.
 
-Definition well_orders (W : (U → Prop) → Prop) :=
+Definition wo_conforming (W : (U → Prop) → Prop) :=
     (∀ x : U, (⋃ W) x → ∃ S : U → Prop, S x ∧ W S ∧ W (S - ❴x❵)) ∧
     well_orders le W.
 
-Local Instance UUO_order : Order (set_type well_orders) := {
-    le A B := [A|] ⊆ [B|] ∧ ∀ a b, [A|] a → [B|] b → ¬[A|] b → a ⊆ b
-}.
-
-Local Instance UUO_refl : Reflexive le.
+Lemma wo_conforming_init : ∀ AA BB, wo_conforming AA → wo_conforming BB → AA ⊆ BB →
+    ∀ A B, AA A → BB B → ¬AA B → A ⊆ B.
 Proof.
-    split.
-    intros SS.
-    split; [>apply refl|].
-    intros a b SSa SSb SSb'.
-    contradiction.
+    intros AA BB [AA_remove AA_wo] [BB_remove BB_wo] sub.
+    intros A B AA_A BB_B AA_B.
+    classic_case (B = A) as [eq|neq].
+    1: subst; apply refl.
+    destruct (well_orders_chain _ BB_wo A B (sub A AA_A) BB_B) as [leq|leq].
+    1: exact leq.
+    exfalso.
+    assert (B ⊂ A) as ltq by (split; assumption).
+    clear neq leq.
+    pose proof (AA_wo (λ X, AA X ∧ B ⊂ X)) as C_ex.
+    prove_parts C_ex.
+    1: apply inter_lsub.
+    1: exists A; split; assumption.
+    clear A AA_A ltq.
+    destruct C_ex as [C [[AA_C BC] C_least]].
+    pose proof (strict_subset_ex _ _ BC) as [x [Bx Cx]].
+    pose proof (AA_remove x (ex_intro _ _ (make_and AA_C Cx)))
+        as [D [Dx [AA_D AA_Dx]]].
+    assert (B ⊂ (D - ❴x❵)) as BD.
+    {
+        split; [>|intro; subst; contradiction].
+        assert (B ⊆ D → B ⊆ (D - ❴x❵)) as sub'.
+        {
+            intros sub' a Ba.
+            split.
+            -   exact (sub' a Ba).
+            -   intros contr.
+                rewrite singleton_eq in contr.
+                subst a; contradiction.
+        }
+        apply sub'.
+        apply sub in AA_D.
+        pose proof (well_orders_chain _ BB_wo _ _ BB_B AA_D) as [leq|leq].
+        -   exact leq.
+        -   apply leq in Dx.
+            contradiction.
+    }
+    specialize (C_least _ (make_and AA_Dx BD)).
+    apply C_least in Cx.
+    destruct Cx as [Dx' neq].
+    contradiction neq.
+    reflexivity.
 Qed.
 
-Local Instance UUO_antisym : Antisymmetric le.
+Lemma well_order_chain_union : ∀ F : set_type wo_conforming → Prop,
+    is_chain le F → wo_conforming (⋃ (image_under (λ S, [S|]) F)).
 Proof.
+    intros F F_chain.
     split.
-    intros A B [AB_sub AB_init] [BA_sub BA_init].
-    rewrite <- set_type_eq.
-    exact (antisym AB_sub BA_sub).
-Qed.
-
-Local Instance UUO_trans : Transitive le.
-Proof.
-    split.
-    intros A B C [AB AB_sub] [BC BC_sub].
-    split; [>exact (trans AB BC)|].
-    intros a c Aa Cb Ac.
-    classic_case ([B|] c) as [Bc|Bc].
-    -   apply AB_sub; assumption.
-    -   apply AB in Aa.
-        apply BC_sub; assumption.
+    -   intros x [A [A_in Ax]].
+        destruct A_in as [AA' [[[AA AA_wo] [F_AA AA_eq]] AA_A]]; subst AA'.
+        pose proof AA_wo as [AA_init AA_wo'].
+        pose proof (AA_init x (ex_intro _ A (make_and AA_A Ax)))
+            as [B [Bx [AA_B AA_Bx]]].
+        exists B.
+        split; [>exact Bx|].
+        split.
+        +   exists AA.
+            split; [>|exact AA_B].
+            exists [AA|AA_wo].
+            split; trivial.
+        +   exists AA.
+            split; [>|exact AA_Bx].
+            exists [AA|AA_wo].
+            split; trivial.
+    -   intros AA AA_sub [A AA_A].
+        pose proof (AA_sub A AA_A) as [BB' [[[BB BB_wo] [F_BB BB_eq]] BB_A]]; subst.
+        cbn in BB_A.
+        pose proof (rand BB_wo (AA ∩ BB) (inter_rsub _ _)
+            (ex_intro _ A (make_and AA_A BB_A))) as [M [[AA_M BB_M] M_least]].
+        exists M.
+        split; [>exact AA_M|].
+        intros Y AA_Y.
+        pose proof (AA_sub Y AA_Y) as [CC' [[[CC CC_wo] [F_CC CC_eq]] CC_A]]; subst.
+        cbn in CC_A.
+        specialize (F_chain _ _ F_BB F_CC).
+        unfold le in F_chain; cbn in F_chain.
+        destruct F_chain as [leq|leq].
+        2: apply leq in CC_A; apply M_least; split; assumption.
+        classic_case (BB Y) as [BB_Y|nBB_Y].
+        1: apply M_least; split; assumption.
+        clear AA AA_sub A AA_A BB_A AA_M M_least AA_Y.
+        apply (wo_conforming_init BB CC); assumption.
 Qed.
 
 Lemma well_order_sets_ex :
-    ∃ W : set_type well_orders, ∀ A : set_type well_orders, ¬(W < A).
+    ∃ W : set_type wo_conforming, ∀ A : set_type wo_conforming, ¬([W|] < [A|]).
 Proof.
-    apply zorn.
-    apply UUO_refl.
-    apply UUO_antisym.
-    apply UUO_trans.
+    apply set_zorn.
     intros F F_chain.
-    unfold has_upper_bound.
-    assert (well_orders (⋃ (image_under (λ S, [S|]) F))) as union_in.
-    {
-        split.
-        -   intros x [A [A_in Ax]].
-            destruct A_in as [AA' [[[AA AA_wo] [F_AA AA_eq]] AA_A]]; subst AA'.
-            pose proof AA_wo as [AA_init AA_wo'].
-            pose proof (AA_init x (ex_intro _ A (make_and AA_A Ax)))
-                as [B [Bx [AA_B AA_Bx]]].
-            exists B.
-            split; [>exact Bx|].
-            split.
-            +   exists AA.
-                split; [>|exact AA_B].
-                exists [AA|AA_wo].
-                split; trivial.
-            +   exists AA.
-                split; [>|exact AA_Bx].
-                exists [AA|AA_wo].
-                split; trivial.
-        -   intros AA AA_sub [A AA_A].
-            pose proof (AA_sub A AA_A) as [BB' [[[BB BB_wo] [F_BB BB_eq]] BB_A]]; subst.
-            cbn in BB_A.
-            pose proof (rand BB_wo (AA ∩ BB) (inter_rsub _ _)
-                (ex_intro _ A (make_and AA_A BB_A))) as [M [[AA_M BB_M] M_least]].
-            exists M.
-            split; [>exact AA_M|].
-            intros Y AA_Y.
-            pose proof (AA_sub Y AA_Y) as [CC' [[[CC CC_wo] [F_CC CC_eq]] CC_A]]; subst.
-            cbn in CC_A.
-            specialize (F_chain _ _ F_BB F_CC).
-            unfold le in F_chain; cbn in F_chain.
-            destruct F_chain as [leq|leq].
-            2: apply leq in CC_A; apply M_least; split; assumption.
-            classic_case (BB Y) as [BB_Y|nBB_Y].
-            1: apply M_least; split; assumption.
-            clear AA AA_sub A AA_A BB_A AA_M M_least AA_Y.
-            apply leq; assumption.
-    }
-    exists [_|union_in].
-    intros WW FWW.
-    split; cbn.
-    -   intros S WW_S.
-        exists [WW|].
-        split; [>|exact WW_S].
-        exists WW.
-        split; trivial.
-    -   intros A B WW_A WWu_B WW_B.
-        destruct WWu_B as [AA' [[AA [F_AA A_eq]] AA_B]]; subst AA'.
-        specialize (F_chain _ _ F_AA FWW) as [leq|leq].
-        1: apply leq in AA_B; contradiction.
-        destruct leq as [sub init].
-        apply init; assumption.
+    apply well_order_chain_union.
+    exact F_chain.
 Qed.
 
 Definition well_order_sets := [ex_val well_order_sets_ex|].
 Definition well_order_sets_wo := [|ex_val well_order_sets_ex]
-    : well_orders well_order_sets.
+    : wo_conforming well_order_sets.
 Lemma well_order_sets_max : ∀ A, ¬([well_order_sets|well_order_sets_wo] < A).
 Proof.
     intros A.
@@ -124,15 +137,17 @@ Proof.
         (ex_val well_order_sets_ex) in ltq.
     rewrite_ex_val W W_max.
     replace [[W|] | [|W]] with W by (apply set_type_eq; reflexivity).
-    apply W_max.
+    rewrite set_type_lt in ltq.
+    exact ltq.
 Qed.
 
 Lemma well_order_sets_union : well_order_sets (⋃ well_order_sets).
 Proof.
     classic_contradiction contr.
     pose (A := well_order_sets ∪ ❴⋃ well_order_sets❵).
-    assert (well_orders A) as A_wo.
+    assert (wo_conforming A) as A_wo.
     {
+        unfold A.
         split.
         -   intros x [B [AB Bx]].
             destruct AB as [AB|B_eq].
@@ -186,16 +201,9 @@ Proof.
     }
     apply (well_order_sets_max [A|A_wo]).
     split.
-    -   split; cbn.
-        +   intros a a_wo.
-            left.
-            exact a_wo.
-        +   intros a b a_wo Ab b_wo.
-            destruct Ab as [b_wo'|b_eq]; [>contradiction|].
-            rewrite singleton_eq in b_eq; subst b.
-            intros n an.
-            exists a.
-            split; assumption.
+    -   intros a a_wo.
+        left.
+        exact a_wo.
     -   intros eq.
         rewrite set_type_eq2 in eq.
         apply contr.
@@ -218,7 +226,7 @@ Proof.
     intros x.
     classic_contradiction contr.
     pose (A := well_order_sets ∪ ❴⋃ well_order_sets ∪ ❴x❵❵).
-    assert (well_orders A) as A_wo.
+    assert (wo_conforming A) as A_wo.
     {
         split.
         -   intros a [B [AB Ba]].
@@ -302,17 +310,9 @@ Proof.
     }
     apply (well_order_sets_max [A|A_wo]).
     split.
-    -   split; cbn.
-        +   intros a a_wo.
-            left.
-            exact a_wo.
-        +   intros a b a_wo Ab b_wo.
-            destruct Ab as [b_wo'|b_eq]; [>contradiction|].
-            rewrite singleton_eq in b_eq; subst b.
-            intros n an.
-            left.
-            exists a.
-            split; assumption.
+    -   intros a a_wo.
+        left.
+        exact a_wo.
     -   intros eq.
         rewrite set_type_eq2 in eq.
         apply contr.
