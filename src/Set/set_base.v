@@ -93,6 +93,19 @@ Proof.
     -   apply TS.
 Qed.
 
+Theorem strict_subset_ex : ∀ (S T : U → Prop), S ⊂ T → ∃ x, ¬S x ∧ T x.
+Proof.
+    intros S T sub.
+    classic_contradiction contr.
+    apply sub.
+    apply antisym; [>apply sub|].
+    intros x Tx.
+    rewrite not_ex in contr.
+    specialize (contr x).
+    rewrite and_comm, not_and_impl, not_not in contr.
+    exact (contr Tx).
+Qed.
+
 Theorem empty_sub : ∀ S : U → Prop, ∅ ⊆ S.
 Proof.
     intros S x contr.
@@ -220,6 +233,21 @@ Proof.
     apply predicate_ext; intros x.
     apply or_idemp.
 Qed.
+
+Lemma union_minus : ∀ A B : U → Prop, A ∩ B = ∅ → A ∪ B - B = A.
+Proof.
+    intros A B dis.
+    apply antisym.
+    -   intros x [[Ax|Bx] nBx].
+        +   exact Ax.
+        +   contradiction.
+    -   intros x Ax.
+        split; [>left; exact Ax|].
+        intros contr.
+        rewrite empty_eq in dis.
+        exact (dis x (make_and Ax contr)).
+Qed.
+
 
 Theorem inter_comm : ∀ S T : U → Prop, S ∩ T = T ∩ S.
 Proof.
