@@ -10,10 +10,26 @@ Context {U : Type}.
 Record wo_func := make_wo_func {
     wo_domain : U → Prop;
     wo_f : U → U → Prop;
-    wo_f_antisym : Antisymmetric (λ x y : set_type wo_domain, wo_f [x|] [y|]);
-    wo_f_wo : WellOrdered (λ x y : set_type wo_domain, wo_f [x|] [y|]);
+    wo_f_antisym : ∀ a b, wo_domain a → wo_domain b →
+        wo_f a b → wo_f b a → a = b;
+    wo_f_wo : well_orders wo_f wo_domain;
     wo_f_top : ∀ a b, ¬wo_domain a → wo_f a b ∧ wo_f b a;
 }.
+
+Lemma wo_f_connex : ∀ f a b, wo_domain f a → wo_domain f b →
+    wo_f f a b ∨ wo_f f b a.
+Proof.
+    intros f a b.
+    apply (well_orders_chain _ (wo_f_wo f)).
+Qed.
+
+Lemma wo_f_refl : ∀ f a, wo_f f a a.
+Proof.
+    intros f a.
+    classic_case (wo_domain f a) as [fa|fa].
+    -   destruct (wo_f_connex f a a fa fa); assumption.
+    -   apply (wo_f_top f a a fa).
+Qed.
 
 Theorem wo_func_eq : ∀ f g : wo_func, wo_domain f = wo_domain g →
     (∀ a b, wo_domain f a → wo_domain f b → wo_f f a b = wo_f g a b) →
@@ -99,18 +115,6 @@ Proof.
         +   apply gh_bigger; assumption.
 Qed.
 
-Lemma wo_f_anti : ∀ {f a b}, wo_domain f a → wo_domain f b →
-    wo_f f a b → wo_f f b a → a = b.
-Proof.
-    intros f a b fa fb ab ba.
-    pose proof (wo_f_antisym f) as f_anti.
-    change a with [[a|fa]|] in ab, ba.
-    change b with [[b|fb]|] in ab, ba.
-    pose proof (antisym (Antisymmetric := f_anti) ab ba) as eq.
-    rewrite set_type_eq2 in eq.
-    exact eq.
-Qed.
-
 Theorem wo_ex : ∃ F : wo_func, ∀ X, ¬F < X.
 Proof.
     apply zorn.
@@ -133,20 +137,17 @@ Proof.
         rewrite_ex_val g [Fg [ga gb]]; clear g_ex.
         specialize (F_chain f g Ff Fg) as [leq|leq].
         -   apply leq in ab; assumption.
-        -   pose proof (wo_f_wo g) as g_wo.
-            destruct (connex [a|ga] [b|gb]) as [ab'|ba]; [>exact ab'|].
+        -   pose proof (wo_f_connex g a b ga gb) as [ab'|ba]; [>exact ab'|].
             cbn in ba.
             apply leq in ba; [>|assumption|assumption].
-            rewrite (wo_f_anti fa fb ab ba).
-            exact (refl [b|gb]).
+            rewrite (wo_f_antisym f a b fa fb ab ba).
+            apply wo_f_refl.
     }
-    assert (Antisymmetric (λ x y : set_type F_domain, F_f [x|] [y|]))
+    assert (∀ a b, F_domain a → F_domain b → F_f a b → F_f b a → a = b)
         as F_f_antisym.
     {
-        split.
-        intros [a Fa] [b Fb]; cbn.
+        intros a b Fa Fb.
         unfold F_f.
-        rewrite set_type_eq2.
         destruct (sem _) as [f_ex|f_nex]; cbn.
         all: destruct (sem _) as [g_ex|g_nex]; cbn.
         -   rewrite_ex_val f [Ff [fa fb]].
@@ -154,9 +155,9 @@ Proof.
             intros ab ba.
             specialize (F_chain f g Ff Fg) as [leq|leq].
             +   apply leq in ab; [>|assumption|assumption].
-                exact (wo_f_anti ga gb ab ba).
+                exact (wo_f_antisym _ _ _ ga gb ab ba).
             +   apply leq in ba; [>|assumption|assumption].
-                exact (wo_f_anti fa fb ab ba).
+                exact (wo_f_antisym _ _ _  fa fb ab ba).
         -   exfalso; apply g_nex.
             destruct f_ex as [f [Ff [fa fb]]].
             exists f.
@@ -176,52 +177,27 @@ Proof.
                 exists f.
                 repeat split; assumption.
     }
-    assert (WellOrdered (λ x y : set_type F_domain, F_f [x|] [y|])) as F_f_wo.
+    assert (well_orders F_f F_domain) as F_f_wo.
     {
-        split.
-        intros S [x Sx].
-        destruct x as [x x_in].
-        pose proof x_in as [A [[f [Ff A_eq]] Ax]]; subst A.
-        assert (∀ a, wo_domain f a → F_domain a) as a_in.
-        {
-            intros a a_in.
-            exists (wo_domain f).
-            split; [>|exact a_in].
-            exists f.
-            split; trivial.
-        }
-        pose proof (wo_f_wo f) as f_wo.
-        pose (S' (a : set_type (wo_domain f)) := S [[a|] | a_in [a|] [|a]]).
-        pose proof (well_ordered S') as a_ex.
-        prove_parts a_ex.
-        {
-            exists [x|Ax].
-            unfold S'; cbn.
-            applys_eq Sx.
-            apply set_type_eq2.
-            reflexivity.
-        }
-        destruct a_ex as [[a fa] [Sa a_least]].
-        unfold S' in Sa; cbn in Sa.
-        exists [a | a_in a fa].
+        intros S S_sub [x Sx].
+        pose proof (S_sub x Sx) as [A [[f [Ff A_eq]] Ax]]; subst A.
+        pose proof (inter_rsub S (wo_domain f)) as S_sub'.
+        pose proof (wo_f_wo f _ S_sub' (ex_intro _ _ (make_and Sx Ax)))
+            as [a [[Sa fa] a_least]].
+        exists a.
         split; [>exact Sa|].
-        cbn in *.
-        intros [b b_in] Sb; cbn.
+        intros b Sb.
         assert (wo_domain f b → F_f a b) as lem.
         {
             intros fb.
-            specialize (a_least [b|fb]).
-            unfold S' in a_least; cbn in a_least.
-            rewrite (proof_irrelevance _ b_in) in a_least.
-            specialize (a_least Sb).
+            specialize (a_least b (make_and Sb fb)).
             apply (F_f_lem f); assumption.
         }
         classic_case (wo_domain f b) as [fb|fb]; [>exact (lem fb)|].
-        pose proof b_in as [B [[g [Fg B_eq]] Bb]]; subst B.
+        pose proof (S_sub b Sb) as [B [[g [Fg B_eq]] Bb]]; subst B.
         specialize (F_chain f g Ff Fg) as [leq|leq].
         -   destruct leq as [sub [ext bigger]].
             specialize (bigger _ _ fa fb).
-            clear Sa.
             apply sub in fa.
             apply (F_f_lem g); assumption.
         -   apply leq in Bb.
@@ -288,16 +264,14 @@ Proof.
              then x ≠ a
              else True
     ).
-    assert (Antisymmetric (λ x y : set_type X_domain, X_f [x|] [y|]))
+    assert (∀ a b, X_domain a → X_domain b → X_f a b → X_f b a → a = b)
         as X_anti.
     {
-        split.
-        intros a b ab ba.
+        intros a b a_in b_in ab ba.
         unfold X_f in ab, ba.
-        destruct a as [a [wa|ax]]; destruct b as [b [wb|bx]]; cbn in *.
-        all: rewrite set_type_eq2.
+        destruct a_in as [wa|ax]; destruct b_in as [wb|bx].
         all: case_if; case_if; try contradiction.
-        -   exact (wo_f_anti wa wb ab ba).
+        -   exact (wo_f_antisym _ _ _ wa wb ab ba).
         -   rewrite singleton_eq in bx; subst b.
             contradiction.
         -   rewrite singleton_eq in ax; subst a.
@@ -308,44 +282,31 @@ Proof.
             rewrite <- ax, <- bx.
             reflexivity.
     }
-    assert (WellOrdered (λ x y : set_type X_domain, X_f [x|] [y|])) as X_wo.
+    assert (well_orders X_f X_domain) as X_wo.
     {
-        split.
-        intros S S_ex.
-        pose proof (wo_f_wo wo) as wo_wo.
-        classic_case (∃ y, S y ∧ wo_domain wo [y|]) as [y_ex|y_nex].
-        -   destruct y_ex as [[y Xy] [Sy y_in]].
-            pose proof (union_lsub (wo_domain wo) ❴x❵) as sub.
-            pose (S' a := S [[a|] | sub [a|] [|a]]).
-            pose proof (well_ordered S') as a_ex.
-            prove_parts a_ex.
-            {
-                exists [y|y_in].
-                unfold S'; cbn.
-                applys_eq Sy.
-                apply set_type_eq2; reflexivity.
-            }
-            destruct a_ex as [[a wa] [S'a a_min]].
-            exists [a | sub a wa].
-            split; [>exact S'a|].
-            clear y y_in Xy Sy.
-            intros [y y_in] Sy; cbn in *.
+        intros S S_sub S_ex.
+        classic_case (∃ y, S y ∧ wo_domain wo y) as [y_ex|y_nex].
+        -   destruct y_ex as [y [Sy y_in]].
+            pose proof (inter_rsub S (wo_domain wo)) as S_sub'.
+            pose proof (wo_f_wo wo _ S_sub' (ex_intro _ _ (make_and Sy y_in)))
+                as [a [[Sa wa] a_min]].
+            exists a.
+            split; [>exact Sa|].
+            clear y y_in Sy.
+            intros y Sy.
             unfold X_f.
             case_if; case_if; try contradiction.
             2: exact true.
-            apply (a_min [y|w0]).
-            unfold S'; cbn.
-            applys_eq Sy.
-            apply set_type_eq2; reflexivity.
-        -   assert (∀ a, S a → [a|] = x) as x_eq.
+            apply (a_min y).
+            split; assumption.
+        -   assert (∀ a, S a → a = x) as x_eq.
             {
                 intros a Sa.
                 rewrite not_ex in y_nex.
                 specialize (y_nex a).
                 rewrite not_and_impl in y_nex.
-                apply y_nex in Sa.
-                destruct a as [a [a_in|ax]]; [>contradiction|].
-                cbn in *.
+                specialize (y_nex Sa).
+                apply S_sub in Sa as [a_in|ax]; [>contradiction|].
                 symmetry; exact ax.
             }
             destruct S_ex as [a Sa].
@@ -405,26 +366,14 @@ Local Instance wo_antisym : Antisymmetric le.
 Proof.
     split.
     intros a b ab ba.
-    pose proof (wo_f_antisym wo) as wo_anti.
-    change a with [[a|wo_all a]|] in ab, ba.
-    change b with [[b|wo_all b]|] in ab, ba.
-    pose proof (antisym (Antisymmetric := wo_anti) ab ba) as eq.
-    rewrite set_type_eq2 in eq.
-    exact eq.
+    exact (wo_f_antisym wo a b (wo_all a) (wo_all b) ab ba).
 Qed.
 
 Local Instance wo_wo : WellOrdered le.
 Proof.
     split.
-    intros S [x Sx].
-    pose proof (wo_f_wo wo) as wo_wo.
-    pose proof (well_ordered (λ x, S [x|]) (ex_intro _ [x|wo_all x] Sx))
-        as [[a a_in] [Sa a_least]].
-    exists a.
-    split; [>exact Sa|].
-    intros y Sy.
-    specialize (a_least [y|wo_all y] Sy).
-    exact a_least.
+    intros S S_ex.
+    exact (wo_f_wo wo S (λ x _, wo_all x) S_ex).
 Qed.
 
 End WellOrder.

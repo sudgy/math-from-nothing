@@ -40,9 +40,14 @@ Definition initial_segment {U} `{Order U} x := λ a, a < x.
 
 Section SetOrder.
 
-Context {U} `{PartialOrder U}.
+Context {U} `{
+    op : U → U → Prop,
+    Reflexive U op,
+    Antisymmetric U op,
+    Transitive U op
+}.
 
-Theorem chain_subset : ∀ S, is_chain le S → ∀ T, T ⊆ S → is_chain le T.
+Theorem chain_subset : ∀ S, is_chain op S → ∀ T, T ⊆ S → is_chain op T.
 Proof.
     intros S S_chain T sub a b Ta Tb.
     apply S_chain.
@@ -50,7 +55,7 @@ Proof.
 Qed.
 
 Theorem well_orders_subset :
-    ∀ S, well_orders le S → ∀ T, T ⊆ S → well_orders le T.
+    ∀ S, well_orders op S → ∀ T, T ⊆ S → well_orders op T.
 Proof.
     intros S S_wo T sub A A_sub A_ex.
     apply S_wo.
@@ -58,7 +63,7 @@ Proof.
     -   exact A_ex.
 Qed.
 
-Theorem well_orders_chain : ∀ S, well_orders le S → is_chain le S.
+Theorem well_orders_chain : ∀ S, well_orders op S → is_chain op S.
 Proof.
     intros S S_wo a b Sa Sb.
     specialize (S_wo ❴a, b❵).
