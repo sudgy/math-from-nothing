@@ -6,13 +6,12 @@ Set Implicit Arguments.
 
 Fixpoint list_image (A B : Type) (l : list A) (f : A → B) :=
     match l with
-    | list_end => list_end
+    | [] => []
     | a :: l' => f a :: list_image l' f
     end.
 Arguments list_image : simpl never.
 
-Theorem list_image_end {A B : Type} : ∀ (f : A → B),
-    list_image list_end f = list_end.
+Theorem list_image_end {A B : Type} : ∀ (f : A → B), list_image [] f = [].
 Proof.
     reflexivity.
 Qed.
@@ -24,7 +23,7 @@ Proof.
 Qed.
 
 Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
-    list_image (a :: list_end) f = f a :: list_end.
+    list_image [a] f = [f a].
 Proof.
     reflexivity.
 Qed.
@@ -58,20 +57,20 @@ Qed.
 
 Fixpoint list_prod2_base {A B : Type} (op : A → A → B) (l : list A) (b : A) :=
     match l with
-    | list_end => list_end
+    | [] => []
     | a :: l' => op a b :: list_prod2_base op l' b
     end.
 
 Fixpoint list_prod2 {A B : Type} (op : A → A → B) (l1 l2 : list A) :=
     match l2 with
-    | list_end => list_end
+    | [] => []
     | b :: l2' => list_prod2_base op l1 b ++ list_prod2 op l1 l2'
     end.
 Arguments list_prod2_base : simpl never.
 Arguments list_prod2 : simpl never.
 
 Theorem list_prod2_base_end {A B} (op : A → A → B) : ∀ a,
-    list_prod2_base op list_end a = list_end.
+    list_prod2_base op [] a = [].
 Proof.
     reflexivity.
 Qed.
@@ -83,7 +82,7 @@ Proof.
 Qed.
 
 Theorem list_prod2_rend {A B : Type} (op : A → A → B) : ∀ (l : list A),
-    list_prod2 op l list_end = list_end.
+    list_prod2 op l [] = [].
 Proof.
     reflexivity.
 Qed.
@@ -95,7 +94,7 @@ Proof.
 Qed.
 
 Theorem list_prod2_lend {A B : Type} (op : A → A → B) (l : list A) :
-    list_prod2 op list_end l = list_end.
+    list_prod2 op [] l = [].
 Proof.
     induction l.
     -   apply list_prod2_rend.
@@ -119,12 +118,12 @@ Qed.
 
 Fixpoint rfold {U} (op : U → U → U) (init : U) (l : list U) :=
     match l with
-    | list_end => init
+    | [] => init
     | a :: l' => op a (rfold op init l')
     end.
 Arguments rfold : simpl never.
 
-Theorem rfold_end {U} (op : U → U → U) init : rfold op init list_end = init.
+Theorem rfold_end {U} (op : U → U → U) init : rfold op init [] = init.
 Proof.
     reflexivity.
 Qed.

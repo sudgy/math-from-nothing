@@ -12,10 +12,15 @@ Arguments list_add {A} a l.
 
 Infix "::" := list_add (at level 60, right associativity) : list_scope.
 Open Scope list_scope.
+Notation "[]" := list_end : list_scope.
+Notation "[ a ]" := (a :: []) : list_scope.
+Notation "[ x ; y ; .. ; z ]" :=
+    (list_add x (list_add y .. (list_add z []) ..))
+    (format "[ '[' x ; '/' y ; '/' .. ; '/' z ']' ]") : list_scope.
 
 Fixpoint list_conc {U : Type} (al bl : list U) : list U :=
   match al with
-   | list_end => bl
+   | [] => bl
    | a :: al' => a :: list_conc al' bl
   end.
 
@@ -24,12 +29,12 @@ Arguments list_conc : simpl never.
 
 Fixpoint list_reverse {U : Type} (l : list U) : list U :=
     match l with
-    | list_end => list_end
-    | a :: l1 => list_reverse l1 ++ (a :: list_end)
+    | [] => []
+    | a :: l1 => list_reverse l1 ++ [a]
     end.
 Arguments list_reverse : simpl never.
 
-Theorem list_end_neq {U} : ∀ (a : U) l, a :: l ≠ list_end.
+Theorem list_end_neq {U} : ∀ (a : U) l, a :: l ≠ [].
 Proof.
     intros a l eq.
     inversion eq.
@@ -43,7 +48,7 @@ Proof.
     split; reflexivity.
 Qed.
 
-Theorem list_single_eq {U} : ∀ (a b : U), a :: list_end = b :: list_end → a = b.
+Theorem list_single_eq {U} : ∀ (a b : U), [a] = [b] → a = b.
 Proof.
     intros a b eq.
     apply list_inversion in eq.
@@ -57,7 +62,7 @@ Proof.
     apply eq.
 Qed.
 
-Theorem list_conc_lid {U} : ∀ l : list U, list_end ++ l = l.
+Theorem list_conc_lid {U} : ∀ l : list U, [] ++ l = l.
 Proof.
     reflexivity.
 Qed.
@@ -68,12 +73,12 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_conc_single {U} : ∀ (a : U) l, (a :: list_end) ++ l = a :: l.
+Theorem list_conc_single {U} : ∀ (a : U) l, [a] ++ l = a :: l.
 Proof.
     reflexivity.
 Qed.
 
-Theorem list_add_conc {U} : ∀ (a : U) l, a :: l = (a :: list_end) ++ l.
+Theorem list_add_conc {U} : ∀ (a : U) l, a :: l = [a] ++ l.
 Proof.
     intros a l.
     rewrite list_conc_add.
@@ -81,7 +86,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_conc_rid {U} : ∀ l : list U, l ++ list_end = l.
+Theorem list_conc_rid {U} : ∀ l : list U, l ++ [] = l.
 Proof.
     intros l.
     induction l.
@@ -103,21 +108,20 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem list_reverse_end {U} : list_reverse (U := U) list_end = list_end.
+Theorem list_reverse_end {U} : list_reverse (U := U) [] = [].
 Proof.
     reflexivity.
 Qed.
 
 Theorem list_reverse_add {U} : ∀ (a : U) l,
-    list_reverse (a :: l) = list_reverse l ++ (a :: list_end).
+    list_reverse (a :: l) = list_reverse l ++ [a].
 Proof.
     reflexivity.
 Qed.
 
 Global Arguments list_reverse : simpl never.
 
-Theorem list_reverse_single {U} : ∀ (a : U),
-    list_reverse (a :: list_end) = a :: list_end.
+Theorem list_reverse_single {U} : ∀ (a : U), list_reverse [a] = [a].
 Proof.
     reflexivity.
 Qed.
@@ -138,7 +142,7 @@ Proof.
 Qed.
 
 Theorem list_reverse_end_eq {U : Type} : ∀ l : list U,
-    list_end = list_reverse l → list_end = l.
+    [] = list_reverse l → [] = l.
 Proof.
     intros l eq.
     destruct l; [>reflexivity|].
