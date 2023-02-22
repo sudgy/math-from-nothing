@@ -8,7 +8,7 @@ Definition image_under {U V} (f : U → V) (S : U → Prop)
 Definition inverse_image {U V} (f : U → V) (T : V → Prop)
     := λ x, T (f x).
 
-Theorem image_under_in {U V} : ∀ (f : U → V) (S : U → Prop) x,
+Theorem image_under_in {U V} : ∀ {f : U → V} {S : U → Prop} {x},
     S x → image_under f S (f x).
 Proof.
     intros f S x Sx.

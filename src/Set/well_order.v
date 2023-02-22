@@ -43,21 +43,17 @@ Proof.
     subst g_domain.
     assert (f_f = g_f) as eq.
     {
-        apply functional_ext.
-        intros x.
-        apply functional_ext.
-        intros y.
+        apply functional_ext2.
+        intros x y.
         classic_case (f_domain x) as [x_in|x_nin].
         1: classic_case (f_domain y) as [y_in|y_nin].
-        -   apply bottom; assumption.
-        -   specialize (f_top y x y_nin) as [f_top1 f_top2].
-            specialize (g_top y x y_nin) as [g_top1 g_top2].
-            apply propositional_ext.
-            split; intro; assumption.
-        -   specialize (f_top x y x_nin) as [f_top1 f_top2].
-            specialize (g_top x y x_nin) as [g_top1 g_top2].
-            apply propositional_ext.
-            split; intro; assumption.
+        -   exact (bottom x y x_in y_in).
+        -   apply propositional_ext; split; intros H.
+            +   apply (g_top y x y_nin).
+            +   apply (f_top y x y_nin).
+        -   apply propositional_ext; split; intros H.
+            +   apply (g_top x y x_nin).
+            +   apply (f_top x y x_nin).
     }
     subst g_f.
     rewrite (proof_irrelevance g_antisym f_antisym).
@@ -80,8 +76,7 @@ Proof.
     -   apply refl.
     -   trivial.
     -   intros a b a_in b_nin.
-        apply wo_f_top.
-        exact b_nin.
+        apply (wo_f_top f b a b_nin).
 Qed.
 
 Local Instance wo_func_order_antisym : Antisymmetric le.
@@ -89,13 +84,12 @@ Proof.
     split.
     intros f g [fg_sub [fg_ext fg_bigger]] [gf_sub [gf_ext gf_bigger]].
     apply wo_func_eq.
-    -   apply antisym; assumption.
+    -   exact (antisym fg_sub gf_sub).
     -   intros a b fa fb.
-        apply propositional_ext.
-        split.
-        +   apply fg_ext; assumption.
+        apply propositional_ext; split.
+        +   exact (fg_ext a b fa fb).
         +   apply fg_sub in fa, fb.
-            apply gf_ext; assumption.
+            exact (gf_ext a b fa fb).
 Qed.
 
 Local Instance wo_func_order_trans : Transitive le.
@@ -105,15 +99,14 @@ Proof.
     split; [>|split].
     -   exact (trans fg_sub gh_sub).
     -   intros a b fa fb f_in.
-        apply (gh_ext _ _ (fg_sub _ fa) (fg_sub _ fb)).
-        apply (fg_ext _ _ fa fb).
-        exact f_in.
+        apply (gh_ext a b (fg_sub a fa) (fg_sub b fb)).
+        exact (fg_ext a b fa fb f_in).
     -   intros a b a_in b_nin.
-        pose proof (fg_bigger _ _ a_in b_nin) as ab.
+        pose proof (fg_bigger a b a_in b_nin) as ab.
         apply fg_sub in a_in.
         classic_case (wo_domain g b) as [gb|gb].
-        +   apply gh_ext; assumption.
-        +   apply gh_bigger; assumption.
+        +   exact (gh_ext a b a_in gb ab).
+        +   exact (gh_bigger a b a_in gb).
 Qed.
 
 Section Chain.
@@ -127,6 +120,14 @@ Let F_f a b :=
     then λ H, wo_f (ex_val H) a b
     else λ _, True.
 
+Lemma F_f_in : ∀ {f a}, F f → wo_domain f a → F_domain a.
+Proof.
+    intros f a Ff fa.
+    exists (wo_domain f).
+    split; [>|exact fa].
+    exact (image_under_in Ff).
+Qed.
+
 Lemma F_f_part : ∀ f a b, wo_domain f a → wo_domain f b → F f →
     wo_f f a b → F_f a b.
 Proof.
@@ -135,10 +136,10 @@ Proof.
     destruct (sem _) as [g_ex|]; [>|exact true]; cbn.
     rewrite_ex_val g [Fg [ga gb]]; clear g_ex.
     specialize (F_chain f g Ff Fg) as [leq|leq].
-    -   apply leq in ab; assumption.
+    all: destruct leq as [sub [ext bigger]].
+    -   exact (ext a b fa fb ab).
     -   pose proof (wo_f_connex g a b ga gb) as [ab'|ba]; [>exact ab'|].
-        cbn in ba.
-        apply leq in ba; [>|assumption|assumption].
+        apply (ext b a gb ga) in ba.
         rewrite (wo_f_antisym f a b fa fb ab ba).
         apply wo_f_refl.
 Qed.
@@ -153,36 +154,37 @@ Proof.
         rewrite_ex_val g [Fg [gb ga]].
         intros ab ba.
         specialize (F_chain f g Ff Fg) as [leq|leq].
-        +   apply leq in ab; [>|assumption|assumption].
+        all: destruct leq as [sub [ext bigger]].
+        +   apply (ext a b fa fb) in ab.
             exact (wo_f_antisym _ _ _ ga gb ab ba).
-        +   apply leq in ba; [>|assumption|assumption].
+        +   apply (ext b a gb ga) in ba.
             exact (wo_f_antisym _ _ _  fa fb ab ba).
     -   exfalso; apply g_nex.
         destruct f_ex as [f [Ff [fa fb]]].
         exists f.
-        repeat split; assumption.
+        split; [>|split]; assumption.
     -   exfalso; apply f_nex.
         destruct g_ex as [g [Fg [ga gb]]].
         exists g.
-        repeat split; assumption.
-    -   destruct Fa as [A [[f [Ff A_eq]] Aa]]; subst A.
+        split; [>|split]; assumption.
+    -   exfalso; apply f_nex.
+        destruct Fa as [A [[f [Ff A_eq]] Aa]]; subst A.
         destruct Fb as [B [[g [Fg B_eq]] Bb]]; subst B.
-        exfalso; apply f_nex.
         specialize (F_chain f g Ff Fg) as [leq|leq].
-        +   apply leq in Aa.
+        all: destruct leq as [sub [ext bigger]].
+        +   apply sub in Aa.
             exists g.
-            repeat split; assumption.
-        +   apply leq in Bb.
+            split; [>|split]; assumption.
+        +   apply sub in Bb.
             exists f.
-            repeat split; assumption.
+            split; [>|split]; assumption.
 Qed.
 
 Lemma F_f_wo : well_orders F_f F_domain.
 Proof.
     intros S S_sub [x Sx].
     pose proof (S_sub x Sx) as [A [[f [Ff A_eq]] Ax]]; subst A.
-    pose proof (inter_rsub S (wo_domain f)) as S_sub'.
-    pose proof (wo_f_wo f _ S_sub' (ex_intro _ _ (make_and Sx Ax)))
+    pose proof (wo_f_wo f _ (inter_rsub _ _) (ex_intro _ _ (make_and Sx Ax)))
         as [a [[Sa fa] a_least]].
     exists a.
     split; [>exact Sa|].
@@ -191,41 +193,34 @@ Proof.
     {
         intros fb.
         specialize (a_least b (make_and Sb fb)).
-        apply (F_f_part f); assumption.
+        exact (F_f_part f a b fa fb Ff a_least).
     }
     classic_case (wo_domain f b) as [fb|fb]; [>exact (lem fb)|].
     pose proof (S_sub b Sb) as [B [[g [Fg B_eq]] Bb]]; subst B.
     pose proof (F_chain f g Ff Fg) as [leq|leq].
-    -   destruct leq as [sub [ext bigger]].
-        specialize (bigger _ _ fa fb).
+    all: destruct leq as [sub [ext bigger]].
+    -   specialize (bigger _ _ fa fb).
         apply sub in fa.
-        apply (F_f_part g); assumption.
-    -   apply leq in Bb.
-        exact (lem Bb).
+        exact (F_f_part g a b fa Bb Fg bigger).
+    -   exact (lem (sub _ Bb)).
 Qed.
 
 Lemma F_f_top : ∀ a b, ¬F_domain a → F_f a b ∧ F_f b a.
     intros a b Fa.
     unfold F_f.
+    assert (∀ f, F f → wo_domain f a → False) as wlog.
+    {
+        intros f Ff fa.
+        apply Fa.
+        exact (F_f_in Ff fa).
+    }
     destruct (sem _) as [f_ex|f_nex]; cbn.
-    1: {
-        exfalso; apply Fa.
-        destruct f_ex as [f [Ff [fa fb]]].
-        exists (wo_domain f).
-        split; [>|apply fa].
-        exists f.
-        split; trivial.
-    }
-    destruct (sem _) as [g_ex|g_nex]; cbn.
-    1: {
-        exfalso; apply Fa.
-        destruct g_ex as [f [Ff [fb fa]]].
-        exists (wo_domain f).
-        split; [>|apply fa].
-        exists f.
-        split; trivial.
-    }
-    split; exact true.
+    2: destruct (sem _) as [g_ex|g_nex]; cbn.
+    -   destruct f_ex as [f [Ff [fa fb]]].
+        exfalso; exact (wlog f Ff fa).
+    -   destruct g_ex as [f [Ff [fb fa]]].
+        exfalso; exact (wlog f Ff fa).
+    -   split; exact true.
 Qed.
 
 Lemma F_upper : has_upper_bound le F.
@@ -233,22 +228,19 @@ Proof.
     exists (make_wo_func F_domain F_f F_f_antisym F_f_wo F_f_top).
     intros g Fg.
     split; [>|split]; cbn.
-    -   intros a a_in.
-        exists (wo_domain g).
-        split; [>|exact a_in].
-        exists g.
-        split; trivial.
+    -   intros a.
+        exact (F_f_in Fg).
     -   intros a b ga gb ab.
         apply (F_f_part g); assumption.
     -   intros a b ga gb.
         unfold F_f.
         destruct (sem _) as [h_ex|h_nex]; [>|exact true].
         rewrite_ex_val h [Fh [ha hb]]; clear h_ex.
-        specialize (F_chain g h Fg Fh) as [gh|hg].
-        +   destruct gh as [sub [ext bigger]].
-            apply bigger; assumption.
-        +   apply hg in hb.
-            contradiction.
+        specialize (F_chain g h Fg Fh) as [leq|leq].
+        all: destruct leq as [sub [ext bigger]].
+        +   exact (bigger a b ga gb).
+        +   apply sub in hb.
+            contradiction (gb hb).
 Qed.
 
 End Chain.
@@ -277,7 +269,7 @@ Proof.
     unfold X_f in ab, ba.
     destruct a_in as [wa|ax]; destruct b_in as [wb|bx].
     all: case_if; case_if; try contradiction.
-    -   exact (wo_f_antisym _ _ _ wa wb ab ba).
+    -   exact (wo_f_antisym wo a b wa wb ab ba).
     -   rewrite singleton_eq in bx; subst b.
         contradiction.
     -   rewrite singleton_eq in ax; subst a.
@@ -294,18 +286,16 @@ Proof.
     intros S S_sub S_ex.
     classic_case (∃ y, S y ∧ wo_domain wo y) as [y_ex|y_nex].
     -   destruct y_ex as [y [Sy y_in]].
-        pose proof (inter_rsub S (wo_domain wo)) as S_sub'.
-        pose proof (wo_f_wo wo _ S_sub' (ex_intro _ _ (make_and Sy y_in)))
-            as [a [[Sa wa] a_min]].
+        pose proof (wo_f_wo wo _ (inter_rsub _ _)
+            (ex_intro _ _ (make_and Sy y_in))) as [a [[Sa wa] a_min]].
         exists a.
         split; [>exact Sa|].
-        clear y y_in Sy.
-        intros y Sy.
+        intros b Sb.
         unfold X_f.
-        case_if; case_if; try contradiction.
-        2: exact true.
-        apply (a_min y).
-        split; assumption.
+        case_if; [>|contradiction]; case_if.
+        +   apply (a_min b).
+            split; assumption.
+        +   exact true.
     -   assert (∀ a, S a → a = x) as x_eq.
         {
             intros a Sa.
@@ -334,7 +324,7 @@ Proof.
     unfold X_domain, union in a_in.
     rewrite not_or in a_in.
     destruct a_in as [a_nin a_neq].
-    case_if; case_if; try contradiction.
+    case_if; [>contradiction|]; case_if.
     -   split; [>exact a_neq|exact true].
     -   split; exact true.
 Qed.
@@ -371,8 +361,7 @@ Lemma wo_all : ∀ x, wo_domain wo x.
 Proof.
     intros x.
     classic_contradiction contr.
-    apply (wo_max (X x contr)).
-    apply X_gt.
+    exact (wo_max (X x contr) (X_gt x contr)).
 Qed.
 
 Local Instance wo_le : Order U := {
