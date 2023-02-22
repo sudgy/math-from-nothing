@@ -196,6 +196,7 @@ Proof.
 Qed.
 
 Lemma F_f_top : ∀ a b, ¬F_domain a → F_f a b ∧ F_f b a.
+Proof.
     intros a b Fa.
     unfold F_f.
     assert (∀ f, F f → wo_domain f a → False) as wlog.
@@ -248,13 +249,11 @@ Hypothesis contr : ¬wo_domain wo x.
 
 Let X_domain := wo_domain wo ∪ ❴x❵.
 Let X_f a b :=
-    If (wo_domain wo a)
-    then If (wo_domain wo b)
+    If (wo_domain wo b)
+    then If (wo_domain wo a)
          then wo_f wo a b
-         else True
-    else If (wo_domain wo b)
-         then x ≠ a
-         else True.
+         else x ≠ a
+    else True.
 
 Lemma X_anti : ∀ a b, X_domain a → X_domain b → X_f a b → X_f b a → a = b.
 Proof.
@@ -285,7 +284,7 @@ Proof.
         split; [>exact Sa|].
         intros b Sb.
         unfold X_f.
-        case_if; [>|contradiction]; case_if.
+        case_if; [>case_if|]; [>|contradiction|].
         +   apply (a_min b).
             split; assumption.
         +   exact true.
@@ -317,7 +316,7 @@ Proof.
     unfold X_domain, union in a_in.
     rewrite not_or in a_in.
     destruct a_in as [a_nin a_neq].
-    case_if; [>contradiction|]; case_if.
+    case_if; case_if; [>contradiction| |contradiction|].
     -   split; [>exact a_neq|exact true].
     -   split; exact true.
 Qed.
@@ -332,14 +331,14 @@ Proof.
         +   intros a b wa wb ab.
             cbn.
             unfold X_f.
-            case_if; case_if.
-            2, 3, 4: contradiction.
+            case_if; [>case_if|].
+            2, 3: contradiction.
             exact ab.
         +   intros a b a_in b_nin.
             cbn.
             unfold X_f.
-            case_if; case_if.
-            1, 3, 4: contradiction.
+            case_if; [>case_if|].
+            1, 2: contradiction.
             exact true.
     -   intros eq'.
         apply contr.
