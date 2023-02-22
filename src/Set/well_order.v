@@ -115,10 +115,8 @@ Variable F : wo_func → Prop.
 Hypothesis F_chain : is_chain le F.
 
 Let F_domain := ⋃ image_under wo_domain F.
-Let F_f a b :=
-    IfH (∃ f, F f ∧ wo_domain f a ∧ wo_domain f b)
-    then λ H, wo_f (ex_val H) a b
-    else λ _, True.
+Let F_f a b := (∃ f, F f ∧ wo_domain f a ∧ wo_domain f b ∧ wo_f f a b) ∨
+               ¬(∃ f, F f ∧ wo_domain f a ∧ wo_domain f b).
 
 Lemma F_f_in : ∀ {f a}, F f → wo_domain f a → F_domain a.
 Proof.
@@ -133,26 +131,18 @@ Lemma F_f_part : ∀ f a b, wo_domain f a → wo_domain f b → F f →
 Proof.
     intros f a b fa fb Ff ab.
     unfold F_f.
-    destruct (sem _) as [g_ex|]; [>|exact true]; cbn.
-    rewrite_ex_val g [Fg [ga gb]]; clear g_ex.
-    specialize (F_chain f g Ff Fg) as [leq|leq].
-    all: destruct leq as [sub [ext bigger]].
-    -   exact (ext a b fa fb ab).
-    -   pose proof (wo_f_connex g a b ga gb) as [ab'|ba]; [>exact ab'|].
-        apply (ext b a gb ga) in ba.
-        rewrite (wo_f_antisym f a b fa fb ab ba).
-        apply wo_f_refl.
+    left.
+    exists f.
+    repeat split; assumption.
 Qed.
 
 Lemma F_f_antisym : ∀ a b, F_domain a → F_domain b → F_f a b → F_f b a → a = b.
 Proof.
     intros a b Fa Fb.
     unfold F_f.
-    destruct (sem _) as [f_ex|f_nex]; cbn.
-    all: destruct (sem _) as [g_ex|g_nex]; cbn.
-    -   rewrite_ex_val f [Ff [fa fb]].
-        rewrite_ex_val g [Fg [gb ga]].
-        intros ab ba.
+    intros [f_ex|f_nex] [g_ex|g_nex].
+    -   destruct f_ex as [f [Ff [fa [fb ab]]]].
+        destruct g_ex as [g [Fg [gb [ga ba]]]].
         specialize (F_chain f g Ff Fg) as [leq|leq].
         all: destruct leq as [sub [ext bigger]].
         +   apply (ext a b fa fb) in ab.
@@ -160,11 +150,11 @@ Proof.
         +   apply (ext b a gb ga) in ba.
             exact (wo_f_antisym _ _ _  fa fb ab ba).
     -   exfalso; apply g_nex.
-        destruct f_ex as [f [Ff [fa fb]]].
+        destruct f_ex as [f [Ff [fa [fb]]]].
         exists f.
         split; [>|split]; assumption.
     -   exfalso; apply f_nex.
-        destruct g_ex as [g [Fg [ga gb]]].
+        destruct g_ex as [g [Fg [ga [gb]]]].
         exists g.
         split; [>|split]; assumption.
     -   exfalso; apply f_nex.
@@ -214,13 +204,13 @@ Lemma F_f_top : ∀ a b, ¬F_domain a → F_f a b ∧ F_f b a.
         apply Fa.
         exact (F_f_in Ff fa).
     }
-    destruct (sem _) as [f_ex|f_nex]; cbn.
-    2: destruct (sem _) as [g_ex|g_nex]; cbn.
-    -   destruct f_ex as [f [Ff [fa fb]]].
-        exfalso; exact (wlog f Ff fa).
-    -   destruct g_ex as [f [Ff [fb fa]]].
-        exfalso; exact (wlog f Ff fa).
-    -   split; exact true.
+    split.
+    -   right.
+        intros [f [Ff [fa fb]]].
+        exact (wlog f Ff fa).
+    -   right.
+        intros [f [Ff [fb fa]]].
+        exact (wlog f Ff fa).
 Qed.
 
 Lemma F_upper : has_upper_bound le F.
@@ -234,11 +224,14 @@ Proof.
         apply (F_f_part g); assumption.
     -   intros a b ga gb.
         unfold F_f.
-        destruct (sem _) as [h_ex|h_nex]; [>|exact true].
-        rewrite_ex_val h [Fh [ha hb]]; clear h_ex.
+        apply or_left.
+        rewrite not_not.
+        intros [h [Fh [ha hb]]].
         specialize (F_chain g h Fg Fh) as [leq|leq].
         all: destruct leq as [sub [ext bigger]].
-        +   exact (bigger a b ga gb).
+        +   exists h.
+            specialize (bigger a b ga gb).
+            repeat split; assumption.
         +   apply sub in hb.
             contradiction (gb hb).
 Qed.
