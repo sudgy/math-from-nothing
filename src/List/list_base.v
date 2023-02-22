@@ -133,23 +133,6 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem list_reverse_end_eq {U : Type} : ∀ l : list U,
-    [] = list_reverse l → [] = l.
-Proof.
-    intros l eq.
-    destruct l; [>reflexivity|].
-    rewrite list_reverse_add in eq.
-    destruct (list_reverse l).
-    -   rewrite list_conc_lid in eq.
-        symmetry in eq.
-        apply list_end_neq in eq.
-        contradiction.
-    -   rewrite list_conc_add in eq.
-        symmetry in eq.
-        apply list_end_neq in eq.
-        contradiction.
-Qed.
-
 Theorem list_reverse_reverse {U : Type} : ∀ l : list U,
     list_reverse (list_reverse l) = l.
 Proof.
@@ -174,4 +157,13 @@ Proof.
     rewrite <- (list_reverse_reverse l2).
     rewrite l_eq.
     reflexivity.
+Qed.
+
+Theorem list_reverse_end_eq {U : Type} : ∀ l : list U,
+    [] = list_reverse l → [] = l.
+Proof.
+    intros l eq.
+    rewrite <- list_reverse_end in eq.
+    apply list_reverse_eq in eq.
+    exact eq.
 Qed.
