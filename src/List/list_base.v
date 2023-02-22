@@ -78,14 +78,6 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_add_conc {U} : ∀ (a : U) l, a :: l = [a] ++ l.
-Proof.
-    intros a l.
-    rewrite list_conc_add.
-    rewrite list_conc_lid.
-    reflexivity.
-Qed.
-
 Theorem list_conc_rid {U} : ∀ l : list U, l ++ [] = l.
 Proof.
     intros l.

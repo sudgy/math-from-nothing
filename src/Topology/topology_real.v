@@ -26,14 +26,14 @@ Proof.
         specialize (b_max (b + 1)).
         rewrite <- nlt_le in b_max.
         exfalso; apply b_max.
-        apply plus_one_pos.
+        apply lt_plus_one.
     -   destruct B_basis as [a [b [B_eq a_min]]].
         specialize (a_min (a - 1)).
         apply le_plus_rrmove in a_min.
         rewrite neg_neg in a_min.
         rewrite <- nlt_le in a_min.
         exfalso; apply a_min.
-        apply plus_one_pos.
+        apply lt_plus_one.
 Qed.
 
 Theorem real_open_interval_eq : ∀ B, top_basis B ↔ ∃ a b, B = open_interval a b.
@@ -162,7 +162,7 @@ Next Obligation.
         reflexivity.
     -   split.
         +   apply refl.
-        +   apply plus_one_pos.
+        +   apply lt_plus_one.
 Qed.
 Next Obligation.
     rename H into a1, H5 into b1, H0 into a2, H3 into b2.
@@ -207,7 +207,7 @@ Next Obligation.
         reflexivity.
     -   split.
         1: apply lt_plus_rrmove.
-        all: apply plus_one_pos.
+        all: apply lt_plus_one.
 Qed.
 Next Obligation.
     rename H into a1, H5 into b1, H0 into a2, H3 into b2.

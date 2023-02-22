@@ -335,10 +335,10 @@ Proof.
         unfold tensor_mult'; rewrite (tensor_product_rid_eq (tensor_power _)).
         rewrite scalar_id.
         reflexivity.
-    -   rewrite list_add_conc.
+    -   rewrite <- list_conc_single.
         rewrite list_conc_assoc.
         rewrite IHl2; clear IHl2.
-        rewrite <- list_add_conc.
+        rewrite list_conc_single.
         unfold f at 2; cbn.
         unfold cat_compose; cbn.
         change (module_homo_f (tensor_product_assoc_homo _ _ _)) with

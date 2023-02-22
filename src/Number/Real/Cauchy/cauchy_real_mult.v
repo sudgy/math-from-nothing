@@ -49,7 +49,7 @@ Proof.
         specialize (M_max (|a n|)).
         prove_parts M_max; [>exists n; split; [>exact ltq|reflexivity]|].
         apply (le_lt_trans M_max).
-        apply plus_one_pos.
+        apply lt_plus_one.
     -   apply (lt_le_trans2 (rmax _ _)).
         rewrite nlt_le in leq.
         specialize (a_cauchy n N leq (refl _)).

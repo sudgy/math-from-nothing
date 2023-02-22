@@ -88,7 +88,7 @@ Proof.
         +   inversion Heql1.
         +   inversion Heql1.
             subst x l0.
-            rewrite (list_add_conc a0 l) at 2.
+            rewrite <- (list_conc_single a0 l) at 2.
             rewrite <- list_conc_assoc.
             rewrite <- Heql2.
             apply (list_perm_skip a0) in IHl.
@@ -98,7 +98,7 @@ Proof.
         +   inversion Heql1.
             subst y l.
             clear Heql1.
-            rewrite (list_add_conc a0 _) at 2.
+            rewrite <- (list_conc_single a0 _) at 2.
             rewrite <- list_conc_assoc.
             rewrite <- Heql2.
             cbn.
@@ -106,7 +106,7 @@ Proof.
             apply (list_perm_trans eq).
             apply list_perm_skip.
             apply list_perm_swap.
-        +   rewrite (list_add_conc a0 l) at 2.
+        +   rewrite <- (list_conc_single a0 l) at 2.
             rewrite <- list_conc_assoc.
             rewrite <- Heql2.
             apply (list_perm_trans (list_perm_swap a0 a l)).
@@ -149,8 +149,8 @@ Proof.
                 rewrite <- list_conc_assoc in eq2.
                 rewrite list_conc_add in eq2.
                 apply (list_perm_trans2 eq2).
-                rewrite (list_add_conc a).
-                rewrite (list_add_conc a (bl ++ al')).
+                rewrite <- (list_conc_single a).
+                rewrite <- (list_conc_single a (bl ++ al')).
                 rewrite <- list_conc_assoc.
                 rewrite <- Heql1, <- Heql2.
                 cbn.
@@ -368,7 +368,7 @@ Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
     list_permutation (l1 ++ x :: l2) (x :: l1 ++ l2).
 Proof.
     intros l1 l2 x.
-    rewrite (list_add_conc).
+    rewrite <- (list_conc_single).
     rewrite list_conc_assoc.
     change (x :: l1 ++ l2) with ((x :: l1) ++ l2).
     apply list_perm_lpart.
@@ -479,7 +479,7 @@ Proof.
                 rewrite list_conc_lid, list_conc_add.
                 rewrite Heql34' in eq.
                 apply (list_perm_trans eq).
-                rewrite list_add_conc.
+                rewrite <- list_conc_single.
                 rewrite list_conc_assoc.
                 rewrite <- list_conc_add.
                 apply list_perm_lpart.
@@ -494,7 +494,7 @@ Proof.
                 cbn.
                 rewrite Heql12' in eq.
                 apply (list_perm_trans2 eq).
-                rewrite (list_add_conc a l2).
+                rewrite <- (list_conc_single a l2).
                 rewrite list_conc_assoc.
                 apply list_perm_lpart.
                 apply list_perm_add.
@@ -557,7 +557,7 @@ Proof.
             }
             inversion Heql34'.
             clear.
-            rewrite (list_add_conc a l4).
+            rewrite <- (list_conc_single a l4).
             rewrite list_conc_assoc.
             rewrite list_conc_single.
             rewrite list_conc_assoc.
@@ -592,7 +592,7 @@ Proof.
             rewrite Heql12.
             cbn.
             clear.
-            rewrite (list_add_conc a l2).
+            rewrite <- (list_conc_single a l2).
             do 2 rewrite list_conc_assoc.
             apply list_perm_lpart.
             rewrite list_conc_single.

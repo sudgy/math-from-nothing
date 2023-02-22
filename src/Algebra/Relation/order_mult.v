@@ -854,13 +854,6 @@ Proof.
     destruct (trans contr eq2); contradiction.
 Qed.
 
-Theorem plus_one_pos : ∀ x, x < x + 1.
-Proof.
-    intros x.
-    rewrite <- lt_plus_0_a_b_ba.
-    exact one_pos.
-Qed.
-
 Theorem two_pos : 0 < 2.
 Proof.
     exact (lt_pos_plus one_pos one_pos).
