@@ -2,6 +2,17 @@
 
 Require Import base_logic.
 
+Theorem functional_ext2 {A B C} : ∀ f g : A → B → C, (∀ a b, f a b = g a b) →
+    f = g.
+Proof.
+    intros f g eq.
+    apply functional_ext.
+    intros a.
+    apply functional_ext.
+    intros b.
+    apply eq.
+Qed.
+
 Theorem func_eq {A B} : ∀ f1 f2 : A → B, f1 = f2 → ∀ x, f1 x = f2 x.
 Proof.
     intros f1 f2 eq x.
