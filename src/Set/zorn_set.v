@@ -24,11 +24,8 @@ Proof.
         exists [_|SS_union].
         intros A FA.
         unfold le; cbn.
-        intros x Ax.
-        exists [A|].
-        split; [>|exact Ax].
-        exists A.
-        split; trivial.
+        apply union_sub.
+        exact (image_under_in FA).
     }
     destruct S_ex as [S S_max].
     exists S.

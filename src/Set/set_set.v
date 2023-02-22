@@ -11,6 +11,21 @@ Definition image_under_collection {U V} (f : U → V) (S : (U → Prop) → Prop
 Definition inverse_image_collection {U V} (f : U → V) (T : (V → Prop) → Prop)
     := λ X, ∃ Y, T Y ∧ X = inverse_image f Y.
 
+Theorem union_sub {U} : ∀ SS : (U → Prop) → Prop, ∀ S, SS S → S ⊆ ⋃ SS.
+Proof.
+    intros SS S SS_S x Sx.
+    exists S.
+    split; assumption.
+Qed.
+
+Theorem inter_sub {U} : ∀ SS : (U → Prop) → Prop, ∀ S, SS S → ⋂ SS ⊆ S.
+Proof.
+    intros SS S SS_S.
+    intros x Sx.
+    apply Sx.
+    exact SS_S.
+Qed.
+
 Theorem union_empty {U} : ⋃ (empty (U := U → Prop)) = ∅.
 Proof.
     apply empty_eq.
