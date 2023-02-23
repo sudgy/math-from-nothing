@@ -240,17 +240,9 @@ Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
     list_sum (list_prod2 op l1 l2) + list_sum (list_image l1 (λ x, op x a)).
 Proof.
     intros l1 l2 a.
-    cbn.
     rewrite list_sum_plus.
     rewrite plus_comm.
-    apply lplus.
-    induction l1.
-    -   cbn.
-        reflexivity.
-    -   rewrite list_image_add, list_prod2_base_add.
-        cbn.
-        rewrite IHl1.
-        reflexivity.
+    reflexivity.
 Qed.
 
 Theorem list_prod2_rconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,

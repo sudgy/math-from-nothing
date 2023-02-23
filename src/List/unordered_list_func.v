@@ -57,21 +57,6 @@ Proof.
     apply list_perm_refl.
 Qed.
 
-Lemma ulist_prod2_base_wd {A B} (op : A → A → B) : ∀ (l1 l2 : list A) a,
-    list_permutation l1 l2 →
-    list_permutation (list_prod2_base op l1 a) (list_prod2_base op l2 a).
-Proof.
-    intros l1 l2 a eq.
-    induction eq.
-    -   cbn.
-        apply list_perm_refl.
-    -   cbn.
-        apply uadd_wd.
-        exact IHeq.
-    -   cbn.
-        apply list_perm_swap.
-    -   exact (list_perm_trans IHeq1 IHeq2).
-Qed.
 Theorem ulist_prod2_wd' {A B} (op : A → A → B) : ∀ l1 l2 l : list A,
     list_permutation l1 l2 →
     list_permutation (list_prod2 op l1 l) (list_prod2 op l2 l).
@@ -82,7 +67,7 @@ Proof.
         apply list_perm_refl.
     -   cbn.
         apply uconc_wd.
-        +   apply ulist_prod2_base_wd.
+        +   apply list_image_perm.
             exact eq.
         +   exact IHl.
 Qed.
@@ -98,7 +83,7 @@ Proof.
         apply list_perm_refl.
     -   cbn.
         apply uconc_wd.
-        +   apply (ulist_prod2_base_wd _ _ _ _ a_eq).
+        +   apply (list_image_perm _ a_eq).
         +   exact IHb_eq.
     -   do 4 rewrite list_prod2_radd.
         do 2 rewrite list_conc_assoc.
@@ -118,9 +103,9 @@ Proof.
                 apply (list_perm_trans (list_perm_split _ _ _)).
                 apply (list_perm_trans2 (list_perm_sym(list_perm_split _ _ _))).
                 apply (list_perm_trans
-                    (list_perm_split (op y0 y :: list_prod2_base op l0 x) _ _)).
+                    (list_perm_split (op y0 y :: list_image l0 (λ z, op z x)) _ _)).
                 apply (list_perm_trans2 (list_perm_sym
-                    (list_perm_split(op x0 y :: list_prod2_base op l0 x) _ _))).
+                    (list_perm_split(op x0 y :: list_image l0 (λ z, op z x)) _ _))).
                 cbn.
                 apply list_perm_swap.
             *   exact (list_perm_trans IHa_eq1 IHa_eq2).
@@ -165,11 +150,10 @@ Proof.
     1: apply list_perm_refl.
     cbn.
     do 2 rewrite list_prod2_radd.
-    rewrite list_prod2_base_add.
+    rewrite list_image_add.
     rewrite list_image_add.
     do 2 rewrite list_conc_add.
     apply list_perm_skip.
-    rewrite list_prod2_base_image.
     pose proof (list_perm_conc (list_image l2 (λ x, op a x))
         (list_image l1 (λ x, op x a0))) as eq.
     apply (list_perm_lpart (list_prod2 op l1 l2)) in eq.
@@ -188,7 +172,6 @@ Proof.
     equiv_get_value l1 l2.
     unfold ulist_conc, ulist_prod2, ulist_add, ulist_image; equiv_simpl.
     rewrite list_prod2_radd.
-    rewrite list_prod2_base_image.
     apply list_perm_refl.
 Qed.
 
