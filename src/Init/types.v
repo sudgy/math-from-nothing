@@ -156,7 +156,7 @@ Proof.
         exact neq.
 Qed.
 
-Class Singleton U : Prop := {
+Class Singleton U := {
     singleton_unique : ∃ x : U, ∀ a, a = x
 }.
 
