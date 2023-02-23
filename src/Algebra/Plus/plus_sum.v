@@ -16,79 +16,51 @@ Section Sum.
 Context {U} `{AllPlus U}.
 
 (* end hide *)
+Theorem sum_zero : ∀ f m, sum f m 0 = 0.
+Proof.
+    reflexivity.
+Qed.
+
+Theorem sum_suc : ∀ f m n, sum f m (nat_suc n) = sum f m n + f (m + n).
+Proof.
+    reflexivity.
+Qed.
+
+Arguments sum : simpl never.
+
 Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
     sum f m n = sum g m n.
 Proof.
     intros f g m n all_eq.
     revert all_eq.
-    nat_induction n.
-    -   intros all_eq.
-        unfold zero; cbn.
+    nat_induction n; intros all_eq.
+    -   do 2 rewrite sum_zero.
         reflexivity.
-    -   intros all_eq.
-        cbn.
+    -   do 2 rewrite sum_suc.
         rewrite IHn.
-        rewrite all_eq.
+        rewrite all_eq by apply nat_lt_suc.
         +   reflexivity.
-        +   apply nat_lt_suc.
         +   intros a a_ltq.
-            rewrite all_eq.
-            *   reflexivity.
-            *   exact (trans a_ltq (nat_lt_suc _)).
+            apply all_eq.
+            exact (trans a_ltq (nat_lt_suc _)).
 Qed.
 
-Theorem sum_minus : ∀ f a b c, sum f a (b + c) - sum f a b = sum f (a + b) c.
+Theorem sum_zero_zero_all : ∀ m n, sum (λ _, 0) m n = 0.
 Proof.
-    intros f a b c.
-    nat_induction c.
-    -   rewrite plus_rid.
-        rewrite plus_rinv.
-        unfold zero at 2; cbn.
-        reflexivity.
-    -   rewrite nat_plus_rsuc.
-        cbn.
-        rewrite <- plus_assoc.
-        rewrite (plus_comm (f (a + (b + c)))).
-        rewrite plus_assoc.
-        rewrite IHc.
-        rewrite plus_assoc.
-        reflexivity.
+    intros m n.
+    nat_induction n.
+    -   apply sum_zero.
+    -   rewrite sum_suc.
+        rewrite plus_rid.
+        exact IHn.
 Qed.
 
-Theorem sum_zero : ∀ f a b, (∀ n, a ≤ n → n < a + b → f n = 0) → sum f a b = 0.
+Theorem sum_zero_zero : ∀ f m n, (∀ a, a < n → f (m + a) = 0) → sum f m n = 0.
 Proof.
     intros f a b n_zero.
-    nat_induction b.
-    -   unfold zero at 1; cbn.
-        reflexivity.
-    -   cbn.
-        rewrite <- (plus_rid 0).
-        apply lrplus.
-        +   apply IHb.
-            intros n n_geq n_ltq.
-            apply n_zero.
-            *   exact n_geq.
-            *   rewrite nat_plus_rsuc.
-                apply (trans n_ltq).
-                apply nat_lt_suc.
-        +   apply n_zero.
-            *   apply nat_le_self_rplus.
-            *   rewrite nat_plus_rsuc.
-                apply nat_lt_suc.
-Qed.
-
-Theorem sum_argument_plus : ∀ f a b c, sum (λ n, f (n + c)) a b = sum f (a + c) b.
-Proof.
-    intros f a b c.
-    nat_induction b.
-    -   unfold zero; cbn.
-        reflexivity.
-    -   cbn.
-        rewrite IHb.
-        rewrite <- plus_assoc.
-        rewrite (plus_comm b c).
-        rewrite plus_assoc.
-        reflexivity.
+    rewrite <- (sum_zero_zero_all a b).
+    apply sum_eq.
+    exact n_zero.
 Qed.
 
 Theorem sum_plus : ∀ f a b c, sum f a b + sum f (a + b) c = sum f a (b + c).
@@ -96,14 +68,59 @@ Proof.
     intros f a b c.
     nat_induction c.
     -   rewrite plus_rid.
-        unfold zero; cbn.
+        rewrite sum_zero.
         apply plus_rid.
     -   rewrite nat_plus_rsuc.
-        cbn.
+        do 2 rewrite sum_suc.
         rewrite plus_assoc.
         rewrite IHc.
         rewrite plus_assoc.
         reflexivity.
+Qed.
+
+Theorem sum_minus : ∀ f a b c, sum f a (b + c) - sum f a b = sum f (a + b) c.
+Proof.
+    intros f a b c.
+    rewrite <- plus_rrmove.
+    symmetry; rewrite plus_comm.
+    apply sum_plus.
+Qed.
+
+Theorem sum_argument_plus : ∀ f a b c, sum (λ n, f (n + c)) a b = sum f (a + c) b.
+Proof.
+    intros f a b c.
+    nat_induction b.
+    -   do 2 rewrite sum_zero.
+        reflexivity.
+    -   do 2 rewrite sum_suc.
+        rewrite IHb.
+        do 2 apply f_equal.
+        do 2 rewrite <- plus_assoc.
+        apply lplus.
+        apply plus_comm.
+Qed.
+
+Theorem sum_func_plus : ∀ f g m n,
+    sum (λ n, f n + g n) m n = sum f m n + sum g m n.
+Proof.
+    intros f g m n.
+    nat_induction n.
+    -   do 3 rewrite sum_zero.
+        symmetry; apply plus_rid.
+    -   do 3 rewrite sum_suc.
+        rewrite IHn.
+        apply plus_4.
+Qed.
+
+Theorem sum_func_neg : ∀ f m n, sum (λ n, -f n) m n = -sum f m n.
+Proof.
+    intros f m n.
+    nat_induction n.
+    -   do 2 rewrite sum_zero.
+        symmetry; apply neg_zero.
+    -   do 2 rewrite sum_suc.
+        rewrite IHn.
+        symmetry; apply neg_plus.
 Qed.
 
 (* begin hide *)

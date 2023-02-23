@@ -470,9 +470,8 @@ Proof.
     classic_case (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1))
             as [n_eq|n_neq].
     -   rewrite (geo_grade_decompose2 a b r s n ar bs n_eq).
-        symmetry; apply sum_zero.
-        intros m C0 m_lt; clear C0.
-        rewrite plus_lid in m_lt.
+        symmetry; apply sum_zero_zero.
+        intros m m_lt.
         assert (r ⊖ s + 2 * m ≠ n) as n_neq.
         {
             cbn in n.

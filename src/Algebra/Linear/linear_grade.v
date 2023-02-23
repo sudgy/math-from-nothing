@@ -827,20 +827,21 @@ Proof.
     cbn.
     classic_case (m = a + b) as [eq|neq].
     -   subst m.
-        rewrite sum_zero.
+        rewrite sum_zero_zero.
         {
             rewrite plus_lid.
             apply grade_project_project.
         }
-        intros n n_geq n_lt.
-        assert (f n ≠ f (a + b)) as neq.
+        intros n n_lt.
+        assert (f (a + n) ≠ f (a + b)) as neq.
         {
             intros contr.
             apply f_inj in contr.
+            apply plus_lcancel in contr.
             subst n.
             destruct n_lt; contradiction.
         }
-        pose proof (grade_project_grade A (f n)) as A_grade.
+        pose proof (grade_project_grade A (f (a + n))) as A_grade.
         apply (grade_project_of_grade_neq _ _ _ A_grade neq).
     -   rewrite nat_plus_rsuc in m_leq.
         rewrite nat_lt_suc_le in m_leq.
