@@ -1,7 +1,5 @@
 Require Import init.
 
-Require Import mult_product.
-
 Require Export linear_grade.
 Require Import linear_grade_isomorphism.
 

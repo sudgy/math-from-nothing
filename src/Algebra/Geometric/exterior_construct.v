@@ -6,7 +6,6 @@ Require Import tensor_algebra.
 Require Import linear_grade.
 
 Require Import ring_ideal.
-Require Import mult_product.
 
 Require Import set.
 Require Import unordered_list.

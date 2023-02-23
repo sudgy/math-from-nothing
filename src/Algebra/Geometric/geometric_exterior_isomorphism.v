@@ -2,7 +2,6 @@ Require Import init.
 
 Require Import set.
 Require Import unordered_list.
-Require Import mult_product.
 
 Require Import module_category.
 Require Import algebra_category.

@@ -1,7 +1,5 @@
 Require Import init.
 
-Require Import mult_product.
-
 Require Import linear_extend.
 
 Require Export geometric_construct.

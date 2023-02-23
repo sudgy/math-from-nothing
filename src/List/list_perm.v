@@ -3,6 +3,7 @@ Require Import init.
 Require Export list_base.
 Require Export list_prop.
 Require Export list_nat.
+Require Export list_fold.
 Require Import nat.
 
 Require Import relation.
@@ -10,7 +11,7 @@ Require Import relation.
 Set Implicit Arguments.
 
 Inductive list_permutation {U} : list U → list U → Prop :=
-| list_perm_nil: list_permutation list_end list_end
+| list_perm_nil : list_permutation list_end list_end
 | list_perm_skip x l l' : list_permutation l l' → list_permutation (x::l) (x::l')
 | list_perm_swap x y l : list_permutation (y::x::l) (x::y::l)
 | list_perm_trans l l' l'' :
@@ -668,3 +669,43 @@ Proof.
     apply (list_perm_trans2 (list_perm_conc l3 l1)) in eq.
     apply (list_perm_conc_lcancel _ _ _ eq).
 Qed.
+
+Section Fold.
+
+Context {U V} `{CRing U, CRing V}.
+
+Theorem list_sum_perm : ∀ l1 l2, list_permutation l1 l2 →
+    list_sum l1 = list_sum l2.
+Proof.
+    intros l1 l2 perm.
+    induction perm.
+    -   reflexivity.
+    -   cbn.
+        rewrite IHperm.
+        reflexivity.
+    -   cbn.
+        do 2 rewrite plus_assoc.
+        rewrite (plus_comm y x).
+        reflexivity.
+    -   rewrite IHperm1, IHperm2.
+        reflexivity.
+Qed.
+
+Theorem list_prod_perm : ∀ l1 l2, list_permutation l1 l2 →
+    list_prod l1 = list_prod l2.
+Proof.
+    intros l1 l2 eq.
+    induction eq.
+    -   reflexivity.
+    -   cbn.
+        rewrite IHeq.
+        reflexivity.
+    -   cbn.
+        do 2 rewrite mult_assoc.
+        rewrite (mult_comm y x).
+        reflexivity.
+    -   rewrite IHeq1.
+        exact IHeq2.
+Qed.
+
+End Fold.

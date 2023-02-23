@@ -10,7 +10,6 @@ Require Import nat.
 Require Import set.
 Require Import unordered_list.
 Require Import ring_ideal.
-Require Import mult_product.
 
 Require Export exterior_construct.
 

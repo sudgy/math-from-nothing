@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Import order_minmax.
-Require Import mult_product.
 Require Import mult_div.
 Require Import nat_domain.
 

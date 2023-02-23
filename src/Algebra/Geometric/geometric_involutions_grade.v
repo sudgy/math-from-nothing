@@ -1,7 +1,5 @@
 Require Import init.
 
-Require Import mult_product.
-
 Require Export geometric_construct.
 Require Import geometric_exterior_isomorphism.
 Require Import geometric_grade.

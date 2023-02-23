@@ -1,6 +1,5 @@
 Require Import init.
 
-Require Import mult_product.
 Require Import order_minmax.
 
 Require Import linear_extend.

@@ -85,21 +85,3 @@ Proof.
         rewrite list_image_end.
         apply list_conc_lid.
 Qed.
-
-Fixpoint rfold {U} (op : U → U → U) (init : U) (l : list U) :=
-    match l with
-    | [] => init
-    | a :: l' => op a (rfold op init l')
-    end.
-Arguments rfold : simpl never.
-
-Theorem rfold_end {U} (op : U → U → U) init : rfold op init [] = init.
-Proof.
-    reflexivity.
-Qed.
-
-Theorem rfold_add {U} (op : U → U → U) init : ∀ a l,
-    rfold op init (a :: l) = op a (rfold op init l).
-Proof.
-    reflexivity.
-Qed.

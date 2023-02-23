@@ -6,7 +6,6 @@ Require Import tensor_algebra.
 Require Export linear_bilinear_form.
 
 Require Import ring_ideal.
-Require Import mult_product.
 
 Require Export set.
 Require Export unordered_list.

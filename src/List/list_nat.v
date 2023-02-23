@@ -4,7 +4,7 @@ Require Export list_base.
 Require Export list_func.
 Require Export list_prop.
 
-Require Import nat.
+Require Export nat.
 
 Set Implicit Arguments.
 
