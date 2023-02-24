@@ -827,7 +827,7 @@ Proof.
     cbn.
     classic_case (m = a + b) as [eq|neq].
     -   subst m.
-        rewrite sum_zero_zero.
+        rewrite sum_zero_eq.
         {
             rewrite plus_lid.
             apply grade_project_project.

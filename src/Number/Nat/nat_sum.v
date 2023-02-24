@@ -34,20 +34,22 @@ Theorem sum_eq : ∀ f g m n, (∀ a, a < n → f (m + a) = g (m + a)) →
     sum f m n = sum g m n.
 Proof.
     intros f g m n all_eq.
-    revert all_eq.
-    nat_induction n; intros all_eq.
+    nat_induction n.
     -   do 2 rewrite sum_zero.
         reflexivity.
-    -   do 2 rewrite sum_suc.
-        rewrite IHn.
-        rewrite all_eq by apply nat_lt_suc.
-        +   reflexivity.
-        +   intros a a_ltq.
+    -   prove_parts IHn.
+        {
+            intros a a_ltq.
             apply all_eq.
             exact (trans a_ltq (nat_lt_suc _)).
+        }
+        do 2 rewrite sum_suc.
+        rewrite all_eq by apply nat_lt_suc.
+        rewrite IHn.
+        reflexivity.
 Qed.
 
-Theorem sum_zero_zero_all : ∀ m n, sum (λ _, 0) m n = 0.
+Theorem sum_zero_all : ∀ m n, sum (λ _, 0) m n = 0.
 Proof.
     intros m n.
     nat_induction n.
@@ -57,10 +59,10 @@ Proof.
         exact IHn.
 Qed.
 
-Theorem sum_zero_zero : ∀ f m n, (∀ a, a < n → f (m + a) = 0) → sum f m n = 0.
+Theorem sum_zero_eq : ∀ f m n, (∀ a, a < n → f (m + a) = 0) → sum f m n = 0.
 Proof.
     intros f a b n_zero.
-    rewrite <- (sum_zero_zero_all a b).
+    rewrite <- (sum_zero_all a b).
     apply sum_eq.
     exact n_zero.
 Qed.
@@ -88,7 +90,8 @@ Proof.
     apply sum_plus.
 Qed.
 
-Theorem sum_argument_plus : ∀ f a b c, sum (λ n, f (n + c)) a b = sum f (a + c) b.
+Theorem sum_argument_plus : ∀ f a b c,
+    sum (λ n, f (n + c)) a b = sum f (a + c) b.
 Proof.
     intros f a b c.
     nat_induction b.
