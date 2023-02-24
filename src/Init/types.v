@@ -39,8 +39,8 @@ Proof.
 Qed.
 
 #[universes(template)]
-Inductive prod (A B:Type) : Type := pair : A → B → A * B
-where "x * y" := (prod x y) : type_scope.
+Inductive prod_type (A B:Type) : Type := pair : A → B → A * B
+where "x * y" := (prod_type x y) : type_scope.
 
 Notation "( x , y , .. , z )" := (pair .. (pair x y) .. z).
 Arguments pair {A B} _ _.
@@ -60,7 +60,7 @@ Section Prod.
 
 Context {A B : Type}.
 (* end hide *)
-Theorem prod_combine : ∀ a b : prod A B, fst a = fst b → snd a = snd b → a = b.
+Theorem prod_combine : ∀ a b : A * B, fst a = fst b → snd a = snd b → a = b.
 Proof.
     intros [a1 b1] [a2 b2] eq1 eq2.
     cbn in *.
@@ -72,11 +72,11 @@ Qed.
 End Prod.
 (* end hide *)
 #[universes(template)]
-Inductive sum (A B:Type) : Type :=
-  | inl : A → sum A B
-  | inr : B → sum A B.
+Inductive sum_type (A B:Type) : Type :=
+  | inl : A → sum_type A B
+  | inr : B → sum_type A B.
 
-Notation "x + y" := (sum x y) : type_scope.
+Notation "x + y" := (sum_type x y) : type_scope.
 Arguments inl {A B} _ , [A] B _.
 Arguments inr {A B} _ , A [B] _.
 

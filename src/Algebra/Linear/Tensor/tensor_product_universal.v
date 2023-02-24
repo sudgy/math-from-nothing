@@ -9,7 +9,6 @@ Require Import tensor_product_construction.
 Require Import set.
 
 Require Import unordered_list.
-Require Import plus_sum.
 
 Require Import module_category.
 Require Import category_initterm.

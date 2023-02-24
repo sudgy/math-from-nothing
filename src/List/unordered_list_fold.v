@@ -1,7 +1,6 @@
 
 Require Import init.
 
-Require Export plus_sum.
 Require Export mult_ring.
 Require Export list.
 Require Export unordered_list_base.

@@ -16,7 +16,7 @@ Theorem nat_to_card_plus :
 Proof.
     intros a b.
     unfold plus at 1, nat_to_card; equiv_simpl.
-    pose (dom := sum (set_type (λ x, x < a)) (set_type (λ x, x < b))).
+    pose (dom := sum_type (set_type (λ x, x < a)) (set_type (λ x, x < b))).
     pose (f (x : dom) := match x with
                          | inl y => [y|]
                          | inr y => a + [y|]
@@ -290,7 +290,7 @@ Theorem nat_to_card_mult :
 Proof.
     intros a b.
     unfold mult at 1, nat_to_card; equiv_simpl.
-    pose (dom := prod (set_type (λ m, m < a)) (set_type (λ m, m < b))).
+    pose (dom := prod_type (set_type (λ m, m < a)) (set_type (λ m, m < b))).
     pose (f (n : dom) := [fst n|] * b + [snd n|]).
     assert (∀ n : dom, f n < a * b) as f_in.
     {

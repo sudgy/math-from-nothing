@@ -10,7 +10,6 @@ Require Import algebra_category.
 Require Import linear_grade.
 
 Require Import set.
-Require Import plus_sum.
 
 (** This file constructs the canonical injection of vectors into the tensor
 algebra and the basic facts about it.

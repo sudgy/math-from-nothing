@@ -12,7 +12,6 @@ Require Import linear_extend.
 Require Import nat.
 Require Import set.
 Require Import unordered_list.
-Require Import plus_sum.
 
 (** This file contains the definition of multiplication on the tensor algebra,
 and the proofs that it forms a rng.

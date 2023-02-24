@@ -11,7 +11,6 @@ Require Import nat.
 Require Import set.
 Require Import list.
 Require Import unordered_list.
-Require Import plus_sum.
 
 (* begin hide *)
 Section TensorPower.

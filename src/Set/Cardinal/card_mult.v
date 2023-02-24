@@ -11,7 +11,7 @@ Require Import nat.
 (* begin hide *)
 Open Scope card_scope.
 (* end hide *)
-Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → prod A C ~ prod B D.
+Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → (A * C ~ B * D)%type.
 Proof.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, (f (fst x), g (snd x))).
@@ -31,7 +31,7 @@ Proof.
         reflexivity.
 Qed.
 Global Instance card_mult_class : Mult card := {
-    mult := binary_op (binary_self_wd (f := prod) (E := card_equiv)card_mult_wd)
+    mult := binary_op (binary_self_wd (f := prod_type) (E := card_equiv)card_mult_wd)
 }.
 
 Theorem card_mult_type : ∀ A B, |(A*B)%type| = |A| * |B|.

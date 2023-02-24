@@ -2,7 +2,6 @@ Require Import init.
 
 Require Import linear_bilinear.
 Require Import tensor_product_universal.
-Require Import plus_sum.
 
 Require Import set.
 Require Import unordered_list.

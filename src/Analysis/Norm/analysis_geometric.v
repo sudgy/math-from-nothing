@@ -4,7 +4,6 @@ Require Export analysis_basic.
 Require Import analysis_series.
 Require Import analysis_order.
 Require Import norm_mult.
-Require Import plus_sum.
 
 (* begin hide *)
 Section GeometricSeries.

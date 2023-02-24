@@ -787,7 +787,7 @@ Theorem nat_to_ord_mult : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_ord, mult at 1; equiv_simpl.
-    pose (dom := prod (set_type (λ m, m < a)) (set_type (λ m, m < b))).
+    pose (dom := prod_type (set_type (λ m, m < a)) (set_type (λ m, m < b))).
     pose (f (n : dom) := [fst n|] * b + [snd n|]).
     assert (∀ n : dom, f n < a * b) as f_in.
     {

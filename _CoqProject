@@ -18,7 +18,6 @@
 ./src/Init/init.v
 
 ./src/Algebra/Plus/plus_group.v
-./src/Algebra/Plus/plus_sum.v
 ./src/Algebra/Plus/plus.v
 
 ./src/Algebra/Mult/mult_ring.v
@@ -41,6 +40,7 @@
 ./src/Number/Nat/nat_order.v
 ./src/Number/Nat/nat_minus.v
 ./src/Number/Nat/nat_binom.v
+./src/Number/Nat/nat_sum.v
 ./src/Number/Nat/nat_abstract.v
 ./src/Number/Nat/nat_from.v
 ./src/Number/Nat/nat.v

@@ -69,9 +69,9 @@ Qed.
 (* begin show *)
 Local Program Instance product_category `(C1 : Category) `(C2 : Category) : Category
 := {
-    cat_U := prod (cat_U C1) (cat_U C2);
+    cat_U := prod_type (cat_U C1) (cat_U C2);
     cat_morphism A B
-        := prod (cat_morphism C1 (fst A) (fst B)) (cat_morphism C2 (snd A) (snd B));
+        := prod_type (cat_morphism C1 (fst A) (fst B)) (cat_morphism C2 (snd A) (snd B));
     cat_compose {A B C} f g := (fst f ∘ fst g, snd f ∘ snd g);
     cat_id A := (𝟙, 𝟙);
 }.

@@ -587,7 +587,7 @@ Theorem nat_to_ord_plus : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_ord, plus at 1; equiv_simpl.
-    pose (dom := sum (set_type (λ m, m < a)) (set_type (λ m, m < b))).
+    pose (dom := sum_type (set_type (λ m, m < a)) (set_type (λ m, m < b))).
     fold dom.
     pose (f (x : dom) := match x with
                          | inl a' => [a'|]

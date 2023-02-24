@@ -1,7 +1,9 @@
 Require Import init.
 
 Require Export plus_group.
-Require Import nat.
+Require Import nat_base.
+Require Import nat_plus.
+Require Import nat_order.
 
 (* This will sum all of the terms in the range [m, m + n) *)
 Fixpoint sum {U} `{Plus U, Zero U} (a : nat → U) (m n : nat) :=

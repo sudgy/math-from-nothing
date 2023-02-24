@@ -11,7 +11,6 @@ Require Import set.
 Require Import card.
 
 Require Import unordered_list.
-Require Import plus_sum.
 
 (* begin hide *)
 Section TensorProduct.

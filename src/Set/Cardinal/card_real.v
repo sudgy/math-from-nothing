@@ -10,7 +10,6 @@ Require Import analysis_topology.
 Require Import analysis_order.
 Require Import analysis_series.
 Require Import order_minmax.
-Require Import plus_sum.
 
 (* begin hide *)
 Section CardReal.

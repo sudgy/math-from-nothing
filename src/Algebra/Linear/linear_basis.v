@@ -8,7 +8,6 @@ Require Import linear_subspace.
 Require Import unordered_list.
 Require Import set.
 Require Import zorn.
-Require Import plus_sum.
 
 Definition linearly_independent {U V} `{Zero U}
     `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}

@@ -4,7 +4,6 @@ Require Export linear_base.
 Require Import linear_subspace.
 Require Import set.
 Require Import unordered_list.
-Require Import plus_sum.
 
 Definition linear_span U {V} `{Plus V, Zero V, ScalarMult U V}
     (S : V → Prop) :=

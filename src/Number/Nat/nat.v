@@ -4,5 +4,6 @@ Require Export nat_order.
 Require Export nat_minus.
 Require Export nat_mult.
 Require Export nat_binom.
+Require Export nat_sum.
 Require Export nat_abstract.
 Require Export nat_from.

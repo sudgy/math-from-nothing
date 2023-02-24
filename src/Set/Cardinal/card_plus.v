@@ -10,7 +10,7 @@ Require Import nat.
 (* begin hide *)
 Open Scope card_scope.
 (* end hide *)
-Lemma card_plus_wd : ∀ A B C D, A ~ B → C ~ D → sum A C ~ sum B D.
+Lemma card_plus_wd : ∀ A B C D, A ~ B → C ~ D → (A + C ~ B + D)%type.
 Proof.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, match x with

@@ -11,7 +11,6 @@ Require Import linear_grade_sum.
 
 Require Import unordered_list.
 Require Import set.
-Require Import plus_sum.
 
 (** This file contains facts about scalars in the tensor algebra, such as the
 canonical injection and a few more facts about multiplication relating to

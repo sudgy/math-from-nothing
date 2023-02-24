@@ -2,7 +2,6 @@ Require Import init.
 
 Require Export list_base.
 Require Import list_nat.
-Require Import plus_sum.
 Require Import mult_ring.
 
 Fixpoint rfold {U} (op : U → U → U) (init : U) (l : list U) :=
