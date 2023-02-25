@@ -161,7 +161,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     SM2 SMO2 SML2 SMR2 SMC2.
 
 (* end hide *)
-Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
+Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 VPZ1 SM1}.
 
 Let g := ex_val f_iso.
 
@@ -440,9 +440,9 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     VPA1 VPC1 VPZ1 VPN1 SM1 SMO1 SML1 SMR1 SMC1 VM1 VP2 VZ2 VN2 VPA2 VPC2 VPZ2
     VPN2 SM2 SMO2 SML2 SMR2 SMC2 VM2.
 (* end hide *)
-Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
+Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 VPZ1 SM1}.
 Context `{IP : Plus grade_I}.
-Context `{GA : @GradedAlgebraObj U V1 VP1 VPC1 VPA1 VZ1 SM1 VG IP VM1}.
+Context `{GA : @GradedAlgebraObj U V1 VP1 VPC1 VPA1 VZ1 VPZ1 SM1 VG IP VM1}.
 (* begin hide *)
 Let VG2 := grade_isomorphism
     (algebra_to_module_homomorphism f)

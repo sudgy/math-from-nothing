@@ -28,18 +28,7 @@ Context {U} `{
 Lemma ulist_sum_wd : ∀ l1 l2 : list U, list_permutation l1 l2 →
     list_sum l1 = list_sum l2.
 Proof.
-    intros l1 l2 eq.
-    induction eq.
-    -   reflexivity.
-    -   cbn.
-        rewrite IHeq.
-        reflexivity.
-    -   cbn.
-        do 2 rewrite plus_assoc.
-        rewrite (plus_comm x y).
-        reflexivity.
-    -   rewrite IHeq1.
-        exact IHeq2.
+    exact list_sum_perm.
 Qed.
 Definition ulist_sum := unary_op (E := ulist_equiv U) ulist_sum_wd.
 

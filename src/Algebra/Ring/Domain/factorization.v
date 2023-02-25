@@ -15,7 +15,8 @@ Context U `{
     UM : Mult U,
     UO : One U,
     @MultAssoc U UM,
-    @MultComm U UM
+    @MultComm U UM,
+    @MultLid U UM UO
 }.
 
 (* end hide *)
@@ -27,7 +28,7 @@ Class UniqueFactorizationDomain := {
 
 (* begin hide *)
 End UniqueFactorizationDef.
-Arguments factorization_base {U UZ UM UO H H0 UniqueFactorizationDomain}.
+Arguments factorization_base {U UZ UM UO H H0 H1 UniqueFactorizationDomain}.
 Section UniqueFactorization.
 
 Context U `{
@@ -44,9 +45,9 @@ Context U `{
     @Rdist U UP UM,
     UMA : @MultAssoc U UM,
     UMC : @MultComm U UM,
-    @MultLid U UM UO,
+    UML : @MultLid U UM UO,
     @MultLcancel U UZ UM,
-    @UniqueFactorizationDomain U UZ UM UO UMA UMC
+    @UniqueFactorizationDomain U UZ UM UO UMA UMC UML
 }.
 
 (* end hide *)

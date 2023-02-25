@@ -31,26 +31,54 @@ Qed.
 Definition ulist_unique {U} :=
     unary_op (E := ulist_equiv U) (ulist_unique_wd U).
 
+Lemma list_filter_conc {U} : ∀ (S : U → Prop) l1 l2,
+    list_filter S (l1 ++ l2) = list_filter S l1 ++ list_filter S l2.
+Proof.
+    intros S l1 l2.
+    induction l1 as [|a l1].
+    -   cbn.
+        do 2 rewrite list_conc_lid.
+        reflexivity.
+    -   rewrite list_conc_add.
+        cbn.
+        rewrite IHl1.
+        case_if [Sa|nSa].
+        +   apply list_conc_add.
+        +   reflexivity.
+Qed.
+
 Lemma ulist_filter_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
     to_equiv (ulist_equiv U) (list_filter S l1) =
     to_equiv (ulist_equiv U) (list_filter S l2).
 Proof.
     intros S l1 l2 eq.
     equiv_simpl.
-    induction eq.
-    -   cbn.
-        apply list_perm_refl.
-    -   cbn.
-        case_if.
-        +   apply list_perm_skip.
-            exact IHeq.
-        +   exact IHeq.
-    -   cbn.
-        do 2 case_if.
-        1: apply list_perm_swap.
-        1, 2: apply list_perm_skip.
-        all: apply list_perm_refl.
-    -   exact (list_perm_trans IHeq1 IHeq2).
+    intros x.
+    revert l2 eq.
+    induction l1; intros.
+    -   apply list_perm_nil_eq in eq.
+        subst l2.
+        reflexivity.
+    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+        apply (list_perm_in eq) in a_in.
+        apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
+        apply (list_perm_trans2 (list_perm_split l3 l4 a)) in eq.
+        apply list_perm_add_eq in eq.
+        specialize (IHl1 _ eq).
+        rewrite list_filter_conc.
+        rewrite list_count_conc.
+        cbn.
+        case_if [Sa|nSa].
+        +   cbn.
+            rewrite IHl1.
+            rewrite list_filter_conc.
+            rewrite list_count_conc.
+            do 2 rewrite plus_assoc.
+            apply rplus.
+            apply plus_comm.
+        +   rewrite IHl1.
+            rewrite list_filter_conc, list_count_conc.
+            reflexivity.
 Qed.
 Definition ulist_filter {U} S :=
     unary_op (E := ulist_equiv U) (ulist_filter_wd U S).

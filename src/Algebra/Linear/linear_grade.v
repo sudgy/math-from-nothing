@@ -28,7 +28,7 @@ Context {U V} `{
     VN : Neg V,
     VPC : @PlusComm V VP,
     VPA : @PlusAssoc V VP,
-    @PlusLid V VP VZ,
+    VPZ : @PlusLid V VP VZ,
     @PlusLinv V VP VZ VN,
 
     SM : ScalarMult U V,
@@ -38,7 +38,7 @@ Context {U V} `{
     @ScalarComp U V UM SM
 }.
 
-Context `{VG : @GradedSpace U V VP VPC VPA VZ SM}.
+Context `{VG : @GradedSpace U V VP VPC VPA VZ VPZ SM}.
 
 (* end hide *)
 Theorem grade_decomposition_zero : grade_decomposition 0 = ulist_end.
@@ -711,7 +711,7 @@ Context `{
     VM : Mult V,
     @Ldist V VP VM,
     @Rdist V VP VM,
-    @GradedAlgebraObj U V VP VPC VPA VZ SM VG IP VM
+    @GradedAlgebraObj U V VP VPC VPA VZ VPZ SM VG IP VM
 }.
 
 (* end hide *)

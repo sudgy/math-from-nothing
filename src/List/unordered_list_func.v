@@ -71,6 +71,60 @@ Proof.
             exact eq.
         +   exact IHl.
 Qed.
+Lemma list_prod2_eq {A B} : ∀ (op : A → A → B) l1 l2,
+    list_prod2 op l1 l2 =
+    list_image (list_prod2 pair l1 l2) (λ x, op (fst x) (snd x)).
+Proof.
+    intros op l1 l2.
+    induction l2.
+    -   do 2 rewrite list_prod2_rend.
+        rewrite list_image_end.
+        reflexivity.
+    -   do 2 rewrite list_prod2_radd.
+        rewrite list_image_conc.
+        rewrite IHl2.
+        rewrite list_image_comp.
+        cbn.
+        reflexivity.
+Qed.
+Lemma list_prod2_count {A} : ∀ l1 l2 (a b : A),
+    list_count (list_prod2 pair l1 l2) (a, b) =
+    list_count l1 a * list_count l2 b.
+Proof.
+    intros l1 l2 a b.
+    induction l2 as [|c l2].
+    -   rewrite list_prod2_rend.
+        cbn.
+        rewrite mult_ranni.
+        reflexivity.
+    -   rewrite list_prod2_radd.
+        rewrite list_count_conc.
+        rewrite IHl2; clear IHl2.
+        cbn.
+        rewrite ldist.
+        apply rplus; clear l2.
+        induction l1 as [|d l1].
+        +   rewrite list_image_end.
+            cbn.
+            rewrite mult_lanni.
+            reflexivity.
+        +   rewrite list_image_add.
+            cbn.
+            rewrite IHl1; clear IHl1.
+            rewrite rdist.
+            apply rplus.
+            case_if [eq|neq].
+            *   inversion eq.
+                case_if [eq1|neq1]; case_if [eq2|neq2]; try contradiction.
+                rewrite mult_lid.
+                reflexivity.
+            *   case_if [eq1|neq1].
+                --  subst d.
+                    case_if [eq2|neq2].
+                    ++  subst; contradiction.
+                    ++  rewrite mult_ranni; reflexivity.
+                --  rewrite mult_lanni; reflexivity.
+Qed.
 Lemma ulist_prod2_wd A B (op : A → A → B) : ∀ al1 al2 bl1 bl2 : list A,
     list_permutation al1 al2 → list_permutation bl1 bl2 →
     to_equiv (ulist_equiv B) (list_prod2 op al1 bl1) =
@@ -78,44 +132,14 @@ Lemma ulist_prod2_wd A B (op : A → A → B) : ∀ al1 al2 bl1 bl2 : list A,
 Proof.
     intros al1 al2 bl1 bl2 a_eq b_eq.
     equiv_simpl.
-    induction b_eq.
-    -   cbn.
-        apply list_perm_refl.
-    -   cbn.
-        apply uconc_wd.
-        +   apply (list_image_perm _ a_eq).
-        +   exact IHb_eq.
-    -   do 4 rewrite list_prod2_radd.
-        do 2 rewrite list_conc_assoc.
-        apply uconc_wd.
-        +   apply (list_perm_trans (list_perm_conc _ _)).
-            induction a_eq.
-            *   cbn.
-                apply list_perm_refl.
-            *   cbn.
-                apply list_perm_skip.
-                apply (list_perm_trans (list_perm_split _ _ _)).
-                apply (list_perm_trans2 (list_perm_sym(list_perm_split _ _ _))).
-                apply list_perm_skip.
-                exact IHa_eq.
-            *   cbn.
-                apply list_perm_swap2.
-                apply (list_perm_trans (list_perm_split _ _ _)).
-                apply (list_perm_trans2 (list_perm_sym(list_perm_split _ _ _))).
-                apply (list_perm_trans
-                    (list_perm_split (op y0 y :: list_image l0 (λ z, op z x)) _ _)).
-                apply (list_perm_trans2 (list_perm_sym
-                    (list_perm_split(op x0 y :: list_image l0 (λ z, op z x)) _ _))).
-                cbn.
-                apply list_perm_swap.
-            *   exact (list_perm_trans IHa_eq1 IHa_eq2).
-        +   apply ulist_prod2_wd'.
-            exact a_eq.
-    -   pose proof (ulist_prod2_wd' op _ _ l' a_eq) as eq.
-        apply list_perm_sym in eq.
-        apply (list_perm_trans IHb_eq1).
-        apply (list_perm_trans eq).
-        exact IHb_eq2.
+    rewrite (list_prod2_eq op al1 bl1).
+    rewrite (list_prod2_eq op al2 bl2).
+    apply list_image_perm.
+    intros [a b].
+    do 2 rewrite list_prod2_count.
+    rewrite (a_eq a).
+    rewrite (b_eq b).
+    reflexivity.
 Qed.
 Definition ulist_prod2 {A B} (op : A → A → B) :=
     binary_op (E := ulist_equiv A) (ulist_prod2_wd A B op).

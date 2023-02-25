@@ -502,7 +502,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem geo_involute_grade : ∀ (X : geo B) (n : nat), of_grade (H10 := GG) n X →
+Theorem geo_involute_grade : ∀ (X : geo B) (n : nat), of_grade (H9 := GG) n X →
     X∗ = (-(1))^n · X.
 Proof.
     intros X' n [X [Xn X_eq]]; subst X'.
@@ -512,7 +512,7 @@ Proof.
     apply ext_to_geo_scalar.
 Qed.
 
-Theorem geo_reverse_grade : ∀ (X : geo B) (n : nat), of_grade (H10 := GG) n X →
+Theorem geo_reverse_grade : ∀ (X : geo B) (n : nat), of_grade (H9 := GG) n X →
     X† = (-(1))^(binom n 2) · X.
 Proof.
     intros X' n [X [Xn X_eq]]; subst X'.

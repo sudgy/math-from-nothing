@@ -20,7 +20,7 @@ Arguments sub_vector_v {U V H H0 H1}.
 Arguments sub_vector_in {U V H H0 H1}.
 
 #[universes(template)]
-Class GradedSpace U V `{P : Plus V, @PlusComm V P, @PlusAssoc V P, Zero V, ScalarMult U V} := {
+Class GradedSpace U V `{P : Plus V, @PlusComm V P, @PlusAssoc V P, Z : Zero V, @PlusLid V P Z, ScalarMult U V} := {
     grade_I : Type;
     grade_subspace : grade_I → Subspace U V;
     grade_distinct : ∀ i j, i ≠ j → ∀ v,
@@ -43,8 +43,9 @@ Class GradedAlgebraObj U V `{
     PC : @PlusComm V P,
     PA : @PlusAssoc V P,
     Z : Zero V,
+    PZ : @PlusLid V P Z,
     SM : ScalarMult U V,
-    @GradedSpace U V P PC PA Z SM,
+    @GradedSpace U V P PC PA Z PZ SM,
     Plus grade_I,
     Mult V
 }
@@ -75,7 +76,7 @@ Context {U V} `{
     VN : Neg V,
     VPC : @PlusComm V VP,
     VPA : @PlusAssoc V VP,
-    @PlusLid V VP VZ,
+    VPZ : @PlusLid V VP VZ,
     @PlusLinv V VP VZ VN,
 
     SM : ScalarMult U V,
@@ -85,7 +86,7 @@ Context {U V} `{
     @ScalarComp U V UM SM
 }.
 
-Context `{@GradedSpace U V VP VPC VPA VZ SM}.
+Context `{@GradedSpace U V VP VPC VPA VZ VPZ SM}.
 
 (* end hide *)
 Definition of_grade i v := subspace_set (grade_subspace i) v.

@@ -216,7 +216,7 @@ Proof.
     cbn.
     change (module_V (algebra_module (exterior_algebra V))) with (ext V) in a.
     rename ar into ar'.
-    assert (of_grade (H10 := EG) r a) as ar by exact ar'.
+    assert (of_grade (H9 := EG) r a) as ar by exact ar'.
     clear ar'.
     apply ext_grade_sum in ar as [l l_eq]; subst a.
     induction l as [|[α a] l] using ulist_induction.
@@ -382,11 +382,11 @@ Proof.
                     rewrite grade_project_plus.
                     rewrite ext_to_geo_plus.
                     rewrite IHA; clear A' A'i IHA.
-                    assert (of_grade (H10 := EG) (nat_suc i)
+                    assert (of_grade (H9 := EG) (nat_suc i)
                         (vector_to_ext V v * A)) as A_grade.
                     {
                         change (nat_suc i) with (1 + i).
-                        apply (of_grade_mult (H14 := EGA)).
+                        apply (of_grade_mult (H13 := EGA)).
                         -   apply vector_to_ext_grade.
                         -   exact Ai.
                     }

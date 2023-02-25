@@ -7,14 +7,16 @@ Require Import set.
 Definition linear_combination_set {U V : Type} (l : ulist (U * V))
     := ulist_unique (ulist_image l snd).
 Definition linear_combination {U V}
-    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
+    `{VZ : Zero V, VP : Plus V, @PlusComm V VP,
+        @PlusAssoc V VP, @PlusLid V VP VZ, ScalarMult U V}
     (l : set_type (@linear_combination_set U V))
     := ulist_sum (ulist_image [l|] (λ x, fst x · snd x)).
 Definition linear_list_in {U V}
     (S : V → Prop) (l : set_type (@linear_combination_set U V))
     := ulist_prop (λ v, S (snd v)) [l|].
 Definition linear_combination_of {U V}
-    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
+    `{VZ : Zero V, VP : Plus V, @PlusComm V VP,
+        @PlusAssoc V VP, @PlusLid V VP VZ, ScalarMult U V}
     (S : V → Prop) (v : V) :=
     ∃ l, v = linear_combination l ∧ linear_list_in S l.
 

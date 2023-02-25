@@ -26,7 +26,7 @@ Context {U V1 V2} `{
     VN1 : Neg V1,
     VPC1 : @PlusComm V1 VP1,
     VPA1 : @PlusAssoc V1 VP1,
-    @PlusLid V1 VP1 VZ1,
+    VPZ1 : @PlusLid V1 VP1 VZ1,
     @PlusLinv V1 VP1 VZ1 VN1,
 
     SM1 : ScalarMult U V1,
@@ -50,7 +50,7 @@ Context {U V1 V2} `{
     @ScalarComp U V2 UM SM2
 }.
 
-Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
+Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 VPZ1 SM1}.
 
 (* end hide *)
 Definition linear_extend_plus_base (f_base : ∀ i a, of_grade i a → V2) :=
@@ -435,7 +435,7 @@ Context {U V1 V2} `{
     VN1 : Neg V1,
     VPC1 : @PlusComm V1 VP1,
     VPA1 : @PlusAssoc V1 VP1,
-    @PlusLid V1 VP1 VZ1,
+    VPZ1 : @PlusLid V1 VP1 VZ1,
     @PlusLinv V1 VP1 VZ1 VN1,
 
     SM1 : ScalarMult U V1,
@@ -459,7 +459,7 @@ Context {U V1 V2} `{
     @ScalarComp U V2 UM SM2
 }.
 
-Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 SM1}.
+Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 VPZ1 SM1}.
 
 (* end hide *)
 Definition bilinear_extend_ldist_base

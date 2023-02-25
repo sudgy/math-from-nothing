@@ -129,11 +129,11 @@ Proof.
     rewrite ext_to_geo_inner.
     rewrite ext_to_geo_to_ext.
     rewrite ext_to_geo_project.
-    assert (of_grade (H10 := EG)
+    assert (of_grade (H9 := EG)
         (nat_suc (nat_suc n)) (vector_to_ext V v * E X)) as Xn'.
     {
         change (nat_suc (nat_suc n)) with (1 + nat_suc n).
-        apply (of_grade_mult (H14 := EGA)).
+        apply (of_grade_mult (H13 := EGA)).
         -   apply vector_to_ext_grade.
         -   destruct Xn as [X' [X'n X'_eq]]; subst X.
             cbn.

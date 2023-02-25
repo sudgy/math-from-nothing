@@ -72,7 +72,7 @@ Existing Instances TG TAG.
 
 (* end hide *)
 Definition ext_grade_set n (v : ext V)
-    := ∃ v', tensor_to_ext V v' = v ∧ of_grade (H10 := TG) n v'.
+    := ∃ v', tensor_to_ext V v' = v ∧ of_grade (H9 := TG) n v'.
 
 Lemma ext_grade_zero : ∀ n, ext_grade_set n 0.
 Proof.
@@ -515,7 +515,7 @@ Proof.
 Qed.
 
 Theorem ext_list_grade : ∀ l,
-    of_grade (H10 := exterior_grade) (list_size l)
+    of_grade (H9 := exterior_grade) (list_size l)
     (list_prod (list_image l (vector_to_ext V))).
 Proof.
     intros l.

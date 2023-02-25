@@ -243,14 +243,14 @@ Proof.
     do 2 rewrite ext_to_geo_scalar.
     rewrite outer_lscalar.
     apply lscalar; clear α.
-    assert (of_grade (H10 := GG) (list_size al)
+    assert (of_grade (H9 := GG) (list_size al)
         (G (list_prod (list_image al (vector_to_ext V))))) as al_grade.
     {
         exists (list_prod (list_image al (vector_to_ext V))).
         split; [>|reflexivity].
         apply ext_list_grade.
     }
-    assert (of_grade (H10 := GG) n (G b)) as b_grade.
+    assert (of_grade (H9 := GG) n (G b)) as b_grade.
     {
         exists b.
         split; [>exact bn|reflexivity].
@@ -279,7 +279,7 @@ Proof.
     rewrite ext_to_geo_add.
     rewrite rdist.
     rewrite grade_project_plus.
-    assert (of_grade (H10 := GG) m (G a)) as a_grade'.
+    assert (of_grade (H9 := GG) m (G a)) as a_grade'.
     {
         exists a.
         split; [>exact a_grade|reflexivity].

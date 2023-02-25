@@ -10,16 +10,19 @@ Require Import set.
 Require Import zorn.
 
 Definition linearly_independent {U V} `{Zero U}
-    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
+    `{VZ : Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP,
+        @PlusLid V VP VZ, ScalarMult U V}
     (S : V → Prop) :=
     ∀ l, linear_list_in S l →
     0 = linear_combination l → ulist_prop (λ x, 0 = fst x) [l|].
 Definition linearly_dependent {U V} `{Zero U}
-    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
+    `{VZ : Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP,
+        @PlusLid V VP VZ, ScalarMult U V}
     (S : V → Prop) := ¬linearly_independent S.
 
 Definition basis {U V} `{Zero U}
-    `{Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP, ScalarMult U V}
+    `{VZ : Zero V, VP : Plus V, @PlusComm V VP, @PlusAssoc V VP,
+        @PlusLid V VP VZ, ScalarMult U V}
     (S : V → Prop) := linearly_independent S ∧ linear_span U S = all.
 
 (* begin hide *)

@@ -12,15 +12,23 @@ Lemma ulist_size_wd U : ∀ l1 l2 : list U, list_permutation l1 l2 →
     list_size l1 = list_size l2.
 Proof.
     intros l1 l2 eq.
-    induction eq.
-    -   reflexivity.
-    -   cbn.
-        rewrite IHeq.
+    revert l2 eq.
+    induction l1 as [|a l1]; intros.
+    -   apply list_perm_nil_eq in eq.
+        destruct eq.
         reflexivity.
-    -   cbn.
+    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+        apply (list_perm_in eq) in a_in.
+        apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
+        apply (list_perm_trans2 (list_perm_split l3 l4 a)) in eq.
+        apply list_perm_add_eq in eq.
+        specialize (IHl1 _ eq).
+        rewrite list_size_conc.
+        rewrite list_conc_add.
+        cbn.
+        rewrite IHl1.
+        rewrite list_size_conc.
         reflexivity.
-    -   rewrite IHeq1.
-        exact IHeq2.
 Qed.
 Definition ulist_size {U} := unary_op (E := ulist_equiv U) (ulist_size_wd U).
 

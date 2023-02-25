@@ -223,7 +223,7 @@ Definition tensor_grade_mult := graded_algebra_isomorphism f f_iso.
 Existing Instances tensor_grade tensor_grade_mult.
 
 Theorem scalar_to_tensor_grade : ∀ a,
-    of_grade (H10 := tensor_grade) 0 (scalar_to_tensor a).
+    of_grade (H9 := tensor_grade) 0 (scalar_to_tensor a).
 Proof.
     intros a.
     unfold of_grade; cbn.
@@ -251,7 +251,7 @@ Proof.
 Qed.
 
 Theorem vector_to_tensor_grade : ∀ v,
-    of_grade (H10 := tensor_grade) 1 (vector_to_tensor v).
+    of_grade (H9 := tensor_grade) 1 (vector_to_tensor v).
 Proof.
     intros v.
     unfold of_grade; cbn.
@@ -311,7 +311,7 @@ Proof.
 Qed.
 
 Theorem vectors_to_tensor_grade : ∀ l,
-    of_grade (H10 := tensor_grade) (list_size l) (vectors_to_tensor l).
+    of_grade (H9 := tensor_grade) (list_size l) (vectors_to_tensor l).
 Proof.
     intros l.
     induction l.
@@ -330,7 +330,7 @@ Qed.
 
 Definition simple_tensor x := ∃ α l, x = α · vectors_to_tensor l.
 
-Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H10 := tensor_grade) i x →
+Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H9 := tensor_grade) i x →
     ∃ l : ulist (cring_U F *
         set_type (λ l : list (module_V V), list_size l = i)),
     ulist_sum (ulist_image l (λ x, fst x · vectors_to_tensor [snd x|])) = x.
@@ -389,13 +389,13 @@ Proof.
                 reflexivity.
             }
             rewrite a_eq; clear a_eq.
-            assert (of_grade 1 (H10 := TAG) (vector_to_tensor_base a))
+            assert (of_grade 1 (H9 := TAG) (vector_to_tensor_base a))
                 as a_homo.
             {
                 exists (vectors_to_power V (a :: list_end)).
                 reflexivity.
             }
-            assert (of_grade (list_size l) (H10 := TAG)
+            assert (of_grade (list_size l) (H9 := TAG)
                 (power_to_tensor V (vectors_to_power V l))) as l_homo.
             {
                 exists (vectors_to_power V l).
@@ -420,7 +420,7 @@ Theorem tensor_simple_sum : ∀ x, ∃ l : ulist (set_type simple_tensor),
     x = ulist_sum (ulist_image l (λ x, [x|])).
 Proof.
     intros x.
-    rewrite (grade_decomposition_eq (H10 := tensor_grade) x).
+    rewrite (grade_decomposition_eq (H9 := tensor_grade) x).
     pose (l := grade_decomposition x).
     change (grade_decomposition x) with l.
     clearbody l.
