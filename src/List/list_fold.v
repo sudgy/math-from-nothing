@@ -92,61 +92,8 @@ End Sum.
 
 Section Sum2.
 
-Context {U V} `{AllPlus U, AllPlus V}.
+Context {U} `{AllPlus U}.
 (* end hide *)
-Theorem list_prod2_lconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
-    list_sum (list_prod2 op (a :: l1) l2) =
-    list_sum (list_prod2 op l1 l2) + list_sum (list_image l2 (λ x, op a x)).
-Proof.
-    intros l1 l2 a.
-    induction l2.
-    -   cbn.
-        rewrite plus_lid.
-        reflexivity.
-    -   cbn.
-        do 2 rewrite list_sum_plus.
-        rewrite IHl2.
-        plus_bring_left (op a a0).
-        reflexivity.
-Qed.
-
-Theorem list_prod2_lconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
-    list_sum (list_prod2 op (a :: l1) l2) =
-    list_sum (list_prod2 op l1 l2) +
-    list_sum (list_prod2 op (a :: list_end) l2).
-Proof.
-    intros l1 l2 a.
-    rewrite list_prod2_lconc.
-    rewrite list_prod2_lconc.
-    rewrite list_prod2_lend.
-    cbn.
-    rewrite plus_lid.
-    reflexivity.
-Qed.
-
-Theorem list_prod2_rconc (op : U → U → V) : ∀ (l1 l2 : list U) a,
-    list_sum (list_prod2 op l1 (a :: l2)) =
-    list_sum (list_prod2 op l1 l2) + list_sum (list_image l1 (λ x, op x a)).
-Proof.
-    intros l1 l2 a.
-    rewrite list_sum_plus.
-    rewrite plus_comm.
-    reflexivity.
-Qed.
-
-Theorem list_prod2_rconc' (op : U → U → V) : ∀ (l1 l2 : list U) a,
-    list_sum (list_prod2 op l1 (a :: l2)) =
-    list_sum (list_prod2 op l1 l2) +
-    list_sum (list_prod2 op l1 (a :: list_end)).
-Proof.
-    intros l1 l2 a.
-    rewrite list_prod2_rconc.
-    rewrite list_prod2_rconc.
-    rewrite list_prod2_rend.
-    cbn.
-    rewrite plus_lid.
-    reflexivity.
-Qed.
 
 Lemma list_sum_func_single_zero : ∀ a n,
     list_sum (func_to_list (λ x, If x = n then a else 0) n) = 0.

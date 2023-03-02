@@ -54,34 +54,3 @@ Proof.
         rewrite IHl.
         reflexivity.
 Qed.
-
-Fixpoint list_prod2 {A B : Type} (op : A → A → B) (l1 l2 : list A) :=
-    match l2 with
-    | [] => []
-    | b :: l2' => list_image l1 (λ x, op x b) ++ list_prod2 op l1 l2'
-    end.
-Arguments list_prod2 : simpl never.
-
-Theorem list_prod2_rend {A B : Type} (op : A → A → B) : ∀ (l : list A),
-    list_prod2 op l [] = [].
-Proof.
-    reflexivity.
-Qed.
-
-Theorem list_prod2_radd {A B : Type} (op : A → A → B) : ∀ a (l1 l2 : list A),
-    list_prod2 op l1 (a :: l2) =
-    list_image l1 (λ x, op x a) ++ list_prod2 op l1 l2.
-Proof.
-    reflexivity.
-Qed.
-
-Theorem list_prod2_lend {A B : Type} (op : A → A → B) (l : list A) :
-    list_prod2 op [] l = [].
-Proof.
-    induction l.
-    -   apply list_prod2_rend.
-    -   rewrite list_prod2_radd.
-        rewrite IHl.
-        rewrite list_image_end.
-        apply list_conc_lid.
-Qed.
