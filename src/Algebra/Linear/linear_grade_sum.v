@@ -403,149 +403,131 @@ Next Obligation.
 Qed.
 Next Obligation.
     pose proof (simple_finite_bij _ [|v]) as [n [f f_bij]].
-    pose (g := bij_inv f).
-    pose proof (bij_inv_bij f) as [g_inj g_sur].
-    fold g in g_inj, g_sur.
-    clearbody g.
-    clear f f_bij.
-    classic_case (inhabited I) as [i|ni].
-    2: {
+    revert v f f_bij.
+    nat_induction n; intros.
+    {
         exists ulist_end.
         split.
         -   rewrite ulist_image_end, ulist_sum_end.
             apply set_type_eq.
             apply functional_ext.
-            intros x.
-            exfalso; apply ni.
-            split.
-            exact x.
+            intros k.
+            symmetry.
+            classic_contradiction contr.
+            contradiction (nat_lt_0_false (f [k|contr])).
         -   apply ulist_prop_end.
     }
-    destruct i as [i].
-    pose (g' m := match (sem (m < n)) with
-        | strong_or_left ltq => [g [m|ltq]|]
-        | strong_or_right _ => i
-        end).
-    pose (l := func_to_ulist g' n).
+    pose proof (sur f [n|nat_lt_suc n]) as [x x_eq].
+    pose (v' (i : I) := If [x|] = i then 0 else [v|] i).
+    assert (∀ k : set_type (λ k, 0 ≠ v' k), 0 ≠ [v|] [k|]) as f_in.
+    {
+        intros [k k_neq].
+        unfold v' in k_neq.
+        cbn.
+        case_if [eq|neq].
+        -   contradiction.
+        -   exact k_neq.
+    }
+    assert (grade_sum_finite v') as v'_fin.
+    {
+        apply (simple_finite_trans _ _ [|v]).
+        exists (λ k, [[k|]|f_in k]).
+        split.
+        intros a b eq.
+        apply set_type_eq.
+        inversion eq.
+        reflexivity.
+    }
+    pose (f' (k : set_type (λ k, 0 ≠ v' k)) := [f [[k|]|f_in k]|]).
+    assert (∀ k, initial_segment n (f' k)) as f'_in.
+    {
+        intros k.
+        unfold initial_segment.
+        unfold f'.
+        split.
+        -   rewrite <- nat_lt_suc_le.
+            apply [|f _].
+        -   destruct k as [k k_neq].
+            cbn.
+            unfold v' in k_neq.
+            intros contr.
+            apply set_type_eq in x_eq.
+            cbn in x_eq.
+            rewrite <- x_eq in contr.
+            apply set_type_eq in contr.
+            apply inj in contr.
+            apply set_type_eq in contr.
+            cbn in contr.
+            case_if [eq|neq].
+            +   contradiction.
+            +   symmetry in contr.
+                contradiction.
+    }
+    specialize (IHn [v'|v'_fin] (λ k, [f' k|f'_in k])).
+    prove_parts IHn.
+    {
+        split; split.
+        -   intros a b eq.
+            unfold f' in eq.
+            apply set_type_eq in eq; cbn in eq.
+            apply set_type_eq in eq; cbn in eq.
+            apply inj in eq.
+            apply set_type_eq in eq; cbn in eq.
+            apply set_type_eq in eq; cbn in eq.
+            exact eq.
+        -   intros [y y_lt].
+            unfold initial_segment in y_lt.
+            pose proof (trans y_lt (nat_lt_suc n)) as y_lt2.
+            pose proof (sur f [y|y_lt2]) as [[z z_neq] z_eq].
+            assert (0 ≠ v' z) as z_neq'.
+            {
+                unfold v'.
+                case_if [eq|neq].
+                -   subst z.
+                    rewrite set_type_simpl in z_eq.
+                    rewrite x_eq in z_eq.
+                    apply set_type_eq in z_eq; cbn in z_eq.
+                    subst y.
+                    contradiction (irrefl _ y_lt).
+                -   exact z_neq.
+            }
+            exists [z|z_neq'].
+            unfold f'.
+            apply set_type_eq; cbn.
+            apply set_type_eq in z_eq; cbn in z_eq.
+            rewrite <- z_eq.
+            do 2 apply f_equal.
+            apply set_type_eq; reflexivity.
+    }
+    destruct IHn as [l [v'_eq l_in]].
     assert (∀ n, grade_sum_subspace_set n (single_to_grade_sum ([v|] n))) as v_in.
     {
         intros m.
         exists ([v|] m).
         reflexivity.
     }
-    pose (l' := ulist_image l (λ n, make_subspace_vector
-        (grade_sum_subspace n) _ (v_in n))).
-    exists l'.
+    exists (make_subspace_vector (grade_sum_subspace [x|]) _ (v_in [x|]) ::: l).
     split.
-    -   unfold l'.
-        rewrite ulist_image_comp; cbn.
-        apply set_type_eq; cbn.
-        apply functional_ext; intros m.
-        unfold l.
-        rewrite func_to_ulist_image.
-        assert ([ulist_sum (func_to_ulist (λ m0, single_to_grade_sum ([v|] (g' m0))) n)|] m =
-            ulist_sum (func_to_ulist (λ m0, single_to_grade_sum_base ([v|] (g' m0)) m) n)) as eq.
-        {
-            do 2 rewrite ulist_sum_sum_eq.
-            remember n as n'.
-            rewrite Heqn'.
-            assert (n ≤ n') as n_leq by (rewrite Heqn'; apply refl).
-            clear Heqn'.
-            nat_induction n.
-            -   unfold zero; cbn.
-                reflexivity.
-            -   cbn.
-                unfold plus at 1; cbn.
-                apply rplus.
-                rewrite IHn by exact (trans (nat_le_suc n) n_leq).
-                reflexivity.
-        }
-        unfold grade_sum_type.
-        rewrite eq; clear eq l l'.
-        pose (h m0 :=
-         @single_to_grade_sum_base (g' m0)
-           (@set_value (grade_sum_base)
-              (grade_sum_finite) v (g' m0)) m).
-        fold h.
-        classic_case ([v|] m = 0) as [fv_z|fv_nz].
-        *   rewrite fv_z.
-            assert (h = (λ _, 0)) as h_eq.
-            {
-                apply functional_ext.
-                intros a.
-                unfold h.
-                unfold single_to_grade_sum_base.
-                destruct (sem (g' a = m)).
-                -   destruct e; cbn.
-                    exact fv_z.
-                -   reflexivity.
-            }
-            rewrite h_eq.
-            clear v g g_inj g_sur g' v v_in h fv_z h_eq.
-            nat_induction n.
-            --  rewrite func_to_ulist_zero.
-                rewrite ulist_sum_end.
-                reflexivity.
-            --  rewrite func_to_ulist_suc.
-                rewrite ulist_sum_add.
-                rewrite plus_lid.
-                exact IHn.
-        *   rewrite neq_sym in fv_nz.
-            pose proof (sur g [m|fv_nz]) as [vn vn_eq].
-            pose (h' m := If m < n then h m else 0).
-            assert (∀ m, m < n → h m = h' m) as h'_eq.
-            {
-                intros m' ltq.
-                unfold h', h.
-                case_if.
-                -   reflexivity.
-                -   contradiction.
-            }
-            rewrite (func_to_ulist_eq _ _ _ h'_eq); clear h'_eq.
-            assert (h' = (λ m0, If m0 = [vn|] then ([v|] m) else 0)) as h_eq.
-            {
-                apply functional_ext.
-                intros m'.
-                unfold h'; clear h'.
-                unfold h; clear h.
-                unfold single_to_grade_sum_base.
-                unfold g'.
-                destruct (sem (m' < n)).
-                case_if; subst.
-                1: destruct (sem ([g [[vn|]|s]|] = m)); subst; cbn.
-                3: destruct (sem ([g [m'|s]|] = m)); subst; cbn.
-                5: case_if; subst.
-                1, 4, 6: reflexivity.
-                -   apply set_type_eq in vn_eq; cbn in vn_eq.
-                    subst m.
-                    exfalso; apply n0.
-                    apply set_type_eq; cbn.
-                    apply f_equal.
-                    apply set_type_eq; reflexivity.
-                -   apply set_type_eq in vn_eq; cbn in vn_eq.
-                    apply set_type_eq in vn_eq; cbn in vn_eq.
-                    apply g_inj in vn_eq.
-                    apply set_type_eq in vn_eq; cbn in vn_eq.
-                    symmetry in vn_eq; contradiction.
-                -   destruct vn; contradiction.
-            }
-            rewrite h_eq.
-            rewrite (ulist_sum_func_single ([v|] m) _ _ [|vn]).
+    -   rewrite ulist_image_add; cbn.
+        rewrite ulist_sum_add.
+        rewrite <- v'_eq.
+        apply set_type_eq.
+        unfold plus; cbn.
+        unfold single_to_grade_sum_base.
+        unfold v'.
+        apply functional_ext.
+        intros k.
+        case_if [eq|neq].
+        +   destruct eq; cbn.
+            rewrite plus_rid.
             reflexivity.
-    -   unfold l'.
-        remember l as l''.
-        clear Heql'' l' l l g' n g g_inj g_sur.
-        rename l'' into l.
-        induction l using ulist_induction.
-        +   rewrite ulist_image_end.
-            apply ulist_prop_end.
-        +   rewrite ulist_image_add.
-            apply ulist_prop_add.
-            split.
-            *   exists a.
-                cbn.
-                reflexivity.
-            *   exact IHl.
+        +   rewrite plus_lid.
+            reflexivity.
+    -   rewrite ulist_prop_add; cbn.
+        split.
+        +   exists [x|].
+            reflexivity.
+        +   exact l_in.
 Qed.
 Next Obligation.
     rename H into l_in.
