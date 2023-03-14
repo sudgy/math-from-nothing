@@ -62,14 +62,12 @@
 ./src/Set/set.v
 
 ./src/List/list_base.v
-./src/List/list_func.v
 ./src/List/list_prop.v
 ./src/List/list_nat.v
 ./src/List/list_fold.v
 ./src/List/list_perm.v
 ./src/List/list.v
 ./src/List/unordered_list_base.v
-./src/List/unordered_list_func.v
 ./src/List/unordered_list_prop.v
 ./src/List/unordered_list_nat.v
 ./src/List/unordered_list_fold.v

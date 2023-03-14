@@ -1,7 +1,6 @@
 Require Import init.
 
 Require Export list_base.
-Require Export list_func.
 
 Require Import relation.
 Require Import set.

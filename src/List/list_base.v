@@ -34,6 +34,13 @@ Fixpoint list_reverse {U : Type} (l : list U) : list U :=
     end.
 Arguments list_reverse : simpl never.
 
+Fixpoint list_image (A B : Type) (l : list A) (f : A → B) :=
+    match l with
+    | [] => []
+    | a :: l' => f a :: list_image l' f
+    end.
+Arguments list_image : simpl never.
+
 Theorem list_end_neq {U} : ∀ (a : U) l, a :: l ≠ [].
 Proof.
     intros a l eq.
@@ -166,4 +173,48 @@ Proof.
     rewrite <- list_reverse_end in eq.
     apply list_reverse_eq in eq.
     exact eq.
+Qed.
+
+Theorem list_image_end {A B : Type} : ∀ (f : A → B), list_image [] f = [].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_image_add {A B : Type} : ∀ a l (f : A → B),
+    list_image (a :: l) f = f a :: list_image l f.
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
+    list_image [a] f = [f a].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_image_conc {A B : Type} : ∀ (l1 l2 : list A) (f : A → B),
+    list_image (l1 ++ l2) f = list_image l1 f ++ list_image l2 f.
+Proof.
+    intros l1 l2 f.
+    induction l1.
+    -   rewrite list_image_end.
+        do 2 rewrite list_conc_lid.
+        reflexivity.
+    -   rewrite list_conc_add.
+        do 2 rewrite list_image_add.
+        rewrite IHl1.
+        rewrite list_conc_add.
+        reflexivity.
+Qed.
+
+Theorem list_image_comp {A B C : Type} : ∀ (l : list A) (f : A → B) (g : B → C),
+    list_image (list_image l f) g = list_image l (λ x, g (f x)).
+Proof.
+    intros l f g.
+    induction l.
+    -   do 2 rewrite list_image_end.
+        reflexivity.
+    -   do 3 rewrite list_image_add.
+        rewrite IHl.
+        reflexivity.
 Qed.

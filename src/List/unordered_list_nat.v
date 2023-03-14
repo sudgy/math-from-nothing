@@ -2,7 +2,6 @@ Require Import init.
 
 Require Import list.
 Require Import unordered_list_base.
-Require Import unordered_list_func.
 Require Import unordered_list_prop.
 
 Require Import nat.
