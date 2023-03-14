@@ -32,45 +32,6 @@ Proof.
 Qed.
 Definition ulist_size {U} := unary_op (E := ulist_equiv U) (ulist_size_wd U).
 
-Definition func_to_ulist {U} (f : nat → U) n :=
-    to_equiv (ulist_equiv U) (func_to_list_base f n).
-
-Theorem func_to_list_ulist {U} : ∀ (f : nat → U) n,
-    func_to_ulist f n = to_equiv (ulist_equiv U) (func_to_list f n).
-Proof.
-    intros f n.
-    unfold func_to_ulist; equiv_simpl.
-    unfold func_to_list.
-    apply list_perm_reverse.
-Qed.
-
-Theorem func_to_ulist_zero {U} : ∀ (f : nat → U), func_to_ulist f 0 = ulist_end.
-Proof.
-    intros f.
-    unfold func_to_ulist, ulist_end; equiv_simpl.
-    apply list_perm_refl.
-Qed.
-
-Theorem func_to_ulist_eq {A : Type} (f g : nat → A) n :
-    (∀ m, m < n → f m = g m) → func_to_ulist f n = func_to_ulist g n.
-Proof.
-    intros eq.
-    do 2 rewrite func_to_list_ulist.
-    equiv_simpl.
-    rewrite (func_to_list_eq _ _ eq).
-    apply list_perm_refl.
-Qed.
-
-Theorem func_to_ulist_image {A B} : ∀ (f : nat → A) (g : A → B) n,
-    ulist_image (func_to_ulist f n) g = func_to_ulist (λ m, g (f m)) n.
-Proof.
-    intros f g n.
-    do 2 rewrite func_to_list_ulist.
-    unfold ulist_image; equiv_simpl.
-    rewrite func_to_list_image.
-    apply list_perm_refl.
-Qed.
-
 Theorem ulist_size_end {U} : ulist_size (@ulist_end U) = 0.
 Proof.
     unfold ulist_size, ulist_end; equiv_simpl.
@@ -93,17 +54,4 @@ Proof.
     equiv_get_value l1 l2.
     unfold ulist_size, ulist_conc; equiv_simpl.
     apply list_size_plus.
-Qed.
-
-Theorem func_to_ulist_suc {U} : ∀ (f : nat → U) n,
-    func_to_ulist f (nat_suc n) = f n ::: func_to_ulist f n.
-Proof.
-    intros f n.
-    rewrite ulist_add_conc.
-    rewrite ulist_conc_comm.
-    do 2 rewrite func_to_list_ulist.
-    unfold ulist_add, ulist_conc, ulist_end; equiv_simpl.
-    cbn.
-    change (list_reverse (func_to_list_base f n)) with (func_to_list f n).
-    apply list_perm_refl.
 Qed.

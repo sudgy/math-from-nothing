@@ -12,26 +12,6 @@ Fixpoint list_size {A : Type} (l : list A) :=
     | list_end => 0
     end.
 
-Theorem func_to_list_image {A B} : ∀ (f : nat → A) (g : A → B) n,
-    list_image (func_to_list f n) g = func_to_list (λ m, g (f m)) n.
-Proof.
-    intros f g n.
-    do 2 rewrite func_to_list2_eq.
-    revert f.
-    nat_induction n.
-    -   unfold zero; cbn.
-        reflexivity.
-    -   cbn.
-        intros f.
-        rewrite list_image_add.
-        specialize (IHn (λ m, f (nat_suc m))).
-        unfold func_to_list2 in IHn.
-        rewrite <- func_to_list2_base_eq in IHn.
-        rewrite IHn.
-        rewrite func_to_list2_base_eq.
-        reflexivity.
-Qed.
-
 Theorem list_size_conc {U} : ∀ l1 l2 : list U,
     list_size (l1 ++ l2) = list_size (l2 ++ l1).
 Proof.
