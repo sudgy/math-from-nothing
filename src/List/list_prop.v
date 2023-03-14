@@ -135,21 +135,6 @@ Theorem image_in_list {U V} : ∀ l y (f : U → V),
                 exact x_in.
 Qed.
 
-Theorem list_in_not_unique {U} : ∀ l1 l2 (x : U), in_list l1 x → in_list l2 x →
-        ¬list_unique (l1 ++ l2).
-    intros l1 l2 x l1_x l2_x l_uni.
-    induction l1.
-    -   contradiction l1_x.
-    -   destruct l1_x as [ax|l1_x].
-        +   subst x.
-            destruct l_uni.
-            apply (in_list_rconc l1) in l2_x.
-            contradiction.
-        +   apply IHl1.
-            *   exact l1_x.
-            *   apply l_uni.
-Qed.
-
 Theorem list_unique_add {U} : ∀ (l : list U) a,
         list_unique (a :: l) → list_unique (l ++ (a :: list_end)).
     intros l a [a_nin a_uni].
@@ -320,20 +305,6 @@ Theorem list_prop_sub {U} : ∀ (l : list U) S T, S ⊆ T →
             apply Sl.
         +   apply IHl.
             apply Sl.
-Qed.
-
-Theorem list_prop_ex {U} : ∀ (l : list U) S, list_prop S l →
-        ∃ l' : list (set_type S), list_image l' (λ x, [x|]) = l.
-    intros l S Sl.
-    induction l.
-    -   exists list_end.
-        apply list_image_end.
-    -   destruct Sl as [Sa Sl].
-        specialize (IHl Sl) as [l' l_eq].
-        exists ([a|Sa] :: l').
-        rewrite list_image_add.
-        rewrite l_eq.
-        reflexivity.
 Qed.
 
 Theorem list_prop_filter {U} : ∀ (l : list U) S T,

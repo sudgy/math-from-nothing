@@ -130,6 +130,5 @@ Proof.
     apply list_prod_mult.
 Qed.
 (* begin hide *)
-
 End Product.
 (* end hide *)

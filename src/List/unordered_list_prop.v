@@ -200,20 +200,6 @@ Proof.
     exact sub.
 Qed.
 
-Theorem ulist_prop_ex {U} : ∀ (l : ulist U) S, ulist_prop S l →
-    ∃ l' : ulist (set_type S), ulist_image l' (λ x, [x|]) = l.
-Proof.
-    intros l S.
-    equiv_get_value l.
-    unfold ulist_prop, ulist_image; equiv_simpl.
-    intros Sl.
-    pose proof (list_prop_ex l S Sl) as [l' l_eq].
-    exists (to_equiv (ulist_equiv (set_type S)) l').
-    equiv_simpl.
-    rewrite l_eq.
-    apply list_perm_refl.
-Qed.
-
 Theorem ulist_prop_filter {U} : ∀ (l : ulist U) S T,
     ulist_prop S l → ulist_prop S (ulist_filter T l).
 Proof.
@@ -297,15 +283,6 @@ Proof.
     exists x.
     equiv_simpl.
     exact H.
-Qed.
-
-Theorem ulist_in_not_unique {U} : ∀ l1 l2 (x : U),
-    in_ulist l1 x → in_ulist l2 x → ¬ulist_unique (l1 +++ l2).
-Proof.
-    intros l1 l2 x.
-    equiv_get_value l1 l2.
-    unfold in_ulist, ulist_unique, ulist_conc; equiv_simpl.
-    apply list_in_not_unique.
 Qed.
 
 Theorem ulist_filter_in_S {U} : ∀ S l (a : U),

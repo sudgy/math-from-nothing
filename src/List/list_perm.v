@@ -13,7 +13,7 @@ Set Implicit Arguments.
 Definition list_permutation {U} (l1 l2 : list U) :=
     ∀ x, list_count l1 x = list_count l2 x.
 
-Theorem list_perm_nil {U} : list_permutation (list_end (A := U)) [].
+Theorem list_perm_nil {U} : list_permutation (U := U) [] [].
 Proof.
     intros x.
     cbn.
@@ -97,14 +97,6 @@ Proof.
     intros al bl n.
     do 2 rewrite list_count_conc.
     apply plus_comm.
-Qed.
-
-Theorem list_perm_add {U} : ∀ (l : list U) a,
-    list_permutation (a :: l) (l ++ a :: list_end).
-Proof.
-    intros l a.
-    apply (list_perm_trans2 (list_perm_conc _ _)).
-    apply list_perm_refl.
 Qed.
 
 Theorem list_perm_rpart {U} : ∀ (al bl cl : list U),
@@ -280,13 +272,6 @@ Proof.
     -   inversion eq2.
 Qed.
 
-Theorem list_perm_eq {U} : ∀ l1 l2 : list U, l1 = l2 → list_permutation l1 l2.
-Proof.
-    intros l1 l2 eq.
-    rewrite eq.
-    apply list_perm_refl.
-Qed.
-
 Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
     list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
 Proof.
@@ -314,17 +299,6 @@ Proof.
             split.
             *   apply IHl1.
             *   apply IHl3; apply IHl1.
-Qed.
-
-Theorem list_perm_swap2 {U} : ∀ (a b : U) l1 l2, list_permutation l1 l2 →
-    list_permutation (a :: b :: l1) (b :: a :: l2).
-Proof.
-    intros a b l1 l2 eq.
-    pose proof (list_perm_swap b a l1) as eq1.
-    apply (list_perm_trans eq1).
-    apply list_perm_skip.
-    apply list_perm_skip.
-    exact eq.
 Qed.
 
 Theorem list_perm_reverse {U} : ∀ l : list U,

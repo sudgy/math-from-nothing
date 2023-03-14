@@ -135,6 +135,19 @@ Inductive optional (A : Type) : Type :=
   | opt_val : A → optional A
   | opt_nil : optional A.
 
+Theorem opt_val_eq {U} : ∀ a b : U, opt_val a = opt_val b → a = b.
+Proof.
+    intros a b eq.
+    inversion eq.
+    reflexivity.
+Qed.
+
+Theorem opt_nil_neq {U} : ∀ a, opt_val a ≠ opt_nil U.
+Proof.
+    intros a eq.
+    inversion eq.
+Qed.
+
 (** This doesn't really fit in Algebra so I'm putting it here.  It's an
 incredibly basic concept.
 *)
