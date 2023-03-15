@@ -58,17 +58,17 @@ Let TAO := algebra_one (tensor_algebra V).
 Existing Instances UP UZ UN UPC UPZ UPN UM UO VP VZ VSM VSO TAP TAZ TAN TAPC TAPA TAPZ TAPN TASM TASO TAM TAMR TAO.
 
 (* end hide *)
-Theorem vector_to_tensor_plus : ∀ u v, vector_to_tensor (u + v) =
+Theorem vector_to_tensor_plus : ∀ u v : module_V V, vector_to_tensor (u + v) =
     vector_to_tensor u + vector_to_tensor v.
 Proof.
     apply module_homo_plus.
 Qed.
-Theorem vector_to_tensor_scalar : ∀ a v, vector_to_tensor (a · v) =
+Theorem vector_to_tensor_scalar : ∀ a (v : module_V V), vector_to_tensor (a · v) =
     a · vector_to_tensor v.
 Proof.
     apply module_homo_scalar.
 Qed.
-Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
+Theorem vector_to_tensor_zero : vector_to_tensor (V := V) 0 = 0.
 Proof.
     apply module_homo_zero.
 Qed.
@@ -371,6 +371,7 @@ Proof.
             pose proof (algebra_homo_one _ _ f).
             cbn in *.
             unfold tensor_algebra in *.
+            unfold algebra_V in H.
             rewrite <- H.
             apply f_equal.
             reflexivity.

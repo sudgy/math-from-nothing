@@ -36,79 +36,33 @@ Arguments module_scalar_ldist {R}.
 Arguments module_scalar_rdist {R}.
 Arguments module_scalar_comp {R}.
 
+Global Existing Instances module_plus module_zero module_neg module_plus_assoc
+    module_plus_comm module_plus_lid module_plus_linv module_scalar
+    module_scalar_id module_scalar_ldist module_scalar_rdist module_scalar_comp.
+
 Record ModuleObjHomomorphism {R : CRingObj} (M : ModuleObj R) (N : ModuleObj R) := make_module_homomorphism {
     module_homo_f : module_V M → module_V N;
     module_homo_plus : ∀ u v,
-        module_homo_f (plus (Plus:=module_plus M) u v) =
-        plus (Plus:=module_plus N) (module_homo_f u) (module_homo_f v);
+        module_homo_f (u + v) = module_homo_f u + module_homo_f v;
     module_homo_scalar : ∀ a v,
-        module_homo_f (scalar_mult (ScalarMult:=module_scalar M) a v) =
-        scalar_mult (ScalarMult:=module_scalar N) a (module_homo_f v);
+        module_homo_f (a · v) = a · module_homo_f v;
 }.
 Arguments module_homo_f {R M N}.
 
 Theorem module_homo_zero {R : CRingObj} {M N : ModuleObj R} :
-    ∀ f : ModuleObjHomomorphism M N,
-    module_homo_f f (@zero _ (module_zero M)) = (@zero _ (module_zero N)).
+    ∀ f : ModuleObjHomomorphism M N, module_homo_f f 0 = 0.
 Proof.
     intros f.
-    pose (UP := cring_plus).
-    pose (UZ := cring_zero).
-    pose (UPZ := cring_plus_lid).
-    pose (MP := module_plus M).
-    pose (MZ := module_zero M).
-    pose (MN := module_neg M).
-    pose (MPC := module_plus_comm M).
-    pose (MPA := module_plus_assoc M).
-    pose (MPZ := module_plus_lid M).
-    pose (MPN := module_plus_linv M).
-    pose (MSM := module_scalar M).
-    pose (MSMR := module_scalar_rdist M).
-    pose (NP := module_plus N).
-    pose (NZ := module_zero N).
-    pose (NN := module_neg N).
-    pose (NPC := module_plus_comm N).
-    pose (NPA := module_plus_assoc N).
-    pose (NPZ := module_plus_lid N).
-    pose (NPN := module_plus_linv N).
-    pose (NSM := module_scalar N).
-    pose (NSMR := module_scalar_rdist N).
     rewrite <- (scalar_lanni 0).
-    rewrite (@module_homo_scalar _ _ _ f).
+    rewrite module_homo_scalar.
     apply scalar_lanni.
 Qed.
 
 Theorem module_homo_neg {R : CRingObj} {M N : ModuleObj R} :
     ∀ f : ModuleObjHomomorphism M N,
-    ∀ v, module_homo_f f (@neg _ (module_neg M) v)
-    = (@neg _ (module_neg N) (module_homo_f f v)).
+    ∀ v, module_homo_f f (-v) = -module_homo_f f v.
 Proof.
     intros f v.
-    pose (UP := cring_plus).
-    pose (UZ := cring_zero).
-    pose (UN := cring_neg).
-    pose (UPC := cring_plus_comm).
-    pose (UPZ := cring_plus_lid).
-    pose (UPN := cring_plus_linv).
-    pose (UO := cring_one).
-    pose (MP := module_plus M).
-    pose (MZ := module_zero M).
-    pose (MPC := module_plus_comm M).
-    pose (MPA := module_plus_assoc M).
-    pose (MPZ := module_plus_lid M).
-    pose (MPN := module_plus_linv M).
-    pose (MSM := module_scalar M).
-    pose (MSMO := module_scalar_id M).
-    pose (MSMR := module_scalar_rdist M).
-    pose (NP := module_plus N).
-    pose (NZ := module_zero N).
-    pose (NPC := module_plus_comm N).
-    pose (NPA := module_plus_assoc N).
-    pose (NPZ := module_plus_lid N).
-    pose (NPN := module_plus_linv N).
-    pose (NSM := module_scalar N).
-    pose (NSMO := module_scalar_id N).
-    pose (NSMR := module_scalar_rdist N).
     rewrite <- scalar_neg_one.
     rewrite (@module_homo_scalar _ _ _ f).
     apply scalar_neg_one.
@@ -139,9 +93,9 @@ Definition module_homo_id {R : CRingObj} (L : ModuleObj R)
 
 Lemma module_homo_compose_plus : ∀ {R : CRingObj} {L M N : ModuleObj R}
     {f : ModuleObjHomomorphism M N} {g : ModuleObjHomomorphism L M},
-    ∀ a b, module_homo_f f (module_homo_f g (@plus _ (module_plus L) a b)) =
-    @plus _ (module_plus N) (module_homo_f f (module_homo_f g a))
-    (module_homo_f f (module_homo_f g b)).
+    ∀ a b, module_homo_f f (module_homo_f g (a + b)) =
+    module_homo_f f (module_homo_f g a) +
+    module_homo_f f (module_homo_f g b).
 Proof.
     intros R L M N f g a b.
     rewrite module_homo_plus.
@@ -149,10 +103,8 @@ Proof.
 Qed.
 Lemma module_homo_compose_scalar : ∀ {R : CRingObj} {L M N : ModuleObj R}
     {f : ModuleObjHomomorphism M N} {g : ModuleObjHomomorphism L M},
-    ∀ a v, module_homo_f f (module_homo_f g
-        (@scalar_mult _ _ (module_scalar L) a v)) =
-    @scalar_mult _ _ (module_scalar N)
-        a (module_homo_f f (module_homo_f g v)).
+    ∀ a v, module_homo_f f (module_homo_f g (a · v))
+        = a · (module_homo_f f (module_homo_f g v)).
 Proof.
     intros R L M N f g a v.
     rewrite module_homo_scalar.

@@ -57,3 +57,7 @@ Definition cring_mult_assoc R := ring_mult_assoc (cring_ring R).
 Definition cring_ldist R := ring_ldist (cring_ring R).
 Definition cring_one R := ring_one (cring_ring R).
 Definition cring_mult_lid R := ring_mult_lid (cring_ring R).
+
+Global Existing Instances cring_plus cring_zero cring_neg cring_mult
+    cring_plus_assoc cring_plus_comm cring_plus_lid cring_plus_linv
+    cring_mult_assoc cring_ldist cring_one cring_mult_lid cring_mult_comm.
