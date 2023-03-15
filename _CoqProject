@@ -182,6 +182,7 @@
 ./src/Algebra/Linear/Tensor/tensor_algebra.v
 ./src/Algebra/Linear/Tensor/tensor_algebra2_base.v
 ./src/Algebra/Linear/Tensor/tensor_algebra2_universal.v
+./src/Algebra/Linear/Tensor/tensor_algebra2_inclusions.v
 
 ./src/Algebra/Geometric/geometric_construct.v
 ./src/Algebra/Geometric/geometric_universal.v
