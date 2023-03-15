@@ -179,6 +179,8 @@
 ./src/Algebra/Linear/Tensor/tensor_product.v
 ./src/Algebra/Linear/Tensor/tensor_power.v
 ./src/Algebra/Linear/Tensor/tensor_algebra.v
+./src/Algebra/Linear/Tensor/tensor_algebra2_base.v
+./src/Algebra/Linear/Tensor/tensor_algebra2_universal.v
 
 ./src/Algebra/Geometric/geometric_construct.v
 ./src/Algebra/Geometric/geometric_universal.v
