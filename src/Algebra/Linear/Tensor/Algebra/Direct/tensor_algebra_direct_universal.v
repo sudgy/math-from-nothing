@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import tensor_algebra2_base.
+Require Import tensor_algebra_direct_base.
 Require Import algebra_category.
 Require Import category_initterm.
 Require Import equivalence.

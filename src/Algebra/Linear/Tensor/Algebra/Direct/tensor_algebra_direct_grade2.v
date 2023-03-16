@@ -1,7 +1,7 @@
 Require Import init.
 
-Require Import tensor_algebra2_grade1.
-Require Import tensor_algebra2_inclusions.
+Require Import tensor_algebra_direct_grade1.
+Require Import tensor_algebra_direct_inclusions.
 Require Import algebra_category.
 Require Import category_initterm.
 Require Import linear_grade.

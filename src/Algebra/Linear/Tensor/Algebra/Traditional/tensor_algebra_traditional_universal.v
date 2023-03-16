@@ -1,10 +1,10 @@
 Require Import init.
 
 Require Import linear_extend.
-Require Import tensor_algebra_base.
-Require Import tensor_algebra_scalar.
-Require Import tensor_algebra_vector.
-Require Import tensor_algebra_mult.
+Require Import tensor_algebra_traditional_base.
+Require Import tensor_algebra_traditional_scalar.
+Require Import tensor_algebra_traditional_vector.
+Require Import tensor_algebra_traditional_mult.
 Require Import tensor_product_universal.
 Require Import tensor_power_universal.
 Require Import linear_grade_sum.

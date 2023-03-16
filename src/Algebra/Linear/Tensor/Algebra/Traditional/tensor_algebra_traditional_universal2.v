@@ -4,11 +4,11 @@ Require Import linear_extend.
 Require Import linear_grade_isomorphism.
 Require Import linear_grade_sum.
 Require Import tensor_power_base.
-Require Import tensor_algebra_base.
-Require Import tensor_algebra_scalar.
-Require Import tensor_algebra_vector.
-Require Import tensor_algebra_mult.
-Require Import tensor_algebra_universal.
+Require Import tensor_algebra_traditional_base.
+Require Import tensor_algebra_traditional_scalar.
+Require Import tensor_algebra_traditional_vector.
+Require Import tensor_algebra_traditional_mult.
+Require Import tensor_algebra_traditional_universal.
 Require Import tensor_product_isomorphisms.
 
 Require Import algebra_category.
@@ -26,8 +26,8 @@ Section TensorAlgebraObj.
 (* end hide *)
 Context {F : CRingObj} (V : ModuleObj F).
 
-Let vector_to_tensor_base := tensor_algebra_vector.vector_to_tensor V.
-Let scalar_to_tensor_base := tensor_algebra_scalar.scalar_to_tensor V.
+Let vector_to_tensor_base := tensor_algebra_traditional_vector.vector_to_tensor V.
+Let scalar_to_tensor_base := tensor_algebra_traditional_scalar.scalar_to_tensor V.
 
 (* begin hide *)
 Let UP := cring_plus F.
@@ -406,7 +406,7 @@ Proof.
             unfold tensor_algebra_base.
             rewrite (tensor_mult_homo _ _ _ _ _ a_homo l_homo).
             unfold vector_to_tensor_base,
-                tensor_algebra_vector.vector_to_tensor.
+                tensor_algebra_traditional_vector.vector_to_tensor.
             rewrite power_to_tensor_tm.
             change (tensor_product_universal.tensor_mult V (cring_module F) a 1)
                 with (vectors_to_power V (a :: list_end)).

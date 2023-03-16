@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export tensor_algebra_base.
+Require Export tensor_algebra_traditional_base.
 Require Import tensor_power_base.
 Require Import tensor_product_universal.
 Require Import tensor_product_isomorphisms.

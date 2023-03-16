@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export tensor_algebra2_universal.
+Require Export tensor_algebra_direct_universal.
 Require Import linear_unital_zero.
 Require Import set.
 Require Import list.
