@@ -136,17 +136,17 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem vector_to_tensor_plus : ∀ u v, vector_to_tensor (u + v) =
+Theorem vector_to_tensor_plus : ∀ u v : module_V V, vector_to_tensor (u + v) =
     vector_to_tensor u + vector_to_tensor v.
 Proof.
     apply module_homo_plus.
 Qed.
-Theorem vector_to_tensor_scalar : ∀ a v, vector_to_tensor (a · v) =
-    a · vector_to_tensor v.
+Theorem vector_to_tensor_scalar : ∀ a (v : module_V V), vector_to_tensor (a · v)
+    = a · vector_to_tensor v.
 Proof.
     apply module_homo_scalar.
 Qed.
-Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
+Theorem vector_to_tensor_zero : vector_to_tensor (zero (U := module_V V)) = 0.
 Proof.
     apply module_homo_zero.
 Qed.
