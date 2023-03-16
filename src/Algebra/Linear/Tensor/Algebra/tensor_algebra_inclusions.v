@@ -1,6 +1,7 @@
 Require Import init.
 
-Require Export tensor_algebra_direct_universal.
+Require Import tensor_algebra_defs.
+Require Export tensor_algebra_base.
 Require Import linear_unital_zero.
 Require Import set.
 Require Import list.
@@ -136,25 +137,8 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem vector_to_tensor_plus : ∀ u v : module_V V, vector_to_tensor (u + v) =
-    vector_to_tensor u + vector_to_tensor v.
-Proof.
-    apply module_homo_plus.
-Qed.
-Theorem vector_to_tensor_scalar : ∀ a (v : module_V V), vector_to_tensor (a · v)
-    = a · vector_to_tensor v.
-Proof.
-    apply module_homo_scalar.
-Qed.
-Theorem vector_to_tensor_zero : vector_to_tensor (zero (U := module_V V)) = 0.
-Proof.
-    apply module_homo_zero.
-Qed.
-
-Definition scalar_to_tensor (a : U) : algebra_V (tensor_algebra V) := a · 1.
-
 Theorem scalar_to_tensor_eq : ∀ a b : U,
-    scalar_to_tensor a = scalar_to_tensor b → a = b.
+    scalar_to_tensor V a = scalar_to_tensor V b → a = b.
 Proof.
     intros a b eq.
     apply (f_equal tensor_to_uz) in eq.
@@ -166,56 +150,6 @@ Proof.
     unfold scalar_mult at 1 3 in eq; cbn in eq.
     do 2 rewrite mult_rid in eq.
     inversion eq.
-    reflexivity.
-Qed.
-
-
-Theorem scalar_to_tensor_plus : ∀ a b,
-    scalar_to_tensor (a + b) = scalar_to_tensor a + scalar_to_tensor b.
-Proof.
-    intros a b.
-    unfold scalar_to_tensor.
-    apply scalar_rdist.
-Qed.
-
-Theorem scalar_to_tensor_zero : scalar_to_tensor 0 = 0.
-Proof.
-    unfold scalar_to_tensor.
-    apply scalar_lanni.
-Qed.
-
-Theorem scalar_to_tensor_mult : ∀ a b,
-    scalar_to_tensor (a * b) = scalar_to_tensor a * scalar_to_tensor b.
-Proof.
-    intros a b.
-    unfold scalar_to_tensor.
-    rewrite scalar_lmult, scalar_rmult.
-    rewrite scalar_comp, mult_lid.
-    reflexivity.
-Qed.
-
-Theorem scalar_to_tensor_scalar : ∀ a A, scalar_to_tensor a * A = a · A.
-Proof.
-    intros a A.
-    unfold scalar_to_tensor.
-    rewrite scalar_lmult.
-    rewrite mult_lid.
-    reflexivity.
-Qed.
-
-Theorem scalar_to_tensor_one : scalar_to_tensor 1 = 1.
-Proof.
-    unfold scalar_to_tensor.
-    apply scalar_id.
-Qed.
-
-Theorem scalar_to_tensor_comm : ∀ a A,
-    scalar_to_tensor a * A = A * scalar_to_tensor a.
-Proof.
-    intros a A.
-    unfold scalar_to_tensor.
-    rewrite scalar_lmult, scalar_rmult.
-    rewrite mult_lid, mult_rid.
     reflexivity.
 Qed.
 

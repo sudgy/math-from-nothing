@@ -47,8 +47,9 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_scalar_comp FR_grade FR_mult FR_ldist FR_rdist FR_lscalar FR_rscalar
     FR_mult_assoc FR_one FR_mult_lid FR_mult_rid.
 
-Lemma tensor_algebra_ex_base : @initial (TO_ALGEBRA V) tensor_to_algebra_base.
+Theorem tensor_algebra_ex : ∃ T, @initial (TO_ALGEBRA V) T.
 Proof.
+    exists tensor_to_algebra_base.
     pose (TAP := tensor_algebra_plus V).
     pose (TAZ := tensor_algebra_zero V).
     pose (TAN := tensor_algebra_neg V).
@@ -315,22 +316,4 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem tensor_algebra_ex : ∃ T, @initial (TO_ALGEBRA V) T.
-Proof.
-    exists tensor_to_algebra_base.
-    exact tensor_algebra_ex_base.
-Qed.
-
-Definition to_tensor_algebra := ex_val tensor_algebra_ex.
-Definition tensor_algebra := (to_algebra_algebra V) to_tensor_algebra.
-Definition vector_to_tensor_homo := (to_algebra_homo V) to_tensor_algebra.
-Definition vector_to_tensor := module_homo_f vector_to_tensor_homo.
-
-Theorem tensor_algebra_universal : @initial (TO_ALGEBRA V) to_tensor_algebra.
-Proof.
-    apply (ex_proof tensor_algebra_ex).
-Qed.
-
 End TensorAlgebraCategory.
-
-Arguments vector_to_tensor {F V}.

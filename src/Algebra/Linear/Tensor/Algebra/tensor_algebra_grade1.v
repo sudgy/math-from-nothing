@@ -1,12 +1,12 @@
 Require Import init.
 
-Require Export tensor_algebra_direct_universal.
+Require Export tensor_algebra_defs.
+Require Export tensor_algebra_base.
 Require Import algebra_category.
 Require Import linear_span.
 Require Import linear_subspace.
 Require Import linear_grade_sum.
 Require Import linear_extend.
-Require Import tensor_algebra_direct_inclusions.
 
 Require Import nat.
 Require Import list.

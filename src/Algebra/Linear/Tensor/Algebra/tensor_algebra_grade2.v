@@ -1,7 +1,6 @@
 Require Import init.
 
-Require Import tensor_algebra_direct_grade1.
-Require Import tensor_algebra_direct_inclusions.
+Require Import tensor_algebra_grade1.
 Require Import algebra_category.
 Require Import category_initterm.
 Require Import linear_grade.
@@ -45,7 +44,7 @@ Proof.
         pose (TNG := tensor_n_grade V).
         pose (h2 (i : nat) (a : algebra_V (tensor_algebra_n V))
             (H : of_grade i a) := algebra_homo_f h1 [ex_val H|]).
-        assert (linear_extend_plus_base h2) as h2_plus.
+        assert (linear_extend_plus_base (VG := TNG) h2) as h2_plus.
         {
             intros u' v' i iu iv.
             unfold h2.
@@ -60,7 +59,7 @@ Proof.
             rewrite uv_eq.
             reflexivity.
         }
-        assert (linear_extend_scalar_base h2) as h2_scalar.
+        assert (linear_extend_scalar_base (VG := TNG) h2) as h2_scalar.
         {
             intros a v' i iv.
             unfold h2.
@@ -74,7 +73,7 @@ Proof.
             rewrite av_eq.
             reflexivity.
         }
-        pose (h3 := linear_extend h2
+        pose (h3 := linear_extend (VG := TNG) h2
             : algebra_V (tensor_algebra_n V) → algebra_V A).
         assert (∀ u v, h3 (u + v) = h3 u + h3 v) as h3_plus.
         {
@@ -217,12 +216,11 @@ Lemma tensor_algebra_iso_ex :
             module_homo_f (vector_to_tensor_homo V) x.
 Proof.
     pose proof (initial_unique _ _
-        tensor_algebra_n_universal (ex_proof (tensor_algebra_ex V)))
+        tensor_algebra_n_universal (tensor_algebra_ex V))
         as [[f f_eq] [[g g_eq] [fg gf]]].
     cbn in *.
     unfold to_algebra_set in *; cbn in *.
-    change (ex_type_val (ex_to_type (tensor_algebra_ex V)))
-        with (to_tensor_algebra V) in *.
+    change (ex_type_val (ex_to_type (_))) with (to_tensor_algebra V) in *.
     inversion fg as [eq1]; clear fg.
     inversion gf as [eq2]; clear gf.
     exists f.
