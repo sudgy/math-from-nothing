@@ -179,7 +179,6 @@
 ./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_scalar.v
 ./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_vector.v
 ./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_universal.v
-./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_universal2.v
 ./src/Algebra/Linear/Tensor/Algebra/Direct/tensor_algebra_direct_base.v
 ./src/Algebra/Linear/Tensor/Algebra/Direct/tensor_algebra_direct_universal.v
 ./src/Algebra/Linear/Tensor/Algebra/tensor_algebra_base.v

@@ -322,37 +322,6 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
-Proof.
-    rewrite <- (scalar_lanni 0).
-    rewrite vector_to_tensor_scalar.
-    rewrite scalar_lanni.
-    reflexivity.
-Qed.
-
-Theorem vector_to_tensor_neg : ∀ v, vector_to_tensor (-v) = -vector_to_tensor v.
-Proof.
-    intros v.
-    rewrite <- scalar_neg_one.
-    rewrite vector_to_tensor_scalar.
-    apply scalar_neg_one.
-Qed.
-(*
-Theorem vector_to_tensor_eq : ∀ u v,
-    vector_to_tensor u = vector_to_tensor v → u = v.
-Proof.
-    apply homo_zero_inj.
-    1: split; apply vector_to_tensor_plus.
-    1: split; apply vector_to_tensor_neg.
-    intros v eq.
-    symmetry in eq.
-    unfold vector_to_tensor, zero in eq; cbn in eq.
-    unfold to_qring in eq.
-    equiv_simpl in eq.
-    rewrite neg_zero, plus_rid in eq.
-    destruct eq as [l l_eq].
-Qed.
-*)
 End TensorAlgebra.
 
 Definition tensor_algebra_object {F : CRingObj} (V : ModuleObj F) := make_algebra F

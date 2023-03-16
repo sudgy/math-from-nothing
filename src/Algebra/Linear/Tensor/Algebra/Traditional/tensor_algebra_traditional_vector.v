@@ -87,19 +87,6 @@ Let k_tensor k := module_V (tensor_power V k).
 Definition vector_to_tensor v := power_to_tensor V (k := 1)
     (tensor_mult V (cring_module F) v 1).
 
-Theorem vector_to_tensor_eq : ∀ u v,
-    vector_to_tensor u = vector_to_tensor v → u = v.
-Proof.
-    intros u v eq.
-    unfold vector_to_tensor in eq.
-    apply power_to_tensor_eq in eq.
-    apply (f_equal (tensor_product_rid_f V)) in eq.
-    do 2 rewrite tensor_product_rid_eq in eq.
-    pose (X := module_scalar_id V).
-    do 2 rewrite scalar_id in eq.
-    exact eq.
-Qed.
-
 Theorem vector_to_tensor_plus : ∀ u v,
     vector_to_tensor (u + v) = vector_to_tensor u + vector_to_tensor v.
 Proof.
@@ -117,21 +104,6 @@ Proof.
     unfold vector_to_tensor.
     rewrite (tensor_lscalar V).
     rewrite (power_to_tensor_scalar V).
-    reflexivity.
-Qed.
-
-Theorem vector_to_tensor_zero : vector_to_tensor 0 = 0.
-Proof.
-    rewrite <- (scalar_lanni 0).
-    rewrite vector_to_tensor_scalar.
-    rewrite scalar_lanni.
-    reflexivity.
-Qed.
-
-Theorem vector_to_tensor_homogeneous : ∀ v, homogeneous (vector_to_tensor v).
-Proof.
-    intros v.
-    exists 1, (tensor_mult V (cring_module F) v 1).
     reflexivity.
 Qed.
 (* begin hide *)
