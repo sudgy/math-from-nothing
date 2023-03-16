@@ -1,5 +1,6 @@
 Require Import init.
 
+Require Export tensor_algebra_defs.
 Require Import tensor_algebra_direct_base.
 Require Import algebra_category.
 Require Import category_initterm.
@@ -16,96 +17,13 @@ Section TensorAlgebraCategory.
 
 (* end hide *)
 Context {F : CRingObj} (V : ModuleObj F).
-Let U := cring_U F.
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPA := cring_plus_assoc F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMA := cring_mult_assoc F.
-Let UMC := cring_mult_comm F.
-Let UMO := cring_mult_lid F.
-Let UMD := cring_ldist F.
-Let VP := module_plus V.
-Let VZ := module_zero V.
-Let VN := module_neg V.
-Let VPA := module_plus_assoc V.
-Let VPC := module_plus_comm V.
-Let VPZ := module_plus_lid V.
-Let VPN := module_plus_linv V.
-Let VSM := module_scalar V.
-Let VSMO := module_scalar_id V.
-Let VSML := module_scalar_ldist V.
-Let VSMR := module_scalar_rdist V.
-Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP VZ VN VPA
-    VPC VPZ VPN VSM VSMO VSML VSMR.
-
-Record to_algebra := make_to_algebra {
-    to_algebra_algebra : AlgebraObj F;
-    to_algebra_homo : ModuleObjHomomorphism V (algebra_module to_algebra_algebra);
-}.
-
-Definition to_algebra_set (f g : to_algebra)
-    (h : cat_morphism (ALGEBRA F)
-                      (to_algebra_algebra f)
-                      (to_algebra_algebra g))
-    := ∀ x, algebra_homo_f h (module_homo_f (to_algebra_homo f) x) =
-            module_homo_f (to_algebra_homo g) x.
-
-Definition to_algebra_compose {F G H : to_algebra}
-    (f : set_type (to_algebra_set G H)) (g : set_type (to_algebra_set F G))
-    := [f|] ∘ [g|].
-
-Lemma to_algebra_set_compose_in {F' G H : to_algebra} :
-    ∀ (f : set_type (to_algebra_set G H)) g,
-    to_algebra_set F' H (to_algebra_compose f g).
-Proof.
-    intros [f f_eq] [g g_eq].
-    unfold to_algebra_set in *.
-    unfold to_algebra_compose; cbn.
-    intros x.
-    rewrite g_eq.
-    apply f_eq.
-Qed.
-
-Lemma to_algebra_set_id_in : ∀ f : to_algebra, to_algebra_set f f 𝟙.
-Proof.
-    intros f.
-    unfold to_algebra_set.
-    intros x.
-    cbn.
-    reflexivity.
-Qed.
-
-Program Instance TO_ALGEBRA : Category := {
-    cat_U := to_algebra;
-    cat_morphism f g := set_type (to_algebra_set f g);
-    cat_compose {F G H} f g := [_|to_algebra_set_compose_in f g];
-    cat_id f := [_|to_algebra_set_id_in f];
-}.
-Next Obligation.
-    apply set_type_eq; cbn.
-    apply (@cat_assoc (ALGEBRA F)).
-Qed.
-Next Obligation.
-    apply set_type_eq; cbn.
-    apply (@cat_lid (ALGEBRA F)).
-Qed.
-Next Obligation.
-    apply set_type_eq; cbn.
-    apply (@cat_rid (ALGEBRA F)).
-Qed.
 
 Let f := make_module_homomorphism F V (algebra_module (tensor_algebra_object V))
     (vector_to_tensor V)
     (vector_to_tensor_plus V)
     (vector_to_tensor_scalar V).
 
-Definition tensor_to_algebra_base := make_to_algebra _ f.
+Definition tensor_to_algebra_base := make_to_algebra _ _ f.
 
 Let FR_module := free_linear F (list (module_V V)).
 Let FR := module_V FR_module.
@@ -129,7 +47,7 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_scalar_comp FR_grade FR_mult FR_ldist FR_rdist FR_lscalar FR_rscalar
     FR_mult_assoc FR_one FR_mult_lid FR_mult_rid.
 
-Lemma tensor_algebra_ex_base : @initial TO_ALGEBRA tensor_to_algebra_base.
+Lemma tensor_algebra_ex_base : @initial (TO_ALGEBRA V) tensor_to_algebra_base.
 Proof.
     pose (TAP := tensor_algebra_plus V).
     pose (TAZ := tensor_algebra_zero V).
@@ -397,18 +315,18 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem tensor_algebra_ex : ∃ T, @initial TO_ALGEBRA T.
+Theorem tensor_algebra_ex : ∃ T, @initial (TO_ALGEBRA V) T.
 Proof.
     exists tensor_to_algebra_base.
     exact tensor_algebra_ex_base.
 Qed.
 
 Definition to_tensor_algebra := ex_val tensor_algebra_ex.
-Definition tensor_algebra := to_algebra_algebra to_tensor_algebra.
-Definition vector_to_tensor_homo := to_algebra_homo to_tensor_algebra.
+Definition tensor_algebra := (to_algebra_algebra V) to_tensor_algebra.
+Definition vector_to_tensor_homo := (to_algebra_homo V) to_tensor_algebra.
 Definition vector_to_tensor := module_homo_f vector_to_tensor_homo.
 
-Theorem tensor_algebra_universal : @initial TO_ALGEBRA to_tensor_algebra.
+Theorem tensor_algebra_universal : @initial (TO_ALGEBRA V) to_tensor_algebra.
 Proof.
     apply (ex_proof tensor_algebra_ex).
 Qed.

@@ -173,6 +173,7 @@
 ./src/Algebra/Linear/Tensor/Power/tensor_power_base.v
 ./src/Algebra/Linear/Tensor/Power/tensor_power_universal.v
 ./src/Algebra/Linear/Tensor/Power/tensor_power.v
+./src/Algebra/Linear/Tensor/Algebra/tensor_algebra_defs.v
 ./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_base.v
 ./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_mult.v
 ./src/Algebra/Linear/Tensor/Algebra/Traditional/tensor_algebra_traditional_scalar.v
