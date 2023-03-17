@@ -178,6 +178,36 @@ Qed.
 
 Unset Keyed Unification.
 
+Theorem list_image_perm {U V} : ∀ al bl (f : U → V),
+    list_permutation al bl →
+    list_permutation (list_image al f) (list_image bl f).
+Proof.
+    intros al bl f albli x.
+    revert bl albli.
+    induction al as [|a al]; intros.
+    -   apply list_perm_nil_eq in albli.
+        subst bl.
+        rewrite list_image_end.
+        cbn.
+        reflexivity.
+    -   assert (in_list (a :: al) a) as a_in by (left; reflexivity).
+        apply (list_perm_in albli) in a_in.
+        apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
+        pose proof (list_perm_split l1 l2 a) as eq.
+        pose proof (list_perm_trans albli eq) as eq2.
+        apply list_perm_add_eq in eq2.
+        specialize (IHal _ eq2).
+        rewrite list_image_conc.
+        do 2 rewrite list_image_add.
+        rewrite list_count_conc.
+        cbn.
+        rewrite IHal.
+        rewrite list_image_conc, list_count_conc.
+        do 2 rewrite plus_assoc.
+        apply rplus.
+        apply plus_comm.
+Qed.
+
 Lemma ulist_image_wd A B : ∀ (f : A → B) a b, list_permutation a b →
     to_equiv (ulist_equiv B) (list_image a f) =
     to_equiv (ulist_equiv B) (list_image b f).

@@ -18,33 +18,44 @@ Qed.
 Definition in_ulist {U} l a
     := unary_op (E := ulist_equiv U) (in_ulist_wd U a) l.
 
+Theorem list_perm_unique {U} : ∀ al bl : list U,
+    list_permutation al bl → list_unique al → list_unique bl.
+Proof.
+    intros al bl albl al_uni.
+    revert bl albl al_uni.
+    induction al as [|a al]; intros.
+    -   apply list_perm_nil_eq in albl.
+        rewrite <- albl.
+        exact true.
+    -   destruct al_uni as [a_nin al_uni].
+        assert (in_list (a :: al) a) as a_in by (left; reflexivity).
+        apply (list_perm_in albl) in a_in.
+        apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
+        pose proof (list_perm_split l1 l2 a) as eq.
+        pose proof (list_perm_trans albl eq) as eq2.
+        apply list_perm_add_eq in eq2.
+        specialize (IHal _ eq2 al_uni).
+        apply list_unique_conc.
+        rewrite list_conc_add.
+        cbn.
+        split; [>|apply list_unique_conc; exact IHal].
+        intros a_in.
+        apply (list_perm_trans2 (list_perm_conc _ _)) in eq2.
+        apply (list_perm_in eq2) in a_in.
+        contradiction.
+Qed.
+
 Lemma ulist_unique_wd U : ∀ l1 l2 : list U, list_permutation l1 l2 →
     list_unique l1 = list_unique l2.
 Proof.
     intros l1 l2 eq.
     apply propositional_ext; split.
-    -   exact (list_perm_unique eq).
+    -   exact (list_perm_unique _ _ eq).
     -   apply list_perm_sym in eq.
-        exact (list_perm_unique eq).
+        exact (list_perm_unique _ _ eq).
 Qed.
 Definition ulist_unique {U} :=
     unary_op (E := ulist_equiv U) (ulist_unique_wd U).
-
-Lemma list_filter_conc {U} : ∀ (S : U → Prop) l1 l2,
-    list_filter S (l1 ++ l2) = list_filter S l1 ++ list_filter S l2.
-Proof.
-    intros S l1 l2.
-    induction l1 as [|a l1].
-    -   cbn.
-        do 2 rewrite list_conc_lid.
-        reflexivity.
-    -   rewrite list_conc_add.
-        cbn.
-        rewrite IHl1.
-        case_if [Sa|nSa].
-        +   apply list_conc_add.
-        +   reflexivity.
-Qed.
 
 Lemma ulist_filter_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
     to_equiv (ulist_equiv U) (list_filter S l1) =
@@ -82,15 +93,44 @@ Qed.
 Definition ulist_filter {U} S :=
     unary_op (E := ulist_equiv U) (ulist_filter_wd U S).
 
+Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
+    list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
+Proof.
+    intros S l1 l2 eq Sl1.
+    revert l2 eq.
+    induction l1; intros.
+    -   apply list_perm_nil_eq in eq.
+        subst l2.
+        exact true.
+    -   destruct Sl1 as [a_in Sl1].
+        assert (in_list (a :: l1) a) as a_in' by (left; reflexivity).
+        apply (list_perm_in eq) in a_in'.
+        apply in_list_split in a_in' as [l3 [l4 eq']]; subst l2.
+        pose proof (list_perm_split l3 l4 a) as eq2.
+        pose proof (list_perm_trans eq eq2) as eq3.
+        apply list_perm_add_eq in eq3.
+        specialize (IHl1 Sl1 _ eq3).
+        clear eq eq2 eq3.
+        induction l3 as [|b l3].
+        +   rewrite list_conc_lid in *.
+            cbn.
+            split; assumption.
+        +   rewrite list_conc_add in *.
+            cbn in *.
+            split.
+            *   apply IHl1.
+            *   apply IHl3; apply IHl1.
+Qed.
+
 Lemma ulist_prop_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
     list_prop S l1 = list_prop S l2.
 Proof.
     intros S l1 l2 eq.
     apply propositional_ext.
     split.
-    -   exact (list_prop_perm S eq).
+    -   exact (list_prop_perm S _ _ eq).
     -   apply list_perm_sym in eq.
-        exact (list_prop_perm S eq).
+        exact (list_prop_perm S _ _ eq).
 Qed.
 Definition ulist_prop {U} S :=
     unary_op (E := ulist_equiv U) (ulist_prop_wd U S).

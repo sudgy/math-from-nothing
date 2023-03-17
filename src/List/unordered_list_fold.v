@@ -24,10 +24,27 @@ Context {U} `{
 }.
 
 (* end hide *)
-Lemma ulist_sum_wd : ∀ l1 l2 : list U, list_permutation l1 l2 →
+
+Theorem ulist_sum_wd : ∀ l1 l2, list_permutation l1 l2 →
     list_sum l1 = list_sum l2.
 Proof.
-    exact list_sum_perm.
+    induction l1 as [|a l1]; intros l2 eq.
+    -   apply list_perm_nil_eq in eq.
+        subst l2.
+        reflexivity.
+    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+        apply (list_perm_in eq) in a_in.
+        apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
+        rewrite list_sum_plus.
+        cbn.
+        pose proof (list_perm_split l3 l4 a) as eq2.
+        pose proof (list_perm_trans eq eq2) as eq3.
+        apply list_perm_add_eq in eq3.
+        rewrite (IHl1 _ eq3).
+        rewrite list_sum_plus.
+        do 2 rewrite plus_assoc.
+        apply rplus.
+        apply plus_comm.
 Qed.
 Definition ulist_sum := unary_op (E := ulist_equiv U) ulist_sum_wd.
 
@@ -86,6 +103,27 @@ Context {U} `{
 }.
 
 (* end hide *)
+Theorem list_prod_perm : ∀ l1 l2, list_permutation l1 l2 →
+    list_prod l1 = list_prod l2.
+Proof.
+    induction l1 as [|a l1]; intros l2 eq.
+    -   apply list_perm_nil_eq in eq.
+        subst l2.
+        reflexivity.
+    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+        apply (list_perm_in eq) in a_in.
+        apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
+        rewrite list_prod_mult.
+        cbn.
+        pose proof (list_perm_split l3 l4 a) as eq2.
+        pose proof (list_perm_trans eq eq2) as eq3.
+        apply list_perm_add_eq in eq3.
+        rewrite (IHl1 _ eq3).
+        rewrite list_prod_mult.
+        do 2 rewrite mult_assoc.
+        apply rmult.
+        apply mult_comm.
+Qed.
 Definition ulist_prod := unary_op (E := ulist_equiv U) list_prod_perm.
 
 Theorem ulist_prod_end : ulist_prod ulist_end = 1.

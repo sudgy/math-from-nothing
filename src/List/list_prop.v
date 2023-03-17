@@ -170,6 +170,22 @@ Theorem list_unique_conc {U} : ∀ l1 l2 : list U,
         exact IHl1.
 Qed.
 
+Lemma list_filter_conc {U} : ∀ (S : U → Prop) l1 l2,
+    list_filter S (l1 ++ l2) = list_filter S l1 ++ list_filter S l2.
+Proof.
+    intros S l1 l2.
+    induction l1 as [|a l1].
+    -   cbn.
+        do 2 rewrite list_conc_lid.
+        reflexivity.
+    -   rewrite list_conc_add.
+        cbn.
+        rewrite IHl1.
+        case_if [Sa|nSa].
+        +   apply list_conc_add.
+        +   reflexivity.
+Qed.
+
 Theorem list_filter_in_S {U} : ∀ S (l : list U) x,
         in_list (list_filter S l) x → S x.
     intros S l x x_in.
