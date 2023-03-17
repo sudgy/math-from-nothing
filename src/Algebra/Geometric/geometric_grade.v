@@ -133,10 +133,10 @@ Qed.
 
 Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
     list_prop2 (λ a b, [B|] a b = 0) l →
-    of_grade (H9 := geo_grade) (list_size l) (list_prod (list_image l φ)).
+    of_grade (H9 := geo_grade) (list_size l) (list_prod (list_image φ l)).
 Proof.
     intros l l_orth.
-    exists (list_prod (list_image l (vector_to_ext V))).
+    exists (list_prod (list_image (vector_to_ext V) l)).
     induction l as [|v l].
     {
         rewrite list_image_end; cbn.

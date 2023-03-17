@@ -68,7 +68,7 @@ Local Open Scope geo_scope.
 
 (* end hide *)
 Definition versor (A : geo B) := ∃ l : list (module_V V),
-        A = list_prod (list_image l φ).
+        A = list_prod (list_image φ l).
 
 Theorem versor_reverse : ∀ A, versor A → versor (A†).
 Proof.

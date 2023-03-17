@@ -392,7 +392,7 @@ Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H9 := tensor_grade) i x �
     ∃ l : ulist (cring_U F *
         set_type (λ l : list (module_V V), list_size l = i)),
     ulist_sum (ulist_image l
-        (λ x, fst x · list_prod (list_image [snd x|] vector_to_tensor))) = x.
+        (λ x, fst x · list_prod (list_image vector_to_tensor [snd x|]))) = x.
 Proof.
     intros x' i [x [x_in x_eq]]; subst x'.
     pose proof (tensor_n_sum_grade V x x_in) as [l l_eq].
@@ -433,7 +433,7 @@ Proof.
         rewrite (proof_irrelevance _ (tensor_n_one_in V)).
         symmetry; apply algebra_homo_one.
     }
-    unfold list_image; fold list_image.
+    unfold list_image. (*; fold list_image.*)
     cbn.
     rewrite IHl at 1; clear IHl.
     pose proof (vector_to_tensor_n_in V v) as v_in.
@@ -449,7 +449,7 @@ Qed.
 
 Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
     x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image (snd p) (λ v, vector_to_tensor v)))).
+        (list_image (λ v, vector_to_tensor v) (snd p)))).
 Proof.
     intros x.
 

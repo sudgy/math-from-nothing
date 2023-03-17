@@ -6,7 +6,7 @@ Require Import mult_ring.
 Fixpoint rfold {U} (op : U → U → U) (init : U) (l : list U) :=
     match l with
     | [] => init
-    | a :: l' => op a (rfold op init l')
+    | a ꞉ l' => op a (rfold op init l')
     end.
 Arguments rfold : simpl never.
 
@@ -16,7 +16,7 @@ Proof.
 Qed.
 
 Theorem rfold_add {U} (op : U → U → U) init : ∀ a l,
-    rfold op init (a :: l) = op a (rfold op init l).
+    rfold op init (a ꞉ l) = op a (rfold op init l).
 Proof.
     reflexivity.
 Qed.
@@ -24,13 +24,13 @@ Qed.
 Fixpoint list_sum {U} `{Plus U, Zero U} (l : list U) :=
     match l with
     | list_end => zero
-    | a :: l' => a + list_sum l'
+    | a ꞉ l' => a + list_sum l'
     end.
 
 Fixpoint list_prod {U} `{Mult U, One U} (l : list U) :=
     match l with
     | list_end => one
-    | a :: l' => a * list_prod l'
+    | a ꞉ l' => a * list_prod l'
     end.
 
 Section Sum.
@@ -38,7 +38,7 @@ Section Sum.
 Context {U} `{AllPlus U}.
 
 Theorem list_sum_plus :
-    ∀ l1 l2, list_sum (l1 ++ l2) = list_sum l1 + list_sum l2.
+    ∀ l1 l2, list_sum (l1 + l2) = list_sum l1 + list_sum l2.
 Proof.
     intros l1 l2.
     induction l1.
@@ -51,7 +51,7 @@ Proof.
         apply plus_assoc.
 Qed.
 
-Theorem list_sum_neg : ∀ l, -list_sum l = list_sum (list_image l neg).
+Theorem list_sum_neg : ∀ l, -list_sum l = list_sum (list_image neg l).
 Proof.
     induction l.
     -   cbn.
@@ -63,7 +63,7 @@ Proof.
 Qed.
 
 Theorem list_sum_minus : ∀ al bl,
-    list_sum al - list_sum bl = list_sum (al ++ (list_image bl neg)).
+    list_sum al - list_sum bl = list_sum (al + (list_image neg bl)).
 Proof.
     intros al bl.
     rewrite list_sum_neg.
@@ -80,7 +80,7 @@ Context {U} `{AllMult U}.
 
 (* end hide *)
 Theorem list_prod_mult :
-    ∀ l1 l2, list_prod (l1 ++ l2) = list_prod l1 * list_prod l2.
+    ∀ l1 l2, list_prod (l1 + l2) = list_prod l1 * list_prod l2.
 Proof.
     intros l1 l2.
     induction l1.

@@ -7,12 +7,12 @@ Require Export nat.
 
 Fixpoint list_size {A : Type} (l : list A) :=
     match l with
-    | a :: l' => nat_suc (list_size l')
+    | a ꞉ l' => nat_suc (list_size l')
     | list_end => 0
     end.
 
 Theorem list_size_conc {U} : ∀ l1 l2 : list U,
-    list_size (l1 ++ l2) = list_size (l2 ++ l1).
+    list_size (l1 + l2) = list_size (l2 + l1).
 Proof.
     induction l1; intros l2.
     -   rewrite list_conc_lid, list_conc_rid.
@@ -30,7 +30,7 @@ Proof.
 Qed.
 
 Theorem list_size_plus {U} : ∀ l1 l2 : list U,
-    list_size (l1 ++ l2) = list_size l1 + list_size l2.
+    list_size (l1 + l2) = list_size l1 + list_size l2.
 Proof.
     intros l1 l2.
     induction l1.
@@ -45,7 +45,7 @@ Proof.
 Qed.
 
 Theorem list_image_size {A B} : ∀ l (f : A → B),
-    list_size (list_image l f) = list_size l.
+    list_size (list_image f l) = list_size l.
 Proof.
     intros l f.
     induction l.
@@ -59,11 +59,11 @@ Qed.
 Fixpoint list_count {U} (l : list U) (a : U) : nat :=
     match l with
     | [] => 0
-    | x :: l' => (If x = a then 1 else 0) + list_count l' a
+    | x ꞉ l' => (If x = a then 1 else 0) + list_count l' a
 end.
 
 Theorem list_count_conc {U} : ∀ l1 l2 (a : U),
-    list_count (l1 ++ l2) a = list_count l1 a + list_count l2 a.
+    list_count (l1 + l2) a = list_count l1 a + list_count l2 a.
 Proof.
     intros l1 l2 a.
     induction l1.

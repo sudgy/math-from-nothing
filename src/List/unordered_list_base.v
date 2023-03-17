@@ -21,7 +21,7 @@ Notation "'ulist' U" := (equiv_type (ulist_equiv U)) (at level 1).
 Definition ulist_end {U} := to_equiv (ulist_equiv U) list_end.
 
 Lemma uadd_wd U : ∀ (a : U) l1 l2,
-    list_permutation l1 l2 → list_permutation (a :: l1) (a :: l2).
+    list_permutation l1 l2 → list_permutation (a ꞉ l1) (a ꞉ l2).
 Proof.
     intros a l1 l2 l_perm.
     apply list_perm_skip.
@@ -38,7 +38,7 @@ Proof.
     equiv_get_value l.
     induction l.
     -   exact S_end.
-    -   assert (to_equiv (ulist_equiv U) (a :: l) =
+    -   assert (to_equiv (ulist_equiv U) (a ꞉ l) =
             a ::: (to_equiv (ulist_equiv U) l)) as eq.
         {
             unfold ulist_add; equiv_simpl.
@@ -80,7 +80,7 @@ Qed.
 
 Lemma uconc_wd U : ∀ al1 al2 bl1 bl2 : list U,
     list_permutation al1 al2 → list_permutation bl1 bl2 →
-    list_permutation (al1 ++ bl1) (al2 ++ bl2).
+    list_permutation (al1 + bl1) (al2 + bl2).
 Proof.
     intros al1 al2 bl1 bl2 eq1 eq2.
     pose proof (list_perm_rpart al1 eq2).
@@ -139,7 +139,7 @@ Proof.
     intros a b c.
     equiv_get_value a b c.
     unfold ulist_conc; equiv_simpl.
-    rewrite list_conc_assoc.
+    rewrite plus_assoc.
     apply list_perm_refl.
 Qed.
 
@@ -180,7 +180,7 @@ Unset Keyed Unification.
 
 Theorem list_image_perm {U V} : ∀ al bl (f : U → V),
     list_permutation al bl →
-    list_permutation (list_image al f) (list_image bl f).
+    list_permutation (list_image f al) (list_image f bl).
 Proof.
     intros al bl f albli x.
     revert bl albli.
@@ -190,7 +190,7 @@ Proof.
         rewrite list_image_end.
         cbn.
         reflexivity.
-    -   assert (in_list (a :: al) a) as a_in by (left; reflexivity).
+    -   assert (in_list (a ꞉ al) a) as a_in by (left; reflexivity).
         apply (list_perm_in albli) in a_in.
         apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
         pose proof (list_perm_split l1 l2 a) as eq.
@@ -209,8 +209,8 @@ Proof.
 Qed.
 
 Lemma ulist_image_wd A B : ∀ (f : A → B) a b, list_permutation a b →
-    to_equiv (ulist_equiv B) (list_image a f) =
-    to_equiv (ulist_equiv B) (list_image b f).
+    to_equiv (ulist_equiv B) (list_image f a) =
+    to_equiv (ulist_equiv B) (list_image f b).
 Proof.
     intros a b f ab.
     equiv_simpl.

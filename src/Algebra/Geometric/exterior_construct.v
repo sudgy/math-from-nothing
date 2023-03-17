@@ -499,7 +499,7 @@ Qed.
 
 Theorem ext_sum : ∀ x : ext, ∃ l : ulist (cring_U F * list (module_V V)),
     x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image (snd p) (λ v, vector_to_ext v)))).
+        (list_image (λ v, vector_to_ext v) (snd p)))).
 Proof.
     intros x.
     equiv_get_value x.

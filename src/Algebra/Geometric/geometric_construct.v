@@ -356,7 +356,7 @@ Qed.
 
 Theorem geo_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
     x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image (snd p) (λ v, φ v)))).
+        (list_image (λ v, φ v) (snd p)))).
 Proof.
     intros x.
     equiv_get_value x.

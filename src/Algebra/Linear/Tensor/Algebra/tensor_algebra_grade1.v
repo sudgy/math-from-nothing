@@ -22,7 +22,7 @@ Section Single.
 Variable n : nat.
 
 Definition tensor_n_base (X : algebra_V (tensor_algebra V)) :=
-    ∃ l, X = list_prod (list_image l vector_to_tensor) ∧ list_size l = n.
+    ∃ l, X = list_prod (list_image vector_to_tensor l) ∧ list_size l = n.
 
 Definition tensor_n_subspace := linear_span_subspace (cring_U F) tensor_n_base.
 
@@ -202,7 +202,7 @@ Proof.
     destruct a_in as [u [a_eq u_size]]; subst a.
     destruct b_in as [v [b_eq v_size]]; subst b.
     assert (linear_combination_set ((one (U := U), list_prod
-        (list_image (u ++ v) vector_to_tensor)) ::: ulist_end)) as comb.
+        (list_image vector_to_tensor (u + v))) ::: ulist_end)) as comb.
     {
         unfold linear_combination_set.
         rewrite ulist_image_add, ulist_image_end.
@@ -223,7 +223,7 @@ Proof.
         rewrite ulist_prop_add.
         split; [>|apply ulist_prop_end].
         cbn.
-        exists (u ++ v).
+        exists (u + v).
         split; [>reflexivity|].
         rewrite <- u_size, <- v_size.
         apply list_size_plus.
@@ -476,7 +476,7 @@ Local Instance tensor_n_one : One (module_V tensor_n_algebra_module) := {
 }.
 
 Lemma tensor_n_list_in : ∀ l, subspace_set (tensor_n_subspace (list_size l))
-    (list_prod (list_image l vector_to_tensor)).
+    (list_prod (list_image vector_to_tensor l)).
 Proof.
     intros l.
     cbn.
@@ -486,7 +486,7 @@ Proof.
 Qed.
 
 Lemma to_tensor_n_list : ∀ l, to_tensor_n [_|tensor_n_list_in l] =
-    list_prod (list_image l vector_to_tensor_n).
+    list_prod (list_image vector_to_tensor_n l).
 Proof.
     intros l.
     induction l.
@@ -494,7 +494,7 @@ Proof.
         unfold one at 2; cbn.
         apply f_equal.
         apply set_type_eq; reflexivity.
-    -   unfold list_image; fold list_image.
+    -   unfold list_image; fold (list_image vector_to_tensor_n).
         cbn.
         rewrite <- IHl.
         unfold vector_to_tensor_n.
@@ -599,7 +599,7 @@ Qed.
 
 Theorem tensor_n_sum : ∀ x, ∃ l : ulist (U * list (module_V V)),
     x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image (snd p) vector_to_tensor_n))).
+        (list_image vector_to_tensor_n (snd p)))).
 Proof.
     intros x.
     induction x as [|u v i iu iv IHx] using grade_induction.
@@ -611,7 +611,7 @@ Proof.
     destruct IHx as [vl v_eq].
     assert (∃ ul : ulist (U * list (module_V V)),
         u = ulist_sum (ulist_image ul (λ p, fst p · list_prod
-            (list_image (snd p) vector_to_tensor_n)))) as [ul u_eq].
+            (list_image vector_to_tensor_n (snd p))))) as [ul u_eq].
     {
         clear v iv vl v_eq.
         pose proof (tensor_n_sum_grade _ iu) as [l l_eq].

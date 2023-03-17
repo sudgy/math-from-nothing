@@ -32,14 +32,14 @@ Record multilinear_from := make_multilinear {
     multilinear_from_f : ∀ l : list (module_V V), list_size l = n →
         module_V multilinear_from_module;
     multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
-        multilinear_from_f (l1 ++ (a + b) :: l2) eq1 =
+        multilinear_from_f (l1 + (a + b) ꞉ l2) eq1 =
         @plus _ (module_plus multilinear_from_module)
-            (multilinear_from_f (l1 ++ a :: l2) eq2)
-            (multilinear_from_f (l1 ++ b :: l2) eq3);
+            (multilinear_from_f (l1 + a ꞉ l2) eq2)
+            (multilinear_from_f (l1 + b ꞉ l2) eq3);
     multilinear_from_scalar : ∀ l1 a v l2 eq1 eq2,
-        multilinear_from_f (l1 ++ (a · v) :: l2) eq1 =
+        multilinear_from_f (l1 + (a · v) ꞉ l2) eq1 =
         @scalar_mult _ _ (module_scalar multilinear_from_module)
-            a (multilinear_from_f (l1 ++ v :: l2) eq2)
+            a (multilinear_from_f (l1 + v ꞉ l2) eq2)
 }.
 
 Definition multilinear_from_set (f g : multilinear_from)
@@ -110,8 +110,8 @@ Proof.
 Qed.
 
 Lemma vectors_to_power_add :
-    ∀ a l (eq1 : list_size (a :: l) = nat_suc n) eq2,
-    vectors_to_power_eq (a :: l) eq1 =
+    ∀ a l (eq1 : list_size (a ꞉ l) = nat_suc n) eq2,
+    vectors_to_power_eq (a ꞉ l) eq1 =
     tensor_mult V (tensor_power V _) a (vectors_to_power_eq l eq2).
 Proof.
     intros a l eq1 eq2.
@@ -122,9 +122,9 @@ Proof.
 Qed.
 
 Lemma tensor_multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
-    vectors_to_power_eq (l1 ++ (a + b) :: l2) eq1 =
-    vectors_to_power_eq (l1 ++ a :: l2) eq2 +
-    vectors_to_power_eq (l1 ++ b :: l2) eq3.
+    vectors_to_power_eq (l1 + (a + b) ꞉ l2) eq1 =
+    vectors_to_power_eq (l1 + a ꞉ l2) eq2 +
+    vectors_to_power_eq (l1 + b ꞉ l2) eq3.
 Proof.
     intros l1 a b l2 eq1 eq2 eq3.
     apply tensor_power_eq.
@@ -155,8 +155,8 @@ Proof.
 Qed.
 
 Lemma tensor_multilinear_from_scalar : ∀ l1 a v l2 eq1 eq2,
-    vectors_to_power_eq (l1 ++ (a · v) :: l2) eq1 =
-    a · vectors_to_power_eq (l1 ++ v :: l2) eq2.
+    vectors_to_power_eq (l1 + (a · v) ꞉ l2) eq1 =
+    a · vectors_to_power_eq (l1 + v ꞉ l2) eq2.
 Proof.
     intros l1 a v l2 eq1 eq2.
     apply tensor_power_eq.
@@ -165,12 +165,18 @@ Proof.
     destruct eq2; cbn.
     clear eq1.
     induction l1.
-    -   unfold list_conc; cbn.
+    -   unfold plus; cbn.
+        unfold list_conc; cbn.
         rewrite (tensor_lscalar V).
         reflexivity.
     -   cbn in *.
+        rewrite list_conc_add.
+        cbn.
+        unfold plus at 6; cbn.
+        unfold list_conc; fold (list_conc (U := module_V V)).
+        cbn.
         rewrite <- (tensor_rscalar V
-            (tensor_power V (list_size (l1 ++ v :: l2)))).
+            (tensor_power V (list_size (list_conc l1 (v ꞉ l2))))).
         apply generic_tensor_mult_eq; [>reflexivity|].
         exact IHl1.
 Qed.
@@ -256,34 +262,34 @@ Proof.
             pose (gMSML := module_scalar_ldist gM).
             pose (gMSMC := module_scalar_comp gM).
             assert (∀ (a : module_V V) l,
-                list_size l = n → list_size (a :: l) = nat_suc n) as l_eq.
+                list_size l = n → list_size (a ꞉ l) = nat_suc n) as l_eq.
             {
                 intros a l eq.
                 cbn.
                 apply f_equal.
                 exact eq.
             }
-            pose (f1 v l eq := multilinear_from_f V (nat_suc n) g (v :: l) (l_eq _ _ eq)).
+            pose (f1 v l eq := multilinear_from_f V (nat_suc n) g (v ꞉ l) (l_eq _ _ eq)).
             assert (∀ v, ∀ l1 a b l2 eq1 eq2 eq3,
-                f1 v (l1 ++ (a + b) :: l2) eq1 =
-                f1 v (l1 ++ a :: l2) eq2 + f1 v (l1 ++ b :: l2) eq3)
+                f1 v (l1 + (a + b) ꞉ l2) eq1 =
+                f1 v (l1 + a ꞉ l2) eq2 + f1 v (l1 + b ꞉ l2) eq3)
                 as f1_plus.
             {
                 intros v l1 a b l2 eq1 eq2 eq3.
                 unfold f1.
-                change (v :: l1 ++ a + b :: l2) with ((v :: l1) ++ a + b :: l2).
-                change (v :: l1 ++ a :: l2) with ((v :: l1) ++ a :: l2).
-                change (v :: l1 ++ b :: l2) with ((v :: l1) ++ b :: l2).
+                change (v ꞉ (l1 + (a + b) ꞉ l2)) with ((v ꞉ l1) + (a + b) ꞉ l2).
+                change (v ꞉ (l1 + a ꞉ l2)) with ((v ꞉ l1) + a ꞉ l2).
+                change (v ꞉ (l1 + b ꞉ l2)) with ((v ꞉ l1) + b ꞉ l2).
                 apply multilinear_from_plus.
             }
             assert (∀ v, ∀ l1 a u l2 eq1 eq2,
-                f1 v (l1 ++ (a · u) :: l2) eq1 =
-                a · f1 v (l1 ++ u :: l2) eq2) as f1_scalar.
+                f1 v (l1 + (a · u) ꞉ l2) eq1 =
+                a · f1 v (l1 + u ꞉ l2) eq2) as f1_scalar.
             {
                 intros v l1 a u l2 eq1 eq2.
                 unfold f1.
-                change (v :: l1 ++ a · u :: l2) with ((v :: l1) ++ a · u :: l2).
-                change (v :: l1 ++ u :: l2) with ((v :: l1) ++ u :: l2).
+                change (v ꞉ (l1 + a · u ꞉ l2)) with ((v ꞉ l1) + a · u ꞉ l2).
+                change (v ꞉ (l1 + u ꞉ l2)) with ((v ꞉ l1) + u ꞉ l2).
                 apply multilinear_from_scalar.
             }
             pose (f2 v := make_multilinear V n

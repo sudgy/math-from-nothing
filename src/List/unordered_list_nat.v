@@ -16,7 +16,7 @@ Proof.
     -   apply list_perm_nil_eq in eq.
         destruct eq.
         reflexivity.
-    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+    -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
         apply (list_perm_trans2 (list_perm_split l3 l4 a)) in eq.

@@ -21,7 +21,7 @@ Proof.
 Qed.
 
 Theorem list_perm_skip {U} : ∀ (x : U) l l', list_permutation l l' →
-    list_permutation (x :: l) (x :: l').
+    list_permutation (x ꞉ l) (x ꞉ l').
 Proof.
     intros x l1 l2 eq.
     intros a.
@@ -30,7 +30,7 @@ Proof.
     apply eq.
 Qed.
 
-Theorem list_perm_swap {U} : ∀ (x y : U) l, list_permutation (y::x::l) (x::y::l).
+Theorem list_perm_swap {U} : ∀ (x y : U) l, list_permutation (y ꞉ x ꞉ l) (x ꞉ y ꞉ l).
 Proof.
     intros x y l n.
     cbn.
@@ -83,7 +83,7 @@ Proof.
 Qed.
 
 Theorem list_perm_lpart {U} : ∀ (al bl cl : list U),
-    list_permutation al bl → list_permutation (al ++ cl) (bl ++ cl).
+    list_permutation al bl → list_permutation (al + cl) (bl + cl).
 Proof.
     intros al bl cl eq n.
     do 2 rewrite list_count_conc.
@@ -92,7 +92,7 @@ Proof.
 Qed.
 
 Theorem list_perm_conc {U} : ∀ al bl : list U,
-    list_permutation (al ++ bl) (bl ++ al).
+    list_permutation (al + bl) (bl + al).
 Proof.
     intros al bl n.
     do 2 rewrite list_count_conc.
@@ -100,7 +100,7 @@ Proof.
 Qed.
 
 Theorem list_perm_rpart {U} : ∀ (al bl cl : list U),
-    list_permutation bl cl → list_permutation (al ++ bl) (al ++ cl).
+    list_permutation bl cl → list_permutation (al + bl) (al + cl).
 Proof.
     intros al bl cl eq n.
     do 2 rewrite list_count_conc.
@@ -109,7 +109,7 @@ Proof.
 Qed.
 
 Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
-    list_permutation (l1 ++ x :: l2) (x :: l1 ++ l2).
+    list_permutation (l1 + x ꞉ l2) (x ꞉ (l1 + l2)).
 Proof.
     intros l1 l2 a x.
     cbn.
@@ -121,7 +121,7 @@ Proof.
 Qed.
 
 Theorem list_perm_add_eq {U} : ∀ (a : U) l1 l2,
-    list_permutation (a :: l1) (a :: l2) → list_permutation l1 l2.
+    list_permutation (a ꞉ l1) (a ꞉ l2) → list_permutation l1 l2.
 Proof.
     intros a l1 l2 eq x.
     specialize (eq x).
@@ -131,7 +131,7 @@ Proof.
 Qed.
 
 Theorem list_perm_conc_lcancel {U} : ∀ (l1 l2 l3 : list U),
-    list_permutation (l1 ++ l2) (l1 ++ l3) → list_permutation l2 l3.
+    list_permutation (l1 + l2) (l1 + l3) → list_permutation l2 l3.
 Proof.
     intros a l1 l2 eq x.
     specialize (eq x).
@@ -142,7 +142,7 @@ Proof.
 Qed.
 
 Theorem list_perm_conc_rcancel {U} : ∀ (l1 l2 l3 : list U),
-    list_permutation (l2 ++ l1) (l3 ++ l1) → list_permutation l2 l3.
+    list_permutation (l2 + l1) (l3 + l1) → list_permutation l2 l3.
 Proof.
     intros a l1 l2 eq x.
     specialize (eq x).
@@ -187,12 +187,12 @@ Proof.
 Qed.
 
 Theorem list_split_perm {U} : ∀ l (a : U), in_list l a → ∃ l',
-    list_permutation l (a :: l').
+    list_permutation l (a ꞉ l').
 Proof.
     intros l a a_in.
     pose proof (in_list_split l a a_in) as [l1 [l2 l_eq]].
     rewrite l_eq.
-    exists (l1 ++ l2).
+    exists (l1 + l2).
     apply list_perm_split.
 Qed.
 

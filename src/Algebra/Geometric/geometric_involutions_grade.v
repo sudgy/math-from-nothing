@@ -332,7 +332,7 @@ Proof.
         reflexivity.
     }
     rewrite list_image_add; cbn.
-    remember (list_prod (list_image l (λ v, φ v))) as X.
+    remember (list_prod (list_image (λ v, φ v) l)) as X.
     clear HeqX.
     rewrite geo_mult_inner_add.
     rewrite scalar_ldist.
@@ -410,7 +410,7 @@ Proof.
     }
     rewrite list_image_add; cbn.
     nat_destruct n; [>inversion ln|].
-    remember (list_prod (list_image l (vector_to_ext V))) as X.
+    remember (list_prod (list_image (vector_to_ext V) l)) as X.
     assert (of_grade n X) as Xn.
     {
         inversion ln.

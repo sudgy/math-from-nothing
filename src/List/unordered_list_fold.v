@@ -32,7 +32,7 @@ Proof.
     -   apply list_perm_nil_eq in eq.
         subst l2.
         reflexivity.
-    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+    -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
         rewrite list_sum_plus.
@@ -110,7 +110,7 @@ Proof.
     -   apply list_perm_nil_eq in eq.
         subst l2.
         reflexivity.
-    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+    -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
         rewrite list_prod_mult.

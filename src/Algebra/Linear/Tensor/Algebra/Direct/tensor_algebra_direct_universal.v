@@ -101,7 +101,7 @@ Proof.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 := free_extend F (list (module_V V))
-            (λ l, list_prod (list_image l (module_homo_f g)))).
+            (λ l, list_prod (list_image (module_homo_f g) l))).
         assert (∀ v, h1 (to_free F (list (module_V V)) [v]) = module_homo_f g v)
             as h1_vec.
         {
@@ -305,7 +305,7 @@ Proof.
         cbn.
         rewrite <- list_conc_single.
         rewrite <- (free_bilinear_free F (list (module_V V))
-            (λ a b, to_free F (list (module_V V)) (a ++ b)) [a] l).
+            (λ a b, to_free F (list (module_V V)) (a + b)) [a] l).
         change (free_bilinear _ _ _ _ _) with (to_free F _ [a] * to_free F _ l).
         rewrite to_qring_mult.
         do 2 rewrite algebra_homo_mult.

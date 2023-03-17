@@ -28,7 +28,7 @@ Proof.
         rewrite <- albl.
         exact true.
     -   destruct al_uni as [a_nin al_uni].
-        assert (in_list (a :: al) a) as a_in by (left; reflexivity).
+        assert (in_list (a ꞉ al) a) as a_in by (left; reflexivity).
         apply (list_perm_in albl) in a_in.
         apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
         pose proof (list_perm_split l1 l2 a) as eq.
@@ -69,7 +69,7 @@ Proof.
     -   apply list_perm_nil_eq in eq.
         subst l2.
         reflexivity.
-    -   assert (in_list (a :: l1) a) as a_in by (left; reflexivity).
+    -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
         apply (list_perm_trans2 (list_perm_split l3 l4 a)) in eq.
@@ -103,7 +103,7 @@ Proof.
         subst l2.
         exact true.
     -   destruct Sl1 as [a_in Sl1].
-        assert (in_list (a :: l1) a) as a_in' by (left; reflexivity).
+        assert (in_list (a ꞉ l1) a) as a_in' by (left; reflexivity).
         apply (list_perm_in eq) in a_in'.
         apply in_list_split in a_in' as [l3 [l4 eq']]; subst l2.
         pose proof (list_perm_split l3 l4 a) as eq2.

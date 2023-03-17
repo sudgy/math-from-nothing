@@ -270,10 +270,10 @@ Proof.
     rewrite rdist.
     rewrite grade_project_plus.
     rewrite <- (plus_rid 0).
-    assert (of_grade r (G (list_prod (list_image l (vector_to_ext V)))))
+    assert (of_grade r (G (list_prod (list_image (vector_to_ext V) l))))
         as l_grade.
     {
-        exists (list_prod (list_image l (vector_to_ext V))).
+        exists (list_prod (list_image (vector_to_ext V) l)).
         split; [>|reflexivity].
         rewrite <- l_size'.
         apply ext_list_grade.

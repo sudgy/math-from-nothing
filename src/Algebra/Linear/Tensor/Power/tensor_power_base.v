@@ -198,7 +198,7 @@ Fixpoint vectors_to_power (l : list (module_V V))
     : module_V (tensor_power (list_size l))
 :=  match l with
     | list_end => @one _ (cring_one F)
-    | a :: l' => tensor_mult V (tensor_power (list_size l'))
+    | a ꞉ l' => tensor_mult V (tensor_power (list_size l'))
         a (vectors_to_power l')
     end.
 
@@ -317,7 +317,7 @@ Qed.
 Theorem vectors_to_power_mult : ∀ l1 l2,
     f (vectors_to_power l1 ⊗' vectors_to_power l2)
     = module_homo_f (tensor_power_nat_eq (list_size_plus l1 l2))
-        (vectors_to_power (l1 ++ l2)).
+        (vectors_to_power (l1 + l2)).
 Proof.
     intros l1 l2.
     symmetry; apply tensor_power_eq_generic.
@@ -335,7 +335,7 @@ Proof.
         rewrite scalar_id.
         reflexivity.
     -   rewrite <- list_conc_single.
-        rewrite list_conc_assoc.
+        rewrite plus_assoc.
         rewrite IHl2; clear IHl2.
         rewrite list_conc_single.
         unfold f at 2; cbn.
@@ -355,7 +355,7 @@ Proof.
         change (tensor_mult (V ⊗ tensor_power (list_size l1))
             (tensor_power (list_size l2))) with
             (@tensor_mult' (nat_suc (list_size l1)) (list_size l2)).
-        assert (∀ l, nat_suc (list_size l) = list_size (l ++ a :: list_end)) as n_eq.
+        assert (∀ l, nat_suc (list_size l) = list_size (l + a ꞉ list_end)) as n_eq.
         {
             intros l.
             rewrite list_size_conc.
@@ -369,7 +369,7 @@ Proof.
             (tensor_mult (tensor_power (list_size l1)) V (vectors_to_power l1)
             a)) with X.
         assert (module_homo_f (tensor_power_nat_eq (n_eq l1))
-                (vectors_to_power (l1 ++ a :: list_end)) = X) as eq.
+                (vectors_to_power (l1 + a ꞉ list_end)) = X) as eq.
         {
             unfold X; clear X.
             induction l1.
@@ -396,7 +396,7 @@ Proof.
                     (tensor_mult (tensor_power (list_size l1)) V
                     (vectors_to_power l1) a)) with X.
                 rewrite <- IHl1; clear IHl1 X.
-                apply (tensor_power_eq_generic _ _ (n_eq (a0 :: l1))).
+                apply (tensor_power_eq_generic _ _ (n_eq (a0 ꞉ l1))).
                 change (V ⊗ tensor_power (list_size l1)) with
                     (tensor_power (nat_suc (list_size l1))).
                 apply generic_tensor_mult_eq.
@@ -406,7 +406,7 @@ Proof.
         }
         rewrite <- eq; clear eq X.
         apply (@to_generic_tensor_f_eq
-            (list_size (l1 ++ a :: list_end))
+            (list_size (l1 + a ꞉ list_end))
             (nat_suc (list_size l1))
         ).
         2: reflexivity.
@@ -461,13 +461,13 @@ Proof.
                 intros [B [α [Bl B_eq]]]; cbn.
                 subst B.
                 exists α.
-                assert (list_size (a :: [Bl|]) = nat_suc n) as Bl_eq.
+                assert (list_size (a ꞉ [Bl|]) = nat_suc n) as Bl_eq.
                 {
                     cbn.
                     rewrite [|Bl].
                     reflexivity.
                 }
-                exists [a :: [Bl|]|Bl_eq].
+                exists [a ꞉ [Bl|]|Bl_eq].
                 cbn.
                 rewrite (tensor_rscalar V).
                 apply f_equal.
@@ -702,17 +702,17 @@ Proof.
     subst A B C.
     rewrite vectors_to_power_mult.
     pose proof (generic_tensor_eq_generic _ _ (list_size_plus [lB|] [lC|])
-        (vectors_to_power ([lB|] ++ [lC|]))) as eq.
+        (vectors_to_power ([lB|] + [lC|]))) as eq.
     rewrite (to_generic_tensor_f_eq (Logic.eq_refl _) eq); clear eq.
     rewrite vectors_to_power_mult.
     rewrite generic_tensor_eq_generic.
     rewrite vectors_to_power_mult.
     pose proof (generic_tensor_eq_generic _ _ (list_size_plus [lA|] [lB|])
-        (vectors_to_power ([lA|] ++ [lB|]))) as eq.
+        (vectors_to_power ([lA|] + [lB|]))) as eq.
     rewrite (to_generic_tensor_f_eq eq (Logic.eq_refl _)); clear eq.
     rewrite vectors_to_power_mult.
     rewrite generic_tensor_eq_generic.
-    rewrite list_conc_assoc.
+    rewrite plus_assoc.
     reflexivity.
 Qed.
 (* begin hide *)

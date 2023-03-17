@@ -65,7 +65,7 @@ Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
     FR_scalar_comp FR_grade.
 
 Local Instance FR_mult : Mult FR := {
-    mult := free_bilinear F (list (module_V V)) (λ a b, to_FR (a ++ b))
+    mult := free_bilinear F (list (module_V V)) (λ a b, to_FR (a + b))
 }.
 Local Instance FR_ldist : Ldist FR := {
     ldist := free_bilinear_ldist _ _ _
@@ -127,7 +127,7 @@ Proof.
     clear v γ cv IHc.
     unfold mult; cbn.
     do 4 rewrite (free_bilinear_free F (list (module_V V))).
-    rewrite list_conc_assoc.
+    rewrite plus_assoc.
     reflexivity.
 Qed.
 Local Instance FR_one : One FR := {

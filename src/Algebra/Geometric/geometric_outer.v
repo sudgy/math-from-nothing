@@ -244,9 +244,9 @@ Proof.
     rewrite outer_lscalar.
     apply lscalar; clear α.
     assert (of_grade (H9 := GG) (list_size al)
-        (G (list_prod (list_image al (vector_to_ext V))))) as al_grade.
+        (G (list_prod (list_image (vector_to_ext V) al)))) as al_grade.
     {
-        exists (list_prod (list_image al (vector_to_ext V))).
+        exists (list_prod (list_image (vector_to_ext V) al)).
         split; [>|reflexivity].
         apply ext_list_grade.
     }
@@ -268,7 +268,7 @@ Proof.
         exact b_grade.
     }
     do 2 rewrite list_image_add; cbn.
-    remember (list_prod (list_image al (vector_to_ext V))) as a.
+    remember (list_prod (list_image (vector_to_ext V) al)) as a.
     remember (list_size al) as m.
     assert (of_grade m a) as a_grade.
     {

@@ -1,6 +1,6 @@
 Require Import init.
 
-Set Implicit Arguments.
+Require Export plus_group.
 
 #[universes(template)]
 Inductive list (A : Type) : Type :=
@@ -10,10 +10,12 @@ Inductive list (A : Type) : Type :=
 Arguments list_end {A}.
 Arguments list_add {A} a l.
 
-Infix "::" := list_add (at level 60, right associativity) : list_scope.
+(** At the risk of being confusing, this is NOT a colon!  It is actually U+A789,
+modifier letter colon.  I have it mapped to \ladd in ibus. *)
+Infix "꞉" := list_add (at level 49, right associativity) : list_scope.
 Open Scope list_scope.
 Notation "[]" := list_end : list_scope.
-Notation "[ a ]" := (a :: []) : list_scope.
+Notation "[ a ]" := (a ꞉ []) : list_scope.
 Notation "[ x ; y ; .. ; z ]" :=
     (list_add x (list_add y .. (list_add z []) ..))
     (format "[ '[' x ; '/' y ; '/' .. ; '/' z ']' ]") : list_scope.
@@ -21,33 +23,35 @@ Notation "[ x ; y ; .. ; z ]" :=
 Fixpoint list_conc {U : Type} (al bl : list U) : list U :=
   match al with
    | [] => bl
-   | a :: al' => a :: list_conc al' bl
+   | a ꞉ al' => a ꞉ list_conc al' bl
   end.
 
-Infix "++" := list_conc (right associativity, at level 60) : list_scope.
+Global Instance list_plus U : Plus (list U) := {
+    plus := list_conc
+}.
 Arguments list_conc : simpl never.
 
 Fixpoint list_reverse {U : Type} (l : list U) : list U :=
     match l with
     | [] => []
-    | a :: l1 => list_reverse l1 ++ [a]
+    | a ꞉ l1 => list_reverse l1 + [a]
     end.
 Arguments list_reverse : simpl never.
 
-Fixpoint list_image (A B : Type) (l : list A) (f : A → B) :=
+Fixpoint list_image {A B : Type} (f : A → B) (l : list A) :=
     match l with
     | [] => []
-    | a :: l' => f a :: list_image l' f
+    | a ꞉ l' => f a ꞉ list_image f l'
     end.
 Arguments list_image : simpl never.
 
-Theorem list_end_neq {U} : ∀ (a : U) l, a :: l ≠ [].
+Theorem list_end_neq {U} : ∀ (a : U) l, a ꞉ l ≠ [].
 Proof.
     intros a l eq.
     inversion eq.
 Qed.
 
-Theorem list_inversion {U} : ∀ (a b : U) al bl, a :: al = b :: bl →
+Theorem list_inversion {U} : ∀ (a b : U) al bl, a ꞉ al = b ꞉ bl →
     a = b ∧ al = bl.
 Proof.
     intros a b al bl eq.
@@ -62,42 +66,55 @@ Proof.
     apply eq.
 Qed.
 
-Theorem list_add_eq {U} : ∀ (x : U) al bl, x :: al = x :: bl → al = bl.
+Theorem list_add_eq {U} : ∀ (x : U) al bl, x ꞉ al = x ꞉ bl → al = bl.
 Proof.
     intros x al bl eq.
     apply list_inversion in eq.
     apply eq.
 Qed.
 
-Theorem list_conc_lid {U} : ∀ l : list U, [] ++ l = l.
+Theorem list_conc_add {U} : ∀ a (l1 l2 : list U), (a ꞉ l1) + l2 = a ꞉ (l1 + l2).
 Proof.
     reflexivity.
 Qed.
 
-Theorem list_conc_add {U} : ∀ a (l1 l2 : list U),
-    (a :: l1) ++ l2 = a :: (l1 ++ l2).
+Theorem list_conc_single {U} : ∀ (a : U) l, [a] + l = a ꞉ l.
 Proof.
     reflexivity.
 Qed.
 
-Theorem list_conc_single {U} : ∀ (a : U) l, [a] ++ l = a :: l.
+Global Instance list_zero U : Zero (list U) := {
+    zero := []
+}.
+
+Global Instance list_plus_lid U : PlusLid (list U).
 Proof.
+    split.
     reflexivity.
 Qed.
-
-Theorem list_conc_rid {U} : ∀ l : list U, l ++ [] = l.
+Theorem list_conc_lid {U} : ∀ l : list U, [] + l = l.
 Proof.
+    exact plus_lid.
+Qed.
+
+Global Instance list_plus_rid U : PlusRid (list U).
+Proof.
+    split.
     intros l.
     induction l.
-    -   apply list_conc_lid.
+    -   reflexivity.
     -   rewrite list_conc_add.
         rewrite IHl.
         reflexivity.
 Qed.
-
-Theorem list_conc_assoc {U} :
-    ∀ l1 l2 l3 : list U, l1 ++ (l2 ++ l3) = (l1 ++ l2) ++ l3.
+Theorem list_conc_rid {U} : ∀ l : list U, l + [] = l.
 Proof.
+    exact plus_rid.
+Qed.
+
+Global Instance list_plus_assoc U : PlusAssoc (list U).
+Proof.
+    split.
     intros l1 l2 l3.
     induction l1.
     -   do 2 rewrite list_conc_lid.
@@ -113,7 +130,7 @@ Proof.
 Qed.
 
 Theorem list_reverse_add {U} : ∀ (a : U) l,
-    list_reverse (a :: l) = list_reverse l ++ [a].
+    list_reverse (a ꞉ l) = list_reverse l + [a].
 Proof.
     reflexivity.
 Qed.
@@ -126,7 +143,7 @@ Proof.
 Qed.
 
 Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
-    list_reverse (l1 ++ l2) = list_reverse l2 ++ list_reverse l1.
+    list_reverse (l1 + l2) = list_reverse l2 + list_reverse l1.
 Proof.
     intros l1 l2.
     induction l1.
@@ -136,7 +153,7 @@ Proof.
     -   rewrite list_conc_add, list_reverse_add.
         rewrite IHl1.
         rewrite list_reverse_add.
-        rewrite list_conc_assoc.
+        rewrite plus_assoc.
         reflexivity.
 Qed.
 
@@ -155,11 +172,9 @@ Proof.
 Qed.
 
 Theorem list_reverse_eq {U : Type} : ∀ l1 l2 : list U,
-    l1 = l2 ↔ list_reverse l1 = list_reverse l2.
+    list_reverse l1 = list_reverse l2 → l1 = l2.
 Proof.
-    intros l1 l2.
-    split; [>intros; subst; reflexivity|].
-    intros l_eq.
+    intros l1 l2 l_eq.
     rewrite <- (list_reverse_reverse l1).
     rewrite <- (list_reverse_reverse l2).
     rewrite l_eq.
@@ -175,25 +190,25 @@ Proof.
     exact eq.
 Qed.
 
-Theorem list_image_end {A B : Type} : ∀ (f : A → B), list_image [] f = [].
+Theorem list_image_end {A B : Type} : ∀ (f : A → B), list_image f [] = [].
 Proof.
     reflexivity.
 Qed.
 
 Theorem list_image_add {A B : Type} : ∀ a l (f : A → B),
-    list_image (a :: l) f = f a :: list_image l f.
+    list_image f (a ꞉ l) = f a ꞉ list_image f l.
 Proof.
     reflexivity.
 Qed.
 
 Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
-    list_image [a] f = [f a].
+    list_image f [a] = [f a].
 Proof.
     reflexivity.
 Qed.
 
 Theorem list_image_conc {A B : Type} : ∀ (l1 l2 : list A) (f : A → B),
-    list_image (l1 ++ l2) f = list_image l1 f ++ list_image l2 f.
+    list_image f (l1 + l2) = list_image f l1 + list_image f l2.
 Proof.
     intros l1 l2 f.
     induction l1.
@@ -208,7 +223,7 @@ Proof.
 Qed.
 
 Theorem list_image_comp {A B C : Type} : ∀ (l : list A) (f : A → B) (g : B → C),
-    list_image (list_image l f) g = list_image l (λ x, g (f x)).
+    list_image g (list_image f l) = list_image (λ x, g (f x)) l.
 Proof.
     intros l f g.
     induction l.

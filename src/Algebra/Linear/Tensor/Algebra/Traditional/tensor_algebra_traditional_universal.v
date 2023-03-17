@@ -87,10 +87,10 @@ Proof.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 n (l : list (module_V V)) (eq : list_size l = n)
-            := rfold mult 1 (list_image l (module_homo_f g))).
+            := rfold mult 1 (list_image (module_homo_f g) l)).
         assert (∀ n, ∀ l1 a b l2 eq1 eq2 eq3,
-            h1 n (l1 ++ (a + b) :: l2) eq1 =
-            h1 n (l1 ++ a :: l2) eq2 + h1 n (l1 ++ b :: l2) eq3) as h1_plus.
+            h1 n (l1 + (a + b) ꞉ l2) eq1 =
+            h1 n (l1 + a ꞉ l2) eq2 + h1 n (l1 + b ꞉ l2) eq3) as h1_plus.
         {
             intros n l1 a b l2 eq1 eq2 eq3.
             unfold h1.
@@ -107,8 +107,8 @@ Proof.
                 apply ldist.
         }
         assert (∀ n, ∀ l1 a v l2 eq1 eq2,
-            h1 n (l1 ++ (a · v) :: l2) eq1 =
-            a · h1 n (l1 ++ v :: l2) eq2) as h1_scalar.
+            h1 n (l1 + (a · v) ꞉ l2) eq1 =
+            a · h1 n (l1 + v ꞉ l2) eq2) as h1_scalar.
         {
             intros n l1 a v l2 eq1 eq2.
             unfold h1.
@@ -308,9 +308,9 @@ Proof.
             subst u v.
             pose (VuSM := module_scalar (tensor_power V (list_size ul))).
             pose (VvSM := module_scalar (tensor_power V (list_size vl))).
-            pose (VuvSM := module_scalar (tensor_power V (list_size (ul++vl)))).
+            pose (VuvSM := module_scalar (tensor_power V (list_size (ul+vl)))).
             assert (of_grade (list_size ul + list_size vl)
-                (power_to_tensor V (α * β · vectors_to_power V (ul ++ vl))))
+                (power_to_tensor V (α * β · vectors_to_power V (ul + vl))))
                 as uv_grade.
             {
                 rewrite power_to_tensor_scalar.
@@ -352,7 +352,7 @@ Proof.
                 intros l.
                 apply ln.
             }
-            pose proof (l_grade (ul ++ vl)) as uvl_grade.
+            pose proof (l_grade (ul + vl)) as uvl_grade.
             rewrite (list_size_plus ul vl) in uvl_grade at 1.
             rewrite (h4_eq _ _ _ _ uvl_grade (Logic.eq_sym (list_size_plus ul vl))).
             rewrite (h4_eq _ _ _ _ (l_grade ul) Logic.eq_refl).
@@ -360,7 +360,7 @@ Proof.
             rewrite scalar_lmult, scalar_rmult.
             rewrite scalar_comp.
             apply f_equal.
-            rewrite (h4_eq2 (list_size ul + list_size vl) (ul ++ vl) (list_size_plus ul vl)).
+            rewrite (h4_eq2 (list_size ul + list_size vl) (ul + vl) (list_size_plus ul vl)).
             rewrite (h4_eq2 (list_size ul) ul Logic.eq_refl).
             rewrite (h4_eq2 (list_size vl) vl Logic.eq_refl).
             unfold h1; cbn.
@@ -382,15 +382,15 @@ Proof.
         intros v.
         assert (of_grade 1 (vector_to_tensor V v)) as v_grade.
         {
-            exists (vectors_to_power V (v :: list_end)).
+            exists (vectors_to_power V (v ꞉ list_end)).
             reflexivity.
         }
         unfold h.
         rewrite (linear_extend_homo _ h_scalar_base _ _ v_grade).
         change (vector_to_tensor V v)
-            with (power_to_tensor V (vectors_to_power V (v :: list_end))).
-        assert (list_size (v :: list_end) = 1) as eq by reflexivity.
-        rewrite (h4_eq2 1 (v :: list_end) eq).
+            with (power_to_tensor V (vectors_to_power V (v ꞉ list_end))).
+        assert (list_size (v ꞉ list_end) = 1) as eq by reflexivity.
+        rewrite (h4_eq2 1 (v ꞉ list_end) eq).
         unfold h1; cbn.
         apply mult_rid.
     -   intros [f1 f1_eq] [f2 f2_eq].
@@ -461,7 +461,7 @@ Proof.
         {
             assert (of_grade 1 (vector_to_tensor V v)) as v_homo.
             {
-                exists (vectors_to_power V (v :: list_end)).
+                exists (vectors_to_power V (v ꞉ list_end)).
                 cbn.
                 unfold vector_to_tensor.
                 reflexivity.
@@ -475,8 +475,8 @@ Proof.
             rewrite (tensor_mult_homo _ _ _ _ _ v_homo l_homo).
             rewrite (power_to_tensor_tm V).
             change (tensor_mult V (cring_module F) v 1) with
-                (vectors_to_power V (v :: list_end)).
-            change 1 with (list_size (v :: list_end)).
+                (vectors_to_power V (v ꞉ list_end)).
+            change 1 with (list_size (v ꞉ list_end)).
             rewrite (vectors_to_power_mult V).
             rewrite <- power_to_tensor_k_eq.
             cbn.

@@ -516,7 +516,7 @@ Qed.
 
 Theorem ext_list_grade : ∀ l,
     of_grade (H9 := exterior_grade) (list_size l)
-    (list_prod (list_image l (vector_to_ext V))).
+    (list_prod (list_image (vector_to_ext V) l)).
 Proof.
     intros l.
     induction l.
@@ -535,7 +535,7 @@ Qed.
 Theorem ext_grade_sum : ∀ (v : ext V) n, of_grade n v →
     ∃ l : ulist (cring_U F * set_type (λ l', list_size l' = n)),
         v = ulist_sum (ulist_image l
-        (λ p, fst p · list_prod (list_image [snd p|] (vector_to_ext V)))).
+        (λ p, fst p · list_prod (list_image (vector_to_ext V) [snd p|]))).
 Proof.
     intros v' n nv.
     destruct nv as [v [v_eq nv]]; subst v'.
