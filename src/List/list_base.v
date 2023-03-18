@@ -25,11 +25,11 @@ Fixpoint list_conc {U : Type} (al bl : list U) : list U :=
    | [] => bl
    | a ꞉ al' => a ꞉ list_conc al' bl
   end.
+Arguments list_conc : simpl never.
 
 Global Instance list_plus U : Plus (list U) := {
     plus := list_conc
 }.
-Arguments list_conc : simpl never.
 
 Fixpoint list_reverse {U : Type} (l : list U) : list U :=
     match l with
@@ -59,9 +59,9 @@ Proof.
     split; reflexivity.
 Qed.
 
-Theorem list_single_eq {U} : ∀ (a b : U), [a] = [b] → a = b.
+Theorem list_single_eq {U} : ∀ (a b : U) al bl, a ꞉ al = b ꞉ bl → a = b.
 Proof.
-    intros a b eq.
+    intros a b al bl eq.
     apply list_inversion in eq.
     apply eq.
 Qed.
@@ -73,12 +73,12 @@ Proof.
     apply eq.
 Qed.
 
-Theorem list_conc_add {U} : ∀ a (l1 l2 : list U), (a ꞉ l1) + l2 = a ꞉ (l1 + l2).
+Theorem list_conc_single {U} : ∀ (a : U) l, [a] + l = a ꞉ l.
 Proof.
     reflexivity.
 Qed.
 
-Theorem list_conc_single {U} : ∀ (a : U) l, [a] + l = a ꞉ l.
+Theorem list_conc_add {U} : ∀ a (l1 l2 : list U), (a ꞉ l1) + l2 = a ꞉ (l1 + l2).
 Proof.
     reflexivity.
 Qed.
@@ -124,20 +124,30 @@ Proof.
         reflexivity.
 Qed.
 
+Global Instance list_plus_lcancel U : PlusLcancel (list U).
+Proof.
+    split.
+    intros a b c eq.
+    induction c as [|x c].
+    -   do 2 rewrite list_conc_lid in eq.
+        exact eq.
+    -   do 2 rewrite list_conc_add in eq.
+        apply list_add_eq in eq.
+        exact (IHc eq).
+Qed.
+
 Theorem list_reverse_end {U} : list_reverse (U := U) [] = [].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_reverse_single {U} : ∀ (a : U), list_reverse [a] = [a].
 Proof.
     reflexivity.
 Qed.
 
 Theorem list_reverse_add {U} : ∀ (a : U) l,
     list_reverse (a ꞉ l) = list_reverse l + [a].
-Proof.
-    reflexivity.
-Qed.
-
-Global Arguments list_reverse : simpl never.
-
-Theorem list_reverse_single {U} : ∀ (a : U), list_reverse [a] = [a].
 Proof.
     reflexivity.
 Qed.
@@ -181,6 +191,19 @@ Proof.
     reflexivity.
 Qed.
 
+Global Instance list_plus_rcancel U : PlusRcancel (list U).
+Proof.
+    split.
+    intros a b c eq.
+    rewrite <- (list_reverse_reverse (a + c)) in eq.
+    rewrite <- (list_reverse_reverse (b + c)) in eq.
+    do 2 rewrite (list_reverse_conc _ c) in eq.
+    apply list_reverse_eq in eq.
+    apply plus_lcancel in eq.
+    apply list_reverse_eq in eq.
+    exact eq.
+Qed.
+
 Theorem list_reverse_end_eq {U : Type} : ∀ l : list U,
     [] = list_reverse l → [] = l.
 Proof.
@@ -195,14 +218,14 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_image_add {A B : Type} : ∀ a l (f : A → B),
-    list_image f (a ꞉ l) = f a ꞉ list_image f l.
+Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
+    list_image f [a] = [f a].
 Proof.
     reflexivity.
 Qed.
 
-Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
-    list_image f [a] = [f a].
+Theorem list_image_add {A B : Type} : ∀ a l (f : A → B),
+    list_image f (a ꞉ l) = f a ꞉ list_image f l.
 Proof.
     reflexivity.
 Qed.
