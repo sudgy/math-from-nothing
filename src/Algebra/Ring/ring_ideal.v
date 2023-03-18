@@ -331,7 +331,7 @@ Context {U} `{
 Variable S : U → Prop.
 
 Definition ideal_generated_by_set x := ∃ l : ulist ((U * U) * set_type S),
-    x = ulist_sum (ulist_image l (λ p, fst (fst p) * [snd p|] * snd (fst p))).
+    x = ulist_sum (ulist_image (λ p, fst (fst p) * [snd p|] * snd (fst p)) l).
 
 Lemma ideal_generated_by_nempty : ∃ x, ideal_generated_by_set x.
 Proof.
@@ -346,7 +346,7 @@ Lemma ideal_generated_by_plus : ∀ a b,
     ideal_generated_by_set (a + b).
 Proof.
     intros a b [al al_eq] [bl bl_eq]; subst a b.
-    exists (al +++ bl).
+    exists (al + bl).
     rewrite ulist_image_conc, ulist_sum_plus.
     reflexivity.
 Qed.
@@ -355,7 +355,7 @@ Lemma ideal_generated_by_lmult : ∀ a b,
     ideal_generated_by_set b → ideal_generated_by_set (a * b).
 Proof.
     intros a b [l l_eq]; subst b.
-    exists (ulist_image l (λ p, ((a * fst (fst p), snd (fst p)), snd p))).
+    exists (ulist_image (λ p, ((a * fst (fst p), snd (fst p)), snd p)) l).
     rewrite ulist_image_comp.
     cbn.
     induction l as [|b l] using ulist_induction.
@@ -373,7 +373,7 @@ Lemma ideal_generated_by_rmult : ∀ a b,
     ideal_generated_by_set a → ideal_generated_by_set (a * b).
 Proof.
     intros a b [l l_eq]; subst a.
-    exists (ulist_image l (λ p, ((fst (fst p), snd (fst p) * b), snd p))).
+    exists (ulist_image (λ p, ((fst (fst p), snd (fst p) * b), snd p)) l).
     rewrite ulist_image_comp.
     cbn.
     induction l as [|a l] using ulist_induction.

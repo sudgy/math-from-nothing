@@ -60,8 +60,8 @@ Theorem factorization_ex : ∀ x : U, 0 ≠ x → ∃ a l,
         ulist_prop (λ x, irreducible x) l' →
         x = a' * ulist_prod l' →
         ∃ l'', ulist_prop (λ x, unit (fst x)) l'' ∧
-               ulist_image l'' (λ x, snd x) = l ∧
-               ulist_image l'' (λ x, fst x * snd x) = l').
+               ulist_image (λ x, snd x) l'' = l ∧
+               ulist_image (λ x, fst x * snd x) l'' = l').
 Proof.
     intros x x_nz.
     pose proof (factorization_base x x_nz) as [a [l [au [l_prime x_eq]]]].
@@ -167,7 +167,7 @@ Proof.
     assert (unit (a' * u)) as a'u_u by (apply unit_mult; assumption).
     specialize (IHl (a' * u) l' a'u_u l'_irr x_eq')
         as [l'' [l''_unit [l''_l l''_l']]].
-    exists ((u, p) ::: l'').
+    exists ((u, p) ː l'').
     repeat split.
     -   rewrite ulist_prop_add; split.
         +   exact uu.
@@ -209,8 +209,8 @@ Theorem factorization_uni : ∀ (x : U) (x_nz : 0 ≠ x),
         ulist_prop (λ x, irreducible x) l →
         x = a * ulist_prod l →
         ∃ l', ulist_prop (λ x, unit (fst x)) l' ∧
-               ulist_image l' (λ x, snd x) = factorization x x_nz ∧
-               ulist_image l' (λ x, fst x * snd x) = l.
+               ulist_image (λ x, snd x) l' = factorization x x_nz ∧
+               ulist_image (λ x, fst x * snd x) l' = l.
 Proof.
     intros x x_nz.
     apply (ex_proof (ex_proof (factorization_ex x x_nz))).

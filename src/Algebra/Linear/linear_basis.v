@@ -47,7 +47,7 @@ Qed.
 Theorem zero_linearly_dependent : ∀ (S : V → Prop), S 0 → linearly_dependent S.
 Proof.
     intros S S0 ind.
-    pose (l := (1, 0) ::: ulist_end).
+    pose (l := (1, 0) ː ulist_end).
     assert (linear_combination_set l) as l_comb.
     {
         unfold linear_combination_set, l.
@@ -374,7 +374,7 @@ Proof.
                 rewrite l_eq in v_eq.
                 exact v_eq.
     }
-    pose (l' := (a, snd x) ::: [l|]).
+    pose (l' := (a, snd x) ː [l|]).
     assert (linear_combination_set l') as l'_comb.
     {
         unfold linear_combination_set, l'.
@@ -459,10 +459,10 @@ Proof.
 Qed.
 
 Theorem basis_single : 0 ≠ 1 → ∀ (S : V → Prop) S_basis v, S v →
-    [basis_coefficients S S_basis v|] = (1, v) ::: ulist_end.
+    [basis_coefficients S S_basis v|] = (1, v) ː ulist_end.
 Proof.
     intros not_trivial2 S S_basis v Sv.
-    pose (l := (1, v) ::: ulist_end).
+    pose (l := (1, v) ː ulist_end).
     assert (linear_combination_set l) as l_comb.
     {
         unfold linear_combination_set, l.
@@ -503,7 +503,7 @@ Qed.
 
 Theorem basis_coefficients_S_ex : ∀ S S_basis v, ∃ l : ulist (U * set_type S),
     [basis_coefficients S S_basis v|] =
-    ulist_image l (λ x, (fst x, [snd x|])).
+    ulist_image (λ x, (fst x, [snd x|])) l.
 Proof.
     intros S S_basis v.
     remember (basis_coefficients S S_basis v) as l.
@@ -519,7 +519,7 @@ Proof.
     -   destruct a as [a u]; cbn in *.
         rewrite ulist_prop_add in l_in; cbn in l_in.
         specialize (IHl (rand l_in)) as [l' l'_eq].
-        exists ((a, [u|land l_in]) ::: l').
+        exists ((a, [u|land l_in]) ː l').
         subst l.
         rewrite ulist_image_add; cbn.
         reflexivity.
@@ -773,7 +773,7 @@ Proof.
         apply set_type_eq in contr2; cbn in contr2.
         subst B'.
         apply contr.
-        pose (l := (1, v) ::: ulist_end).
+        pose (l := (1, v) ː ulist_end).
         assert (linear_combination_set l) as l_comb.
         {
             unfold l, linear_combination_set.

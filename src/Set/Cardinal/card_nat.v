@@ -203,7 +203,7 @@ Theorem nat_to_card_le_plus_lcancel : ∀ {a b} c,
 Proof.
     intros a b c leq.
     nat_induction c.
-    -   change (nat_to_card 0) with 0 in leq.
+    -   change (nat_to_card 0) with (zero (U := card)) in leq.
         do 2 rewrite plus_lid in leq.
         exact leq.
     -   apply IHc; clear IHc.

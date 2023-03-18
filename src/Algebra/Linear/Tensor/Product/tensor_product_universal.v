@@ -460,7 +460,7 @@ Qed.
 Definition simple_tensor T := ∃ a b, T = a ⊗ b.
 
 Theorem tensor_sum : ∀ T, ∃ l : ulist (set_type simple_tensor),
-    T = ulist_sum (ulist_image l (λ x, [x|])).
+    T = ulist_sum (ulist_image (λ x, [x|]) l).
 Proof.
     pose (tp := module_plus (tensor_product_base)).
     pose (tz := module_zero (tensor_product_base)).
@@ -501,7 +501,7 @@ Proof.
         rewrite h_in.
         reflexivity.
     }
-    exists (ulist_image l (λ t, [_|f'_in t])).
+    exists (ulist_image (λ t, [_|f'_in t]) l).
     unfold f'; cbn.
     rewrite ulist_image_comp; cbn.
     clear f' f'_in.

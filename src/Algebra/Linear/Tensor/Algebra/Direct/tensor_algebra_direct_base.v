@@ -289,7 +289,7 @@ Proof.
         exists a, b.
         reflexivity.
     }
-    exists (((1, 1), [_|ab_in]) ::: ulist_end).
+    exists (((1, 1), [_|ab_in]) ː ulist_end).
     rewrite ulist_image_add, ulist_image_end.
     cbn.
     rewrite ulist_sum_add, ulist_sum_end.
@@ -313,7 +313,7 @@ Proof.
         exists α, v.
         reflexivity.
     }
-    exists (((1, 1), [_|v_in]) ::: ulist_end).
+    exists (((1, 1), [_|v_in]) ː ulist_end).
     rewrite ulist_image_add, ulist_image_end.
     cbn.
     rewrite ulist_sum_add, ulist_sum_end.

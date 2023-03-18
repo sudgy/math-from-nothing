@@ -117,7 +117,7 @@ Proof.
         cbn.
         clear v Sv.
         intros v Av.
-        pose (l := (1, v) ::: ulist_end).
+        pose (l := (1, v) ː ulist_end).
         assert (linear_combination_set l) as l_comb.
         {
             unfold linear_combination_set, l.

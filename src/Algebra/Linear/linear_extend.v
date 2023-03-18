@@ -108,8 +108,8 @@ Qed.
 
 (* end hide *)
 Definition linear_extend (v : V1) :=
-    ulist_sum (ulist_image (grade_decomposition v)
-        (λ x, f_base (ex_val [|x]) [x|] (ex_proof [|x]))).
+    ulist_sum (ulist_image
+        (λ x, f_base (ex_val [|x]) [x|] (ex_proof [|x])) (grade_decomposition v)).
 
 Let f := linear_extend.
 
@@ -156,7 +156,7 @@ Proof.
     rewrite ulist_image_end, ulist_sum_end, plus_rid.
     classic_case (0 = grade_project v i) as [vi_z|vi_nz].
     -   assert (grade_decomposition (a + v) =
-            [a|a_homo] ::: grade_decomposition v) as eq.
+            [a|a_homo] ː grade_decomposition v) as eq.
         {
             apply grade_decomposition_unique.
             -   rewrite ulist_image_add, ulist_sum_add.
@@ -248,7 +248,7 @@ Proof.
                 -   exact ai.
                 -   apply grade_project_grade.
             }
-            assert (grade_decomposition (a + v) = [_|b_homo] ::: l) as eq.
+            assert (grade_decomposition (a + v) = [_|b_homo] ː l) as eq.
             {
                 apply grade_decomposition_unique.
                 -   rewrite ulist_image_add, ulist_sum_add; cbn.

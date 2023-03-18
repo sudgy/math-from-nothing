@@ -391,8 +391,8 @@ Qed.
 Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H9 := tensor_grade) i x →
     ∃ l : ulist (cring_U F *
         set_type (λ l : list (module_V V), list_size l = i)),
-    ulist_sum (ulist_image l
-        (λ x, fst x · list_prod (list_image vector_to_tensor [snd x|]))) = x.
+    ulist_sum (ulist_image
+        (λ x, fst x · list_prod (list_image vector_to_tensor [snd x|])) l) = x.
 Proof.
     intros x' i [x [x_in x_eq]]; subst x'.
     pose proof (tensor_n_sum_grade V x x_in) as [l l_eq].
@@ -405,7 +405,7 @@ Proof.
         rewrite_ex_val l [x_eq l_size].
         exact l_size.
     }
-    exists (ulist_image l (λ x, (fst x, [_|size_eq (snd x)]))).
+    exists (ulist_image (λ x, (fst x, [_|size_eq (snd x)])) l).
     rewrite ulist_image_comp; cbn.
     induction l as [|[a v] l] using ulist_induction.
     {
@@ -448,8 +448,8 @@ Proof.
 Qed.
 
 Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
-    x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image (λ v, vector_to_tensor v) (snd p)))).
+    x = ulist_sum (ulist_image (λ p, fst p · list_prod
+        (list_image (λ v, vector_to_tensor v) (snd p))) l).
 Proof.
     intros x.
 

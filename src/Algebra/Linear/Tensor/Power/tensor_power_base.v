@@ -420,7 +420,7 @@ Definition simple_tensor_power n (A : module_V (tensor_power n)) :=
 
 Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
     ∃ l : ulist (set_type (simple_tensor_power n)),
-    A = ulist_sum (ulist_image l (λ x, [x|])).
+    A = ulist_sum (ulist_image (λ x, [x|]) l).
 Proof.
     intros n A.
     nat_induction n.
@@ -440,7 +440,7 @@ Proof.
             symmetry; apply tensor_power_eq_generic.
             reflexivity.
         }
-        exists ([A|A_in] ::: ulist_end).
+        exists ([A|A_in] ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
@@ -477,8 +477,8 @@ Proof.
                 rewrite generic_tensor_eq_generic.
                 reflexivity.
             }
-            pose (laA := ulist_image lA (λ x, [_|a_in x])).
-            exists (laA +++ l').
+            pose (laA := ulist_image (λ x, [_|a_in x]) lA).
+            exists (laA + l').
             rewrite ulist_image_conc.
             change (V ⊗ tensor_power n) with (tensor_power (nat_suc n)).
             rewrite ulist_sum_plus.

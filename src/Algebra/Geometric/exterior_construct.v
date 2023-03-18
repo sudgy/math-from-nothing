@@ -349,7 +349,7 @@ Proof.
         exists v.
         reflexivity.
     }
-    exists (((1, 1), [_|v2_in]) ::: ulist_end).
+    exists (((1, 1), [_|v2_in]) ː ulist_end).
     rewrite ulist_image_add, ulist_sum_add; cbn.
     rewrite ulist_image_end, ulist_sum_end; cbn.
     rewrite mult_lid, mult_rid.
@@ -498,8 +498,8 @@ Proof.
 Qed.
 
 Theorem ext_sum : ∀ x : ext, ∃ l : ulist (cring_U F * list (module_V V)),
-    x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image (λ v, vector_to_ext v) (snd p)))).
+    x = ulist_sum (ulist_image (λ p, fst p · list_prod
+        (list_image (λ v, vector_to_ext v) (snd p))) l).
 Proof.
     intros x.
     equiv_get_value x.

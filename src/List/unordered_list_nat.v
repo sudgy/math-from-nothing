@@ -38,7 +38,7 @@ Proof.
 Qed.
 
 Theorem ulist_size_add {U} : ∀ (a : U) l,
-    ulist_size (a ::: l) = nat_suc (ulist_size l).
+    ulist_size (a ː l) = nat_suc (ulist_size l).
 Proof.
     intros a l.
     equiv_get_value l.
@@ -47,10 +47,10 @@ Proof.
 Qed.
 
 Theorem ulist_size_plus {U} : ∀ l1 l2 : ulist U,
-    ulist_size (l1 +++ l2) = ulist_size l1 + ulist_size l2.
+    ulist_size (l1 + l2) = ulist_size l1 + ulist_size l2.
 Proof.
     intros l1 l2.
     equiv_get_value l1 l2.
-    unfold ulist_size, ulist_conc; equiv_simpl.
+    unfold ulist_size, plus; equiv_simpl.
     apply list_size_plus.
 Qed.

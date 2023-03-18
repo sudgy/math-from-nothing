@@ -5,12 +5,12 @@ Require Import unordered_list.
 Require Import set.
 
 Definition linear_combination_set {U V : Type} (l : ulist (U * V))
-    := ulist_unique (ulist_image l snd).
+    := ulist_unique (ulist_image snd l).
 Definition linear_combination {U V}
     `{VZ : Zero V, VP : Plus V, @PlusComm V VP,
         @PlusAssoc V VP, @PlusLid V VP VZ, ScalarMult U V}
     (l : set_type (@linear_combination_set U V))
-    := ulist_sum (ulist_image [l|] (λ x, fst x · snd x)).
+    := ulist_sum (ulist_image (λ x, fst x · snd x) [l|]).
 Definition linear_list_in {U V}
     (S : V → Prop) (l : set_type (@linear_combination_set U V))
     := ulist_prop (λ v, S (snd v)) [l|].
@@ -26,7 +26,7 @@ Section LinearBase.
 Context {U V} `{AlgebraField U V}.
 
 Theorem linear_combination_add : ∀ x l H1 H2,
-    linear_combination [x ::: l | H1] =
+    linear_combination [x ː l | H1] =
     fst x · snd x + linear_combination [l | H2].
 Proof.
     intros x l HH1 HH2.
@@ -147,7 +147,7 @@ Proof.
         apply in_ulist_split in v_in as [l1 l1_eq].
         subst l.
         remember (α * β + a) as a'.
-        pose (l' := (a', v) ::: l1).
+        pose (l' := (a', v) ː l1).
         assert (linear_combination_set l') as l'_comb.
         {
             unfold linear_combination_set in *.
@@ -169,7 +169,7 @@ Proof.
             rewrite ulist_prop_add; cbn.
             rewrite ulist_prop_add in Sl; cbn in Sl.
             exact Sl.
-    -   pose (l' := (α * β, v) ::: l).
+    -   pose (l' := (α * β, v) ː l).
         assert (linear_combination_set l') as l'_comb.
         {
             unfold l', linear_combination_set; cbn.
@@ -198,7 +198,7 @@ Theorem linear_combination_of_scalar : ∀ S a v,
     linear_combination_of S v → linear_combination_of S (a · v).
 Proof.
     intros S a v v_comb.
-    pose (l := (a, v) ::: ulist_end).
+    pose (l := (a, v) ː ulist_end).
     assert (linear_combination_set l) as l_comb.
     {
         unfold linear_combination_set, l.
@@ -234,7 +234,7 @@ Proof.
         apply linear_combination_of_scalar.
         exact v_comb.
     }
-    pose (l := (1, u) ::: (1, v) ::: ulist_end : ulist (U * V)).
+    pose (l := (1, u) ː (1, v) ː ulist_end : ulist (U * V)).
     assert (linear_combination_set l) as l_comb.
     {
         unfold linear_combination_set, l; cbn.

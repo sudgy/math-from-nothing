@@ -143,7 +143,7 @@ Proof.
 Qed.
 
 Theorem in_ulist_add {U} : ∀ (a b : U) l,
-    in_ulist (b ::: l) a ↔ b = a ∨ in_ulist l a.
+    in_ulist (b ː l) a ↔ b = a ∨ in_ulist l a.
 Proof.
     intros a b l.
     equiv_get_value l.
@@ -151,7 +151,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem in_ulist_single {U} : ∀ (a b : U), in_ulist (a ::: ulist_end) b → a = b.
+Theorem in_ulist_single {U} : ∀ (a b : U), in_ulist (a ː ulist_end) b → a = b.
 Proof.
     intros a b b_in.
     rewrite in_ulist_add in b_in.
@@ -166,7 +166,7 @@ Proof.
     exact true.
 Qed.
 
-Theorem ulist_unique_single {U} : ∀ a : U, ulist_unique (a ::: ulist_end).
+Theorem ulist_unique_single {U} : ∀ a : U, ulist_unique (a ː ulist_end).
 Proof.
     intros a.
     unfold ulist_unique, ulist_add, ulist_end; equiv_simpl.
@@ -175,7 +175,7 @@ Proof.
 Qed.
 
 Theorem ulist_unique_add {U} : ∀ (a : U) l,
-    ulist_unique (a ::: l) ↔ ¬in_ulist l a ∧ ulist_unique l.
+    ulist_unique (a ː l) ↔ ¬in_ulist l a ∧ ulist_unique l.
 Proof.
     intros a l.
     equiv_get_value l.
@@ -192,7 +192,7 @@ Proof.
 Qed.
 
 Theorem ulist_filter_add_in {U} : ∀ (S : U → Prop) a l, S a →
-    ulist_filter S (a ::: l) = a ::: ulist_filter S l.
+    ulist_filter S (a ː l) = a ː ulist_filter S l.
 Proof.
     intros S a l Sa.
     equiv_get_value l.
@@ -203,7 +203,7 @@ Proof.
 Qed.
 
 Theorem ulist_filter_add_nin {U} : ∀ (S : U → Prop) a l, ¬S a →
-    ulist_filter S (a ::: l) = ulist_filter S l.
+    ulist_filter S (a ː l) = ulist_filter S l.
 Proof.
     intros S a l Sa.
     equiv_get_value l.
@@ -221,7 +221,7 @@ Proof.
 Qed.
 
 Theorem ulist_prop_add {U} : ∀ S (a : U) l,
-    ulist_prop S (a ::: l) ↔ S a ∧ ulist_prop S l.
+    ulist_prop S (a ː l) ↔ S a ∧ ulist_prop S l.
 Proof.
     intros S a l.
     equiv_get_value l.
@@ -249,7 +249,7 @@ Proof.
 Qed.
 
 Theorem ulist_prop_split {U} : ∀ l (S : U → Prop),
-    (∀ a l', l = a ::: l' → S a) → ulist_prop S l.
+    (∀ a l', l = a ː l' → S a) → ulist_prop S l.
 Proof.
     intros l S ind.
     induction l using ulist_induction.
@@ -260,38 +260,38 @@ Proof.
             reflexivity.
         +   apply IHl.
             intros b l' eq.
-            apply (ind b (a ::: l')).
+            apply (ind b (a ː l')).
             rewrite eq.
             apply ulist_swap.
 Qed.
 
 Theorem in_ulist_conc {U} : ∀ l1 l2 (a : U),
-    in_ulist (l1 +++ l2) a → in_ulist l1 a ∨ in_ulist l2 a.
+    in_ulist (l1 + l2) a → in_ulist l1 a ∨ in_ulist l2 a.
 Proof.
     intros l1 l2 a.
     equiv_get_value l1 l2.
-    unfold in_ulist, ulist_conc; equiv_simpl.
+    unfold in_ulist, plus; equiv_simpl.
     apply in_list_conc.
 Qed.
 
 Theorem in_ulist_lconc {U} : ∀ l1 l2 (a : U),
-    in_ulist l1 a → in_ulist (l1 +++ l2) a.
+    in_ulist l1 a → in_ulist (l1 + l2) a.
 Proof.
     intros l1 l2 a.
     equiv_get_value l1 l2.
-    unfold in_ulist, ulist_conc; equiv_simpl.
+    unfold in_ulist, plus; equiv_simpl.
     apply in_list_lconc.
 Qed.
 Theorem in_ulist_rconc {U} : ∀ l1 l2 (a : U),
-    in_ulist l2 a → in_ulist (l1 +++ l2) a.
+    in_ulist l2 a → in_ulist (l1 + l2) a.
 Proof.
     intros l1 l2 a.
     equiv_get_value l1 l2.
-    unfold in_ulist, ulist_conc; equiv_simpl.
+    unfold in_ulist, plus; equiv_simpl.
     apply in_list_rconc.
 Qed.
 
-Theorem in_ulist_split {U} : ∀ l (a : U), in_ulist l a → ∃ l', l = a ::: l'.
+Theorem in_ulist_split {U} : ∀ l (a : U), in_ulist l a → ∃ l', l = a ː l'.
 Proof.
     intros l a a_in.
     equiv_get_value l.
@@ -303,7 +303,7 @@ Proof.
 Qed.
 
 Theorem in_ulist_image {U V} : ∀ l a (f : U → V),
-    in_ulist l a → in_ulist (ulist_image l f) (f a).
+    in_ulist l a → in_ulist (ulist_image f l) (f a).
 Proof.
     intros l a f.
     equiv_get_value l.
@@ -312,7 +312,7 @@ Proof.
 Qed.
 
 Theorem image_in_ulist {U V} : ∀ l y (f : U → V),
-    in_ulist (ulist_image l f) y → ∃ x, f x = y ∧ in_ulist l x.
+    in_ulist (ulist_image f l) y → ∃ x, f x = y ∧ in_ulist l x.
 Proof.
     intros l y f.
     equiv_get_value l.
@@ -352,8 +352,8 @@ Proof.
 Qed.
 
 Theorem ulist_filter_image_in {U V} : ∀ S (f : U → V) (l : ulist U) x,
-    in_ulist (ulist_image (ulist_filter S l) f) x →
-    in_ulist (ulist_image l f) x.
+    in_ulist (ulist_image f (ulist_filter S l)) x →
+    in_ulist (ulist_image f l) x.
 Proof.
     intros S f l x.
     equiv_get_value l.
@@ -362,8 +362,8 @@ Proof.
 Qed.
 
 Theorem ulist_filter_image_unique {U V} : ∀ S (f : U → V) (l : ulist U),
-    ulist_unique (ulist_image l f) →
-    ulist_unique (ulist_image (ulist_filter S l) f).
+    ulist_unique (ulist_image f l) →
+    ulist_unique (ulist_image f (ulist_filter S l)).
 Proof.
     intros S f l.
     equiv_get_value l.
@@ -382,7 +382,7 @@ Proof.
 Qed.
 
 Theorem ulist_image_unique {U V} : ∀ (l : ulist U) (f : U → V),
-    ulist_unique (ulist_image l f) → ulist_unique l.
+    ulist_unique (ulist_image f l) → ulist_unique l.
 Proof.
     intros l f.
     equiv_get_value l.

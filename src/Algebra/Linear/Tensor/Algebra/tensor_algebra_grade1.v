@@ -104,7 +104,7 @@ Proof.
     cbn.
     rewrite (span_linear_combination U).
     assert (linear_combination_set
-        ((one (U := U), vector_to_tensor v) ::: ulist_end)) as comb.
+        ((one (U := U), vector_to_tensor v) ː ulist_end)) as comb.
     {
         unfold linear_combination_set.
         rewrite ulist_image_add.
@@ -202,7 +202,7 @@ Proof.
     destruct a_in as [u [a_eq u_size]]; subst a.
     destruct b_in as [v [b_eq v_size]]; subst b.
     assert (linear_combination_set ((one (U := U), list_prod
-        (list_image vector_to_tensor (u + v))) ::: ulist_end)) as comb.
+        (list_image vector_to_tensor (u + v))) ː ulist_end)) as comb.
     {
         unfold linear_combination_set.
         rewrite ulist_image_add, ulist_image_end.
@@ -446,7 +446,7 @@ Proof.
     cbn.
     rewrite (span_linear_combination U).
     assert (linear_combination_set ((one (U := U),
-        one (U := algebra_V (tensor_algebra V))) ::: ulist_end)) as comb.
+        one (U := algebra_V (tensor_algebra V))) ː ulist_end)) as comb.
     {
         unfold linear_combination_set.
         rewrite ulist_image_add.
@@ -513,8 +513,8 @@ Qed.
 
 Theorem tensor_n_sum_grade : ∀ {n} x, of_grade n x →
     ∃ l : ulist (cring_U F * set_type (tensor_n_base n)),
-        x = ulist_sum (ulist_image l
-        (λ p, fst p · to_tensor_n [_|tensor_n_base_in (snd p)])).
+        x = ulist_sum (ulist_image
+        (λ p, fst p · to_tensor_n [_|tensor_n_base_in (snd p)]) l).
 Proof.
     intros n x nx.
     destruct nx as [v x_eq]; subst x.
@@ -526,7 +526,7 @@ Proof.
     }
     destruct v_in as [[l l_comb] [l_eq l_in]].
     assert (∃ l' : ulist (cring_U F * set_type (tensor_n_base n)),
-        [v|] = ulist_sum (ulist_image l' (λ p, fst p · [snd p|]))) as [l' l'_eq].
+        [v|] = ulist_sum (ulist_image (λ p, fst p · [snd p|]) l')) as [l' l'_eq].
     {
         rewrite l_eq.
         unfold linear_combination; cbn.
@@ -540,7 +540,7 @@ Proof.
             destruct l_in as [a_in l_in].
             specialize (IHl l_in) as [l' l'_eq].
             destruct a as [a al]; cbn in *.
-            exists ((a, [_|a_in]) ::: l').
+            exists ((a, [_|a_in]) ː l').
             do 2 rewrite ulist_image_add, ulist_sum_add; cbn.
             rewrite l'_eq.
             reflexivity.
@@ -555,7 +555,7 @@ Proof.
     }
     pose (x_transfer (x : set_type (tensor_n_base n))
         := [_|x_in x] : module_V (tensor_n_module n)).
-    pose (l := ulist_image l' (λ x, fst x · x_transfer (snd x))).
+    pose (l := ulist_image (λ x, fst x · x_transfer (snd x)) l').
     assert (v = ulist_sum l) as u_eq.
     {
         unfold l.
@@ -598,8 +598,8 @@ Proof.
 Qed.
 
 Theorem tensor_n_sum : ∀ x, ∃ l : ulist (U * list (module_V V)),
-    x = ulist_sum (ulist_image l (λ p, fst p · list_prod
-        (list_image vector_to_tensor_n (snd p)))).
+    x = ulist_sum (ulist_image (λ p, fst p · list_prod
+        (list_image vector_to_tensor_n (snd p))) l).
 Proof.
     intros x.
     induction x as [|u v i iu iv IHx] using grade_induction.
@@ -610,16 +610,17 @@ Proof.
     }
     destruct IHx as [vl v_eq].
     assert (∃ ul : ulist (U * list (module_V V)),
-        u = ulist_sum (ulist_image ul (λ p, fst p · list_prod
-            (list_image vector_to_tensor_n (snd p))))) as [ul u_eq].
+        u = ulist_sum (ulist_image (λ p, fst p · list_prod
+            (list_image vector_to_tensor_n (snd p))) ul)) as [ul u_eq].
     {
         clear v iv vl v_eq.
         pose proof (tensor_n_sum_grade _ iu) as [l l_eq].
         subst u.
         clear iu.
-        exists (ulist_image l (λ x, (fst x, ex_val [|snd x]))).
+        exists (ulist_image (λ x, (fst x, ex_val [|snd x])) l).
         rewrite ulist_image_comp; cbn.
-        do 2 apply f_equal.
+        apply f_equal.
+        apply f_equal2; [>|reflexivity].
         apply functional_ext.
         intros [a v]; cbn.
         apply f_equal.
@@ -630,7 +631,7 @@ Proof.
         apply to_tensor_n_eq.
         exact v_eq.
     }
-    exists (ul +++ vl).
+    exists (ul + vl).
     subst u v.
     rewrite ulist_image_conc, ulist_sum_plus.
     reflexivity.

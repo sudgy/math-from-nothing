@@ -299,7 +299,7 @@ Proof.
 Qed.
 
 Lemma grade_sum_list_sum_k : ∀ (al : ulist (grade_sum_type)) k,
-    [ulist_sum al|] k = ulist_sum (ulist_image al (λ a, [a|] k)).
+    [ulist_sum al|] k = ulist_sum (ulist_image (λ a, [a|] k) al).
 Proof.
     intros al k.
     induction al using ulist_induction.
@@ -506,7 +506,7 @@ Next Obligation.
         exists ([v|] m).
         reflexivity.
     }
-    exists (make_subspace_vector (grade_sum_subspace [x|]) _ (v_in [x|]) ::: l).
+    exists (make_subspace_vector (grade_sum_subspace [x|]) _ (v_in [x|]) ː l).
     split.
     -   rewrite ulist_image_add; cbn.
         rewrite ulist_sum_add.
@@ -555,7 +555,7 @@ Next Obligation.
         unfold zero, plus in l_zero; cbn in l_zero.
         apply set_type_eq in l_zero; cbn in l_zero.
         assert (∀ k, 0 = single_to_grade_sum_base v k +
-            [ulist_sum (ulist_image l sub_vector_v)|] k) as eq2.
+            [ulist_sum (ulist_image sub_vector_v l)|] k) as eq2.
         {
             intros k.
             unfold VZ.

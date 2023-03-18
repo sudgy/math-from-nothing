@@ -54,7 +54,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ulist_sum_add : ∀ a l, ulist_sum (a ::: l) = a + ulist_sum l.
+Theorem ulist_sum_add : ∀ a l, ulist_sum (a ː l) = a + ulist_sum l.
 Proof.
     intros a l.
     equiv_get_value l.
@@ -62,15 +62,15 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ulist_sum_plus : ∀ a b, ulist_sum (a +++ b) = ulist_sum a + ulist_sum b.
+Theorem ulist_sum_plus : ∀ a b, ulist_sum (a + b) = ulist_sum a + ulist_sum b.
 Proof.
     intros a b.
     equiv_get_value a b.
-    unfold ulist_sum, ulist_conc; equiv_simpl.
+    unfold ulist_sum, plus; equiv_simpl.
     apply list_sum_plus.
 Qed.
 
-Theorem ulist_sum_neg : ∀ l, -ulist_sum l = ulist_sum (ulist_image l neg).
+Theorem ulist_sum_neg : ∀ l, -ulist_sum l = ulist_sum (ulist_image neg l).
 Proof.
     intros l.
     equiv_get_value l.
@@ -79,7 +79,7 @@ Proof.
 Qed.
 
 Theorem ulist_sum_minus : ∀ a b,
-    ulist_sum a - ulist_sum b = ulist_sum (a +++ (ulist_image b neg)).
+    ulist_sum a - ulist_sum b = ulist_sum (a + (ulist_image neg b)).
 Proof.
     intros a b.
     rewrite ulist_sum_plus.
@@ -132,7 +132,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ulist_prod_add : ∀ a l, ulist_prod (a ::: l) = a * ulist_prod l.
+Theorem ulist_prod_add : ∀ a l, ulist_prod (a ː l) = a * ulist_prod l.
 Proof.
     intros a l.
     equiv_get_value l.
@@ -141,11 +141,11 @@ Proof.
 Qed.
 
 Theorem ulist_prod_mult :
-    ∀ a b, ulist_prod (a +++ b) = ulist_prod a * ulist_prod b.
+    ∀ a b, ulist_prod (a + b) = ulist_prod a * ulist_prod b.
 Proof.
     intros a b.
     equiv_get_value a b.
-    unfold ulist_prod, ulist_conc; equiv_simpl.
+    unfold ulist_prod, plus; equiv_simpl.
     apply list_prod_mult.
 Qed.
 (* begin hide *)

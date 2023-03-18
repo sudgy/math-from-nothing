@@ -193,7 +193,7 @@ Local Open Scope card_scope.
 
 (* end hide *)
 Theorem tensor_sum_base : ∀ T, ∃ l : ulist (set_type simple_tensor_base),
-    T = ulist_sum (ulist_image l (λ x, [x|])).
+    T = ulist_sum (ulist_image (λ x, [x|]) l).
 Proof.
     intros T.
     equiv_get_value T.
@@ -301,7 +301,7 @@ Proof.
         rewrite tensor_lscalar_base.
         reflexivity.
     }
-    exists ([x'|x'_simple] ::: l).
+    exists ([x'|x'_simple] ː l).
     rewrite ulist_image_add, ulist_sum_add.
     unfold x'; cbn.
     clear x' x'_simple.

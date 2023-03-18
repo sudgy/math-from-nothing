@@ -88,7 +88,7 @@ Next Obligation.
         classic_case (0 = r) as [r_z | r_nz].
         +   rewrite <- r_z in eq.
             rewrite plus_rid in eq.
-            exists (((1, q), [b|Logic.eq_refl]) ::: ulist_end).
+            exists (((1, q), [b|Logic.eq_refl]) ː ulist_end).
             rewrite ulist_image_add, ulist_sum_add; cbn.
             rewrite ulist_image_end, ulist_sum_end.
             rewrite plus_rid.

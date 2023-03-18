@@ -80,7 +80,7 @@ Qed.
 
 Theorem grade_decomposition_of_grade : ∀ v i, 0 ≠ v → ∀ H : of_grade i v,
     grade_decomposition v =
-    [v|ex_intro _ i H] ::: ulist_end.
+    [v|ex_intro _ i H] ː ulist_end.
 Proof.
     intros v i v_nz v_in.
     apply grade_decomposition_unique.
@@ -96,7 +96,7 @@ Proof.
 Qed.
 
 Theorem grade_decomposition_homo : ∀ v : set_type homogeneous, 0 ≠ [v|] →
-    grade_decomposition [v|] = v ::: ulist_end.
+    grade_decomposition [v|] = v ː ulist_end.
 Proof.
     intros [v [i v_in]] v_neq; cbn in *.
     apply grade_decomposition_of_grade.
@@ -173,7 +173,7 @@ Theorem grade_project_in : ∀ v i, 0 ≠ grade_project v i →
 Proof.
     intros v i vi_nz.
     assert (in_ulist (ulist_image
-        (grade_decomposition v) (λ x, [x|])) (grade_project v i)) as vi_in.
+        (λ x, [x|]) (grade_decomposition v)) (grade_project v i)) as vi_in.
     {
         case_grade_project v i vi vi_eq vi_in v_nin.
         -   apply in_ulist_image.
@@ -291,7 +291,7 @@ Proof.
     }
     rewrite ulist_image_add, ulist_sum_add.
     clear v.
-    remember (ulist_sum (ulist_image l (λ x, [x|]))) as v.
+    remember (ulist_sum (ulist_image (λ x, [x|]) l)) as v.
     apply (S_ind _ _ (ex_val [|a])).
     -   apply (ex_proof [|a]).
     -   case_grade_project v (ex_val [|a]) vi vi_eq vi_in vi_nin;
@@ -368,7 +368,7 @@ Proof.
                 -   rewrite c_eq.
                     exact (ex_proof [|c]).
             }
-            assert (grade_decomposition ([b|] + v) = [_|bc_homo] ::: l)
+            assert (grade_decomposition ([b|] + v) = [_|bc_homo] ː l)
                 as l_eq2.
             {
                 apply grade_decomposition_unique.
@@ -415,7 +415,7 @@ Proof.
             subst c.
             symmetry in c_eq; contradiction.
     -   rewrite not_ex in c_nex.
-        assert (grade_decomposition ([b|] + v) = b ::: grade_decomposition v)
+        assert (grade_decomposition ([b|] + v) = b ː grade_decomposition v)
             as l_eq.
         {
             apply grade_decomposition_unique.
@@ -662,8 +662,7 @@ Proof.
     intros u v all_eq.
     rewrite (grade_decomposition_eq u).
     rewrite (grade_decomposition_eq v).
-    apply f_equal.
-    apply f_equal2; [>|reflexivity].
+    do 2 apply f_equal.
     apply ulist_in_unique_eq.
     1, 2: apply (ulist_image_unique (grade_decomposition _) (λ x, ex_val [|x])).
     1, 2: apply grade_decomposition_uni.

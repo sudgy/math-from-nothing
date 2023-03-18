@@ -56,7 +56,7 @@ Proof.
                 apply mult_comm.
             *   exact IHl.
     -   intros [c eq].
-        exists (((c, 1), [a|Logic.eq_refl]) ::: ulist_end).
+        exists (((c, 1), [a|Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_rid, plus_rid.
@@ -175,7 +175,7 @@ Proof.
     assert (ideal_set I' a0) as [n0 Ia0].
     {
         rewrite I'_eq.
-        exists (((1, 1), [a0|Logic.eq_refl]) ::: ulist_end).
+        exists (((1, 1), [a0|Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
@@ -221,7 +221,7 @@ Next Obligation.
     -   rewrite <- principle_ideal_div.
         rewrite <- d_eq.
         cbn.
-        exists (((1, 1), [a|make_lor Logic.eq_refl]) ::: ulist_end).
+        exists (((1, 1), [a|make_lor Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
@@ -230,7 +230,7 @@ Next Obligation.
     -   rewrite <- principle_ideal_div.
         rewrite <- d_eq.
         cbn.
-        exists (((1, 1), [b|make_ror Logic.eq_refl]) ::: ulist_end).
+        exists (((1, 1), [b|make_ror Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
@@ -395,8 +395,8 @@ Next Obligation.
     }
     classic_contradiction contr.
     assert (∀ b l, ulist_prop (λ x, prime x) l → a = b * ulist_prod l →
-            ∃ b' p, ulist_prop (λ x, prime x) (p ::: l) ∧
-                a = b' * ulist_prod (p ::: l)) as b_ex.
+            ∃ b' p, ulist_prop (λ x, prime x) (p ː l) ∧
+                a = b' * ulist_prod (p ː l)) as b_ex.
     {
         intros b l l_prime a_eq.
         assert (0 ≠ b) as b_nz.
@@ -440,7 +440,7 @@ Next Obligation.
         | nat_suc n' =>
             let bp := build_p' n' in
             let p_ex := b_ex (fst [bp|]) (snd [bp|]) (land [|bp]) (rand [|bp])in
-            [(ex_val p_ex, ex_val (ex_proof p_ex) ::: snd [bp|]) |
+            [(ex_val p_ex, ex_val (ex_proof p_ex) ː snd [bp|]) |
              ex_proof (ex_proof p_ex)]
         end).
     pose (I n := principle_ideal_by (fst [build_p n|])).

@@ -187,7 +187,7 @@ Next Obligation.
         rewrite neg_zero, plus_rid.
         assert (ext_ideal_base V (vector_to_tensor v * vector_to_tensor v))
             as v2_in by (exists v; reflexivity).
-        exists (((a11, a21), [_|v2_in]) ::: ulist_end).
+        exists (((a11, a21), [_|v2_in]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
@@ -245,11 +245,11 @@ Next Obligation.
         -   exact Su.
     }
     pose (f S := make_subspace_vector (ext_sub S) _ (S_in S)).
-    exists (ulist_image l f).
+    exists (ulist_image f l).
     split.
     -   rewrite ulist_image_comp.
         unfold f; cbn.
-        clear l_in ST ext_subset ext_sub_zero ext_sub_plus ext_sub_scalar
+        clear l_in ext_subset ext_sub_zero ext_sub_plus ext_sub_scalar
             ext_sub S_in f.
         subst v.
         induction l using ulist_induction.
@@ -285,8 +285,8 @@ Next Obligation.
     rename H into l_in, H0 into l_uni, H1 into l_z.
     assert (∀ i (l : ulist (algebra_V (tensor_algebra V) * algebra_V
         (tensor_algebra V) * set_type (ext_ideal_base V))),
-        tensor_to_ext V (grade_project (ulist_sum (ulist_image l
-            (λ p, fst (fst p) * [snd p|] * snd (fst p)))) i) = 0) as lem.
+        tensor_to_ext V (grade_project (ulist_sum (ulist_image
+            (λ p, fst (fst p) * [snd p|] * snd (fst p)) l)) i) = 0) as lem.
     {
         clear l l_in l_uni l_z.
         intros i l.
@@ -334,7 +334,7 @@ Next Obligation.
                 unfold tensor_to_ext, zero; equiv_simpl.
                 apply equiv_eq; cbn.
                 rewrite neg_zero, plus_rid.
-                exists (((a1, a2), [a3|a3_in]) ::: ulist_end).
+                exists (((a1, a2), [a3|a3_in]) ː ulist_end).
                 rewrite ulist_image_add, ulist_sum_add; cbn.
                 rewrite ulist_image_end, ulist_sum_end.
                 rewrite plus_rid.
@@ -354,11 +354,11 @@ Next Obligation.
     destruct Av' as [v' [v'_eq v'i]].
     subst v.
     assert (∃ lv, tensor_to_ext V (lv - grade_project lv i) =
-        ulist_sum (ulist_image l sub_vector_v)) as [lv lv_eq].
+        ulist_sum (ulist_image sub_vector_v l)) as [lv lv_eq].
     {
         clear v' l_z v'i Av.
-        pose (l' := ulist_image l (λ x, from_equiv (sub_vector_v x))).
-        assert (ulist_sum (ulist_image l sub_vector_v) =
+        pose (l' := ulist_image (λ x, from_equiv (sub_vector_v x)) l).
+        assert (ulist_sum (ulist_image sub_vector_v l) =
             tensor_to_ext V (ulist_sum l')) as l_eq.
         {
             unfold l'.
@@ -534,8 +534,8 @@ Qed.
 
 Theorem ext_grade_sum : ∀ (v : ext V) n, of_grade n v →
     ∃ l : ulist (cring_U F * set_type (λ l', list_size l' = n)),
-        v = ulist_sum (ulist_image l
-        (λ p, fst p · list_prod (list_image (vector_to_ext V) [snd p|]))).
+        v = ulist_sum (ulist_image
+        (λ p, fst p · list_prod (list_image (vector_to_ext V) [snd p|])) l).
 Proof.
     intros v' n nv.
     destruct nv as [v [v_eq nv]]; subst v'.

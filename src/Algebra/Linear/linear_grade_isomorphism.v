@@ -220,7 +220,7 @@ Next Obligation.
         (subspace_homo f (sub_vector_sub S))
         (module_homo_f f (sub_vector_v S))
         (S_in S)).
-    exists (ulist_image l Sf).
+    exists (ulist_image Sf l).
     split.
     -   rewrite ulist_image_comp.
         unfold Sf; cbn.
@@ -278,7 +278,7 @@ Next Obligation.
         (subspace_homo g (sub_vector_sub S))
         (module_homo_f g (sub_vector_v S))
         (S_in S)).
-    pose proof (grade_independent (ulist_image l Sg)) as l'_eq.
+    pose proof (grade_independent (ulist_image Sg l)) as l'_eq.
     prove_parts l'_eq.
     -   clear l_uni l_eq.
         induction l using ulist_induction.
