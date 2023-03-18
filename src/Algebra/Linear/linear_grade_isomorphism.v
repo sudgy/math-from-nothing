@@ -61,7 +61,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
 
 (* end hide *)
 Definition subspace_homo_set (S : Subspace U V1) y
-    := ∃ x, subspace_set S x ∧ module_homo_f f x = y.
+    := ∃ x, subspace_set S x ∧ f x = y.
 
 Lemma subspace_homo_zero : ∀ S, subspace_homo_set S 0.
 Proof.
@@ -165,7 +165,7 @@ Context `{VG : @GradedSpace U V1 VP1 VPC1 VPA1 VZ1 VPZ1 SM1}.
 
 Let g := ex_val f_iso.
 
-Lemma grade_iso_fg : ∀ x, module_homo_f f (module_homo_f g x) = x.
+Lemma grade_iso_fg : ∀ x, f (g x) = x.
 Proof.
     intros x.
     pose proof (land (ex_proof f_iso)) as eq.
@@ -175,7 +175,7 @@ Proof.
     inversion eq as [eq2].
     apply (func_eq _ _ eq2).
 Qed.
-Lemma grade_iso_gf : ∀ x, module_homo_f g (module_homo_f f x) = x.
+Lemma grade_iso_gf : ∀ x, g (f x) = x.
 Proof.
     intros x.
     pose proof (rand (ex_proof f_iso)) as eq.
@@ -195,7 +195,7 @@ Next Obligation.
     destruct H0 as [u1 [iu1 u1_eq]].
     destruct H1 as [u2 [ju2 u2_eq]].
     rewrite <- u2_eq in u1_eq.
-    apply (f_equal (module_homo_f g)) in u1_eq.
+    apply (f_equal g) in u1_eq.
     do 2 rewrite grade_iso_gf in u1_eq.
     subst u2.
     pose proof (grade_distinct i j neq u1 iu1 ju2) as u1_z.
@@ -204,10 +204,10 @@ Next Obligation.
     symmetry; apply module_homo_zero.
 Qed.
 Next Obligation.
-    pose (u := module_homo_f g v).
+    pose (u := g v).
     pose proof (grade_decompose_ex u) as [l [u_eq u_in]].
     assert (∀ S : SubspaceVector U V1, subspace_homo_set f
-        (sub_vector_sub S) (module_homo_f f (sub_vector_v S))) as S_in.
+        (sub_vector_sub S) (f (sub_vector_v S))) as S_in.
     {
         clear u v l u_eq u_in.
         intros [S v Sv]; cbn.
@@ -218,13 +218,13 @@ Next Obligation.
     }
     pose (Sf S := make_subspace_vector
         (subspace_homo f (sub_vector_sub S))
-        (module_homo_f f (sub_vector_v S))
+        (f (sub_vector_v S))
         (S_in S)).
     exists (ulist_image Sf l).
     split.
     -   rewrite ulist_image_comp.
         unfold Sf; cbn.
-        apply (f_equal (module_homo_f f)) in u_eq.
+        apply (f_equal f) in u_eq.
         unfold u in u_eq.
         rewrite grade_iso_fg in u_eq.
         rewrite u_eq.
@@ -266,7 +266,7 @@ Qed.
 Next Obligation.
     rename H into l_in, H0 into l_uni, H1 into l_eq.
     assert (∀ S : SubspaceVector U V2, subspace_homo_set g
-        (sub_vector_sub S) (module_homo_f g (sub_vector_v S))) as S_in.
+        (sub_vector_sub S) (g (sub_vector_v S))) as S_in.
     {
         intros [S v Sv]; cbn.
         exists v.
@@ -276,7 +276,7 @@ Next Obligation.
     }
     pose (Sg S := make_subspace_vector
         (subspace_homo g (sub_vector_sub S))
-        (module_homo_f g (sub_vector_v S))
+        (g (sub_vector_v S))
         (S_in S)).
     pose proof (grade_independent (ulist_image Sg l)) as l'_eq.
     prove_parts l'_eq.
@@ -292,7 +292,7 @@ Next Obligation.
             exists i.
             apply predicate_ext.
             intros x; split; intros x_in.
-            *   exists (module_homo_f f x).
+            *   exists (f x).
                 unfold U, V1, V2, VP1, VZ1, SM1, VP2, VZ2, SM2 in *.
                 split.
                 --  rewrite <- a_eq.
@@ -333,7 +333,7 @@ Next Obligation.
                     clear a b b_eq b_in.
                     intros a b b_eq x x_in.
                     assert (subspace_homo_set g
-                        (sub_vector_sub a) (module_homo_f g x)) as x_in'.
+                        (sub_vector_sub a) (g x)) as x_in'.
                     {
                         exists x.
                         split.
@@ -343,7 +343,7 @@ Next Obligation.
                     unfold U, V1, V2, VP1, VZ1, SM1, VP2, VZ2, SM2 in *.
                     rewrite b_eq in x_in'.
                     destruct x_in' as [y [y_in y_eq]].
-                    apply (f_equal (module_homo_f f)) in y_eq.
+                    apply (f_equal f) in y_eq.
                     do 2 rewrite grade_iso_fg in y_eq.
                     subst y.
                     exact y_in.
@@ -379,7 +379,7 @@ Next Obligation.
             destruct l'_eq as [a_z l_z].
             split; [>clear l_z IHl|exact (IHl l_z)].
             cbn in a_z.
-            apply (f_equal (module_homo_f f)) in a_z.
+            apply (f_equal f) in a_z.
             rewrite grade_iso_fg in a_z.
             rewrite module_homo_zero in a_z.
             exact a_z.

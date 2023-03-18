@@ -34,9 +34,7 @@ Record to_geo := make_to_geo {
     to_geo_algebra : AlgebraObj F;
     to_geo_homo : ModuleObjHomomorphism V (algebra_module to_geo_algebra);
     to_geo_contract : ∀ v,
-        @mult _ (algebra_mult to_geo_algebra)
-        (module_homo_f to_geo_homo v)
-        (module_homo_f to_geo_homo v) =
+        @mult _ (algebra_mult to_geo_algebra) (to_geo_homo v) (to_geo_homo v) =
         @scalar_mult _ _ (algebra_scalar to_geo_algebra)
             ([B|] v v) (@one _ (algebra_one to_geo_algebra))
 }.
@@ -45,8 +43,7 @@ Definition to_geo_set (f g : to_geo)
     (h : cat_morphism (ALGEBRA F)
                       (to_geo_algebra f)
                       (to_geo_algebra g))
-    := ∀ x, algebra_homo_f h (module_homo_f (to_geo_homo f) x) =
-            module_homo_f (to_geo_homo g) x.
+    := ∀ x, h ((to_geo_homo f) x) = (to_geo_homo g) x.
 
 Definition to_geo_compose {F G H : to_geo}
     (f : set_type (to_geo_set G H)) (g : set_type (to_geo_set F G))
@@ -163,7 +160,7 @@ Proof.
         change (module_homo_f (to_algebra_homo V (to_tensor_algebra V)))
             with (@vector_to_tensor F V) in g_eq.
         assert (∀ a b, eq_equal (ideal_equiv (geo_ideal B)) a b →
-            algebra_homo_f g a = algebra_homo_f g b) as g_wd.
+            g a = g b) as g_wd.
         {
             intros a b eq.
             destruct eq as [l l_eq].

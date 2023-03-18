@@ -101,8 +101,8 @@ Proof.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 := free_extend F (list (module_V V))
-            (λ l, list_prod (list_image (module_homo_f g) l))).
-        assert (∀ v, h1 (to_free F (list (module_V V)) [v]) = module_homo_f g v)
+            (λ l, list_prod (list_image g l))).
+        assert (∀ v, h1 (to_free F (list (module_V V)) [v]) = g v)
             as h1_vec.
         {
             intros v.

@@ -41,7 +41,7 @@ Existing Instances E2P E2Z E2N E2M E2O E2S.
 Variable f : ModuleObjHomomorphism V1 V2.
 
 (* begin hide *)
-Definition outermorphism_base1 x := vector_to_ext V2 (module_homo_f f x) : ext V2.
+Definition outermorphism_base1 x := vector_to_ext V2 (f x) : ext V2.
 
 Lemma outermorphism_base_plus : ∀ u v, outermorphism_base1 (u + v) =
     outermorphism_base1 u + outermorphism_base1 v.
@@ -91,7 +91,7 @@ Definition outermorphism_homo := [outermorphism_base|].
 Definition outermorphism := algebra_homo_f outermorphism_homo : ext V1 → ext V2.
 
 Theorem outermorphism_eq : ∀ v, outermorphism (vector_to_ext V1 v) =
-    vector_to_ext V2 (module_homo_f f v).
+    vector_to_ext V2 (f v).
 Proof.
     apply [|outermorphism_base].
 Qed.

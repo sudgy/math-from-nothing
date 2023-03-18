@@ -68,7 +68,7 @@ Defined.
 
 Theorem tensor_power_eq_generic : ∀ m n (eq : m = n) A B,
     to_generic_tensor A = to_generic_tensor B →
-    module_homo_f (tensor_power_nat_eq eq) A = B.
+    tensor_power_nat_eq eq A = B.
 Proof.
     intros m n eq A B AB.
     (* I honestly don't know what I'm doing in this proof *)
@@ -86,7 +86,7 @@ Theorem tensor_power_eq : ∀ n (A B : module_V (tensor_power n)),
 Proof.
     intros n A B eq.
     assert (n = n) as eq' by reflexivity.
-    assert (module_homo_f (tensor_power_nat_eq eq') A = A) as eq2.
+    assert (tensor_power_nat_eq eq' A = A) as eq2.
     {
         apply tensor_power_eq_generic.
         reflexivity.
@@ -97,7 +97,7 @@ Proof.
 Qed.
 
 Lemma generic_tensor_eq_generic : ∀ m n (eq : m = n) A,
-    to_generic_tensor (module_homo_f (tensor_power_nat_eq eq) A) =
+    to_generic_tensor (tensor_power_nat_eq eq A) =
     to_generic_tensor A.
 Proof.
     intros m n eq A.
@@ -207,7 +207,7 @@ Let tensor_mult' {a b} A B
 
 Local Infix "⊗'" := tensor_mult' (at level 40, no associativity).
 
-Let f {a b} A := module_homo_f (tensor_power_mult a b) A.
+Let f {a b} A := tensor_power_mult a b A.
 
 Lemma f_plus : ∀ a b (A B : module_V (tensor_power a ⊗ tensor_power b)),
     f (A + B) = f A + f B.
@@ -316,7 +316,7 @@ Qed.
 
 Theorem vectors_to_power_mult : ∀ l1 l2,
     f (vectors_to_power l1 ⊗' vectors_to_power l2)
-    = module_homo_f (tensor_power_nat_eq (list_size_plus l1 l2))
+    = tensor_power_nat_eq (list_size_plus l1 l2)
         (vectors_to_power (l1 + l2)).
 Proof.
     intros l1 l2.
@@ -362,13 +362,13 @@ Proof.
             reflexivity.
         }
         symmetry in n_eq.
-        pose (X := module_homo_f (tensor_power_mult1 (list_size l1))
+        pose (X := tensor_power_mult1 (list_size l1)
             (tensor_mult (tensor_power (list_size l1)) V (vectors_to_power l1)
             a)).
         change (module_homo_f (tensor_power_mult1 (list_size l1))
             (tensor_mult (tensor_power (list_size l1)) V (vectors_to_power l1)
             a)) with X.
-        assert (module_homo_f (tensor_power_nat_eq (n_eq l1))
+        assert (tensor_power_nat_eq (n_eq l1)
                 (vectors_to_power (l1 + a ꞉ list_end)) = X) as eq.
         {
             unfold X; clear X.
@@ -388,7 +388,7 @@ Proof.
                     (V ⊗ tensor_power (list_size l1))
                     (tensor_power_mult1 (list_size l1))).
                 rewrite tensor_product_riso_eq.
-                pose (X := module_homo_f (tensor_power_mult1 (list_size l1))
+                pose (X := tensor_power_mult1 (list_size l1)
                     (tensor_mult (tensor_power (list_size l1)) V
                     (vectors_to_power l1) a)).
                 fold X in IHl1.
@@ -416,7 +416,7 @@ Qed.
 
 Definition simple_tensor_power n (A : module_V (tensor_power n)) :=
     ∃ α (l : set_type (λ l : list (module_V V), list_size l = n)),
-    A = α · module_homo_f (tensor_power_nat_eq [|l]) (vectors_to_power [l|]).
+    A = α · tensor_power_nat_eq [|l] (vectors_to_power [l|]).
 
 Theorem tensor_power_sum : ∀ {n} (A : module_V (tensor_power n)),
     ∃ l : ulist (set_type (simple_tensor_power n)),
@@ -500,7 +500,7 @@ Qed.
 
 Lemma tensor_power_rscalar : ∀ n
     (A : module_V (tensor_power n)) (B : module_V (tensor_power 0)),
-    module_homo_f (tensor_power_nat_eq (plus_rid n)) (f (A ⊗' B)) = B · A.
+    tensor_power_nat_eq (plus_rid n) (f (A ⊗' B)) = B · A.
 Proof.
     intros n A B.
     apply tensor_power_eq_generic.
@@ -573,7 +573,7 @@ Proof.
     2: inversion lA_size.
     cbn.
     cbn in lA_size.
-    assert (module_homo_f (tensor_power_nat_eq lA_size) (@one _ (cring_one F))
+    assert (tensor_power_nat_eq lA_size (@one _ (cring_one F))
         = (@one _ (cring_one F))) as eq.
     {
         apply tensor_power_eq_generic.
@@ -586,16 +586,16 @@ Proof.
 Qed.
 
 Theorem tensor_power_mult_assoc : ∀ a b c A B C,
-    module_homo_f (tensor_power_nat_eq (plus_assoc _ _ _))
-    (module_homo_f (tensor_power_mult a (b + c))
+    tensor_power_nat_eq (plus_assoc _ _ _)
+    (tensor_power_mult a (b + c)
         (tensor_mult (tensor_power a) (tensor_power (b + c))
             A
-            (module_homo_f (tensor_power_mult b c)
+            (tensor_power_mult b c
                 (tensor_mult (tensor_power b) (tensor_power c) B C))))
     =
-    module_homo_f (tensor_power_mult (a + b) c)
+    tensor_power_mult (a + b) c
         (tensor_mult (tensor_power (a + b)) (tensor_power c)
-            (module_homo_f (tensor_power_mult a b)
+            (tensor_power_mult a b
                 (tensor_mult (tensor_power a) (tensor_power b) A B))
             C).
 Proof.

@@ -43,7 +43,7 @@ Proof.
             with (vector_to_tensor (V := V)) in h1_eq.
         pose (TNG := tensor_n_grade V).
         pose (h2 (i : nat) (a : algebra_V (tensor_algebra_n V))
-            (H : of_grade i a) := algebra_homo_f h1 [ex_val H|]).
+            (H : of_grade i a) := h1 [ex_val H|]).
         assert (linear_extend_plus_base (VG := TNG) h2) as h2_plus.
         {
             intros u' v' i iu iv.
@@ -212,8 +212,8 @@ Qed.
 Lemma tensor_algebra_iso_ex :
     ∃ f : cat_morphism (ALGEBRA F) (tensor_algebra_n V) (tensor_algebra V),
         isomorphism f ∧
-        ∀ x, algebra_homo_f f (vector_to_tensor_n V x) =
-            module_homo_f (vector_to_tensor_homo V) x.
+        ∀ x, f (vector_to_tensor_n V x) =
+            vector_to_tensor_homo V x.
 Proof.
     pose proof (initial_unique _ _
         tensor_algebra_n_universal (tensor_algebra_ex V))
@@ -237,19 +237,19 @@ Qed.
 Let f := ex_val tensor_algebra_iso_ex.
 Let f_iso := land (ex_proof tensor_algebra_iso_ex).
 Let g := ex_val f_iso.
-Lemma tensor_algebra_iso_eq : ∀ x, algebra_homo_f f (vector_to_tensor_n V x)
+Lemma tensor_algebra_iso_eq : ∀ x, f (vector_to_tensor_n V x)
     = vector_to_tensor x.
 Proof.
     apply (ex_proof tensor_algebra_iso_ex).
 Qed.
-Lemma tensor_algebra_iso_fg : ∀ x, algebra_homo_f f (algebra_homo_f g x) = x.
+Lemma tensor_algebra_iso_fg : ∀ x, f (g x) = x.
 Proof.
     intros x.
     pose proof (ex_proof f_iso) as [eq1 eq2]; clear eq2.
     inversion eq1 as [eq1'].
     apply (func_eq _ _ eq1').
 Qed.
-Lemma tensor_algebra_iso_gf : ∀ x, algebra_homo_f g (algebra_homo_f f x) = x.
+Lemma tensor_algebra_iso_gf : ∀ x, g (f x) = x.
 Proof.
     intros x.
     pose proof (ex_proof f_iso) as [eq1 eq2]; clear eq1.
@@ -453,9 +453,9 @@ Theorem tensor_sum : ∀ x, ∃ l : ulist (cring_U F * list (module_V V)),
 Proof.
     intros x.
 
-    pose proof (tensor_n_sum V (algebra_homo_f g x)) as [l x_eq].
+    pose proof (tensor_n_sum V (g x)) as [l x_eq].
     exists l.
-    apply (f_equal (algebra_homo_f f)) in x_eq.
+    apply (f_equal f) in x_eq.
     rewrite tensor_algebra_iso_fg in x_eq.
     rewrite x_eq.
     clear x x_eq.

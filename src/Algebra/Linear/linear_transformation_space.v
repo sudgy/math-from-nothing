@@ -169,7 +169,7 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD VP1 VZ1 VN1
     SM2 SMO2 SML2 SMR2 SMC2.
 
 Definition linear_trans_plus_base (f g : ModuleObjHomomorphism V1 V2) :=
-    λ v, module_homo_f f v + module_homo_f g v.
+    λ v, f v + g v.
 
 Lemma linear_trans_plus_plus : ∀ f g, ∀ u v,
     linear_trans_plus_base f g (u + v) =
@@ -232,7 +232,7 @@ Instance linear_trans_zero : Zero (ModuleObjHomomorphism V1 V2) := {
 }.
 
 Definition linear_trans_neg_base (f : ModuleObjHomomorphism V1 V2) :=
-    λ v, -module_homo_f f v.
+    λ v, -f v.
 
 Lemma linear_trans_neg_plus : ∀ f, ∀ u v,
     linear_trans_neg_base f (u + v) =
@@ -298,7 +298,7 @@ Next Obligation.
 Qed.
 
 Definition linear_trans_scalar_base a (f : ModuleObjHomomorphism V1 V2) :=
-    λ v, a · module_homo_f f v.
+    λ v, a · f v.
 
 Lemma linear_trans_scalar_plus : ∀ a f, ∀ u v,
     linear_trans_scalar_base a f (u + v) =
@@ -404,7 +404,7 @@ Let TS := linear_trans_scalar V V.
 Existing Instances TP TS.
 
 Definition linear_trans_mult_base (f g : ModuleObjHomomorphism V V) :=
-    λ v, module_homo_f f (module_homo_f g v).
+    λ v, f (g v).
 
 Lemma linear_trans_mult_plus : ∀ f g, ∀ u v,
     linear_trans_mult_base f g (u + v) =

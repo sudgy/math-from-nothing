@@ -16,8 +16,7 @@ Definition to_algebra_set (f g : to_algebra)
     (h : cat_morphism (ALGEBRA F)
                       (to_algebra_algebra f)
                       (to_algebra_algebra g))
-    := ∀ x, algebra_homo_f h (module_homo_f (to_algebra_homo f) x) =
-            module_homo_f (to_algebra_homo g) x.
+    := ∀ x, h (to_algebra_homo f x) = to_algebra_homo g x.
 
 Definition to_algebra_compose {F G H : to_algebra}
     (f : set_type (to_algebra_set G H)) (g : set_type (to_algebra_set F G))

@@ -71,7 +71,7 @@ Local Existing Instances tensor_algebra_plus tensor_algebra_zero
 
 Theorem power_to_tensor_k_eq : ∀ k n (eq : k = n) (A : k_tensor k),
     power_to_tensor A =
-    power_to_tensor (module_homo_f (tensor_power_nat_eq V eq) A).
+    power_to_tensor (tensor_power_nat_eq V eq A).
 Proof.
     intros k n eq A.
     destruct eq.

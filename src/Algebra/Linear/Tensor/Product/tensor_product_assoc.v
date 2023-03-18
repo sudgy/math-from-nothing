@@ -98,7 +98,7 @@ Theorem tensor_product_assoc :
             (tensor_product M (tensor_product N O))
             (tensor_product (tensor_product M N) O),
         isomorphism f ∧
-        ∀ a b c, module_homo_f f (a ⊗1_23 (b ⊗23 c)) = (a ⊗12 b) ⊗12_3 c.
+        ∀ a b c, f (a ⊗1_23 (b ⊗23 c)) = (a ⊗12 b) ⊗12_3 c.
 Proof.
     pose (T12_plus := module_plus V12).
     pose (T12_zero := module_zero V12).
@@ -164,7 +164,7 @@ Proof.
     pose (f2_base a := make_bilinear _ _ _ _ (f1_bil a)).
     pose (f2 a := ex_singleton (tensor_product_universal _ _ (f2_base a))).
     cbn in f2.
-    pose (f3 a b := module_homo_f [f2 a|] b).
+    pose (f3 a b := [f2 a|] b).
     assert (bilinear f3) as f3_bil.
     {
         repeat split; intros.
@@ -217,7 +217,7 @@ Proof.
                 do 2 rewrite plus_assoc.
                 apply rplus.
                 rewrite plus_comm.
-                rewrite (plus_comm (module_homo_f fv1 [a|])).
+                rewrite (plus_comm (fv1 [a|])).
                 rewrite <- plus_assoc.
                 apply lplus.
                 destruct a as [a [u [v eq]]]; subst a; cbn.
@@ -255,7 +255,7 @@ Proof.
         pose (g2_base c := make_bilinear _ _ _ _ (g1_bil c)).
         pose (g2 c := ex_singleton (tensor_product_universal _ _ (g2_base c))).
         cbn in g2.
-        pose (g3 b a := module_homo_f [g2 a|] b).
+        pose (g3 b a := [g2 a|] b).
         assert (bilinear g3) as g3_bil.
         {
             repeat split; intros.
@@ -310,7 +310,7 @@ Proof.
                     do 2 rewrite plus_assoc.
                     apply rplus.
                     rewrite plus_comm.
-                    rewrite (plus_comm (module_homo_f gv1 [a|])).
+                    rewrite (plus_comm (gv1 [a|])).
                     rewrite <- plus_assoc.
                     apply lplus.
                     destruct a as [a [u [v eq]]]; subst a; cbn.

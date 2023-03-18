@@ -41,7 +41,7 @@ Global Existing Instances module_plus module_zero module_neg module_plus_assoc
     module_scalar_id module_scalar_ldist module_scalar_rdist module_scalar_comp.
 
 Record ModuleObjHomomorphism {R : CRingObj} (M : ModuleObj R) (N : ModuleObj R) := make_module_homomorphism {
-    module_homo_f : module_V M → module_V N;
+    module_homo_f :> module_V M → module_V N;
     module_homo_plus : ∀ u v,
         module_homo_f (u + v) = module_homo_f u + module_homo_f v;
     module_homo_scalar : ∀ a v,
@@ -50,7 +50,7 @@ Record ModuleObjHomomorphism {R : CRingObj} (M : ModuleObj R) (N : ModuleObj R) 
 Arguments module_homo_f {R M N}.
 
 Theorem module_homo_zero {R : CRingObj} {M N : ModuleObj R} :
-    ∀ f : ModuleObjHomomorphism M N, module_homo_f f 0 = 0.
+    ∀ f : ModuleObjHomomorphism M N, f 0 = 0.
 Proof.
     intros f.
     rewrite <- (scalar_lanni 0).
@@ -60,7 +60,7 @@ Qed.
 
 Theorem module_homo_neg {R : CRingObj} {M N : ModuleObj R} :
     ∀ f : ModuleObjHomomorphism M N,
-    ∀ v, module_homo_f f (-v) = -module_homo_f f v.
+    ∀ v, f (-v) = -f v.
 Proof.
     intros f v.
     rewrite <- scalar_neg_one.
@@ -70,7 +70,7 @@ Qed.
 
 Theorem module_homomorphism_eq {R : CRingObj} {M N : ModuleObj R} :
     ∀ f g : ModuleObjHomomorphism M N,
-    (∀ x, module_homo_f f x = module_homo_f g x) → f = g.
+    (∀ x, f x = g x) → f = g.
 Proof.
     intros [f1 plus1 scalar1] [f2 plus2 scalar2] f_eq.
     cbn in *.
@@ -93,9 +93,7 @@ Definition module_homo_id {R : CRingObj} (L : ModuleObj R)
 
 Lemma module_homo_compose_plus : ∀ {R : CRingObj} {L M N : ModuleObj R}
     {f : ModuleObjHomomorphism M N} {g : ModuleObjHomomorphism L M},
-    ∀ a b, module_homo_f f (module_homo_f g (a + b)) =
-    module_homo_f f (module_homo_f g a) +
-    module_homo_f f (module_homo_f g b).
+    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
 Proof.
     intros R L M N f g a b.
     rewrite module_homo_plus.
@@ -103,8 +101,7 @@ Proof.
 Qed.
 Lemma module_homo_compose_scalar : ∀ {R : CRingObj} {L M N : ModuleObj R}
     {f : ModuleObjHomomorphism M N} {g : ModuleObjHomomorphism L M},
-    ∀ a v, module_homo_f f (module_homo_f g (a · v))
-        = a · (module_homo_f f (module_homo_f g v)).
+    ∀ a v, f (g (a · v)) = a · (f (g v)).
 Proof.
     intros R L M N f g a v.
     rewrite module_homo_scalar.
@@ -113,7 +110,7 @@ Qed.
 Definition module_homo_compose {R : CRingObj} {L M N : ModuleObj R}
     (f : ModuleObjHomomorphism M N) (g : ModuleObjHomomorphism L M) 
     : ModuleObjHomomorphism L N := make_module_homomorphism R L N
-        (λ x, module_homo_f f (module_homo_f g x))
+        (λ x, f (g x))
         module_homo_compose_plus module_homo_compose_scalar.
 
 Global Program Instance MODULE (R : CRingObj) : Category := {

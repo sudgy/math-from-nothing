@@ -120,7 +120,7 @@ Definition ext_involute_base
     := ex_singleton (exterior_universal V ext_involute_base3).
 
 Definition ext_involute_homo := [ext_involute_base|].
-Definition ext_involute := algebra_homo_f ext_involute_homo : ext V → ext V.
+Definition ext_involute := ext_involute_homo : ext V → ext V.
 
 Local Notation "a '∗'" := (ext_involute a) (at level 10).
 
@@ -309,7 +309,7 @@ Definition ext_reverse_base
     := ex_singleton (exterior_universal V ext_reverse_base3).
 
 Definition ext_reverse_homo := [ext_reverse_base|].
-Definition ext_reverse := algebra_homo_f ext_reverse_homo : ext V → ext V.
+Definition ext_reverse := ext_reverse_homo : ext V → ext V.
 
 Local Notation "a '†'" := (ext_reverse a) (at level 10).
 

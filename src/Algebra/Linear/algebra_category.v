@@ -51,7 +51,7 @@ Global Existing Instances algebra_mult algebra_ldist algebra_rdist
     algebra_scalar_rdist algebra_scalar_comp.
 
 Record AlgebraObjHomomorphism {R : CRingObj} (A B : AlgebraObj R) := make_algebra_homomorphism {
-    algebra_homo_f : algebra_V A → algebra_V B;
+    algebra_homo_f :> algebra_V A → algebra_V B;
     algebra_homo_plus : ∀ u v,
         algebra_homo_f (u + v) = algebra_homo_f u + algebra_homo_f v;
     algebra_homo_scalar : ∀ a v,
@@ -65,21 +65,21 @@ Arguments algebra_homo_f {R A B}.
 Definition algebra_to_module_homomorphism {R : CRingObj} {A B : AlgebraObj R}
     (f : AlgebraObjHomomorphism A B) :=
     make_module_homomorphism R (algebra_module A) (algebra_module B)
-    (algebra_homo_f f)
+    f
     (algebra_homo_plus _ _ f)
     (algebra_homo_scalar _ _ f).
 
 Theorem algebra_to_module_homo_eq {R : CRingObj} {A B : AlgebraObj R}
     (f : AlgebraObjHomomorphism A B) :
-    ∀ x, algebra_homo_f f x =
-    module_homo_f (algebra_to_module_homomorphism f) x.
+    ∀ x, f x =
+    (algebra_to_module_homomorphism f) x.
 Proof.
     reflexivity.
 Qed.
 
 Theorem algebra_homo_zero {R : CRingObj} {M N : AlgebraObj R} :
     ∀ f : AlgebraObjHomomorphism M N,
-    algebra_homo_f f 0 = 0.
+    f 0 = 0.
 Proof.
     intros f.
     rewrite algebra_to_module_homo_eq.
@@ -88,7 +88,7 @@ Qed.
 
 Theorem algebra_homo_neg {R : CRingObj} {M N : AlgebraObj R} :
     ∀ f : AlgebraObjHomomorphism M N,
-    ∀ v, algebra_homo_f f (-v) = -algebra_homo_f f v.
+    ∀ v, f (-v) = -f v.
 Proof.
     intros f v.
     rewrite algebra_to_module_homo_eq.
@@ -97,7 +97,7 @@ Qed.
 
 Theorem algebra_homomorphism_eq {R : CRingObj} {M N : AlgebraObj R} :
     ∀ f g : AlgebraObjHomomorphism M N,
-    (∀ x, algebra_homo_f f x = algebra_homo_f g x) → f = g.
+    (∀ x, f x = g x) → f = g.
 Proof.
     intros [f1 plus1 scalar1 mult1 one1] [f2 plus2 scalar2 mult2 one2] f_eq.
     cbn in *.
@@ -124,9 +124,7 @@ Definition algebra_homo_id {R : CRingObj} (A : AlgebraObj R)
 
 Lemma algebra_homo_compose_plus : ∀ {R : CRingObj} {L M N : AlgebraObj R}
     {f : AlgebraObjHomomorphism M N} {g : AlgebraObjHomomorphism L M},
-    ∀ a b, algebra_homo_f f (algebra_homo_f g (a + b)) =
-    algebra_homo_f f (algebra_homo_f g a) +
-    algebra_homo_f f (algebra_homo_f g b).
+    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
 Proof.
     intros R L M N f g a b.
     rewrite algebra_homo_plus.
@@ -134,8 +132,7 @@ Proof.
 Qed.
 Lemma algebra_homo_compose_scalar : ∀ {R : CRingObj} {L M N : AlgebraObj R}
     {f : AlgebraObjHomomorphism M N} {g : AlgebraObjHomomorphism L M},
-    ∀ a v, algebra_homo_f f (algebra_homo_f g (a · v)) =
-        a · algebra_homo_f f (algebra_homo_f g v).
+    ∀ a v, f (g (a · v)) = a · f (g v).
 Proof.
     intros R L M N f g a v.
     rewrite algebra_homo_scalar.
@@ -143,9 +140,7 @@ Proof.
 Qed.
 Lemma algebra_homo_compose_mult : ∀ {R : CRingObj} {L M N : AlgebraObj R}
     {f : AlgebraObjHomomorphism M N} {g : AlgebraObjHomomorphism L M},
-    ∀ a b, algebra_homo_f f (algebra_homo_f g (a * b)) =
-    algebra_homo_f f (algebra_homo_f g a) *
-    algebra_homo_f f (algebra_homo_f g b).
+    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
 Proof.
     intros R L M N f g a b.
     rewrite algebra_homo_mult.
@@ -153,7 +148,7 @@ Proof.
 Qed.
 Lemma algebra_homo_compose_one : ∀ {R : CRingObj} {L M N : AlgebraObj R}
     {f : AlgebraObjHomomorphism M N} {g : AlgebraObjHomomorphism L M},
-    algebra_homo_f f (algebra_homo_f g 1) = 1.
+    f (g 1) = 1.
 Proof.
     intros R L M N f g.
     rewrite algebra_homo_one.
@@ -162,7 +157,7 @@ Qed.
 Definition algebra_homo_compose {R : CRingObj} {L M N : AlgebraObj R}
     (f : AlgebraObjHomomorphism M N) (g : AlgebraObjHomomorphism L M)
     : AlgebraObjHomomorphism L N := make_algebra_homomorphism R L N
-        (λ x, algebra_homo_f f (algebra_homo_f g x))
+        (λ x, f (g x))
         algebra_homo_compose_plus algebra_homo_compose_scalar
         algebra_homo_compose_mult algebra_homo_compose_one.
 

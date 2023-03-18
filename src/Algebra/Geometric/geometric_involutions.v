@@ -106,7 +106,7 @@ Definition geo_involute_base
     := ex_singleton (geometric_universal B geo_involute_base3).
 
 Definition geo_involute_homo := [geo_involute_base|].
-Definition geo_involute := algebra_homo_f geo_involute_homo : geo B → geo B.
+Definition geo_involute := geo_involute_homo : geo B → geo B.
 
 Local Notation "a '∗'" := (geo_involute a) (at level 10).
 
@@ -295,7 +295,7 @@ Definition geo_reverse_base
     := ex_singleton (geometric_universal B geo_reverse_base3).
 
 Definition geo_reverse_homo := [geo_reverse_base|].
-Definition geo_reverse := algebra_homo_f geo_reverse_homo : geo B → geo B.
+Definition geo_reverse := geo_reverse_homo : geo B → geo B.
 
 Local Notation "a '†'" := (geo_reverse a) (at level 10).
 

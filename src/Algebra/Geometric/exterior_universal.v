@@ -20,17 +20,14 @@ Record to_ext := make_to_ext {
     to_ext_algebra : AlgebraObj F;
     to_ext_homo : ModuleObjHomomorphism V (algebra_module to_ext_algebra);
     to_ext_alternating : ∀ v, (@zero _ (algebra_zero to_ext_algebra)) =
-        @mult _ (algebra_mult to_ext_algebra)
-        (module_homo_f to_ext_homo v)
-        (module_homo_f to_ext_homo v);
+        @mult _ (algebra_mult to_ext_algebra) (to_ext_homo v) (to_ext_homo v);
 }.
 
 Definition to_ext_set (f g : to_ext)
     (h : cat_morphism (ALGEBRA F)
                       (to_ext_algebra f)
                       (to_ext_algebra g))
-    := ∀ x, algebra_homo_f h (module_homo_f (to_ext_homo f) x) =
-            module_homo_f (to_ext_homo g) x.
+    := ∀ x, h (to_ext_homo f x) = to_ext_homo g x.
 
 Definition to_ext_compose {F G H : to_ext}
     (f : set_type (to_ext_set G H)) (g : set_type (to_ext_set F G))
@@ -141,7 +138,7 @@ Theorem exterior_universal : @initial TO_EXT ext_to_ext.
         change (module_homo_f (to_algebra_homo V (to_tensor_algebra V)))
             with (@vector_to_tensor F V) in g_eq.
         assert (∀ a b, eq_equal (ideal_equiv (ext_ideal V)) a b →
-            algebra_homo_f g a = algebra_homo_f g b) as g_wd.
+            g a = g b) as g_wd.
         {
             intros a b eq.
             destruct eq as [l l_eq].

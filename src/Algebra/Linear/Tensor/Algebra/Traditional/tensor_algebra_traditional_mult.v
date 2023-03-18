@@ -70,14 +70,14 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
 Let k_tensor k := module_V (tensor_power V k).
 
 Definition tensor_mult_base i j a b (ai : of_grade i a) (bj : of_grade j b)
-    := power_to_tensor V (module_homo_f (tensor_power_mult V _ _)
+    := power_to_tensor V (tensor_power_mult V _ _
         (tensor_mult _ _ (ex_val ai) (ex_val bj))).
 
 Lemma power_to_tensor_tm :
     ∀ k1 k2 (A : k_tensor k1) (B : k_tensor k2) AH BH,
     tensor_mult_base k1 k2 (power_to_tensor V A) (power_to_tensor V B) AH BH
     = power_to_tensor V
-        (module_homo_f (tensor_power_mult V _ _) (tensor_mult _ _ A B)).
+        (tensor_power_mult V _ _ (tensor_mult _ _ A B)).
 Proof.
     intros k1 k2 A B Ak1 Bk2.
     unfold tensor_mult_base.
@@ -226,7 +226,7 @@ Lemma tensor_mult_base_grade : ∀ u v i j H1 H2,
     of_grade (plus (U := nat) i j) (tensor_mult_base i j u v H1 H2).
 Proof.
     intros u v i j ui vj.
-    exists (module_homo_f (tensor_power_mult V _ _)
+    exists (tensor_power_mult V _ _
         (tensor_mult _ _ (ex_val ui) (ex_val vj))).
     reflexivity.
 Qed.
@@ -303,16 +303,16 @@ Next Obligation.
     subst a' b' c'.
 
     pose proof (power_to_tensor_tm i j a b ai bj) as eq.
-    assert (of_grade (i + j) (power_to_tensor V (module_homo_f
-        (tensor_power_mult V i j) (tensor_mult _ _ a b)))) as abij'.
+    assert (of_grade (i + j) (power_to_tensor V (
+        tensor_power_mult V i j (tensor_mult _ _ a b)))) as abij'.
     {
         rewrite <- eq.
         exact abij.
     }
     rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ abij' _ eq); clear eq.
     pose proof (power_to_tensor_tm j k b c bj ck) as eq.
-    assert (of_grade (j + k) (power_to_tensor V (module_homo_f
-        (tensor_power_mult V j k) (tensor_mult _ _ b c)))) as bcjk'.
+    assert (of_grade (j + k) (power_to_tensor V (
+        tensor_power_mult V j k (tensor_mult _ _ b c)))) as bcjk'.
     {
         rewrite <- eq.
         exact bcjk.

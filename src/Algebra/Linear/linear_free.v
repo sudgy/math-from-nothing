@@ -359,7 +359,7 @@ Definition free_from_set (f g : free_from)
     (h : cat_morphism (MODULE F)
                       (free_from_module f)
                       (free_from_module g))
-    := ∀ x, module_homo_f h (free_from_f f x) = free_from_f g x.
+    := ∀ x, h (free_from_f f x) = free_from_f g x.
 
 Definition free_from_compose {F G H : free_from}
     (f : set_type (free_from_set G H)) (g : set_type (free_from_set F G))

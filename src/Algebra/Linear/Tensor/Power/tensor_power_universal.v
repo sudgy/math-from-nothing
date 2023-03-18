@@ -47,7 +47,7 @@ Definition multilinear_from_set (f g : multilinear_from)
                       (multilinear_from_module f)
                       (multilinear_from_module g))
     := ∀ x (eq : list_size x = n),
-        module_homo_f h (multilinear_from_f f x eq) = multilinear_from_f g x eq.
+        h (multilinear_from_f f x eq) = multilinear_from_f g x eq.
 
 Definition multilinear_from_compose {F G H : multilinear_from}
     (f : set_type (multilinear_from_set G H))
@@ -96,7 +96,7 @@ Next Obligation.
 Qed.
 
 Definition vectors_to_power_eq {m} (l : list (module_V V)) (eq : list_size l = m)
-    := module_homo_f (tensor_power_nat_eq V eq) (vectors_to_power V l).
+    := tensor_power_nat_eq V eq (vectors_to_power V l).
 
 Lemma vectors_to_power_eq_generic {m} :
     ∀ (l : list (module_V V)) (eq : list_size l = m),
@@ -295,7 +295,7 @@ Proof.
             pose (f2 v := make_multilinear V n
                 (multilinear_from_module V (nat_suc n) g)
                 (f1 v) (f1_plus v) (f1_scalar v)).
-            pose (f3 v := module_homo_f (ex_val (IHn0 (f2 v)))).
+            pose (f3 v := ex_val (IHn0 (f2 v))).
             cbn in f3.
             assert (bilinear f3) as f_bil.
             {
@@ -348,7 +348,7 @@ Proof.
                         do 2 rewrite plus_assoc.
                         apply rplus.
                         rewrite <- plus_assoc.
-                        rewrite (plus_comm _ (module_homo_f h2 [v|])).
+                        rewrite (plus_comm _ (h2 [v|])).
                         rewrite plus_assoc.
                         apply rplus; clear l.
                         destruct v as [v [α  [l v_eq]]]; subst v; cbn.

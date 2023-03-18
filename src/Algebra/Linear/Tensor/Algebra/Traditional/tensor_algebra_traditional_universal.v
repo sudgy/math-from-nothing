@@ -87,7 +87,7 @@ Proof.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 n (l : list (module_V V)) (eq : list_size l = n)
-            := rfold mult 1 (list_image (module_homo_f g) l)).
+            := rfold mult 1 (list_image g l)).
         assert (∀ n, ∀ l1 a b l2 eq1 eq2 eq3,
             h1 n (l1 + (a + b) ꞉ l2) eq1 =
             h1 n (l1 + a ꞉ l2) eq2 + h1 n (l1 + b ꞉ l2) eq3) as h1_plus.
@@ -127,7 +127,7 @@ Proof.
         pose (h2 n := make_multilinear _ n _ (h1 n) (h1_plus n) (h1_scalar n)).
         pose (h3 n := ex_singleton (tensor_power_universal V n (h2 n))).
         cbn in h3.
-        pose (h4 i v (H : of_grade i v) := module_homo_f [h3 i|] (ex_val H)).
+        pose (h4 i v (H : of_grade i v) := [h3 i|] (ex_val H)).
         assert (∀ n, ∀ l eq li,
             h4 n (power_to_tensor V (vectors_to_power V l)) li = h1 n l eq)
             as h4_eq2.

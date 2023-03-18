@@ -237,7 +237,7 @@ Proof.
     apply algebra_homo_mult.
 Qed.
 
-Definition geo_mult_inner a v := snd (module_homo_f (geo_mult_inner_f a v) (1, 0)).
+Definition geo_mult_inner a v := snd (geo_mult_inner_f a v (1, 0)).
 
 (* end hide *)
 Theorem geo_mult_inner_rplus : ∀ a u v,
@@ -692,7 +692,7 @@ Proof.
     apply algebra_homo_mult.
 Qed.
 
-Definition ext_to_geo (v : ext V) := module_homo_f (ext_to_geo_f v) 1 : geo B.
+Definition ext_to_geo (v : ext V) := ext_to_geo_f v 1 : geo B.
 
 (* end hide *)
 Theorem ext_to_geo_plus : ∀ u v,

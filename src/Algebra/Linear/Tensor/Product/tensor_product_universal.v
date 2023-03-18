@@ -94,7 +94,7 @@ Definition bilinear_from_set (f g : bilinear_from)
     (h : cat_morphism (MODULE F)
                       (bilinear_from_module f)
                       (bilinear_from_module g))
-    := ∀ x y, module_homo_f h (bilinear_from_f f x y) = bilinear_from_f g x y.
+    := ∀ x y, h (bilinear_from_f f x y) = bilinear_from_f g x y.
 
 Definition bilinear_from_compose {F G H : bilinear_from}
     (f : set_type (bilinear_from_set G H)) (g : set_type (bilinear_from_set F G))
@@ -487,9 +487,9 @@ Proof.
     pose proof (func_eq _ _ gh') as gh; cbn in gh.
     pose proof (func_eq _ _ hg') as hg; cbn in hg.
     clear gh' hg'.
-    pose proof (tensor_sum_base M N (module_homo_f g T)) as [l l_eq].
+    pose proof (tensor_sum_base M N (g T)) as [l l_eq].
     pose (f' (t : set_type (simple_tensor_base M N))
-        := module_homo_f h [t|]).
+        := h [t|]).
     assert (∀ t, simple_tensor (f' t)) as f'_in.
     {
         intros [t [u [v t_eq]]].
@@ -509,7 +509,7 @@ Proof.
     induction l using ulist_induction; intros.
     -   rewrite ulist_image_end, ulist_sum_end.
         rewrite ulist_image_end, ulist_sum_end in l_eq.
-        apply (f_equal (module_homo_f h)) in l_eq.
+        apply (f_equal h) in l_eq.
         rewrite hg in l_eq.
         rewrite l_eq.
         rewrite <- (scalar_ranni 0).
