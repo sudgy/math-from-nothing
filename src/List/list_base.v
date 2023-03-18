@@ -17,7 +17,7 @@ Open Scope list_scope.
 Notation "[]" := list_end : list_scope.
 Notation "[ a ]" := (a ꞉ []) : list_scope.
 Notation "[ x ; y ; .. ; z ]" :=
-    (list_add x (list_add y .. (list_add z []) ..))
+    (x ꞉ (y ꞉ .. (z ꞉ []) ..))
     (format "[ '[' x ; '/' y ; '/' .. ; '/' z ']' ]") : list_scope.
 
 Fixpoint list_conc {U : Type} (al bl : list U) : list U :=

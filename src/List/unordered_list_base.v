@@ -32,9 +32,15 @@ Definition ulist_add {U} (a : U)
 (** Like with list_add, this is NOT a colon!  It is actually U+02D0,
 modifier letter triangular colon.  I have it mapped to \uadd in ibus. *)
 Infix "ː" := ulist_add (at level 49, right associativity) : list_scope.
+(** These are \llbracket and \rrbracket, U+27E6 and U+27E7. *)
+Notation "⟦⟧" := ulist_end : list_scope.
+Notation "⟦ a ⟧" := (a ː ⟦⟧) : list_scope.
+Notation "⟦ x ; y ; .. ; z ⟧" :=
+    (x ː (y ː .. (z ː ⟦⟧) ..))
+    (format "⟦ '[' x ; '/' y ; '/' .. ; '/' z ']' ⟧") : list_scope.
 
 Theorem ulist_induction {U} : ∀ S : ulist U → Prop,
-    S ulist_end → (∀ a l, S l → S (a ː l)) → ∀ l, S l.
+    S ⟦⟧ → (∀ a l, S l → S (a ː l)) → ∀ l, S l.
 Proof.
     intros S S_end S_add l.
     equiv_get_value l.
@@ -52,7 +58,7 @@ Proof.
 Qed.
 
 Theorem ulist_destruct {U} : ∀ S : ulist U → Prop,
-    S ulist_end → (∀ a l, S (a ː l)) → ∀ l, S l.
+    S ⟦⟧ → (∀ a l, S (a ː l)) → ∀ l, S l.
 Proof.
     intros S S_end S_ind l.
     induction l using ulist_induction.
@@ -60,7 +66,7 @@ Proof.
     -   apply S_ind.
 Qed.
 
-Theorem ulist_end_neq {U} : ∀ (a : U) l, a ː l ≠ ulist_end.
+Theorem ulist_end_neq {U} : ∀ (a : U) l, a ː l ≠ ⟦⟧.
 Proof.
     intros a l contr.
     equiv_get_value l.
@@ -70,8 +76,7 @@ Proof.
     inversion contr.
 Qed.
 
-Theorem ulist_single_eq {U} : ∀ (a b : U), a ː ulist_end = b ː ulist_end →
-    a = b.
+Theorem ulist_single_eq {U} : ∀ (a b : U), ⟦a⟧ = ⟦b⟧ → a = b.
 Proof.
     intros a b eq.
     unfold ulist_add, ulist_end in eq; equiv_simpl in eq.
@@ -102,7 +107,7 @@ Proof.
     apply list_perm_refl.
 Qed.
 
-Theorem ulist_add_conc {U} : ∀ (a : U) l, a ː l = (a ː ulist_end) + l.
+Theorem ulist_add_conc {U} : ∀ (a : U) l, a ː l = (⟦a⟧) + l.
 Proof.
     intros a l.
     equiv_get_value l.
@@ -111,7 +116,7 @@ Proof.
 Qed.
 
 Global Instance ulist_zero U : Zero (ulist U) := {
-    zero := ulist_end
+    zero := ⟦⟧
 }.
 
 Global Instance ulist_plus_comm U : PlusComm (ulist U).
@@ -132,12 +137,12 @@ Proof.
     apply list_perm_refl.
 Qed.
 
-Theorem ulist_conc_lid {U} : ∀ l : ulist U, ulist_end + l = l.
+Theorem ulist_conc_lid {U} : ∀ l : ulist U, ⟦⟧ + l = l.
 Proof.
     exact plus_lid.
 Qed.
 
-Theorem ulist_conc_rid {U} : ∀ l : ulist U, l + ulist_end = l.
+Theorem ulist_conc_rid {U} : ∀ l : ulist U, l + ⟦⟧ = l.
 Proof.
     exact plus_rid.
 Qed.
@@ -222,7 +227,7 @@ Definition ulist_image {A B} (f : A → B) :=
     unary_op (E := ulist_equiv A) (ulist_image_wd A B f).
 
 Theorem ulist_image_end {A B : Type} : ∀ f : A → B,
-    ulist_image f ulist_end = ulist_end.
+    ulist_image f ⟦⟧ = ⟦⟧.
 Proof.
     intros f.
     unfold ulist_end, ulist_image; equiv_simpl.
