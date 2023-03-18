@@ -84,7 +84,7 @@ Proof.
     rewrite nat_isomorphism_A in η_iso.
     rewrite nat_isomorphism_A in ε_iso.
     pose (η'_f A := ex_val (ε_iso A)).
-    assert (∀ {A B} f, η'_f B ∘ (𝟏 ⋄ f) = (F ○ G ⋄ f) ∘ η'_f A) as η'_commute.
+    assert (∀ {A B} f, η'_f B ∘ (⌈𝟏⌉ f) = (⌈F ○ G⌉ f) ∘ η'_f A) as η'_commute.
     {
         intros A B f.
         unfold η'_f.
@@ -105,7 +105,7 @@ Proof.
     }
     pose (η' := {|nat_trans_f := η'_f; nat_trans_commute := η'_commute|}).
     pose (ε'_f A := ex_val (η_iso A)).
-    assert (∀ {A B} f, ε'_f B ∘ (G ○ F ⋄ f) = (𝟏 ⋄ f) ∘ ε'_f A) as ε'_commute.
+    assert (∀ {A B} f, ε'_f B ∘ (⌈G ○ F⌉ f) = (⌈𝟏⌉ f) ∘ ε'_f A) as ε'_commute.
     {
         intros A B f.
         unfold ε'_f.
@@ -115,7 +115,7 @@ Proof.
         pose proof (nat_trans_commute η f) as eq.
         cbn in *.
         apply rcompose with A' in eq.
-        rewrite <- (cat_assoc _ (η • A) A') in eq.
+        rewrite <- (cat_assoc _ (η A) A') in eq.
         cbn in *.
         rewrite A'_eq1 in eq.
         rewrite cat_rid in eq.
@@ -134,14 +134,14 @@ Proof.
         unfold η'_f.
         unfold ex_val.
         destruct (ex_to_type _) as [B [B_eq1 B_eq2]]; cbn.
-        exists (ε • A).
+        exists (ε A).
         split; assumption.
     -   intros A.
         cbn.
         unfold ε'_f.
         unfold ex_val.
         destruct (ex_to_type _) as [B [B_eq1 B_eq2]]; cbn.
-        exists (η • A).
+        exists (η A).
         split; assumption.
 Qed.
 
@@ -171,8 +171,8 @@ Qed.
 Theorem functor_equiv_sur1 : essentially_surjective F.
 Proof.
     intros B.
-    exists (G ⌈B⌉).
-    exists (ε • B).
+    exists (G B).
+    exists (ε B).
     destruct equiv as [η_iso ε_iso].
     rewrite nat_isomorphism_A in ε_iso.
     apply ε_iso.
@@ -350,16 +350,16 @@ Proof.
         functor_compose := G_compose;
         functor_id := G_id;
     |}).
-    pose (η_f A := ex_val (sur _ (Surjective := F_full _ _) (g (F ⌈A⌉)))
-        : cat_morphism C1 (𝟏 ⌈A⌉) (G ○ F ⌈A⌉)).
+    pose (η_f A := ex_val (sur _ (Surjective := F_full _ _) (g (F A)))
+        : cat_morphism C1 (𝟏 A) ((G ○ F) A)).
     assert (∀ {A B} (f : cat_morphism C1 A B),
-        η_f B ∘ (𝟏 ⋄ f) = (G ○ F ⋄ f) ∘ η_f A) as η_commute.
+        η_f B ∘ (⌈𝟏⌉ f) = (⌈G ○ F⌉ f) ∘ η_f A) as η_commute.
     {
         intros A B f0.
         cbn.
         unfold G_morphism.
-        change (ex_type_val (ex_to_type (F_sur (F ⌈A⌉)))) with (G_f (F ⌈A⌉)).
-        change (ex_type_val (ex_to_type (F_sur (F ⌈B⌉)))) with (G_f (F ⌈B⌉)).
+        change (ex_type_val (ex_to_type (F_sur (F A)))) with (G_f (F A)).
+        change (ex_type_val (ex_to_type (F_sur (F B)))) with (G_f (F B)).
         unfold η_f.
         rewrite_ex_val f1 f1_eq.
         rewrite_ex_val f2 f2_eq.
@@ -376,7 +376,7 @@ Proof.
         symmetry; exact eq.
     }
     assert (∀ {A B} (f : cat_morphism C2 A B),
-        h B ∘ (F ○ G ⋄ f) = (𝟏 ⋄ f) ∘ h A) as ε_commute.
+        h B ∘ (⌈F ○ G⌉ f) = (⌈𝟏⌉ f) ∘ h A) as ε_commute.
     {
         intros A B f.
         cbn.
@@ -390,34 +390,34 @@ Proof.
         rewrite cat_lid.
         reflexivity.
     }
-    pose (ε_f B := h B : cat_morphism C2 (F ○ G ⌈B⌉) (𝟏 ⌈B⌉)).
+    pose (ε_f B := h B : cat_morphism C2 ((F ○ G) B) (𝟏 B)).
     pose (η := {|nat_trans_f := η_f; nat_trans_commute := η_commute|}).
     pose (ε := {|nat_trans_f := ε_f; nat_trans_commute := ε_commute|}).
     exists G, η, ε.
     split; rewrite nat_isomorphism_A.
     -   intros A.
         unfold isomorphism.
-        exists (ex_val (sur _ (Surjective := F_full _ _) (h (F ⌈A⌉)))).
+        exists (ex_val (sur _ (Surjective := F_full _ _) (h (F A)))).
         cbn.
         unfold η_f.
-        change (ex_type_val (ex_to_type (F_sur (F ⌈A⌉)))) with (G ⌈F ⌈A⌉⌉).
+        change (ex_type_val (ex_to_type (F_sur (F A)))) with (G (F A)).
         rewrite_ex_val f1 f1_eq.
         rewrite_ex_val f2 f2_eq.
         split.
         +   pose proof (lrcompose f1_eq f2_eq) as eq.
             rewrite <- functor_compose in eq.
-            specialize (gh_id (F ⌈A⌉)).
+            specialize (gh_id (F A)).
             cbn in *.
-            change (ex_type_val (ex_to_type (F_sur (F ⌈A⌉)))) with (G_f (F ⌈A⌉)) in *.
+            change (ex_type_val (ex_to_type (F_sur (F A)))) with (G_f (F A)) in *.
             rewrite gh_id in eq.
             rewrite <- functor_id in eq.
             apply F_faith in eq.
             exact eq.
         +   pose proof (lrcompose f2_eq f1_eq) as eq.
             rewrite <- functor_compose in eq.
-            specialize (hg_id (F ⌈A⌉)).
+            specialize (hg_id (F A)).
             cbn in *.
-            change (ex_type_val (ex_to_type (F_sur (F ⌈A⌉)))) with (G_f (F ⌈A⌉)) in *.
+            change (ex_type_val (ex_to_type (F_sur (F A)))) with (G_f (F A)) in *.
             rewrite hg_id in eq.
             rewrite <- functor_id in eq.
             apply F_faith in eq.

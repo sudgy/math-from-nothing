@@ -6,15 +6,15 @@ Require Import category_natural_transformation.
 
 Class Adjunction `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C2 C1) := {
-    adj_a : ∀ {A B}, cat_morphism C2 (F ⌈A⌉) B → cat_morphism C1 A (G ⌈B⌉);
+    adj_a : ∀ {A B}, cat_morphism C2 (F A) B → cat_morphism C1 A (G B);
     adj_bij : ∀ A B, Bijective (@adj_a A B);
     adj_b {A B} := bij_inv _ (f_bij := adj_bij A B);
-    adj_nat1 : ∀ {A B C} (g : cat_morphism C2 (F ⌈A⌉) B)
+    adj_nat1 : ∀ {A B C} (g : cat_morphism C2 (F A) B)
                          (q : cat_morphism C2 B C),
-        adj_a (q ∘ g) = (G ⋄ q) ∘ adj_a g;
+        adj_a (q ∘ g) = (⌈G⌉ q) ∘ adj_a g;
     adj_nat2 : ∀ {A B C} (p : cat_morphism C1 A B)
-                         (f : cat_morphism C1 B (G ⌈C⌉)),
-        adj_b (f ∘ p) = adj_b f ∘ (F ⋄ p);
+                         (f : cat_morphism C1 B (G C)),
+        adj_b (f ∘ p) = adj_b f ∘ (⌈F⌉ p);
 }.
 
 Arguments adj_a {C1 C2 F G} Adjunction {A B}.
@@ -31,14 +31,14 @@ Context `{C1 : Category, C2 : Category}
         `{F : @Functor C1 C2, G : @Functor C2 C1}.
 Context `(Ad : @Adjunction C1 C2 F G).
 
-Theorem adj_ab : ∀ {A B} (f : cat_morphism C1 A (G ⌈B⌉)), adj_a Ad (adj_b Ad f) = f.
+Theorem adj_ab : ∀ {A B} (f : cat_morphism C1 A (G B)), adj_a Ad (adj_b Ad f) = f.
 Proof.
     intros A B f.
     unfold adj_b.
     apply inverse_eq2.
     apply bij_inv_inv.
 Qed.
-Theorem adj_ba : ∀ {A B} (f : cat_morphism C2 (F ⌈A⌉) B), adj_b Ad (adj_a Ad f) = f.
+Theorem adj_ba : ∀ {A B} (f : cat_morphism C2 (F A) B), adj_b Ad (adj_a Ad f) = f.
 Proof.
     intros A B f.
     unfold adj_b.
@@ -55,7 +55,7 @@ Local Program Instance compose_adjunction
     `(A1 : @Adjunction C1 C2 F G, A2 : @Adjunction C2 C3 F' G')
     : Adjunction (F' ○ F) (G ○ G') :=
 {
-    adj_a {A B} (f : cat_morphism C3 (F' ⌈F ⌈A⌉⌉) B)
+    adj_a {A B} (f : cat_morphism C3 (F' (F A)) B)
         := adj_a A1 (adj_a A2 f);
 }.
 Next Obligation.

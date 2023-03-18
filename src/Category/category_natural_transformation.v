@@ -6,17 +6,17 @@ Class NatTransformation `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C1 C2) :=
 {
     nat_trans_f : ∀ A,
-        cat_morphism C2 (F ⌈A⌉) (G ⌈A⌉);
+        cat_morphism C2 (F A) (G A);
     nat_trans_commute : ∀ {A B} (f : cat_morphism C1 A B),
-        nat_trans_f B ∘ (F ⋄ f) = (G ⋄ f) ∘ nat_trans_f A;
+        nat_trans_f B ∘ (⌈F⌉ f) = (⌈G⌉ f) ∘ nat_trans_f A;
 }.
 
 Arguments nat_trans_f {C1 C2 F G} NatTransformation.
 Arguments nat_trans_commute {C1 C2 F G} NatTransformation {A B}.
 
-Notation "α • A" := (nat_trans_f α A) (at level 30).
+Coercion nat_trans_f : NatTransformation >-> Funclass.
 (** So nat_trans_commute says:
-    [(α • B) ∘ (F ⋄ f) = (G ⋄ f) ∘ (α • A)]
+    [(α B) ∘ (⌈F⌉ f) = (⌈G⌉ f) ∘ (α A)]
 *)
 
 (* begin show *)
@@ -40,7 +40,7 @@ Local Program Instance vcompose_nat_transformation `{C1 : Category, C2 : Categor
     `(α : @NatTransformation C1 C2 G H, β : @NatTransformation C1 C2 F G)
     : NatTransformation F H :=
 {
-    nat_trans_f A := α • A ∘ β • A
+    nat_trans_f A := α A ∘ β A
 }.
 (* end show *)
 Next Obligation.
@@ -60,7 +60,7 @@ Local Program Instance hcompose_nat_transformation
     `(β : @NatTransformation C2 C3 F' G', α : @NatTransformation C1 C2 F G)
     : NatTransformation (F' ○ F) (G' ○ G) :=
 {
-    nat_trans_f A := β • (G ⌈A⌉) ∘ (F' ⋄ α • A)
+    nat_trans_f A := β (G A) ∘ (⌈F'⌉ (α A))
 }.
 (* end show *)
 Next Obligation.
@@ -83,7 +83,7 @@ Global Remove Hints id_nat_transformation vcompose_nat_transformation hcompose_n
 Theorem nat_trans_compose_eq `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2, H : @Functor C1 C2} :
     ∀ (α : NatTransformation G H) (β : NatTransformation F G),
-    ∀ A, (α □ β) • A = α • A ∘ β • A.
+    ∀ A, (α □ β) A = α A ∘ β A.
 Proof.
     intros α β A.
     cbn.
@@ -92,7 +92,7 @@ Qed.
 
 Theorem nat_trans_eq `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2} :
-    ∀ (α β : NatTransformation F G), (∀ A, α • A = β • A) → α = β.
+    ∀ (α β : NatTransformation F G), (∀ A, α A = β A) → α = β.
 Proof.
     intros [f1 commute1] [f2 commute2] H.
     cbn in *.
@@ -197,14 +197,14 @@ Definition nat_isomorphism `{C1 : Category, C2 : Category}
 
 Theorem nat_isomorphism_A `{C1 : Category, C2 : Category}
     `{F : @Functor C1 C2, G : @Functor C1 C2} : ∀ α : NatTransformation F G,
-    nat_isomorphism α ↔ (∀ A, isomorphism (α • A)).
+    nat_isomorphism α ↔ (∀ A, isomorphism (α A)).
 Proof.
     intros α.
     split.
     -   intros α_iso A.
         destruct α_iso as [β [β_eq1 β_eq2]].
         cbn in *.
-        exists (β • A).
+        exists (β A).
         do 2 rewrite <- nat_trans_compose_eq.
         rewrite β_eq1, β_eq2.
         cbn.
@@ -212,13 +212,13 @@ Proof.
     -   intros all_iso.
         pose (β_f A := ex_val (all_iso A)).
         assert (∀ {A B} (f : cat_morphism C1 A B),
-            β_f B ∘ (G ⋄ f) = (F ⋄ f) ∘ β_f A) as β_commute.
+            β_f B ∘ (⌈G⌉ f) = (⌈F⌉ f) ∘ β_f A) as β_commute.
         {
             intros A B f.
             unfold β_f.
             rewrite_ex_val A' [A'_eq1 A'_eq2].
             rewrite_ex_val B' [B'_eq1 B'_eq2].
-            apply rcompose with (F ⋄ f) in A'_eq2.
+            apply rcompose with (⌈F⌉ f) in A'_eq2.
             rewrite cat_lid in A'_eq2.
             rewrite <- cat_assoc in A'_eq2.
             rewrite nat_trans_commute in A'_eq2.
