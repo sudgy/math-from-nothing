@@ -431,12 +431,28 @@ Proof.
         reflexivity.
 Qed.
 
+Theorem prop_is_true : ∀ {P : Prop}, P → P = True.
+Proof.
+    intros P H.
+    rewrite <- prop_eq_true.
+    exact H.
+Qed.
+
+Theorem prop_is_false : ∀ {P : Prop}, ¬P → P = False.
+Proof.
+    intros P H.
+    rewrite <- prop_eq_false.
+    exact H.
+Qed.
+
 Theorem eq_iff {U} : ∀ a b : U, a = b ↔ b = a.
+Proof.
     intros a b.
     split; intro eq; symmetry; exact eq.
 Qed.
 
 Theorem or_left : ∀ A B : Prop, (¬B → A) → A ∨ B.
+Proof.
     intros A B H.
     classic_case B as [BH|BH].
     -   right; exact BH.
@@ -444,6 +460,7 @@ Theorem or_left : ∀ A B : Prop, (¬B → A) → A ∨ B.
 Qed.
 
 Theorem or_right : ∀ A B : Prop, (¬A → B) → A ∨ B.
+Proof.
     intros A B H.
     classic_case A as [AH|AH].
     -   left; exact AH.
