@@ -2,7 +2,7 @@ Require Import init.
 
 Require Import list.
 Require Import unordered_list_base.
-Require Import unordered_list_prop.
+Require Import unordered_list_in.
 
 Require Import nat.
 Require Import equivalence.

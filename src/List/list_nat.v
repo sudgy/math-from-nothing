@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export list_base.
-Require Export list_prop.
+Require Export list_in.
 
 Require Export nat.
 
