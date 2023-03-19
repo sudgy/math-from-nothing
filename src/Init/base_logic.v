@@ -217,3 +217,19 @@ Notation "'IfH' P 'then' v1 'else' v2" :=
     | strong_or_right H => v2 H
     end
     (at level 200, right associativity).
+
+Theorem if_true {U} : ∀ {H : Prop} {a b : U}, H → (If H then a else b) = a.
+Proof.
+    intros H a b P.
+    destruct (sem H).
+    -   reflexivity.
+    -   contradiction.
+Qed.
+
+Theorem if_false {U} : ∀ {H : Prop} {a b : U}, ¬H → (If H then a else b) = b.
+Proof.
+    intros H a b P.
+    destruct (sem H).
+    -   contradiction.
+    -   reflexivity.
+Qed.
