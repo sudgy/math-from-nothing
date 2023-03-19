@@ -190,7 +190,7 @@ Theorem list_split_perm {U} : ∀ l (a : U), in_list l a → ∃ l',
     list_permutation l (a ꞉ l').
 Proof.
     intros l a a_in.
-    pose proof (in_list_split l a a_in) as [l1 [l2 l_eq]].
+    pose proof (in_list_split a_in) as [l1 [l2 l_eq]].
     rewrite l_eq.
     exists (l1 + l2).
     apply list_perm_split.

@@ -35,10 +35,10 @@ Proof.
         pose proof (list_perm_trans albl eq) as eq2.
         apply list_perm_add_eq in eq2.
         specialize (IHal _ eq2 al_uni).
-        apply list_unique_conc.
+        apply list_unique_comm.
         rewrite list_conc_add.
         cbn.
-        split; [>|apply list_unique_conc; exact IHal].
+        split; [>|apply list_unique_comm; exact IHal].
         intros a_in.
         apply (list_perm_trans2 (list_perm_conc _ _)) in eq2.
         apply (list_perm_in eq2) in a_in.
@@ -77,16 +77,17 @@ Proof.
         specialize (IHl1 _ eq).
         rewrite list_filter_conc.
         rewrite list_count_conc.
-        cbn.
-        case_if [Sa|nSa].
-        +   cbn.
+        classic_case (S a) as [Sa|nSa].
+        +   do 2 rewrite (list_filter_add_in Sa).
+            cbn.
             rewrite IHl1.
             rewrite list_filter_conc.
             rewrite list_count_conc.
             do 2 rewrite plus_assoc.
             apply rplus.
             apply plus_comm.
-        +   rewrite IHl1.
+        +   do 2 rewrite (list_filter_add_nin nSa).
+            rewrite IHl1.
             rewrite list_filter_conc, list_count_conc.
             reflexivity.
 Qed.
@@ -170,8 +171,7 @@ Theorem ulist_unique_single {U} : ∀ a : U, ulist_unique (a ː ulist_end).
 Proof.
     intros a.
     unfold ulist_unique, ulist_add, ulist_end; equiv_simpl.
-    rewrite not_false.
-    split; exact true.
+    apply list_unique_single.
 Qed.
 
 Theorem ulist_unique_add {U} : ∀ (a : U) l,
@@ -197,9 +197,8 @@ Proof.
     intros S a l Sa.
     equiv_get_value l.
     unfold ulist_filter, ulist_add; equiv_simpl.
-    case_if.
-    -   apply list_perm_refl.
-    -   contradiction.
+    rewrite (list_filter_add_in Sa).
+    apply list_perm_refl.
 Qed.
 
 Theorem ulist_filter_add_nin {U} : ∀ (S : U → Prop) a l, ¬S a →
@@ -208,9 +207,8 @@ Proof.
     intros S a l Sa.
     equiv_get_value l.
     unfold ulist_filter, ulist_add; equiv_simpl.
-    case_if.
-    -   contradiction.
-    -   apply list_perm_refl.
+    rewrite (list_filter_add_nin Sa).
+    apply list_perm_refl.
 Qed.
 
 Theorem ulist_prop_end {U} : ∀ S : U → Prop, ulist_prop S ulist_end.
@@ -330,7 +328,7 @@ Proof.
     intros S l a.
     equiv_get_value l.
     unfold in_ulist, ulist_filter; equiv_simpl.
-    apply list_filter_in_S.
+    apply list_filter_in_set.
 Qed.
 
 Theorem ulist_filter_in {U} : ∀ S l (a : U),
@@ -377,7 +375,7 @@ Proof.
     intros S l.
     equiv_get_value l.
     unfold ulist_filter; equiv_simpl.
-    rewrite <- list_filter_filter.
+    rewrite list_filter_filter.
     apply list_perm_refl.
 Qed.
 
