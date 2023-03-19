@@ -238,9 +238,8 @@ Proof.
         destruct uni as [a_nin uni].
         rewrite list_unique_add.
         split.
-        +   intros contr.
-            apply (in_list_lconc l1 l2) in contr.
-            contradiction (a_nin contr).
+        +   contrapositive a_nin.
+            apply in_list_lconc.
         +   exact (IHl1 uni).
 Qed.
 

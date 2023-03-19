@@ -201,10 +201,8 @@ Global Instance list_plus_rcancel U : PlusRcancel (list U).
 Proof.
     split.
     intros a b c eq.
-    rewrite <- (list_reverse_reverse (a + c)) in eq.
-    rewrite <- (list_reverse_reverse (b + c)) in eq.
-    do 2 rewrite (list_reverse_conc _ c) in eq.
-    apply list_reverse_eq in eq.
+    apply (f_equal list_reverse) in eq.
+    do 2 rewrite (list_reverse_conc) in eq.
     apply plus_lcancel in eq.
     apply list_reverse_eq in eq.
     exact eq.

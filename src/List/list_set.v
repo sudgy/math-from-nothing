@@ -89,8 +89,8 @@ Proof.
             exact IHl1.
 Qed.
 
-Theorem list_filter_in {U} : ∀ S (l : list U) x,
-    in_list (list_filter S l) x → in_list l x.
+Lemma list_filter_in_both {U} : ∀ S (l : list U) x,
+    in_list (list_filter S l) x → in_list l x ∧ S x.
 Proof.
     intros S l x x_in.
     induction l.
@@ -102,28 +102,29 @@ Proof.
             rewrite in_list_add in x_in.
             destruct x_in as [x_eq|x_in].
             *   subst a.
+                split; [>|exact Sa].
                 left; reflexivity.
-            *   right; exact (IHl x_in).
+            *   specialize (IHl x_in).
+                split; [>|apply IHl].
+                right; apply IHl.
         +   rewrite (list_filter_add_nin Sa) in x_in.
-            right; exact (IHl x_in).
+            specialize (IHl x_in).
+            split; [>|apply IHl].
+            right; apply IHl.
+Qed.
+
+Theorem list_filter_in {U} : ∀ S (l : list U) x,
+    in_list (list_filter S l) x → in_list l x.
+Proof.
+    intros S l x x_in.
+    apply (list_filter_in_both S l x x_in).
 Qed.
 
 Theorem list_filter_in_set {U} : ∀ S (l : list U) x,
     in_list (list_filter S l) x → S x.
 Proof.
     intros S l x x_in.
-    induction l.
-    -   rewrite list_filter_end in x_in.
-        contradiction x_in.
-    -   classic_case (S a) as [Sa|Sa].
-        +   rewrite (list_filter_add_in Sa) in x_in.
-            rewrite in_list_add in x_in.
-            destruct x_in as [eq|x_in].
-            *   subst x.
-                exact Sa.
-            *   exact (IHl x_in).
-        +   rewrite (list_filter_add_nin Sa) in x_in.
-            exact (IHl x_in).
+    apply (list_filter_in_both S l x x_in).
 Qed.
 
 Theorem list_filter_unique {U} : ∀ S (l : list U),
