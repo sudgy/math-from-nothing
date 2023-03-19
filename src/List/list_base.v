@@ -73,11 +73,6 @@ Proof.
     apply eq.
 Qed.
 
-Theorem list_conc_single {U} : ∀ (a : U) l, [a] + l = a ꞉ l.
-Proof.
-    reflexivity.
-Qed.
-
 Theorem list_conc_add {U} : ∀ a (l1 l2 : list U), (a ꞉ l1) + l2 = a ꞉ (l1 + l2).
 Proof.
     reflexivity.
@@ -95,6 +90,14 @@ Qed.
 Theorem list_conc_lid {U} : ∀ l : list U, [] + l = l.
 Proof.
     exact plus_lid.
+Qed.
+
+Theorem list_conc_single {U} : ∀ (a : U) l, [a] + l = a ꞉ l.
+Proof.
+    intros a l.
+    rewrite list_conc_add.
+    rewrite list_conc_lid.
+    reflexivity.
 Qed.
 
 Global Instance list_plus_rid U : PlusRid (list U).
@@ -141,15 +144,18 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_reverse_single {U} : ∀ (a : U), list_reverse [a] = [a].
-Proof.
-    reflexivity.
-Qed.
-
 Theorem list_reverse_add {U} : ∀ (a : U) l,
     list_reverse (a ꞉ l) = list_reverse l + [a].
 Proof.
     reflexivity.
+Qed.
+
+Theorem list_reverse_single {U} : ∀ (a : U), list_reverse [a] = [a].
+Proof.
+    intros a.
+    rewrite list_reverse_add.
+    rewrite list_reverse_end.
+    apply list_conc_lid.
 Qed.
 
 Theorem list_reverse_conc {U : Type} : ∀ l1 l2 : list U,
@@ -218,15 +224,18 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
-    list_image f [a] = [f a].
+Theorem list_image_add {A B : Type} : ∀ a l (f : A → B),
+    list_image f (a ꞉ l) = f a ꞉ list_image f l.
 Proof.
     reflexivity.
 Qed.
 
-Theorem list_image_add {A B : Type} : ∀ a l (f : A → B),
-    list_image f (a ꞉ l) = f a ꞉ list_image f l.
+Theorem list_image_single {A B : Type} : ∀ a (f : A → B),
+    list_image f [a] = [f a].
 Proof.
+    intros a f.
+    rewrite list_image_add.
+    rewrite list_image_end.
     reflexivity.
 Qed.
 

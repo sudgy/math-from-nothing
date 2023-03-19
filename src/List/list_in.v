@@ -24,17 +24,18 @@ Proof.
     exact true.
 Qed.
 
-Theorem in_list_single {U} : ∀ a b : U, in_list [a] b ↔ a = b.
-Proof.
-    intros a b.
-    unfold in_list.
-    rewrite or_rfalse.
-    reflexivity.
-Qed.
-
 Theorem in_list_add {U} : ∀ (a b : U) l,
     in_list (a ꞉ l) b ↔ a = b ∨ in_list l b.
 Proof.
+    reflexivity.
+Qed.
+
+Theorem in_list_single {U} : ∀ a b : U, in_list [a] b ↔ a = b.
+Proof.
+    intros a b.
+    rewrite in_list_add.
+    rewrite (prop_is_false (in_list_end b)).
+    rewrite or_rfalse.
     reflexivity.
 Qed.
 
@@ -157,18 +158,19 @@ Proof.
     exact true.
 Qed.
 
-Theorem list_unique_single {U} : ∀ a : U, list_unique [a].
-Proof.
-    intros a.
-    split.
-    -   exact (in_list_end a).
-    -   exact true.
-Qed.
-
 Theorem list_unique_add {U} : ∀ (a : U) l,
     list_unique (a ꞉ l) ↔ ¬in_list l a ∧ list_unique l.
 Proof.
     reflexivity.
+Qed.
+
+Theorem list_unique_single {U} : ∀ a : U, list_unique [a].
+Proof.
+    intros a.
+    rewrite list_unique_add.
+    split.
+    -   exact (in_list_end a).
+    -   exact true.
 Qed.
 
 Tactic Notation "list_unique_induction" ident(l) ident(uni) "as"

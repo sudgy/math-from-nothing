@@ -35,22 +35,6 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem list_filter_single_in {U} : ∀ (S : U → Prop) a,
-    S a → list_filter S [a] = [a].
-Proof.
-    intros S a Sa.
-    unfold list_filter.
-    exact (if_true Sa).
-Qed.
-
-Theorem list_filter_single_nin {U} : ∀ (S : U → Prop) a,
-    ¬S a → list_filter S [a] = [].
-Proof.
-    intros S a Sa.
-    unfold list_filter.
-    exact (if_false Sa).
-Qed.
-
 Theorem list_filter_add_in {U} : ∀ {S : U → Prop} {a l},
     S a → list_filter S (a ꞉ l) = a ꞉ list_filter S l.
 Proof.
@@ -66,6 +50,24 @@ Proof.
     intros S a l Sa.
     unfold list_filter; fold (list_filter (U := U)).
     rewrite (if_false Sa).
+    reflexivity.
+Qed.
+
+Theorem list_filter_single_in {U} : ∀ (S : U → Prop) a,
+    S a → list_filter S [a] = [a].
+Proof.
+    intros S a Sa.
+    rewrite (list_filter_add_in Sa).
+    rewrite list_filter_end.
+    reflexivity.
+Qed.
+
+Theorem list_filter_single_nin {U} : ∀ (S : U → Prop) a,
+    ¬S a → list_filter S [a] = [].
+Proof.
+    intros S a Sa.
+    rewrite (list_filter_add_nin Sa).
+    rewrite list_filter_end.
     reflexivity.
 Qed.
 
@@ -213,18 +215,18 @@ Proof.
     exact true.
 Qed.
 
-Theorem list_prop_single {U} : ∀ S (a : U), list_prop S [a] ↔ S a.
-Proof.
-    intros S a.
-    unfold list_prop.
-    rewrite and_rtrue.
-    reflexivity.
-Qed.
-
 Theorem list_prop_add {U} : ∀ S (a : U) l,
     list_prop S (a ꞉ l) ↔ S a ∧ list_prop S l.
 Proof.
     reflexivity.
+Qed.
+
+Theorem list_prop_single {U} : ∀ S (a : U), list_prop S [a] ↔ S a.
+Proof.
+    intros S a.
+    rewrite list_prop_add.
+    rewrite (prop_is_true (list_prop_end S)).
+    apply and_rtrue.
 Qed.
 
 Tactic Notation "list_prop_induction" ident(l) ident(P) "as"
@@ -285,16 +287,17 @@ Proof.
     exact true.
 Qed.
 
-Theorem list_prop2_single {U} : ∀ S (a : U), list_prop2 S [a].
-Proof.
-    intros S a.
-    unfold list_prop2.
-    rewrite and_rtrue.
-    apply list_prop_end.
-Qed.
-
 Theorem list_prop2_add {U} : ∀ S (a : U) l,
     list_prop2 S (a ꞉ l) ↔ list_prop (S a) l ∧ list_prop2 S l.
 Proof.
     reflexivity.
+Qed.
+
+Theorem list_prop2_single {U} : ∀ S (a : U), list_prop2 S [a].
+Proof.
+    intros S a.
+    rewrite list_prop2_add.
+    split.
+    -   apply list_prop_end.
+    -   apply list_prop2_end.
 Qed.
