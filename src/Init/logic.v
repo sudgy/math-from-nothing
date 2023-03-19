@@ -5,6 +5,15 @@ Require Export base_logic.
 
 Ltac exfalso := elimtype False.
 
+Theorem contrapositive : ∀ {A B : Prop}, (A → B) → (¬B → ¬A).
+Proof.
+    intros A B H b a.
+    specialize (H a).
+    contradiction (b H).
+Qed.
+
+Ltac contrapositive H := revert H; apply contrapositive.
+
 Theorem not_not : ∀ P, (¬¬P) ↔ P.
 Proof.
     intro P.
@@ -16,6 +25,15 @@ Proof.
         contradiction (PH' PH).
 Qed.
 Ltac classic_contradiction_prop H := apply (land (not_not _)); intros H.
+
+Theorem contrapositive_iff : ∀ {A B : Prop}, (A → B) ↔ (¬B → ¬A).
+Proof.
+    intros A B.
+    split; [>apply contrapositive|].
+    rewrite <- (not_not A) at 2.
+    rewrite <- (not_not B) at 2.
+    apply contrapositive.
+Qed.
 
 Theorem not_impl : ∀ A B : Prop, (¬(A → B)) ↔ (A ∧ ¬B).
 Proof.
