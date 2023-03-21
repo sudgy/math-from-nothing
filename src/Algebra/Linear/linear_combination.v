@@ -307,7 +307,7 @@ Theorem linear_list_in_remove_zeros : ∀ l S,
     linear_list_in S l → linear_list_in S (linear_remove_zeros l).
 Proof.
     intros l S Sl.
-    apply ulist_prop_filter.
+    apply ulist_prop_other_filter.
     exact Sl.
 Qed.
 

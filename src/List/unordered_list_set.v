@@ -139,13 +139,13 @@ Proof.
     exact sub.
 Qed.
 
-Theorem ulist_prop_filter {U} : ∀ (l : ulist U) S T,
+Theorem ulist_prop_other_filter {U} : ∀ (l : ulist U) S T,
     ulist_prop S l → ulist_prop S (ulist_filter T l).
 Proof.
     intros l S T.
     equiv_get_value l.
     unfold ulist_prop, ulist_filter; equiv_simpl.
-    apply list_prop_filter.
+    apply list_prop_other_filter.
 Qed.
 
 Theorem ulist_prop_split {U} : ∀ l (S : U → Prop),

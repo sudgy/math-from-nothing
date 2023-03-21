@@ -267,7 +267,21 @@ Proof.
         split; assumption.
 Qed.
 
-Theorem list_prop_filter {U} : ∀ (l : list U) S T,
+Theorem list_prop_filter {U} : ∀ (l : list U) S, list_prop S (list_filter S l).
+Proof.
+    intros l S.
+    induction l.
+    -   rewrite list_filter_end.
+        apply list_prop_end.
+    -   classic_case (S a) as [Sa|Sa].
+        +   rewrite (list_filter_add_in Sa).
+            rewrite list_prop_add.
+            split; assumption.
+        +   rewrite (list_filter_add_nin Sa).
+            exact IHl.
+Qed.
+
+Theorem list_prop_other_filter {U} : ∀ (l : list U) S T,
     list_prop S l → list_prop S (list_filter T l).
 Proof.
     intros l S T Sl.

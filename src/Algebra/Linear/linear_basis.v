@@ -146,7 +146,7 @@ Proof.
     intros S S_basis v.
     unfold basis_coefficients.
     rewrite_ex_val l [v_eq Sl].
-    apply ulist_prop_filter.
+    apply ulist_prop_other_filter.
     exact Sl.
 Qed.
 
