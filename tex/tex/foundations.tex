@@ -1,0 +1,831 @@
+\documentclass[../math.tex]{subfiles}
+\externaldocument{../math.tex}
+
+\begin{document}
+
+\chapter{Foundations} \label{chap-foundations}
+
+\section{Calculus of Inductive Constructions}
+
+The basic foundation for math used here is the Calculus of Inductive
+Constructions (CIC) used by Coq.  I actually don't know how to describe CIC
+rigorously, so in this section I will only describe things in non-precise terms.
+
+The fundamental entity is types.  Types have values, and a value $a$ having a
+type $\mathbb U$ is written as $a : \mathbb U$.  There are two main categories
+of types: \verb|Prop| and \verb|Set|.  \verb|Prop| is impredicative, while I
+don't actually know what's special about \verb|Set|.  Case analysis (described
+below) on values of type \verb|Prop| is not allowed when constructing values of
+a type other than \verb|Prop|.  Other than types explicitly in \verb|Prop|, most
+types will be written in blackboard bold: $\mathbb A$, $\mathbb B$, etc.
+
+Types form a hierarchy: there exist types \verb|Type|$_0$, \verb|Type|$_1$,
+\ldots such that $\verb|Type|_n : \verb|Type|_{n + 1}$.  \verb|Prop| and
+\verb|Set| are both values in some \verb|Type|$_n$.  While you do not need to
+worry about this hierarchy most of the time, every once in a while certain
+constructions are prohibited by the hierarchy, because $\verb|Type| :
+\verb|Type|$ is inconsistent.
+
+Functions are also first-class objects, and are values in \verb|Type|.  A
+function $f : \mathbb A \rightarrow \mathbb B$ produces a unique value $f(a) :
+\mathbb B$ for all $a : \mathbb A$.  I think the exact type of $f$ is related to
+the types of $A$ and $B$.
+
+The main way of constructing new types is through inductive definitions.  These
+produce values/functions called constructors that create values of the new type.
+These constructors are allowed to be recursive.  As an example, the natural
+numbers are defined as an inductive type with two constructors: A single value
+called $0_{\mathbb N}$, and a function $S_{\mathbb N} : \mathbb N \rightarrow
+\mathbb N$.  The values from each constructor are considered distinct, as are
+the values from a single constructor with different inputs (i.e. constructors
+are injective).  To build things from an inductive type, one can do a case
+analysis and produce a different value for every possible constructor.  To prove
+things from an inductive type, one can do case analysis while further assuming
+that the property holds for all inputs to the constructors, which corresponds to
+a proof by induction.
+
+Propositions are types.  Values of that type correspond to proofs of that
+proposition.  So given a function like $A \rightarrow B$ where $A$ and $B$ are
+propositions, it can be thought of as saying that given a proof of $A$, we can
+get a proof of $B$, aka $A$ implies $B$.  Predicates $P$ on a type $\mathbb A$
+are thought of as functions $\mathbb A \rightarrow \vtt{Prop}$.
+
+Sets are thought of as predicates.  As such, we often use the notation $a \in P$
+to mean $P(a)$.  We can also use the usual set builder notation $\{x : \U \mid
+S(x)\}$ to describe a set $S$ built from values in $\U$.
+
+Basic logical propositions are defined in Coq and will not be defined in detail
+here.  Here is a list of the ones used here:
+\begin{itemize}
+    \item True, which is a proposition that has a single constructor with no
+    inputs.  Notation: \verb|True|.
+    \item False, which is a proposition that has no constructors.  Notation:
+    \verb|False|.
+    \item Not, which takes in a \verb|Prop| $A$ and is defined as $A \rightarrow
+    \verb|False|$.  Notation: $\neg$.
+    \item And, which is a \verb|Prop| that has a single constructor that takes
+    in two other \verb|Prop|s.  Notation: $\wedge$.
+    \item Or, which is a \verb|Prop| that has two constructors that each take
+    in another \verb|Prop|.  Notation: $\vee$.
+    \item Iff, which takes in two \verb|Prop|s $A$ and $B$ and is defined as $(A
+    \rightarrow B) \wedge (B \rightarrow A)$.  Notation: $\leftrightarrow$.
+    \item Equality, which takes in a type and two values of that type and
+    returns a \verb|Prop| saying whether the two values are equal.  Notation:
+    $=$.
+    \item Existence, which is a \verb|Prop| that takes in a predicate on a type
+    and a value of that type that satisfies that predicate.  Notation:
+    $\exists$.
+\end{itemize}
+
+Beyond these basic mathematical propositions, there are a few more that are
+useful for us:
+
+\begin{itemize}
+    \item Inhabited: A \verb|Prop| that takes in a value of a certain type.  It
+    is basically a proof that a type is not empty.  Notation: \verb|inhabited|.
+    \item Strong Existence: Like existence but is a \verb|Type| rather than a
+    \verb|Prop|.  The reason for having this is that you can produce the value
+    when constructing non-\verb|Prop|s, which you can't do with normal
+    existence.  Notation: $\{x \mid P\}$, which states that $x$ satisfies
+    predicate $P$.
+    \item Strong Or: Like or, but is a \verb|Type| rather than a \verb|Prop|.
+    This exists for the same reason strong existence exists.  Notation: $\{A\} +
+    \{B\}$.
+\end{itemize}
+
+\section{Further Axioms}
+
+The system described in the previous section has a few shortcomings when it
+comes to doing math in a traditional way, so we will now extend it with some
+axioms.
+
+\begin{axiom}[Functional Extensionality]
+    For all types $\mathbb A$ and $\mathbb B$, for all function $f, g : \mathbb
+    A \rightarrow \mathbb B$,
+    \[
+        (\forall x, f(x) = g(x)) \rightarrow f = g.
+    \]
+\end{axiom}
+
+\begin{axiom}[Propositional Extensionality]
+    For all propositions $A$ and $B$,
+    \[
+        (A \leftrightarrow B) \rightarrow A = B.
+    \]
+\end{axiom}
+
+\begin{axiom}[Indefinite Description]
+    For all types $\mathbb A$,
+    \[
+        \verb|inhabited | \mathbb A \rightarrow \mathbb A.
+    \]
+\end{axiom}
+
+Functional extensionality and propositional extensionality are pretty
+self-explanatory.  They directly give another kind of extensionality:
+
+\begin{theorem}[Predicate extensionality]
+    Given a type $\mathbb A$, for all predicates $P, Q : \mathbb A \rightarrow
+    \verb|Prop|$,
+    \[
+        (\forall x, x \in P \leftrightarrow x \in Q) \rightarrow P = Q.
+    \]
+\end{theorem}
+\begin{proof}
+    Given that $P$ and $Q$ are functions, we can use functional extensionality
+    and reduce this to showing that for all $x$, $x \in P = x \in Q$.  Using
+    propositional extensionality, we only need to show that $x \in P
+    \leftrightarrow x \in Q$.  This is true by hypothesis.  Thus, $P = Q$.
+\end{proof}
+
+Indefinite description is a bit less clear and requires some explaining.  It is
+related to the axiom of choice.  The main use of this axiom is to get around the
+restriction of case analysis on \verb|Prop|s to create \verb|Type|s, at the cost
+of losing all description of that value (hence the name of the axiom).  As an
+example, here are some simple but useful theorems that indefinite description
+gives us:
+
+\begin{theorem} \label{ex-to-type}
+    Given a type $\mathbb A$ and a predicate $P : \mathbb A \rightarrow
+    \verb|Prop|$,
+    \[
+        (\exists x, x \in P) \rightarrow \{x \mid P\}.
+    \]
+\end{theorem}
+\begin{proof}
+    Due to the restriction of case analysis on \verb|Prop|s when creating
+    \verb|Type|s, we can't explicitly produce the value $x$ from $\exists x,
+    P(x)$.  However, we can apply indefinite description to instead make us
+    need to construct $\verb|inhabited | \{x \mid P\}$.  This is now a
+    \verb|Prop|, so we can now produce the value $x$ that satisfies $P(x)$.  Now
+    that we have the value $x$ such that $P(x)$, we can construct $\{x \mid
+    P\}$, so we know that $\verb|inhabited | \{x \mid P\}$.
+\end{proof}
+
+\begin{theorem} \label{or-to-strong}
+    For all propositions $A$ and $B$,
+    \[
+        A \vee B \rightarrow \{A\} + \{B\}.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof is very similar to the proof of Theorem \ref{ex-to-type} and won't
+    be repeated.
+\end{proof}
+
+Several other useful facts can be derived from these axioms, but the proofs are
+more complicated.  I didn't work out the proofs myself so I will not put them
+here.
+
+\begin{theorem}[Proof Irrelevance]
+    For a given proposition $P$, for all $A, B : P$, $A = B$.
+\end{theorem}
+
+\begin{theorem}[Excluded Middle]
+    For all propositions $P$, $P \vee \neg P$.
+\end{theorem}
+\noindent By Theorem \ref{or-to-strong}, we also have $\{P\} + \{\neg P\}$.
+
+These last several theorems make many of the usual constructions in math work
+and will be used implicitly in the future.
+
+\section{Logic}
+
+We now have the basic machinery necessary to prove many basic logical theorems.
+Many of these proofs will implicitly be using propositional extensionality.
+
+\begin{theorem} \label{false-rect}
+    For all types $\mathbb A$, $\verb|False| \rightarrow \mathbb A$.
+\end{theorem}
+\begin{proof}
+    Assuming we have an instance of $\verb|False|$, we can do case analysis on
+    it.  Because $\verb|False|$ has no constructors, there are no cases, so we
+    vacuously get a value of $\mathbb A$.
+\end{proof}
+\noindent This is how we formalize some proofs by contradiction.
+
+\begin{theorem} \label{not-not}
+    For all propositions $P$, $P = \neg\neg P$.
+\end{theorem}
+\begin{proof}
+    Assume that $P$ is true.  By definition, $\neg\neg P$ is the same as $(P
+    \rightarrow \verb|False|) \rightarrow \verb|False|$, so we can assume that
+    $P \rightarrow \verb|False|$.  Because we know that $P$ is true, this means
+    that $\verb|False|$ is true, which is a contradiction.
+
+    Now assume that $\neg \neg P$ is true.  By the law of the excluded middle,
+    we know that either $P$ or $\neg P$.  If $P$, then we are done, so consider
+    the case $\neg P$.  Because $\neg \neg P$ is equivalent to $\neg P
+    \rightarrow \verb|False|$, we now have a proof of $\verb|False|$, which is a
+    contradiction.
+\end{proof}
+\noindent The second part of this theorem is how we formalize some other proofs
+by contradiction.  We will no longer be this careful in how we deal with proofs
+by contradiction and will deal with them in a more traditional way.
+
+\begin{theorem}
+    For all propositions $A$ and $B$, we have $(A \to B) \leftrightarrow (\neg B
+    \to \neg A)$.
+\end{theorem}
+\begin{proof}
+    First assume that $A \to B$ and $\neg B$, and for a contradiction assume
+    that $A$.  Then we have $B$, which is a contradiction.  Thus we have $\neg
+    A$, so when $A \to B$, we have $\neg B \to \neg A$.
+
+    To prove that $(\neg B \to \neg A) \to (A \to B)$, notice that by the
+    previous theorem this is the same as $(\neg B \to \neg A) \to (\neg \neg A
+    \to \neg \neg B)$, which follows from the preceding paragraph.
+\end{proof}
+\noindent This is how we formalize proofs by contrapositive.
+
+\begin{theorem}
+    For all propositions $A$ and $B$, $\neg (A \rightarrow B) = A \wedge \neg
+    B$.
+\end{theorem}
+\begin{proof}
+    Assume that $\neg (A \rightarrow B)$.  We must prove both $A$ and $\neg B$.
+    If $\neg A$, then $A \rightarrow B$ would be true because any proof of $A$
+    would cause a contradiction with $\neg A$.  But $\neg (A \rightarrow B)$, so
+    we must have $A$.  Now if $B$, then $A \rightarrow B$ would be true because
+    $B$ is always true anyway.  But $\neg (A \rightarrow B)$, so we must have
+    $\neg B$.  Thus, both $A$ and $\neg B$, so $\neg (A \rightarrow B)
+    \rightarrow A \wedge \neg B$.
+
+    Now assume that $A \wedge \neg B$, and for a contradiction assume that $A
+    \rightarrow B$.  Since $A$ and $A \rightarrow B$, we get $B$, but $\neg B$,
+    so we have a contradiction.  Thus, $A \wedge \neg B \rightarrow \neg(A
+    \rightarrow B)$.
+\end{proof}
+
+\begin{theorem} \label{not-and}
+    For all propositions $A$ and $B$, $\neg(A \wedge B) = \neg A \vee \neg B$.
+\end{theorem}
+\begin{proof}
+    Assume that $\neg(A \wedge B)$.  If we had both $A$ and $B$, it would be a
+    contradiction, so we have at least one of $\neg A$ and $\neg B$, which means
+    that $\neg A \vee \neg B$.
+
+    Now assume that $\neg A \vee \neg B$.  For the sake of a contradiction,
+    assume that $A \wedge B$.  Then in both cases of $\neg A \vee \neg B$ we
+    would have a contradiction, so $\neg(A \wedge B)$.
+\end{proof}
+
+\begin{theorem} \label{not-or}
+    For all propositions $A$ and $B$, $\neg(A \vee B) = \neg A \wedge \neg B$.
+\end{theorem}
+\begin{proof}
+    We can prove this using the previous theorems:
+    \begin{align*}
+        \neg(A \vee B) &= \neg A \wedge \neg B \\
+        \neg(A \vee B) &= \neg \neg (\neg A \wedge \neg B) \\
+        \neg(A \vee B) &= \neg (\neg \neg A \vee \neg \neg B) \\
+        \neg(A \vee B) &= \neg (A \vee B).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all types $\mathbb U$ and predicates $P$ on $\mathbb U$,
+    \[
+        \neg(\exists a, a \in P) = (\forall a, a \notin P).
+    \]
+\end{theorem}
+\begin{proof}
+    Assume that $\neg(\exists a, a \in P)$.  Now let $a : \mathbb U$ and assume
+    for a contradiction that $a \in P$.  Then we have $\exists a, a \in P$,
+    which is a contradiction, so we must have $a \notin P$.
+
+    Now assume that $\forall a, a \notin P$, and assume for a contradiction that
+    $\exists a, a \in P$.  This is instantly a contradiction, so $\neg(\exists
+    a, a \in P)$.
+\end{proof}
+
+\begin{theorem}
+    For all types $\mathbb U$ and predicates $P$ on $\mathbb U$,
+    \[
+        \neg(\forall a, a \in P) = (\exists a, a \notin P).
+    \]
+\end{theorem}
+\begin{proof}
+    We can prove this using the previous theorems:
+    \begin{align*}
+        \neg(\forall a, a \in P) &= (\exists a, a \notin P) \\
+        \neg(\forall a, a \in P) &= \neg\neg(\exists a, a \notin P) \\
+        \neg(\forall a, a \in P) &= \neg(\forall a, \neg \neg (a \in P)) \\
+        \neg(\forall a, a \in P) &= \neg(\forall a, a \in P).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all propositions $A$ and $B$, $\neg(A \wedge B) = (A \rightarrow \neg
+    B)$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        \neg(A \wedge B) &= (A \rightarrow \neg B) \\
+        \neg(A \wedge B) &= \neg \neg (A \rightarrow \neg B) \\
+        \neg(A \wedge B) &= \neg (A \wedge \neg \neg B) \\
+        \neg(A \wedge B) &= \neg (A \wedge B).
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{and-assoc}
+    For all propositions $A$, $B$, and $C$, $A \wedge (B \wedge C) = (A \wedge
+    B) \wedge C$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{or-assoc}
+    For all propositions $A$, $B$, and $C$, $A \vee (B \vee C) = (A \vee B)
+    \wedge C$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{and-comm}
+    For all propositions $A$ and $B$, $A \wedge B = B \wedge A$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{or-comm}
+    For all propositions $A$ and $B$, $A \vee B = B \vee A$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{and-or-ldist}
+    For all propositions $A$, $B$, and $C$, $A \wedge (B \vee C) = (A \wedge B)
+    \vee (A \wedge C)$.
+\end{theorem}
+\begin{proof}
+    Assume that $A \wedge (B \vee C)$.  Then $A$ and $B \vee C$.  In the case
+    where $B$ is true, we have $A \wedge B$, and in the case where $C$ is true,
+    we have $A \wedge C$.  Either way, we have $(A \wedge B) \vee (A \wedge C)$.
+
+    Now assume that $(A \wedge B) \vee (A \wedge C)$.  In the case where $A
+    \wedge B$ is true, we have $B \vee C$, so $A \wedge (B \vee C)$ is true.  In
+    the case where $A \wedge C$ is true, we have $B \vee C$, so $A \wedge (B
+    \vee C)$ is true.  Either way, we have $A \wedge (B \vee C)$.
+\end{proof}
+
+\begin{theorem} \label{and-or-rdist}
+    For all propositions $A$, $B$, and $C$, $(A \vee B) \wedge C = (A \wedge C)
+    \vee (B \wedge C)$.
+\end{theorem}
+\begin{proof}
+    This follows from Theorems \ref{and-comm} and \ref{and-or-ldist}.
+\end{proof}
+
+\begin{theorem} \label{or-and-ldist}
+    For all propositions $A$, $B$, and $C$, $A \vee (B \wedge C) = (A \vee B)
+    \wedge (A \vee C)$.
+\end{theorem}
+\begin{proof}
+    Assume that $A \vee (B \wedge C)$.  In the case where $A$ is true, we have
+    both $A \vee B$ and $A \vee C$, so $(A \vee B) \wedge (A \vee C)$ is true.
+    In the case where $B \wedge C$ is true, we again have both $A \vee B$ and $A
+    \vee C$, so $(A \vee B) \wedge (A \vee C)$ is true.  Either way, we have $(A
+    \vee B) \wedge (A \vee C)$.
+
+    Now assume that $(A \vee B) \wedge (A \vee C)$.  If $A$ is true, then $A
+    \vee (B \wedge C)$ is true.  If $A$ is not true, then $A \vee B$ implies
+    $B$ and $A \vee C$ implies $C$, so we have both $B$ and $C$.  Thus, $B
+    \wedge C$, so $A \vee (B \wedge C)$ is true.  Either way, we have $A \vee (B
+    \wedge C)$.
+\end{proof}
+
+\begin{theorem} \label{or-and-rdist}
+    For all propositions $A$, $B$, and $C$, $(A \wedge B) \vee C = (A \vee C)
+    \wedge (B \vee C)$.
+\end{theorem}
+\begin{proof}
+    This follows from Theorems \ref{or-comm} and \ref{or-and-ldist}.
+\end{proof}
+
+\begin{theorem} \label{or-lfalse}
+    For all propositions $P$, $\vtt{False} \vee P = P$.
+\end{theorem}
+\begin{proof}
+    Assume that $\vtt{False} \vee P$.  Then because $\vtt{False}$ can't be true,
+    we must have $P$.
+
+    Now assume $P$.  Then $\vtt{False} \vee P$ because $P$ is true.
+\end{proof}
+
+\begin{theorem} \label{or-ltrue}
+    For all propositions $P$, $\vtt{True} \vee P = \vtt{True}$.
+\end{theorem}
+\begin{proof}
+    The forward implication is true because \vtt{True} is always true.  The
+    reverse implication is true because $A \rightarrow A \vee B$.
+\end{proof}
+
+\begin{theorem} \label{and-lfalse}
+    For all propositions $P$, $\vtt{False} \wedge P = \vtt{False}$.
+\end{theorem}
+\begin{proof}
+    Both implications assume \vtt{False}, so the theorem is true vacuously.
+\end{proof}
+
+\begin{theorem} \label{and-ltrue}
+    For all propositions $P$, $\vtt{True} \wedge P = P$.
+\end{theorem}
+\begin{proof}
+    Assuming $\vtt{True} \wedge P$, we automatically get $P$, so the forward
+    implication is true.  Assuming $P$, we already have \vtt{True} for free so
+    we get $\vtt{True} \wedge P$, so the reverse implication is true as well.
+\end{proof}
+
+\begin{theorem} \label{or-idemp}
+    For all propositions $P$, $P \vee P = P$.
+\end{theorem}
+\begin{proof}
+    If $P \vee P$ is true, then in both cases we have $P$, so the forward
+    implication is true.  Now if $P$ is true, then we have $P \vee P$, so the
+    reverse implication is true.
+\end{proof}
+
+\begin{theorem} \label{and-idemp}
+    For all propositions $P$, $P \wedge P = P$.
+\end{theorem}
+\begin{proof}
+    If $P \wedge P$ is true, then we have $P$, so the forward implication is
+    true.  Now if $P$ is true, then we have $P$ and $P$, so $P \wedge P$, so the
+    reverse implication is true.
+\end{proof}
+
+\begin{theorem} \label{or-both}
+    For all propositions $P$, $P \vee \neg P = \vtt{True}$.
+\end{theorem}
+\begin{proof}
+    The forward implication is trivial, while the reverse implication follows
+    from the law of the excluded middle.
+\end{proof}
+
+\begin{theorem} \label{and-both}
+    For all propositions $P$, $P \wedge \neg P = \vtt{False}$.
+\end{theorem}
+\begin{proof}
+    For the forward implication $P \wedge \neg P$ is a contradiction.  For the
+    reverse implication, \vtt{False} itself is a contradiction.  Thus, the
+    theorem is true vacuously.
+\end{proof}
+
+We can also prove some theorems about the nature of \verb|Prop| itself.
+
+\begin{theorem} \label{not-true}
+    $\neg \verb|True| = \verb|False|.$
+\end{theorem}
+\begin{proof}
+    Assume $\neg \verb|True|$.  However, because we know that \verb|True| is
+    true, we have a contradiction.  The reverse implication follows from Theorem
+    \ref{false-rect}.
+\end{proof}
+
+\begin{theorem} \label{not-false}
+    $\neg \verb|False| = \verb|True|.$
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        \neg \vtt{False} &= \vtt{True} \\
+        \neg \vtt{False} &= \neg \neg \vtt{True} \\
+        \neg \vtt{False} &= \neg \vtt{False}.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{prop-eq-true}
+    For all propositions $P$, $P = (P = \vtt{True})$.
+\end{theorem}
+\begin{proof}
+    Assume $P$.  Then we must prove that $P = \vtt{True}$.  $P \rightarrow
+    \vtt{True}$ is trivial because \vtt{True} is always true.  $\vtt{True}
+    \rightarrow P$ is true because we are assuming $P$.  Thus, $P \rightarrow (P
+    = \vtt{True})$.
+
+    Now assume that $P = \vtt{True}$.  Then to prove $P$ we just need to prove
+    $\vtt{True}$, which is trivial.  Thus, $(P = \vtt{True}) \rightarrow P$.
+\end{proof}
+
+\begin{theorem} \label{prop-eq-false}
+    For all propositions $P$, $\neg P = (P = \vtt{False})$.
+\end{theorem}
+\begin{proof}
+    Assume $\neg P$.  Then we must prove that $P = \vtt{False}$.  $P \rightarrow
+    \vtt{False}$ is precisely the statement $\neg P$.  $\vtt{False} \rightarrow
+    P$ is true vacuously.  Thus, $\neg P \rightarrow (P = \vtt{False})$.
+
+    Now assume that $P = \vtt{False}$.  Then $\neg P$ is equivalent to $\neg
+    \vtt{False}$, which is equal to $\vtt{True}$, which is trivial.
+\end{proof}
+
+\begin{theorem} \label{prop-split}
+    For all propositions $P$, $(P = \vtt{True}) \vee (P = \vtt{False})$.
+\end{theorem}
+\begin{proof}
+    By theorems \ref{prop-eq-true} and \ref{prop-eq-false}, this is equivalent
+    to $P \vee \neg P$, which is just the law of the excluded middle.
+\end{proof}
+
+\begin{theorem} \label{prop-neq}
+    $\vtt{True} \neq \vtt{False}$.
+\end{theorem}
+\begin{proof}
+    This is equivalent to $\vtt{True} = \vtt{False} \rightarrow \vtt{False}$.
+    So assuming that $\vtt{True} = \vtt{False}$, we must prove \vtt{False}.  But
+    because $\vtt{True} = \vtt{False}$, this is the same as proving \vtt{True},
+    which is trivial.
+\end{proof}
+
+\begin{theorem}
+    For all propositions $P$, $P \neq (\neg P)$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{prop-split}, $P$ is either \vtt{True} or \vtt{False}.  When
+    $P$ is \vtt{True}, we then get $(\vtt{True} \neq (\neg \vtt{True})) =
+    (\vtt{True} \neq \vtt{False})$, which is Theorem \ref{prop-neq}.  When $P$
+    is \vtt{False}, we then get $(\vtt{False} \neq (\neg \vtt{False})) =
+    (\vtt{False} \neq \vtt{True})$, which is again Theorem \ref{prop-neq}.
+\end{proof}
+\noindent The last few theorems will be used later to prove that the cardinality
+of \vtt{Prop} is two.
+
+\begin{theorem} \label{not-eq-eq}
+    For all propositions $A$ and $B$, if $(\neg A) = (\neg B)$, then $A = B$.
+\end{theorem}
+\begin{proof}
+    We can apply $\neg$ to both sides of $(\neg A) = (\neg B)$ to get $(\neg
+    \neg A) = (\neg \neg B)$, so by Theorem \ref{not-not} we have $A = B$.
+\end{proof}
+
+\begin{theorem} \label{not-eq-iff}
+    For all propositions $A$ and $B$, $(A \leftrightarrow B) \leftrightarrow
+    (\neg A \leftrightarrow \neg B)$.
+\end{theorem}
+\begin{proof}
+    By propositional extensionality, we can reduce this to proving that $(A = B)
+    \leftrightarrow ((\neg A) = (\neg B))$.  The forward direction is trivial,
+    and the reverse direction is the previous theorem.
+\end{proof}
+
+\begin{theorem} \label{prop-is-true}
+    For all propositions $P$, $P \to P = \verb|True|$.
+\end{theorem}
+\begin{proof}
+    This is a direct consequence of Theorem \ref{prop-eq-true}.
+\end{proof}
+
+\begin{theorem} \label{prop-is-false}
+    For all propositions $P$, $\neg P \to P = \verb|False|$.
+\end{theorem}
+\begin{proof}
+    This is a direct consequence of Theorem \ref{prop-eq-false}.
+\end{proof}
+
+\begin{theorem} \label{or-left}
+    For all propositions $A$ and $B$, $(\neg B \to A) \to A \vee B$.
+\end{theorem}
+\begin{proof}
+    If $B$, then we have $A \vee B$.  If $\neg B$, then we have $A$ from $\neg B
+    \to A$, so $A \vee B$.
+\end{proof}
+
+\begin{theorem} \label{or-right}
+    For all propositions $A$ and $B$, $(\neg A \to B) \to A \vee B$.
+\end{theorem}
+\begin{proof}
+    If $A$, then we have $A \vee B$.  If $\neg A$, then we have $B$ from $\neg A
+    \to B$, so $A \vee B$.
+\end{proof}
+
+\section{Functions}
+
+\begin{definition}
+    Given a type $\mathbb U$, we define the identity function $1_\mathbb U :
+    \mathbb U \rightarrow \mathbb U$ as $1_\mathbb U(a) = a$ for all $a :
+    \mathbb U$.
+\end{definition}
+
+\begin{definition}
+    Given types $\mathbb A$ and $\mathbb B$ and a proof that $\mathbb A
+    \rightarrow \vtt{False}$, we define the empty function $\varnothing_{\mathbb
+    A \mathbb B} : \mathbb A \rightarrow \mathbb B$ by utilizing Theorem
+    \ref{false-rect} on all inputs.
+\end{definition}
+
+\begin{definition}
+    Given three types $\A$, $\B$, and $\C$ and two functions $f : \A \rightarrow
+    \B$ and $g : \B \rightarrow \C$, we define their composition $g \circ f$
+    with $(g \circ f)(a) = g(f(a))$ for all $a : \A$.
+\end{definition}
+
+\begin{class}
+    Given a function $f : \A \rightarrow \B$, we say that the function is
+    injective if $\forall a, b : \A, f(a) = f(b) \rightarrow a = b$.
+\end{class}
+
+\begin{class}
+    Given a function $f : \A \rightarrow \B$, we say that the function is
+    surjective if $\forall b : \B, \exists a : \A, f(a) = b$.
+\end{class}
+
+\begin{class}
+    Given a function $f : \A \rightarrow \B$, we say that the function is
+    bijective if it is injective and surjective.
+\end{class}
+
+\begin{instance}
+    The identity function is bijective.
+\end{instance}
+\begin{proof}
+    Because $1_\U(a) = 1_\U(b)$ is identical to $a = b$, $1_\U(a) = 1_\U(b)
+    \rightarrow a = b$, so $1_\U$ is injective.  For any $x : \U$, $1_\U(x) =
+    x$, so $1_\U$ is surjective.  Because $1_\U$ is injective and surjective, it
+    is bijective.
+\end{proof}
+
+\begin{instance} \label{inj-comp}
+    The composition of injective functions is injective.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types and $f : \A \rightarrow \B$ and $g : \B
+    \rightarrow \C$ be injective functions.  Let $a, b : \A$ such that $g(f(a))
+    = g(f(b))$.  Because $g$ is injective, we have $f(a) = f(b)$, and because
+    $f$ is injective, we have $a = b$ as required.
+\end{proof}
+
+\begin{instance} \label{sur-comp}
+    The composition of surjective functions is surjective.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types and $f : \A \rightarrow \B$ and $g : \B
+    \rightarrow \C$ be surjective functions.  Let $c : \C$.  Then because $g$ is
+    surjective, there exists a $b : \B$ such that $g(b) = c$.  Furthermore,
+    because $f$ is surjective, there exists an $a : \A$ such that $f(a) = b$.
+    Thus, $g(f(a)) = g(b) = c$, so $g \circ f$ is surjective.
+\end{proof}
+
+\begin{instance} \label{bij-comp}
+    The composition of bijective functions is bijective.
+\end{instance}
+\begin{proof}
+    This is just the combination of Theorems \ref{inj-comp} and \ref{sur-comp}.
+\end{proof}
+
+\begin{instance} \label{empty-inj}
+    The empty function is injective.
+\end{instance}
+\begin{proof}
+    Let $\A$ and $\B$ be types such that $\A \rightarrow \vtt{False}$.  Then for
+    all $a, b : \A$ such that $\varnothing_{\A\B}(a) = \varnothing_{\A\B}(b)$,
+    we already have a contradiction because no such values exist in the first
+    place.  Thus, the theorem is vacuously true.
+\end{proof}
+
+\begin{instance}
+    For any types $\A$ and $\B$ and function $f : \A \rightarrow \B$, if $\B
+    \rightarrow \vtt{False}$, then $f$ is surjective.
+\end{instance}
+\begin{proof}
+    Let $b : \B$.  Then because $\B \rightarrow \vtt{False}$, we already have a
+    contradiction, so the theorem is vacuously true.
+\end{proof}
+
+\begin{theorem}[Partition Principle]
+    For all types $\A$ and $\B$, if there is a surjective function from $\A$ to
+    $\B$, there exists an injective function from $\B$ to $\A$.
+\end{theorem}
+\begin{proof}
+    Let $f$ be a surjective function from $\A$ to $\B$.  Then for any value $b :
+    \B$, we have a value $a : \A$ such that $f(a) = b$.  Define a new function
+    $g : \B \rightarrow \A$ that is given by this value.  Now let $x, y : \B$
+    such that $g(x) = g(y)$.  Because $f$ is surjective, we have an $a$ such
+    that $f(a) = x$, and by the definition of $g$ we have $g(x) = a$.
+    Similarly, there is a $b$ such that $f(b) = y$ and $g(y) = b$.  But since
+    $g(x) = g(y)$, we have $a = b$.  Thus, $f(a) = f(b)$, so $x = y$, showing
+    that $g$ is an injective function from $\B$ to $\A$.
+\end{proof}
+
+The previous theorem implicitly used indefinite description (in particular,
+Theorem \ref{ex-to-type}) in its definition of $g$.  These uses of indefinite
+description will no longer be pointed out in the future.
+
+\begin{definition}
+    Given types $\A$ and $\B$ and functions $f : \A \rightarrow \B$ and $g : \B
+    \rightarrow \A$, $g$ is said to be the inverse of $f$ if
+    \[
+        \forall x : \A, g(f(x)) = x
+    \]
+    and
+    \[
+        \forall x : \B, f(g(x)) = x.
+    \]
+\end{definition}
+
+\begin{theorem}
+    Bijective functions have an inverse.
+\end{theorem}
+\begin{proof}
+    Let $f$ be a bijective function from $\A$ to $\B$.  Because $f$ is
+    surjective, given any $b : \B$, there exists an $a : \A$ such that $f(a) =
+    b$.  Let $g : \B \rightarrow \A$ be the function that gets this value.  It
+    is claimed that $g$ is the inverse of $f$.  First, let $x : \A$.  Then
+    $g(f(x)) = y$ with $f(y) = f(x)$.  Because $f$ is injective, we have $y =
+    x$, so $g(f(x)) = x$.  Second, let $x : \B$.  Then $g(x) = y$ with $f(y) =
+    x$.  Thus, $f(g(x)) = f(y) = x$.
+\end{proof}
+
+\begin{instance}
+    A function that has an inverse is bijective.
+\end{instance}
+\begin{proof}
+    Let $f : \A \rightarrow \B$ and $g : \B \rightarrow \A$ be inverses.  First,
+    let $a$ and $b$ be values in $\A$ such that $f(a) = f(b)$.  Then we also
+    have $g(f(a)) = g(f(b))$, and because $f$ and $g$ are inverses, we get $a =
+    b$.  Thus, $f$ is injective.  Now let $b : \B$.  Then letting $a = g(b)$,
+    $f(a) = b$, so $f$ is surjective.
+\end{proof}
+
+\section{Basic Types} \label{sec-types}
+
+There are a few basic types that we can create that are useful.
+
+\begin{definition}
+    Given a \Prop\ $A$ and a dependent \Prop\ $B : A \rightarrow \Prop$, we
+    define the dependent conjunction $A \curlywedge B$ with a single
+    constructor $\forall a : A, B(a) \rightarrow A \curlywedge B$.
+\end{definition}
+
+This is like a normal conjunction except that the second \Prop depends on the
+first \Prop being true.
+
+\begin{definition}
+    Define an inductive type $\S$ with a single value constructor $I$.  This is
+    called the singleton type.
+\end{definition}
+
+\begin{definition}
+    Given two types $\A$ and $\B$, define an inductive type with a single
+    constructor that takes in a value of each type.  Call this type the product
+    of $\A$ and $\B$, denoted $\A \times \B$.  We write values of this type as
+    $(a, b)$, where $a : \A$ and $b : \B$.  We also can define the projection
+    operators $P_1 : \A \times \B \rightarrow \A$ and $P_2 : \A \times \B
+    \rightarrow \B$ that acquire the first and second component of a value in
+    $\A \times \B$.
+\end{definition}
+
+\begin{definition}
+    Given two type $\A$ and $\B$, define an inductive type with two
+    constructors: one which takes in a value of $\A$, and another which takes in
+    a value of $\B$.  Call this type the sum of $\A$ and $\B$, denoted $\A +
+    \B$.
+\end{definition}
+
+\begin{definition}
+    Given a type $\A$, define the optional type with two constructors: one
+    called \vtt{val} which takes in a value of $\A$, and one value constructor
+    called \verb|nil|.  Call this type $\O(\A)$.
+\end{definition}
+
+\begin{class}
+    Given a type $\A$, we say that the type is nontrivial if there are two
+    values $a$ and $b$ in $\A$ with $a \neq b$.
+\end{class}
+
+\begin{theorem} \label{not-trivial2}
+    If $\A$ is a nontrivial type, then for all $c : \A$, there exists a $d : \A$
+    such that $c \neq d$.
+\end{theorem}
+\begin{proof}
+    Because $\A$ is not trivial, we have some $a$ and $b$ in $\A$ such that $a
+    \neq b$.  Now let $c : \A$.  If $c = a$, then $b$ is an element such that $c
+    \neq b$.  If $c \neq a$, then $a$ is an element such that $c \neq a$.
+\end{proof}
+
+\begin{class}
+    Given a type $\A$, we say that the type is a singleton type if there exists
+    an $x : \A$ such that for all $a : \A$, $a = x$.
+\end{class}
+
+\begin{theorem}
+    If $\A$ is a singleton type, then for all $a$ and $b$ in $\A$, $a = b$.
+\end{theorem}
+\begin{proof}
+    Because both $a = x$ and $b = x$, we have $a = b$.
+\end{proof}
+
+\begin{theorem}
+    If any type $\A$ is inhabited and if for all $a$ and $b$ in $\A$ we have $a
+    = b$, then $\A$ is a singleton type.
+\end{theorem}
+\begin{proof}
+    Because $\A$ is inhabited there is some $x : \A$.  Because $a = b$ for all
+    $a$ and $b$ in $\A$, we know that $a = x$ for all $a : \A$, so $\A$ is a
+    singleton type.
+\end{proof}
+
+\end{document}

@@ -1,0 +1,86 @@
+\ProvidesPackage{mystyle}
+
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{indentfirst}
+\usepackage[all]{nowidow}
+
+\theoremstyle{definition}
+\newtheorem{axiom}{Axiom}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{remark}
+\newtheorem{case}{Case}[theorem]
+\renewcommand{\thecase}{\arabic{case}}
+
+\def\bvec#1{\def\useanchorwidth{T}\stackon[1.2pt]{#1}{\text{\scriptsize$\,\Rightarrow$}}}
+\def\tvec#1{\def\useanchorwidth{T}\stackon[1.2pt]{#1}{\text{\scriptsize$\,\Rrightarrow$}}}
+\newcommand{\lcontr}{\,\rfloor\,}
+\newcommand{\rcontr}{\,\lfloor\,}
+
+\newcommand{\vtt}[1]{%
+  \text{\normalfont\ttfamily\detokenize{#1}}%
+}
+
+\newcommand{\De}{\mathrm{d}}
+\newcommand{\Di}{\,\mathrm{d}}
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+
+\DeclareMathOperator{\Det}{Det}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\erf}{erf}
+\DeclareMathOperator{\arcsinh}{arcsinh}
+\DeclareMathOperator{\arccosh}{arccosh}
+\DeclareMathOperator{\arctanh}{arctanh}
+
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\D}{\mathbb{D}}
+\renewcommand{\L}{\mathbb{L}}
+\newcommand{\N}{\mathbb{N}}
+\renewcommand{\O}{\mathbb{O}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\S}{\mathbb{S}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\U}{\mathbb{U}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\iN}{\iota_\N}
+\newcommand{\iZ}{\iota_\Z}
+\newcommand{\iQ}{\iota_\Q}
+
+\newcommand{\Prop}{\vtt{Prop}\xspace}
+\newcommand{\Type}{\vtt{Type}\xspace}
+
+\theoremstyle{definition}
+\newtheorem{class}{Class}[section]
+\newtheorem{instance}{Instance}[section]
+
+\newcommand{\val}[1]{\vtt{val} (#1)}
+\newcommand{\nil}{\vtt{nil}}
+
+\newcommand{\st}[2]{[ #1 \, | \, #2 ]}
+\newcommand{\stv}[1]{[ #1\, |\,]}
+\newcommand{\stp}[1]{[ \,|\, #1 ]}
+
+\newcommand{\Empty}{\varnothing}
+
+\newcommand{\set}[1]{#1 \rightarrow\Prop}
+\newcommand{\col}[1]{(#1 \rightarrow\Prop)\rightarrow\Prop}
+
+\newcommand{\usim}{{\sim}}
+\newcommand{\conc}{\mathbin{^\frown}}

@@ -1,0 +1,2053 @@
+\documentclass[../math.tex]{subfiles}
+\externaldocument{../math.tex}
+\externaldocument{foundations}
+
+\begin{document}
+
+\setcounter{chapter}{1}
+
+\chapter{Elementary Algebra} \label{chap-ealgebra}
+
+In this chapter we will develop an extensive system of classes that encode basic
+algebraic manipulations.  Note that the classes we define will not be things
+like groups, rings, fields, etc.  Instead, we will define classes for each
+individual property that we might want.  This ``unbundled'' approach, as it's
+called, has a much wider range of applicability than the bundled approach.
+There are many types that don't satisfy all of the axioms for a ring or a field
+but which still have enough to do basic algebra.  (A notable example is the
+ordinals, which have addition and multiplication defined, but neither is
+commutative.)  We will still define the traditional algebraic concepts, but they
+will not be used that much in this chapter.
+
+In addition to considering single algebraic types, we will also be describing
+maps between two algebraic types, similar to homomorphisms.  Similar to the
+unbundled approach taken to algebraic structures, the properties of these
+functions will be unbundled as well.  More traditional homomorphisms will be
+defined later.
+
+In the Coq code, there are notably many more theorems than what are said here.
+Those are for convenience when doing algebra in Coq, but the theorems are so
+simple that here they can just be considered as ``skipping'' a few trivial
+steps.
+
+Throughout this chapter, let $\U$ be a type.  All classes defined are
+parameterized by this type.
+
+\section{Addition and Subtraction}
+
+\begin{class}
+    A binary operation $\U \rightarrow \U \rightarrow \U$ which is called
+    addition, denoted with +.
+\end{class}
+
+\begin{class}
+    Addition is associative if for all $a$, $b$, and $c$ in $\U$, $a + (b + c) =
+    (a + b) + c$.
+\end{class}
+
+\begin{class}
+    Addition is commutative if for all $a$ and $b$ in $\U$, $a + b = b + a$.
+\end{class}
+
+\begin{class}
+    A special value $0 : \U$.
+\end{class}
+
+\begin{class}
+    Zero is a left identity if for all $a$ in $\U$, $0 + a = a$.
+\end{class}
+
+\begin{class}
+    Zero is a right identity if for all $a$ in $\U$, $a + 0 = a$.
+\end{class}
+
+\begin{class}
+    Addition is left cancellative if for all $a$, $b$, and $c$ in $\U$, $c + a =
+    c + b \rightarrow a = b$.
+\end{class}
+
+\begin{class}
+    Addition is right cancellative if for all $a$, $b$, and $c$ in $\U$, $a + c
+    = b + c \rightarrow a = b$.
+\end{class}
+
+\begin{class}
+    An unary operation $\U \rightarrow \U$ which is called negation, denoted
+    with $-$.  We also use the shorthand $a - b = a + (-b)$.
+\end{class}
+
+\begin{class}
+    Negation is a left inverse if for all $a$ in $\U$, $-a + a = 0$.
+\end{class}
+
+\begin{class}
+    Negation is a right inverse if for all $a$ in $\U$, $a - a = 0$.
+\end{class}
+
+\begin{class}[Group]
+    A type $\U$ is a Group if it has instances of addition, zero, and negation
+    such that addition is associative, zero is a left and right identity, and
+    negation is a left and right inverse.
+\end{class}
+
+\begin{class}[Abelian Group]
+    A type $\U$ is an Abelian Group if it is a Group and addition is
+    commutative.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $f(a + b) = f(a) + f(b)$ for all
+    $a$ and $b$ in $\U$, then we say that $f$ is additive.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $f(0) = 0$, we say that $f$
+    preserves the additive identity.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $f(-a) = -f(a)$ for all $a$ in
+    $\U$, then we say that $f$ preserves additive inverses.
+\end{class}
+
+Several of these classes together provide instances of some of the others.
+
+\begin{instance}
+    If addition is commutative and zero is a left identity, then zero is a right
+    identity.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    If addition is commutative and left cancellative, then addition is right
+    cancellative.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    If addition is commutative and negation is a left inverse, then negation is
+    a right inverse.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    If addition is cancellative and $f$ is additive, then $f$ preserves the
+    additive identity.
+\end{instance}
+\begin{proof}
+    Because $0 + 0 = 0$, we also have $f(0 + 0) = f(0)$.  Using additivity,
+    $f(0) + f(0) = f(0)$, and by canceling $f(0)$ we get $f(0) = 0$.
+\end{proof}
+
+\begin{instance}
+    If $f$ is additive, then $f$ preserves additive inverses.
+\end{instance}
+\begin{proof}
+    We know that $f(a - a) = f(0) = 0$, and using additivity we have $f(a) +
+    f(-a) = 0$, and rearranging we get $f(-a) = -f(a)$.
+\end{proof}
+
+The previous instances allows us to only check for one-sided addition laws when
+addition is commutative.
+
+\begin{instance} \label{plus-linv-lcancel}
+    If addition is associative, zero is a left identity, and negation is a left
+    inverse, then addition is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be such that $c + a = c + b$.  Then
+    \begin{align*}
+        c + a &= c + b \\
+        -c + (c + a) &= -c + (c + b) \\
+        (-c + c) + a &= (-c + c) + b \\
+        0 + a &= 0 + b \\
+        a &= b.
+    \end{align*}
+\end{proof}
+
+\begin{instance} \label{plus-rinv-rcancel}
+    If addition is associative, zero is a right identity, and negation is a
+    right inverse, then addition is right cancellative.
+\end{instance}
+\begin{proof}
+    This proof is the same in form as the previous one.
+\end{proof}
+
+Throughout the rest of this section, the classes required will no longer be
+specified and will have to be determined from the proofs.  As said previously,
+Coq does this automatically.
+
+\begin{theorem}
+    $-0 = 0$.
+\end{theorem}
+\begin{proof}
+    We have both $0 - 0 = 0$ and $0 - 0 = -0$, so $-0 = 0$.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \U$, $-{-a} = a$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        -{-a} &= a \\
+        -{-a} - a &= a - a \\
+        -(-a) + (-a) &= a - a \\
+        0 &= 0.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{neg-plus}
+    For all $a$ and $b$ in $\U$, $-(a + b) = -b + -a$.  Furthermore, if addition
+    is commutative, $-(a + b) = -a + -b$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        (a + b) - (a + b) &= 0 \\
+        a + (b - (a + b)) &= 0 \\
+        b - (a + b) &= -a \\
+        -(a + b) &= -b + -a.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{not-trivial-zero}
+    If $\U$ is nontrivial, then there exists an $A : \U$ such that $a \neq 0$.
+\end{theorem}
+\begin{proof}
+    This is a direct application of Theorem \ref{not-trivial2}.
+\end{proof}
+
+\begin{theorem} \label{homo-zero-inj}
+    If $f$ is additive and preserves additive inverses, if $0 = f(a)$ implies
+    that $0 = a$ for all $a$ in $\U$, then $f$ is injective.
+\end{theorem}
+\begin{proof}
+    Let $b$ and $c$ be values in $\U$ such that $f(b) = f(c)$.  We must prove
+    that $b = c$.  Using the properties of $f$, we know that $0 = f(b) - f(c) =
+    f(b - c)$.  We can also get away with proving that $0 = b - c$.  Thus, by
+    setting $b - c = a$, the theorem is true by hypothesis.
+\end{proof}
+
+\begin{theorem} \label{homo-inj-zero}
+    If $f$ preserves the additive identity and is injective, then $0 \neq a$
+    implies that $0 \neq f(a)$ for all $a : \U$.
+\end{theorem}
+\begin{proof}
+    Assume that $0 = f(a)$.  Then $f(0) = f(a)$, and because $f$ is injective,
+    $0 = a$, contradicting $0 \neq a$.
+\end{proof}
+
+\section{Multiplication}
+
+\begin{class} \label{mult}
+    A binary operation $\U \rightarrow \U \rightarrow \U$ which is called
+    multiplication, denoted by concatenation.
+\end{class}
+
+\begin{class}
+    Multiplication is left distributive if for all $a$, $b$, and $c$ in $\U$,
+    $a(b + c) = ab + ac$.
+\end{class}
+
+\begin{class}
+    Multiplication is right distributive if for all $a$, $b$, and $c$ in $\U$,
+    $(a + b)c = ac + bc$.
+\end{class}
+
+\begin{class}
+    Multiplication is associative if for all $a$, $b$, and $c$ in $\U$, $a(bc) =
+    (ab)c$.
+\end{class}
+
+\begin{class}
+    Multiplication is commutative if for all $a$ and $b$ in $\U$, $ab = ba$.
+\end{class}
+
+\begin{class}
+    Zero is a left annihilator if for all $a$ in $\U$, $0a = 0$.
+\end{class}
+
+\begin{class}
+    Zero is a right annihilator if for all $a$ in $\U$, $a0 = 0$.
+\end{class}
+
+\begin{class}
+    A special value $1 : \U$.
+\end{class}
+
+\begin{class}
+    One is a left identity if for all $a$ in $\U$, $1a = a$.
+\end{class}
+
+\begin{class}
+    One is a right identity if for all $a$ in $\U$, $a1 = a$.
+\end{class}
+
+\begin{class}
+    Multiplication is left cancellative if for all $a$, $b$, and $c$ in $\U$
+    with $c \neq 0$, $ca = cb \rightarrow a = b$.
+\end{class}
+
+\begin{class}
+    Multiplication is right cancellative if for all $a$, $b$, and $c$ in $\U$
+    with $c \neq 0$, $ac = bc \rightarrow a = b$.
+\end{class}
+
+\begin{class}[Rng]
+    A type $\U$ is a Rng if addition forms an Abelian Group and if there is an
+    instance of multiplication such that multiplication is left distributive,
+    right distributive, and associative.
+\end{class}
+
+\begin{class}[Ring]
+    A type $\U$ is a Ring if it is a Rng and there is an instance of one such
+    that one is a left and right identity.
+\end{class}
+
+\begin{class}[Commutative Ring]
+    A type $\U$ is a Commutative Ring if it is a Ring and multiplication is
+    commutative.
+\end{class}
+
+\begin{class}[Integral Domain]
+    A type $\U$ is an Integral Domain if it is a Commutative Ring and
+    multiplication is left and right cancellative.
+\end{class}
+
+\begin{definition}
+    Given a type $\A$ with addition and a one, we define $2 = 1 + 1$, $3 = 1 +
+    1 + 1$, etc.
+\end{definition}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $f(ab) = f(a)f(b)$ for all $a$
+    and $b$ in $\U$, then we say that $f$ is multiplicative.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $f(1) = 1$, we say that $f$
+    preserves the multiplicative identity.
+\end{class}
+Notice that from this and additivity we get $f(2) = 2$, $f(3) = 3$, etc.
+
+Like with addition, several of these classes together provide instances of some
+of the others.
+
+\begin{instance}
+    If multiplication is commutative and one is a left identity, then one is a
+    right identity.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance} \label{ldist-rdist}
+    If multiplication is commutative and left distributive, then multiplication
+    is right distributive.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance} \label{mult-lanni-ranni}
+    If multiplication is commutative and zero is a left annihilator, then zero
+    is a right annihilator.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    If multiplication is commutative and left cancellative, then multiplication
+    is right cancellative.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+Like with addition, the previous instances allows us to only check for one-sided
+multiplication laws when multiplication is commutative.
+
+\begin{instance} \label{ring-mult-lanni}
+    If addition is cancellative, zero is an identity, and multiplication is
+    right distributive, then zero is a left annihilator.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        0a + 0a &= 0a + 0a \\
+        0a + 0a &= (0 + 0)a \\
+        0a + 0a &= 0a \\
+        0a + 0a &= 0a + 0 \\
+        0a &= 0 \\
+    \end{align*}
+\end{proof}
+
+\begin{instance} \label{ring-mult-ranni}
+    If addition is cancellative, zero is an identity, and multiplication is
+    left distributive, then zero is a right annihilator.
+\end{instance}
+\begin{proof}
+    The proof is the same in form to the proof of Instance
+    \ref{ring-mult-lanni}.
+\end{proof}
+
+\begin{theorem} \label{not-trivial-one}
+    If $\U$ is not trivial, then $0 \neq 1$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{not-trivial-zero}, there exists an $a : \U$ such that $a
+    \neq 0$.  But if $0 = 1$, we could multiply both sides by $a$ to get $0 =
+    a$, which is a contradiction, so we must have $0 \neq 1$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\U$, $(-a)b = -(ab)$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        (-a)b &= -(ab) \\
+        ab + (-a)b &= ab - (ab) \\
+        (a - a)b &= 0 \\
+        0b &= 0 \\
+        0 &= 0.
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\U$, $a(-b) = -(ab)$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the last proof.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ in $\U$, $(-1)a = -a$.
+\end{theorem}
+\begin{proof}
+    \[
+        (-1)a = -(1a) = -a.
+    \]
+\end{proof}
+
+Even though these next few theorems aren't really needed, they're included in
+the Coq code and it is interesting to see how these basic ideas follow from the
+axioms.
+
+\begin{theorem}
+    $2 + 2 = 4$.
+\end{theorem}
+\begin{proof}
+    \[
+        2 + 2 = (1 + 1) + (1 + 1) = 1 + 1 + 1 + 1 = 4.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a$ in $\U$, $2a = a + a$.
+\end{theorem}
+\begin{proof}
+    \[
+        2a = (1 + 1)a = 1a + 1a = a + a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    $(2)(2) = 4$.
+\end{theorem}
+\begin{proof}
+    \[
+        (2)(2) = 2 + 2 = 4.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\U$, $aa - bb = (a + b) (a - b)$.
+\end{theorem}
+\begin{proof}
+    \[
+        (a + b)(a - b) = a(a - b) + b(a - b) = aa - ab + ba - bb = aa - bb + ab
+        - ab = aa - bb.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ with $0 = ab$, either $0 = a$ or $0 = b$.
+\end{theorem}
+\begin{proof}
+    Assume that $0 \neq a$.  Then
+    \begin{align*}
+        0 &= ab \\
+        a0 &= ab \\
+        0 &= b,
+    \end{align*}
+    so we have either $0 = a$ or $0 = b$.
+\end{proof}
+
+\begin{theorem} \label{mult-nz}
+    For all $a \neq 0$ and $b \neq 0$, $ab \neq 0$.
+\end{theorem}
+\begin{proof}
+    This is the contrapositive of the previous theorem.
+\end{proof}
+
+\begin{theorem}
+    If $a \neq 0$, then $-a \neq 0$.
+\end{theorem}
+\begin{proof}
+    Assume that $-a = 0$.  Because $0 = -0$, we have $-a = -0$, so $a = 0$,
+    which contradicts $a \neq 0$.
+\end{proof}
+
+\section{Division}
+
+\begin{class}
+    An unary operation $\U \rightarrow \U$ which is called the reciprocal.  We
+    denote the reciprocal of $a$ as $a^{-1}$ or $\frac{1}{a}$, and use the
+    shorthand $\frac{a}{b} = a b^{-1}$.
+\end{class}
+
+\begin{class}
+    The reciprocal is a left inverse if for all $a$ in $\U$ with $a \neq 0$,
+    $a^{-1}a = 1$.
+\end{class}
+
+\begin{class}
+    The reciprocal is a right inverse if for all $a$ in $\U$ with $a \neq 0$,
+    $aa^{-1} = 1$.
+\end{class}
+
+Notice that division is handled slightly differently than usual.  Most people do
+not consider the reciprocal of zero to be defined.  Instead, we define the
+reciprocal of zero, but do not put any constraints on what its value is.
+
+\begin{class}[Field]
+    A type $\U$ is a Field if it is a Commutative Ring, it has a reciprocal that
+    is an inverse, and it is nontrivial.
+\end{class}
+
+\begin{instance}
+    If multiplication is commutative and the reciprocal is a left inverse, then
+    the reciprocal is right a right inverse.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $f(a^{-1}) = f(a)^{-1}$ for all
+    $a \neq 0$ in $\U$, then we say that $f$ preserves multiplicative inverses.
+\end{class}
+
+\begin{instance}
+    Multiplication is cancellative in fields.
+\end{instance}
+\begin{proof}
+    The proof is the same in form to the proofs of Instances
+    \ref{plus-linv-lcancel} and \ref{plus-rinv-rcancel}.
+\end{proof}
+
+\begin{theorem}
+    If $a \neq 0$, then $a^{-1} \neq 0$.
+\end{theorem}
+\begin{proof}
+    Because $a \neq 0$, $\U$ is not trivial.  Now assume that $a^{-1} = 0$.
+    Then we could multiply by $a$ to get $aa^{-1} = 0$.  Because $a \neq 0$, we
+    get $1 = 0$, which contradicts nontriviality.
+\end{proof}
+
+\begin{theorem}
+    If $a \neq 0$, then $(a^{-1})^{-1} = a$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        (a^{-1})^{-1} &= a \\
+        a^{-1} (a^{-1})^{-1} &= a^{-1} a \\
+        1 &= 1.
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    If $a \neq 0$, then $(-a)^{-1} = -a^{-1}$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        (-a)^{-1} &= -a^{-1} \\
+        (-a)(-a)^{-1} &= (-a)(-a^{-1}) \\
+        1 &= -{-(aa^{-1})} \\
+        1 &= aa^{-1} \\
+        1 &= 1.
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    If $a \neq 0$ and $b \neq 0$, $(ab)^{-1} = b^{-1}a^{-1}$.  In particular, if
+    multiplication is commutative, $(ab)^{-1} = a^{-1}b^{-1}$.
+\end{theorem}
+\begin{proof}
+    This proof is the same in form to the proof of Theorem \ref{neg-plus}.
+\end{proof}
+
+\begin{theorem}
+    $1^{-1} = 1$.
+\end{theorem}
+\begin{proof}
+    If $\U$ was trivial, the theorem would be trivial, so assume that $0 \neq
+    1$.  Then we have $1^{-1} = 1 1^{-1} = 1$.
+\end{proof}
+
+\begin{instance}
+    If $\U$ is a field and $f$ is multiplicative and preserves the
+    multiplicative identity, then $f$ is injective.
+\end{instance}
+\begin{proof}
+    We will use Theorem \ref{homo-zero-inj}.  Let $a$ be such that $0 = f(a)$
+    and assume for a contradiction that $0 \neq a$.  Then by multiplying by
+    $f(a^{-1})$ on both sides of $0 = f(a)$ we get \[
+        0 = f(a) f(a^{-1}) = f(a a^{-1}) = f(1) = 1,
+    \]
+    which contradicts non-triviality.
+\end{proof}
+
+\begin{instance}
+    If $f$ is multiplicative and preserves the multiplicative identity, then $f$
+    preserves multiplicative inverses.
+\end{instance}
+\begin{proof}
+    Let $a \neq 0$.  Then by Theorem \ref{homo-inj-zero}, $f(a) \neq 0$ as well.
+    Then we know that \[
+        f(a) f(a^{-1}) = f(a a^{-1}) = f(1) = 1 = f(a) f(a)^{-1},
+    \]
+    and by canceling $f(a)$ we get $f(a^{-1}) = f(a)^{-1}$.
+\end{proof}
+
+\section{Relations}
+
+\begin{definition}
+    Given a type $\U$, we use the term relation to refer to functions $\U
+    \rightarrow \U \rightarrow \vtt{Prop}$.  Given a relation $R$, we often use
+    the notation $aRb$ to mean that $R(a, b)$ is true.
+\end{definition}
+
+\begin{definition}
+    Given a relation $R$, we can define the strict relation $R'$ given by $aR'b
+    = aRb \wedge a \neq b$.
+\end{definition}
+
+\begin{definition}
+    Given a relation $R$, we can define the dual relation $R'$ given by $aR'b =
+    bRa$.
+\end{definition}
+
+\begin{class}
+    A relation is reflexive if $aRa$ for all $a$.
+\end{class}
+
+\begin{class}
+    A relation is irreflexive if $\neg aRa$ for all $a$.
+\end{class}
+
+\begin{class}
+    A relation is symmetric if for all $a$ and $b$, $aRb \rightarrow bRa$.
+\end{class}
+
+\begin{class}
+    A relation is antisymmetric if for all $a$ and $b$, $aRb \rightarrow bRa
+    \rightarrow a = b$.
+\end{class}
+
+\begin{class}
+    A relation is asymmetric if for all $a$ and $b$, $aRb \rightarrow \neg bRa$.
+\end{class}
+
+\begin{class}
+    A relation is transitive if for all $a$, $b$, and $c$, $aRb \rightarrow bRc
+    \rightarrow aRc$.
+\end{class}
+
+\begin{class}
+    A relation is dense if for all $a$ and $b$ with $aRb$, there exists a $c$
+    such that $aRc$ and $cRb$.
+\end{class}
+
+\begin{class}
+    A relation is connex if for all $a$ and $b$, $\{aRb\} + \{bRa\}$.
+\end{class}
+
+\begin{class}
+    A relation is trichotomous if for all $a$ and $b$, $\{aRb\} + \{a = b\} +
+    \{bRa\}$.
+\end{class}
+
+\begin{class}
+    A relation is well ordered if for every nonempty set $S$, there exists an
+    element $a \in S$ such that $a \leq b$ for all $b \in S$.
+\end{class}
+
+\begin{instance}
+    A relation that is connex is reflexive.
+\end{instance}
+\begin{proof}
+    Let $R$ be a connex relation and let $a : \U$.  Then by connexivity, we have
+    either $aRa$ or $aRa$.  Either way, $aRa$, so $R$ is reflexive.
+\end{proof}
+
+For the rest of this section, let $\leq$ be a relation on $\U$ that is possibly
+reflexive, antisymmetric, transitive, and connex.  Let $<$ be $\leq$'s strict
+relation and $\geq$ be $\leq$'s dual relation.
+
+\begin{instance}
+    $<$ is irreflexive.
+\end{instance}
+\begin{proof}
+    $a \neq a$ for all $a$, so this is true by definition.
+\end{proof}
+
+\begin{instance}
+    $<$ is asymmetric.
+\end{instance}
+\begin{proof}
+    Assume that $a < b$ and $b < a$.  Then because $a \leq b$ and $b \leq a$, we
+    have $a = b$, which contradicts $a < b$.
+\end{proof}
+
+\begin{instance}
+    $<$ is transitive.
+\end{instance}
+\begin{proof}
+    Assume that $a < b$ and $b < c$.  Because $a \leq b$ and $b \leq c$, we have
+    $a \leq c$, so we only need to prove that $a \neq c$.  If $a = c$, we would
+    have $a < b$ and $b < a$, which is a contradiction, so we must have $a \neq
+    c$.  Thus, $a < c$.
+\end{proof}
+
+\begin{instance}
+    $<$ is trichotomous.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be values in $\U$.  If $a = b$ we're done, so assume that $a
+    \neq b$.  Then because $\leq$ is connex we have $a \leq b$ or $b \leq a$.
+    If $a \leq b$, we have $a \neq b$ so $a < b$.  If $b \leq a$, we have $b
+    \neq a$ so $b < a$.  Thus, we either have $a < b$, $a = b$, or $b < a$, so
+    $<$ is trichotomous.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, $a \nleq b \leftrightarrow b < a$.
+\end{theorem}
+\begin{proof}
+    Assume that $a \nleq b$.  Because $\leq$ is connex, we must have $b \leq a$.
+    Also, if $a = b$, we would have $a \leq b$, which contradicts $a \nleq b$.
+    Thus, $b \leq a$ and $b \neq a$, so $b < a$.
+
+    Now assume that $b < a$.  Then if $a \leq b$, we would have $a \leq b$ and
+    $b \leq a$, so $b = a$, which contradicts $b < a$.  Thus we must have $a
+    \nleq b$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, $a \nless b \leftrightarrow b \leq a$.
+\end{theorem}
+\begin{proof}
+    \[
+        a \nless b \leftrightarrow \neg (a < b) \leftrightarrow \neg\neg (b \leq
+        a) \leftrightarrow b \leq a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, if $a \leq b$ and $b < c$, $a < c$.
+\end{theorem}
+\begin{proof}
+    We get $a \leq c$ through the transitivity of $\leq$, so all we need to
+    prove is that $a \neq c$.  If $a = c$, we would have $a \leq b$ and $b \leq
+    a$, so $b = a$, which contradicts $b < a$.  Thus $a \neq c$, so $a < c$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, if $a < b$ and $b \leq c$, $a < c$.
+\end{theorem}
+\begin{proof}
+    We get $a \leq c$ through the transitivity of $\leq$, so all we need to
+    prove is that $a \neq c$.  If $a = c$, we would have $a \leq b$ and $b \leq
+    a$, so $a = b$, which contradicts $a < b$.  Thus $a \neq c$, so $a < c$.
+\end{proof}
+
+\section{Order}
+
+\begin{class}
+    An order on a type $\U$ is a particular relation on $\U$.  It is written
+    $\leq$.  Its strict relation is written $<$, its dual relation is written
+    $\geq$, and its strict dual relation is written $>$.
+\end{class}
+
+Note that in the Coq code, the dual relation is rarely used, to cut down on the
+number of theorems that need to be proved.
+
+\begin{class}
+    An order is said to be a partial order if it is reflexive, antisymmetric,
+    and transitive.
+\end{class}
+
+\begin{class}
+    An order is said to be a total order if it is connex, antisymmetric, and
+    transitive.
+\end{class}
+
+\begin{class}
+    An order is said to be a well order if it is antisymmetric and well-ordered.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $a \leq b$ implies that $f(a)
+    \leq f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves
+    inequalities in one direction.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $a < b$ implies that $f(a) <
+    f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves strict
+    inequalities in one direction.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $a \leq b \leftrightarrow f(a)
+    \leq f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves
+    inequalities in both directions.
+\end{class}
+
+\begin{class}
+    If $f : \U \to \V$ is a function such that $a < b \leftrightarrow f(a) <
+    f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves strict
+    inequalities in both directions.
+\end{class}
+
+\begin{instance} \label{wo-connex}
+    A relation that is well ordered is connex.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be two values.  Then consider the set $\{a, b\}$.  Because
+    the relation is well ordered, the set has a least element.  If $a$ is the
+    least element, then $a \leq b$, and if $b$ is the least element, then $b
+    \leq a$.  Thus, the relation is connex.
+\end{proof}
+
+\begin{instance} \label{wo-trans}
+    A relation that is well ordered and antisymmetric is transitive.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be such that $a \leq b$ and $b \leq c$.  Consider the
+    set $\{a, b, c\}$.  Because the relation is well ordered, the set has a
+    least element.  If $a$ is the least element, then $a \leq c$.  If $b$ is the
+    least element, then $a \leq b$ and $b \leq a$, so $a = b$ by antisymmetry,
+    meaning that $a = b \leq c$.  If $c$ is the least element, then $b \leq c$
+    and $c \leq b$, so $b = c$ by antisymmetry, meaning that $a \leq b = c$.  In
+    all cases $a \leq c$, so the relation is transitive.
+\end{proof}
+
+Notice now that to prove that a set is well-ordered, all we need to do is prove
+that it is antisymmetric and that every set has a minimum.
+
+\begin{instance} \label{homo-le-lt}
+    If $f$ is injective and preserves inequalities in one direction, then it
+    preserves strict inequalities in one direction.
+\end{instance}
+\begin{proof}
+    Since we already know that $a \leq b \rightarrow f(a) \leq f(b)$, we only
+    need to prove that $a \neq b \rightarrow f(a) \neq f(b)$, which is the
+    contrapositive of the definition of injectivity.
+\end{proof}
+
+\begin{instance} \label{homo-le-le2}
+    If $f$ is injective and preserves inequalities in one direction, then it
+    preserves inequalities in both directions.
+\end{instance}
+\begin{proof}
+    Because $f$ preserves inequalities in one direction already, we only need to
+    prove that $f(a) \leq f(b) \implies a \leq b$.  For a contradiction, assume
+    that $b < a$.  Then because $b \leq a$, we have $f(b) \leq f(a)$.  Because
+    $f(a) \leq f(b)$ and $f(b) \leq f(a)$, by antisymmetry we have $f(a) =
+    f(b)$.  By injectivity we have $a = b$, contradicting $b < a$.
+\end{proof}
+
+\begin{instance} \label{homo-lt-lt2}
+    If $f$ preserves strict inequalities in one direction, then it preserves
+    strict inequalities in both directions.
+\end{instance}
+\begin{proof}
+    Because $f$ preserves inequalities in one direction already, we only need to
+    prove that $f(a) < f(b) \implies a < b$.  For a contradiction, assume that
+    $b \leq a$.  Because $f(a) < f(b)$, we can't have $b = a$, so $b < a$.  Then
+    because $f$ preserves strict inequalities in one direction we have $f(b) <
+    f(a)$.  We can't have both $f(a) < f(b)$ and $f(b) < f(a)$, so it must be
+    the case that $a < b$.
+\end{proof}
+
+\subsection{Order and Addition}
+
+Addition and order often interact in a consistent way, as formalized in the
+following classes and theorems.
+
+\begin{class}
+    An order is said to be left additive if for all $a$, $b$, and $c$, if $a
+    \leq b$, then $c + a \leq c + b$.
+\end{class}
+
+\begin{class}
+    An order is said to be right additive if for all $a$, $b$, and $c$, if $a
+    \leq b$, then $a + c \leq b + c$.
+\end{class}
+
+\begin{class}
+    An order is said to be left addition cancellative if for all $a$, $b$, and
+    $c$, if $c + a \leq c + b$, then $a \leq b$.
+\end{class}
+
+\begin{class}
+    An order is said to be right addition cancellative if for all $a$, $b$, and
+    $c$, if $a + c \leq b + c$, then $a \leq b$.
+\end{class}
+
+\begin{class}[Ordered Group]
+    A type $\U$ is an Ordered Group if it is a Group and has an order that is
+    left and right additive.
+\end{class}
+
+\begin{instance}
+    If addition is commutative and $\leq$ is left additive, then $\leq$ is right
+    additive.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    If addition is commutative and $\leq$ is left addition cancellative, then
+    $\leq$ is right addition cancellative.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    Under the conditions of Instance \ref{plus-linv-lcancel}, if $\leq$ is left
+    additive, then $\leq$ is left addition cancellative.
+\end{instance}
+\begin{proof}
+    The proof is identical in the form to the proof of Instance
+    \ref{plus-linv-lcancel}.
+\end{proof}
+
+\begin{instance}
+    Under the conditions of Instance \ref{plus-rinv-rcancel}, if $\leq$ is right
+    additive, then $\leq$ is right addition cancellative.
+\end{instance}
+\begin{proof}
+    The proof is identical in the form to the proof of Instance
+    \ref{plus-rinv-rcancel}.
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, if $a < b$, then $c + a < c + b$.
+\end{theorem}
+\begin{proof}
+    We already have $a \leq b \rightarrow c + a \leq c + b$, so we only need to
+    prove that $c + a \neq c + b$.  If $c + a = c + b$, we could cancel $c$ to
+    get $a + b$ which contradicts $a < b$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, if $a < b$, then $a + c < b + c$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proof.
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, if $c + a < c + b$, then $a < b$.
+\end{theorem}
+\begin{proof}
+    Again, proving that $a \leq b$ is straightforward, so we only need to prove
+    that $a \neq b$.  If $a = b$, we would have $c + a < c + a$, which is
+    impossible.
+\end{proof}
+\noindent Note that the proof did not use additive inverses, which will allow us
+to utilize this theorem in types like the natural numbers.
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, if $a + c < b + c$, then $a < b$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proof.
+\end{proof}
+
+\begin{theorem} \label{le-lrplus}
+    If $a \leq b$ and $c \leq d$, then $a + c \leq b + d$.
+\end{theorem}
+\begin{proof}
+    From $a \leq b$ we get $a + c \leq b + c$ and from $c \leq d$ we get $b + c
+    \leq b + d$, and by transitivity we get $a + c \leq b + d$.
+\end{proof}
+
+\begin{theorem} \label{lt-le-lrplus}
+    If $a < b$ and $c \leq d$, then $a + c < b + d$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proof.
+\end{proof}
+
+\begin{theorem} \label{le-lt-lrplus}
+    If $a \leq b$ and $c < d$, then $a + c < b + d$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proofs.
+\end{proof}
+
+\begin{theorem} \label{lt-lrplus}
+    If $a < b$ and $c < d$, then $a + c < b + d$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proofs.
+\end{proof}
+
+\subsection{Order and Multiplication}
+
+Multiplication and order often interact in a consistent way as well, as
+formalized in the following classes and theorems.
+
+\begin{class}
+    An order is said to be multiplicative if $0 \leq a$ and $0 \leq b$ implies
+    $0 \leq ab$.
+\end{class}
+
+\begin{class}
+    An order is said to be left multiplicative if for all $a$, $b$, and $c$ with
+    $0 \leq c$, if $a \leq b$, then $ca \leq cb$.
+\end{class}
+
+\begin{class}
+    An order is said to be right multiplicative if for all $a$, $b$, and $c$
+    with $0 \leq c$, if $a \leq b$, then $ac \leq bc$.
+\end{class}
+
+\begin{class}
+    An order is said to be left multiplication cancellative if for all $a$, $b$,
+    and $c$ with $0 < c$, if $ca \leq cb$, then $a \leq b$.
+\end{class}
+
+\begin{class}
+    An order is said to be right multiplication cancellative if for all $a$,
+    $b$, and $c$ with $0 < c$, if $ac \leq bc$, then $a \leq b$.
+\end{class}
+
+\begin{class}[Ordered Ring]
+    An Ordered Ring is a Ring that is also an Ordered Group and where the order
+    is multiplicative.
+\end{class}
+
+\begin{class}[Ordered Integral Domain]
+    An Ordered Integral Domain is an Ordered Ring that is an Integral Domain and
+    where the order is left and right multiplication cancellative.
+\end{class}
+
+\begin{class}[Ordered Field]
+    An Ordered Field is an Ordered Ring that is also a field.
+\end{class}
+
+\begin{instance}
+    If multiplication is commutative and $\leq$ is left multiplicative, then
+    $\leq$ is right multiplicative.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    If multiplication is commutative and $\leq$ is left multiplication
+    cancellative, then $\leq$ is right multiplication cancellative.
+\end{instance}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{instance}
+    In an Ordered Ring, $\leq$ is left multiplicative.
+\end{instance}
+\begin{proof}
+    Assume that $a \leq b$ and $0 \leq c$.  Then $0 \lq b - a$, and because
+    $\leq$ is multiplicative, we have $0 \leq c(b - a)$.  Then $0 \leq cb - ca$,
+    so $ca \leq cb$.
+\end{proof}
+
+\begin{instance}
+    In an Ordered Ring, $\leq$ is right multiplicative.
+\end{instance}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{theorem}
+    If $0 < a$, then $0 < a^{-1}$.
+\end{theorem}
+\begin{proof}
+    Assume that $a^{-1} \leq 0$. Then multiplying by $a$ twice we get $aaa^{-1}
+    \leq 0$.  Because $0 < a$, $0 \neq a$, so $aaa^{-1} = a \leq 0$.  $a \leq 0$
+    contradicts $0 < a$, so we must have $0 < a^{-1}$.
+\end{proof}
+
+\begin{theorem}
+    If $a < 0$, then $a^{-1} < 0$.
+\end{theorem}
+\begin{proof}
+    Because $a < 0$, $0 < -a$, so by the previous theorem $0 < (-a)^{-1}$.
+    Thus, $0 < -a^{-1}$, so $a^{-1} < 0$.
+\end{proof}
+
+\begin{instance}
+    In an ordered field, $\leq$ is left multiplication cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be such that $0 < c$ and $ca \leq cb$.  Because $0 <
+    c$, $0 < c^{-1}$, so we can multiply by $c^{-1}$ on the left to get
+    $c^{-1}ca \leq c^{-1}cb$, so $a \leq b$.
+\end{proof}
+
+\begin{theorem} \label{le-lmult-neg}
+    If $a \leq b$ and $c \leq 0$, then $cb \leq ca$.
+\end{theorem}
+\begin{proof}
+    Because $c \leq 0$, $0 \leq -c$, so we can multiply $a \leq b$ by $-c$ to
+    get $-ca \leq -cb$, so $cb \leq ca$.
+\end{proof}
+
+\begin{theorem} \label{le-rmult-neg}
+    If $a \leq b$ and $c \leq 0$, then $bc \leq ac$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{theorem} \label{le-mult-lcancel-neg}
+    If $ca \leq cb$ and $c < 0$, then $b \leq a$.
+\end{theorem}
+\begin{proof}
+    From $ca \leq cb$, we have $(-c)(-a) \leq (-c)(-b)$.  Because $c < 0$, $0 <
+    -c$, so we can cancel $-c$ to get $-a \leq -b$, so $b \leq a$.
+\end{proof}
+
+\begin{theorem} \label{le-mult-rcancel-neg}
+    If $ac \leq bc$ and $c < 0$, then $b \leq a$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{theorem} \label{le-lrmult-pos}
+    If $a \leq b$, $c \leq d$, $0 \leq a$, and $0 \leq c$, then $ac \leq bd$.
+\end{theorem}
+\begin{proof}
+    From $a \leq b$ and $c \leq 0$, we get $ac \leq bc$.  Because $0 \leq a$ and
+    $a \leq b$, we get $0 \leq b$, and with $c \leq d$ we get $bc \leq bd$.
+    Thus, by transitivity, we get $ac \leq bd$.
+\end{proof}
+
+In the next several theorems, we will be proving that several of the properties
+of $\leq$ hold for $<$ as well.  Because the $\leq$ properties are already
+known, the only interesting part of the proofs are proving that two values are
+not equal, and the rest of the proofs will be skipped.
+
+\begin{theorem}
+    If $0 < a$ and $0 < b$, then $0 < ab$.
+\end{theorem}
+\begin{proof}
+    We must prove that $0 \neq ab$.  This follows from Theorem \ref{mult-nz}.
+\end{proof}
+
+\begin{theorem}
+    If $a < b$ and $0 < c$, then $ca < cb$.
+\end{theorem}
+\begin{proof}
+    Assume that $ca = cb$.  Then because $0 < c$, we can cancel $c$ to get $a =
+    b$.  This contradicts $a < b$, so $ca \neq cb$.
+\end{proof}
+
+\begin{theorem}
+    If $a < b$ and $0 < c$, then $ac < bc$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{theorem}
+    If $ca < cb$ and $0 < c$, then $a < b$.
+\end{theorem}
+\begin{proof}
+    Assume that $a = b$.  Then we would have $ca < ca$, which is impossible.
+\end{proof}
+
+\begin{theorem}
+    If $ac < bc$ and $0 < c$, then $a < b$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{theorem}
+    If $a < b$ and $c < 0$, then $cb < ca$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to Theorem \ref{le-lmult-neg}.
+\end{proof}
+
+\begin{theorem}
+    If $a < b$ and $c < 0$, then $bc < ac$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to Theorem \ref{le-rmult-neg}.
+\end{proof}
+
+\begin{theorem}
+    If $ca < cb$ and $c < 0$, then $b < a$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to Theorem \ref{le-mult-lcancel-neg}.
+\end{proof}
+
+\begin{theorem}
+    If $ac < bc$ and $c < 0$, then $b < a$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to Theorem \ref{le-mult-rcancel-neg}.
+\end{proof}
+
+\begin{theorem}
+    If $a < b$, $c < d$, $0 \leq a$, and $0 \leq c$, then $ac < bd$.
+\end{theorem}
+\begin{proof}
+    First, because $0 \leq a$ and $a < b$, we have $0 < b$.  We now have two
+    cases: when $c = 0$, and when $c \neq 0$.
+
+    When $c = 0$, we must prove that $0 < bd$.  We already know that $0 < b$,
+    and because $0 \leq c$ and $c < d$, we know that $0 < d$ as well.  Because
+    $<$ is multiplicative, we know that $0 < bd$.
+
+    When $c \neq 0$, we now know that $0 < c$.  Then we can multiply $a < b$ by
+    $c$ to get $ac < bc$, and we can multiply $c < d$ by $b$ to get $bc < bd$.
+    Then by transitivity we get $ac < bd$.
+\end{proof}
+
+We can now move on to slightly more interesting theorems.
+
+\begin{theorem} \label{square-pos}
+    For all $a$, $0 \leq aa$.
+\end{theorem}
+\begin{proof}
+    We know that either $0 \leq a$ or $0 \leq -a$.  When $0 \leq a$, the result
+    follows from $\leq$ being multiplicative.  When $0 \leq -a$, we can write
+    $aa = (-a)(-a)$, and again the result follows from $\leq$ being
+    multiplicative.
+\end{proof}
+
+\begin{theorem}
+    If $0 \leq a$ and $0 \leq b$, then $a \leq b \leftrightarrow aa \leq bb$.
+\end{theorem}
+\begin{proof}
+    Assume that $a \leq b$.  Then the result follows directly from Theorem
+    \ref{le-lrmult-pos}.
+
+    Now assume that $aa \leq bb$.  If $a = 0$, the result would follow from
+    Theorem \ref{square-pos}, so assume that $a \neq 0$.  From $aa \leq bb$ we
+    get $0 \leq bb - aa = (b + a)(b - a)$.  Because $0 < a$ and $0 \leq b$, we
+    know that $0 < b + a$, so we can cancel $b + a$ from $0 \leq (b + a)(b - a)$
+    to get $0 \leq b - a$.  Thus, $a \leq b$ as required.
+\end{proof}
+
+\begin{theorem}
+    If $0 \leq a$ and $0 \leq b$, then $a < b \leftrightarrow aa < bb$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proof.
+\end{proof}
+
+\begin{theorem} \label{one-pos}
+    $0 < 1$.
+\end{theorem}
+\begin{proof}
+    We know that $0 \neq 1$ from Theorem \ref{not-trivial-one}, so we only need
+    to prove that $0 \leq 1$.  Asume that $1 < 0$.  Then $0 < -1$, and because
+    $<$ is multiplicative, we get $0 < (-1)(-1) = 1$.  But this contradicts $1 <
+    0$, so it must be the case that $0 \leq 1$.
+\end{proof}
+
+\begin{theorem}
+    For all $x$, $x < x + 1$.
+\end{theorem}
+\begin{proof}
+    We can cancel x to get $0 < 1$ which is true by the previous theorem.
+\end{proof}
+
+Several simple statements follow from some of the previous theorems, such as $0
+< 2$, $1 < 2$, etc.
+
+\begin{theorem} \label{inv-ge-one}
+    If $1 \leq a$, then $a^{-1} \leq 1$.
+\end{theorem}
+\begin{proof}
+    Because $1 \leq a$, we know that $0 < a$.  Thus, $0 < a^{-1}$, so we can
+    multiply both sides of $1 \leq a$ by $a^{-1}$ to get $a^{-1} \leq 1$.
+\end{proof}
+
+\begin{theorem} \label{inv-le-one}
+    If $0 < a \leq 1$, then $1 \leq a^{-1}$.
+\end{theorem}
+\begin{proof}
+    This proof is similar to the previous proof.
+\end{proof}
+
+\begin{theorem}
+    If $1 < a$, then $a^{-1} < 1$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to Theorem \ref{inv-ge-one}.
+\end{proof}
+
+\begin{theorem}
+    If $0 < a < 1$, then $1 < a^{-1}$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to Theorem \ref{inv-le-one}.
+\end{proof}
+
+\begin{theorem}
+    If $0 < a$ and $aa = 1$, then $a = 1$.
+\end{theorem}
+\begin{proof}
+    Because $aa = 1 = 1(1)$, we have $0 = aa - 1(1) = (a + 1)(a - 1)$.  Now if
+    $a \neq 1$, we would have $a - 1 \neq 0$, so we could cancel $a - 1$ and get
+    $0 = a + 1$.  This implies that $a = -1$.  However, $0 < a$, so this is
+    impossible.  Thus, it must be the case that $a = 1$.
+\end{proof}
+
+\begin{theorem}
+    If $aa = 1$, then $a = 1$ or $a = -1$.
+\end{theorem}
+\begin{proof}
+    By trichotomy, we have either $a < 0$, $a = 0$, or $0 < a$.  The case $a =
+    0$ because this would imply $0 = 1$, and the case $0 < a$ is solved by the
+    previous theorem.  Now when $a < 0$, we have $0 < -a$, and because $(-a)(-a)
+    = aa = 1$, by the previous theorem we have $-a = 1$, so $a = -1$.
+\end{proof}
+
+\begin{theorem}
+    \[
+        \frac{a}{2} + \frac{a}{2} = a.
+    \]
+\end{theorem}
+\begin{proof}
+    \[
+        \frac{a}{2} + \frac{a}{2} = \frac{2a}{2} = a.
+    \]
+\end{proof}
+
+\begin{theorem} \label{le-div-pos}
+    If $0 < a$ and $a \leq b$, then $b^{-1} \leq a^{-1}$.
+\end{theorem}
+\begin{proof}
+    By transitivity we also have $0 < b$.  Thus, we can multiply both sides
+    of $a \leq b$ by $a^{-1}$ and by $b^{-1}$ to get $b^{-1} \leq a^{-1}$.
+\end{proof}
+
+\begin{theorem} \label{le-div-neg}
+    If $b < 0$ and $a \leq b$, then $b^{-1} \leq a^{-1}$.
+\end{theorem}
+\begin{proof}
+    By transitivity we also have $a^{-1} < 0$.  Thus, we can multiply both sides
+    of $a \leq b$ by $a^{-1}$ and by $b^{-1}$ to get $b^{-1} \leq a^{-1}$, where
+    both multiplications cause the inequality to flip.
+\end{proof}
+
+\begin{theorem}
+    If $0 < a$ and $a < b$, then $b^{-1} < a^{-1}$.
+\end{theorem}
+\begin{proof}
+    The proof is identical in form to the proof of Theorem \ref{le-div-pos}.
+\end{proof}
+
+\begin{theorem}
+    If $b < 0$ and $a < b$, then $b^{-1} < a^{-1}$.
+\end{theorem}
+\begin{proof}
+    The proof is identical in form to the proof of Theorem \ref{le-div-neg}.
+\end{proof}
+
+\begin{theorem}
+    If $0 < a$, then $0 < \frac{a}{2}$.
+\end{theorem}
+\begin{proof}
+    Because $0 < 2$, we have $0 < 2^{-1}$.  Because $0 < a$ and $0 < 2^{-1}$, $0
+    < a2^{-1}$.
+\end{proof}
+
+\begin{theorem}
+    If $a < 0$, then $\frac{a}{2} < 0$.
+\end{theorem}
+\begin{proof}
+    Because $0 < 2$, we have $0 < 2^{-1}$.  We can thus multiply both sides of
+    $a < 0$ by $2^{-1}$ to get $a2^{-1} < 0$.
+\end{proof}
+
+\begin{theorem}
+    If $0 < a$, then $0 < 2a$.
+\end{theorem}
+\begin{proof}
+    This follows directly from $0 < a$ and $0 < 2$.
+\end{proof}
+
+\begin{theorem}
+    If $a < 0$, then $2a < 0$.
+\end{theorem}
+\begin{proof}
+    Because $0 < 2$, we can multiply both sides of $a < 0$ by $2$ to get $2a <
+    0$.
+\end{proof}
+
+\begin{theorem}
+    If $a < b$, then
+    \[
+        a < \frac{a + b}{2}.
+    \]
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        a &< \frac{a + b}{2} \\
+        \frac{a}{2} + \frac{a}{2} &< \frac{a}{2} + \frac{b}{2} \\
+        \frac{a}{2} &< \frac{b}{2} \\
+        a &< b.
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    If $a < b$, then
+    \[
+        \frac{a + b}{2} < b.
+    \]
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        \frac{a + b}{2} &< b \\
+        \frac{a}{2} + \frac{b}{2} &< \frac{b}{2} + \frac{b}{2} \\
+        \frac{a}{2} &< \frac{b}{2} \\
+        a &< b.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Ordered fields are dense.
+\end{instance}
+\begin{proof}
+    Given $a$ and $b$ such that $a < b$, we have
+    \[
+        a < \frac{a + b}{2} < b
+    \]
+    by the previous two theorems.
+\end{proof}
+
+\subsection{Bounds}
+
+In all of the following definitions, let $\leq$ be an arbitrary relation and let
+$S$ be a set on $\U$.
+
+\begin{definition}
+    A value $x$ is a lower bound of $S$ if for all $y \in S$, $x \leq y$.
+\end{definition}
+
+\begin{definition}
+    A value $x$ is an upper bound of $S$ if for all $y \in S$, $y \leq x$.
+\end{definition}
+
+\begin{definition}
+    A value $x$ is the infimum of $S$ if it is a lower bound of $S$ and for all
+    other lower bounds $y$, $y \leq x$.
+\end{definition}
+
+\begin{definition}
+    A value $x$ is the supremum of $S$ if it is an upper bound of $S$ and for
+    all other upper bounds $y$, $x \leq y$.
+\end{definition}
+
+\begin{class}
+    A relation is supremum complete if every nonempty set that has an upper
+    bound has a supremum.
+\end{class}
+
+\begin{theorem} \label{upper-bound-leq}
+    If $a$ is not an upper bound of $S$ and $b$ is an upper bound of $S$, then
+    $a < b$.
+\end{theorem}
+\begin{proof}
+    Because $a$ is not an upper bound of $S$, there exists some $c \in S$ such
+    that $a < c$.  Because $b$ is an upper bound of $S$, we have $c \leq b$, so
+    by transitivity we get $a < b$.
+\end{proof}
+
+\begin{theorem} \label{lower-bound-leq}
+    If $a$ is not a lower bound of $S$ and $b$ is a lower bound of $S$, then $a
+    < b$.
+\end{theorem}
+\begin{proof}
+    This is just the dual version of the previous theorem.
+\end{proof}
+
+\begin{theorem}
+    An ordered group that is supremum complete is also ``infimum complete'',
+    that is, every nonempty set with a lower bound has an infimum.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a nonempty set with a lower bound.  Then let $S' = \{x : \U \mid
+    -x \in S$.  Because $S$ is nonempty, there exists some $x \in S$.  Then $-x
+    \in S'$, so $S'$ is nonempty.  We also know that $S$ has a lower bound $l$.
+    Then for any $y \in S'$, $-y \in S$, so $l \leq -y$, which means that $y
+    \leq -l$, so $-l$ is an upper bound for $S'$.
+
+    Because $S'$ is nonempty and has an upper bound, it has a supremum $\alpha$.
+    Now consider any $x \in S$.  Then $-x \in S'$, so $-x \leq \alpha$.  Thus,
+    $-\alpha \leq x$, so $-\alpha$ is a lower bound of $S$.  Furthermore, for
+    any other lower bound $y$ of $S$, by the above argument we have that $-y$ is
+    an upper bound of $S'$.  Thus, $\alpha \leq -y$, so $y \leq -\alpha$.  This
+    means that $-\alpha$ is the infimum of $S$.
+\end{proof}
+
+\begin{theorem}
+    Let $\U$ be dense.  Let $S$ be a set on $\U$, and define a new set $C = \{x
+    : \U \mid \text{$x$ is not an upper bound of $S$}\}$.  Then for all
+    $\alpha$, $\alpha$ is a supremum of $S$ if and only if it is a supremum of
+    $C$.
+\end{theorem}
+\begin{proof}
+    Assume that $\alpha$ is the supremum of $S$.  Let $x$ be an element of $C$.
+    Because $x \in C$, $x$ is not an upper bound of $S$.  Thus, by Theorem
+    \ref{upper-bound-leq}, $x < \alpha$, so $\alpha$ is an upper bound of $C$.
+
+    Now let $y$ be another upper bound of $C$.  Assume for a contradiction that
+    $y < \alpha$.  Because $\U$ is dense, there exists a $z$ such that $y < z <
+    \alpha$.  Now if $z$ was an upper bound of $S$, we would have $\alpha \leq
+    z$, which contradicts $z < \alpha$, so $z \in C$.  But $y$ is an upper bound
+    of $C$, so $z \leq y$, which contradicts $y < z$.  Thus the original
+    assumption $y < \alpha$ is false, so we must have $\alpha \leq y$.  Thus,
+    $\alpha$ is the least upper bound of $C$.
+
+    Now assume that $\alpha$ is the supremum of $C$.  Let $x$ be an element of
+    $S$.  Assume for a contradiction that $\alpha < x$.  Because $\U$ is dense,
+    there exists a $z$ such that $\alpha < z < x$.  Now if $z$ was an upper
+    bound of $S$, we would have $x \leq z$, which contradicts $z < x$, so $z \in
+    C$.  But $\alpha$ is an upper bound of $C$, so $z \leq \alpha$, which
+    contradicts $\alpha < z$.  Thus the original assumption $\alpha < x$ is
+    false, so we must have $x \leq \alpha$, so $\alpha$ is an upper bound of
+    $S$.
+
+    Now let $y$ be another upper bound of $S$.  By the first paragraph of the
+    proof, $y$ is an upper bound of $C$ as well, so $\alpha \leq y$.  Thus,
+    $\alpha$ is the least upper bound of $S$.
+\end{proof}
+
+\subsection{Absolute Values I}
+
+There are two main notions of absolute value: the one inherent in any ordered
+group, and norms from linear algebra.  We will look at the first one here.
+
+\begin{definition}
+    Let $a : \U$.  Then we define the absolute value $|a|$ piecewise:
+    \[
+        |a| = \begin{cases}
+            a & \text{if $0 \leq a$} \\
+            -a & \text{if $a < 0$.}
+        \end{cases}
+    \]
+\end{definition}
+
+\begin{theorem} \label{abs-pos-eq}
+    If $0 \leq x$, then $|x| = x$.
+\end{theorem}
+\begin{proof}
+    This follow directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    $|0| = 0$.
+\end{theorem}
+\begin{proof}
+    This follows from $0 \leq 0$.
+\end{proof}
+
+\begin{theorem}
+    $|1| = 1$.
+\end{theorem}
+\begin{proof}
+    This follows from $0 \leq 1$.
+\end{proof}
+
+\begin{theorem}
+    $0 = |x|$ iff $0 = x$.
+\end{theorem}
+\begin{proof}
+    If $0 \leq x$, then the statement is $0 = x \leftrightarrow 0 = x$, which is
+    trivially true.  So assume that $x < 0$.  Then the equation $0 = -x$ is
+    equivalent to $0 = x$.
+\end{proof}
+
+\begin{theorem}
+    $0 \neq |x|$ iff $0 \neq x$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the previous theorem.
+\end{proof}
+
+\begin{theorem}
+    $0 \leq |x|$.
+\end{theorem}
+\begin{proof}
+    If $0 \leq x$, then we're done, so now consider the case where $x < 0$.
+    This implies that $0 < -x$, so $0 \leq -x = |x|$.
+\end{proof}
+
+\begin{theorem}
+    $|{-x}| = |x|$.
+\end{theorem}
+\begin{proof}
+    There are four cases.
+    \begin{case} $0 \leq -x$, $0 \leq x$. \\
+        From $0 \leq -x$ we get $x \leq 0$, and with $0 \leq x$ by antisymmetry
+        we get $0 = x$.  Because $-0 = 0$, this case is true.
+    \end{case}
+    \begin{case} $0 \leq -x$, $x < 0$. \\
+        The result becomes the reflexive equality $-x = -x$.
+    \end{case}
+    \begin{case} $-x < 0$, $0 \leq x$. \\
+        The result becomes $-{-x} = x$, which is true.
+    \end{case}
+    \begin{case} $-x < 0$, $x < 0$. \\
+        From $-x < 0$ we get $0 < x$, which contradicts $x < 0$, so this case is
+        impossible.
+    \end{case}
+\end{proof}
+
+\begin{theorem}
+    If $x \leq 0$, then $|x| = -x$.
+\end{theorem}
+\begin{proof}
+    Because $x \leq 0$ we have $0 \leq -x$.  By the previous theorem we have
+    $|x| = |{-x}|$, so by Theorem \ref{abs-pos-eq} $|x| = -x$.
+\end{proof}
+
+\begin{theorem}
+    $|a - b| = |b - a|$.
+\end{theorem}
+\begin{proof}
+    \[
+        |a - b| = |{-(a - b)}| = |{-{-b}} - a| = |b - a|.
+    \]
+\end{proof}
+
+\begin{theorem}
+    $|ab| = |a|\,|b|$.
+\end{theorem}
+\begin{proof}
+    We will first prove the following lemma: for all $a \geq 0$, $|ab| = a|b|$.
+    Consider the case when $0 \leq b$.  Then $0 \leq ab$, so the equation to be
+    proved becomes the reflexive equality $ab = ab$.  Now when $b \leq 0$, $ab
+    \leq 0$, so $|ab| = -ab$ and $|b| = -b$, so the equation to be proved once
+    becomes another reflexive equality $-ab = -ab$.
+
+    Armed with this lemma, let's now attack the main theorem.  Then the case $0
+    \leq a$ follows from the lemma.  Now when $a \leq 0$, we can write the
+    equation to be proved as $|-ab| = -a|b|$.  Because $0 \leq -a$, this again
+    follows from the lemma.
+\end{proof}
+
+\begin{theorem} \label{abs-le}
+    For all $a$ and $b$, $|a| \leq b \leftrightarrow -b \leq a \leq b$.
+\end{theorem}
+\begin{proof}
+    First assume that $|a| \leq b$ and consider the case $0 \leq a$.  Then we
+    have $a \leq b$, so $-b \leq -a$ as well.  Because $0 \leq a$, we have $-a
+    \leq 0$, so by transitivity we have $-b \leq a$.  Now for the case $a \leq
+    0$, we have $-a \leq b$, so we directly get $-b \leq a$.  Because $a \leq
+    0$, we have $0 \leq -a$, so by transitivity we get $-b \leq -a$.  We thus
+    have $a \leq b$.
+
+    Now assume that $-b \leq a \leq b$.  Then if $0 \leq a$ we have $|a| = a
+    \leq b$, and if $a \leq 0$ we have $|a| = -a \leq b$.
+\end{proof}
+
+\begin{theorem} \label{abs-lt}
+    For all $a$ and $b$, $|a| < b \leftrightarrow -b < a < b$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous proof.
+\end{proof}
+
+\begin{theorem} \label{abs-le-pos}
+    For all $x$, $x \leq |x|$.
+\end{theorem}
+\begin{proof}
+    If $0 \leq x$, the proof follows by reflexivity.  If $x \leq 0$, we have $0
+    \leq -x = |x|$, so by transitivity we get $x \leq |x|$.
+\end{proof}
+
+\begin{theorem} \label{abs-le-neg}
+    For all $x$, $-x \leq |x|$.
+\end{theorem}
+\begin{proof}
+    If $0 \leq x$, then $-x \leq 0$, so by transitivity we have $-x \leq x =
+    |x|$.  When $x \leq 0$, the proof follows by reflexivity.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, $|a + b| \leq |a| + |b|$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{abs-le}, we only need to prove $-|a| - |b| \leq a + b \leq
+    |a| + |b|$.  The first of these can be rewritten as $-a - b \leq |a| + |b|$.
+    By Theorem \ref{abs-le-neg}, we have $-a \leq |a|$ and $-b \leq |b|$, and
+    adding these gets the required result.  The second of these, $a + b \leq |a|
+    + |b|$, is similar.  By Theorem \ref{abs-le-pos}, we have $a \leq |a|$ and
+    $b \leq |b|$, and adding these again gets the required result.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, $|a| - |b| \leq |a - b|$.
+\end{theorem}
+\begin{proof}
+    By the triangle inequality, we have $|a| = |(a - b) + b| \leq |a - b| +
+    |b|$.  Rearranging, we get $|a| - |b| \leq |a - b|$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, $||a| - |b|| \leq |a - b|$.
+\end{theorem}
+\begin{proof}
+    We can use Theorem \ref{abs-le}, and one of the cases was already covered by
+    the previous theorem.  So we just need to prove $-|a - b| \leq |a| - |b|$.
+    Rearranging, we get $|b| - |a| \leq |a - b| = |b - a|$, so the result again
+    follows by the previous theorem.
+\end{proof}
+
+\begin{theorem}
+    For all $x$, $||x|| = |x|$.
+\end{theorem}
+\begin{proof}
+    We know that $0 \leq |x|$, so the result follows from Theorem
+    \ref{abs-pos-eq}.
+\end{proof}
+
+\begin{theorem}
+    If $x \neq 0$, then $|x|^{-1} = |x^{-1}|$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        |x|^{-1} &= |x^{-1}| \\
+        |x|^{-1} |x| &= |x^{-1}| |x| \\
+        |x|^{-1} |x| &= |x^{-1}x| \\
+        1 &= |1| \\
+        1 &= 1 \\
+    \end{align*}
+\end{proof}
+
+\subsection{Minima and Maxima}
+
+\begin{definition}
+    Let $a$ and $b$ be values in $\U$.  Then we define the minimum of $a$ and
+    $b$ piecewise:
+    \[
+        \min(a, b) = \begin{cases}
+            a & \text{if $a \leq b$} \\
+            b & \text{if $b < a$.}
+        \end{cases}
+    \]
+    We also define the maximum of $a$ and $b$ in the same way:
+    \[
+        \min(a, b) = \begin{cases}
+            b & \text{if $a \leq b$} \\
+            a & \text{if $b < a$.}
+        \end{cases}
+    \]
+\end{definition}
+
+\begin{theorem}
+    For all $a$ and $b$, if $a \leq b$, then $\min(a, b) = a$.
+\end{theorem}
+\begin{proof}
+    $\min(a, b)$ has two cases: $a \leq b$, and $b < a$.  When $a \leq b$, then
+    $\min(a, b) = a$ as required.  The case $b < a$ contradicts the $a \leq b$
+    from the theorem's hypotheses so this case is impossible.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, if $b \leq a$, then $\min(a, b) = b$.
+\end{theorem}
+\begin{proof}
+    $\min(a, b)$ has two cases: $a \leq b$, and $b < a$.  When $a \leq b$, then
+    we must prove $a = b$.  Because we have $a \leq b$ and $b \leq a$, the
+    result follows from antisymmetry.  When $b < a$, $\min(a, b) = b$ as
+    required.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, if $a \leq b$, then $\max(a, b) = b$.
+\end{theorem}
+\begin{proof}
+    $\max(a, b)$ has two cases: $a \leq b$, and $b < a$.  When $a \leq b$, then
+    $\max(a, b) = b$ as required.  The case $b < a$ contradicts the $a \leq b$
+    from the theorem's hypotheses so this case is impossible.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$, if $b \leq a$, then $\max(a, b) = a$.
+\end{theorem}
+\begin{proof}
+    $\max(a, b)$ has two cases: $a \leq b$, and $b < a$.  When $a \leq b$, then
+    we must prove $b = a$.  Because we have $a \leq b$ and $b \leq a$, the
+    result follows from antisymmetry.  When $b < a$, $\max(a, b) = a$ as
+    required.
+\end{proof}
+
+When working with $\min$ and $\max$, the previous theorems allow us to consider
+the cases $a \leq b$ and $b \leq a$ rather than $a \leq b$ and $b < a$, which
+can make some proofs a bit simpler.
+
+\begin{theorem} \label{min-comm}
+    For all $a$ and $b$, $\min(a, b) = \min(b, a)$.
+\end{theorem}
+\begin{proof}
+    When $a \leq b$, we get $\min(a, b) = a = \min(b, a)$, and when $b \leq a$,
+    we get $\min(a, b) = b = \min(b, a)$.
+\end{proof}
+
+\begin{theorem} \label{max-comm}
+    For all $a$ and $b$, $\max(a, b) = \max(b, a)$.
+\end{theorem}
+\begin{proof}
+    When $a \leq b$, we get $\max(a, b) = b = \max(b, a)$, and when $b \leq a$,
+    we get $\max(a, b) = a = \max(b, a)$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, $\min(a, \min(b, c)) = \min(\min(a, b), c)$.
+\end{theorem}
+\begin{proof}
+    There are four cases.
+    \begin{case} $a \leq b$, $b \leq c$. \\
+        By transitivity we also have $a \leq c$.  Then
+        \[
+            \min(a, \min(b, c)) = \min(a, b) =
+            a
+            = \min(a, c) = \min(\min(a, b), c).
+        \]
+    \end{case}
+    \begin{case} $a \leq b$, $c \leq b$.
+        \[
+            \min(a, \min(b, c)) =
+            \min(a, c)
+            = \min(\min(a, b), c).
+        \]
+    \end{case}
+    \begin{case} $b \leq a$, $b \leq c$.
+        \[
+            \min(a, \min(b, c)) = \min(a, b) =
+            b
+            = \min(b, c) = \min(\min(a, b), c).
+        \]
+    \end{case}
+    \begin{case} $b \leq a$, $c \leq b$. \\
+        By transitivity we also have $c \leq a$.  Then
+        \[
+            \min(a, \min(b, c)) = \min(a, c) =
+            c
+            = \min(b, c) = \min(\min(a, b), c).
+        \]
+    \end{case}
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $b$, and $c$, $\max(a, \max(b, c)) = \max(\max(a, b), c)$.
+\end{theorem}
+\begin{proof}
+    There are four cases.
+    \begin{case} $a \leq b$, $b \leq c$. \\
+        By transitivity we also have $a \leq c$.  Then
+        \[
+            \max(a, \max(b, c)) = \max(a, c) =
+            c
+            = \max(b, c) = \max(\max(a, b), c).
+        \]
+    \end{case}
+    \begin{case} $a \leq b$, $c \leq b$.
+        \[
+            \max(a, \max(b, c)) = \max(a, b) =
+            b
+            = \max(b, c) = \max(\max(a, b), c).
+        \]
+    \end{case}
+    \begin{case} $b \leq a$, $b \leq c$.
+        \[
+            \max(a, \max(b, c)) =
+            \max(a, c)
+            = \max(\max(a, b), c).
+        \]
+    \end{case}
+    \begin{case} $b \leq a$, $c \leq b$. \\
+        By transitivity we also have $c \leq a$.  Then
+        \[
+            \max(a, \max(b, c)) = \max(a, b) =
+            a
+            = \max(a, c) = \max(\max(a, b), c).
+        \]
+    \end{case}
+\end{proof}
+
+The previous few theorems allow us to to find the minimum/maximum of several
+numbers with no ambiguity.
+
+\begin{theorem} \label{lmin}
+    For all $a$ and $b$, $\min(a, b) \leq a$.
+\end{theorem}
+\begin{proof}
+    When $a \leq b$, $\min(a, b) = a \leq a$.  When $b \leq a$, $\min(a, b) = b
+    \leq a$.
+\end{proof}
+
+\begin{theorem} \label{rmin}
+    For all $a$ and $b$, $\min(a, b) \leq b$.
+\end{theorem}
+\begin{proof}
+    This follows from Theorems \ref{lmin} and \ref{min-comm}.
+\end{proof}
+
+\begin{theorem} \label{lmax}
+    For all $a$ and $b$, $a \leq \max(a, b)$.
+\end{theorem}
+\begin{proof}
+    When $a \leq b$, $\max(a, b) = b \geq a$.  When $b \leq a$, $\max(a, b) = a
+    \geq a$.
+\end{proof}
+
+\begin{theorem} \label{rmax}
+    For all $a$ and $b$, $b \leq \max(a, b)$.
+\end{theorem}
+\begin{proof}
+    This follows from Theorems \ref{lmax} and \ref{max-comm}.
+\end{proof}
+
+\begin{theorem}
+    Given two types $\A$ and $\B$ and a function $f : \A \rightarrow \A
+    \rightarrow \B$ such that $f(a, b) = f(b, a)$ for all $a$ and $b$ in $\A$
+    (such as addition), then $f(\min(a, b), \max(a, b)) = f(a, b)$.
+\end{theorem}
+\begin{proof}
+    When $a \leq b$, $f(\min(a, b), \max(a, b)) = f(a, b)$.  When $b \leq a$,
+    $f(\min(a, b), \max(a, b)) = f(b, a) = f(a, b)$.
+\end{proof}
+
+\subsection{Dictionary Order}
+
+\begin{definition}
+    Given two ordered types $\A$ and $\B$, we can define an order on $\A \times
+    \B$ called the dictionary order, defined by
+    \[
+        (a_1, b_1) \leq (a_2, b_2) = b_1 < b_2 \vee (a_1 \leq a_2 \wedge b_1 =
+        b_2).
+    \]
+\end{definition}
+
+\begin{theorem}
+    If $\A$ and $\B$ are partially ordered, then $\A \times \B$ is partially
+    ordered.
+\end{theorem}
+\begin{proof}
+    \textit{Reflexivity.}  Because $a \leq a$ and $b = b$, we have $(a, b) \leq
+    (a, b)$.
+
+    \textit{Transitivity.}  Let $(a_1, b_1)$, $(a_2, b_2)$, and $(a_3, b_3)$ be
+    values of $\A \times \B$ with $(a_1, b_1) \leq (a_2, b_2)$ and $(a_2, b_2)
+    \leq (a_3, b_3)$.  We have four cases.
+    \begin{case}
+        $b_1 < b_2$, $b_2 < b_3$.  We then have $b_1 < b_3$ by transitivity.
+    \end{case}
+    \begin{case}
+        $b_1 < b_2$, $a_2 \leq a_3 \wedge b_2 = b_3$.  Because $b_2 = b_3$, we
+        have $b_1 < b_3$.
+    \end{case}
+    \begin{case}
+        $a_1 \leq a_2 \wedge b_1 = b_2$, $b_2 < b_3$.  Because $b_1 = b_2$, we
+        have $b_1 < b_3$.
+    \end{case}
+    \begin{case}
+        $a_1 \leq a_2 \wedge b_1 = b_2$, $a_2 \leq a_3 \wedge b_2 = b_3$.  We
+        now $a_1 \leq a_3$ by transitivity.  We also have $b_1 = b_3$, so $(a_1,
+        a_3) \leq (b_1, b_3)$.
+    \end{case}
+
+    \setcounter{case}{0}
+    \textit{Antisymmetry.}  Let $(a_1, b_1)$ and $(a_2, b_2$ be values of $\A
+    \times \B$ such that $(a_1, b_1) \leq (a_2, b_2)$ and $(a_2, b_2) \leq (a_1,
+    b_1)$.  We have four cases.
+    \begin{case}
+        $b_1 < b_2$, $b_2 < b_1$.  This case is impossible.
+    \end{case}
+    \begin{case}
+        $b_1 < b_2$, $a_1 \leq a_2 \wedge b_1 = b_2$.  Because $b_1 = b_2$, we
+        have $b_1 < b_1$, so this case is also impossible.
+    \end{case}
+    \begin{case}
+        $a_1 \leq a_2 \wedge b_1 = b_2$, $b_1 < b_2$.  Because $b_1 = b_2$, we
+        have $b_1 < b_1$, so this case is also impossible.
+    \end{case}
+    \begin{case}
+        $a_1 \leq a_2 \wedge b_1 = b_2$, $a_1 \leq a_2 \wedge b_1 = b_2$.  We
+        have $a_1 \leq a_2$ and $a_2 \leq a_1$, so $a_1 = a_2$.  Thus, we have
+        $a_1 = a_2$ and $b_1 = b_2$, so $(a_1, b_1) = (a_2, b_2)$.
+    \end{case}
+\end{proof}
+
+\begin{theorem}
+    If $\A$ and $\B$ are totally ordered, then $\A \times \B$ is totally
+    ordered.
+\end{theorem}
+\begin{proof}
+    We only need to check that $\A \times \B$ is connex.  Let $(a_1, b_1)$ and
+    $(a_2, b_2)$ be values of $\A \times \B$.  If $b_1 < b_2$, then $(a_1, b_1)
+    \leq (a_2, b_2)$, and if $b_2 < b_1$, then $(a_2, b_2) \leq (a_1, b_1)$.
+    Thus, $b_1 = b_2$ is the only case left to check.  Now if $a_1 \leq a_2$, we
+    would have $(a_1, b_1) \leq (a_2, b_2)$, and if $a_2 \leq a_1$ we would have
+    $(a_2, b_2) \leq (a_1, b_1)$.  All possible cases have now been checked, so
+    $\A \times \B$ is connex.
+\end{proof}
+
+\begin{theorem}
+    If $\A$ and $\B$ are well ordered, then $\A \times \B$ is well ordered.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a nonempty set on $\A \times \B$.  Then there exists some $(a, b)
+    \in S$.  Now define a set $S_B = \{y : \B \mid \exists x, (x, y) \in
+    S\}$.  Then $b \in S_B$ because $(a, b) \in S$.  Thus, $S_B$ is nonempty, so
+    there exists some minimum value $b' \in S_B$, along with a corresponding
+    $a_b$ such that $(a_b, b') \in S$.  Now define a set $S_A = \{x : \A \mid
+    (x, b') \in S\}$.  Then $a_b \in S_A$ because $(a_b, b') \in S$, so $S_A$ is
+    nonempty.  Thus, there exists some minimum value $a' \in S_A$.
+
+    We will now prove that $(a', b')$ is the minimum of $S$.  First, $(a', b')
+    \in S$ by definition.  Now let $(x, y)$ be another element of $S$.  The
+    inequality $y < b'$ would contradict the minimality of $b'$, so we must have
+    $b' \leq y$.  Also when $b' < y$ we have $(a', b') \leq (x, y)$, so we're
+    done in this case.  The only case left is $b' = y$.  Now $x < a'$ would
+    contradict the minimality of $a'$, so we must have $a' \leq x$.  We now have
+    $a' \leq x$ and $b' = y$, so $(a', b') \leq (x, y)$ as required.  Thus,
+    $(a', b')$ is the minimum element of $S$.
+\end{proof}
+
+
+\end{document}

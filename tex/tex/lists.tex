@@ -1,0 +1,954 @@
+\documentclass[../math.tex]{subfiles}
+\externaldocument{../math.tex}
+\externaldocument{set}
+
+\begin{document}
+
+\setcounter{chapter}{4}
+
+\chapter{Lists}
+
+\begin{definition}
+    Let $\A$ be a type.  Then we can define a new inductive type $\L(\A)$ with
+    two constructors: a value constructor $[]$, and a constructor that takes in
+    a value $x : \A$ and a value $a : \L(\A)$, denoted $x : a$.  We call a
+    value in $\L(\A)$ a list of $\A$, and we call $[]$ the empty list.  We use
+    the notation $[a, b, \cdots, n]$ to mean $a : b : \cdots : n : []$.
+\end{definition}
+
+By the properties of inductive types, we can perform induction on lists.  Note
+that we are not performing induction on the size of the list.  We are performing
+induction on the list itself.  This will be an important distinction to make
+when we are talking about the size of the list.
+
+Note that by the properties of constructors, we have $x : a \neq []$.  We also
+know that if $x_1 : a_1 = x_2 : a_2$, then $x_1 = x_2$ and $a_1 = a_2$.
+
+Throughout this chapter, let $\U$ be a type.  Unless said otherwise, all values
+that are not lists will be assumed to be of this type.
+
+\section{Basic Operations}
+
+\begin{instance}
+    Let $a$ and $b$ be two lists.  We define their sum $a + b$ recursively on
+    $a$:
+    \begin{align*}
+              [] + b &= b \\
+        (x : a') + b &= x : (a' + b).
+    \end{align*}
+\end{instance}
+\noindent Notice that addition is concatenation of lists.
+
+\begin{definition}
+    Let $a$ be a list.  Then we define its reverse $a^{-1}$ recursively:
+    \begin{align*}
+              []^{-1} &= [] \\
+        (x : a')^{-1} &= a'^{-1} + [x].
+    \end{align*}
+\end{definition}
+
+\begin{definition}
+    Let $\A$ and $\B$ be types, and $f$ a function from $\A$ to $\B$.  Then for
+    a list $a : \L(\A)$, we can define a new list $f(a) : \L(\B)$ recursively:
+    \begin{align*}
+            f([]) &= [] \\
+        f(x : a') &= f(x) : f(a').
+    \end{align*}
+\end{definition}
+
+\begin{instance}
+    Define $0 = []$.  Note that we will still use the notation $[]$ instead of
+    $0$.
+\end{instance}
+
+\begin{instance}
+    $[]$ is a left additive identity.
+\end{instance}
+\begin{proof}
+    This follows directly from the definition of $+$.
+\end{proof}
+
+\begin{theorem}
+    For all values $x$ and lists $a$ and $b$,
+    \[
+        (x : a) + b = x : (a + b).
+    \]
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition of $+$.
+\end{proof}
+
+\begin{theorem}
+    For all values $x$ and lists $a$,
+    \[
+        [x] + a = x : a.
+    \]
+\end{theorem}
+\begin{proof}
+    \[
+        [x] + a = (x : []) + a = x : ([] + a) = x : a.
+    \]
+\end{proof}
+
+\begin{instance}
+    $[]$ is a right additive identity.
+\end{instance}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then $[] + [] = []$.
+    Now assume that $a + [] = a$.  We must prove that for all $x$, $(x : a) + []
+    = x : a$.  This is true because
+    \[
+        (x : a) + [] = x : (a + []) = x : a,
+    \]
+    where the last equality follows from the inductive hypothesis.
+\end{proof}
+
+\begin{instance}
+    Concatenation of lists is associative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be lists.  We will prove that $a + (b + c) =
+    (a + b) + c$ by induction on $a$.  First, when $a = []$, then
+    \[
+        [] + (b + c) = b + c = ([] + b) + c,
+    \]
+    so the base case is true.  Now assume that $a + (b + c) = (a +
+    b) + c$, and let $x$ be any value.  Then
+    \begin{align*}
+        &(x : a) + (b + c) \\
+        ={}& x : (a + (b + c) \\
+        ={}& x : ((a + b) + c) \\
+        ={}& (x : (a + b)) + c \\
+        ={}& ((x : a) + b) + c,
+    \end{align*}
+    showing that the inductive case is true.  Thus, by induction, concatenation
+    of lists is associative.
+\end{proof}
+
+\begin{instance}
+    Concatenation of lists is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be lists such that $c + a = c + b$.  The proof will be
+    by induction on $c$.  When $c = []$, we have
+    \[
+        a = [] + a = [] + b = b,
+    \]
+    so the base case is true.  Now assume that if $c + a = c + b$, then $a = b$.
+    Let $x$ be any value.  Then
+    \begin{align*}
+        (x : c) + a &= (x : c) + b \\
+        x : (c + a) &= x : (c + b) \\
+        c + a &= c + b,
+    \end{align*}
+    so the result follows from the inductive hypothesis.  Thus, by induction,
+    concatenation of lists is left cancellative.
+\end{proof}
+
+\begin{theorem}
+    $[]^{-1} = []$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition of the reverse of a list.
+\end{proof}
+
+\begin{theorem}
+    For all values $x$ and lists $a$, $(x : a)^{-1} = a^{-1} + [x]$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition of the reverse of a list.
+\end{proof}
+
+\begin{theorem}
+    For all values $x$, $[x]^{-1} = [x]$.
+\end{theorem}
+\begin{proof}
+    \[
+        [x]^{-1} = (x : [])^{-1} = [] + [x] = [x].
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all lists $a$ and $b$, $(a + b)^{-1} = b^{-1} + a^{-1}$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we have
+    \[
+        ([] + b)^{-1} = b^{-1} = b^{-1} + [],
+    \]
+    so the base case is true.  Now assume that $(a + b)^{-1} = b^{-1} +
+    a^{-1}$.  Then for all $x : \U$,
+    \begin{align*}
+           & ((x : a) + b)^{-1} \\
+        ={}& (x : (a + b))^{-1} \\
+        ={}& (a + b)^{-1} + [x] \\
+        ={}& (b^{-1} + a^{-1}) + [x] \\
+        ={}& b^{-1} + (a^{-1} + [x]) \\
+        ={}& b^{-1} + (x : a)^{-1},
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, $(a + b)^{-1} =
+    b^{-1} + a^{-1}$ for all lists $a$ and $b$.
+\end{proof}
+
+\begin{theorem} \label{list-reverse-reverse}
+    For all lists $a$, $(a^{-1})^{-1} = a$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we have
+    $([]^{-1})^{-1} = []^{-1} = []$, so the base case is true.  Now assume that
+    $(a^{-1})^{-1} = a$ and let $x$ be any value of $\U$.  Then
+    \begin{align*}
+           & ((x : a)^{-1})^{-1} \\
+        ={}& (a^{-1} + [x])^{-1} \\
+        ={}& [x]^{-1} + (a^{-1})^{-1} \\
+        ={}& [x] + a \\
+        ={}& x : a,
+    \end{align*}
+    se the inductive case is true.  Thus, by induction $(a^{-1})^{-1} = a$ for
+    all lists $a$.
+\end{proof}
+
+\begin{theorem}
+    For all lists $a$ and $b$, $a = b$ if and only if $a^{-1} = b^{-1}$.
+\end{theorem}
+\begin{proof}
+    The forward direction is trivial.  For the reverse direction, assume that
+    $a^{-1} = b^{-1}$.  Then we can apply the reverse to both sides to get
+    $(a^{-1})^{-1} = (b^{-1})^{-1}$.  By the previous theorem this means that $a
+    = b$, as required.
+\end{proof}
+
+\begin{instance}
+    Concatenation of lists is right cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be lists such that $a + c = b + c$.  Then
+    \begin{align*}
+        a + c &= b + c \\
+        (a + c)^{-1} &= (b + c)^{-1} \\
+        c^{-1} + a^{-1} &= c^{-1} + b^{-1} \\
+        a^{-1} &= b^{-1} \\
+        a &= b.
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all lists $a$, if $a^{-1} = []$, then $a = []$ as well.
+\end{theorem}
+\begin{proof}
+    Because $[]^{-1} = []$, we have $a^{-1} = []^{-1}$, and the result follows
+    from the previous theorem.
+\end{proof}
+
+\begin{theorem}
+    $f([]) = []$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \L(\A)$ and $x : \A$, $f(x : a) = f(x) : f(a)$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all $x : \A$, $f([x]) = [f(x)]$.
+\end{theorem}
+\begin{proof}
+    \[
+        f([x]) = f(x : []) = f(x) : [] = f(x).
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all lists $a$ and $b$, $f(a + b) = f(a) + f(b)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        f([] + b) = f(b) = [] + f(b) = f([]) + f(b),
+    \]
+    so the base case is true.  Now assume that $f(a + b) = f(a) + f(b)$.
+    Then for all $x : \A$,
+    \begin{align*}
+           & f((x : a) + b) \\
+        ={}& f(x : (a + b)) \\
+        ={}& f(x) : f(a + b) \\
+        ={}& f(x) : f(a) + f(b) \\
+        ={}& (f(x) : f(a)) + f(b) \\
+        ={}& f(x : a) + f(b),
+    \end{align*}
+    so the inductive hypothesis is true.  Thus, $f(a + b) = f(a) + f(b)$
+    by induction.
+\end{proof}
+
+\begin{theorem}
+    Let $\A$, $\B$, and $\C$ be types, and $f$ a function from $\A$ to $\B$ and
+    $g$ a function from $\B$ to $\C$.  Then for all lists $a : \L(\A)$,
+    \[
+        g(f(a)) = (g \circ f)(a).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        g(f([])) = g([]) = [] = (g \circ f)([]),
+    \]
+    so the base case is true.  Now assume that $g(f(a)) = (g \circ f)(a)$.  Then
+    for all $x : \A$,
+    \begin{align*}
+           & g(f(x : a)) \\
+        ={}& g(f(x) : f(a)) \\
+        ={}& g(f(x)) : g(f(a)) \\
+        ={}& (g \circ f)(x) : (g \circ f)(a) \\
+        ={}& (g \circ f)(x : a),
+    \end{align*}
+    so the inductive hypothesis is true.  Thus, $g(f(a)) = (g \circ f)(a)$ by
+    induction.
+\end{proof}
+
+\section{Values in Lists}
+
+\begin{definition}
+    Let $a$ be a list and $x$ be a value.  Then we define the $x \in a$
+    recursively on $a$:
+    \begin{align*}
+              x \in [] &= \vtt{False} \\
+        x \in (y : a') &= (x = y \vee x \in a').
+    \end{align*}
+\end{definition}
+
+\begin{definition}
+    Let $a$ be a list.  Then we define $a$ having unique elements recursively:
+    \begin{align*}
+            \text{$[]$ has unique elements} &= \vtt{True} \\
+        \text{$x : a'$ has unique elements} &= x \notin a' \wedge \text{$a'$ has
+        unique elements.}
+    \end{align*}
+\end{definition}
+\noindent Notice that because $(a : l)$ having unique elements implies that $l$
+has unique elements, when doing induction on a list, it having unique elements
+does not need to be considered as a part of the inductive hypothesis.
+
+\begin{theorem}
+    For all elements $x$, $x \notin []$.
+\end{theorem}
+\begin{proof}
+    Because $\neg \vtt{False} = \vtt{True}$, this is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all elements $x$ and $y$ and lists $a$, $x \in (y : a) \leftrightarrow x
+    = y \vee x \in a$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all elements $x$ and $y$, $x \in [y] \leftrightarrow x = y$.
+\end{theorem}
+\begin{proof}
+    \[
+        x \in [y] \leftrightarrow x = y \vee x \in []
+        \leftrightarrow x = y \vee \vtt{False}
+        \leftrightarrow x = y.
+    \]
+\end{proof}
+
+\begin{theorem} \label{in-list-conc}
+    For all lists $a$ and $b$ and for all values $x$, if $x \in (a + b)$, then
+    either $x \in a$ or $x \in b$.
+\end{theorem}
+\begin{proof}
+    Assume that $x \notin b$.  Then the proof will be by induction on $a$.  When
+    $a = []$, then we have $x \in b$, contradicting $x \notin b$, so the base
+    case is true.  Now assume that if $x \in (a + b)$, then $x \in a$, and
+    let $y$ be a value such that $x \in (y : a + b)$.  We must prove that $x \in
+    (y : a)$.  If $x = y$, then we have $x \in (y : a)$.  If $x \neq y$, then we
+    have $x \in (a + b)$, so by the inductive hypothesis we have $x \in a$.
+    Thus, $x \in (y : a)$.  Either way, $x \in (y : a)$, showing that the
+    theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{in-list-rconc}
+    For all lists $a$ and $b$ and values $x$, if $x \in b$, then $x \in (a +
+    b)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then $x \in b$ by
+    hypothesis, so the base case is true.  Now assume that $x \in (a + b)$.  We
+    must prove that $x \in (y : a + b)$ for any value $y$.  But $x \in (a + b)$
+    is precisely one of the ways that we can have $x \in (y : a + b)$, so the
+    result is trivial.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{in-list-lconc}
+    For all lists $a$ and $b$ and values $x$, if $x \in a$, then $x \in (a +
+    b)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we $x \in []$, a
+    contradiction.  Thus the base case is true vacuously.  Now assume that if $x
+    \in a$, then $x \in (a + b)$.  We must prove that for some value $y$, if $x
+    \in (y : a)$, then $x \in (y : a + b)$.  Now if $x = y$, then we have $x \in
+    (y : a + b)$.  If $x \neq y$, then we have $x \in a$, so by the inductive
+    hypothesis we have $x \in (a + b)$, showing that $x \in (y : a + b)$.  Thus,
+    the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{in-list-comm}
+    For all lists $a$ and $b$ and values $x$, if $x \in (a + b)$, then $x \in (b
+    + a)$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{in-list-conc}, we have either $x \in a$ or $x \in b$.  If $x
+    \in a$, the result follows from Theorem \ref{in-list-lconc}, and if $x \in
+    b$, the result follows from Theorem \ref{in-list-rconc}.
+\end{proof}
+
+\begin{theorem} \label{in-list-split}
+    For all lists $a$ and values $x$, in $x \in a$, then there exist lists $b$
+    and $c$ such that $a = b + x : c$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  $x \in []$ is a contradiction, so
+    the base case is vacuously true.  Now assume that if $x \in a$, then there
+    exist lists $b$ and $c$ such that $a = b + x : c$, and assume that $x \in
+    (y : a)$ for some $y$.  We must prove that there exist lists $b$ and $c$
+    such that $y : a = b + x : c$.  If $x = y$, then we have $y : a = [] + x :
+    a$ as required.  If $x \neq y$, then $x \in a$, so by the inductive
+    hypothesis we have lists $b$ and $c$ such that $a = b + x : c$, so $y : a
+    = y : b + x : c$.  Either way, the inductive step is true, so the theorem is
+    true by induction.
+\end{proof}
+
+\begin{theorem} \label{in-list-image}
+    For all lists $a$, values $x$, and functions $f : \U \to \V$, if $x \in a$,
+    then $f(x) \in f(a)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  $x \in []$ is a contradiction, so
+    the base case is vacuously true.  Now assume that if $x \in a$, then $f(x)
+    \in f(a)$, and that $x \in y : a$ for some value $y$.  We must prove that
+    $f(x) \in f(y : a) = f(y) : f(a)$.  If $x = y$, then $f(x) \in f(y) : f(a)$.
+    If $x \neq y$, then $x \in a$, so by the inductive hypothesis, $f(x) \in
+    f(a)$, so $f(x) \in f(y) : f(a)$.  Either way, the inductive step is true,
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{image-in-list}
+    For all lists $a$, values $y$, and functions $f : \U \to \V$, if $y \in
+    f(a)$, then there exists an $x \in a$ such that $f(x) = y$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, $y \in f([]) = []$ is
+    a contradiction, so the base case is vacuously true.  Now assume that if $y
+    \in f(a)$, then there exists an $x \in a$ such that $f(x) = y$, and assume
+    that there is some value $z$ such that $y \in f(z : a)$.  This means that
+    either $f(z) = y$ or $y \in f(a)$.  If $f(z) = y$, then $z$ itself is an
+    element $x$ such that $f(x) = y$ and $x \in (z : a)$.  If $y \in f(a)$, then
+    by the inductive hypothesis, there is some $x$ such that $f(x) = y$ and $x
+    \in l$, so $x \in (z : a)$ as well.  Either way, the inductive step is true,
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    $[]$ has unique elements.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all values $a$ and lists $l$, $a : l$ has unique elements iff $a \notin
+    l$ and $l$ has unique elements.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all values $a$, $[a]$ has unique elements.
+\end{theorem}
+\begin{proof}
+    $[a]$ having unique elements is the same as $a \notin []$ and $[]$ having
+    unique elements.  Both of these are trivial.
+\end{proof}
+
+\begin{lemma} \label{list-unique-comm-add}
+    For all lists $a$ and values $x$, if $x : a$ has unique elements, then $a +
+    [x]$ has unique elements.
+\end{lemma}
+\begin{proof}
+    Because $x : a$ has unique elements, $x \notin a$ and $a$ has unique
+    elements.  The proof will be by induction on $a$.  When $a = []$, then $[] +
+    [x] = [x]$, which has unique elements, so the base case is true.  Now assume
+    that if $x \notin a$, then $(a + [x])$ has unique elements, and assume that
+    there is a $y$ such that $y \notin (x : a)$.  This means that $y \neq x$ and
+    $y \notin a$.  We must prove that $y : a + [x]$ has unique elements, that
+    is, that $y \notin (a + [x])$ and that $(a + [x])$ has unique elements.  The
+    latter follows from the inductive hypothesis.  To prove that $y \notin (a +
+    [x])$, assume that $y \in (a + [x])$.  Then by Theorem \ref{in-list-conc},
+    either $y \in a$ or $y \in [x]$.  If $y \in a$, that contradicts $y \notin
+    a$ from before.  If $y \in [x]$, then $y = x$ contradicting $y \neq x$ from
+    before.  Both cases have a contradiction, so our assumption that $y \in (a +
+    [x])$ was false, meaning that $y \notin (a + [x])$.  Thus, the inductive
+    step is true, so by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{list-unique-comm}
+    For all lists $a$ and $b$, $a + b$ has unique elements if and only if $b +
+    a$ has unique elements.
+\end{theorem}
+\begin{proof}
+    By symmetry we only need to prove the forward implication.  We will use
+    induction on $a$ to prove the statement ``For all lists $b$, if $a + b$ has
+    unique elements, then $b + a$ has unique elements.''  First, when $a = []$,
+    then when $[] + b = b$ has unique elements, then $b + [] = b$ has unique
+    elements, so the base case is true.
+
+    Now assume that for all lists $b$, if $a + b$ has unique elements, then $b +
+    a$ has unique elements.  We need to prove that if $x : a + b$ has unique
+    elements, then $b + x : a$ has unique elements.  By Lemma
+    \ref{list-unique-comm-add}, we know that $a + b + [x] = a + (b + [x])$ has
+    unique elements.  Then by the inductive hypothesis, $(b + [x]) + a = b + x :
+    a$ has unique elements.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{list-unique-lconc}
+    For all lists $a$ and $b$, if $a + b$ has unique elements, then $a$ has
+    unique elements.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  $[]$ has unique elements, so the
+    base case is true.  Now assume that $a$ has unique elements and let $x$ be
+    such that $x : a + b$ has unique elements.  Because $x : a + b$ has unique
+    elements, we know that $x \notin a + b$.  By the contrapositive of Theorem
+    \ref{in-list-lconc}, we know that $x \notin a$.  Thus, $x \notin a$ and $a$
+    has unique elements, showing that $x : a$ has unique elements.  Thus, the
+    theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-unique-rconc}
+    For all lists $a$ and $b$, if $a + b$ has unique elements, then $b$ has
+    unique elements.
+\end{theorem}
+\begin{proof}
+    This is just the combination of Theorems \ref{list-unique-lconc} and
+    \ref{list-unique-comm}.
+\end{proof}
+
+\begin{theorem} \label{list-unique-conc}
+    For all lists $a$ and $b$, if $a + b$ has unique elements, then for every $x
+    \in a$, we have $x \notin b$.
+\end{theorem}
+\begin{proof}
+    Assume that there is an $x$ such that $x \in a$ and $x \in b$.  We will
+    derive a contradiction by induction on $a$.  $x \in []$ is a contradiction,
+    so the base case is true.  Now assume that $x \notin a$, and that there's a
+    $y$ such that $x \in y : a$ and $y : a + b$ has unique elements.  Because $y
+    : a + b$ has unique elements, we have $y \notin (a + b)$.  Because $x \in y
+    : a$, we have two cases: when $x = y$, and when $x \in a$.  When $x = y$, we
+    have $x \in b$, and by Theorem \ref{in-list-rconc} we have $x \in (a + b)$,
+    contradicting $x \notin (a + b)$.  When $x \in a$, this directly
+    contradicts the inductive hypothesis.  Thus, by induction, we have a
+    contradiction, meaning that we can't have both $x \in a$ and $x \in b$.
+\end{proof}
+
+\begin{theorem} \label{list-image-unique}
+    For all lists $a$ and functions $f : \U \to \V$, if $f(a)$ has unique
+    elements, then $a$ does as well.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, it has unique
+    elements, so the base case is true.  Now assume that $a$ has unique
+    elements.  We must prove that if $f(x : a) = f(x) : f(a)$ has unique
+    elements, then $x : a$ has unique elements.  Because $f(x) : f(a)$ has
+    unique elements, we know that $f(x) \notin f(a)$ and that $f(a)$ has unique
+    elements.  Because $f(x) \notin f(a)$, by the contrapositive of Theorem
+    \ref{in-list-image}, we know that $x \notin a$.  By the inductive
+    hypothesis, $a$ has unique elements.  Thus, $x : a$ has unique elements, so
+    the theorem is true by induction.
+\end{proof}
+
+\section{Lists and Sets}
+
+\begin{definition}
+    Let $a$ be a list, and let $S$ be a set.  We will define the filtered list
+    $a^S$ recursively:
+    \begin{align*}
+             []^S &= [] \\
+        (x : a)^S &= \text{If $x \in S$ then $x : a^S$ else $a^S$}.
+    \end{align*}
+\end{definition}
+
+\begin{definition} \label{list-prop}
+    Let $a$ be a list, and let $S$ be a set.  We will define $a \in S$, meaning
+    that every element in $a$ is in $S$, recursively:
+    \begin{align*}
+           [] \in S &= \vtt{True} \\
+        x : a \in S &= x \in S \wedge a \in S.
+    \end{align*}
+\end{definition}
+\noindent Notice that like a list having unique elements, because $(a : l) \in
+S$ implies that $l \in S$, when doing induction on a list, it being in $S$ does
+not need to be considered as a part of the inductive hypothesis.
+
+\begin{definition}
+    Given a relation $\usim$, let $x \usim$ represent the set of all elements
+    $y$ such that $x \sim y$.  Then for a list $a$, we define $a \in \usim$
+    recursively:
+    \begin{align*}
+           [] \in \usim &= \vtt{True} \\
+        x : a \in \usim &= a \in (x \usim) \wedge a \in \usim.
+    \end{align*}
+    Note that in the last expression, the first $\in$ is being used in the sense
+    of definition \ref{list-prop}, while the second $\in$ is the recursive one.
+\end{definition}
+
+Note that this definition only checks that elements are related in one
+direction, and that elements are not checked against themselves.  To be honest
+part of this reason is that this definition is used in a grand total of one
+situations (at least currently), in a place where the relation is symmetric and
+shouldn't be checked against itself.  However, you can derive other forms that
+may be more suitable for other situations from the last two definitions, so not
+much is lost by using this definition.
+
+It is important to note that we now have four different usages of $\in$.
+Context can distinguish between them all.  Given a value $x$, a list $a$, a set
+$S$, and a relation $\usim$, $x \in S$ is traditional set membership, $x \in a$
+checks if $x$ occurs in the list $a$, $a \in S$ checks if every elements of $a$
+is in $S$, and $a \in \usim$ checks if all elements of $a$ are related to each
+other.  This confusion won't be as bad in future chapters because these concepts
+will usually just be written in English rather than using this notation (e.g.
+explicitly saying that every value in a list satisfies a predicate).
+
+\begin{theorem}
+    For all sets $S$, $[]^S = []$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, values $x$, and lists $a$, if $x \in S$, then $(x : a)^S =
+    x : a^S$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, values $x$, and lists $a$, if $x \notin S$, then $(x :
+    a)^S = a^S$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and values $x$, if $x \in S$, then $[x]^S = [x]$.
+\end{theorem}
+\begin{proof}
+    \[
+        [x]^S = x : [] = [x].
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and values $x$, if $x \in S$, then $[x]^S = []$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and lists $a$ and $b$, $(a + b)^S = a^S + b^S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        ([] + b)^S = b^S = [] + b^S = []^S + b^S,
+    \]
+    so the base case is true.  Now assume that $(a + b)^S = a^S + b^S$.  We must
+    prove that for any $x$, $(x : a + b)^S = (x : a)^S + b^S$.  There are two
+    cases: when $x \in S$, and when $x \notin S$.  When $x \in S$,
+    \[
+        (x : a + b)^S = x : (a + b)^S = x : a^S + b^S = (x : a)^S + b^S.
+    \]
+    When $x \notin S$,
+    \[
+        (x : a + b)^S = (a + b)^S = a^S + b^S = (x : a)^S + b^S.
+    \]
+    Either way, the inductive step is true, so the theorem is true by induction.
+\end{proof}
+
+\begin{lemma} \label{list-filter-in-both}
+    For all sets $S$, lists $a$, and values $x$, if $x \in a^S$, then $x \in a$
+    and $x \in S$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, $x \in []^S = []$ is
+    a contradiction, so the base case is vacuously true.  Now assume that for
+    any $x \in a^S$, we have $x \in a$ and $x \in S$, and that $x \in (y : a)^S$ for some
+    value $y$.  We must prove that $x \in y : a$ and that $x \in S$.  We have two cases: when $y
+    \in S$, and when $y \notin S$.  When $y \notin S$, we have $x \in a^S$, so
+    by the inductive hypothesis we have $x \in S$ and $x \in a$, meaning that $x
+    \in (y : a)$.  When $y \in S$, we have $x \in y : a^S$, so we have two more
+    cases here: when $x = y$, and when $x \in a^S$.  When $x = y$, we easily
+    have $x \in y : a$ and $y \in S$.  When $x \in a^S$, by the inductive
+    hypothesis we have $x \in S$ and $x \in a$, so $x \in y : a$.  The inductive
+    step is true in all cases, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-filter-in}
+    For all sets $S$, lists $a$, and values $x$, if $x \in a^S$, then $x \in a$.
+\end{theorem}
+\begin{proof}
+    This is just a special case of Lemma \ref{list-filter-in-both}.
+\end{proof}
+
+\begin{theorem} \label{list-filter-in-set}
+    For all sets $S$, lists $a$, and values $x$, if $x \in a^S$, then $x \in S$.
+\end{theorem}
+\begin{proof}
+    This is just a special case of Lemma \ref{list-filter-in-both}.
+\end{proof}
+
+\begin{theorem} \label{list-filter-unique}
+    For all sets $S$ and lists $a$, if $a$ has unique elements, then $a^S$ has
+    unique elements.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then $[]^S = []$ has
+    unique elements, so the base case is true.  Now assume that $a^S$ has unique
+    elements and that $x : a$ has unique elements for some value $x$.  We must
+    prove that $(x : a)^S$ has unique elements.  Because $x : a$ has unique
+    elements, we know that $x \notin a$ and that $a$ has unique elements.  There
+    are two cases: when $x \in S$, and when $x \notin S$.  When $x \in S$, we
+    must prove that $x : a^S$ has unique elements.  $x \notin a^S$ follows from
+    the contrapositive of Theorem \ref{list-filter-in}, and $a^S$ having unique
+    elements is the inductive hypothesis.  When $x \notin S$, we must prove that
+    $a^S$ has unique elements, which is the inductive hypothesis.  Either way,
+    $(x : a)^S$ has unique elements, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-filter-image-in}
+    For all sets $S : \set{\U}$, functions $f : \U \to \V$, lists $a$, and
+    values $y : \V$, if $y \in f(a^S)$, then $y \in f(a)$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{image-in-list}, there is some $x \in a^S$ such that $f(x) =
+    y$.  Because $x \in a^S$, we know that $x \in a$ by Theorem
+    \ref{in-list-image}.  Thus, by Theorem \ref{list-filter-in}, $f(x) = y \in
+    f(a)$.
+\end{proof}
+
+\begin{theorem} \label{list-filter-image-unique}
+    For all sets $S : \set{\U}$, function $f : \U \to \V$, and lists $a$, if
+    $f(a)$ has unique elements, then $f(a^S)$ has unique elements.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then $f([]^S) = f([])
+    = []$ has unique elements, so the base case is true.  Now assume that
+    $f(a^S)$ has unique elements, and let $x$ be a value such that $f(x : a)$
+    has unique elements.  This means that $f(x) \notin f(a)$.  We must prove
+    that $f((x : a)^S)$ has unique elements.  There are two cases: when $x \in
+    S$, and when $x \notin S$.  When $x \in S$, we have $f((x : a)^S) = f(x :
+    a^S) = f(x) : f(a^S)$.  $f(a^S)$ has unique elements by the inductive
+    hypothesis, so we just need to prove that $f(x) \notin f(a^S)$, which
+    follows from the contrapositive of Theorem \ref{list-filter-image-in}.  When
+    $x \notin S$, we have $f((x : a)^S) = f(a^S)$, which has unique elements by
+    the inductive hypothesis.  In both cases, $f((x : a)^S)$ has unique
+    elements, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-filter-inter}
+    For all sets $S$ and $T$ and lists $a$, $(a^S)^T = a^{S \cap T}$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then $([]^S)^T = []^T
+    = [] = []^{S \cap T}$, so the base case is true.  Now assume that $(a^S)^T =
+    a^{S \cap T}$.  We must prove that for all values $x$, we have $((x :
+    a)^S)^T = (x : a)^{S \cap T}$.  There are three cases: when $x \in S$ and $x
+    \in T$, when $x \in S$ and $x \notin T$, and when $x \notin S$.  When $x \in
+    S$ and $x \in T$, we also have $x \in S \cap T$, so
+    \[
+        ((x : a)^S)^T = (x : a^S)^T = x : (a^S)^T = x : a^{S \cap T}
+        = (x : a)^{S \cap T}.
+    \]
+    When $x \in S$ and $x \notin T$, we also have $x \notin S \cap T$, so
+    \[
+        ((x : a)^S)^T = (x : a^S)^T = (a^S)^T = a^{S \cap T}
+        = (x : a)^{S \cap T}.
+    \]
+    When $x \notin S$, we also have $x \notin S \cap T$, so
+    \[
+        ((x : a)^S)^T = (a^S)^T = a^{S \cap T} = (x : a)^{S \cap T}.
+    \]
+    All cases work, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-filter-filter}
+    For all sets $S$ and lists $a$, $(a^S)^S = a^S$.
+\end{theorem}
+\begin{proof}
+    This is just the combination of Theorem \ref{list-filter-inter} and Theorem
+    \ref{inter-idemp}.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $[] \in S$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, values $x$, and lists $a$, $(x : a) \in S$ if and only if
+    $x \in S$ and $a \in S$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and values $x$, $[x] \in S$ if and only if $x \in S$.
+\end{theorem}
+\begin{proof}
+    \[
+        [x] \in S \leftrightarrow x \in S \wedge [] \in S
+        \leftrightarrow x \in S \wedge \vtt{True}
+        \leftrightarrow x \in S.
+    \]
+\end{proof}
+
+\begin{theorem} \label{list-prop-conc}
+    For all sets $S$ and lists $a$ and $b$, $(a + b) \in S$ if and only if $a
+    \in S$ and $b \in S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then
+    \begin{align*}
+        &([] + b) \in S \\
+        \leftrightarrow{}&b \in S \\
+        \leftrightarrow{}&\vtt{True} \wedge b \in S \\
+        \leftrightarrow{}&[] \in S \wedge b \in S,
+    \end{align*}
+    so the base case is true.  Now assume that $(a + b) \in S$ if and only if $a
+    \in S$ and $b \in S$.  Then for any value $x$,
+    \begin{align*}
+        &(x : a + b) \in S \\
+        \leftrightarrow{}&x \in S \wedge (a + b) \in S \\
+        \leftrightarrow{}&x \in S \wedge a \in S \wedge b \in S \\
+        \leftrightarrow{}&(x : a) \in S \wedge b \in S,
+    \end{align*}
+    showing that the inductive step is true.  Thus, the theorem is true by
+    induction.
+\end{proof}
+
+\begin{theorem} \label{list-prop-sub}
+    For all sets $S$ and $T$ with $S \subseteq T$ and all lists $a$, if $a \in
+    S$, then $a \in T$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we trivially have $[]
+    \in T$, so the base case is true.  Now assume that $a \in T$.  We must prove
+    that for all values $x$ with $(x : a) \in S$, we also have $(x : a) \in T$.
+    Because $x \in S$ and $S \subseteq T$, we have $x \in T$, and we have $a \in
+    T$ by the inductive hypothesis.  Thus, $(x : a) \in T$.
+\end{proof}
+
+\begin{theorem} \label{list-prop-filter}
+    For all lists $a$ and sets $S$, $a^S \in S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, $[]^S = [] \in S$, so
+    the base case is true.  Now assume that $a^S \in S$.  We must prove that for
+    all values $x$, $(x : a)^S \in S$.  There are two cases: when $x \in S$, and
+    when $x \notin S$.  When $x \in S$, we have $(x : a)^S = x : a^S$, and
+    because $x \in S$ and $a^S \in S$ by the inductive hypothesis, we have $(x :
+    a)^S \in S$.  When $x \notin S$, we have $(x : a)^S = a^S$, so by the
+    inductive hypothesis we have $(x : a)^S \in S$.  Either way, $(x : a)^S \in
+    S$, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-prop-in}
+    For all lists $a$ and sets $S$, if $a \in S$, then for all $x \in a$, we
+    have $x \in S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  $x \in []$ is impossible, so the
+    base case is vacuously true.  Now assume that if $x \in a$, then $x \in S$.
+    We must prove that for all values $y$ such that $(y : a) \in S$ and $x \in
+    (y : a)$, we have $x \in S$.  Because $x \in (y : a)$, we have either $x =
+    y$ or $x \in a$.  If $x = y$, then because $(y : a) \in S$, we have $x \in
+    S$.  If $x \in a$, then $x \in S$ by the inductive hypothesis.  Either way,
+    $x \in S$, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-prop-in-sub}
+    For all lists $a$ and $b$ and sets $S$, if for all $x \in a$ we have $x \in
+    b$, and if $b \in S$, then $a \in S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  First $[] \in S$, so the base case
+    is true.  Now assume that if for all $x \in a$ we have $x \in b$, then we
+    have $a \in S$.  We must prove that for some value $y$ with $x \in (y : a)$
+    implying $x \in b$, we have $(y : a) \in S$.  Because $y \in (y : a)$, we
+    have $y \in b$, and because $b \in S$, by Theorem \ref{list-prop-in} we have
+    $y \in S$.  Also, any $x \in a$ is $(y : a)$ as well, so we have that any $x
+    \in a$ is in $b$.  Thus, by the inductive hypothesis, we have $a \in S$.
+    Thus, $y \in S$ and $a \in S$, showing that $(y : a) \in S$, showing that
+    the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-prop-other-filter}
+    For all lists $a$ and sets $S$ and $T$, if $a \in S$, then $a^T \in S$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{list-prop-in-sub}, it suffices to prove that for all $x \in
+    a^T$, we have $x \in a$, which follows directly from Theorem
+    \ref{list-filter-in}.
+\end{proof}
+
+\begin{theorem}
+    For all relations $\usim$, $[] \in \usim$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all relations $\usim$, lists $a$, and values $x$, $(x : a) \in \usim$ if
+    and only if $a \in (x\usim)$ and $a \in \usim$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem} \label{list-prop2-single}
+    For all relations $\usim$ and values $x$, $[x] \in \usim$.
+\end{theorem}
+\begin{proof}
+    \[
+        [x] \in \usim
+        \leftrightarrow [] \in (x\usim) \wedge [] \in \usim
+        \leftrightarrow \vtt{True} \wedge \vtt{True}
+        \leftrightarrow \vtt{True}.
+    \]
+\end{proof}
+
+\section{Lists and Natural Numbers}
+
+\section{Folds}
+
+\section{Permutations}
+
+\section{Unordered Lists}
+
+\end{document}

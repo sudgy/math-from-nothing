@@ -1,0 +1,2159 @@
+\documentclass[../math.tex]{subfiles}
+\externaldocument{../math.tex}
+\externaldocument{foundations}
+\externaldocument{elementary_algebra}
+\externaldocument{natural}
+
+\begin{document}
+
+\setcounter{chapter}{3}
+
+\chapter{Basic Set Theory} \label{chap-set}
+
+As mentioned in Chapter \ref{chap-foundations}, sets are thought of as
+predicates.  To be precise, given a type $\U$, sets are thought of as functions
+$S : \U \rightarrow \vtt{Prop}$, where $a \in S$ is defined to be $S(a)$.  Note
+that this is very different from the usual way of thinking about sets.  While in
+set theories like ZFC you can have any elements you want in a set, here sets
+must only contain values from a single type.  While this won't be too big of an
+issue in this chapter and in most applications, it will cause radical changes in
+our understanding of the cardinals and the ordinals.
+
+\section{Basic Set Operations}
+
+In this section, let $\U$ be a type.  All sets in this section will be sets of
+values in $\U$ unless said otherwise.  There are many interesting ideas related
+to sets that we can define:
+
+\begin{definition}
+    Given two sets $S$ and $T$, we say that $S$ is a subset of $T$ if for all $x
+    \in S$, $x \in T$ as well.  We write this relationship as $S \subseteq T$.
+    Given that this is a relation defined on sets, we can also define a strict
+    relation on sets $S \subseteq T \wedge S \neq T$, which we denote with $S
+    \subset T$.
+\end{definition}
+\noindent Note that unlike in traditional set theory, the relation $S \subseteq
+T$ is only defined when $S$ and $T$ are both sets on the same type.
+
+\begin{definition}
+    We define the empty set $\varnothing$ on $\U$ as the set $\varnothing = \{x
+    : \U \mid \vtt{False}\}$.
+\end{definition}
+\noindent This is again a break from traditional set theory.  While there is
+usually only one empty set, here we have a different empty set for every type.
+
+\begin{definition}
+    We define the universal set $\bm U$ on $\U$ as the set $U = \{x : \U \mid
+    \vtt{True}\}$.
+\end{definition}
+\noindent This is another break from traditional set theory since universal sets
+can't even be defined in traditional set theory.
+
+\begin{definition}
+    Given values $x_1, x_2, \cdots, x_n : \U$, we define the set
+    \[
+        \{x_1, x_2, \cdots, x_n\} =
+        \{y : \U \mid x_1 = y \vee x_2 = y \vee \cdots \vee x_n = y\}.
+    \]
+\end{definition}
+
+\begin{definition}
+    Given two sets $S$ and $T$, we define their union $S \cup T = \{x : \U \mid
+    x \in S \vee x \in T\}$.
+\end{definition}
+
+\begin{definition}
+    Given two sets $S$ and $T$, we define their intersection $S \cap T = \{x :
+    \U \mid x \in S \wedge x \in T\}$.
+\end{definition}
+
+\begin{definition}
+    Given a set $S$, we define its complement $S^c = \{x : \U \mid x \notin
+    S\}$.
+\end{definition}
+
+\begin{definition}
+    Given two sets $S$ and $T$, we define their difference $S - T = S \cap T^c$.
+\end{definition}
+
+\begin{definition}
+    Given two sets $S$ and $T$, we define their symmetric difference $S \ominus
+    T = (S - T) \cup (T - S)$.
+\end{definition}
+\noindent Notice that like with the subset relation, all of these binary
+operations on sets are only defined for sets on the same type.
+
+\begin{definition}
+    We say that two sets $S$ and $T$ are disjoint if $S \cap T = \varnothing$,
+    and we say that they intersect otherwise.
+\end{definition}
+
+While most uses of the Cartesian product are better handled using a product type
+as defined in Section \ref{sec-types}, there are still a few cases where the
+Cartesian product of sets is useful, so we will still define it here.
+\begin{definition}
+    Given two types $\U$ and $\V$ with sets $S : \U \to \Prop$ and $T : \V \to
+    \Prop$, we define the Cartesian product $S \times T : (\U \times \V) \to
+    \Prop$ to be the set $\{(x, y) : \U \times \V \mid x \in S \wedge y \in
+    T\}$.
+\end{definition}
+
+Note that the power set is not defined here.  This is because it is actually
+already defined.  We think of sets as being values in the type $\U \rightarrow
+\Prop$, which means that the type $\U \rightarrow \Prop$ itself is the power set
+of $\U$.
+
+\begin{instance}
+    $\subseteq$ is reflexive.
+\end{instance}
+\begin{proof}
+    Let $S$ be a set.  We must prove that for all $x \in S$, $x \in S$.  Thus
+    what we must prove is precisely what we started with.
+\end{proof}
+
+\begin{instance}
+    $\subseteq$ is transitive.
+\end{instance}
+\begin{proof}
+    Let $R$, $S$, and $T$ be sets such that $R \subseteq S$ and $S \subseteq T$.
+    Now let $x \in R$.  Because $R \subseteq S$, $x \in S$.  Now because $S
+    \subseteq T$, $x \in T$.  Because $x$ was an arbitrary element of $R$, $R
+    \subseteq T$ and $\subseteq$ is transitive.
+\end{proof}
+
+\begin{instance}
+    $\subseteq$ is antisymmetric.
+\end{instance}
+\begin{proof}
+    Let $S$ and $T$ be sets such that $S \subseteq T$ and $T \subseteq S$.  By
+    predicate extensionality, we need to prove that for all $x : \U$, $x \in S
+    \leftrightarrow x \in T$.  This is equivalent to $(x \in S \rightarrow x \in
+    T) \wedge (x \in T \rightarrow x \in S)$, and each individual statement
+    follows from $S \subseteq T$ and $T \subseteq S$.  Thus, $\subseteq$ is
+    antisymmetric.
+\end{proof}
+
+This shows us that $\subseteq$ partially orders sets on a type.
+
+\begin{theorem} \label{strict-subset-ex}
+    For all sets $S$ and $T$, if $S \subset T$, then there exists an $x$ such
+    that $x \in T$ and $x \notin S$.
+\end{theorem}
+\begin{proof}
+    Assume the opposite, that is, that for all $x$, if $x \in T$, then $x \in
+    S$.  This means that $T \subseteq S$.  Because $S \subseteq T$, we have $S =
+    T$, contradicting $S \subset T$.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $\varnothing \subseteq S$.
+\end{theorem}
+\begin{proof}
+    Let $x \in \varnothing$.  This is already a contradiction, so the theorem
+    holds vacuously.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $S \subseteq \bm U$.
+\end{theorem}
+\begin{proof}
+    Let $x \in S$.  $x \in \bm U$ is always true, so $S \subseteq \bm U$.
+\end{proof}
+
+\begin{theorem} \label{empty-eq}
+    For all sets $S$, $S = \varnothing$ if and only if $\forall x, x \notin S$.
+\end{theorem}
+\begin{proof}
+    If $S = \varnothing$, then we have $\forall x, x \notin \varnothing$, so the
+    forward implication is true.  If $\forall x, x \notin S$, we have $S
+    \subseteq \varnothing$ vacuously, and because $\varnothing \subseteq S$, we
+    have $S = \varnothing$ by antisymmetry, so the reverse implication is true
+    as well.
+\end{proof}
+
+\begin{theorem} \label{empty-neq}
+    For all sets $S$, $S \neq \varnothing$ if and only if $\exists x, x \in S$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        S = \varnothing &\leftrightarrow \forall x, x \notin S \\
+        S \neq \varnothing &\leftrightarrow \neg(\forall x, x \notin S) \\
+        &\leftrightarrow \exists x, x \in S.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{all-eq}
+    For all sets $S$, $S = \bm U$ if and only if $\forall x, x \in S$.
+\end{theorem}
+\begin{proof}
+    If $S = \bm U$, then we have $\forall x, x \in \bm U$, so the forward
+    implication is true.  If $\forall x, x \in S$, we have $\bm U \subseteq S$,
+    and because $S \subseteq \bm U$, we have $S = \bm U$ by antisymmetry, so the
+    reverse implication is true as well.
+\end{proof}
+
+\begin{theorem} \label{all-neq}
+    For all sets $S$, $S \neq \bm U$ if and only if $\exists x, x \notin S$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        S = \bm U &\leftrightarrow \forall x, x \in S \\
+        S \neq \bm U &\leftrightarrow \neg(\forall x, x \in S) \\
+                 &\leftrightarrow \exists x, x \notin S.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{union-comm}
+    For all sets $S$ and $T$, $S \cup T = T \cup S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{or-comm}.
+\end{proof}
+
+\begin{theorem} \label{union-assoc}
+    For all sets $R$, $S$, and $T$, $R \cup (S \cup T) = (R \cup S) \cup T$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{or-assoc}.
+\end{proof}
+
+\begin{theorem} \label{union-lid}
+    For all sets $S$, $\varnothing \cup S = S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{or-lfalse}.
+\end{proof}
+
+\begin{theorem} \label{union-lanni}
+    For all sets $S$, $\bm U \cup S = \bm U$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{or-ltrue}.
+\end{proof}
+
+\begin{theorem} \label{union-lsub}
+    For all sets $S$ and $T$, $S \subseteq S \cup T$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{union-compl-all}
+    For all sets $S$, $S \cup S^c = \bm U$.
+\end{theorem}
+\begin{proof}
+    This follows from Theorem \ref{all-eq} and the law of the excluded middle.
+\end{proof}
+
+\begin{theorem} \label{union-idemp}
+    For all sets $S$, $S \cup S = S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{or-idemp}.
+\end{proof}
+
+\begin{theorem} \label{union-minus}
+    For all sets $A$ and $B$, if $A \cap B = \empty$, then $A \cup B - B = A$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in A \cup B - B$.  Then $x \in A
+    \cup B$ and $x \notin B$.  Because $x \in A \cup B$, either $x \in A$ or $x
+    \in B$.  $x \in B$ is impossible because $x \notin B$, so we must have $x \in
+    A$.  Thus, $A \cup B - B \subseteq A$.
+
+    Now let $x \in A$.  This means that $x \in A \cup B$.  Because $A \cap B =
+    \empty$, we can't have $x \in B$.  Thus, $x \in A \cup B - B$, showing that
+    $A \subseteq A \cup B - B$.
+
+    Because $A \cup B - B \subseteq A$ and $A \subseteq A \cup B - B$, we have
+    $A \cup B - B = A$ by antisymmetry.
+\end{proof}
+
+\begin{theorem} \label{inter-comm}
+    For all sets $S$ and $T$, $S \cap T = T \cap S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{and-comm}.
+\end{proof}
+
+\begin{theorem} \label{inter-assoc}
+    For all sets $R$, $S$, and $T$, $R \cap (S \cap T) = (R \cap S) \cap T$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{and-assoc}.
+\end{proof}
+
+\begin{theorem} \label{inter-lid}
+    For all sets $S$, $\bm U \cap S = S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{and-ltrue}.
+\end{proof}
+
+\begin{theorem} \label{inter-lanni}
+    For all sets $S$, $\varnothing \cap S = \varnothing$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{and-lfalse}.
+\end{proof}
+
+\begin{theorem} \label{inter-lsub}
+    For all sets $S$ and $T$, $S \cap T \subseteq S$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{lsub-inter-equal}
+    For all sets $S$ and $T$, if $S \subseteq T$, $S \cap T = S$.
+\end{theorem}
+\begin{proof}
+    We already have $S \cap T \subseteq S$, so we must prove that $S \subseteq S
+    \cap T$.  Let $x \in S$.  Then we have $x \in S$, and because $S \subseteq
+    T$, we have $x \in T$ as well.  Thus, $x \in S \cap T$, so $S \subseteq S
+    \cap T$.
+\end{proof}
+
+\begin{theorem} \label{inter-compl-empty}
+    For all sets $S$, $S \cap S^c = \varnothing$.
+\end{theorem}
+\begin{proof}
+    $x \in S$ and $x \in S^c = x \notin S$ is a contradiction, so this follows
+    from Theorem \ref{empty-eq}.
+\end{proof}
+
+\begin{theorem} \label{inter-idemp}
+    For all sets $S$, $S \cap S = S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{and-idemp}.
+\end{proof}
+
+\begin{theorem} \label{union-ldist}
+    For all sets $R$, $S$, and $T$, $R \cup (S \cap T) = (R \cup S) \cap (R \cup
+    T)$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{or-and-ldist}.
+\end{proof}
+
+\begin{theorem} \label{inter-ldist}
+    For all sets $R$, $S$, and $T$, $R \cap (S \cup T) = (R \cap S) \cup (R \cap
+    T)$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{and-or-ldist}.
+\end{proof}
+
+\begin{theorem} \label{union-inter-self}
+    For all sets $S$ and $T$, $S \cup (S \cap T) = S$.
+\end{theorem}
+\begin{proof}
+    We already have $S \subseteq S \cup (S \cap T)$, so by antisymmetry we only
+    need to prove that $S \cup (S \cap T) \subseteq S$.  Choose any $x \in S
+    \cup (S \cap T)$.  Then either $x \in S$ or $x \in S$ and $x \in T$.  Either
+    way, $x \in S$, so $S \cup (S \cap T) \subseteq S$.
+\end{proof}
+
+\begin{theorem} \label{inter-union-self}
+    For all sets $S$ and $T$, $S \cap (S \cup T) = S$.
+\end{theorem}
+\begin{proof}
+    We already have $S \cap (S \cup T) \subseteq S$, so by antisymmetry we only
+    need to prove that $S \subseteq S \cap (S \cup T)$.  Choose any $x \in S$.
+    Then $x \in S \cup T$ as well, so $x \in S \cap (S \cup T)$, showing that $S
+    \subseteq S \cap (S \cup T)$.
+\end{proof}
+
+\begin{theorem} \label{compl-compl}
+    For all sets $S$, $(S^c)^c = S$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{not-not}.
+\end{proof}
+
+\begin{theorem} \label{compl-empty}
+    $\varnothing^c = \bm U$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{not-false}.
+\end{proof}
+
+\begin{theorem} \label{compl-all}
+    $\bm U^c = \varnothing$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{not-true}.
+\end{proof}
+
+\begin{theorem} \label{union-compl}
+    For all sets $A$ and $B$, $(A \cup B)^c = A^c \cap B^c$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{not-or}.
+\end{proof}
+
+\begin{theorem} \label{inter-compl}
+    For all sets $A$ and $B$, $(A \cap B)^c = A^c \cup B^c$.
+\end{theorem}
+\begin{proof}
+    This follows from predicate extensionality and Theorem \ref{not-and}.
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $S - \varnothing = S$.
+\end{theorem}
+\begin{proof}
+    \[
+        S - \varnothing = S \cap \varnothing^c = S \cap \bm U = S.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $\varnothing - S = \varnothing$.
+\end{theorem}
+\begin{proof}
+    \[
+        \varnothing - S = \varnothing \cap S^c = \varnothing.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $S - S = \varnothing$.
+\end{theorem}
+\begin{proof}
+    \[
+        S - S = S \cap S^c = \varnothing.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and $T$, $(S - T) - T = S - T$.
+\end{theorem}
+\begin{proof}
+    \[
+        (S - T) - T = (S \cap T^c) \cap T^c = S \cap (T^c \cap T^c) = S \cap T^c
+        = S - T.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and $T$, $S \ominus T = (S \cup T) - (S \cap T)$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        S \ominus T
+        &= (S - T) \cup (T - S) \\
+        &= (S \cap T^c) \cup (T \cap S^c) \\
+        &= (S \cup T) \cap (S \cup S^c) \cap (T^c \cup T) \cap (T^c \cup S^c) \\
+        &= (S \cup T) \cap \bm U \cap \bm U \cap (T^c \cup S^c) \\
+        &= (S \cup T) \cap (T^c \cup S^c) \\
+        &= (S \cup T) \cap (T \cap S)^c \\
+        &= (S \cup T) \cap (S \cap T)^c \\
+        &= (S \cup T) - (S \cap T).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$ and $T$, $S \ominus T = T \ominus S$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition of $\ominus$ with Theorem
+    \ref{union-comm}.
+\end{proof}
+
+\begin{theorem}
+    For all sets $R$, $S$, and $T$, $R \ominus (S \ominus T) = (R \ominus S)
+    \ominus T$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        &\phantom{=}\ \ R \ominus (S \ominus T) \\
+        &= R \cup (S \ominus T) - R \cap (S \ominus T) \\
+        &= R \cup (S \cup T - S \cap T) - R \cap ((S - T) \cup (T - S)) \\
+        &= (R \cup ((S \cup T) \cap (S \cap T)^c)) \cap
+            (R \cap ((S \cap T^c) \cup (T \cap S^c)))^c \\
+        &= (R \cup ((S \cup T) \cap (S^c \cup T^c))) \cap
+            (R^c \cup ((S^c \cup T) \cap (T^c \cup S))) \\
+        &= (R \cup S \cup T) \cap (R \cup S^c \cup T^c) \cap
+            (R^c \cup S^c \cup T) \cap (R^c \cup T^c \cup S) \\
+        &= (T \cup S \cup R) \cap (T^c \cup S^c \cup R) \cap
+            (T \cup S^c \cup R^c) \cap (T^c \cup R^c \cup S) \\
+        &= (T \cup S \cup R) \cap (T \cup S^c \cup R^c) \cap
+            (T^c \cup S^c \cup R) \cap (T^c \cup R^c \cup S) \\
+        &= (T \cup ((S \cup R) \cap (S^c \cup R^c))) \cap
+            (T^c \cup ((S^c \cup R) \cap (R^c \cup S))) \\
+        &= (T \cup ((S \cup R) \cap (S \cap R)^c)) \cap
+            (T \cap ((S \cap R^c) \cup (R \cap S^c)))^c \\
+        &= T \cup (S \cup R - S \cap R) - T \cap ((S - R) \cup (R - S)) \\
+        &= T \cup (S \ominus R) - T \cap (S \ominus R) \\
+        &= T \ominus (S \ominus R) \\
+        &= (S \ominus R) \ominus T \\
+        &= (R \ominus S) \ominus T.
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $\varnothing \ominus S = S$.
+\end{theorem}
+\begin{proof}
+    \[
+        \varnothing \ominus S = (\varnothing - S) \cup (S - \varnothing)
+        = \varnothing \cup S = S.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all sets $S$, $S \ominus S = \varnothing$.
+\end{theorem}
+\begin{proof}
+    \[
+        (S - S) \cup (S - S) = \varnothing \cup \varnothing = \varnothing.
+    \]
+\end{proof}
+
+\begin{theorem}
+    Let $\U$ and $\V$ be types with sets $A$ and $B$ on $\U$ and $C$ and $D$ on
+    $\V$ such that $A \subseteq B$ and $C \subseteq D$.  Then $A \times C
+    \subseteq B \times D$.
+\end{theorem}
+\begin{proof}
+    Let $(x, y)$ be a value in $\U \times \V$ such that $(x, y) \in A \times C$.
+    This means that $x \in A$ and $y \in C$.  Because $A \subseteq B$ and $C
+    \subseteq D$, we have $x \in B$ and $y \in D$.  Thus, $(x, y) \in B \times
+    D$, so $A \times C \subseteq B \times D$.
+\end{proof}
+
+\begin{theorem}
+    Let $\U$ and $\V$ be types with sets $A$ and $B$ on $\U$ and $C$ and $D$ on
+    $\V$.  Then
+    \[
+        (A \cap B) \times (C \cap D) = (A \times C) \cap (B \times D).
+    \]
+\end{theorem}
+\begin{proof}
+    For a value $(x, y)$ to be in $(A \cap B) \times (C \cap D)$, we must have
+    $x \in A$, $x \in B$, $y \in C$, and $y \in D$.  For $(x, y)$ to be in $(A
+    \times C) \cap (B \times D)$, we must have $x \in A$, $y \in C$, $x \in B$,
+    and $y \in D$.  Thus, the conditions for being in the two sets are
+    equivalent.
+\end{proof}
+
+\section{Converting Sets to Types}
+
+Given a set $S$, it can be useful to treat it as a type, not a set.  This can be
+done by creating a new dependent type.
+
+\begin{definition}
+    Given a set $S$, define the type $\T(S)$ as a dependent inductive type with
+    a single constructor $\forall x : \U, x \in S \rightarrow \T(S)$.  Given an
+    $x : \U$ with $H : x \in S$, we write this constructor as $\st{x}{H}$.
+    Given a value $X = \st{x}{H} : \T(S)$, we define $\stv{X} = x$ and $\stp{X}
+    = H$.
+\end{definition}
+
+Note that this is technically the same thing as strong existence.  However,
+because the two concepts are fundamentally distinct, we will distinguish between
+the two types.
+
+\begin{theorem} \label{set-type-simpl}
+    For all sets $S$, $X : \T(S)$, and $H : \stv{X} \in S$, $\st{\stv{X}}{H} =
+    x$.
+\end{theorem}
+\begin{proof}
+    Let $x = \stv{X}$ and $H' = \stp{X}$.  Then we need to show that $\st{x}{H}
+    = \st{x}{H'}$.  This follows from proof irrelevance.
+\end{proof}
+
+\begin{theorem} \label{set-type-eq}
+    For all sets $S$ and values $a$ and $b$ in $\T(S)$, $a = b$ if and only if
+    $\stv{a} = \stv{b}$.
+\end{theorem}
+\begin{proof}
+    When $a = b$, $\stv{a} = \stv{b}$ is trivial, so the forward implication is
+    true.  Now assume that $\stv a = \stv b$.  Let $a' = \stv a$, $H_a = \stp
+    a$, $b' = \stv b$, and $H_b = \stp b$.  We must prove that $\st{a'}{H_a} =
+    \st{b'}{H_b}$.  We already have $a' = b'$, so all that's left is to prove
+    that $H_a = H_b$.  Because $a' = b'$, we see that $H_a$ and $H_b$ are the
+    same type, so they are equal by proof irrelevance.
+\end{proof}
+
+\subsection{Converting sets to/from $\T(X)$}
+
+\begin{definition}
+    Let $X$ and $S$ be sets on $\U$.  Then we define a new set $S_X : \T(X)
+    \rightarrow \Prop$ with $S_X = \{x : \T(X) \mid \stv{x} \in S\}$.
+\end{definition}
+
+\begin{definition}
+    Let $X$ and be a set on $\U$, and $S$ a set on $\T(X)$.  Then we define a
+    new set $S_\U : \U \rightarrow \Prop$ with $S_\U = \{x : \U \mid x \in X
+    \curlywedge \lambda H, \st{x}{H} \in S\}$.
+\end{definition}
+
+In the rest of this subsection, let $X$ be a set on $\U$.
+
+\begin{theorem} \label{to-set-type-in}
+    For all sets $A$ with $A \subseteq X$, if $x \in A$, then $\st{x}{H} \in
+    A_X$, where $H$ is the proof that $x \in X$ using $A \subseteq X$ and $x \in
+    A$.
+\end{theorem}
+\begin{proof}
+    We must prove that $x \in A$, which is true by hypothesis.
+\end{proof}
+
+\begin{theorem} \label{from-set-type-in}
+    For all sets $A$ on $\T(X)$, for all $x \in A$, $\stv x \in A_\U$.
+\end{theorem}
+\begin{proof}
+    Let $x \in A$.  We know that $x : \T(X)$, so $\stv x \in X$.  Call that
+    proof $H$.  Because $x \in A$, we know that $\st{\stv x}{H} \in A$, so we
+    see that $\stv x \in A_\U$.
+\end{proof}
+
+\begin{theorem} \label{to-from-set-type}
+    For all sets $A$ on $\T(X)$, $(A_\U)_X = A$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in (A_\U)_X$.  This means $H :
+    \stv x \in X$, and that $\st{\stv x}{H} \in A$.  By Theorem
+    \ref{set-type-simpl} we have $\st{\stv x}{H} = x$, so $x \in A$.  Thus,
+    $(A_\U)_X \subseteq A$.
+
+    Now let $x \in A$.  To prove that $x \in (A_\U)_X$, it suffices to show that
+    $\stv x \in A_\U$.  Because $x \in A$, this follows from Theorem
+    \ref{from-set-type-in}.  Thus, $A \subseteq (A_\U)_X$.
+\end{proof}
+
+\begin{theorem} \label{from-to-set-type}
+    For all sets $A$ on $\U$, if $A \subseteq X$, then $(A_X)_\U = A$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in (A_X)_\U$.  Then $H : x \in
+    X$ and $\st{x}{H} \in A_X$, so $\stv{\st{x}{H}} \in A$, which means that $x
+    \in A$.  Thus, $(A_X)_\U \subseteq A$.
+
+    Now let $x \in A$.  Because $A \subseteq X$, $H : x \in X$ as well.  To
+    prove that $x \in (A_X)_\U$, we just need to show that $\st{x}{H} \in A_X$.
+    We just need to prove that $\stv{\st{x}{H}} \in A$, which is true because $x
+    \in A$.  Thus, $A \subseteq (A_X)_\U$.
+\end{proof}
+
+\begin{theorem} \label{to-set-type-inter}
+    For all sets $A$ on $\U$, $A_X = (A \cap X)_X$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in A_X$.  Then $\stv x \in X$
+    and $\stv x \in A$, so $\stv x \in (A \cap X)$.  Because $\stv x \in (A \cap
+    X)$ and $\stv x \in X$, $x \in (A \cap X)_X$, so $A_X \subseteq (A \cap
+    X)_X$.
+
+    Now let $x \in (A \cap X)_X$.  Then $\stv x \in A \cap X \subseteq A$ and
+    $\stv x \in X$, so $x \in A_X$.
+\end{proof}
+
+\begin{theorem} \label{to-set-type-sub}
+    For all sets $A$ and $B$ on $\U$, if $A \subseteq B$, then $A_X \subseteq
+    B_X$.
+\end{theorem}
+\begin{proof}
+    Let $x \in A_X$.  Then $\stv x \in A$.  Because $A \subseteq B$, we have
+    $\stv x \in B$.  Thus, $x \in B_X$, showing that $A_X \subseteq B_X$.
+\end{proof}
+
+\begin{theorem} \label{to-from-set-type-sub}
+    For all sets $A$ on $\U$ and $B$ on $\T(X)$, if $A \subseteq X$ and $A_X
+    \subseteq B$, then $A \subseteq B_\U$.
+\end{theorem}
+\begin{proof}
+    Let $x \in A$.  Then because $A \subseteq X$, we have $x \in X$.  Call this
+    proof $H$.  Then $\st{x}{H} \in A_X$.  Because $A_X \subseteq B$, we have
+    $\st{x}{H} \in B$ as well.  Because $x \in X$ and $\st{x}{H} \in B$, we have
+    $x \in B_\U$, so $A \subseteq B_\U$.
+\end{proof}
+
+\begin{theorem} \label{from-set-type-sub-X}
+    For all sets $A$ on $\T(X)$, $A_\U \subseteq X$.
+\end{theorem}
+\begin{proof}
+    Let $x \in A_\U$.  Then $H : x \in X$ and $\st{x}{H} \in A$, so $x \in X$.
+    Thus, $A_\U \subseteq X$.
+\end{proof}
+
+\begin{theorem} \label{from-set-type-union}
+    For all sets $A$ and $B$ on $\T(X)$, if $A \cup B = \bm U\footnote{Note that
+    this is the universal set \textit{in $\T(X)$}, not in $\U$}$, then $A_\U
+    \cup B_\U = X$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  If $x \in A_\U \cup B_\U$, there will be
+    two cases.  However, both cases instantly get $x \in X$, so $A_\U \cup B_\U
+    \subseteq X$.  Now let $x$ be a value such that we have a proof $H : x \in
+    X$.  Now $\st{x}{H} \in \bm U$, and because $A \cup B = \bm U$, we have
+    $\st{x}{H} \in A \cup B$.  Now when $\st{x}{H} \in A$, because $x \in X$ we
+    have $x \in A_\U$.  Similarly, when $\st{x}{H} \in B$, $x \in B_\U$.  Either
+    way, $x \in A_\U \cup B_\U$.  Thus, $X \subseteq A_\U \cup B_\U$.
+\end{proof}
+
+\subsection{Ordering $\T(S)$}
+
+If $\U$ is ordered, it is possible to order $\T(S)$ for all sets $S$ as follows:
+
+\begin{definition}
+    Let $a$ and $b$ be values in $\T(S)$.  Then define $a \leq b$ to mean that
+    $\stv a \leq \stv b$.
+\end{definition}
+
+From this definition, we instantly see that the order in $\T(S)$ will inherit
+reflexivity, antisymmetry, transitivity, and connexivity from $\U$.  The only
+thing that doesn't immediately follow is if $\T(S)$ is well-ordered whenever
+$\U$ is.
+
+\begin{theorem}
+    If $\U$ is well-ordered, then $\T(S)$ is as well.
+\end{theorem}
+\begin{proof}
+    Let $T$ be a nonempty set on $\T(S)$.  Then $T_\U$ is nonempty as well, so
+    it has a least element $x \in T_\U$.  Because $x \in T_\U$, we have $H : x
+    \in S$ and $\st{x}{H} \in T$.  We will prove that $\st{x}{H}$ is the minimum
+    value in $T$.  For all $y \in T$, we have $\stv y \in T_\U$, so because $x$
+    is the minimum element of $T_\U$, we have $x \leq \stv y$.  This means that
+    $\stv{\st{x}{H}} \leq \stv y$, which is the definition of $\st{x}{H} \leq
+    y$.  Thus, $\st{x}{H}$ is the minimum element of $T$, so $\T(S)$ is
+    well-ordered.
+\end{proof}
+
+\section{Functions To/From Sets}
+
+Throughout this section, let $\A$ and $\B$ be types and let $f$ be a function
+from $\A$ to $\B$.
+
+\begin{definition}
+    We define the image of $f$ as the set $\{y : \B \mid \exists x : \A, y =
+    f(x)\}$.
+\end{definition}
+
+\begin{definition}
+    Given a set $S : \A \rightarrow \Prop$, we define the image $f(S)$ as the
+    set $f(S) = \{y : \B \mid \exists x : \A, x \in S \wedge y = f(x)\}$.
+\end{definition}
+
+\begin{definition}
+    Given a set $T : \B \rightarrow \Prop$, we define the inverse image
+    $f^{-1}(T)$ as the set $f^{-1}(T) = \{x : \A \mid f(x) \in T\}$.
+\end{definition}
+
+\begin{theorem} \label{image-under-in}
+    For all sets $S : \A \rightarrow \Prop$ and $x \in S$, $f(x) \in f(S)$.
+\end{theorem}
+\begin{proof}
+    We know that $x \in S$ and $f(x) = f(x)$, so $f(x) \in f(S)$.
+\end{proof}
+
+\begin{theorem} \label{image-inverse-sub}
+    For all sets $T : \B \rightarrow \Prop$, $f(f^{-1}(T)) \subseteq T$.
+\end{theorem}
+\begin{proof}
+    Let $y \in f(f^{-1}(T))$.  This means that there is some $x \in f^{-1}(T)$
+    such that $y = f(x)$.  Because $x \in f^{-1}(T)$, we have $f(x) = y \in T$.
+    Thus, $f(f^{-1}(T)) \subseteq T$.
+\end{proof}
+
+\begin{theorem} \label{image-sub}
+    If $S$ and $T$ are sets on $\A$ such that $S \subseteq T$, then $f(S)
+    \subseteq f(T)$.
+\end{theorem}
+\begin{proof}
+    Let $y \in f(S)$.  This means there exists an $x \in S$ such that $y =
+    f(x)$.  Because $S \subseteq T$, we have $x \in T$, so we now have an $x \in
+    T$ such that $y = f(x)$.  This means that $y \in f(T)$, so $f(S) \subseteq
+    f(T)$.
+\end{proof}
+
+\begin{theorem} \label{inverse-complement}
+    For all sets $T : \B \rightarrow \Prop$, $f^{-1}(T^c) = f^{-1}(T)^c$.
+\end{theorem}
+\begin{proof}
+    The set $f^{-1}(T^c)$ is all elements $x : \U$ such that $f(x) \notin T$,
+    while the set $f^{-1}(T)^c$ is all elements $x : \U$ such that $x \notin
+    f^{-1}(T)$, which is the same as saying that $f(x) \notin T$.  Thus, the
+    definition of the two sets is equivalent.
+\end{proof}
+
+\begin{theorem} \label{inverse-image-bij-inv}
+    If $f$ is bijective with an inverse $g : \B \rightarrow \A$, then for all
+    sets $S : \U \rightarrow \Prop$, $g^{-1}(S) = f(S)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $y \in g^{-1}(S)$.  This means that
+    $g(y) \in S$.  Because $g$ is the inverse of $f$, we have $y = f(g(y))$.
+    Because $g(y) \in S$ and $y = f(g(y))$, we have $y \in f(S)$ as required.
+
+    Now let $y \in f(S)$.  This means that there is an $x \in S$ such that $y =
+    f(x)$.  Because $g(f(x)) = x$, we have $g(f(x)) = g(y) \in S$, which means
+    that $y \in g^{-1}(S)$.
+\end{proof}
+
+\begin{theorem} \label{bij-inverse-image}
+    If $f$ is bijective, then for all sets $T : \B \rightarrow \Prop$,
+    $f(f^{-1}(T)) = T$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  $f(f^{-1}(T)) \subseteq T$ was already
+    proved in Theorem \ref{image-inverse-sub}, so we only need to prove that
+    $T \subseteq f(f^{-1}(T))$.  Let $y \in T$.  Because $f$ is bijective, it
+    has an inverse $g : \B \rightarrow \A$.  Then $g(y) \in f^{-1}(T)$ because
+    $f(g(y)) = y \in T$.  Because $g(y) \in f^{-1}(T)$ and $y = f(g(y))$, we
+    have $y \in f(f^{-1}(T))$ as required.
+\end{proof}
+
+\begin{theorem} \label{inj-inverse-image}
+    If $f$ is injective, then for all sets $S : \A \rightarrow \Prop$,
+    $f^{-1}(f(S)) = S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in f^{-1}(f(S))$.  This means
+    that $f(x) \in f(S)$, so there exists a $y \in S$ such that $f(x) = f(y)$.
+    Because $f$ is injective, $x = y$, so $x \in S$ as required.
+
+    Now let $x \in S$.  We need to prove that $x \in f^{-1}(f(S))$ which is
+    equivalent to showing that $f(x) \in f(S)$.  This follows from Theorem
+    \ref{image-under-in}.
+\end{proof}
+
+\section{Sets of Sets}
+
+A set of sets is simply a value in a type $(\U \rightarrow \Prop) \rightarrow
+\Prop$.  We will call a set of sets a collection.  There are several basic
+definitions using collections that we can make.
+
+\begin{definition}
+    Given a collection $\mathcal S : (\U \rightarrow \Prop) \rightarrow \Prop$,
+    we define its union $\bigcup \mathcal S$ as the set
+    \[
+        \bigcup \mathcal S =
+            \{x : \U \mid \exists A, A \in \mathcal S \wedge x \in A\}.
+    \]
+\end{definition}
+
+\begin{definition}
+    Given a collection $\mathcal S : (\U \rightarrow \Prop) \rightarrow \Prop$,
+    we define its intersection $\bigcap \mathcal S$ as the set
+    \[
+        \bigcap \mathcal S =
+            \{x : \U \mid \forall A, A \in \mathcal S \rightarrow x \in A\}.
+    \]
+\end{definition}
+
+\begin{definition}
+    Given a collection $\mathcal S : (\A \rightarrow \Prop) \rightarrow \Prop$
+    and a function $f : \A \rightarrow \B$, we define the image $f(\mathcal S)$
+    as the set
+    \[
+        f(\mathcal S) =
+            \{Y : \B \rightarrow \Prop \mid
+            \exists X, X \in \mathcal S \wedge Y = f(X)\}.
+    \]
+\end{definition}
+
+\begin{definition}
+    Given a collection $\mathcal T : (\B \rightarrow \Prop) \rightarrow \Prop$
+    and a function $f : \A \rightarrow \B$, the define the inverse image
+    $f^{-1}(\mathcal T)$ as the set
+    \[
+        f^{-1}(\mathcal T) =
+            \{X : \A \rightarrow \Prop \mid
+            \exists Y, Y \in \mathcal T \wedge X = f^{-1}(Y)\}.
+    \]
+\end{definition}
+
+Of course, for finite collections we want $\bigcup\{A_1, A_2, \cdots, A_n\} =
+A_1 \cup A_2 \cup \cdots \cup A_n$, and likewise for intersections.  This can be
+done through the next several theorems.
+
+\begin{theorem}
+    $\bigcup \Empty = \Empty$.
+\end{theorem}
+\begin{proof}
+    If $x \in \bigcup \Empty$, that would mean that there exists an $A \in
+    \Empty$ such that $x \in A$.  But $A \in \Empty$ is impossible, so there
+    cannot be any $x \in \bigcup \Empty$.  Thus $\bigcup \Empty = \Empty$.
+\end{proof}
+
+\begin{theorem}
+    $\bigcap \Empty = \bm U$.
+\end{theorem}
+\begin{proof}
+    We need to prove that $x \in \bigcap \Empty$ for all $x$.  To do so, we need
+    to prove that for all $A \in \Empty$, $x \in A$.  Because we can't have $A
+    \in \Empty$, this is vacuously true.
+\end{proof}
+
+\begin{theorem}
+    For all sets $A : \U \rightarrow \Prop$ and collections $\mathcal S : (\U
+    \rightarrow \Prop) \rightarrow \Prop$,
+    \[
+        \bigcup (\{A\} \cup \mathcal S) = A \cup \bigcup \mathcal S.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in \bigcup (\{A\} \cup \mathcal
+    S)$.  This means that there exists a $B \in \{A\} \cup \mathcal S$ such that
+    $x \in B$.  So we now have two cases: when $B = A$, and when $B \in \mathcal
+    S$.  When $B = A$, we have $x \in A \subseteq A \cup \bigcup \mathcal S$.
+    When $B \in \mathcal S$, because $x \in B$ we have $x \in \bigcup \mathcal S
+    \subseteq A \cup \bigcup \mathcal S$.  Either way, $x \in A \cup \bigcup
+    \mathcal S$, so $\bigcup (\{A\} \cup \mathcal S) \subseteq A \cup \bigcup
+    \mathcal S$.
+
+    Now let $x \in A \cup \bigcup \mathcal S$.  We have two cases: when $x \in
+    A$, and when $x \in \bigcup \mathcal S$.  When $x \in A$, we also have $A
+    \in \{A\} \subseteq \{A\} \cup \mathcal S$, so $x \in \bigcup(\{A\} \cup
+    \mathcal S)$.  When $x \in \bigcup \mathcal S$, we know that there exists
+    some $B \in \mathcal S$ such that $x \in B$.  Because $B \in \mathcal S$, we
+    have $B \in \{A\} \cup \mathcal S$, so $x \in \bigcup(\{A\} \cup \mathcal
+    S)$.  Either way, $x \in \bigcup(\{A\} \cup \mathcal S)$, so $A \cup \bigcup
+    \mathcal S \subseteq \bigcup(\{A\} \cup \mathcal S)$.
+\end{proof}
+
+\begin{theorem}
+    For all sets $A : \U \rightarrow \Prop$ and collections $\mathcal S : (\U
+    \rightarrow \Prop) \rightarrow \Prop$,
+    \[
+        \bigcap (\{A\} \cup \mathcal S) = A \cap \bigcap \mathcal S.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in \bigcap (\{A\} \cup \mathcal
+    S)$.  This means that for any $B \in \{A\} \cup \mathcal S$, $x \in B$.
+    Because $A \in \{A\} \cup \mathcal S$, we have $x \in A$.  Also, every $B
+    \in \mathcal S$ is also in $\{A\} \cup \mathcal S$, so we have $x \in
+    \bigcap \mathcal S$ as well.  Together, this means that $x \in A \cap
+    \bigcap \mathcal S$, so $\bigcap (\{A\} \cup \mathcal S) \subseteq A \cap
+    \bigcap \mathcal S$.
+
+    Now let $x \in A \cap \bigcap \mathcal S$.  This means that $x \in A$ and $x
+    \in \bigcap \mathcal S$.  Because $x \in \bigcap \mathcal S$, $x \in B$ for
+    all $B \in \mathcal S$.  Now for any $B \in \{A\} \cup \mathcal S$, either
+    $B = A$ or $B \in \mathcal S$.  If $B = A$, then we have $x \in B$.  If $B
+    \in \mathcal S$, then we also have $x \in B$.  Either way, $x \in B$, which
+    means that $x \in \bigcap (\{A\} \cup \mathcal S)$, so $A \cap \bigcap
+    \mathcal S \subseteq \bigcap (\{A\} \cup \mathcal S)$.
+\end{proof}
+
+The previous four theorems provide an induction scheme that allows us to easily
+prove that
+\[
+    \bigcup \{A_1, A_2, \cdots, A_n\} = A_1 \cup A_2 \cup \cdots \cup A_n
+\]
+and
+\[
+    \bigcap \{A_1, A_2, \cdots, A_n\} = A_1 \cap A_2 \cap \cdots \cap A_n.
+\]
+
+\begin{theorem}
+    For all collections $\mathcal S : \col \U$, defining the set
+    \[
+        \mathcal S' = \{A : \set U \mid A^c \in \mathcal S\},
+    \]
+    we have
+    \[
+        \left( \bigcup \mathcal S \right)^c = \bigcap \mathcal S'.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in (\bigcup \mathcal S)^c$.  To
+    prove that $x \in \bigcap \mathcal S'$, we must prove that for all $A$ such
+    that $A^c \in \mathcal S$, we have $x \in A$.  To do this, assume that $x
+    \notin A$.  This means that $x \in A^c$.  We now have $x \in A^c$ and $A^c
+    \in \mathcal S$, so $x \in \bigcup \mathcal S$.  However, we know that $x
+    \in (\bigcup \mathcal S)^c$, so this is a contradiction.  Thus, $x \in A$,
+    so $x \in \bigcap \mathcal S'$, meaning that $(\bigcup \mathcal S)^c
+    \subseteq \bigcap \mathcal S'$.
+
+    Now let $x \in \bigcap \mathcal S'$.  If $x$ is in fact in $\bigcup \mathcal
+    S$, there would exist some $A \in \mathcal S$ such that $x \in A$.  Because
+    $A \in \mathcal S$, we have $A^c \in \mathcal S'$, and because $x \in
+    \bigcap \mathcal S'$, we have $x \in A^c$.  We now have both $x \in A$ and
+    $x \in A^c$, which is a contradiction.  Thus, $x \notin \bigcup \mathcal S$,
+    so we have $\bigcap \mathcal S' \subseteq (\bigcup \mathcal S)^c$.
+\end{proof}
+
+\begin{theorem}
+    For all collections $\mathcal S : \col \U$, defining the set
+    \[
+        \mathcal S' = \{A : \set U \mid A^c \in \mathcal S\},
+    \]
+    we have
+    \[
+        \left( \bigcap \mathcal S \right)^c = \bigcup \mathcal S'.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in (\bigcap \mathcal S)^c$.
+    This means that there exists some $A \in \mathcal S$ such that $x \notin A$.
+    We thus have $A^c \in \mathcal S'$ and $x \in A^c$, which shows that $x \in
+    \bigcup \mathcal S'$.  Thus, $(\bigcap \mathcal S)^c \subseteq \bigcup
+    \mathcal S'$.
+
+    Now let $x \in \bigcup \mathcal S'$.  This means that there exists an $A$
+    such that $A \in S'$ and $x \in A$.  From $A \in S'$ we have $A^c \in S$.
+    Now if $x \in \bigcap \mathcal S$, because $A^c \in S$, we would have $x \in
+    A^c$, which contradicts $x \in A$.  Thus $x \notin \bigcap \mathcal S$, so
+    $x \in (\bigcap \mathcal S)^c$.  Thus, $\bigcup \mathcal S' \subseteq
+    (\bigcap \mathcal S)^c$.
+\end{proof}
+
+\begin{theorem} \label{inverse-union}
+    For all functions $f : \A \rightarrow \B$ and collections $\mathcal T : \col
+    \B$,
+    \[
+        f^{-1} \left( \bigcup \mathcal T \right) = \bigcup f^{-1}(\mathcal T).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  Let $x \in f^{-1}(\bigcup \mathcal T)$.
+    This means that $f(x) \in \bigcup \mathcal T$, so there exists an $A \in
+    \mathcal T$ such that $f(x) \in A$.  Because $A \in \mathcal T$, we have
+    $f^{-1}(A) \in f^{-1}(\mathcal T)$.  Because $f(x) \in A$, we have $x \in
+    f^{-1}(A)$.  Because $f^{-1}(A) \in f^{-1}(\mathcal T)$ and $x \in
+    f^{-1}(A)$, we have $x \in \bigcup(f^{-1}\mathcal T)$, so $f^{-1}(\bigcup
+    \mathcal T) \subseteq \bigcup f^{-1}(\mathcal T)$.
+
+    Now let $x \in \bigcup f^{-1}(\mathcal T)$.  This means that there exists an
+    $A \in f^{-1}(\mathcal T)$ such that $x \in A$.  Because $A \in
+    f^{-1}(\mathcal T)$, there exists some $Y \in \mathcal T$ such that $A =
+    f^{-1}(Y)$.  We thus have $x \in f^{-1}(Y)$, so $f(x) \in Y$.  Because $f(x)
+    \in Y$ and $Y \in \mathcal T$, we have $f(x) \in \bigcup \mathcal T$, so $x
+    \in f^{-1}(\bigcup \mathcal T)$.  Thus, $\bigcup f^{-1}(\mathcal T)
+    \subseteq f^{-1}(\bigcup \mathcal T)$.
+\end{proof}
+
+\section{Quotients}
+
+\begin{definition}
+    A relation $\sim$ is an equivalence relation if it is reflexive, symmetric,
+    and transitive.
+\end{definition}
+
+Throughout the rest of this section, let $\A$ be a type and $\sim$ an
+equivalence relation on $A$.
+
+\begin{definition}
+    For some $a : \A$, we define the equivalence class set of $a$ as the set
+    $[[a]] = \{x : \A \mid a \sim x\}$.
+\end{definition}
+
+\begin{definition}
+    Define a set of sets $\A_\sim = \{S : \A \to \Prop \mid \exists a : \A,
+    [[a]] = S\}$.
+\end{definition}
+
+\begin{definition}
+    Define $\A/\usim = \T(\A_\sim)$.  The elements of $\A/{\sim}$ are called
+    equivalence classes.
+\end{definition}
+Note that unlike in usual theories, what we call equivalence classes are not
+quite sets.
+
+\begin{definition}
+    For any $a : \A$, $[ [a]]$ is trivially in $\A_\sim$.  Call this proof $H$.
+    Then we define $[a] = \st{[ [a]]}{H}$.
+\end{definition}
+
+\begin{theorem} \label{equiv-eq}
+    For all $a, b : \A$, $[a] = [b] \leftrightarrow a \sim b$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{set-type-eq}, we only need to show that $[ [a]] = [ [b]]
+    \leftrightarrow a \sim b$.
+
+    For the forward implication, we must prove that $[ [a]] = [ [b]] \to a \sim
+    b$.  Because $[ [a]] = [ [b]]$, we know that for all $x : \A$, $(a \sim x) =
+    (b \sim x)$.  Using $x = b$, we see that $(a \sim b) = (b \sim b)$.  $b \sim
+    b$ because equivalence relations are reflexive, so $a \sim b$.
+
+    For the reverse implication, we must prove that $a \sim b \to [ [a]] = [
+    [b]]$.  When $a \sim b$, by the symmetry of equivalence relations we also
+    have $b \sim a$.  By predicate extensionality, we need to show that for all
+    $x : \U$, $a \sim x \leftrightarrow b \sim x$.  When $a \sim x$, because $b
+    \sim a$, by the transitivity of equivalence relations we have $b \sim x$ as
+    required.  When $b \sim x$, because $a \sim b$, by the transitivity of
+    equivalence relations we again have $a \sim x$ as required.  Thus, when $a
+    \sim b$, $a \sim x \leftrightarrow b \sim x$, so $a \sim b \to [ [a]] = [
+    [b]]$.
+\end{proof}
+
+\begin{theorem}
+    For all $X : \A/\usim$, there exists an $x : \A$ such that $[x] = X$.
+\end{theorem}
+\begin{proof}
+    By $[|X]$, there exists an $x : \A$ such that $[ [x]] = [X|]$.  To prove
+    $[x] = X$, by Theorem \ref{set-type-eq}, it suffices to prove $\stv{[x]} =
+    \stv{X}$.  We have $\stv{[x]} = [ [x]]$ by definition, and we already know
+    that $[ [x]] = [X|]$.
+\end{proof}
+
+\begin{definition}
+    Given an $X : \A/\usim$, define $\{X\}$ to be a value in $\A$ as given by
+    the previous theorem.
+\end{definition}
+
+\begin{theorem} \label{from-equiv-eq}
+    For all $X : \A/\usim$, $[\{X\}] = X$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{unary-op-ex}
+    For all types $\B$ and functions $f : \A \to \B$, if $a \sim b \to f(a) =
+    f(b)$ for all $a$ and $b$ in $\A$, then there exists a function $f' :
+    \A/\usim \to \B$ such that for all $x : \A$, we have $f'([x]) = f(x)$.
+\end{theorem}
+\begin{proof}
+    Define the function $f' : \A/\usim \to \B$ given by $f'(X) = f(\{X\})$.  We
+    must prove that for all $x : \A$, $f(\{[x]\}) = f(x)$.  Because $f$ is
+    well-defined, it suffices to prove that $\{[x]\} \sim x$.  By Theorem
+    \ref{equiv-eq} this is equivalent to $[\{[x]\}] = [x]$, which is true by
+    Theorem \ref{from-equiv-eq}.
+\end{proof}
+
+At this point we can forget about the construction of $\A/\usim$ and just use
+the previous few theorems.  More complicated functions can be created through
+clever applications of Theorem \ref{unary-op-ex}.  Binary functions are slightly
+less trivial:
+
+\begin{theorem} \label{binary-op-ex}
+    For all types $\B$ and functions $f : \A \to \A \to \B$, if $a \sim b \to c
+    \sim d \to f(a, c) = f(b, d)$ for all $a$, $b$, $c$, and $d$ in $\A$, then
+    there exists a function $f' : \A/\usim \to \A/\usim \to \B$ such that for
+    all $x$ and $y$ in $\A$, we have $f'([x], [y]) = f(x, y)$.
+\end{theorem}
+\begin{proof}
+    First fix a value $a : \A$.  Now consider the function $f_a : \A \to \B$
+    given by $f_a(b) = f(a, b)$.  Because $f$ is well-defined, $f_a$ is
+    well-defined as an unary function, so by Theorem \ref{unary-op-ex} there
+    exists a function $f_a' : \A/\usim \to \B$ such that for all $x : \A$,
+    $f_a'([x]) = f_a(x) = f(a, x)$.
+
+    Now let $f_1 : \A \to (\A/\usim \to \B)$ be the function given by $f_1(a) =
+    f_a'$.  We want to prove that this is well-defined.  Given $a$ and $b$ such
+    that $a \sim b$, we must prove that $f_1(a) = f_1(b)$.  By functional
+    extensionality, we must prove that for all $C : \A/\usim$, we have
+    $f_1(a)(C) = f_1(b)(C)$.  Choose a representative $c$ such that $[c] = C$.
+    Then
+    \[
+        f_1(a)(C) = f_a'([c]) = f(a, c)
+    \]
+    and
+    \[
+        f_1(b)(C) = f_b'([c]) = f(b, c),
+    \]
+    so we must prove that $f(a, c) = f(b, c)$.  This follows from $a \sim b$ and
+    the fact that $f$ is well-defined.
+
+    Because $f_1$ is well-defined, there exists a function $f' : \A/\usim \to
+    (\A/\usim \to \B)$ such that $f'([a]) = f_1(a)$.  Thinking of it as a
+    function $\A/\usim \to \A/\usim \to \B$, this is the function required:
+    Consider values $x$ and $y$ in $\A$.  Then
+    \[
+        f'([x])([y]) = f_1(x)([y]) = f_x([y]) = f(x, y).
+    \]
+\end{proof}
+
+To convert a function $f : \A \to \A$ to a function $f' : \A/\usim \to
+\A/\usim$, just apply Theorem \ref{unary-op-ex} to the function $f'' : \A \to
+\A/\usim$ given by $f''(x) = [f(x)]$.  The condition for being well-defined
+simplifies to checking that $a \sim b \to f(a) \sim f(b)$.  A similar process
+works for binary functions as well.
+
+To convert a function $f : \A \to \B \to \C$ to a function $f' : \A/\usim \to \B
+\to \C$, one can fix a $b : \B$ and apply Theorem \ref{unary-op-ex} to the
+function $f_b : \A \to \C$ given by $f_b(a) = f(a, b)$.
+
+\section{Sets and Order}
+
+In all of the following definitions, let $\leq$ be an arbitrary relation and let
+$S$ be a set on $\U$.
+
+\begin{definition}
+    A value $x$ is the least element of $S$ if $x \in S$ and for all $y \in S$,
+    $x \leq y$.
+\end{definition}
+
+\begin{definition}
+    A value $x$ is the greatest element of $S$ if $x \in S$ and for all $y \in
+    S$, $y \leq x$.
+\end{definition}
+
+\begin{definition}
+    A value $x$ is a minimal element of $S$ if $x \in S$ and for all $y \in S$,
+    $y \nless x$.
+\end{definition}
+
+\begin{definition}
+    A value $x$ is a maximal element of $S$ if $x \in S$ and for all $y \in S$,
+    $x \nless y$.
+\end{definition}
+
+\begin{definition}
+    Given values $a$ and $b$, we define several intervals:
+    \begin{itemize}
+        \item $(a, b) = \{x : \U \mid a < x \wedge x < b\}$
+        \item $[a, b) = \{x : \U \mid a \leq x \wedge x < b\}$
+        \item $(a, b] = \{x : \U \mid a < x \wedge x \leq b\}$
+        \item $[a, b] = \{x : \U \mid a \leq x \wedge x \leq b\}$
+        \item $(a, \infty) = \{x : \U \mid a < x\}$
+        \item $[a, \infty) = \{x : \U \mid a \leq x\}$
+        \item $(-\infty, b) = \{x : \U \mid x < b\}$
+        \item $(-\infty, b] = \{x : \U \mid x \leq b\}$
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    In a partially ordered type, a set $S$ is a chain if for all $a$ and $b$ in
+    $S$, $a \leq b$ or $b \leq a$.
+\end{definition}
+
+\begin{definition}
+    In a partially ordered type, a set $S$ is well-ordered if for all nonempty
+    subsets $A \subseteq S$, there exists an $a \in A$ such that for all $b \in
+    A$, $a \leq b$.
+\end{definition}
+
+\begin{definition}
+    In an ordered type $\U$, the initial segment $\U_x$ of a value $x : \U$ is
+    the set $\{a : \U \mid a < x\}$.
+\end{definition}
+
+\begin{definition}
+    Given a natural number $n$, we define the type $\T(n)$ as $\T(\N_n)$.
+\end{definition}
+
+\begin{theorem}
+    In a partially ordered type, a subset of a chain is a chain.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a chain, and $T$ a subset of $S$.  For any two elements $a$ and
+    $b$ in $T$, because $T \subseteq S$, we know that $a$ and $b$ are in $S$ as
+    well.  Because $S$ is a chain, $a$ and $b$ are comparable, so $T$ is a
+    chain.
+\end{proof}
+
+\begin{theorem}
+    In a partially ordered type, a subset of a well-ordered set is well-ordered.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a well-ordered set, and $T$ a subset of $S$.  Let $A$ be a
+    nonempty subset of $T$.  Because $A \subseteq T$ and $T \subseteq S$, we
+    have $A \subseteq S$ by transitivity.  Because $A$ is a nonempty subset of
+    $S$, it has a least element.  Thus, $T$ is well-ordered.
+\end{proof}
+
+\begin{theorem}
+    In a partially ordered type, a well-ordered set is a chain.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a well-ordered set, and let $a$ and $b$ be two elements of $S$.
+    Because $a \in S$ and $b \in S$, $\{a, b\} \subseteq S$.  Furthermore,
+    because $a \in \{a, b\}$, $\{a, b\}$ is nonempty.  Thus, because $S$ is
+    well-ordered, $\{a, b\}$ has a least element.  If it is $a$, then $a \leq
+    b$, and if it is $b$, then $b \leq a$.
+\end{proof}
+
+\section{Finite Types}
+
+While a full discussion of infinite and finite types requires developing the
+theory of the cardinals, some facts about finite types can be proved directly
+here.  In the Coq code, this also has the practical benefit that using the ideas
+developed here allows parts of the code to not depend on the cardinals, allowing
+for more parallelization when compiling it.  Thus, as in the Coq code, we will
+distinguish between the concept of finiteness developed here and the concept of
+finiteness in the cardinals, even though they are equivalent.
+
+\begin{definition}
+    Let $\U$ be a type.  Then we say that $\U$ is simply finite if there exists
+    a natural number $n$ and an injective function $f : \U \to \T(n)$.
+\end{definition}
+
+\begin{theorem} \label{simple-finite-trans}
+    For all types $\U$ and $\V$, if $\V$ is simply finite and there exists an
+    injective function from $\U$ to $\V$, then $\U$ is simply finite.
+\end{theorem}
+\begin{proof}
+    Let $f : \U \to \V$ be injective.  Because $\V$ is simply finite, there
+    exists a natural number $n$ and an injective function $g : \V \to \T(n)$.
+    Then by Theorem \ref{inj-comp}, $g \circ f$ is an injective function from
+    $\U$ to $\T(n)$, so $\U$ is simply finite.
+\end{proof}
+
+\begin{theorem} \label{simple-finite-nat}
+    For all $n : \N$, $\T(n)$ is simply finite.
+\end{theorem}
+\begin{proof}
+    The identity function is injective.
+\end{proof}
+
+\begin{theorem} \label{simple-finite-sum}
+    If $\U$ and $\V$ are simply finite types, then $\U + \V$ is as well.
+\end{theorem}
+\begin{proof}
+    Let $m$ and $n$ be natural numbers such that there are injective functions
+    $f : \U \to \T(m)$ and $g : \V \to \T(n)$.  Now because $f(x) < m$ for all
+    $x : \U$, we also have $f(x) < m + n$ for all $x$.  Furthermore, because
+    $g(x) < n$ for all $x : \V$, we have $m + g(x) < m + n$.  With this we can
+    define a function $h$ from $\U + \V$ to $\T(m + n)$:
+    \[
+        h(x) =
+        \begin{cases}
+            f(x) \quad &\text{if $x : \A$} \\
+            m + g(x) \quad &\text{if $x : \B$.}
+        \end{cases}
+    \]
+    It remains to prove that $h$ is injective.  Let $a$ and $b$ be values in $\U
+    + \V$ such that $h(a) = h(b)$.  We must prove that $a = b$.  There are four
+    cases, depending on when $a$ and $b$ are in $\U$ or $\V$.
+    \begin{case} $a : \U$ and $b : \U$. \\
+        Here we have $f(a) = f(b)$.  Because $f$ is injective, we have $a = b$
+        as required.
+    \end{case}
+    \begin{case} $a : \U$ and $b : \V$. \\
+        Here we have $f(a) = m + g(b)$.  But $f(a) < m$, meaning that $m + g(b)
+        < m$.  Thus, this case is impossible.
+    \end{case}
+    \begin{case} $a : \V$ and $b : \U$. \\
+        Here we have $m + g(a) = f(b)$.  But $f(b) < m$, meaning that $m + g(a)
+        < m$.  Thus, this case is impossible.
+    \end{case}
+    \begin{case} $a : \U$ and $b : \U$. \\
+        Here we have $m + g(a) = m + g(b)$.  By canceling $m$ we get $g(a) =
+        g(b)$.  Because $g$ is injective, we have $a = b$ as required.
+    \end{case}
+\end{proof}
+
+\begin{theorem} \label{simple-finite-prod}
+    If $\U$ and $\V$ are simply finite types, then $\U \times \V$ is as well.
+\end{theorem}
+\begin{proof}
+    Let $m$ and $n$ be natural numbers such that there are injective functions
+    $f : \U \to \T(m)$ and $g : \V \to \T(n)$.  We know that for all $a : \U$
+    and $b : \V$, $f(a) < m$ and $g(b) < n$.  By Theorem \ref{nat-le-suc-lt},
+    $S(f(a)) \leq m$.  We can multiply this inequality by $n$ to get $nS(f(a)) =
+    nf(a) + n \leq mn$.  Because $g(b) < n$, we have $nf(a) + g(b) < mn$.  Thus,
+    we can define a function $h : \U \times \V \to \T(mn)$ with $h(a, b) = nf(a)
+    + g(b)$.  It remains to prove that $h$ is injective.
+
+    Let $(a_1, a_2)$ and $(b_1, b_2)$ be such that $h(a_1, a_2) = h(b_1, b_2)$.
+    We must prove that $a_1 = b_1$ and $a_2 = b_2$.  Because $h(a_1, a_2) =
+    h(b_1, b_2)$ we have
+    \[
+        nf(a_1) + g(a_2) = nf(b_1) + g(b_2).
+    \]
+    For the sake of a contradiction, assume that $f(a_1) \neq f(b_1)$.  Without
+    loss of generality we can assume that $f(a_1) < f(b_1)$.  By Theorem
+    \ref{nat-lt-ex}, there exists some $c$ such that $f(a_1) + S(c) = f(b_1)$.
+    Then we have
+    \[
+        nf(a_1) + g(a_2) = nf(a_1) + nS(c) + g(b_2).
+    \]
+    Canceling $nf(a_1)$, we get
+    \[
+        g(a_2) = nS(c) + g(b_2).
+    \]
+    But $g(a_2) < n$, so
+    \[
+        nS(c) + g(b_2) = n + nc + g(b_2) < n,
+    \]
+    which is a contradiction.  Thus, $f(a_1) = f(b_1)$.
+
+    From here the rest of the proof is relatively straightforward.  Because
+    $f(a_1) = f(b_1)$ and $f$ is injective, $a_1 = b_1$.  Furthermore, we now
+    have
+    \[
+        nf(a_1) + g(a_2) = nf(a_1) + g(b_2),
+    \]
+    so by canceling we get
+    \[
+        g(a_2) = g(b_2).
+    \]
+    Again, $g$ is injective, so $a_2 = b_2$.  We have shown that $a_1 = b_1$ and
+    $a_2 = b_2$, so $h$ is injective.
+\end{proof}
+
+\begin{theorem} \label{simple-finite-bij}
+    If $\U$ is a simply finite type, then there exists an $n : \N$ and a
+    bijective function $f : \U \to \T(n)$.
+\end{theorem}
+\begin{proof}
+    Let $n$ be a natural number and $f$ an injective function from $\U$ to
+    $\T(n)$.  The proof will be by induction on $n$.  When $n = 0$, because
+    $\T(0)$ is empty, $f$ is necessarily the empty function, which is bijective.
+    Thus the base case holds.  Now assume that for all types $\U'$ and natural
+    numbers $n$ with an injective function $f' : \U' \to \T(n)$, there exists a
+    natural number $m$ and a bijective function $g' : \U' \to \T(m)$.  We must
+    prove that for all $n$ and injective functions $f : \U \to \T(S(n))$, there
+    exists a bijective function $g : \U \to \T(S(n))$.  Now if $f(a) \neq n$ for
+    all $a : \U$, then $f$ itself is a function from $\U$ to $\T(n)$, so the
+    result follows directly from the inductive hypothesis.  Thus, we now only
+    need to consider the case of when there exists an $a : \U$ such that $f(a) =
+    n$.
+
+    Define a new type $\V = \T(\{x : \U \mid x \neq a\})$.  We will now prove
+    that for all $x : \V$, $f(x) < n$.  First, by definition of $f$, we have
+    $f(x) < S(n)$, which by Theorem \ref{nat-lt-suc-le} means that $f(x) \leq
+    n$.  Assume for a contradiction that $f(x) = n$.  Then because $f(a) = n$,
+    we have $f(x) = f(a)$, and by injectivity, $x = a$, which is a
+    contradiction.  Thus, $f(x) \neq n$.  Because $f(x) \leq n$ and $f(x) \neq
+    n$, we have $f(x) < n$.
+
+    Thus, restricting $f$ to $\V$ produces an injective function $\V \to \T(n)$,
+    so by the inductive hypothesis there exists a natural number $m$ and a
+    bijective function $g' : \V \to \T(m)$.  We can define a new function $g :
+    \U \to \T(S(m))$ by
+    \[
+        g(x) = \begin{cases}
+            m \quad &\text{if $x = a$} \\
+            g'(x) \quad &\text{if $x \neq a$.}
+        \end{cases}
+    \]
+    We will now prove that $g$ is bijective.
+
+    To prove that $g$ is injective, let $x$ and $y$ be elements of $\U$ with
+    $g(x) = g(y)$.  We must prove that $x = y$.  If $x = a$ and $y = a$, this is
+    trivial.  If $x = a$ and $y \neq a$, $g(x) = g(y)$ implies that $m = g'(y)$.
+    But $g'(y) < m$, so this is impossible.  The case $x \neq a$ and $y = a$ is
+    similar.  If $x \neq a$  and $y \neq a$, then $g(x) = g(y)$ implies that
+    $g'(x) = g'(y)$, and because $g'$ is injective, $x = y$ as required.
+
+    To prove that $g$ is surjective, let $y$ be a natural number less than
+    $S(m)$.  If $y = m$, then $g(a) = m = y$ as required.  If $y \neq m$, then
+    $y < m$, and because $g'$ is surjective, there exists an $x$ such that
+    $g'(x) = y$, and thus $g(x) = y$ as required.  Thus, $g$ is surjective.
+
+    Because $g$ is injective and surjective, it is bijective, so $g$ is a
+    bijective function from $\U$ to $\T(S(m))$.
+\end{proof}
+
+\begin{theorem} \label{nat-not-finite}
+    The natural numbers are not simply finite.
+\end{theorem}
+\begin{proof}
+    Assume that there exists a natural number $n$ and an injective function $f :
+    \N \to \T(n)$.  We will derive a contradiction using induction on $n$.  When
+    $n = 0$, then $f$ is a function from a nonempty type to the empty type
+    $\T(0)$, which is impossible.  Thus the base case is true.  Now assume that
+    it's impossible to have an injective function from $\N$ to $\T(n)$.  We must
+    derive a contradiction from the existence of an injective function $f : \N
+    \to \T(S(n))$.  Now if $f(a) \neq n$ for all $a : \N$, then $f$ itself is a
+    function from $\N$ to $\T(n)$, which is impossible by the inductive
+    hypothesis.  Thus, we now only need to consider the case of when there
+    exists an $a : \N$ such that $f(a) = n$.
+
+    Now define a new function $g : \N \to \N$ given by
+    \[
+        g(x) = \begin{cases}
+            f(x) \quad &\text{if $x < a$} \\
+            f(S(x)) \quad &\text{otherwise.}
+        \end{cases}
+    \]
+    We will now prove that for all $x : \N$, $g(x) < n$.  First, because $g$ is
+    defined to always be some output of $f$, $g(x) < S(n)$, so $g(x) \leq n$.
+    So we only need to prove that $g(x) \neq n$.  If $g(x) = n$, because $f(a) =
+    n$, we have $g(x) = f(a)$.  Now when $x < a$, we have $g(x) = f(x) = f(a)$,
+    and by injectivity we have $x = a$, contradicting $x < a$.  Now when $\neg(x
+    < a)$, we have $g(x) = f(S(x)) = f(a)$, and by injectivity we have $S(x) =
+    a$, meaning that $\neg(x < S(x))$, contradicting Theorem \ref{nat-lt-suc}.
+    Thus, both cases have a contradiction, so we have $g(x) \neq n$, meaning
+    that $g(x) < n$ for all $x : \N$.  This means that $g$ is a function from
+    $\N \to \T(n)$.
+
+    We will now prove that it is injective.  Let $x$ and $y$ be natural numbers
+    such that $g(x) = g(y)$.  We must prove that $x = y$.  If $x < a$ and $y <
+    a$, we have $f(x) = f(y)$, and by injectivity of $f$ we get $x = y$.  If $x
+    < a$ and $a \leq y$, we get $f(x) = f(S(y))$, and by injectivity of $f$ we
+    get $x = S(y)$.  But this implies $S(y) < a \leq y$, contradicting Theorem
+    \ref{nat-lt-suc}.  The case $a \leq x$ and $y < a$ is similar.  If $a \leq
+    x$ and $a \leq y$, then $f(S(x)) = f(S(y))$, and by injectivity of $f$ we
+    get $S(x) = S(y)$, so $x = y$.  By exhausting all cases, we see that $g$ is
+    injective.
+
+    We now see that $g$ is an injective function from $\N \to \T(n)$, which is
+    impossible by the inductive hypothesis.  Thus, we see by induction that
+    there is no injective function $\N \to \T(n)$ for any $n : \N$, showing that
+    $\N$ is not simply finite.
+\end{proof}
+
+\begin{theorem} \label{simple-finite-min}
+    If $\U$ is a totally-ordered simply finite set, then $\U$ has a minimum
+    element.
+\end{theorem}
+\begin{proof}
+    Assume that $\U$ has no minimum element.  This means that for all $m : \U$,
+    there exists an $a < m$.  Let $f$ be a function from $\N$ to $\U$ defined
+    recursively such that $f(S(x))$ is such an element less than $f(x)$.  We
+    will prove that $f$ is injective.  Let $a$ and $b$ be natural numbers such
+    that $f(a) = f(b)$.  We must prove that $a = b$.
+
+    Assume that $a \neq b$.  Without loss of generality we can assume that $a <
+    b$.  From this we can prove that $f(b) < f(a)$.  Because $a < b$, we know
+    that there exists a $c$ such that $a + S(c) = b$.  We will now prove that
+    $f(a + S(c)) < f(a)$ by induction on $c$.  When $c = 0$, $f(S(a)) < f(a)$ by
+    the definition of $f$, so the base case is true.  When $f(a + S(c)) < f(a)$,
+    then $f(a + S(S(c))) < f(a + S(c))$ by the definition of $f$, so by
+    transitivity we have $f(a + S(S(c))) < f(a)$, proving the inductive case.
+    Thus, by induction, $f(b) < f(a)$.  But this contradicts $f(a) = f(b)$,
+    meaning that our original assumption of $a \neq b$ is false.  Thus, $a = b$,
+    and $f$ is injective.
+
+    Because $\U$ is simply finite, there exists a natural number $n$ and an
+    injective function $g : \U \to \T(n)$.  The function $g \circ f : \N \to
+    \T(n)$ is thus an injective function, proving that $\N$ is simply finite,
+    contradicting Theorem \ref{nat-not-finite}.  Thus, $\U$ has a minimum
+    element.
+\end{proof}
+
+\begin{theorem} \label{simple-finite-max}
+    If $\U$ is a totally-ordered simply finite set, then $\U$ has a maximum
+    element.
+\end{theorem}
+\begin{proof}
+    This follows from the previous theorem by using the dual relation to $\leq$.
+\end{proof}
+
+\section{Transfinite Induction and Recursion}
+
+In a well-ordered type, there are two useful theorems that we can use:
+transfinite induction and transfinite recursion.  In this section, let $\U$ be a
+well-ordered type.
+
+\begin{theorem}[Transfinite Induction] \label{transfinite-induction}
+    For all sets $S : \set{\U}$, if for all $\alpha : \U$, $\beta \in S$ for all
+    $\beta < \alpha$ implies that $\alpha \in S$, then $\alpha \in S$ for all
+    $\alpha : \U$.
+\end{theorem}
+\begin{proof}
+    Assume that there is some $\alpha \notin S$.  Then there exists some element
+    in set $S^c$, and because $\U$ is well-ordered, there exists a least element
+    $\beta \in S^c$.  Because $\beta$ is the least element in $S^c$, every
+    element less than $\beta$ is in $S$, so by hypothesis $\beta \in S$ as well,
+    which contradicts $\beta \in S^c$.  Thus, there is no $\alpha \notin S$, so
+    $\alpha \in S$ for all $\alpha : \U$.
+\end{proof}
+
+Transfinite recursion is a bit trickier.  The proof employed here has a few
+lemmas that are repeated for the whole type and for initial segments.  I feel
+like this repetition is unneeded because we can consider an initial segment to
+be its own type, but I have not managed to figure out how to do this in the Coq
+code, so the extra lemmas will be presented here.  Because the proof of the
+lemmas for initial segments is identical to the proof for the whole type, they
+will not be presented here.
+
+Throughout the rest of this section, in addition to $\U$ being a well-ordered
+type, let $\A$ be any type, and let $f$ be a binary function from values $p$ in
+$\U$ and functions $\T(\U_p) \to \A$ to $\A$.  More explicitly, $f$ is of the
+type $\forall p : \U, (\T(\U_p) \to \A) \to \A$.  Given a function $g : \U \to
+\A$ and a value $p : \U$, we define $g \uparrow p$ to be the function from
+$\T(\U_p)$ to $\A$ given by $(g \uparrow p)(x) = g(\stv x)$.
+
+\begin{theorem}[Uniqueness of Transfinite Recursion]
+    For all functions $g$ and $h$ from $\U$ to $\A$, if $g(n) = f(n, g \uparrow
+    n)$ and $h(n) = f(n, h \uparrow n)$ for all $n : \U$, then $g = h$.
+\end{theorem}
+\begin{proof}
+    Let $x : \U$.  We must prove that $g(x) = h(x)$.  By transfinite induction,
+    we can assume that for all $y < x$, $g(y) = h(y)$.  By hypothesis, we can
+    replace $g(x)$ and $h(x)$ with $f(x, g \uparrow x)$ and $f(x, h \uparrow x$,
+    so we must prove that $f(x, g \uparrow x) = f(x, h \uparrow x)$.  It
+    suffices to prove that $g \uparrow x = h \uparrow x$.  Let $y$ be such that
+    $y < x$.  We must prove that $(g \uparrow x)(y) = (h \uparrow x)(y)$, that
+    is, that $g(y) = h(y)$.  This is true by the inductive hypothesis.  Thus, by
+    transfinite induction, the theorem is true.
+\end{proof}
+
+\begin{lemma}[Uniqueness of Transfinite Recursion for Initial Segments]
+    For all $\alpha : \U$ and functions $g$ and $h$ from $\T(\U_\alpha)$ to
+    $\A$, if $g(n) = f(\stv n, g \uparrow n)\footnote{Note that using $g
+    \uparrow n$ in this context is a bit of an abuse of notation.  $g \uparrow
+    n$ is technically a function from $\T(\T(\U_\alpha)_n)$ to $\A$, but we are
+    considering it a function from $\T(\U_n) \to \A$, which we can do by
+    transitivity.  This abuse of notation will be used in the rest of this
+    section as well.}$ and $h(n) = f(\stv n, h \uparrow n)$ for all $n :
+    \T(\U_\alpha)$, then $g = h$.
+\end{lemma}
+\begin{proof}
+    This proof is similar in form to the previous theorem.
+\end{proof}
+
+\begin{lemma} \label{transfinite-recursion-part}
+    For all $g : \forall n, \T(\U_n) \to \A$, if for all $n : \U$ and $a :
+    \T(\U_n)$ we have $g(n, a) = f(\stv a, g(n) \uparrow a)$, then for all $n :
+    \U$ and $a : \T(U_n)$, we have $g(n, a) = f(\stv a, g(\stv a))$.
+\end{lemma}
+\begin{proof}
+    By hypothesis, $g(n, a) = f(\stv a, g(n) \uparrow a)$, so we need to prove
+    that $f(\stv a, g(n) \uparrow a) = f(\stv a, g(\stv a))$.  It suffices to
+    prove that $g(n) \uparrow a = g(\stv a)$, which follows from the uniqueness
+    of transfinite recursion.
+\end{proof}
+
+\begin{lemma} \label{transfinite-recursion-part-initial}
+    For all $\alpha : \U$ and $g : \forall n : \T(\U_\alpha), \T(\U_{\stv n})
+    \to \A$, if for all $n : \T(\U_\alpha)$ and $a : \T(\U_{\stv n})$ we have
+    $g(n, a) = f(\stv a, g(n) \uparrow a)$, then for all $n : \T(\U_\alpha)$ and
+    $a : \T(U_{\stv n})$, we have $g(n, a) = f(\stv a, g(\stv a))$.
+\end{lemma}
+\begin{proof}
+    This proof is similar in form to the previous theorem.
+\end{proof}
+
+\begin{lemma} \label{transfinite-recursion-initial}
+    For all $\alpha : \U$, there exists a function $g : \T(\U_\alpha) \to \A$
+    such that for all $n$, $g(n) = f(\stv n, g \uparrow n)$.
+\end{lemma}
+\begin{proof}
+    By transfinite induction on $\alpha$, we can assume that for all $\beta <
+    \alpha$, there exists a function $h_\beta : \T(\U_\beta) \to \A$ such that
+    for all $n : \T(\U_\beta)$, $h_\beta(n) = f(\stv n, h_\beta \uparrow n)$.
+    We can now define the function $g(n)$ as $g(n) = f(\stv n, h_n)$.  Then for
+    all $n < \alpha$, we must prove that $f(\stv n, h_n) = f(\stv n, f(\stv n,
+    h_n) \uparrow n)$.  It suffices to prove that $h_n = f(\stv n, h_n) \uparrow
+    n$.  This follows from Lemma \ref{transfinite-recursion-part-initial}.
+\end{proof}
+
+\begin{theorem}[Transfinite Recursion]
+    There exists a function $g : \U \to \A$ such that for all $n$, $g(n) = f(n,
+    g \uparrow n)$.
+\end{theorem}
+\begin{proof}
+    By Lemma \ref{transfinite-recursion-initial}, for all $\alpha$, there exists
+    a function $h_\alpha : \T(\U_\alpha) \to \A$ such that for all $n :
+    \T(\U_\alpha)$, $h_\alpha(n) = f(\stv n, h_\alpha \uparrow n)$.  We can now
+    define the function $g(n)$ as $g(n) = f(n, h_n)$.  Then for all $n$, we must
+    prove that $f(n, h_n) = f(n, f(n, h_n) \uparrow n)$.  It suffices to prove
+    that $h_n = f(n, h_n) \uparrow n$.  This follows from Lemma
+    \ref{transfinite-recursion-part}.
+\end{proof}
+
+\section{Zorn's Lemma}
+
+A common alternative to transfinite recursion is Zorn's Lemma.  Throughout this
+section, let $\U$ be a partially-ordered set.  All lemmas and definitions made
+in this section up until Theorem \ref{zorn} will not be referenced outside of
+this section.  We say that a set $S$ has a strict upper bound if there exists an
+$x$ such that for all $a \in S$, $a < x$.
+
+\begin{definition}
+    Define a collection of sets $\mathcal F$ where $S \in \mathcal F$ if and
+    only if $S$ well-orders $\U$ and $S$ has a strict upper bound.
+\end{definition}
+
+\begin{definition}
+    Define a function $f : \mathcal F \rightarrow \U$ that takes in a set in
+    $\mathcal F$ and produces a strict upper bound of that set.
+\end{definition}
+
+\begin{definition}
+    Given a set $C$ and a value $x$, define $P(C, x) = \{y \mid y \in C \wedge y
+    < x\}$.
+\end{definition}
+
+\begin{lemma}
+    For all sets $A$ and values $x$, if $A$ well-orders $\U$, then $P(A, x) \in
+    \mathcal F$.
+\end{lemma}
+\begin{proof}
+    Because $A$ well-orders $\U$, we know that $P(A, x)$ well-orders $\U$ as
+    well.  Because $y < x$ for all $y \in P(A, x)$, $x$ is a strict upper bound.
+    Thus, $P(A, x) \in \mathcal F$.
+\end{proof}
+
+\begin{definition}
+    If a set $A$ well-orders $\U$ and if for all $x \in A$, $x = f(P(A, x))$,
+    then we say that $A$ is conforming.  Call the collection of conforming sets
+    $\mathcal C$.
+\end{definition}
+
+\begin{lemma} \label{conforming-add-wo}
+    If $A \in \mathcal F$ is a conforming set, then $A \cup \{f(A)\}$
+    well-orders $\U$.
+\end{lemma}
+\begin{proof}
+    Let $S$ be a nonempty subset of $A \cup \{f(A)\}$.  There are two cases:
+    when there exists something in $S$ that is not equal to $f(A)$, or when no
+    such element exists.
+
+    When there exists a $y \in S$ such that $f(A) \neq y$, we must have $y \in
+    A$.  Because $A$ is conforming, it is well-ordered, and because $y \in A
+    \cap S$, there exists a least element $a \in A \cap S$.  We will prove that
+    $a$ is the least element of $S$.  Let $z \in S$.  Because $S \subseteq A
+    \cup \{f(A)\}$, either $z \in A$ or $z \in \{f(A)\}$.  When $z \in A$, we
+    have $a \leq z$ because $a$ is the minimum element of $A \cap S$.  When $z
+    \in \{f(A)\}$, we have $z = f(A)$, and $a < z$ by the definition of $f(A)$.
+    Either way, $a \leq z$, so $a$ is the minimum element of $S$.
+
+    Now when there is nothing in $S$ that is not equal to $f(A)$, because $S$ is
+    nonempty, that means that everything in $S$ is equal to $f(A)$, that is, $S
+    = \{f(A)\}$.  In this case, $f(A)$ is trivially the least element of $S$.
+\end{proof}
+
+\begin{lemma} \label{conforming-add-conforming}
+    If $A \in \mathcal F$ is a conforming set, then $A \cup \{f(A)\}$ is
+    conforming.
+\end{lemma}
+\begin{proof}
+    We already know that $A \cup \{f(A)\}$ well-orders $\U$ by the previous
+    theorem, so we only need to prove that for all $y \in A \cup \{f(A)\}$, we
+    have $y = f(P(A \cup \{f(A)\}, y))$.  There are two cases: when $y
+    \in A$, and when $y \in \{f(A)\}$.
+
+    When $y \in A$, because $A$ is conforming, $y = f(P(A, y))$.  Thus, we must
+    prove that $f(P(A, y)) = f(P(A \cup \{f(A)\}, y))$.  It suffices to prove
+    that $P(A, y) = P(A \cup \{f(A)\}, y)$, which we will do by antisymmetry.
+    Let $a \in P(A, y)$.  Then $a \in A \subseteq A \cup \{f(A)\}$ and $a < y$,
+    so $a \in P(A \cup \{f(A)\}, y)$, showing that $P(A, y) \subseteq P(A \cup
+    \{f(A)\}, y)$.  Now let $a \in P(A \cup \{f(A)\}, y)$.  We already have $a <
+    y$, and when $a \in A$, we easily have $a \in P(A, y)$.
+    When $a \in \{f(A)\}$, we have $f(A) < y$, contradicting the definition of
+    $f(A)$.  So we see that $P(A \cup \{f(A)\}, y) \subseteq P(A, y)$.  Thus, by
+    antisymmetry, $P(A, y) = P(A \cup \{f(A)\}, y)$, showing that this case is
+    true.
+
+    Now when $y \in \{f(A)\}$, we must prove that $f(A) = f(P(A \cup \{f(A)\},
+    f(A)))$.  It suffices to prove that $A = P(A \cup \{f(A)\}, f(A))$, which we
+    will do by antisymmetry.  Let $a \in A$.  Then $a \in A \cup \{f(A)\}$ as
+    well, and $a < f(A)$ by the definition of $f(A)$.  Thus, $a \in P(A \cup
+    \{f(A)\}, f(A))$, so $A \subseteq P(A \cup \{f(A)\}, f(A))$.  Now let $a \in
+    P(A \cup \{f(A)\}, f(A))$.  Now $a \notin \{f(A)\}$ because $a < f(A)$, so
+    we must have $a \in A$, showing that $P(A \cup \{f(A)\}, f(A)) \subseteq A$.
+    By antisymmetry, we have seen that $A = P(A \cup \{f(A)\}, f(A))$, showing
+    that this case is true as well.
+\end{proof}
+
+\begin{lemma} \label{zorn-initial1}
+    For all conforming sets $A$ and $B$ and values $a$ and $b$, if $b \in A$, $a
+    \in B$, and $b \notin B$, then $a < b$.
+\end{lemma}
+\begin{proof}
+    Because $b \in A - B$ and $A$ well-orders $\U$, there exists a least element
+    $x \in A - B$.  By transitivity we only need to prove that $a < x$.  For the
+    sake of a contradiction, assume that $a \nless x$.  Then $a \in B - P(A,
+    x)$, so there exists a least element $y \in B - P(A, x)$.  We know that $x
+    \in A - P(B, y)$, so there exists a least element $z \in A - P(B, y)$.  By
+    definition we have $z \leq x$.
+
+    We will now prove that $P(A, z) = P(B, y)$.  To prove that $P(A, z)
+    \subseteq P(B, y)$, let $c \in P(A, z)$.  If $c \notin P(B, y)$, then we
+    would have both $c \in A - P(B, y)$ and $c < z$, contradicting the
+    minimality of $z$, so $c \in P(B, y)$.  Thus, $P(A, z) \subseteq P(B, y)$.
+
+    To prove that $P(B, y) \subseteq P(A, z)$, let $u \in P(B, y)$.  Now $u$
+    must be in $P(A, x)$, because if it was not, we would have $u \in B - P(A,
+    x)$ and $u < y$, contradicting the minimality of $y$.  Thus, we also have $u
+    \in A$, so to prove that $u \in P(A, z)$ all we must prove is that $u < z$.
+    Now $u = z$ is impossible because $u \in P(B, y)$ and $z \notin P(B, y)$.
+    Because $u \in A$ and $z \in A$, they are comparable.  If $u \leq z$,
+    because $u \neq z$, we have $u < z$ as required.  We will show that the $z
+    \leq u$ case is impossible by showing that it implies $z \in P(B, y)$,
+    contradicting $z \notin P(B, y)$.  If $z \leq u$, then because $u < y$, we
+    have $z < y$, so all that remains is showing that $z \in B$.  If $z \notin
+    B$, then $z \in A - B$.  Because $u < x$ (because $u \in P(A, x)$), we also
+    have $z < x$.  This contradicts the minimality of $x$, showing that the case
+    $z \leq u$ is impossible.  Thus, $u \in A$ and $u < z$, showing that $u \in
+    P(A, z)$.  This shows that $P(B, y) \subseteq P(A, z)$, so $P(A, z) = P(B,
+    y)$.
+
+    Because $P(B, y) = P(A, z)$, we have $f(P(B, y)) = f(P(A, z))$.  Because $A$
+    and $B$ are conforming, this implies $y = z$.  Because $z \in A$, we now
+    have $y \in A$.  Because $z \leq x$, we also have $y \leq x$.  Furthermore,
+    $y \neq x$ because $y \in B$ and $x \notin B$, so $y < x$.  Thus, because $y
+    \in A$ and $y < x$, we have $y \in P(A, x)$, contradicting the definition of
+    $y$.  This shows that our (much) earlier assumption that $a \nless x$ is
+    false, proving the lemma.
+\end{proof}
+
+\begin{lemma} \label{zorn-initial2}
+    For all conforming sets $A$ and $B$ and values $a$ and $b$, if $a \leq b$,
+    $a \in A$, and $b \in B$, then $a \in B$.
+\end{lemma}
+\begin{proof}
+    Assume that $a \notin B$.  Then by the previous lemma we would have $b < a$,
+    contradicting $a \leq b$.
+\end{proof}
+
+\begin{lemma}
+    $\bigcup \mathcal C$ is conforming.
+\end{lemma}
+\begin{proof}
+    To prove that $\bigcup \mathcal C$ well-orders $\U$, let $S$ be a nonempty
+    subset of $\bigcup \mathcal C$, so that there exists an $x \in S$.  Because
+    $x \in S \subseteq \bigcup \mathcal C$, there exists some conforming set $A$
+    such that $x \in A$.  Because $A$ well-orders $\U$, because $A \cap S
+    \subseteq A$ and $x \in A \cap S$, we know that there exists a minimum
+    element $a \in A \cap S$.  We will prove that $a$ is the minimum element of
+    $S$ as well.  We know that $a \in S$ already, so all we need to prove is
+    that for all $y \in S$, we have $a \leq y$.  Because $y \in S \subseteq
+    \bigcup \mathcal C$, there exists a conforming set $B$ such that $y \in B$.
+    Now if $y \in A$, then $a \leq y$ because $a$ is the minimum element of $A
+    \cap S$.  If $y \notin A$, then $a < y$ by Lemma \ref{zorn-initial1}.
+    Either way, $a \leq y$, so $a$ is the minimum element of $S$, showing that
+    $\bigcup \mathcal C$ well-orders $\U$.
+
+    Now we must show that for all $x \in \bigcup \mathcal C$, we have $x =
+    f(P(\bigcup \mathcal C, x))$.  Because $x \in \bigcup \mathcal C$, there
+    exists some conforming set $A$ such that $x \in A$.  Because $A$ is
+    conforming, we know that $x = f(P(A, x))$, so we must prove that $f(P(A, x))
+    = f(P(\bigcup \mathcal C, x))$.  It suffices to prove that $P(A, x) =
+    P(\bigcup \mathcal C, x)$, which we will now prove by antisymmetry.  Let $c
+    \in P(A, x)$.  Since $c \in A$ and $A$ is conforming, we know that $c \in
+    \bigcup \mathcal C$, and because $c < x$, we have $c \in P(\bigcup \mathcal
+    C, x)$.  Thus, $P(A, x) \subseteq P(\bigcup \mathcal C, x)$.  Now let $c \in
+    P(\bigcup \mathcal C, x)$.  Because $c \in \bigcup \mathcal C$, there exists
+    a conforming set $B$ with $c \in B$.  By Lemma \ref{zorn-initial2} we know
+    that $c \in A$, and because $c < x$, we have $c \in P(A, x)$.  Thus,
+    $P(\bigcup \mathcal C, x) \subseteq P(A, x)$, so by antisymmetry we have
+    $P(A, x) = P(\bigcup \mathcal C, x)$.
+\end{proof}
+
+\begin{lemma} \label{union-no-sub}
+    $\bigcup \mathcal C$ has no strict upper bound.
+\end{lemma}
+\begin{proof}
+    Assume that it does have a strict upper bound.  Then $\bigcup \mathcal C \in
+    \mathcal F$.  Define $x = f(\bigcup \mathcal C)$.  By Lemma
+    \ref{conforming-add-conforming}, we know that $\bigcup \mathcal C \cup
+    \{x\}$ is conforming, so $\bigcup \mathcal C \cup \{x\} \subseteq \bigcup
+    \mathcal C$, showing that $x \in \bigcup \mathcal C$.  However, this implies
+    that $x < x$, which is a contradiction.  Thus, $\bigcup \mathcal C$ has no
+    strict upper bound.
+\end{proof}
+
+Notice that up until now we have never used the hypothesis of Zorn's lemma,
+showing that in any partially ordered set, there exists a well-ordered subset
+that has no strict upper bound.  From this fact, Zorn's lemma itself is trivial.
+
+\begin{theorem}[Zorn's Lemma] \label{zorn}
+    If every chain in $\U$ has an upper bound, then $\U$ has a maximal element.
+\end{theorem}
+\begin{proof}
+    $\bigcup \mathcal C$ is a chain, so it has an upper bound $m$.  If there
+    existed some element $x > m$, $x$ would be a strict upper bound of $\bigcup
+    \mathcal C$, contradicting Lemma \ref{union-no-sub}.  Thus, $m$ is a maximal
+    element of $\U$.
+\end{proof}
+
+The rest of this section will be several subsections describing particular
+special cases of Zorn's lemma that are often useful.
+
+\subsection{Zorn's lemma on preorders}
+
+Let $\U$ be a set with an order that is only reflexive and transitive.  Such an
+order is called a preorder.
+
+\begin{definition}
+    Define a relation $\sim$ on $\U$ where $a \sim b$ if and only if $a \leq b$
+    and $b \leq a$.
+\end{definition}
+
+\begin{instance}
+    $\sim$ is an equivalence relation.
+\end{instance}
+\begin{proof}
+    $\sim$ is reflexive by the reflexivity of $\leq$.  $\sim$ is symmetric by
+    the commutativity of logical conjunction.  Now if $x \sim y$ and $y \sim z$,
+    then $x \leq z$ and $z \leq x$ by transitivity of $\leq$, so $\sim$ is
+    transitive.
+\end{proof}
+
+\begin{lemma}
+    $\leq$ is well-defined under the equivalence relation $\sim$.
+\end{lemma}
+\begin{proof}
+    By symmetry all we need to prove is that if $a \sim b$, $c \sim d$, and $a
+    \leq c$, then $b \leq d$.  From $a \sim b$ we know that $b \leq a$, and from
+    $c \sim d$ we know that $c \leq d$.  Thus, by transitivity with $b \leq a$,
+    $a \leq c$, and $c \leq d$, we have $b \leq d$ as required.
+\end{proof}
+
+\begin{instance}
+    In $\U/\usim$, $\leq$ is a partial order.
+\end{instance}
+\begin{proof}
+    Reflexivity and transitivity follow directly from the reflexivity and
+    transitivity of $\leq$ in $\U$.  For antisymmetry, $a \leq b$ and $b \leq a$
+    is the definition of $a = b$.
+\end{proof}
+
+Using $\sim$, we can prove a version of Zorn's lemma that is valid on preorders:
+
+\begin{theorem}[Zorn's lemma on preorders] \label{preorder-zorn}
+    If every chain in $\U$ has an upper bound, then there exists an element $a :
+    \U$ such that for all $x \geq a$, we also have $a \geq x$.
+\end{theorem}
+\begin{proof}
+    Let $F'$ be a chain in $\U/\usim$.  Now define a set $F : \U \to \Prop$
+    given by $F = \{x : \U, [x] \in F'\}$.  We will prove that $F$ is a chain.
+    Let $x$ and $y$ be elements of $F$.  Then $[x] \in F'$ and $[y] \in F'$, and
+    because $F'$ is a chain, $[x]$ and $[y]$ are comparable.  Thus, $x$ and $y$
+    are comparable as well, proving that $F$ is a chain.  Thus, by hypothesis,
+    $F$ has an upper bound $a$.  Let $[x]$ be an element of $F'$.  Then $x \in
+    F$, so $x \leq a$.  This means that $[x] \leq [a]$ as well, showing that
+    $[a]$ is an upper bound of $F'$.  Thus, every chain in $\U/\usim$ has an
+    upper bound.
+
+    Because of this, we can apply Zorn's lemma on $\U/\usim$ to get a maximal
+    element $[a]$ of $\U/\usim$.  We will show that $a$ is the element we are
+    looking for.  Let $x \geq a$.  Then $[x] \geq [a]$, and because $[a]$ is
+    maximal, we must have $[x] = [a]$.  This implies that $a \geq x$, as
+    required.
+\end{proof}
+
+\subsection{Zern's lemma on subsets}
+
+\begin{theorem} \label{set-zorn}
+    Let $\U$ be a type and $\mathcal S$ be a collection of sets on $\U$.  If
+    for every chain $\mathcal F$ made up of sets in $\mathcal S$, we have
+    $\bigcup \mathcal F \in \mathcal S$ as well, then $\mathcal S$ has a maximal
+    element with respect to set inclusion.
+\end{theorem}
+\begin{proof}
+    $\mathcal S$ is partially ordered by inclusion, so if we can prove that
+    every chain has an upper bound, Zorn's lemma provides the maximal element.
+    Given a chain $\mathcal F$ and a set $A \in \mathcal F$, we know that $A
+    \subseteq \bigcup \mathcal F$.  Because $\bigcup \mathcal F \in \mathcal S$
+    by hypothesis, this means that $\bigcup \mathcal F$ is an upper bound of
+    $\mathcal F$.
+\end{proof}
+
+\section{The Well-Ordering Theorem}
+
+\begin{theorem}
+    Every type can be well-ordered.
+\end{theorem}
+\begin{proof}
+    Let $\U$ be a type.  Consider the set $\mathcal F : ((\U \to \Prop) \times
+    (\U \to \U \to \Prop)) \to \Prop$, where $(D, \leq) \in \mathcal F$ if and
+    only if:
+    \begin{enumerate}
+        \item For all $a$ and $b$ in $D$, if $a \leq b$ and $b \leq a$, then $a
+        = b$.
+        \item $D$ well-orders $\U$ under $\leq$.
+        \item If $a \notin D$, then for all $b$, $a \leq b$ and $b \leq a$.
+    \end{enumerate}
+    Note that this is slightly different from the usual proofs given for the
+    well-ordering theorem: they usually consider well-orderings of subsets of
+    $\U$, whereas here we allow the relation to be defined on all of $\U$, but
+    only a well-ordering on a subset.  This is because working on relations on
+    sets of a type involves having to deal with dependent types, which can be
+    annoying to work with in Coq and their use is preferably avoided unless
+    needed.
+
+    For any $(D, \leq) \in \mathcal F$, because $D$ well-orders $\U$, we also
+    know that $D$ is a chain, and that $\leq$ is reflexive (in fact, $\leq$ is
+    reflexive outside of $D$ as well, because we have defined $\mathcal F$ such
+    that all elements outside $D$ are related to every element).
+
+    To prove that $(A, \leq_A) = (B, \leq_B)$, it suffices to prove that $A = B$
+    and that $\leq_A$ and $\leq_B$ agree on $A$.  Both $\leq_A$ and $\leq_B$ are
+    defined such that any elements not in $A$ are related to every other
+    element, so if they agree on $A$, they agree on all arguments and are equal.
+
+    We will now define an order on $\mathcal F$ where we define $(A, \leq_A)
+    \leq (B, \leq_B)$ if and only if:
+    \begin{enumerate}
+        \item (Subset) $A \subseteq B$.
+        \item (Equality) For all $a \in A$ and $b \in B$, if $a \leq_A b$, then
+        $a \leq_B b$.
+        \item (Extension) For all $a \in A$ and $b \notin A$, then $a \leq_B b$.
+    \end{enumerate}
+    This is a partial order, as we will now prove.
+
+    Let $(D, \leq_D)$ be in $\mathcal F$.  We have $D \subseteq D$ and $a \leq_D
+    b \to a \leq_D b$ trivially.  The extension condition for $(D, \leq_D) \leq
+    (D, \leq_D)$ follows from the extension condition of $\mathcal F$.  Thus,
+    the order on $\mathcal F$ is reflexive.
+
+    Let $(A, \leq_A)$ and $(B, \leq_B)$ be elements of $\mathcal F$ such that
+    $(A, \leq_A) \leq (B, \leq_B)$ and $(B, \leq_B) \leq (A, \leq_B)$.  We have
+    $A \subseteq B$ and $B \subseteq A$, so $A = B$.  To prove that $\leq_A =
+    \leq_B$, let $a$ and $b$ be elements of $A$.  We need to prove that $a
+    \leq_A b \leftrightarrow a \leq_B b$.  This follows from the equality
+    condition of $\leq$.  Thus, the order on $\mathcal F$ is antisymmetric.
+
+    Let $(A, \leq_A)$, $(B, \leq_B)$, and $(C, \leq_C)$ be elements of $\mathcal
+    F$ such that $(A, \leq_A) \leq (B, \leq_B)$ and $(B, \leq_B) \leq (C,
+    \leq_C)$.  Then we have $A \subseteq B$ and $B \subseteq C$, so $A \subseteq
+    C$ by transitivity.  Now let $a \in A$ and $b \in A$ and assume that $a
+    \leq_A b$.  Then from the equality condition of $(A, \leq_A) \leq (B,
+    \leq_B)$, we have $a \leq_B b$, and from the equality condition of $(B,
+    \leq_B) \leq (C, \leq_C)$, we have $a \leq_C b$ as required for the equality
+    condition of $\leq$.  Finally, we need to prove that for all $a \in A$ and
+    $b \notin A$, we have $a \leq_C b$.  From the extension condition for $(A,
+    \leq_A) \leq (B, \leq_B)$, we have $a \leq_B b$.  Now if $b \in B$, we would
+    have $a \leq_C b$ from the equality condition of $(B, \leq_B) \leq (C,
+    \leq_C)$.  If $b \notin B$, we would have $a \leq_C b$ from the extension
+    condition of $(B, \leq_B) \leq (C, \leq_C)$.  Either way, $a \leq_C b$,
+    showing that the extension condition holds.  Thus, all three conditions
+    hold, so $(A, \leq_A) \leq (C, \leq_C)$, and the order on $\mathcal F$ is
+    transitive.
+
+    We will now show that every chain in $\mathcal F$ has an upper bound.  Let
+    $\mathcal C$ be a chain in $\mathcal F$.  Consider the set $F$ that
+    is the union of all of the domains in $\mathcal C$.  We will also define a
+    relation $\leq_F$ by saying that for $a \leq_F b$ if and only if either one
+    of these conditions hold:
+    \begin{enumerate}
+        \item There exists an $(A, \leq_A) \in \mathcal C$ such that $a \in A$,
+        $b \in A$, and $a \leq_A b$.
+        \item There exists no $(A, \leq_A) \in \mathcal C$ such that $a \in A$
+        and $b \in A$.
+    \end{enumerate}
+    We will now prove that $(F, \leq_F) \in \mathcal F$.
+
+    For antisymmetry, let $a$ and $b$ be in $F$, and let $a \leq_F b$ and $b
+    \leq_F a$.  We have four cases, depending on the two cases created by
+    $a \leq_F b$ and $b \leq_F a$.
+    \begin{case} There exists an $(A, \leq_A) \in \mathcal C$ such that $a \in
+    A$, $b \in A$, and $a \leq_A b$, and there exists a $(B, \leq B) \in
+    \mathcal C$ such that $a \in B$, $b \in B$, and $b \leq_B a$. \\
+        \indent In this case, because $(A, \leq_A)$ and $(B, \leq_B)$ are both
+        in $\mathcal C$, they are comparable, so that we either have $a \leq_A
+        b$ and $b \leq_A a$, or $a \leq_B b$ and $b \leq_B a$.  In either case,
+        the result follows from antisymmetry.
+    \end{case}
+    \begin{case} There exists an $(A, \leq_A) \in \mathcal C$ such that $a \in
+    A$, $b \in A$, and $a \leq_A b$, but there exists no $(B, \leq_B) \in
+    \mathcal C$ such that $a \in B$ and $b \in B$. \\
+        \indent This case is impossible.
+    \end{case}
+    \begin{case} There exists no $(A, \leq_A) \in \mathcal C$ such that $a \in
+    A$ and $b \in A$, but there exists a $(B, \leq_B) \in \mathcal C$ such that
+    $a \in B$ and $b \in B$, and $a \leq_B b$. \\
+        \indent This case is impossible.
+    \end{case}
+    \begin{case} There exists no $(A, \leq_A) \in \mathcal C$ such that $a \in
+    A$ and $b \in A$, and there exists no $(B, \leq_B) \in \mathcal C$ such that
+    $a \in B$ and $b \in B$. \\
+        \indent Because $a \in F$ we have an $(A, \leq_A) \in \mathcal C$ such
+        that $a \in A$.  Likewise, because $b \in F$, we have a $(B, \leq_B) \in
+        \mathcal C$ such that $b \in B$.  Because $F$ is a chain, $(A, \leq_A)$
+        and $(B, \leq_B)$ are comparable.  Assume without loss of generality
+        that $(A, \leq_A) \leq (B, \leq_B)$.  Then we have both $a \in B$ and $b
+        \in B$, contradicting the premise of this case.  Thus, this case is also
+        impossible.
+    \end{case}
+    \noindent All cases have been checked, so $\leq_F$ is antisymmetric in $F$.
+
+    To prove that $F$ well-orders $\U$ under $\leq_F$, let $S$ be a subset of
+    $F$ and $x$ be an element of $S$.  This means that $x \in F$, so there
+    exists an $(A, \leq_A) \in \mathcal C$ such that $x \in A$.  Then $A \cap S$
+    is a nonempty subset of $S$, so it has a least element $a$.  We will prove
+    that $a$ is the least element of $A$.  Let $b \in S$.  If $b \in A$, then $a
+    \leq_A b$ by $a$ being the least element of $A \cap F$, so $a \leq_F b$.  If
+    $b \notin A$, because $b \in S$, there exists a $(B, \leq_B) \in \mathcal C$
+    such that $b \in B$.  Because they are in $\mathcal C$, $(A, \leq_A)$ and
+    $(B, \leq_B)$ are comparable.  If $(B, \leq_B) \leq (A, \leq_A)$, then $b
+    \in A$, so $a \leq_A b$ by $a$ being the least element of $A \cap F$, so $a
+    \leq_F b$.  If $(A, \leq_A) \subseteq (B, \leq_B)$, by the extension
+    condition, we have $a \leq_B b$, so $a \leq_F b$.  In all cases, $a \leq_F
+    b$, so $a$ is the minimum element of $S$.
+
+    For the last condition for $(F, \leq_F) \in \mathcal C$, let $a \notin F$
+    and let $b$ be arbitrary.  Because $a \notin F$, there exists no $(A,
+    \leq_A) \in \mathcal C$ such that $a \in A$ and $b \in A$.  This means that
+    the second condition of $\leq_F$ is true for both $a \leq_F b$ and $b \leq_F
+    a$.
+
+    We have now shown that $(F, \leq_F) \in \mathcal F$.  We will now show that
+    it is an upper bound of $\mathcal C$.  Let $(A, \leq_A)$ be an element of
+    $\mathcal C$.  $A \subseteq F$ is trivial by the definition of $F$.  To
+    prove the equality condition, note that when we have an $a \in A$ and a $b
+    \in A$ with $a \leq_A b$, we have one of the possible conditions for $a
+    \leq_F b$.  To prove the extension condition, let $a \in A$ and $b \notin
+    A$.  If there did not exist a $(B, \leq_B) \in \mathcal C$ such that $a \in
+    B$ and $b \in B$, we would have $a \leq_F b$ because the second condition is
+    satisfied.  So assume there is a $(B, \leq_B) \in \mathcal C$ such that $a
+    \in B$ and $b \in B$.  Because $(A, \leq_A)$ and $(B, \leq_B)$ are both in
+    $\mathcal C$, they are comparable.  If $(A, \leq_A) \leq (B, \leq_B)$, then
+    by the extension condition we have $a \leq_B b$, proving $a \leq_F b$.  If
+    $(B, \leq_B) \leq (A, \leq_A)$, then we would have $b \in A$, which
+    contradicts $b \notin A$.  Every case has been accounted for, so $\leq_F$
+    satisfies the extension condition.  Because $\leq_F$ satisfies all of the
+    conditions, $(A, \leq_A) \leq (F, \leq_F)$.
+
+    Thus, $(F, \leq_F)$ is an upper bound of $\mathcal C$, showing that every
+    chain in $\mathcal F$ has an upper bound.  Because every chain has an upper
+    bound, by Zorn's lemma there exists a maximal element $(W, \leq_W) \in
+    \mathcal F$.  We will now prove that $W = \bm U$.
+
+    Assume that $W \neq \bm U$, that is, that there is some $x \notin W$.  Then
+    define the set $X = W \cup \{x\}$ and a new relation $\leq_X$ defined
+    piecewise by
+    \[
+        a \leq_X b =
+        \begin{cases}
+            a \leq_W b  & \quad \text{if $a \in W$ and $b \in W$} \\
+            x \neq a    & \quad \text{if $a \notin W$ and $b \in W$} \\
+            \verb|True| & \quad \text{if $b \notin W$.}
+        \end{cases}
+    \]
+    We will prove that $(X, \leq_X) \in \mathcal F$.
+
+    To prove that $\leq_X$ is antisymmetric in $X$, let $a$ and $b$ be elements
+    of $X$ with $a \leq_X b$ and $b \leq_X a$.  Now if $a$ and $b$ are in $W$,
+    then they are equal by the antisymmetry of $\leq_W$.  If they are both not
+    in $W$, then they are both equal to $x$ and are equal.  If $a \in W$ and $b
+    \notin W$, this means that $x \neq b$ (from $b \leq_X a$) and $x = b$ (from
+    $b \notin W$), so this case is impossible.  The case $a \notin W$ and $b \in
+    W$ is similar.  Thus, all cases have been accounted for, so $\leq_X$ is
+    antisymmetric in $X$.
+
+    To prove that $X$ well-orders $\U$ under $\leq_X$, let $S$ be a subset of
+    $X$ and let $x$ be an element of $S$.  Now we have two cases: either $S =
+    \{x\}$, or there exists something in $S$ that is in $W$.  When $S = \{x\}$,
+    $\{x\}$ is the least element of $S$ because $x \notin W$ implies that $x
+    \leq_X x = \verb|True|$.  When an element $y'$ is in both $S$ and $W$,
+    because $W$ well-orders $\leq_W$, there is a least element $a$ in $S \cap
+    W$.  Then $a$ is a least element in $S$, because for any other $b \in S$, if
+    $b \in W$, then $a \leq b$ by $a$ being the least element in $S \cap W$, and
+    if $b \notin W$, then $a \leq_X b$ by definition.  Thus, $X$ well-orders
+    $\U$ under $\leq_X$.
+
+    For the final condition for $(X, \leq_X) \in \mathcal F$, let $a \notin X$
+    and $b$ be an arbitrary element.  Because $a \notin X$, we know that $a
+    \notin W$ and $a \neq x$.  Because $a \notin W$, we easily have $b \leq_X
+    a$.  If $b \notin W$, we again would easily have $a \leq_X b$, and if $b \in
+    W$, then $a \leq_X b$ because $a \neq x$.  We have seen that $a \leq_X b$
+    and $b \leq_X a$, so $(X, \leq_X)$ satisfies the third condition of being in
+    $\mathcal F$.
+
+    Thus, $(X, \leq_X) \in \mathcal X$.  We will now prove that $(W, \leq_W)
+    \leq (X, \leq_X)$.  $W \subseteq W \cup \{x\} = X$ is trivial.  Equality and
+    extension follow directly from the definition of $X$.  However, $(W, \leq_W)
+    \neq (X, \leq_X)$.  For if it was, then $x \in W$, contradicting our
+    assumption earlier that $x \notin W$.  Thus, $(W, \leq_W) < (X, \leq_X)$.
+    But this contradicts the maximality of $(W, \leq_W)$, showing that our
+    assumption much earlier that $x \notin W$ is false.  Thus, $x \in W$,
+    showing that $W = \bm U$.
+
+    We now have a relation defined on $\U$ that is antisymmetric and
+    well-ordered on all of $\U$.  By Instances \ref{wo-connex} and
+    \ref{wo-trans}, this is enough to prove that $\U$ is well-ordered.
+\end{proof}
+
+Note: While trying to find simpler proofs of the well-ordering theorem (yes, the
+above three pages are simpler than the previous iterations were), I came up with
+a proof that I don't know if I've seen before so I want to at least mention the
+idea here.  The idea is to take the collection $\mathcal C$ of collections
+$\mathcal W$ of $\U$ such that the subset relation of all elements in $\mathcal
+W$ is well-ordered, and that for all $x$ in the union of a collection, there
+exists some set $S$ in the collection with $x \in S$, $S \in \mathcal W$, and
+$(S - \{x\}) \in \mathcal W$.  You can then apply Zorn's lemma to this set of
+collections ordered by inclusion, and then by maximality every element in $\U$
+is in some set in the maximal collection, and then you define $a \leq b$ to mean
+that the minimal set containing $a$ is a subset of the minimal set containing
+$b$.  This does work, and it produces a proof that is roughly the same length as
+the one presented here.  However, it is conceptually much more confusing, so I
+opted to go with this proof.
+
+\end{document}

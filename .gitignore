@@ -4,6 +4,11 @@
 *.vos
 *.aux
 *.v#
+*.log
+*.out
+*.pdf
+*.gz
+*.toc
 /Makefile.conf
 /.Makefile.d
 /html/

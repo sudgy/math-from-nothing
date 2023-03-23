@@ -1,0 +1,1813 @@
+\documentclass[../math.tex]{subfiles}
+\externaldocument{../math.tex}
+\externaldocument{foundations}
+\externaldocument{elementary_algebra}
+
+\begin{document}
+
+\setcounter{chapter}{2}
+
+\chapter{The Natural Numbers} \label{chap-natural}
+
+\begin{definition}[Natural Numbers]
+    Define the type $\N$ inductively with two constructors: a value constructor
+    $0_\N$ and a function constructor $S_\N : \N \rightarrow \N$.
+\end{definition}
+
+In this chapter, $0_\N$ will just be called $0$ and $S_\N$ will just be called
+$S$.  By the properties of inductive constructions (which I admittedly didn't
+develop), this definition satisfies all of the Peano axioms.
+
+The following basic definitions will also be useful in the future:
+\begin{definition}
+    Let $\U$ be a type and $f$ be a function from $\U$ to $\U$.  Then we define
+    the iterated function $f^n(x)$ recursively as follows:
+    \begin{itemize}
+        \item $f^0(x) = x$
+        \item $f^{S(n)}(x) = f(f^n(x))$.
+    \end{itemize}
+\end{definition}
+\begin{definition}
+    Given a type $\U$, we call a function $\N \rightarrow \U$ a sequence of
+    $\U$.
+\end{definition}
+
+\section{Addition}
+
+\begin{instance}
+    Let $a$ and $b$ be natural numbers.  Then we define addition in $\N$
+    recursively on $a$:
+    \begin{itemize}
+        \item $0 + b = b$
+        \item $S(a) + b = a + S(b)$.
+    \end{itemize}
+\end{instance}
+
+\begin{theorem}
+    For all $a$ and $b$,
+    \[
+        S(a) + b = S(a + b).
+    \]
+\end{theorem}
+\begin{proof}
+    We will do this by induction on $a$ with the statement ``For all $b$, $S(a)
+    + b = S(a + b)$.''  When $a = 0$,
+    \[
+        S(0) + b = 0 + S(b) = S(b) = S(0 + b),
+    \]
+    so the base case is true.  Now assume that for all $b$, $S(a) + b = S(a +
+    b)$.  Then
+    \[
+        S(S(a)) + b = S(a) + S(b) = S(a + S(b)) = S(S(a) + b).
+    \]
+    Thus, by induction, $S(a) + b = S(a + b)$ for all $a$ and $b$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$,
+    \[
+        a + S(b) = S(a + b).
+    \]
+\end{theorem}
+\begin{proof}
+    \[
+        a + S(b) = S(a) + b = S(a + b).
+    \]
+\end{proof}
+
+\begin{instance}
+    In the natural numbers we define $0 = 0_\N$.
+\end{instance}
+
+\begin{instance}
+    Zero in $\N$ is a left additive identity.
+\end{instance}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all $a$, $a + 0 = a$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $0 + 0 = 0$, so the
+    base case is true.  Now assume that $a + 0 = a$.  Then
+    \[
+        S(a) + 0 = S(a + 0) = S(a),
+    \]
+    so the inductive case is true.  Thus, by induction, $a + 0 = a$ for all $a$.
+\end{proof}
+Note that once we've proved addition to be commutative, we won't need the
+previous theorem any more.
+
+\begin{instance}
+    Addition in $\N$ is commutative.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be natural numbers.  The proof will be by induction on $a$.
+    When $a = 0$, $0 + b = b = b + 0$, so the base case is true.  Now assume
+    that $a + b = b + a$.  Then
+    \[
+        S(a) + b = S(a + b) = S(b + a) = b + S(a),
+    \]
+    so the inductive case is true.  Thus, by induction, addition is commutative.
+\end{proof}
+
+\begin{instance}
+    Addition in $\N$ is associative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers.  The proof will be by induction on
+    $a$.  When $a = 0$, $0 + (b + c) = b + c = (0 + b) + c$, so the base case is
+    true.  Now assume that $a + (b + c) = (a + b) + c$.  Then
+    \[
+        S(a) + (b + c) = S(a + (b + c)) = S((a + b) + c) = S(a + b) + c
+        = (S(a) + b) + c,
+    \]
+    so the inductive case is true.  Thus, by induction, addition is associative.
+\end{proof}
+
+\begin{instance}
+    Addition in $\N$ is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers.  The proof will by by induction on
+    $c$.  When $c = 0$, we get $0 + a = 0 + b \rightarrow a = b$, so the base
+    case is true.  Now assume that $c + a = c + b \rightarrow a = b$.  Then
+    \begin{align*}
+        S(c) + a &= S(c) + b \\
+        S(c + a) &= S(c + b) \\
+        c + a &= c + b \\
+        a &= c,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, addition is left
+    cancellative.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\N$, if $0 = a + b$, then $0 = a$ and $0 = b$.
+\end{theorem}
+\begin{proof}
+    If $0 \neq a$, then $a = S(a')$ for some $a' : \N$.  Then we would have $0 =
+    S(a') + b = S(a' + b)$.  But it's impossible for zero to equal the successor
+    of a natural number, so we must have $0 = a$.  Then we also get $0 = a + b =
+    0 + b = b$, so we now have $0 = a$ and $0 = b$.
+\end{proof}
+
+\section{Multiplication}
+
+\begin{instance}
+    Let $a$ and $b$ be natural numbers.  Then we define multiplication in $\N$
+    recursively on $a$:
+    \begin{itemize}
+        \item $0b = 0$
+        \item $S(a)b = b + ab$.
+    \end{itemize}
+\end{instance}
+
+\begin{instance}
+    In the natural numbers we define $1 = S(0)$.
+\end{instance}
+
+\begin{instance}
+    One in $\N$ is a left multiplicative identity.
+\end{instance}
+\begin{proof}
+    \[
+        1a = S(0)a = 0a + a = 0 + a = a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$,
+    \[
+        S(a)b = b + ab.
+    \]
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$,
+    \[
+        aS(b) = a + ab.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, we have
+    \[
+        0S(b) = 0 = 0 + 0 = 0 + 0b,
+    \]
+    so the base case is true.  Now assume that $aS(b) = a + ab$.  Then
+    \[
+        S(a)S(b) = S(b) + aS(b) = S(b) + a + ab = b + S(a) + ab = S(a) + b + ab
+        = S(a) + S(a)b,
+    \]
+    so the inductive case is true.  Thus, by induction, $aS(b) = a + ab$ for all
+    $a$ and $b$.
+\end{proof}
+
+\begin{instance} \label{nat-ldist}
+    Multiplication in $\N$ is left distributive over addition.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers.  The proof will be by induction on
+    $a$.  When $a = 0$, $0(b + c) = 0 = 0 + 0 = 0b + 0c$, so the base case is
+    true.  Now assume that $a(b + c) = ab + ac$.  Then
+    \[
+        S(a)(b + c) = b + c + a(b + c) = b + c + ab + ac = b + ab + c + ac =
+        S(a)b + S(a)c,
+    \]
+    so the inductive case is true.  Thus, by induction, multiplication is left
+    distributive over addition.
+\end{proof}
+
+\begin{instance}
+    Multiplication in $\N$ is commutative.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be natural numbers.  The proof will be by induction on $a$.
+    When $a = 0$, $0b = 0 = b0$, so the base case is true.  Now assume that $ab
+    = ba$.  Then
+    \[
+        S(a)b = b + ab = b + ba = bS(a),
+    \]
+    so the inductive case is true.  Thus, by induction, multiplication is
+    commutative.
+\end{proof}
+A special note is in order about the base case in the previous proof.  We got
+$0b = 0$ from the definition of multiplication, but what about $0 = b0$?  This
+came from the fact that you can prove the annihilation property from the
+distributive property.  However, we've only proven left distributivity, not
+right distributivity.  We haven't proved commutativity yet so we can't use
+Instance \ref{mult-lanni-ranni} or Instance \ref{ldist-rdist} either.  So is the
+proof even valid?  It is, because Instance \ref{ring-mult-ranni} uses
+\textit{left} distributivity to prove that zero is a \textit{right} annihilator.
+Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
+\ref{nat-ldist}.
+
+\begin{instance}
+    Multiplication in $\N$ is associative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers.  The proof will be by induction on
+    $a$.  When $a = 0$, $0(bc) = 0 = 0c = (0b)c$, so the base case is true.  Now
+    assume that $a(bc) = (ab)c$.  Then
+    \[
+        S(a)(bc) = bc + a(bc) = bc + (ab)c = (b + ab)c = (S(a)b)c,
+    \]
+    so the inductive case is true.  Thus, by induction, multiplication is
+    associative.
+\end{proof}
+
+\begin{theorem} \label{nat-neq-suc-mult}
+    For all $a$ and $b$ in $\N$, $0 \neq S(a)S(b)$.
+\end{theorem}
+\begin{proof}
+    If $0 = S(a)S(b)$, we would have
+    \[
+        0 = S(a)S(b) = S(b) + aS(b) = S(b + aS(b)),
+    \]
+    so zero would equal the successor of a natural number, which is impossible.
+\end{proof}
+
+\begin{instance}
+    Multiplication in $\N$ is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers such that $ca = cb$ with $c \neq
+    0$.  Because $c \neq 0$, we can write $c = S(c')$ so that we instead have
+    $S(c')a = S(c')b$.  We will now do induction on $a$ with the statement ``For
+    all $b$, $S(c')a = S(c')b \rightarrow a = b$.''
+
+    First, when $a = 0$, we must prove that $0 = S(c')b$ implies that $0 = b$.
+    If $0 \neq b$, we could write $b = S(b')$ and thus $0 = S(c')S(b')$, which
+    contradicts Theorem \ref{nat-neq-suc-mult}.  Thus, the base case is true.
+
+    Now assume that for all $b$, $S(c')a = S(c')b \rightarrow a = b$, and that
+    $S(c')S(a) = S(c')b$.  We must prove that $S(a) = b$.  Now if $b = 0$, we
+    would have $S(c')S(a) = 0$, which again contradicts Theorem
+    \ref{nat-neq-suc-mult}, so $b \neq 0$.  This means that we can write $b =
+    S(b')$ for some $b'$, so we now have
+    \begin{align*}
+        S(c')S(a) &= S(c')S(b') \\
+        S(c') + S(c')a &= S(c') + S(c')b' \\
+        S(c')a &= S(c')b' \\
+        a &= b' \\
+        S(a) &= S(b') = b,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, multiplication is
+    associative.
+\end{proof}
+
+\begin{instance}
+    The natural numbers are not trivial.
+\end{instance}
+\begin{proof}
+    Because $0 \neq S(a)$ for any natural number $a$, we have $0 \neq 1$, so
+    $\N$ is not trivial.
+\end{proof}
+
+\section{Order}
+
+\begin{instance}
+    Let $a$ and $b$ be natural numbers.  Then we define order in $\N$
+    recursively on $a$:
+    \begin{itemize}
+        \item $0 \leq b = \vtt{True}$
+        \item $S(a) \leq 0 = \vtt{False}$
+        \item $S(a) \leq S(b) = a \leq b$.
+    \end{itemize}
+\end{instance}
+
+\begin{theorem} \label{nat-neg-eq}
+    For all $a$, if $a \leq 0$, then $a = 0$.
+\end{theorem}
+\begin{proof}
+    If $a \neq 0$, we would have $a = S(a')$, so $S(a') \leq 0$, which is
+    \vtt{False} by definition.
+\end{proof}
+
+\begin{theorem} \label{nat-pos2}
+    For all $n : \N$, $0 < S(n)$.
+\end{theorem}
+\begin{proof}
+    By the definition of $\leq$ we have $0 \leq S(n)$, and by the definition of
+    $\N$ we have $0 \neq S(n)$.
+\end{proof}
+
+\begin{theorem} \label{nat-neg2}
+    For all $n : \N$, $n \nless 0$.
+\end{theorem}
+\begin{proof}
+    If $n < 0$, we would have $n \leq 0$, so by Theorem \ref{nat-neg-eq} we
+    would have $n = 0$, which contradicts $n < 0$.
+\end{proof}
+
+\begin{theorem}
+    $0 < 1$.
+\end{theorem}
+\begin{proof}
+    This is a direct application of Theorem \ref{nat-pos2}.
+\end{proof}
+\noindent Note that we can't use Theorem \ref{one-pos} in this case because the
+proof used additive inverses, which don't exist in the natural numbers.
+
+\begin{theorem} \label{nat-sucs-le}
+    For all $a$ and $b$, $S(a) \leq S(b) \leftrightarrow a \leq b$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{nat-sucs-lt}
+    For all $a$ and $b$, $S(a) < S(b) \leftrightarrow a < b$.
+\end{theorem}
+\begin{proof}
+    This is equivalent to saying
+    \[
+        (S(a) \leq S(b) \wedge S(a) \neq S(b)) \leftrightarrow
+        (a \leq b \wedge a \neq b).
+    \]
+    From Theorem \ref{nat-sucs-le} we know that $S(a) \leq S(b) \leftrightarrow
+    a \leq b$, and by the properties of inductive definitions we know that $S(a)
+    \neq S(b) \leftrightarrow a \neq b$.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is connex.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be natural numbers.  We will do induction on $a$ with the
+    statement ``For all $b$, $a \leq b \vee b \leq a$.''  When $a = 0$, we know
+    that $0 \leq b$, so the base case is true.  Now assume that for all $b$, $a
+    \leq b \vee b \leq a$.  We must prove that $S(a) \leq b \vee b \leq S(a)$.
+    Now when $b = 0$, we would have $0 \leq S(a)$ as required.  When $b \neq 0$,
+    we have $b = S(b')$ for some $b : \N$.  Thus we now must prove that $S(a)
+    \leq S(b') \vee S(b') \leq S(a)$.  By Theorem \ref{nat-sucs-le}, this is
+    equivalent to proving $a \leq b' \vee b' \leq a$, which follows from the
+    inductive hypothesis.  Thus, by induction, the order on $\N$ is connex.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is antisymmetric.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be natural numbers.  We will do induction on $a$ with the
+    statement ``For all $b$, $a \leq b \rightarrow b \leq a \rightarrow a =
+    b$.''  When $a = 0$, we have $b \leq 0$, so $b = 0$ as well, proving that $a
+    = b$, so the base case is true.  Now assume that for all $b$, $a \leq b
+    \rightarrow b \leq a \rightarrow a = b$, and also assume that $S(a) \leq b$
+    and $b \leq S(a)$.  We must prove that $S(a) = b$.  Now $b \neq 0$, because
+    if it was equal to zero, we would have $S(a) \leq 0$.  Thus $b = S(b')$ for
+    some $b' : \N$, so we now have $S(a) \leq S(b')$ and $S(b') \leq S(a)$,
+    which is equivalent to $a \leq b'$ and $b' \leq a$.  Then by the inductive
+    hypothesis we have $a = b'$, so $S(a) = S(b') = b$ as required.  Thus, by
+    induction, the order on $\N$ is antisymmetric.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is transitive.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers.  We will do induction on $c$ with
+    the statement ``For all $a$ and $b$, $a \leq b \rightarrow b \leq c
+    \rightarrow a \leq c$.''  When $c = 0$, we have $b \leq 0$, so $b = 0$.
+    Then $a \leq 0$, so $a = 0$ as well.  Thus, $a = 0 \leq 0 = c$, so the base
+    case is true.
+
+    Now assume that for all $a$ and $b$, $a \leq b \rightarrow b \leq c
+    \rightarrow a \leq c$, that $a \leq b$, and that $b \leq S(c)$.  We must
+    prove that $a \leq S(c)$.  Now when $b = 0$, we have $a \leq 0$, so $a = 0$,
+    so $a = 0 \leq S(c)$ is true.  When $b \neq 0$, we have some $b'$ such that
+    $b = S(b')$.  We now have $a \leq S(b')$ and $S(b') \leq S(c)$.  Again, if
+    $a = 0$, we have $a = 0 \leq S(c)$, so consider when $a \neq 0$.  Then there
+    is an $a' : \N$ such that $a = S(a')$.  Thus we now have $S(a') \leq S(b')$
+    and $S(b') \leq S(c)$.  By Theorem \ref{nat-sucs-le}, this is the same as
+    $a' \leq b'$ and $b' \leq c$.  Then by the inductive hypothesis, we have $a'
+    \leq c$, so $a = S(a') \leq S(c)$ as required.  Thus, by induction, the
+    order on $\N$ is transitive.
+\end{proof}
+
+\begin{theorem} \label{nat-le-suc}
+    For all $a : \N$, $a \leq S(a)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, then we have $0 \leq
+    1$, which is true.  When $a \leq S(a)$, we have $S(a) \leq S(S(a))
+    \leftrightarrow a \leq S(a)$, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{nat-lt-suc}
+    For all $a : \N$, $a < S(a)$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is left additive.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers such that $a \leq b$.  We must
+    prove that $c + a \leq c + b$.  The proof will be by induction on $c$.  When
+    $c = 0$, we have $0 + a = a \leq c = 0 + c$, so the base case is true.  Now
+    assume that $c + a \leq c + b$.  Then
+    \begin{align*}
+        c + a &\leq c + b \\
+        S(c + a) &\leq S(c + b) \\
+        S(c) + a &\leq S(c) + b,
+    \end{align*}
+    so the inductive step is true.  Thus, by induction, the order on $\N$ is
+    left additive.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is left addition cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be such that $c + a \leq c + b$.  The proof will be by
+    induction on $c$.  When $c = 0$, we have $a = 0 + a \leq 0 + b = b$, so the
+    base case is true.  Now assume that $c + a \leq c + b \rightarrow a \leq b$.
+    We must prove that $S(c) + a \leq S(c) + b \rightarrow a \leq b$.  Assuming
+    $S(c) + a \leq S(c) + b$, we get
+    \begin{align*}
+        S(c) + a &\leq S(c) + b \\
+        S(c + a) &\leq S(c + b) \\
+        c + a &\leq c + b \\
+        a &\leq b,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the order on $\N$ is
+    left addition cancellative.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is multiplicative.
+\end{instance}
+\begin{proof}
+    We always have $0 \leq ab$ in $\N$.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is left multiplicative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be natural numbers such that $a \leq b$.  We must
+    prove that $ca \leq cb$.  The proof will be by induction on $c$.  When
+    $c = 0$, we have $0a = 0 \leq 0 = 0c$, so the base case is true.  Now
+    assume that $ca \leq cb$.  Then
+    \begin{align*}
+        S(c)a &\leq S(c)b \\
+        a + ca &\leq b + cb,
+    \end{align*}
+    and because $a \leq b$ and $ca \leq cb$, this is true, so the inductive step
+    is true.  Thus, by induction, the order on $\N$ is left multiplicative.
+\end{proof}
+
+\begin{instance}
+    The order on $\N$ is left multiplication cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be such that $c \neq 0$ and $ca \leq cb$.  Because $c
+    \neq 0$, $c = S(c')$ for some $c'$, so $S(c')a \leq S(c')b$.  We will now do
+    induction on $a$ with the statement ``For all $b$, $S(c')a \leq S(c')b
+    \rightarrow a \leq b$.''  When $a = 0$, then $0 \leq S(c')b$, so the base
+    case is true.  Now assume that for all $b$, $S(c')a \leq S(c')b \rightarrow
+    a \leq b$, and assume that $S(c')S(a) \leq S(c')b$.  We must prove that
+    $S(a) \leq b$.  If $b = 0$, we would have $S(c')S(a) \leq 0$, so by Theorem
+    \ref{nat-neg-eq}, $S(c')S(a) = 0$.  But this is impossible due to Theorem
+    \ref{nat-neq-suc-mult}, so we must have $b \neq 0$.  Thus, there is some
+    $b'$ such that $b = S(b')$.  Then
+    \begin{align*}
+        S(c')S(a) &\leq S(c')b \\
+        S(c')S(a) &\leq S(c')S(b') \\
+        S(c') + S(c')a &\leq S(c') + S(c')b' \\
+        S(c')a &\leq S(c')b' \\
+        a &\leq b' \\
+        S(a) &\leq S(b') = b,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the order on $\N$ is
+    left multiplication cancellative.
+\end{proof}
+
+\begin{theorem} \label{nat-lt-suc-le}
+    For all $a$ and $b$ in $\N$, $a < S(b) \leftrightarrow a \leq b$.
+\end{theorem}
+\begin{proof}
+    To prove the forward implication, we will prove by induction on $a$ the
+    statement ``For all $b$, $a < S(b) \rightarrow a \leq b$.''  When $a = 0$,
+    we have $0 \leq b$, so the base case is true.  Now assume that for all $b$,
+    $a < S(b) \rightarrow a \leq b$, and assume that $S(a) < S(b)$, which also
+    means that $a < b$.  We must prove that $S(a) \leq b$.  Now because $a < b$,
+    $b \neq 0$, so there is some $b'$ such that $b = S(b')$.  We thus have $a <
+    S(b')$, so by the inductive hypothesis, we have $a \leq b'$, so $S(a) \leq
+    S(b') = b$, so the inductive case is true.  Thus, by induction, the forward
+    implication is true.
+
+    Now assume that $a \leq b$.  By Theorem \ref{nat-lt-suc} we have $b < S(b)$,
+    so by transitivity we have $a < S(b)$.
+\end{proof}
+
+\begin{theorem} \label{nat-le-suc-lt}
+    For all $a$ and $b$ in $\N$, $S(a) \leq b \leftrightarrow a < b$.
+\end{theorem}
+\begin{proof}
+    If $b = 0$, both directions cause a contradiction because $S(a) \nleq 0$ and
+    $a \nless 0$, so $b \neq 0$.  Thus there exists a $b'$ with $b = S(b')$, so
+    we need to prove
+    \[
+        S(a) \leq S(b) \leftrightarrow a < S(b).
+    \]
+    By Theorem \ref{nat-sucs-le} this is the same as
+    \[
+        a \leq b \leftrightarrow a < S(b),
+    \]
+    which is precisely Theorem \ref{nat-lt-suc-le}.
+\end{proof}
+
+\begin{theorem} \label{nat-le-self-lplus}
+    For all $a$ and $b$ in $\N$, $a \leq a + b$.
+\end{theorem}
+\begin{proof}
+    We know that $0 \leq b$, and adding $a$ to both sides yields $a \leq a + b$.
+\end{proof}
+
+\begin{theorem} \label{nat-le-self-lmult}
+    For all $a$ and $b$ in $\N$, if $0 \neq b$, $a \leq ba$.
+\end{theorem}
+\begin{proof}
+    We use induction on $a$.  When $a = 0$, $0 \leq 0 = b0$, so the base case is
+    true.  Now assume that $a \leq ba$.  Because $0 \neq b$, $1 \leq b$.  By
+    Theorem \ref{le-lrplus} we get
+    \begin{align*}
+        1 + a &\leq b + ba \\
+        S(a) &\leq bS(a),
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}[Strong Induction]
+    For all sets $S$ of the natural numbers, if for all $n : \N$, $m \in S$ for
+    all $m < n$ implies that $n \in S$, then $n \in S$ for all $n : \N$.
+\end{theorem}
+\begin{proof}
+    Define a new set $T = \{n : \N \mid \forall m, m < n \rightarrow m \in S\}$.
+    We will prove by induction that for all $n$, $n \in T$.
+
+    First, for $n = 0$, there is no $m < 0$, so $0 \in T$ vacuously.
+
+    Now assume that $n \in T$, that is, that for all $m < n$, $m \in S$.  We
+    must prove that for all $m < S(n)$, $m \in S$.  By the conditions of the
+    theorem, we can prove that $m \in S$ by proving that for all $m' < m$, $m'
+    \in S$.  Because $m < S(n)$, by Theorem \ref{nat-lt-suc-le}, we have $m \leq
+    n$, so by transitivity we have $m' < n$.  Thus, by the inductive hypothesis,
+    $m' \in S$, meaning that $m \in S$, so the inductive step is true.
+
+    We now know by induction that for all $n$, $n \in T$.  So now let $n$ be any
+    natural number.  We want to prove that $n \in S$.  From the conditions of
+    the theorem, we can prove this if for all $m < n$, $m \in S$.  This is true
+    because $n \in T$.  Thus, $n \in S$.
+\end{proof}
+
+\begin{instance}[Well-Ordering Principle]
+    The natural numbers are well-ordered.
+\end{instance}
+\begin{proof}
+    Let $S$ be a nonempty set of natural numbers.  Assume that there was no
+    least element, that is, that for all $a \in S$, there exists a $b \in S$
+    such that $b < a$.  We will now prove that $S$ is empty.  Let $x$ be a
+    natural number.  We will prove by strong induction on $x$ that $x \notin S$.
+    The inductive hypothesis is ``For all $m < x$, $m \notin S$.''  Now if $x
+    \in S$, because we assumed that there is no least element, there exists such
+    an $m < x$ that is in $S$, which contradicts the inductive hypothesis.
+    Thus, $x \notin S$, so $S$ is empty by strong induction.  However, $S$ is
+    nonempty by hypothesis, so the original assumption that there is no least
+    element in $S$ was incorrect.
+\end{proof}
+
+\section{Subtraction}
+
+While a normal definition of subtraction is impossible in the natural numbers,
+there are many situations where a suitable substitute is useful.  The most
+useful of these substitutes are probably the following two theorems.
+
+\begin{theorem} \label{nat-le-ex}
+    For all $a$ and $b$ in $\N$, if $a \leq b$, then there exists a $c : \N$
+    such that $a + c = b$.
+\end{theorem}
+\begin{proof}
+    We will do induction on $a$ with the statement ``for all $b$ with $a \leq
+    b$, there exists a $c : \N$ such that $a + c = b$.''  When $a = 0$, then
+    setting $c = b$ is the answer because $0 + b = b$, so the base case is true.
+    Now assume that for all $b$ with $a \leq b$, there exists a $c : \N$ such
+    that $a + c = b$.  We must prove that if $S(a) \leq b$, there exists a $d :
+    \N$ such that $S(a) + d = b$.  Now $b \neq 0$ because if it was equal to
+    zero, we would have $S(a) \leq 0$.  So there exists a $b' : \N$ such that $b
+    = S(b')$.  Then $S(a) \leq S(b') \rightarrow a \leq b'$, so by the inductive
+    hypothesis there exists a $c$ such that $a + c = b'$.  Setting $d = c$
+    works, because
+    \begin{align*}
+        a + c &= b' \\
+        S(a + c) &= S(b') \\
+        S(a) + c &= b,
+    \end{align*}
+    so the inductive case in true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-lt-ex}
+    For all $a$ and $b$ in $\N$, if $a < b$, then there exists a $c : \N$
+    such that $a + S(c) = b$.
+\end{theorem}
+\begin{proof}
+    By the previous theorem, we already have a $c$ with $a + c = b$.  Now if $c
+    = 0$, we would have $a = b$, which contradicts $a < b$.  Thus, $c \neq 0$,
+    so there exists a $c'$ such that $c = S(c')$.  We now have $a + S(c') = b$,
+    so $c'$ is the number required for the theorem.
+\end{proof}
+
+Another approach to defining subtraction is to only define it for cases where
+where the difference is still positive.  We can do this with optional types,
+which were defined in Section \ref{sec-types}.
+
+\begin{definition}
+    Let $a$ and $b$ be natural numbers.  Then we can define a function $\ominus
+    : \N \rightarrow \N \rightarrow \O(\N)$ recursively on $a$ as
+    follows:
+    \begin{itemize}
+        \item $a \ominus 0 = \val a$
+        \item $0 \ominus S(b) = \nil$
+        \item $S(a) \ominus S(b) = a \ominus b$.
+    \end{itemize}
+\end{definition}
+
+\begin{theorem} \label{nat-minus-eq}
+    For all $a : \N$, $a \ominus a = \val 0$.
+\end{theorem}
+\begin{proof}
+    We will use induction on $a$.  When $a = 0$, $0 \ominus 0 = \val 0$,
+    so the base case is true.  Now assume that $a \ominus a = \val 0$.  Then
+    $S(a) \ominus S(a) = a \ominus a = \val 0$, so the inductive case is true.
+    Thus, by induction, $a \ominus a = \val 0$.
+\end{proof}
+
+\begin{theorem} \label{nat-minus-zero}
+    For all $a : \N$, $a \ominus 0 = \val a$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{nat-minus-lt}
+    If $a < b$, then $a \ominus b = \nil$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{nat-lt-ex}, there is some $c$ such that $a + S(c) = b$.  We
+    now need to prove that $a \ominus (a + S(c)) = a \ominus S(a + c) = \nil$.
+    We will do so by induction on $a$.  When $a = 0$, $0 \ominus S(c) = \nil$,
+    so the base case is true.  Now assume that $a \ominus S(a + c) = \nil$.
+    Then
+    \[
+        S(a) \ominus S(S(a) + c) = S(a) \ominus S(S(a + c)) = a \ominus S(a + c)
+        = \nil,
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-minus-plus}
+    For all $a$ and $b$, $(a + b) \ominus a = \val b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $b \ominus 0 = \val
+    b$, so the base case is true.  Now assume that $(a + b) \ominus a = \val b$.
+    Then
+    \[
+        (S(a) + b) \ominus S(a) = S(a + b) \ominus S(a) = (a + b) \ominus a =
+        \val b,
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+Yet another way of doing subtraction in the natural numbers is to consider the
+absolute value of the difference of two natural numbers.
+
+\begin{definition}
+    Let $a$ and $b$ be natural numbers.  Then we define $|a - b|$ recursively as
+    follows:
+    \begin{itemize}
+        \item $|a - 0| = a$
+        \item $|0 - b| = b$
+        \item $|S(a) - S(b)| = |a - b|$.
+    \end{itemize}
+    Note that the notation $|a - b|$ is used here as the notation for a new
+    function, not as the composition of subtraction and an absolute value.
+\end{definition}
+
+\begin{theorem}
+    For all $a : \N$, $|a - a| = 0$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $|0 - 0| = 0$, so the
+    base case is true.  Now when $|a - a| = 0$, $|S(a) - S(a)| = |a - a| = 0$,
+    so the inductive case is true as well.  Thus, by induction, the theorem is
+    true.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\N$, $|a - b| = |b - a|$.
+\end{theorem}
+\begin{proof}
+    The proof will by induction on $a$ with the statement ``For all $b$, $|a -
+    b| = |b - a|$.  When $a = 0$, $|0 - b| = b = |b - 0|$, so the base case is
+    true.  Now assume that for all $b$, $|a - b| = |b - a|$.  We must prove that
+    $|S(a) - b| = |b - S(a)|$.  Now if $b = 0$, the equation will be true for
+    the same reason as before.  If $b \neq 0$, there exists a $b'$ such that $b
+    = S(b')$.  Then $|S(a) - S(b')| = |a - b'|$, so by the inductive hypothesis
+    $|a - b'| = |b' - a| = |S(b') - S(a)|$, so the inductive case is true.
+    Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\N$, $|(a + b) - a| = b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $|b - 0| = b$, so the
+    base case is true.  Now assume that $|(a + b) - a| = b$.  Then
+    \[
+        |(S(a) + b) - S(a)| = |S(a + b) - S(a)| = |(a + b) - a| = b,
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-abs-minus-min}
+    For all $a$ and $b$ in $\N$, $|a - b| + \min(a, b) = \max(a, b)$.
+\end{theorem}
+\begin{proof}
+    There are two cases: $a \leq b$, and $b \leq a$.
+    \begin{case} $a \leq b$. \\
+        The equation to be proved becomes $|a - b| + a = b$.  By Theorem
+        \ref{nat-le-ex}, there is some $c$ such that $a + c = b$.  Then
+        \[
+            |a - b| + a = |a - (a + c)| + a = c + a = b.
+        \]
+    \end{case}
+    \begin{case} $b \leq a$. \\
+        The equation to be proved becomes $|a - b| + b = a$.  By Theorem
+        \ref{nat-le-ex}, there is some $c$ such that $b + c = a$.  Then
+        \[
+            |a - b| + b = |(b + c) - b| + b = c + b = a.
+        \]
+    \end{case}
+\end{proof}
+
+\begin{theorem} \label{nat-abs-minus-zero}
+    For all $a$ and $b$ in $\N$, If $|a - b| = 0$, then $a = b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$ with the statement ``For all $b$, if
+    $|a - b| = 0$, then $a = b$.''  First, for $a = 0$, we get $|0 - b| = b =
+    0$, so $a = b$ as required.  Thus, the base case is true.  Now assume that
+    for all $b$, if $|a - b| = 0$, then $a = b$.  Assume that $|S(a) - b| = 0$.
+    Then if $b = 0$, we would have $|S(a) - 0| = S(a) = 0$, which is impossible,
+    so $b \neq 0$.  Thus, there exists a $b'$ such that $b = S(b')$.  Then
+    $|S(a) - S(b')| = |a - b'| = 0$, so by the inductive hypothesis, $a = b'$.
+    Then we have $S(a) = S(b') = b$, so the inductive case is true.  Thus, the
+    theorem is true by induction.
+\end{proof}
+
+\section{Division}
+
+While division is impossible in the natural numbers, we can do something similar
+with Euclidean division.
+
+\begin{theorem}[Euclidean Division]
+    For all natural numbers $a$ and $b$ with $b \neq 0$, there exist $q$ and $r$
+    such that $a = bq + r$ and $r < b$.
+\end{theorem}
+\begin{proof}
+    Define a set $S$ by $S = \{n : \N \mid a < bn\}$.  Now because $b \neq 0$,
+    we have $0 < b$, and adding $a$ to both sides we get $a < b + a$.
+    Furthermore, by Theorem \ref{nat-le-self-lmult}, $a \leq ba$, and adding $b$
+    to both sides we get $b + a \leq b + ba = b(1 + a)$.  Thus, by transitivity,
+    $a < b(1 + a)$, showing that $1 + a \in S$.
+
+    By the well-ordering principle, because $S$ is nonempty, there exists a
+    minimum element $q' \in S$, with $a < bq'$.  Now if $q' = 0$, we would have
+    $a < 0$, which is impossible, so $q' \neq 0$.  Thus there exists a $q$ such
+    that $q' = S(q)$, so we have $a < bS(q) = b + bq$.
+
+    Now if $a < bq$, we would have $q \in S$, which contradicts the minimality
+    of $q'$ in $S$.  Thus, we have $bq \leq a$.  Then by Theorem
+    \ref{nat-le-ex}, we have some $r$ such that $bq + r = a$.  We thus have our
+    required $q$ and $r$, and we only need to show that $r < b$.  From $a < q +
+    bq$, we get $bq + r < b + bq$, and canceling $bq$ we get $r < b$ as
+    required.
+\end{proof}
+
+While there is much more we can describe about division and divisibility in the
+natural numbers, we will wait to do this until we have described everything in a
+more abstract setting in ring theory.  The reason for including this proof here
+is that it is useful in a proof involving the cardinals.
+
+\section{Factorials}
+
+\begin{definition}
+    Given an $a : \N$, we define the factorial $a!$ recursively:
+    \begin{itemize}
+        \item $0! = 1$
+        \item $S(n)! = S(n) n!$
+    \end{itemize}
+\end{definition}
+
+\begin{definition}
+    Let $n$ and $k$ be natural numbers.  Then we define the binomial coefficient
+    $\binom{n}{k}$ recursively:
+    \begin{itemize}
+        \item $\displaystyle \binom{n}{0} = 1$
+        \item $\displaystyle \binom{0}{k} = 0$
+        \item $\displaystyle \binom{S(n)}{S(k)} = \binom{n}{k} +
+            \binom{n}{S(k)}$.
+    \end{itemize}
+\end{definition}
+
+\begin{theorem} \label{factorial-nz}
+    For all $n : \N$, $n! \neq 0$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, we have $1 \neq 0$, so
+    the base case is true.  Now assume that $n! \neq 0$.  Then $S(n)! = S(n)
+    n!$.  Now $S(n) \neq 0$ by definition, and $n! \neq 0$ by the inductive
+    hypothesis, so their product is not equal to zero either, so the inductive
+    case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $n$, $\displaystyle \binom{n}{1} = n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction.  When $n = 0$, $\binom{0}{1} = 0$, so the
+    base case is true.  Now assume that $\binom{n}{1} = n$.  Then
+    \[
+        \binom{S(n)}{1} = \binom{n}{0} + \binom{n}{1} = 1 + n = S(n),
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{binom-greater}
+    For all $n$ and $k$ with $n < k$, $\displaystyle \binom{n}{k} = 0$.
+\end{theorem}
+\begin{proof}
+    The proof will by induction on $n$ with the statement ``For all $k$ with $n
+    < k$, $\binom{n}{k} = 0$.''  When $n = 0$, because $n < k$, $k \neq 0$, so
+    we have $\binom{0}{k} = 0$ by definition, so the base case is true.  Now
+    assume that for all $k$ with $n < k$, $\binom{n}{k} = 0$.  We must prove
+    that for all $k$ with $S(n) < k$, $\binom{S(n)}{k} = 0$.  Now because $S(n)
+    < k$, $k \neq 0$, so there exists a $k'$ such that $k = S(k')$.  We now have
+    $S(n) < S(k') \rightarrow n < k'$, so by the inductive hypothesis we have
+    $\binom{n}{k'} = 0$.  We also have $n < S(k')$, so again by the inductive
+    hypothesis we have $\binom{n}{S(k')} = 0$.  Then
+    \[
+        \binom{S(n)}{k} = \binom{S(n)}{S(k')} = \binom{n}{k'} + \binom{n}{S(k')}
+        = 0 + 0 = 0,
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $n : \N$, $\displaystyle \binom{n}{n} = 1$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  First, when $n = 0$, $\binom{0}{0} =
+    1$ by definition, so the base case is true.  Now assume that $\binom{n}{n} =
+    1$.  Then
+    \[
+        \binom{S(n)}{S(n)} = \binom{n}{n} + \binom{n}{S(n)} = 1 + 0 = 1,
+    \]
+    where in the second-to-last step we used the inductive hypothesis and
+    Theorem \ref{binom-greater}
+\end{proof}
+
+\begin{theorem}
+    For all $m$ and $n$ in $\N$,
+    \[
+        \binom{n + m}{n} n! m! = (n + m)!
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by double induction.  The first induction will be on $m$
+    with the statement ``For all $n$,
+    \[
+        \binom{n + m}{n} n! m! = (n + m)!.\text{''}
+    \]
+    First, when $m = 0$,
+    \[
+        \binom{n}{n} n! 0! = 1 n! 1 = n!,
+    \]
+    so the base case is true.  Now assume that for all $n$,
+    \[
+        \binom{n + m}{n} n! m! = (n + m)!.
+    \]
+    We must prove that
+    \[
+        \binom{n + S(m)}{n} n! S(m)! = (n + S(m))!.
+    \]
+    We will do this by another induction on $n$.  When $n = 0$, by the argument
+    above, the equation holds, so the base case is true.  Now assume that
+    \[
+        \binom{n + S(m)}{n} n! S(m)! = (n + S(m))!.
+    \]
+    We must now prove that
+    \[
+        \binom{S(n) + S(m)}{S(n)} S(n)! S(m)! = (S(n) + S(m))!.
+    \]
+    We first see that
+    \begin{align*}
+        \binom{S(n) + S(m)}{S(n)} S(n)! S(m)! &=
+            \binom{S(n + S(m))}{S(n)} S(n)! S(m)! \\
+        &= \left( \binom{n + S(m)}{n} + \binom{n + S(m)}{S(n)} \right)
+            S(n)! S(m)! \\
+        &= \left( \binom{n + S(m)}{n} + \binom{S(n) + m}{S(n)} \right)
+            S(n)! S(m)! \\
+        &= \binom{n + S(m)}{n} S(n)! S(m)! +
+            \binom{S(n) + m}{S(n)} S(n)! S(m)!  \\
+        &= \binom{n + S(m)}{n} n! S(m)! S(n) +
+            \binom{S(n) + m}{S(n)} S(n)! m! S(m). \\
+    \intertext{Now using both inductive hypotheses,}
+        &= (n + S(m))! S(n) + (S(n) + m)! S(m) \\
+        &= S(n + m)! S(n) + S(n + m)! S(m) \\
+        &= S(n + m)! (S(n) + S(m)) \\
+        &= S(n + m)! S(S(n + m)) \\
+        &= S(S(n + m))! \\
+        &= (S(n) + S(m))!.
+    \end{align*}
+    This means that the inductive case for our induction on $n$ is true, which
+    means that the inductive case for our induction on $m$ is true as well.
+    Thus, the theorem is true by double induction.
+\end{proof}
+
+\begin{theorem}
+    For all $m$ and $n$ in $\N$,
+    \[
+        \binom{m + n}{m} = \binom{m + n}{n}.
+    \]
+\end{theorem}
+\begin{proof}
+    We know that $(m + n)! = (n + m)!$, and using the previous theorem, we get
+    \[
+        \binom{m + n}{m} m! n! = \binom{n + m}{n} n! m!.
+    \]
+    By Theorem \ref{factorial-nz}, we can cancel $m!$ and $n!$ to get the
+    desired result.
+\end{proof}
+
+\section{The Relation Between Natural Numbers And Other Types}
+
+In this whole section, let $\U$ be a type with whatever algebraic operations are
+needed.  We will be exploring several ways to connect $\U$ with $\N$.
+
+\subsection{Sums}
+
+\begin{definition}
+    Let $f$ be a function from $\N$ to $\U$, and let $m$ and $n$ be natural
+    numbers.  Then we define the sum $\sum_m^{\downarrow n} f$ recursively on
+    $n$:
+    \begin{align*}
+        \sum_m^{\downarrow 0}    f &= 0 \\
+        \sum_m^{\downarrow S(n)} f &= \sum_m^{\downarrow n} f + f(m + n).
+    \end{align*}
+\end{definition}
+If we want to write an expression in the place of $f$, we will use the notation
+\[
+    \sum_{i = m}^{\downarrow n} f(i).
+\]
+\textbf{Note that this is very different from the usual definition of sums!} The
+usual notation for sums means that $\sum_m^n$ adds the result of the function on
+all values from $m$ to $n$, inclusive, whereas this definition adds all values
+from $m$ to $m + n - 1$.  Working with this definition is simpler than the usual
+definition when working in Coq, so we'll use it here too.  To be honest, the
+down arrow in the notation is just there to make it look so weird that you are
+forced to remember that the definition is not the traditional definition.
+
+\begin{theorem}
+    For all functions $f$ and natural numbers $m$, $\sum_m^{\downarrow 0} f =
+    0$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and natural numbers $m$, $\sum_m^{\downarrow S(n)} f =
+    \sum_m^{\downarrow n} f + f(m + n)$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and $g$ and natural numbers $m$ and $n$ such that for
+    all $a < n$, $f(m + a) = g(m + a)$, we have
+    \[
+        \sum_m^{\downarrow n} f = \sum_m^{\downarrow n} g.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$ on the statement ``If $f(m + a) = g(m
+    + a)$ for all $a < n$, then $\sum_m^{\downarrow m} f = \sum_m^{\downarrow n}
+    g$''.  The base case is trivial.  Now assume that $f(m + a) = g(m + a)$ for
+    all $a < n$ implies that $\sum_m^{\downarrow n} f = \sum_m^{\downarrow n}
+    g$, and that for all $a < S(n)$, we have $f(m + a) = g(m + a)$.  Now for $a
+    < n$, we have $a < S(n)$, so $f(m + a) = g(m + a)$ for all $a < n$, so the
+    inductive hypothesis states that $\sum_m^{\downarrow n} f =
+    \sum_m^{\downarrow n} g$.  Then
+    \begin{align*}
+           & \sum_m^{\downarrow S(n)} f \\
+        ={}& \sum_m^{\downarrow n} f + f(m + n) \\
+        ={}& \sum_m^{\downarrow n} g + f(m + n) \\
+    \intertext{by the inductive hypothesis.  Because $n < S(n)$, we have $f(m +
+    n) = g(m + n)$, so}
+        ={}& \sum_m^{\downarrow n} g + g(m + n) \\
+        ={}& \sum_m^{\downarrow S(n)} g,
+    \end{align*}
+    showing that the inductive case is true.  Thus, the theorem is true by
+    induction.
+\end{proof}
+
+\begin{theorem}
+    For all natural numbers $m$ and $n$, $\sum_m^{\downarrow n} 0 = 0$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  The base case is trivial.  Now
+    assume that $\sum_m^{\downarrow n} 0 = 0$.  Then
+    \begin{align*}
+           & \sum_m^{\downarrow S(n)} 0 \\
+        ={}& \sum_m^{\downarrow n} + 0 \\
+        ={}& 0 + 0 \\
+        ={}& 0,
+    \end{align*}
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and natural numbers $m$ and $n$, if for all $a < n$,
+    $f(m + a) = 0$, then $\sum_m^{\downarrow n} f = 0$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the previous two theorems.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and natural numbers $a$, $b$, and $c$,
+    \[
+        \sum_a^{\downarrow b} f + \sum_{a + b}^{\downarrow c} f =
+        \sum_a^{\downarrow b + c} f.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $c$.  When $c = 0$,
+    \[
+        \sum_a^{\downarrow b} f + \sum_{a + b}^{\downarrow 0} f =
+        \sum_a^{\downarrow b} f + 0 =
+        \sum_a^{\downarrow b + 0} f,
+    \]
+    so the base case is true.  Now assume that
+    \[
+        \sum_a^{\downarrow b} f + \sum_{a + b}^{\downarrow c} f =
+        \sum_a^{\downarrow b + c} f.
+    \]
+    Then
+    \begin{align*}
+           & \sum_a^{\downarrow b} f + \sum_{a + b}^{\downarrow S(c)} f \\
+        ={}& \sum_a^{\downarrow b} f + \sum_{a + b}^{\downarrow c} f
+            + f(a + b + c) \\
+        ={}& \sum_a^{\downarrow b + c} f + f(a + (b + c)) \\
+        ={}& \sum_a^{\downarrow S(b + c)} f \\
+        ={}& \sum_a^{\downarrow b + S(c)} f,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and natural numbers $a$, $b$, and $c$,
+    \[
+        \sum_{n = a}^{\downarrow b} f(n + c) = \sum_{a + c}^{\downarrow b} f.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will by induction on $b$.  When $b = 0$,
+    \[
+        \sum_{n = a}^{\downarrow 0} f(n + c) = 0 =
+        \sum_{a + c}^{\downarrow 0} f,
+    \]
+    so the base case is true.  Now assume that
+    \[
+        \sum_{n = a}^{\downarrow b} f(n + c) = \sum_{a + c}^{\downarrow b} f.
+    \]
+    Then
+    \begin{align*}
+           & \sum_{n = a}^{\downarrow S(b)} f(n + c) \\
+        ={}& \sum_{n = a}^{\downarrow b} f(n + c) + f (a + c + b) \\
+        ={}& \sum_{a + c}^{\downarrow b} f + f((a + c) + b) \\
+        ={}& \sum_{a + c}^{\downarrow S(b)} f,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and $g$ and natural numbers $a$ and $b$,
+    \[
+        \sum_{n = a}^{\downarrow b} (f(n) + g(n)) =
+        \sum_a^{\downarrow b} f + \sum_a^{\downarrow b} g.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $b$.  When $b = 0$,
+    \[
+        \sum_{n = a}^{\downarrow 0} (f(n) + g(n)) =
+        0 = 0 + 0 =
+        \sum_a^{\downarrow 0} f + \sum_a^{\downarrow 0} g,
+    \]
+    so the base case is true.  Now assume that
+    \[
+        \sum_{n = a}^{\downarrow b} (f(n) + g(n)) =
+        \sum_a^{\downarrow b} f + \sum_a^{\downarrow b} g.
+    \]
+    Then
+    \begin{align*}
+           & \sum_{n = a}^{\downarrow S(b)} (f(n) + g(n)) \\
+        ={}& \sum_{n = a}^{\downarrow b} (f(n) + g(n)) + f(a + b) + g(a + b) \\
+        ={}& \sum_a^{\downarrow b} f + \sum_a^{\downarrow b} g
+            + f(a + b) + g(a + b) \\
+        ={}& \sum_a^{\downarrow b} f + f(a + b) +
+             \sum_a^{\downarrow b} g + g(a + b) \\
+        ={}& \sum_a^{\downarrow S(b)} f + \sum_a^{\downarrow S(b)} g,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all functions $f$ and natural numbers $a$ and $b$,
+    \[
+        \sum_{n = a}^{\downarrow b} (-f(n)) = -\sum_a^{\downarrow b} f.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $b$.  When $b = 0$,
+    \[
+        \sum_{n = a}^{\downarrow 0} (-f(n)) =
+        0 = -0 =
+        -\sum_a^{\downarrow 0} f,
+    \]
+    so the base case is true.  Now assume that
+    \[
+        \sum_{n = a}^{\downarrow b} (-f(n)) = -\sum_a^{\downarrow b} f.
+    \]
+    Then
+    \begin{align*}
+           & \sum_{n = a}^{\downarrow S(b)} (-f(n)) \\
+        ={}& \sum_{n = a}^{\downarrow b} (-f(n)) - f(a + b) \\
+        ={}& -\sum_a^{\downarrow b} f - f(a + b) \\
+        ={}& -\left( \sum_a^{\downarrow b} f + f(a + b) \right) \\
+        ={}& -\sum_a^{\downarrow S(b)} f,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\subsection{Multiplying by Natural Numbers}
+
+\begin{definition}
+    Given an $n : \N$ and an $a : \U$, we can define the product $na$
+    recursively on $n$:
+    \begin{itemize}
+        \item $0a = 0$
+        \item $S(n)a = a + na$.
+    \end{itemize}
+    Note that while we are using the same notation as multiplication, this is
+    not an instance of Class \ref{mult}.
+\end{definition}
+
+\begin{theorem}
+    For all $a : \N$, $a0 = 0$, where $0 : \U$.
+\end{theorem}
+\begin{proof}
+    The proof will by induction on $a$.  When $a = 0$, $00 = 0$ by definition,
+    so the base case is true.  Now assume that $a0 = 0$.  Then $S(a)0 = 0 + a0 =
+    a0 = 0$, so the inductive case is true.  Thus, the theorem is true by
+    induction.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \U$, $1a = a$, where $1 : \N$.
+\end{theorem}
+\begin{proof}
+    \[
+        1a = S(0)a = a + 0a = a + 0 = a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a : \N$ and $b$ and $c$ in $\U$, $a(b + c) = ab + ac$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, then $0(b + c) = 0 = 0
+    + 0 = 0b + 0c$, so the base case is true.  Now assume that $a(b + c) = ab +
+    ac$.  Then
+    \[
+        S(a)(b + c) = b + c + a(b + c) = b + c + ab + ac = (b + ab) + (c + ac) =
+        S(a)b + S(a)c,
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\N$ and $c$ in $\U$, $(a + b)c = ac + bc$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, then $(0 + b)c = bc =
+    0a + bc$, so the base case is true.  Now assume that $(a + b)c = ac + bc$.
+    Then
+    \[
+        (S(a) + b)c = S(a + b)c = c + (a + b)c = c + ac + bc = S(a)c + bc,
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\N$ and $c$ in $\U$, $(ab)c = a(bc)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, then $(0b)c = 0c = 0 =
+    0(bc)$, so the base case is true.  Now assume that $(ab)c = a(bc)$.
+    Then
+    \[
+        (S(a)b)c = (b + ab)c = bc + (ab)c = bc + a(bc) = S(a)(bc),
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \N$ and $b : \U$, $-(ab) = a(-b)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $-(0b) = 0 = 0(-b)$,
+    so the base case is true.  Now assume that $-(ab) = a(-b)$.  Then
+    \[
+        -(S(a)b) = -(b + ab) = -b - (ab) = -b + a(-b) = S(a)(-b),
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\subsection{Exponentiating by Natural Numbers}
+
+\begin{definition}
+    Given an $a : \U$ and an $n : \N$, we can define the $n$th power of $a$
+    recursively on $n$:
+    \begin{itemize}
+        \item $a^0 = 1$
+        \item $a^{S(n)} = a^na$.
+    \end{itemize}
+    Note that with this definition, $0^0 = 1$.
+\end{definition}
+
+\begin{theorem}
+    For all $n : \N$, $0^{S(n)} = 0$.
+\end{theorem}
+\begin{proof}
+    \[
+        0^{S(n)} = 0^n0 = 0.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a : \U$, $a^1 = a$.
+\end{theorem}
+\begin{proof}
+    \[
+        a^1 = a^{S(0)} = a^0a = 1a = a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $n : \N$, $1^n = 1$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $1^0 = 1$, so the base
+    case is true.  Now assume that $1^n = 1$.  Then
+    \[
+        1^{S(n)} = 1^n1 = 1^n = 1,
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \U$ and all $b$ and $c$ in $\N$,
+    \[
+        a^{b + c} = a^b a^c.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $c$.  When $c = 0$,
+    \[
+        a^{b + 0} = a^b = a^b1 = a^ba^0,
+    \]
+    so the base case is true.  Now assume that $a^{b + c} = a^b a^c$.  Then
+    \[
+        a^{b + S(c)} = a^{S(b + c)} = a^{b + c}a = a^b a^c a = a^b a^{S(c)},
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\U$ and $n : \N$,
+    \[
+        (ab)^n = a^nb^n.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$,
+    \[
+        (ab)^0 = 1 = 1(1) = a^0b^0,
+    \]
+    so the base case is true.  Now assume that $(ab)^n = a^nb^n$.  Then
+    \[
+        (ab)^{S(n)} = (ab)^n ab = a^n b^n a b = a^n a b^n b = a^{S(n)} b^{S(n)},
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ in $\U$ and $b$ and $c$ in $\N$,
+    \[
+        (a^m)^n = a^{mn}.
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$,
+    \[
+        (a^m)^0 = 1 = a^0 = a^{m0},
+    \]
+    so the base case is true.  Now assume that $(a^m)^n = a^{mn}$.  Then
+    \[
+        (a^m)^{S(n)} = (a^m)^n a^m = a^{mn} a^m = a^{mn + m} = a^{mS(n)},
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-pow-not-zero}
+    For all $a : \U$ and $n : \N$, if $a \neq 0$, then $a^n \neq 0$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, we have $a^0 = 1 \neq
+    0$, so the base case is true.  Now assume that $a^n \neq 0$.  Then $a^{S(n)}
+    = a^na.$  Because $a^n \neq 0$ and $a \neq 0$, we have $a^na \neq 0$, so the
+    inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-pow-neg-even}
+    For all $n : \N$, $(-1)^{2n} = 1$, where $1 : \U$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $(-1)^0 = 1$, so the
+    base case is true.  Now assume that $(-1)^{2n} = 1$.  Then
+    \[
+        (-1)^{2S(n)} = (-1)^{2n + 2} = (-1)^{2n} (-1)^2 = 1 (-1)^2 = (-1)^2 =
+        (-1)^1 (-1) = (-1) (-1) = 1,
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-pow-neg-odd}
+    For all $n : \N$, $(-1)^{2n + 1} = -1$, where $-1 : \U$.
+\end{theorem}
+\begin{proof}
+    \[
+        (-1)^{2n + 1} = (-1)^{2n} (-1)^1 = 1 (-1) = -1.
+    \]
+\end{proof}
+
+\begin{theorem} \label{nat-pow-neg-binom2}
+    For all $n : \N$,
+    \[
+        (-1)^{\binom{n + 2}{2}} = -(-1)^{\binom{n}{2}},
+    \]
+    where $-1 : \U$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        (-1)^{\binom{n + 2}{2}}
+        &= (-1)^{\binom{n + 1}{1} + \binom{n + 1}{2}} \\
+        &= (-1)^{\binom{n}{0} + \binom{n}{1} + \binom{n}{1} + \binom{n}{2}} \\
+        &= (-1)^{1 + n + \binom{n}{2} + n} \\
+        &= (-1)^{1} (-1)^{2n} (-1)^{\binom{n}{2}} \\
+        &= (-1) (1) (-1)^{\binom{n}{2}} \\
+        &= -(-1)^{\binom{n}{2}}.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{nat-pow-pos}
+    For all $a : \U$ with $0 \leq a$, $0 \leq a^n$ for all $n : \N$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $0 \leq 1 = a^0$, so
+    the base case is true.  Now assume that $0 \leq a^n$.  Then because $0 \leq
+    a$ and $0 \leq a^n$, we have $0 \leq a^na = a^{S(n)}$, so the inductive case
+    is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-pow-pos2}
+    For all $a : \U$ with $0 < a$, $0 < a^n$ for all $n : \N$.
+\end{theorem}
+\begin{proof}
+    This proof is identical in form to the previous one.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \U$ and $m$ and $n$ in $\N$, if $1 \leq a$ and $m \leq n$, then
+    $a^m \leq a^n$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{nat-le-ex}, there exists some $c : \N$ such that $m + c =
+    n$.  We now need to prove that $a^m \leq a^{m + c}$, which we will do by
+    induction on $c$.  When $c = 0$, we have $a^m \leq a^m$, so the base case is
+    true.  Now assume that $a^m \leq a^{m + c}$.  Because $1 \leq a$, we have $0
+    < a$, so by Theorem \ref{nat-pow-pos2} we have $0 < a^{m + c}$.  We can thus
+    multiply the inequality $1 \leq a$ by $a^{m + c}$ to get $a^{m + c} \leq
+    a^{m + c}a = a^{m + S(c)}$.  Because $a^m \leq a^{m + c}$ and $a^{m + c}
+    \leq a^{m + S(c)}$, by transitivity we have $a^m \leq a^{m + S(c)}$, so the
+    inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \U$ and $m$ and $n$ in $\N$, if $1 < a$ and $m < n$, then $a^m
+    < a^n$.
+\end{theorem}
+\begin{proof}
+    Before proving the theorem the following lemma is useful: For all $n : \N$,
+    $a^n < a^na$.  Because $1 < a$, $0 < a$, so by Theorem \ref{nat-pow-pos2},
+    $0 < a^n$.  Thus, we can multiply the inequality $1 < a$ by $a^n$ to get
+    $a^n < a^na$.
+
+    Now let $m$ and $n$ be natural numbers such that $m < n$.  By Theorem
+    \ref{nat-lt-ex}, there exists some $c : \N$ such that $m + S(c) = n$.  We
+    now need to prove that $a^m < a^{m + S(c)}$, which we will do by induction
+    on $c$.  When $c = 0$, we have $a^m < a^ma$, which follows from the lemma,
+    so the base case is true.  Now assume that $a^m < a^{m + S(c)}$.  Then by
+    the lemma, $a^{m + S(c)} < a^{m + S(c)}a = a^{m + S(S(c))}$, so by
+    transitivity we have $a^m < a^{m + S(S(c))}$, so inductive case is true.
+    Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{nat-pow-le-one}
+    For all $a : \U$ with $1 \leq a$, $1 \leq a^n$ for all $n : \N$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $1 \leq 1 = a^0$, so
+    the base case is true.  Now assume that $1 \leq a^n$.  Then because
+    everything involved is positive, we can multiply the inequalities $1 \leq
+    a^n$ and $1 \leq a$ to get $1 \leq a^na = a^{S(n)}$, so the inductive case
+    is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{nat-pow-lt-one}
+    For all $a : \U$ with $1 < a$, $1 < a^{S(n)}$ for all $n : \N$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $1 < a = a^1$, so the
+    base case is true.  Now assume that $1 < a^{S(n)}$.  Then because everything
+    involved is positive, we can multiply the inequalities $1 < a^{S(n)}$ and $1
+    < a$ to get $1 < a^{S(n)}a = a^{S(S(n))}$, so the inductive case is true.
+    Thus, the theorem is true by induction.
+\end{proof}
+
+\subsection{The Natural Numbers in Other Types}
+
+\begin{definition}
+    We can define an inclusion $\iN : \N \rightarrow \U$ recursively on an
+    argument $n$:
+    \begin{itemize}
+        \item $\iN(0_\N) = 0_\U$
+        \item $\iN(S(n)) = 1_\U + \iN(n)$.
+    \end{itemize}
+    After this chapter, the function $\iN$ will be not be written and will
+    be assumed to be used any time a natural number appears in an expression
+    involving other types, unless the notation is necessary to avoid ambiguity.
+\end{definition}
+
+From this function, we can define the characteristic of a type.
+
+\begin{class}
+    We say that the characteristic of a type $\U$ is $n$ if $n$ is the least
+    nonzero natural number such that $\iN(n) = 0$.  If no such $n$ exists,
+    we say that the characteristic is zero.
+\end{class}
+
+It can also be useful to just keep track of what values are zero or nonzero.
+Using this name for this concept is original to me.
+
+\begin{class}
+    A type $\U$ has nullity $n$ if $\iN(n) = 0$.
+\end{class}
+\begin{class}
+    A type $\U$ does not have nullity $n$ if $\iN(n) \neq 0$.
+\end{class}
+
+We easily see that a type has a characteristic of zero if and only if it does
+not have nullity $n$ for all $n \neq 0$.
+
+\begin{theorem}
+    For all $n : \N$, $\iN(n) = n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $\iN(0) = 0$, so
+    the base case is true.  Now assume that $\iN(n) = n$.  Then
+    \[
+        \iN(S(n)) = 1 + \iN(n) = 1 + n = S(n),
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{instance}
+    If $\U$ has characteristic zero, then $\iN$ is injective.
+\end{instance}
+\begin{proof}
+    Assume that $a$ and $b$ are natural numbers such that $\iN(a) =
+    \iN(b)$.  We must prove that $a = b$.  We will do this by induction on
+    $a$ with the statement ``For all $b$, $\iN(a) = \iN(b) \rightarrow
+    a = b$.''  When $a = 0$, we have $0 = \iN(b)$.  Because $\U$ has
+    characteristic zero, we must have $b = 0$, so the base case is true.  Now
+    assume that for all $b$, $\iN(a) = \iN(b) \rightarrow a = b$, and
+    that $\iN(S(a)) = \iN(b)$.  We must prove that $S(a) = b$.  Now if
+    $b = 0$, we would have $\iN(S(a)) = 0$, which contradicts $\U$ having
+    characteristic zero.  Thus, $b \neq 0$, so there exists a $b'$ such that $b
+    = S(b')$.  We now have
+    \begin{align*}
+        \iN(S(a)) &= \iN(b) \\
+        \iN(S(a)) &= \iN(S(b')) \\
+        1 + \iN(a) &= 1 + \iN(b') \\
+        \iN(a) &= \iN(b') \\
+        a &= b' \\
+        S(a) &= S(b') = b,
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \N$, $a1_\U = \iN(a)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction an $a$.  When $a = 0$, $0(1_\U) = 0 =
+    \iN(0)$, so the base case is true.  Now assume that $a1_\U = \iN(a)$.  Then
+    \[
+        S(a)1_\U = 1_\U + a1_\U = 1_\U + \iN(a) = \iN(S(a)),
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{instance}
+    $\iN$ is additive.
+\end{instance}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$,
+    \[
+        \iN(0 + b) = \iN(b) = 0 + \iN(b) = \iN(0) + \iN(b),
+    \]
+    so the base case is true.  Now assume that $\iN(a + b) = \iN(a) + \iN(b)$.
+    Then
+    \[
+        \iN(S(a) + b) = \iN(S(a + b)) = 1 + \iN(a + b) = 1 + \iN(a) + \iN(b) =
+        \iN(S(a)) + \iN(b),
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{instance}
+    $\iN$ is multiplicative.
+\end{instance}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$,
+    \[
+        \iN(0b) = \iN(0) = 0 = 0\iN(b) = \iN(0)\iN(b),
+    \]
+    so the base case is true.  Now assume that $\iN(ab) = \iN(a)\iN(b)$.
+    Then
+    \[
+        \iN(S(a)b) = \iN(b + ab) = \iN(b) + \iN(ab) = \iN(b) + \iN(a)\iN(b) =
+        (1 + \iN(a)) \iN(b) = \iN(S(a))\iN(b),
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \N$ and $b : \U$, $ab = \iN(a)b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $0 = \iN(0)$, so $0b =
+    \iN(0)b$, so the base case is true.  Now assume that $ab = \iN(a)b$.  Then
+    \[
+        S(a)b = b + ab = b + \iN(a)b = (1 + \iN(a))b = \iN(S(a))b,
+    \]
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{from-nat-pos2}
+    For all $n : \N$, $0_\U \leq \iN(n)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $0 \leq 0 = \iN(0)$,
+    so the base case is true.  Now assume that $0 \leq \iN(n)$.  Then because $0
+    \leq 1$, we can add the two inequalities to get $0 \leq 1 + \iN(n) =
+    \iN(S(n))$, so the inductive case is true.  Thus, by induction, the theorem
+    is true.
+\end{proof}
+
+\begin{theorem} \label{from-nat-pos}
+    For all $n : \N$, $0_\U < \iN(S(n))$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $0 < 1 = \iN(1)$, so
+    the base case is true.  Now assume that $0 < \iN(S(n))$.  Then because $0 <
+    1$, we can add the two inequalities to get $0 < 1 + \iN(S(n)) =
+    \iN(S(S(n)))$, so the inductive case is true.  Thus, by induction, the
+    theorem is true.
+\end{proof}
+
+\begin{instance}
+    An ordered ring has characteristic zero.
+\end{instance}
+\begin{proof}
+    This follows directly from the previous theorem.
+\end{proof}
+
+\begin{instance}
+    $\iN$ preserves inequalities in one direction.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be natural numbers.  We must prove that $a \leq b
+    \rightarrow \iN(a) \leq \iN(b)$.  We will use induction on $a$ with the
+    statement ``For all $b : \N$, $a \leq b \rightarrow \iN(a) \leq \iN(b)$.''
+    When $a = 0$ we need to prove $\iN(0) = 0 \leq \iN(b)$, which follows from
+    Theorem \ref{from-nat-pos2}, so the base case is true.  Now assume that for
+    all $b : \N$, $a \leq b \rightarrow \iN(a) \leq \iN(b)$, and that $S(a) \leq
+    b$.  Then if $b = 0$, we would have $S(a) \leq 0$, which is impossible.
+    Thus, $b \neq 0$, so there exists a $b'$ such that $b = S(b')$.  Then
+    \begin{align*}
+        S(a) &\leq b \\
+        S(a) &\leq S(b') \\
+        a &\leq b' \\
+        \iN(a) &\leq \iN(b') \\
+        1 + \iN(a) &\leq 1 + \iN(b') \\
+        \iN(S(a)) &\leq \iN(S(b')) \\
+        \iN(S(a)) &\leq \iN(b),
+    \end{align*}
+    so the inductive case is true.  Thus, by induction, the theorem is true.
+\end{proof}
+
+Notice that by Instances \ref{homo-le-lt}, \ref{homo-le-le2}, and
+\ref{homo-lt-lt2}, $\iN$ preserves both strict and non-strict inequalities in
+both directions.
+
+\begin{instance}
+    A ring of characteristic zero is not trivial.
+\end{instance}
+\begin{proof}
+    We instantly have $0 \neq 1$ from the definition of characteristic zero.
+\end{proof}
+\noindent Note that this doesn't allow us to remove non-triviality from the
+conditions for an ordered ring/field because proving that an ordered ring has
+characteristic zero uses non-triviality.
+
+\subsection{The Archimedean Property}
+
+The most general definition of the Archimedean property is the following:
+
+\begin{class}
+    Let $\U$ be an ordered group.  Then $\U$ is Archimedean if for all $x > 0$
+    and $y > 0$, there exists some $n : \N$ such that $x < ny$.
+\end{class}
+
+Two other useful characterizations (which are not always equivalent to the
+original definition!) are as follows:
+
+\begin{definition}
+    $\U$ is Archimedean$_1$ if for all $x > 0$ in $\U$, there exists an $n : \N$
+    such that $x < \iN(n)$.
+\end{definition}
+
+\begin{definition}
+    $\U$ is Archimedean$_2$ if for all $\varepsilon > 0$ in $\U$, there exists
+    an $n : \N$ such that $\iN(S(n))^{-1} < \varepsilon$.
+\end{definition}
+
+While these characterizations are not always equivalent, they are equivalent in
+ordered fields.
+
+\begin{theorem}
+    In an ordered field, being Archimedean is the same thing as being
+    Archimedean$_1$.
+\end{theorem}
+\begin{proof}
+    We will first prove that Archimedean$_1$ $\rightarrow$ Archimedean.  Let $x$
+    and $y$ both be positive values.  Then $\frac{x}{y}$ is positive, so because
+    $\U$ is Archimedean$_1$, there exists an $n$ such that $\frac{x}{y} < n$.
+    Then multiplying both sides by $y$ we get $x < ny$ as required.
+
+    Now we will prove that Archimedean $\rightarrow$ Archimedean$_1$.  Let $x$
+    be a value in $\U$ with $0 < x$.  Then because $0 < 1$ and $\U$ is
+    Archimedean, we have some $n$ such that $x < n1 = n$ as required.
+\end{proof}
+
+\begin{theorem}
+    In an ordered field, being Archimedean is the same thing as being
+    Archimedean$_2$.
+\end{theorem}
+\begin{proof}
+    We will prove this by showing that being Archimedean$_1$ is equivalent to
+    being \linebreak Archimedean$_2$.
+
+    We will first prove that Archimedean$_2$ $\rightarrow$ Archimedean$_1$.  Let
+    $x > 0$.  Then $x^{-1} > 0$ as well, so because $\U$ is Archimedean$_2$, we
+    have an $n : \N$ such that $S(n)^{-1} < x^{-1}$.  Because $0 < S(n)$ and $0
+    < x$ we can invert this to $x < S(n)$ as required.
+
+    Now we will prove that Archimedean$_1$ $\rightarrow$ Archimedean$_2$.  Let
+    $\varepsilon$ be a value in $\U$ with $0 < \varepsilon$.  Then
+    $0 < \varepsilon^{-1}$ as well, so because $\U$ is Archimedean$_1$ we have
+    an $n : \N$ such that $\varepsilon^{-1} < n$.  Now if $n$ was zero we would
+    have $\varepsilon^{-1} < 0$ which contradicts $0 < \varepsilon^{-1}$, so $n
+    \neq 0$.  We thus have an $n'$ such that $n = S(n')$, so we now have
+    $\varepsilon^{-1} < S(n)$.  Because both $\varepsilon^{-1}$ and $S(n)$ are
+    greater than zero, we can invert this inequality to get $S(n)^{-1} <
+    \varepsilon$ as required.
+\end{proof}
+
+\begin{theorem}
+    If an ordered ring is Archimedean$_1$, then for all $x : \U$, there exists
+    an $n$ with $x < \iN(n)$.
+\end{theorem}
+\begin{proof}
+    If $x > 0$, then this follows from $\U$ being Archimedean$_1$.  If $x \leq
+    0$, then $n = 1$ works.
+\end{proof}
+
+The following theorem can be useful sometimes in analysis.
+
+\begin{theorem}
+    In an Archimedean ordered field, for all $\varepsilon > 0$, there exists an
+    $n$ with $(2^n)^{-1} < \varepsilon$.
+\end{theorem}
+\begin{proof}
+    By the Archimedean property, there exists an $n$ such that $S(n)^{-1} <
+    \varepsilon$.  We will show that $(2^{S(n)})^{-1} < \varepsilon$.  Because
+    $S(n)^{-1} < \varepsilon$, the result will follow from transitivity if we
+    can prove that $(2^{S(n)})^{-1} < S(n)^{-1}$.  Both of these are positive,
+    so we can invert the inequality to get $S(n) < 2^{S(n)}$.  Let $n' = S(n)$.
+    We will prove this new inequality by induction on $n'$, so we need to prove
+    that $n' < 2^{n'}$.  First, when $n' = 0$, we have $0 < 1 = 2^0$, so the
+    base case is true.  Now assume that $n' < 2^{n'}$.  Then we have $S(n') < 1
+    + 2^{n'}$.  By Theorem \ref{nat-pow-le-one}, we have $1 \leq 2^{n'}$, and by
+    adding $2^{n'}$ to both sides we get $1 + 2^{n'} \leq 2^{n'} + 2^{n'} =
+    2^{n'}2 = 2^{S(n')}$.  Thus, by transitivity, we have $S(n') < 2^{S(n')}$,
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\end{document}
