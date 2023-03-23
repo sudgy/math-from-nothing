@@ -28,7 +28,7 @@ Proof.
         rewrite list_count_conc.
         classic_case (S a) as [Sa|nSa].
         +   do 2 rewrite (list_filter_add_in Sa).
-            cbn.
+            do 2 rewrite list_count_add.
             rewrite IHl1.
             rewrite list_filter_conc.
             rewrite list_count_conc.

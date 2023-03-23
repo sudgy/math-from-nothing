@@ -526,7 +526,7 @@ Proof.
         apply scalar_to_ext_grade.
     -   rewrite list_image_add.
         cbn.
-        change (nat_suc (list_size l)) with (1 + list_size l).
+        change (list_size (a ꞉ l)) with (1 + list_size l).
         apply (grade_mult (GradedAlgebraObj := exterior_grade_mult)).
         +   apply vector_to_ext_grade.
         +   exact IHl.

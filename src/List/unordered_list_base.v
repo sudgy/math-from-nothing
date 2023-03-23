@@ -206,7 +206,7 @@ Proof.
         rewrite list_image_conc.
         do 2 rewrite list_image_add.
         rewrite list_count_conc.
-        cbn.
+        do 2 rewrite list_count_add.
         rewrite IHal.
         rewrite list_image_conc, list_count_conc.
         do 2 rewrite plus_assoc.

@@ -226,7 +226,7 @@ Proof.
         exists (u + v).
         split; [>reflexivity|].
         rewrite <- u_size, <- v_size.
-        apply list_size_plus.
+        apply list_size_conc.
 Qed.
 
 Definition tensor_n_mult_base i j

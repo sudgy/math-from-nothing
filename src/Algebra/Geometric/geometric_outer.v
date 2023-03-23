@@ -269,6 +269,7 @@ Proof.
     }
     do 2 rewrite list_image_add; cbn.
     remember (list_prod (list_image (vector_to_ext V) al)) as a.
+    rewrite list_size_add.
     remember (list_size al) as m.
     assert (of_grade m a) as a_grade.
     {

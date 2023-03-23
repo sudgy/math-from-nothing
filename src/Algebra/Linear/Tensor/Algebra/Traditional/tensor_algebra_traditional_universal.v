@@ -315,7 +315,7 @@ Proof.
             {
                 rewrite power_to_tensor_scalar.
                 apply of_grade_scalar.
-                rewrite <- list_size_plus.
+                rewrite <- list_size_conc.
                 apply ln.
             }
             rewrite (linear_extend_base_eq _ _ _ _ _ uv_grade).
@@ -353,14 +353,14 @@ Proof.
                 apply ln.
             }
             pose proof (l_grade (ul + vl)) as uvl_grade.
-            rewrite (list_size_plus ul vl) in uvl_grade at 1.
-            rewrite (h4_eq _ _ _ _ uvl_grade (Logic.eq_sym (list_size_plus ul vl))).
+            rewrite (list_size_conc ul vl) in uvl_grade at 1.
+            rewrite (h4_eq _ _ _ _ uvl_grade (Logic.eq_sym (list_size_conc ul vl))).
             rewrite (h4_eq _ _ _ _ (l_grade ul) Logic.eq_refl).
             rewrite (h4_eq _ _ _ _ (l_grade vl) Logic.eq_refl).
             rewrite scalar_lmult, scalar_rmult.
             rewrite scalar_comp.
             apply f_equal.
-            rewrite (h4_eq2 (list_size ul + list_size vl) (ul + vl) (list_size_plus ul vl)).
+            rewrite (h4_eq2 (list_size ul + list_size vl) (ul + vl) (list_size_conc ul vl)).
             rewrite (h4_eq2 (list_size ul) ul Logic.eq_refl).
             rewrite (h4_eq2 (list_size vl) vl Logic.eq_refl).
             unfold h1; cbn.

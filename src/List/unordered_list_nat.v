@@ -22,11 +22,11 @@ Proof.
         apply (list_perm_trans2 (list_perm_split l3 l4 a)) in eq.
         apply list_perm_add_eq in eq.
         specialize (IHl1 _ eq).
-        rewrite list_size_conc.
+        rewrite list_size_comm.
         rewrite list_conc_add.
-        cbn.
+        do 2 rewrite list_size_add.
         rewrite IHl1.
-        rewrite list_size_conc.
+        rewrite list_size_comm.
         reflexivity.
 Qed.
 Definition ulist_size {U} := unary_op (E := ulist_equiv U) (ulist_size_wd U).
@@ -52,5 +52,5 @@ Proof.
     intros l1 l2.
     equiv_get_value l1 l2.
     unfold ulist_size, plus; equiv_simpl.
-    apply list_size_plus.
+    apply list_size_conc.
 Qed.

@@ -265,7 +265,7 @@ Proof.
                 list_size l = n → list_size (a ꞉ l) = nat_suc n) as l_eq.
             {
                 intros a l eq.
-                cbn.
+                rewrite list_size_add.
                 apply f_equal.
                 exact eq.
             }

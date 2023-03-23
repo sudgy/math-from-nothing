@@ -316,7 +316,7 @@ Qed.
 
 Theorem vectors_to_power_mult : ∀ l1 l2,
     f (vectors_to_power l1 ⊗' vectors_to_power l2)
-    = tensor_power_nat_eq (list_size_plus l1 l2)
+    = tensor_power_nat_eq (list_size_conc l1 l2)
         (vectors_to_power (l1 + l2)).
 Proof.
     intros l1 l2.
@@ -326,6 +326,7 @@ Proof.
     -   rewrite list_conc_rid.
         cbn.
         unfold f; cbn.
+        change (list_size []) with (zero (U := nat)).
         unfold zero at 4; cbn.
         destruct (Logic.eq_sym (plus_rid (list_size l1))); cbn.
         rewrite cat_lid.
@@ -339,6 +340,8 @@ Proof.
         rewrite IHl2; clear IHl2.
         rewrite list_conc_single.
         unfold f at 2; cbn.
+        change (list_size (a ꞉ l2)) with (nat_suc (list_size l2)).
+        cbn.
         unfold cat_compose; cbn.
         change (module_homo_f (tensor_product_assoc_homo _ _ _)) with
             (tensor_product_assoc_f (tensor_power (list_size l1)) V
@@ -358,7 +361,7 @@ Proof.
         assert (∀ l, nat_suc (list_size l) = list_size (l + a ꞉ list_end)) as n_eq.
         {
             intros l.
-            rewrite list_size_conc.
+            rewrite list_size_comm.
             reflexivity.
         }
         symmetry in n_eq.
@@ -375,12 +378,15 @@ Proof.
             induction l1.
             -   apply tensor_power_eq_generic.
                 cbn.
+                change (list_size []) with (zero (U := nat)).
                 unfold zero at 4; cbn.
                 change (module_homo_f (tensor_product_comm_homo _ _)) with
                     (tensor_product_comm_f (cring_module F) V).
                 rewrite tensor_product_comm_eq.
                 reflexivity.
             -   cbn.
+                change (list_size (a0 ꞉ l1)) with (nat_suc (list_size l1)).
+                cbn.
                 unfold cat_compose; cbn.
                 fold (tensor_product_assoc_inv_f V (tensor_power (list_size l1)) V).
                 rewrite tensor_product_assoc_inv_eq.
@@ -433,6 +439,7 @@ Proof.
             cbn.
             rewrite <- @module_homo_scalar.
             unfold scalar_mult; cbn.
+            change (list_size []) with (zero (U := nat)).
             unfold zero at 6; cbn.
             pose (X1 := cring_mult_lid).
             pose (X2 := cring_mult_comm).
@@ -463,7 +470,7 @@ Proof.
                 exists α.
                 assert (list_size (a ꞉ [Bl|]) = nat_suc n) as Bl_eq.
                 {
-                    cbn.
+                    rewrite list_size_add.
                     rewrite [|Bl].
                     reflexivity.
                 }
@@ -701,13 +708,13 @@ Proof.
     clear eq1 eq2 eq3 eq12 eq23.
     subst A B C.
     rewrite vectors_to_power_mult.
-    pose proof (generic_tensor_eq_generic _ _ (list_size_plus [lB|] [lC|])
+    pose proof (generic_tensor_eq_generic _ _ (list_size_conc [lB|] [lC|])
         (vectors_to_power ([lB|] + [lC|]))) as eq.
     rewrite (to_generic_tensor_f_eq (Logic.eq_refl _) eq); clear eq.
     rewrite vectors_to_power_mult.
     rewrite generic_tensor_eq_generic.
     rewrite vectors_to_power_mult.
-    pose proof (generic_tensor_eq_generic _ _ (list_size_plus [lA|] [lB|])
+    pose proof (generic_tensor_eq_generic _ _ (list_size_conc [lA|] [lB|])
         (vectors_to_power ([lA|] + [lB|]))) as eq.
     rewrite (to_generic_tensor_f_eq eq (Logic.eq_refl _)); clear eq.
     rewrite vectors_to_power_mult.

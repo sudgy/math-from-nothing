@@ -503,6 +503,7 @@ Proof.
         rewrite scalar_lmult.
         rewrite scalar_comp.
         apply rscalar.
+        rewrite list_size_add.
         remember (list_size l) as n.
         clear Heqn l_grade.
         unfold one at 5; cbn.

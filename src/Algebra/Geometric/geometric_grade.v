@@ -149,7 +149,7 @@ Proof.
     specialize (IHl l_orth) as [IHl1 IHl2].
     rewrite list_image_add; cbn.
     split.
-    -   change (nat_suc (list_size l)) with (1 + list_size l).
+    -   change (list_size (v ꞉ l)) with (1 + list_size l).
         apply (grade_mult (GradedAlgebraObj := exterior_grade_mult V)).
         +   apply vector_to_ext_grade.
         +   exact IHl1.

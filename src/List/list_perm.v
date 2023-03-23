@@ -33,7 +33,7 @@ Qed.
 Theorem list_perm_swap {U} : ∀ (x y : U) l, list_permutation (y ꞉ x ꞉ l) (x ꞉ y ꞉ l).
 Proof.
     intros x y l n.
-    cbn.
+    do 4 rewrite list_count_add.
     do 2 rewrite plus_assoc.
     apply rplus.
     apply plus_comm.
@@ -77,8 +77,7 @@ Proof.
     intros l l_eq.
     destruct l as [|a l]; [>reflexivity|].
     specialize (l_eq a).
-    cbn in l_eq.
-    case_if [eq|neq]; [>|contradiction].
+    rewrite list_count_add_eq in l_eq.
     inversion l_eq.
 Qed.
 
@@ -112,9 +111,9 @@ Theorem list_perm_split {U} : ∀ l1 l2 (x : U),
     list_permutation (l1 + x ꞉ l2) (x ꞉ (l1 + l2)).
 Proof.
     intros l1 l2 a x.
-    cbn.
+    rewrite list_count_add.
     do 2 rewrite list_count_conc.
-    cbn.
+    rewrite list_count_add.
     do 2 rewrite plus_assoc.
     apply rplus.
     apply plus_comm.
