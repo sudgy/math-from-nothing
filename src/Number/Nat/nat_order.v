@@ -326,6 +326,16 @@ Proof.
     apply nat_le_self_lmult.
 Qed.
 
+Theorem nat_neq0_leq1 : ∀ {a}, 0 ≠ a → 1 ≤ a.
+Proof.
+    intros a a_neq.
+    unfold one; cbn.
+    rewrite nat_le_suc_lt.
+    split.
+    -   apply nat_pos.
+    -   exact a_neq.
+Qed.
+
 Theorem strong_induction : ∀ S : nat → Prop,
     (∀ n, (∀ m, m < n → S m) → S n) → ∀ n, S n.
 Proof.

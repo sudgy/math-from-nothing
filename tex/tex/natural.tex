@@ -587,6 +587,14 @@ proof used additive inverses, which don't exist in the natural numbers.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
+\begin{proof} \label{nat-neq0-leq1}
+    For all natural numbers $a$, if $0 \neq a$, then $1 \leq a$.
+\end{proof}
+\begin{proof}
+    By Theorem \ref{nat-le-suc-lt}, then is the same as proving that $0 < a$,
+    which is true by the definition of $\leq$ and $0 \neq a$.
+\end{proof}
+
 \begin{theorem}[Strong Induction]
     For all sets $S$ of the natural numbers, if for all $n : \N$, $m \in S$ for
     all $m < n$ implies that $n \in S$, then $n \in S$ for all $n : \N$.
