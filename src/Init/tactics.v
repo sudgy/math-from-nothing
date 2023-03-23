@@ -60,3 +60,9 @@ Ltac prove_parts_base H := let H' := fresh in
     | ?A → ?B => assert A as H'
     end; [> clear H | specialize (H H'); clear H'].
 Ltac prove_parts H := repeat prove_parts_base H.
+
+(** This is meant to be like [rewrite] but will actually use [change] rather
+than [rewrite].  It can be useful when working with dependent types.  However,
+it's not as powerful as rewrite because it can't handle theorems with
+parameters. *)
+Ltac def_rewrite H := match type of H with | ?a = ?b => change a with b end.
