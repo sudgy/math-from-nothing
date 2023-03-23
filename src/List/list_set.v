@@ -281,19 +281,44 @@ Proof.
             exact IHl.
 Qed.
 
+Theorem list_prop_in {U} : ∀ (a : list U) S, list_prop S a →
+    ∀ x, in_list a x → S x.
+Proof.
+    intros a S a_in x x_in.
+    list_prop_induction a a_in as y Sy IHl.
+    -   contradiction x_in.
+    -   rewrite in_list_add in x_in.
+        destruct x_in as [eq|x_in].
+        +   subst.
+            exact Sy.
+        +   exact (IHl x_in).
+Qed.
+
+Theorem list_prop_in_sub {U} : ∀ {a b : list U} {S},
+    list_prop S b → (∀ x, in_list a x → in_list b x) → list_prop S a.
+Proof.
+    intros a b S b_in sub.
+    induction a as [|x a].
+    -   apply list_prop_end.
+    -   rewrite list_prop_add.
+        split.
+        +   apply (list_prop_in _ _ b_in).
+            apply sub.
+            rewrite in_list_add.
+            left; reflexivity.
+        +   apply IHa.
+            intros y y_in.
+            apply sub.
+            rewrite in_list_add.
+            right; exact y_in.
+Qed.
+
 Theorem list_prop_other_filter {U} : ∀ (l : list U) S T,
     list_prop S l → list_prop S (list_filter T l).
 Proof.
     intros l S T Sl.
-    list_prop_induction l Sl as a Sa IHl.
-    -   rewrite list_filter_end.
-        apply list_prop_end.
-    -   classic_case (T a) as [Ta|Ta].
-        +   rewrite (list_filter_add_in Ta).
-            rewrite list_prop_add.
-            split; assumption.
-        +   rewrite (list_filter_add_nin Ta).
-            exact IHl.
+    apply (list_prop_in_sub Sl).
+    apply list_filter_in.
 Qed.
 
 Theorem list_prop2_end {U} : ∀ S : U → U → Prop, list_prop2 S [].
