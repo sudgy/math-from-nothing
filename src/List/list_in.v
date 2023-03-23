@@ -153,7 +153,7 @@ Proof.
                 exact x_in.
 Qed.
 
-Theorem list_unique_end {U} : list_unique (U := U) [].
+Theorem list_unique_end U : list_unique (U := U) [].
 Proof.
     exact true.
 Qed.
@@ -233,7 +233,7 @@ Theorem list_unique_lconc {U} : ∀ (l1 l2 : list U),
 Proof.
     intros l1 l2 uni.
     induction l1.
-    -   exact list_unique_end.
+    -   apply list_unique_end.
     -   rewrite list_conc_add, list_unique_add in uni.
         destruct uni as [a_nin uni].
         rewrite list_unique_add.
@@ -272,7 +272,7 @@ Theorem list_image_unique {U V} : ∀ (l : list U) (f : U → V),
 Proof.
     intros l f l_uni.
     induction l.
-    -   exact list_unique_end.
+    -   apply list_unique_end.
     -   rewrite list_image_add in l_uni.
         rewrite list_unique_add in l_uni.
         rewrite list_unique_add.

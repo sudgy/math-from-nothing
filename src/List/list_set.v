@@ -133,7 +133,7 @@ Proof.
     intros S l l_uni.
     list_unique_induction l l_uni as a a_nin IHl.
     -   rewrite list_filter_end.
-        exact list_unique_end.
+        apply list_unique_end.
     -   classic_case (S a) as [Sa|Sa].
         +   rewrite (list_filter_add_in Sa).
             rewrite list_unique_add.
@@ -162,7 +162,7 @@ Proof.
     intros S f l l_uni.
     induction l as [|a l].
     -   rewrite list_filter_end, list_image_end.
-        exact list_unique_end.
+        apply list_unique_end.
     -   rewrite list_image_add, list_unique_add in l_uni.
         destruct l_uni as [fa_nin l_uni].
         specialize (IHl l_uni).

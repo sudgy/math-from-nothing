@@ -19,7 +19,7 @@ Fixpoint list_count {U} (l : list U) (a : U) : nat :=
 end.
 Arguments list_count : simpl never.
 
-Theorem list_size_end {U} : list_size (U := U) [] = 0.
+Theorem list_size_end U : list_size (U := U) [] = 0.
 Proof.
     reflexivity.
 Qed.

@@ -139,7 +139,7 @@ Proof.
         exact (IHc eq).
 Qed.
 
-Theorem list_reverse_end {U} : list_reverse (U := U) [] = [].
+Theorem list_reverse_end U : list_reverse (U := U) [] = [].
 Proof.
     reflexivity.
 Qed.
