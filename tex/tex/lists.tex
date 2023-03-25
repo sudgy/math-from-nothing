@@ -824,6 +824,193 @@ explicitly saying that every value in a list satisfies a predicate).
 
 \section{Lists and Natural Numbers}
 
+\begin{definition}
+    Let $a$ be a list.  Then we define its size $|a|$ (a natural number)
+    recursively:
+    \begin{align*}
+            |[]| &= 0 \\
+        |x : a'| &= 1 + |a'|.
+    \end{align*}
+\end{definition}
+
+\begin{definition}
+    Let $a$ be a list, and $x$ a value.  We define the count of $x$ in $a$,
+    denoted $|a|_x$, recursively:
+    \begin{align*}
+           |[]|_x &= 0 \\
+        |y : a|_x &= |a|_x + \begin{cases}
+            1 \quad \text{If $x = y$} \\
+            0 \quad \text{If $x \neq y$}.
+        \end{cases}
+    \end{align*}
+\end{definition}
+
+\begin{theorem}
+    For all values $x$, $|[x]| = 1$.
+\end{theorem}
+\begin{proof}
+    $|[x]| = 1 + |[]| = 1 + 0 = 1$.
+\end{proof}
+
+\begin{theorem} \label{list-size-conc}
+    For all lists $a$ and $b$, $|a + b| = |a| + |b|$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        |[] + b| = |b| = 0 + |b| = |[]| + |b|,
+    \]
+    so the base case is true.  Now assume that $|a + b| = |a| + |b|$.  Then for
+    all values $x$,
+    \[
+        |x : a + b| = 1 + |a + b| = 1 + |a| + |b| = |x : a| + |b|,
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-size-comm}
+    For all lists $a$ and $b$, $|a + b| = |b + a|$.
+\end{theorem}
+\begin{proof}
+    This is just the combination of Theorem \ref{list-size-conc} and the
+    commutativity of the addition of natural numbers.
+\end{proof}
+
+\begin{theorem} \label{list-image-size}
+    For all lists $a$ and functions $f : \U \to \V$, we have $|f(a)| = |a|$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        |f([])| = |[]|,
+    \]
+    so the base case is true.  Now assume that $|f(a)| = |a|$.  Then for all
+    values $x$,
+    \[
+        |f(x : a)| = |f(x) : f(a)| = 1 + |f(a)| = 1 + |a| = |x : a|,
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all values $x$, $|[x]|_x = 1$.
+\end{theorem}
+\begin{proof}
+    \[
+        |[x]|_x = 1 + |[]|_x = 1 + 0 = 1.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all values $x$ and $y$ with $x \neq y$, $|[x]|_y = 0$.
+\end{theorem}
+\begin{proof}
+    \[
+        |[x]|_y = 0 + |[]|_x = 0 + 0 = 0.
+    \]
+\end{proof}
+
+\begin{theorem} \label{list-count-conc}
+    For all lists $a$ and $b$ and values $x$, $|a + b|_x = |a|_x + |b|_x$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        |[] + b|_x = |b|_x = 0 + |b|_x = |[]|_x + |b|_x,
+    \]
+    so the base case is true.  Now assume that $|a + b|_x = |a|_x + |b|_x$.
+    Then for all values $y$,
+    \[
+        |y : a + b|_x = |[y]|_x + |a + b|_x = |[y]|_x + |a|_x + |b|_x
+        = |y : a|_x + |b|_x,
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-count-comm}
+    For all lists $a$ and $b$ and values $x$, $|a + b|_x = |b + a|_x$.
+\end{theorem}
+\begin{proof}
+    This is just the combination of Theorem \ref{list-count-conc} and the
+    commutativity of the addition of natural numbers.
+\end{proof}
+
+\begin{theorem} \label{list-count-reverse}
+    For all lists $a$ and values $x$, $|a|_x = |a^{-1}|_x$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$,
+    \[
+        |[]|_x = |[]^{-1}|_x,
+    \]
+    so the base case is true.  Now assume that $|a|_x = |a^{-1}|_x$.  Then for
+    all values $y$,
+    \[
+        |y : a|_x = |[y]|_x + |a|_x = |a^{-1}|_x + |[y]|_x = |a^{-1} + [y]|_x
+        = |(y : a)^{-1}|_x,
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-count-in}
+    For all lists $a$ and values $x$, $x \in a$ if and only if $0 \neq |a|_x$.
+\end{theorem}
+\begin{proof}
+    For the forward direction, let $x \in a$.  Then by Theorem
+    \ref{in-list-split}, there exist lists $b$ and $c$ such that $a = b + x :
+    c$.  Then
+    \[
+        |a|_x = |b + x : c|_x = |b|_x + |[x]|_x + |c|_x = |b|_x + 1 + |c|_x.
+    \]
+    Zero is not equal to any natural number plus one, so $0 \neq |a|_x$.
+
+    For the reverse direction, assume that $0 \neq |a|_x$.  The proof will be by
+    induction on $a$.  When $a = []$, $0 \neq |[]|_x = 0$ is a contradiction, so
+    the base case is vacuously true.  Now assume that if $0 \neq |a|_x$, then $x
+    \in a$.  We must prove that if $0 \neq |y : a|_x$ for some value $y$, then
+    $x \in y : l$.  If $x = y$, the result is trivial, so assume that $x \neq
+    y$.  Then $|y : a|_x = |a|_x$, so we have $0 \neq |a|_x$, so $x \in a$ by
+    the inductive hypothesis.  Thus, by induction, the theorem is true.
+\end{proof}
+
+\begin{theorem} \label{list-count-nin}
+    For all lists $a$ and values $x$, $x \notin a$ if and only if $0 = |a|_x$.
+\end{theorem}
+\begin{proof}
+    This is just the previous theorem stated in a slightly different way.
+\end{proof}
+
+\begin{theorem} \label{list-count-unique}
+    For all lists $a$, if $a$ has unique elements, then for all values $x$,
+    $|a|_x \leq 1$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, then $|[]|_x = 0 \leq
+    1$, so the base case is true.  Now assume that $|a|_x \leq 1$.  Then we must
+    prove that for all values $y$ such that $y : a$ has unique elements, then
+    $|y : a|_x \leq 1$.  Because $y : a$ has unique elements, we know that $y
+    \notin a$, so by Theorem \ref{list-count-nin} we have $0 = |a|_y$.  There
+    are now two cases: when $x = y$, and when $x \neq y$.  When $x = y$, we have
+    \[
+        |y : a|_x = |y : a|_y = 1 + |a|_y = 1 + 0 \leq 1.
+    \]
+    When $x \neq y$, we have
+    \[
+        |y : a|_x = |a|_x,
+    \]
+    which is less than or equal to one by the inductive hypothesis.  Either way,
+    $|y : a|_x \leq 1$, so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-count-in-unique}
+    For all lists $a$ and values $x$, if $a$ has unique elements and $x \in a$,
+    then $|a|_x = 1$.
+\end{theorem}
+\begin{proof}
+    This follows directly from antisymmetry and Theorems \ref{list-count-unique}
+    and \ref{list-count-in}.
+\end{proof}
+
 \section{Folds}
 
 \section{Permutations}
