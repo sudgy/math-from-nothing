@@ -69,16 +69,6 @@ that are not lists will be assumed to be of this type.
 \end{proof}
 
 \begin{theorem}
-    For all values $x$ and lists $a$ and $b$,
-    \[
-        (x : a) + b = x : (a + b).
-    \]
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition of $+$.
-\end{proof}
-
-\begin{theorem}
     For all values $x$ and lists $a$,
     \[
         [x] + a = x : a.
@@ -143,20 +133,6 @@ that are not lists will be assumed to be of this type.
     \end{align*}
     so the result follows from the inductive hypothesis.  Thus, by induction,
     concatenation of lists is left cancellative.
-\end{proof}
-
-\begin{theorem}
-    $[]^{-1} = []$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition of the reverse of a list.
-\end{proof}
-
-\begin{theorem}
-    For all values $x$ and lists $a$, $(x : a)^{-1} = a^{-1} + [x]$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition of the reverse of a list.
 \end{proof}
 
 \begin{theorem}
@@ -241,20 +217,6 @@ that are not lists will be assumed to be of this type.
 \end{proof}
 
 \begin{theorem}
-    $f([]) = []$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
-\end{proof}
-
-\begin{theorem}
-    For all $a : \L(\A)$ and $x : \A$, $f(x : a) = f(x) : f(a)$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
-\end{proof}
-
-\begin{theorem}
     For all $x : \A$, $f([x]) = [f(x)]$.
 \end{theorem}
 \begin{proof}
@@ -332,21 +294,6 @@ that are not lists will be assumed to be of this type.
 \noindent Notice that because $(a : l)$ having unique elements implies that $l$
 has unique elements, when doing induction on a list, it having unique elements
 does not need to be considered as a part of the inductive hypothesis.
-
-\begin{theorem}
-    For all elements $x$, $x \notin []$.
-\end{theorem}
-\begin{proof}
-    Because $\neg \vtt{False} = \vtt{True}$, this is true by definition.
-\end{proof}
-
-\begin{theorem}
-    For all elements $x$ and $y$ and lists $a$, $x \in (y : a) \leftrightarrow x
-    = y \vee x \in a$.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
-\end{proof}
 
 \begin{theorem}
     For all elements $x$ and $y$, $x \in [y] \leftrightarrow x = y$.
@@ -454,21 +401,6 @@ does not need to be considered as a part of the inductive hypothesis.
     by the inductive hypothesis, there is some $x$ such that $f(x) = y$ and $x
     \in l$, so $x \in (z : a)$ as well.  Either way, the inductive step is true,
     so the theorem is true by induction.
-\end{proof}
-
-\begin{theorem}
-    $[]$ has unique elements.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
-\end{proof}
-
-\begin{theorem}
-    For all values $a$ and lists $l$, $a : l$ has unique elements iff $a \notin
-    l$ and $l$ has unique elements.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
 \end{proof}
 
 \begin{theorem}
@@ -628,29 +560,6 @@ will usually just be written in English rather than using this notation (e.g.
 explicitly saying that every value in a list satisfies a predicate).
 
 \begin{theorem}
-    For all sets $S$, $[]^S = []$.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
-\end{proof}
-
-\begin{theorem}
-    For all sets $S$, values $x$, and lists $a$, if $x \in S$, then $(x : a)^S =
-    x : a^S$.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
-\end{proof}
-
-\begin{theorem}
-    For all sets $S$, values $x$, and lists $a$, if $x \notin S$, then $(x :
-    a)^S = a^S$.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
-\end{proof}
-
-\begin{theorem}
     For all sets $S$ and values $x$, if $x \in S$, then $[x]^S = [x]$.
 \end{theorem}
 \begin{proof}
@@ -802,21 +711,6 @@ explicitly saying that every value in a list satisfies a predicate).
 \end{proof}
 
 \begin{theorem}
-    For all sets $S$, $[] \in S$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
-\end{proof}
-
-\begin{theorem}
-    For all sets $S$, values $x$, and lists $a$, $(x : a) \in S$ if and only if
-    $x \in S$ and $a \in S$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
-\end{proof}
-
-\begin{theorem}
     For all sets $S$ and values $x$, $[x] \in S$ if and only if $x \in S$.
 \end{theorem}
 \begin{proof}
@@ -914,21 +808,6 @@ explicitly saying that every value in a list satisfies a predicate).
     By Theorem \ref{list-prop-in-sub}, it suffices to prove that for all $x \in
     a^T$, we have $x \in a$, which follows directly from Theorem
     \ref{list-filter-in}.
-\end{proof}
-
-\begin{theorem}
-    For all relations $\usim$, $[] \in \usim$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
-\end{proof}
-
-\begin{theorem}
-    For all relations $\usim$, lists $a$, and values $x$, $(x : a) \in \usim$ if
-    and only if $a \in (x\usim)$ and $a \in \usim$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
 \end{proof}
 
 \begin{theorem} \label{list-prop2-single}
