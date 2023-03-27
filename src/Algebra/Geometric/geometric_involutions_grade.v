@@ -129,6 +129,7 @@ Proof.
     induction x as [|v l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite geo_involute_one.
         rewrite <- scalar_to_geo_one.
         rewrite geo_mult_inner_scalar.
@@ -177,6 +178,7 @@ Proof.
     induction x as [|v l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite ext_involute_one.
         rewrite ext_to_geo_one.
         apply geo_involute_one.
@@ -254,6 +256,7 @@ Proof.
         destruct l; [>|inversion l_size].
         clear l_size.
         rewrite list_image_add; cbn.
+        rewrite list_prod_add.
         rewrite mult_rid.
         rewrite ext_inner_vector.
         apply of_grade_scalar.
@@ -263,6 +266,7 @@ Proof.
     destruct l as [|a l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_ext_one.
         rewrite ext_inner_scalar.
         apply of_grade_zero.
@@ -323,6 +327,7 @@ Proof.
     induction x as [|b l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_geo_one at 1.
         rewrite geo_mult_inner_scalar.
         rewrite scalar_ranni.
@@ -332,6 +337,7 @@ Proof.
         reflexivity.
     }
     rewrite list_image_add; cbn.
+    rewrite list_prod_add.
     remember (list_prod (list_image (λ v, φ v) l)) as X.
     clear HeqX.
     rewrite geo_mult_inner_add.
@@ -409,6 +415,7 @@ Proof.
         apply geo_reverse_one.
     }
     rewrite list_image_add; cbn.
+    rewrite list_prod_add.
     nat_destruct n; [>inversion ln|].
     remember (list_prod (list_image (vector_to_ext V) l)) as X.
     assert (of_grade n X) as Xn.

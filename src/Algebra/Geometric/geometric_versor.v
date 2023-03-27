@@ -84,9 +84,8 @@ Proof.
         rewrite list_image_conc.
         rewrite list_image_single.
         rewrite list_prod_mult.
-        cbn.
+        rewrite list_prod_single.
         rewrite geo_reverse_vector.
-        rewrite mult_rid.
         reflexivity.
 Qed.
 

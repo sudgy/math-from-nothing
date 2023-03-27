@@ -124,8 +124,7 @@ Proof.
         exists [v].
         split.
         +   rewrite list_image_single.
-            cbn.
-            rewrite mult_rid.
+            rewrite list_prod_single.
             reflexivity.
         +   reflexivity.
 Qed.
@@ -491,11 +490,12 @@ Proof.
     intros l.
     induction l.
     -   unfold list_image; cbn.
-        unfold one at 2; cbn.
+        rewrite list_prod_end.
+        unfold one; cbn.
         apply f_equal.
         apply set_type_eq; reflexivity.
     -   unfold list_image; fold (list_image vector_to_tensor_n).
-        cbn.
+        rewrite list_prod_add.
         rewrite <- IHl.
         unfold vector_to_tensor_n.
         rewrite to_tensor_n_mult.

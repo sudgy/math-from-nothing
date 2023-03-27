@@ -99,6 +99,7 @@ Proof.
     induction x as [|u l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_ext_one.
         do 2 rewrite ext_inner_scalar.
         do 2 rewrite ext_inner_rzero.
@@ -145,6 +146,7 @@ Proof.
     induction x as [|u l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_geo_one.
         do 2 rewrite geo_mult_inner_scalar.
         do 2 rewrite geo_mult_inner_rzero.
@@ -193,6 +195,7 @@ Proof.
     induction x as [|b l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_geo_one.
         rewrite geo_to_ext_of_scalar.
         rewrite geo_mult_inner_scalar.
@@ -243,6 +246,7 @@ Proof.
     induction x as [|b l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_ext_one.
         rewrite ext_to_geo_of_scalar.
         rewrite ext_inner_scalar.
@@ -290,6 +294,7 @@ Proof.
     induction x as [|a l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         replace (ext_to_geo B 1) with (@one _ (geo_one B))
             by (symmetry; apply (ext_to_geo_one B)).
         apply geo_to_ext_one.
@@ -329,6 +334,7 @@ Proof.
     induction x as [|a l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite geo_to_ext_one.
         apply ext_to_geo_one.
     }

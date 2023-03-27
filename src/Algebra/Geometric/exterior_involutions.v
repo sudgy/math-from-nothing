@@ -493,6 +493,7 @@ Proof.
         rewrite scalar_id.
         apply ext_reverse_one.
     -   rewrite list_image_add; cbn.
+        rewrite list_prod_add.
         rewrite ext_reverse_mult.
         rewrite IHl; clear IHl.
         rewrite ext_reverse_vector.

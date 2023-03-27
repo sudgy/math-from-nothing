@@ -433,8 +433,8 @@ Proof.
         rewrite (proof_irrelevance _ (tensor_n_one_in V)).
         symmetry; apply algebra_homo_one.
     }
-    unfold list_image. (*; fold list_image.*)
-    cbn.
+    rewrite list_image_add at 1.
+    rewrite list_prod_add at 1.
     rewrite IHl at 1; clear IHl.
     pose proof (vector_to_tensor_n_in V v) as v_in.
     pose proof (tensor_n_list_in V l) as l_in.

@@ -268,6 +268,7 @@ Proof.
         exact b_grade.
     }
     do 2 rewrite list_image_add; cbn.
+    do 2 rewrite list_prod_add.
     remember (list_prod (list_image (vector_to_ext V) al)) as a.
     rewrite list_size_add.
     remember (list_size al) as m.

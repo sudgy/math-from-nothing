@@ -419,6 +419,7 @@ Proof.
     induction v as [|v l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_geo_one.
         do 3 rewrite geo_mult_inner_scalar.
         rewrite plus_rid.
@@ -463,6 +464,7 @@ Proof.
     induction v as [|v l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_geo_one.
         do 2 rewrite geo_mult_inner_scalar.
         rewrite scalar_ranni.
@@ -539,6 +541,7 @@ Proof.
     induction x as [|v l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_geo_one.
         rewrite geo_mult_inner_scalar.
         apply geo_mult_inner_rzero.

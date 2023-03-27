@@ -140,6 +140,7 @@ Proof.
     induction l as [|v l].
     {
         rewrite list_image_end; cbn.
+        rewrite list_prod_end.
         split.
         -   rewrite <- scalar_to_ext_one.
             apply scalar_to_ext_grade.
@@ -162,6 +163,7 @@ Proof.
         clear l_orth IHl1 IHl2.
         induction l as [|u l].
         +   rewrite list_image_end; cbn.
+            rewrite list_prod_end.
             rewrite <- scalar_to_geo_one.
             symmetry; apply geo_mult_inner_scalar.
         +   destruct v_orth as [uv_orth u_orth].

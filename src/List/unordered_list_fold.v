@@ -36,7 +36,7 @@ Proof.
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
         rewrite list_sum_plus.
-        cbn.
+        do 2 rewrite list_sum_add.
         pose proof (list_perm_split l3 l4 a) as eq2.
         pose proof (list_perm_trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.
@@ -70,7 +70,7 @@ Proof.
     apply list_sum_plus.
 Qed.
 
-Theorem ulist_sum_neg : ∀ l, -ulist_sum l = ulist_sum (ulist_image neg l).
+Theorem ulist_sum_neg : ∀ l, ulist_sum (ulist_image neg l) = -ulist_sum l.
 Proof.
     intros l.
     equiv_get_value l.
@@ -79,7 +79,7 @@ Proof.
 Qed.
 
 Theorem ulist_sum_minus : ∀ a b,
-    ulist_sum a - ulist_sum b = ulist_sum (a + (ulist_image neg b)).
+    ulist_sum (a + (ulist_image neg b)) = ulist_sum a - ulist_sum b.
 Proof.
     intros a b.
     rewrite ulist_sum_plus.
@@ -114,7 +114,7 @@ Proof.
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
         rewrite list_prod_mult.
-        cbn.
+        do 2 rewrite list_prod_add.
         pose proof (list_perm_split l3 l4 a) as eq2.
         pose proof (list_perm_trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.

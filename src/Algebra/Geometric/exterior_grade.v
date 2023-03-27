@@ -521,7 +521,7 @@ Proof.
     intros l.
     induction l.
     -   rewrite list_image_end.
-        cbn.
+        rewrite list_prod_end.
         rewrite <- scalar_to_ext_one.
         apply scalar_to_ext_grade.
     -   rewrite list_image_add.
