@@ -56,6 +56,13 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem set_type_refl {U} {S : U → Prop} : ∀ a (H1 H2 : S a), [a|H1] = [a|H2].
+Proof.
+    intros a H1 H2.
+    rewrite set_type_eq2.
+    reflexivity.
+Qed.
+
 Theorem ex_set_type {U} {S : U → Prop} : (∃ x, S x) → set_type S.
 Proof.
     intros x_ex.
@@ -63,6 +70,46 @@ Proof.
     destruct x_ex as [x Sx].
     split.
     exact [x|Sx].
+Qed.
+
+Theorem set_type_rewrite_eq {U} {S : U → Prop} : ∀ {a b} {H : S a}, a = b → S b.
+Proof.
+    intros a b H eq.
+    subst.
+    exact H.
+Qed.
+
+Tactic Notation "st_proof_simpl" constr(a) simple_intropattern(H) :=
+    let go H1 H2 :=
+        pose proof (H1 H2) as H;
+        rewrite (proof_irrelevance (H1 H2) H) in *
+    in
+    match goal with
+    | |- context [[a|?H1 ?H2]] => go H1 H2
+    | K: context [[a|?H1 ?H2]] |- _ => go H1 H2
+    end.
+
+Tactic Notation "st_proof_simpl" constr(a) :=
+    let H := fresh in st_proof_simpl a H.
+
+Tactic Notation "st_proof_simpl_anon" simple_intropattern(H) :=
+    let go H1 H2 :=
+        pose proof (H1 H2) as H;
+        rewrite (proof_irrelevance (H1 H2) H) in *
+    in
+    match goal with
+    | |- context [[?a|?H1 ?H2]] => go H1 H2
+    | K: context [[?a|?H1 ?H2]] |- _ => go H1 H2
+    end.
+
+Tactic Notation "st_proof_simpl" := let H := fresh in st_proof_simpl_anon H.
+
+Theorem set_type_rewrite {U} {S : U → Prop} : ∀ a b (H : S a) (eq : a = b),
+    [a|H] = [b|set_type_rewrite_eq (H := H) eq].
+Proof.
+    intros a b H eq.
+    subst.
+    apply set_type_refl.
 Qed.
 
 (** This converts a set S : U → Prop to a set S : set_type X → Prop *)
