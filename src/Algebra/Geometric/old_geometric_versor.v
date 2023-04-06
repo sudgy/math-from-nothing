@@ -1,11 +1,11 @@
 Require Import init.
 
-Require Export geometric_construct.
-Require Import geometric_involutions.
-Require Import geometric_involutions_grade.
-Require Import geometric_grade.
-Require Import geometric_norm.
-Require Import geometric_product_formulae.
+Require Export old_geometric_construct.
+Require Import old_geometric_involutions.
+Require Import old_geometric_involutions_grade.
+Require Import old_geometric_grade.
+Require Import old_geometric_norm.
+Require Import old_geometric_product_formulae.
 
 (* begin hide *)
 Section GeometricVersor.

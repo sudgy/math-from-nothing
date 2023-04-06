@@ -1,7 +1,7 @@
 Require Import init.
 
-Require Export geometric_construct.
-Require Import geometric_universal.
+Require Export old_geometric_construct.
+Require Import old_geometric_universal.
 
 (* begin hide *)
 Section GeometricInvolutions.

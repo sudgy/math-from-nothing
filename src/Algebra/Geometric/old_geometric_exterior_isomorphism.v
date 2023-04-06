@@ -7,10 +7,10 @@ Require Import module_category.
 Require Import algebra_category.
 Require Import linear_bilinear_form.
 
-Require Export geometric_construct.
-Require Export exterior_construct.
-Require Export exterior_to_geometric.
-Require Export geometric_to_exterior.
+Require Export old_geometric_construct.
+Require Export old_exterior_construct.
+Require Export old_exterior_to_geometric.
+Require Export old_geometric_to_exterior.
 
 (* begin hide *)
 Section GeometricExteriorIso.

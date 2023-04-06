@@ -4,7 +4,7 @@ Require Import set.
 Require Import ring_ideal.
 Require Import unordered_list.
 
-Require Export exterior_construct.
+Require Export old_exterior_construct.
 Require Import module_category.
 Require Import algebra_category.
 Require Import category_initterm.

@@ -2,8 +2,8 @@ Require Import init.
 
 Require Import set.
 
-Require Export exterior_construct.
-Require Import exterior_universal.
+Require Export old_exterior_construct.
+Require Import old_exterior_universal.
 Require Import module_category.
 Require Import algebra_category.
 

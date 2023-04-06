@@ -3,9 +3,9 @@ Require Import init.
 Require Export linear_grade.
 Require Import linear_grade_isomorphism.
 
-Require Export geometric_construct.
-Require Import geometric_exterior_isomorphism.
-Require Import exterior_grade.
+Require Export old_geometric_construct.
+Require Import old_geometric_exterior_isomorphism.
+Require Import old_exterior_grade.
 Require Export nat.
 
 (* begin hide *)

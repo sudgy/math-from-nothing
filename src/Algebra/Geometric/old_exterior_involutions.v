@@ -8,9 +8,9 @@ Require Import linear_grade.
 Require Import module_category.
 Require Import algebra_category.
 
-Require Export exterior_construct.
-Require Import exterior_universal.
-Require Import exterior_grade.
+Require Export old_exterior_construct.
+Require Import old_exterior_universal.
+Require Import old_exterior_grade.
 
 (* begin hide *)
 Section ExteriorInvolutions.

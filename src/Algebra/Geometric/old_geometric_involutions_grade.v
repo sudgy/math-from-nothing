@@ -1,11 +1,11 @@
 Require Import init.
 
-Require Export geometric_construct.
-Require Import geometric_exterior_isomorphism.
-Require Import geometric_grade.
-Require Import exterior_grade.
-Require Export geometric_involutions.
-Require Import exterior_involutions.
+Require Export old_geometric_construct.
+Require Import old_geometric_exterior_isomorphism.
+Require Import old_geometric_grade.
+Require Import old_exterior_grade.
+Require Export old_geometric_involutions.
+Require Import old_exterior_involutions.
 
 (* begin hide *)
 Section GeometricInvolutions.

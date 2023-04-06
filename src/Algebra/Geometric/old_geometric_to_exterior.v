@@ -9,10 +9,10 @@ Require Import linear_bilinear_form.
 Require Import linear_sum.
 Require Import linear_transformation_space.
 
-Require Export geometric_construct.
-Require Export geometric_universal.
-Require Export exterior_construct.
-Require Import exterior_universal.
+Require Export old_geometric_construct.
+Require Export old_geometric_universal.
+Require Export old_exterior_construct.
+Require Import old_exterior_universal.
 
 (* begin hide *)
 Section GeometricToExterior.

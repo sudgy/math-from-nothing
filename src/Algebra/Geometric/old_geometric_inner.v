@@ -2,9 +2,9 @@ Require Import init.
 
 Require Import linear_extend.
 
-Require Export geometric_construct.
-Require Import geometric_grade.
-Require Import geometric_involutions_grade.
+Require Export old_geometric_construct.
+Require Import old_geometric_grade.
+Require Import old_geometric_involutions_grade.
 
 (* begin hide *)
 Section GeometricInner.

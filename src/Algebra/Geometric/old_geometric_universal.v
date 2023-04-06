@@ -10,7 +10,7 @@ Require Import algebra_category.
 Require Import category_initterm.
 Require Import tensor_algebra.
 
-Require Export geometric_construct.
+Require Export old_geometric_construct.
 
 (* begin hide *)
 Section GeometricCategory.

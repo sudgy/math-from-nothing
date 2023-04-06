@@ -11,7 +11,7 @@ Require Import set.
 Require Import unordered_list.
 Require Import ring_ideal.
 
-Require Export exterior_construct.
+Require Export old_exterior_construct.
 
 (* begin hide *)
 Section ExteriorGrade.
