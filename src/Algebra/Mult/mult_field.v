@@ -18,13 +18,13 @@ Class MultRinv U `{Zero U, Mult U, One U, Div U} := {
 }.
 
 Class FieldBase U `{
-    FM : AllMult U,
+    FM : AllMultClass U,
     UD : Div U,
     UMD : @MultLinv U UZ UM UE UD,
     UMDR : @MultRinv U UZ UM UE UD
 }.
 
-Class Field U `{
+Class FieldClass U `{
     FF : FieldBase U,
     NotTrivial U
 }.
@@ -38,7 +38,7 @@ Arguments div : simpl never.
 
 Section FieldImply1.
 
-Context {U} `{Field U}.
+Context {U} `{FieldClass U}.
 
 Global Instance mult_linv_rinv : MultRinv U.
 Proof.
@@ -53,7 +53,7 @@ End FieldImply1.
 
 Section FieldImply2.
 
-Context {U} `{Field U}.
+Context {U} `{FieldClass U}.
 
 Global Instance mult_linv_lcancel : MultLcancel U.
 Proof.
@@ -81,7 +81,7 @@ End FieldImply2.
 
 Section Field.
 
-Context {U} `{Field U}.
+Context {U} `{FieldClass U}.
 
 (* end hide *)
 Theorem div_nz : ∀ a, 0 ≠ a → 0 ≠ /a.
@@ -302,7 +302,7 @@ End Field.
 
 Section MultHomo.
 
-Context {U V} `{Field U, Field V}.
+Context {U V} `{FieldClass U, FieldClass V}.
 (* end hide *)
 Context (f : U → V) `{
     @Injective U V f,

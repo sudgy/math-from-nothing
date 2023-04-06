@@ -28,7 +28,7 @@ Definition basis {U V} `{Zero U}
 (* begin hide *)
 Section Basis.
 
-Context {U V} `{VectorSpace U V}.
+Context {U V} `{VectorSpaceClass U V}.
 
 (* end hide *)
 Theorem empty_linearly_independent : linearly_independent ∅.

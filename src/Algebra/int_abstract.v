@@ -10,7 +10,7 @@ Require Import order_minmax.
 Section IntAbstract.
 
 Context {U} `{
-    OrderedField U,
+    OrderedFieldClass U,
     @CharacteristicZero U UP UZ UE
 }.
 

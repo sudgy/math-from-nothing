@@ -48,7 +48,7 @@ Arguments plus : simpl never.
 Arguments zero : simpl never.
 Arguments neg : simpl never.
 
-Class Group U `{
+Class GroupClass U `{
     UP : Plus U,
     UZ : Zero U,
     UN : Neg U,
@@ -59,13 +59,13 @@ Class Group U `{
     UPNR : @PlusRinv U UP UZ UN
 }.
 
-Class AbelianGroup U `{
-    AGG : Group U,
+Class AbelianGroupClass U `{
+    AGG : GroupClass U,
     UPC : @PlusComm U UP
 }.
 
-Class AllPlus U `{
-    APG : AbelianGroup U,
+Class AllPlusClass U `{
+    APG : AbelianGroupClass U,
     UPL : @PlusLcancel U UP,
     UPR : @PlusRcancel U UP
 }.
@@ -86,7 +86,7 @@ Class HomomorphismNeg {U V} `{Neg U, Neg V} (f : U → V) := {
 (* begin hide *)
 Section PlusGroupImply.
 
-Context {U} `{AllPlus U}.
+Context {U} `{AllPlusClass U}.
 
 Global Instance plus_lid_rid : PlusRid U.
 Proof.
@@ -118,7 +118,7 @@ End PlusGroupImply.
 
 Section PlusGroup.
 
-Context {U} `{AllPlus U, NotTrivial U}.
+Context {U} `{AllPlusClass U, NotTrivial U}.
 
 (* end hide *)
 Theorem lplus : ∀ {a b} c, a = b → c + a = c + b.
@@ -150,7 +150,7 @@ End PlusGroup.
 
 Section PlusGroup2.
 
-Context {U} `{AllPlus U}.
+Context {U} `{AllPlusClass U}.
 
 Theorem plus_rrinv : ∀ a b, a + b - b = a.
 Proof.
@@ -400,7 +400,7 @@ End PlusGroup2.
 
 Section PlusHomo.
 
-Context {U V} `{AllPlus U, AllPlus V}.
+Context {U V} `{AllPlusClass U, AllPlusClass V}.
 (* end hide *)
 Context (f : U → V) `{
     @Injective U V f,

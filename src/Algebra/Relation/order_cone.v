@@ -15,7 +15,7 @@ Class OrderCone U `{Plus U, Neg U, Mult U, One U} := {
 
 Section OrderCone.
 
-Context {U} `{Field U, @OrderCone U UP UN UM UE}.
+Context {U} `{FieldClass U, @OrderCone U UP UN UM UE}.
 
 Theorem cone_one : cone 1.
 Proof.

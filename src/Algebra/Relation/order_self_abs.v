@@ -5,7 +5,7 @@ Require Export order_mult.
 (* begin hide *)
 Section Abs.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedFieldClass U}.
 (* end hide *)
 
 Definition abs (a : U) := If 0 ≤ a then a else -a.

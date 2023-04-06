@@ -43,7 +43,7 @@ Definition cauchy_schwarz {U} `{AbsoluteValue U} f
 Section Abs.
 
 Context {U : Type} `{
-    OrderedField U,
+    OrderedFieldClass U,
 
     UA : AbsoluteValue U,
     @AbsDefinite U UA UZ,

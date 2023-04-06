@@ -16,8 +16,8 @@ Class OrderPlusRcancel U `{Plus U, Order U} := {
     le_plus_rcancel : ∀ {a b} c, a + c ≤ b + c → a ≤ b
 }.
 
-Class OrderPlus U `{
-    OPP : AllPlus U,
+Class OrderPlusClass U `{
+    OPP : AllPlusClass U,
     OPO : TotalOrder U,
     UOP : @OrderLplus U UP UO,
     UOPR : @OrderRplus U UP UO,
@@ -28,7 +28,7 @@ Class OrderPlus U `{
 (* begin hide *)
 Section OrderPlusImply.
 
-Context {U} `{OrderPlus U}.
+Context {U} `{OrderPlusClass U}.
 
 Global Instance le_lplus_rplus : OrderRplus U.
 Proof.
@@ -70,7 +70,7 @@ End OrderPlusImply.
 
 Section OrderPlus.
 
-Context {U} `{OrderPlus U}.
+Context {U} `{OrderPlusClass U}.
 
 (* end hide *)
 Theorem le_lrplus : ∀ {a b c d}, a ≤ b → c ≤ d → a + c ≤ b + d.

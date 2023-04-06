@@ -49,34 +49,34 @@ Class MultRcancel U `{Zero U, Mult U} := {
     mult_rcancel : ∀ {a b} c, 0 ≠ c → a * c = b * c → a = b;
 }.
 
-Class Rng U `{
-    RP : AllPlus U,
+Class RngClass U `{
+    RP : AllPlusClass U,
     UM : Mult U,
     UL : @Ldist U UP UM,
     UR : @Rdist U UP UM,
     UMA : @MultAssoc U UM
 }.
 
-Class Ring U `{
-    RR : Rng U,
+Class RingClass U `{
+    RR : RngClass U,
     UE : @One U,
     UME : @MultLid U UM UE,
     UMER : @MultRid U UM UE
 }.
 
-Class CRing U `{
-    CRR : Ring U,
+Class CRingClass U `{
+    CRR : RingClass U,
     UMC : @MultComm U UM
 }.
 
-Class IntegralDomain U `{
-    IDR : CRing U,
+Class IntegralDomainClass U `{
+    IDR : CRingClass U,
     UML : @MultLcancel U UZ UM,
     UMR : @MultRcancel U UZ UM
 }.
 
-Class AllMult U `{
-    AMI : IntegralDomain U,
+Class AllMultClass U `{
+    AMI : IntegralDomainClass U,
     UZL : @MultLanni U UZ UM,
     UZR : @MultRanni U UZ UM
 }.
@@ -112,7 +112,7 @@ Notation "- 9" := (-(9)) : algebra_scope.
 (* begin hide *)
 Section MultRingImply.
 
-Context {U} `{AllMult U}.
+Context {U} `{AllMultClass U}.
 
 Global Instance mult_lid_rid : MultRid U.
 Proof.
@@ -152,7 +152,7 @@ End MultRingImply.
 
 Section MultRing.
 
-Context {U} `{AllMult U, NotTrivial U}.
+Context {U} `{AllMultClass U, NotTrivial U}.
 
 (* end hide *)
 Theorem lmult : ∀ {a b} c, a = b → c * a = c * b.
@@ -303,7 +303,7 @@ End MultRing.
 
 Section MultHomo.
 
-Context {U V} `{AllMult U, AllMult V}.
+Context {U V} `{AllMultClass U, AllMultClass V}.
 (* end hide *)
 Context (f : U → V) `{
     @Injective U V f,

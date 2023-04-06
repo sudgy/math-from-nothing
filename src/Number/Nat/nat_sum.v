@@ -15,7 +15,7 @@ Fixpoint sum {U} `{Plus U, Zero U} (a : nat → U) (m n : nat) :=
 (* begin hide *)
 Section Sum.
 
-Context {U} `{AllPlus U}.
+Context {U} `{AllPlusClass U}.
 
 (* end hide *)
 Theorem sum_zero : ∀ f m, sum f m 0 = 0.

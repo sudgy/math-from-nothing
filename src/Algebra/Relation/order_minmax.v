@@ -10,7 +10,7 @@ Definition max {U} `{Order U} x y :=
 (* begin hide *)
 Section MinMax.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedFieldClass U}.
 (* end hide *)
 Theorem min_leq : ∀ a b, a ≤ b → min a b = a.
 Proof.

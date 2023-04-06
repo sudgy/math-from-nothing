@@ -12,7 +12,7 @@ Require Import order_minmax.
 Section RatAbstract.
 
 Context {U} `{
-    OrderedField U,
+    OrderedFieldClass U,
     @CharacteristicZero U UP UZ UE
 }.
 Local Existing Instance characteristic_zero_not_trivial.

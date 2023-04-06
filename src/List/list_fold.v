@@ -39,7 +39,7 @@ Arguments list_prod : simpl never.
 
 Section Fold.
 
-Context {U} `{Ring U}.
+Context {U} `{RingClass U}.
 
 Theorem list_sum_end : list_sum [] = 0.
 Proof.

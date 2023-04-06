@@ -42,7 +42,7 @@ Open Scope nat_scope.
 
 Section FromNat.
 
-Context {U} `{OrderedField U, @CharacteristicZero U UP UZ UE}.
+Context {U} `{OrderedFieldClass U, @CharacteristicZero U UP UZ UE}.
 (* end hide *)
 
 Theorem from_nat_suc : ∀ n, from_nat (nat_suc n) = 1 + from_nat n.
@@ -214,7 +214,7 @@ End FromNat.
 (* end hide *)
 Section CharacteristicImply.
 
-Context {U} `{OrderedField U, @CharacteristicZero U UP UZ UE}.
+Context {U} `{OrderedFieldClass U, @CharacteristicZero U UP UZ UE}.
 
 #[refine]
 Local Instance characteristic_zero_not_trivial : NotTrivial U := {
@@ -257,7 +257,7 @@ End CharacteristicImply.
 Section CharacteristicSpecific.
 
 Context {U} `{
-    OrderedField U,
+    OrderedFieldClass U,
     @FromNatNZ U 2 UP UZ UE,
     @FromNatNZ U 3 UP UZ UE,
     @FromNatNZ U 4 UP UZ UE
@@ -284,7 +284,7 @@ Qed.
 End CharacteristicSpecific.
 Section OrderedFieldCharacteristic.
 
-Context {U} `{OrderedField U, @CharacteristicZero U UP UZ UE}.
+Context {U} `{OrderedFieldClass U, @CharacteristicZero U UP UZ UE}.
 
 Global Instance ordered_field_char : CharacteristicZero U.
 Proof.
@@ -297,7 +297,7 @@ End OrderedFieldCharacteristic.
 (* begin hide *)
 Section Archimedean.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedFieldClass U}.
 
 (* end hide *)
 Let a1 := ∀ x : U, 0 < x → ∃ n, x < from_nat n.

@@ -21,8 +21,8 @@ Class OrderMultRcancel U `{Zero U, Mult U, Order U} := {
     le_mult_rcancel_pos : ∀ {a b} c, 0 < c → a * c ≤ b * c → a ≤ b
 }.
 
-Class OrderedField U `{
-    OFF : Field U,
+Class OrderedFieldClass U `{
+    OFF : FieldClass U,
     OFO : TotalOrder U,
     UOP : @OrderLplus U UP UO,
     UOPR : @OrderRplus U UP UO,
@@ -38,7 +38,7 @@ Class OrderedField U `{
 (* begin hide *)
 Section OrderMultImply.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedFieldClass U}.
 
 Global Instance le_lmult_rmult : OrderRmult U.
 Proof.
@@ -96,7 +96,7 @@ End OrderMultImply.
 
 Section OrderMult.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedFieldClass U}.
 
 (* end hide *)
 Theorem lt_lmult_pos : ∀ {a b} c, 0 < c → a < b → c * a < c * b.

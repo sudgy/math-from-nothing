@@ -23,7 +23,7 @@ Definition linear_combination_of {U V}
 (* begin hide *)
 Section LinearBase.
 
-Context {U V} `{AlgebraField U V}.
+Context {U V} `{AlgebraFieldClass U V}.
 
 Theorem linear_combination_add : ∀ x l H1 H2,
     linear_combination [x ː l | H1] =

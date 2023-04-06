@@ -31,9 +31,9 @@ Class ScalarRMult U V `{Mult V, ScalarMult U V} := {
     scalar_rmult : ∀ a u v, u * (a · v) = a · (u * v)
 }.
 
-Class Module U V `{
-    MR : CRing U,
-    MG : AbelianGroup V,
+Class ModuleClass U V `{
+    MR : CRingClass U,
+    MG : AbelianGroupClass V,
     SM : ScalarMult U V,
     SMC : @ScalarComp U V UM SM,
     SME : @ScalarId U V UE SM,
@@ -41,9 +41,9 @@ Class Module U V `{
     SMR : @ScalarRdist U V UP UP0 SM
 }.
 
-Class VectorSpace U V `{
-    VF : Field U,
-    VG : AbelianGroup V,
+Class VectorSpaceClass U V `{
+    VF : FieldClass U,
+    VG : AbelianGroupClass V,
     SM : ScalarMult U V,
     SMC : @ScalarComp U V UM SM,
     SME : @ScalarId U V UE SM,
@@ -51,9 +51,9 @@ Class VectorSpace U V `{
     SMR : @ScalarRdist U V UP UP0 SM
 }.
 
-Class Algebra U V `{
-    AR : CRing U,
-    AR : Ring V,
+Class AlgebraClass U V `{
+    AR : CRingClass U,
+    AR : RingClass V,
     SM : ScalarMult U V,
     SMC : @ScalarComp U V UM SM,
     SME : @ScalarId U V UE SM,
@@ -63,9 +63,9 @@ Class Algebra U V `{
     SMRM : @ScalarRMult U V UM0 SM
 }.
 
-Class AlgebraField U V `{
-    AF : Field U,
-    AR : Ring V,
+Class AlgebraFieldClass U V `{
+    AF : FieldClass U,
+    AR : RingClass V,
     SM : ScalarMult U V,
     SMC : @ScalarComp U V UM SM,
     SME : @ScalarId U V UE SM,
@@ -78,7 +78,7 @@ Class AlgebraField U V `{
 (* begin hide *)
 Section LinearBase.
 
-Context {U V} `{AlgebraField U V}.
+Context {U V} `{AlgebraFieldClass U V}.
 
 (* end hide *)
 Theorem lscalar : ∀ {u v} a, u = v → a · u = a · v.

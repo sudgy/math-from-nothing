@@ -71,7 +71,7 @@ End Bounds.
 Section Supremum.
 
 Context {U} `{
-    OrderedField U,
+    OrderedFieldClass U,
     @SupremumComplete U le,
     @Dense U le
 }.

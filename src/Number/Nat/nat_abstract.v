@@ -25,7 +25,7 @@ Arguments nat_pow : simpl never.
 (* begin hide *)
 Section NatAbstract.
 
-Context {U} `{OrderedField U}.
+Context {U} `{OrderedFieldClass U}.
 Local Open Scope nat_scope.
 (* end hide *)
 Theorem nat_mult_lanni : ∀ a, 0 × a = 0.
