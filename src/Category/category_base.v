@@ -30,6 +30,8 @@ Arguments cat_morphism : clear implicits.
 Arguments cat_compose Category {A B C} f g.
 Arguments cat_id : clear implicits.
 
+Coercion cat_U : Category >-> Sortclass.
+
 Infix "∘" := (cat_compose _).
 Notation "𝟙" := (cat_id _ _).
 
@@ -69,7 +71,7 @@ Qed.
 (* begin show *)
 Local Program Instance product_category `(C1 : Category) `(C2 : Category) : Category
 := {
-    cat_U := prod_type (cat_U C1) (cat_U C2);
+    cat_U := prod_type C1 C2;
     cat_morphism A B
         := prod_type (cat_morphism C1 (fst A) (fst B)) (cat_morphism C2 (snd A) (snd B));
     cat_compose {A B C} f g := (fst f ∘ fst g, snd f ∘ snd g);
@@ -90,7 +92,7 @@ Next Obligation.
 Qed.
 
 Class SubCategory `(C0 : Category) := {
-    subcat_S : cat_U C0 → Prop;
+    subcat_S : C0 → Prop;
     subcat_morphism : ∀ {A B}, cat_morphism C0 A B → Prop;
     subcat_compose : ∀ {A B C} (f : cat_morphism C0 B C) (g : cat_morphism C0 A B),
         subcat_morphism f → subcat_morphism g → subcat_morphism (f ∘ g);

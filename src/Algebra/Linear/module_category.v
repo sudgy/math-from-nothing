@@ -7,7 +7,7 @@ Require Export ring_category.
 one-sided modules, I'll just make a different category for those.
 *)
 Record ModuleObj (R : CRingObj) := make_module {
-    module_V : Type;
+    module_V :> Type;
     module_plus : Plus module_V;
     module_zero : Zero module_V;
     module_neg : Neg module_V;
@@ -41,7 +41,7 @@ Global Existing Instances module_plus module_zero module_neg module_plus_assoc
     module_scalar_id module_scalar_ldist module_scalar_rdist module_scalar_comp.
 
 Record ModuleObjHomomorphism {R : CRingObj} (M : ModuleObj R) (N : ModuleObj R) := make_module_homomorphism {
-    module_homo_f :> module_V M → module_V N;
+    module_homo_f :> M → N;
     module_homo_plus : ∀ u v,
         module_homo_f (u + v) = module_homo_f u + module_homo_f v;
     module_homo_scalar : ∀ a v,

@@ -9,15 +9,15 @@ change names later if I need to.
 *)
 Record AlgebraObj (F : CRingObj) := make_algebra {
     algebra_module : ModuleObj F;
-    algebra_mult : Mult (module_V algebra_module);
-    algebra_ldist : @Ldist (module_V algebra_module) (module_plus algebra_module) algebra_mult;
-    algebra_rdist : @Rdist (module_V algebra_module) (module_plus algebra_module) algebra_mult;
-    algebra_mult_assoc : @MultAssoc (module_V algebra_module) algebra_mult;
-    algebra_one : One (module_V algebra_module);
-    algebra_mult_lid : @MultLid (module_V algebra_module) algebra_mult algebra_one;
-    algebra_mult_rid : @MultRid (module_V algebra_module) algebra_mult algebra_one;
-    algebra_scalar_lmult : @ScalarLMult (cring_U F) (module_V algebra_module) algebra_mult (module_scalar algebra_module);
-    algebra_scalar_rmult : @ScalarRMult (cring_U F) (module_V algebra_module) algebra_mult (module_scalar algebra_module);
+    algebra_mult : Mult algebra_module;
+    algebra_ldist : @Ldist algebra_module (module_plus algebra_module) algebra_mult;
+    algebra_rdist : @Rdist algebra_module (module_plus algebra_module) algebra_mult;
+    algebra_mult_assoc : @MultAssoc algebra_module algebra_mult;
+    algebra_one : One algebra_module;
+    algebra_mult_lid : @MultLid algebra_module algebra_mult algebra_one;
+    algebra_mult_rid : @MultRid algebra_module algebra_mult algebra_one;
+    algebra_scalar_lmult : @ScalarLMult (cring_U F) algebra_module algebra_mult (module_scalar algebra_module);
+    algebra_scalar_rmult : @ScalarRMult (cring_U F) algebra_module algebra_mult (module_scalar algebra_module);
 }.
 Arguments algebra_module {F}.
 Arguments algebra_mult {F}.
@@ -30,6 +30,7 @@ Arguments algebra_mult_rid {F}.
 Arguments algebra_scalar_lmult {F}.
 Arguments algebra_scalar_rmult {F}.
 Definition algebra_V {F} (A : AlgebraObj F) := module_V (algebra_module A).
+Coercion algebra_V : AlgebraObj >-> Sortclass.
 Definition algebra_plus {F} (A : AlgebraObj F) := module_plus (algebra_module A).
 Definition algebra_zero {F} (A : AlgebraObj F) := module_zero (algebra_module A).
 Definition algebra_neg {F} (A : AlgebraObj F) := module_neg (algebra_module A).
@@ -51,7 +52,7 @@ Global Existing Instances algebra_mult algebra_ldist algebra_rdist
     algebra_scalar_rdist algebra_scalar_comp.
 
 Record AlgebraObjHomomorphism {R : CRingObj} (A B : AlgebraObj R) := make_algebra_homomorphism {
-    algebra_homo_f :> algebra_V A → algebra_V B;
+    algebra_homo_f :> A → B;
     algebra_homo_plus : ∀ u v,
         algebra_homo_f (u + v) = algebra_homo_f u + algebra_homo_f v;
     algebra_homo_scalar : ∀ a v,
