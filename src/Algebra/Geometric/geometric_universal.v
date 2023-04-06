@@ -31,7 +31,7 @@ Existing Instances UP UN UM VP VS.
 Context (B : set_type bilinear_form).
 
 Record to_geo := make_to_geo {
-    to_geo_algebra : AlgebraObj F;
+    to_geo_algebra : ALGEBRA F;
     to_geo_homo : ModuleObjHomomorphism V (algebra_module to_geo_algebra);
     to_geo_contract : ∀ v,
         @mult _ (algebra_mult to_geo_algebra) (to_geo_homo v) (to_geo_homo v) =
@@ -40,8 +40,7 @@ Record to_geo := make_to_geo {
 }.
 
 Definition to_geo_set (f g : to_geo)
-    (h : cat_morphism (ALGEBRA F)
-                      (to_geo_algebra f)
+    (h : cat_morphism (to_geo_algebra f)
                       (to_geo_algebra g))
     := ∀ x, h ((to_geo_homo f) x) = (to_geo_homo g) x.
 

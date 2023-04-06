@@ -13,7 +13,7 @@ Local Program Instance TYPE : Category := {
 }.
 (* end show *)
 
-Theorem set_category_isomorphism : ∀ {A B} (f : cat_morphism TYPE A B),
+Theorem set_category_isomorphism : ∀ {A B} (f : cat_morphism A B),
     isomorphism f → Bijective f.
 Proof.
     intros A B f [g [g_eq1 g_eq2]].

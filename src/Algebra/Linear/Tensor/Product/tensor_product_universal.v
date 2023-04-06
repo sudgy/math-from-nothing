@@ -82,7 +82,7 @@ Definition tensor_product_base := make_module
     (tensor_scalar_comp M N).
 
 Record bilinear_from := make_bilinear {
-    bilinear_from_module : ModuleObj F;
+    bilinear_from_module : MODULE F;
     bilinear_from_f : V1 → V2 → module_V bilinear_from_module;
     bilinear_from_bi : bilinear
         (H1 := module_plus bilinear_from_module)
@@ -91,8 +91,7 @@ Record bilinear_from := make_bilinear {
 }.
 
 Definition bilinear_from_set (f g : bilinear_from)
-    (h : cat_morphism (MODULE F)
-                      (bilinear_from_module f)
+    (h : cat_morphism (bilinear_from_module f)
                       (bilinear_from_module g))
     := ∀ x y, h (bilinear_from_f f x y) = bilinear_from_f g x y.
 

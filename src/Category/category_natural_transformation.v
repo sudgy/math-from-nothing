@@ -6,8 +6,8 @@ Class NatTransformation `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C1 C2) :=
 {
     nat_trans_f : ∀ A,
-        cat_morphism C2 (F A) (G A);
-    nat_trans_commute : ∀ {A B} (f : cat_morphism C1 A B),
+        cat_morphism (F A) (G A);
+    nat_trans_commute : ∀ {A B} (f : cat_morphism A B),
         nat_trans_f B ∘ (⌈F⌉ f) = (⌈G⌉ f) ∘ nat_trans_f A;
 }.
 
@@ -211,7 +211,7 @@ Proof.
         split; reflexivity.
     -   intros all_iso.
         pose (β_f A := ex_val (all_iso A)).
-        assert (∀ {A B} (f : cat_morphism C1 A B),
+        assert (∀ {A B} (f : cat_morphism A B),
             β_f B ∘ (⌈G⌉ f) = (⌈F⌉ f) ∘ β_f A) as β_commute.
         {
             intros A B f.

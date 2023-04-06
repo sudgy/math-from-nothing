@@ -8,13 +8,12 @@ Section TensorAlgebraDefs.
 Context {F : CRingObj} (V : ModuleObj F).
 
 Record to_algebra := make_to_algebra {
-    to_algebra_algebra : AlgebraObj F;
+    to_algebra_algebra : ALGEBRA F;
     to_algebra_homo : ModuleObjHomomorphism V (algebra_module to_algebra_algebra);
 }.
 
 Definition to_algebra_set (f g : to_algebra)
-    (h : cat_morphism (ALGEBRA F)
-                      (to_algebra_algebra f)
+    (h : cat_morphism (to_algebra_algebra f)
                       (to_algebra_algebra g))
     := ∀ x, h (to_algebra_homo f x) = to_algebra_homo g x.
 

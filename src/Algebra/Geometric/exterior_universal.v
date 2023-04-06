@@ -17,15 +17,14 @@ Section ExteriorCategory.
 Context {F : CRingObj} (V : ModuleObj F).
 
 Record to_ext := make_to_ext {
-    to_ext_algebra : AlgebraObj F;
+    to_ext_algebra : ALGEBRA F;
     to_ext_homo : ModuleObjHomomorphism V (algebra_module to_ext_algebra);
     to_ext_alternating : ∀ v, (@zero _ (algebra_zero to_ext_algebra)) =
         @mult _ (algebra_mult to_ext_algebra) (to_ext_homo v) (to_ext_homo v);
 }.
 
 Definition to_ext_set (f g : to_ext)
-    (h : cat_morphism (ALGEBRA F)
-                      (to_ext_algebra f)
+    (h : cat_morphism (to_ext_algebra f)
                       (to_ext_algebra g))
     := ∀ x, h (to_ext_homo f x) = to_ext_homo g x.
 

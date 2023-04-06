@@ -10,9 +10,9 @@ Require Import unordered_list.
 (** This maybe doesn't belong here, but oh well *)
 Section SubspaceHomomorphism.
 
-Context {F : CRingObj} {M N : ModuleObj F}.
+Context {F : CRingObj} {M N : MODULE F}.
 
-Variable (f : cat_morphism (MODULE F) M N).
+Variable (f : cat_morphism M N).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -111,9 +111,9 @@ End SubspaceHomomorphism.
 Section Grade.
 
 (* end hide *)
-Context {F : CRingObj} {M N : ModuleObj F}.
+Context {F : CRingObj} {M N : MODULE F}.
 
-Variables (f : cat_morphism (MODULE F) M N) (f_iso : isomorphism f).
+Variables (f : cat_morphism M N) (f_iso : isomorphism f).
 
 (* begin hide *)
 Let U := cring_U F.
@@ -390,9 +390,9 @@ End Grade.
 
 Section GradeAlgebraObj.
 
-Context {F : CRingObj} {M N : AlgebraObj F}.
+Context {F : CRingObj} {M N : ALGEBRA F}.
 
-Variables (f : cat_morphism (ALGEBRA F) M N) (f_iso : isomorphism f).
+Variables (f : cat_morphism M N) (f_iso : isomorphism f).
 
 Let U := cring_U F.
 Let UP := cring_plus F.

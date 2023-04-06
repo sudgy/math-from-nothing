@@ -7,9 +7,9 @@ Set Universe Polymorphism.
 (* end show *)
 
 Definition initial `{C0 : Category} (I : cat_U C0)
-    := ∀ A, Singleton (cat_morphism C0 I A).
+    := ∀ A, Singleton (cat_morphism I A).
 Definition terminal `{C0 : Category} (T : cat_U C0)
-    := ∀ A, Singleton (cat_morphism C0 A T).
+    := ∀ A, Singleton (cat_morphism A T).
 
 (* begin hide *)
 Section InitTerm1.
@@ -18,7 +18,7 @@ Context `{C0 : Category}.
 
 (* end hide *)
 Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
-    ∀ f : cat_morphism C0 I1 I2, isomorphism f.
+    ∀ f : cat_morphism I1 I2, isomorphism f.
 Proof.
     intros I1 I2 I1_init I2_init f.
     pose proof (I1_init I1) as I1_self.
@@ -41,7 +41,7 @@ Proof.
 Qed.
 
 Theorem initial_iso_unique : ∀ I1 I2, initial I1 → initial I2 →
-    ∀ f g : cat_morphism C0 I1 I2, f = g.
+    ∀ f g : cat_morphism I1 I2, f = g.
 Proof.
     intros I1 I2 I1_init I2_init f g.
     specialize (I1_init I2).
@@ -49,14 +49,14 @@ Proof.
 Qed.
 
 Theorem initial_dual_terminal :
-    ∀ I : cat_U C0, initial I → terminal (C0:=dual_category C0) I.
+    ∀ I : C0, initial I → terminal (C0:=dual_category C0) I.
 Proof.
     intros I I_init.
     exact I_init.
 Qed.
 
 Theorem terminal_dual_initial :
-    ∀ I : cat_U C0, terminal I → initial (C0:=dual_category C0) I.
+    ∀ I : C0, terminal I → initial (C0:=dual_category C0) I.
 Proof.
     intros I I_term.
     exact I_term.
@@ -70,7 +70,7 @@ Context `{C0 : Category}.
 
 (* end hide *)
 Theorem terminal_all_iso : ∀ T1 T2, terminal T1 → terminal T2 →
-    ∀ f : cat_morphism C0 T1 T2, isomorphism f.
+    ∀ f : cat_morphism T1 T2, isomorphism f.
 Proof.
     intros T1 T2 T1_term T2_term f.
     apply terminal_dual_initial in T1_term, T2_term.
@@ -89,7 +89,7 @@ Proof.
 Qed.
 
 Theorem terminal_iso_unique : ∀ T1 T2, terminal T1 → terminal T2 →
-    ∀ f g : cat_morphism C0 T1 T2, f = g.
+    ∀ f g : cat_morphism T1 T2, f = g.
 Proof.
     intros T1 T2 T1_term T2_term f g.
     specialize (T2_term T1).

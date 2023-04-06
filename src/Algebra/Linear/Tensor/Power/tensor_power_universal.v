@@ -28,7 +28,7 @@ Existing Instances VP VSM VnP VnSM.
 
 (* end hide *)
 Record multilinear_from := make_multilinear {
-    multilinear_from_module : ModuleObj F;
+    multilinear_from_module : MODULE F;
     multilinear_from_f : ∀ l : list (module_V V), list_size l = n →
         module_V multilinear_from_module;
     multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
@@ -43,8 +43,7 @@ Record multilinear_from := make_multilinear {
 }.
 
 Definition multilinear_from_set (f g : multilinear_from)
-    (h : cat_morphism (MODULE F)
-                      (multilinear_from_module f)
+    (h : cat_morphism (multilinear_from_module f)
                       (multilinear_from_module g))
     := ∀ x (eq : list_size x = n),
         h (multilinear_from_f f x eq) = multilinear_from_f g x eq.

@@ -6,14 +6,14 @@ Require Import set.
 
 Record morphism_to `{C0 : Category} (X : cat_U C0) := {
     morphism_to_obj : cat_U C0;
-    morphism_to_f : cat_morphism C0 morphism_to_obj X;
+    morphism_to_f : cat_morphism morphism_to_obj X;
 }.
 
 Arguments morphism_to_obj {C0} {X}.
 Arguments morphism_to_f {C0} {X}.
 
 Definition slice_set `{C0 : Category} {X : cat_U C0} (f g : morphism_to X)
-    (h : cat_morphism C0 (morphism_to_obj f) (morphism_to_obj g))
+    (h : cat_morphism (morphism_to_obj f) (morphism_to_obj g))
     := morphism_to_f g ∘ h = morphism_to_f f.
 
 Definition slice_set_compose `{C0 : Category} {X : cat_U C0}
@@ -67,14 +67,14 @@ Qed.
 
 Record morphism_from `{C0 : Category} (X : cat_U C0) := {
     morphism_from_obj : cat_U C0;
-    morphism_from_f : cat_morphism C0 X morphism_from_obj;
+    morphism_from_f : cat_morphism X morphism_from_obj;
 }.
 
 Arguments morphism_from_obj {C0} {X}.
 Arguments morphism_from_f {C0} {X}.
 
 Definition coslice_set `{C0 : Category} {X : cat_U C0} (f g : morphism_from X)
-    (h : cat_morphism C0 (morphism_from_obj f) (morphism_from_obj g))
+    (h : cat_morphism (morphism_from_obj f) (morphism_from_obj g))
     := h ∘ morphism_from_f f = morphism_from_f g.
 
 Definition coslice_set_compose `{C0 : Category} {X : cat_U C0}

@@ -351,13 +351,12 @@ Definition free_module := make_module
 .
 
 Record free_from := make_free_from {
-    free_from_module : ModuleObj F;
+    free_from_module : MODULE F;
     free_from_f : V → module_V free_from_module;
 }.
 
 Definition free_from_set (f g : free_from)
-    (h : cat_morphism (MODULE F)
-                      (free_from_module f)
+    (h : cat_morphism (free_from_module f)
                       (free_from_module g))
     := ∀ x, h (free_from_f f x) = free_from_f g x.
 

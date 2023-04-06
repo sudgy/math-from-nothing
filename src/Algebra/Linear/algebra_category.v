@@ -8,7 +8,7 @@ because unital associative algebras are all I care about for the moment.  I can
 change names later if I need to.
 *)
 Record AlgebraObj (F : CRingObj) := make_algebra {
-    algebra_module : ModuleObj F;
+    algebra_module : MODULE F;
     algebra_mult : Mult algebra_module;
     algebra_ldist : @Ldist algebra_module (module_plus algebra_module) algebra_mult;
     algebra_rdist : @Rdist algebra_module (module_plus algebra_module) algebra_mult;
@@ -189,8 +189,8 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Theorem algebra_to_module_iso {R : CRingObj} {A B : AlgebraObj R} :
-    ∀ f : cat_morphism (ALGEBRA R) A B, isomorphism f →
+Theorem algebra_to_module_iso {R : CRingObj} {A B : ALGEBRA R} :
+    ∀ f : cat_morphism A B, isomorphism f →
     isomorphism (C0 := MODULE R)(algebra_to_module_homomorphism f).
 Proof.
     intros f [g [fg gf]].
