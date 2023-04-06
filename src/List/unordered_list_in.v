@@ -32,7 +32,7 @@ Proof.
         apply (list_perm_in albl) in a_in.
         apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
         pose proof (list_perm_split l1 l2 a) as eq.
-        pose proof (list_perm_trans albl eq) as eq2.
+        pose proof (trans albl eq) as eq2.
         apply list_perm_add_eq in eq2.
         specialize (IHal _ eq2 al_uni).
         apply list_unique_comm.
@@ -40,7 +40,7 @@ Proof.
         cbn.
         split; [>|apply list_unique_comm; exact IHal].
         intros a_in.
-        apply (list_perm_trans2 (list_perm_conc _ _)) in eq2.
+        apply (trans2 (list_perm_conc _ _)) in eq2.
         apply (list_perm_in eq2) in a_in.
         contradiction.
 Qed.

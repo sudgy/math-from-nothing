@@ -38,7 +38,7 @@ Proof.
         rewrite list_sum_conc.
         do 2 rewrite list_sum_add.
         pose proof (list_perm_split l3 l4 a) as eq2.
-        pose proof (list_perm_trans eq eq2) as eq3.
+        pose proof (trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.
         rewrite (IHl1 _ eq3).
         rewrite list_sum_conc.
@@ -116,7 +116,7 @@ Proof.
         rewrite list_prod_conc.
         do 2 rewrite list_prod_add.
         pose proof (list_perm_split l3 l4 a) as eq2.
-        pose proof (list_perm_trans eq eq2) as eq3.
+        pose proof (trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.
         rewrite (IHl1 _ eq3).
         rewrite list_prod_conc.

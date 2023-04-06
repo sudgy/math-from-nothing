@@ -4,18 +4,8 @@ Require Import list_perm.
 
 Require Import equivalence.
 
-Local Instance list_perm_reflexive U : Reflexive _ := {
-    refl := @list_perm_refl U
-}.
-Local Instance list_perm_symmetric U : Symmetric _ := {
-    sym := @list_perm_sym U
-}.
-Local Instance list_perm_transitive U : Transitive _ := {
-    trans := @list_perm_trans U
-}.
-
 Definition ulist_equiv U := make_equiv _
-    (list_perm_reflexive U) (list_perm_symmetric U) (list_perm_transitive U).
+    (list_perm_refl U) (list_perm_sym U) (list_perm_trans U).
 Notation "'ulist' U" := (equiv_type (ulist_equiv U)) (at level 1).
 
 Definition ulist_end {U} := to_equiv (ulist_equiv U) list_end.
@@ -92,7 +82,7 @@ Proof.
     intros al1 al2 bl1 bl2 eq1 eq2.
     pose proof (list_perm_rpart al1 eq2).
     pose proof (list_perm_lpart bl2 eq1).
-    exact (list_perm_trans H H0).
+    exact (trans H H0).
 Qed.
 Global Instance ulist_plus U : Plus (ulist U) := {
     plus := binary_op (binary_self_wd (E := ulist_equiv U) (uconc_wd U))
@@ -200,7 +190,7 @@ Proof.
         apply (list_perm_in albli) in a_in.
         apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
         pose proof (list_perm_split l1 l2 a) as eq.
-        pose proof (list_perm_trans albli eq) as eq2.
+        pose proof (trans albli eq) as eq2.
         apply list_perm_add_eq in eq2.
         specialize (IHal _ eq2).
         rewrite list_image_conc.

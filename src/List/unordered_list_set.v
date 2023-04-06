@@ -21,7 +21,7 @@ Proof.
     -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
-        apply (list_perm_trans2 (list_perm_split l3 l4 a)) in eq.
+        apply (trans2 (list_perm_split l3 l4 a)) in eq.
         apply list_perm_add_eq in eq.
         specialize (IHl1 _ eq).
         rewrite list_filter_conc.
@@ -57,7 +57,7 @@ Proof.
         apply (list_perm_in eq) in a_in'.
         apply in_list_split in a_in' as [l3 [l4 eq']]; subst l2.
         pose proof (list_perm_split l3 l4 a) as eq2.
-        pose proof (list_perm_trans eq eq2) as eq3.
+        pose proof (trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.
         specialize (IHl1 Sl1 _ eq3).
         clear eq eq2 eq3.
