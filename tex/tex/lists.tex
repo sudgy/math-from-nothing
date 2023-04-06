@@ -1013,6 +1013,90 @@ explicitly saying that every value in a list satisfies a predicate).
 
 \section{Folds}
 
+\begin{definition}
+    Let $*$ be a binary operation on $\U$, $e$ a value in $\U$, and $a$ a list.
+    Then we define the right fold $*(a, e)$ recursively on $a$:
+    \begin{align*}
+           *([], e) &= e \\
+        *(x : a, e) &= x * (*(a, e)).
+    \end{align*}
+\end{definition}
+
+\begin{definition}
+    Given a list $a$, we define the sum of the list $\sum a$ to be $+(a, 0)$.
+\end{definition}
+
+\begin{definition}
+    Given a list $a$, we define the product of the list $\prod a$ to be
+    $\cdot(a, 0)$, where $\cdot$ represents multiplication.
+\end{definition}
+
+\begin{theorem}
+    For all elements $x$, $\sum [x] = x$.
+\end{theorem}
+\begin{proof}
+    \[
+        \sum [x] = x + \sum [] = x + 0 = x.
+    \]
+\end{proof}
+
+\begin{theorem} \label{list-sum-conc}
+    For all lists $a$ and $b$, $\sum (a + b) = \sum a + \sum b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  First, when $a = []$,
+    \[
+        \sum ([] + b) = \sum b = 0 + \sum b = \sum [] + \sum b,
+    \]
+    so the base case is true.  Now assume that $\sum (a + b) = \sum a + \sum b.$
+    Then for all values $x$,
+    \[
+        \sum(x : a + b) = x + \sum(a + b) = x + \sum a + \sum b = \sum (x : a)
+        \sum b,
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-sum-neg}
+    For all lists $a$, $\sum (-a) = -\sum a$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  First, when $a = []$,
+    \[
+        \sum (-[]) = \sum [] = 0 = -0 = -\sum [],
+    \]
+    so the base case is true.  Now assume that $\sum (-a) = -\sum a$.  Then for
+    all values $x$,
+    \[
+        \sum (-(x : a)) = \sum(-x : -a) = -x + \sum (-a) = -x - \sum a = -(x +
+        \sum a) = -\sum (x : a),
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list-sum-minus}
+    For all lists $a$ and $b$, $\sum (a + (-b)) = \sum a - \sum b$.
+\end{theorem}
+\begin{proof}
+    This is just the combination of the previous two theorems.
+\end{proof}
+
+\begin{theorem}
+    For all elements $x$, $\prod [x] = x$.
+\end{theorem}
+\begin{proof}
+    \[
+        \prod [x] = x \prod [] = x 1 = x.
+    \]
+\end{proof}
+
+\begin{theorem} \label{list-prod-conc}
+    For all lists $a$ and $b$, $\prod (a + b) = (\prod a) (\prod b)$.
+\end{theorem}
+\begin{proof}
+    The proof is identical in form to the proof of Theorem \ref{list-sum-conc}.
+\end{proof}
+
 \section{Permutations}
 
 \section{Unordered Lists}
