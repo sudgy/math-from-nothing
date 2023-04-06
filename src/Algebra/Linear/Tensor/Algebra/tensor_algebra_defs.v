@@ -8,7 +8,7 @@ Section TensorAlgebraDefs.
 Context {F : CRingObj} (V : ModuleObj F).
 
 Record to_algebra := make_to_algebra {
-    to_algebra_algebra : ALGEBRA F;
+    to_algebra_algebra : Algebra F;
     to_algebra_homo : ModuleObjHomomorphism V (algebra_module to_algebra_algebra);
 }.
 
@@ -50,15 +50,15 @@ Program Instance TO_ALGEBRA : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (ALGEBRA F)).
+    apply (@cat_assoc (Algebra F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (ALGEBRA F)).
+    apply (@cat_lid (Algebra F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (ALGEBRA F)).
+    apply (@cat_rid (Algebra F)).
 Qed.
 
 End TensorAlgebraDefs.

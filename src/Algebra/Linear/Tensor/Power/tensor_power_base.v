@@ -25,7 +25,7 @@ Local Arguments cat_id : simpl never.
 Infix "⊗" := tensor_product.
 
 (* end hide *)
-Fixpoint tensor_power (n : nat) : MODULE F :=
+Fixpoint tensor_power (n : nat) : Module F :=
     match n with
     | nat_zero => cring_module F
     | nat_suc n' => V ⊗ tensor_power n'
@@ -160,7 +160,7 @@ Fixpoint tensor_power_mult (m n : nat)
     end.
 
 Theorem tensor_power_mult1_iso :
-    ∀ n, isomorphism (C0 := MODULE F) (tensor_power_mult1 n).
+    ∀ n, isomorphism (C0 := Module F) (tensor_power_mult1 n).
 Proof.
     intros n.
     induction n.
@@ -174,7 +174,7 @@ Proof.
 Qed.
 
 Theorem tensor_power_mult_iso :
-    ∀ m n, isomorphism (C0 := MODULE F) (tensor_power_mult m n).
+    ∀ m n, isomorphism (C0 := Module F) (tensor_power_mult m n).
 Proof.
     intros m n.
     revert m.

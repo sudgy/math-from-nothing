@@ -397,7 +397,7 @@ Proof.
     -   exact ext_to_geo_to_ext_homo.
 Qed.
 
-Theorem geo_ext_iso : isomorphic (C0 := MODULE F)
+Theorem geo_ext_iso : isomorphic
     (algebra_module (geometric_algebra B))
     (algebra_module (exterior_algebra V)).
 Proof.

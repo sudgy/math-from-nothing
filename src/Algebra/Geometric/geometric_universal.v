@@ -31,7 +31,7 @@ Existing Instances UP UN UM VP VS.
 Context (B : set_type bilinear_form).
 
 Record to_geo := make_to_geo {
-    to_geo_algebra : ALGEBRA F;
+    to_geo_algebra : Algebra F;
     to_geo_homo : ModuleObjHomomorphism V (algebra_module to_geo_algebra);
     to_geo_contract : ∀ v,
         @mult _ (algebra_mult to_geo_algebra) (to_geo_homo v) (to_geo_homo v) =
@@ -77,15 +77,15 @@ Program Instance TO_GEO : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (ALGEBRA F)).
+    apply (@cat_assoc (Algebra F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (ALGEBRA F)).
+    apply (@cat_lid (Algebra F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (ALGEBRA F)).
+    apply (@cat_rid (Algebra F)).
 Qed.
 
 Definition vector_to_geo_homo := make_module_homomorphism

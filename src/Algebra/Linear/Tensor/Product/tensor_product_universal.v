@@ -82,7 +82,7 @@ Definition tensor_product_base := make_module
     (tensor_scalar_comp M N).
 
 Record bilinear_from := make_bilinear {
-    bilinear_from_module : MODULE F;
+    bilinear_from_module : Module F;
     bilinear_from_f : V1 → V2 → module_V bilinear_from_module;
     bilinear_from_bi : bilinear
         (H1 := module_plus bilinear_from_module)
@@ -128,15 +128,15 @@ Program Instance BILINEAR_FROM : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (MODULE F)).
+    apply (@cat_assoc (Module F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (MODULE F)).
+    apply (@cat_lid (Module F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (MODULE F)).
+    apply (@cat_rid (Module F)).
 Qed.
 
 (* begin hide *)

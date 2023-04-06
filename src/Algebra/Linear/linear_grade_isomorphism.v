@@ -10,7 +10,7 @@ Require Import unordered_list.
 (** This maybe doesn't belong here, but oh well *)
 Section SubspaceHomomorphism.
 
-Context {F : CRingObj} {M N : MODULE F}.
+Context {F : CRingObj} {M N : Module F}.
 
 Variable (f : cat_morphism M N).
 
@@ -111,7 +111,7 @@ End SubspaceHomomorphism.
 Section Grade.
 
 (* end hide *)
-Context {F : CRingObj} {M N : MODULE F}.
+Context {F : CRingObj} {M N : Module F}.
 
 Variables (f : cat_morphism M N) (f_iso : isomorphism f).
 
@@ -390,7 +390,7 @@ End Grade.
 
 Section GradeAlgebraObj.
 
-Context {F : CRingObj} {M N : ALGEBRA F}.
+Context {F : CRingObj} {M N : Algebra F}.
 
 Variables (f : cat_morphism M N) (f_iso : isomorphism f).
 

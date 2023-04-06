@@ -413,7 +413,7 @@ End TensorProductIsomorphism.
 Section TensorProductIsomorphism.
 
 (* end hide *)
-Context {F : CRingObj} (M1 M2 N1 N2 : MODULE F).
+Context {F : CRingObj} (M1 M2 N1 N2 : Module F).
 
 (* begin hide *)
 Let U := cring_U.
@@ -646,7 +646,7 @@ End TensorProductIsomorphism.
 Section TensorProductIsomorphism.
 
 (* end hide *)
-Context {F : CRingObj} (M1 M2 N : MODULE F).
+Context {F : CRingObj} (M1 M2 N : Module F).
 
 (* begin hide *)
 Let U := cring_U.
@@ -780,7 +780,7 @@ End TensorProductIsomorphism.
 Section TensorProductIsomorphism.
 
 (* end hide *)
-Context {F : CRingObj} (M N1 N2 : MODULE F).
+Context {F : CRingObj} (M N1 N2 : Module F).
 
 (* begin hide *)
 Let U := cring_U.

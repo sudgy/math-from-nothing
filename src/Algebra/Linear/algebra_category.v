@@ -8,7 +8,7 @@ because unital associative algebras are all I care about for the moment.  I can
 change names later if I need to.
 *)
 Record AlgebraObj (F : CRingObj) := make_algebra {
-    algebra_module : MODULE F;
+    algebra_module : Module F;
     algebra_mult : Mult algebra_module;
     algebra_ldist : @Ldist algebra_module (module_plus algebra_module) algebra_mult;
     algebra_rdist : @Rdist algebra_module (module_plus algebra_module) algebra_mult;
@@ -163,7 +163,7 @@ Definition algebra_homo_compose {R : CRingObj} {L M N : AlgebraObj R}
         algebra_homo_compose_mult algebra_homo_compose_one.
 
 (* begin show *)
-Global Program Instance ALGEBRA (R : CRingObj) : Category := {
+Global Program Instance Algebra (R : CRingObj) : Category := {
     cat_U := AlgebraObj R;
     cat_morphism M N := AlgebraObjHomomorphism M N;
     cat_compose {L M N} f g := algebra_homo_compose f g;
@@ -189,9 +189,9 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Theorem algebra_to_module_iso {R : CRingObj} {A B : ALGEBRA R} :
+Theorem algebra_to_module_iso {R : CRingObj} {A B : Algebra R} :
     ∀ f : cat_morphism A B, isomorphism f →
-    isomorphism (C0 := MODULE R)(algebra_to_module_homomorphism f).
+    isomorphism (C0 := Module R)(algebra_to_module_homomorphism f).
 Proof.
     intros f [g [fg gf]].
     exists (algebra_to_module_homomorphism g).

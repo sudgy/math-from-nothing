@@ -28,7 +28,7 @@ Existing Instances VP VSM VnP VnSM.
 
 (* end hide *)
 Record multilinear_from := make_multilinear {
-    multilinear_from_module : MODULE F;
+    multilinear_from_module : Module F;
     multilinear_from_f : ∀ l : list (module_V V), list_size l = n →
         module_V multilinear_from_module;
     multilinear_from_plus : ∀ l1 a b l2 eq1 eq2 eq3,
@@ -83,15 +83,15 @@ Program Instance MULTILINEAR_FROM : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (MODULE F)).
+    apply (@cat_assoc (Module F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (MODULE F)).
+    apply (@cat_lid (Module F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (MODULE F)).
+    apply (@cat_rid (Module F)).
 Qed.
 
 Definition vectors_to_power_eq {m} (l : list (module_V V)) (eq : list_size l = m)

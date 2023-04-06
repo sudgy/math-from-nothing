@@ -17,7 +17,7 @@ Section ExteriorCategory.
 Context {F : CRingObj} (V : ModuleObj F).
 
 Record to_ext := make_to_ext {
-    to_ext_algebra : ALGEBRA F;
+    to_ext_algebra : Algebra F;
     to_ext_homo : ModuleObjHomomorphism V (algebra_module to_ext_algebra);
     to_ext_alternating : ∀ v, (@zero _ (algebra_zero to_ext_algebra)) =
         @mult _ (algebra_mult to_ext_algebra) (to_ext_homo v) (to_ext_homo v);
@@ -59,15 +59,15 @@ Program Instance TO_EXT : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (ALGEBRA F)).
+    apply (@cat_assoc (Algebra F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (ALGEBRA F)).
+    apply (@cat_lid (Algebra F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (ALGEBRA F)).
+    apply (@cat_rid (Algebra F)).
 Qed.
 
 Definition vector_to_ext_homo := make_module_homomorphism

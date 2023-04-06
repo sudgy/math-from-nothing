@@ -351,7 +351,7 @@ Definition free_module := make_module
 .
 
 Record free_from := make_free_from {
-    free_from_module : MODULE F;
+    free_from_module : Module F;
     free_from_f : V → module_V free_from_module;
 }.
 
@@ -393,15 +393,15 @@ Program Instance FREE_FROM : Category := {
 }.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_assoc (MODULE F)).
+    apply (@cat_assoc (Module F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_lid (MODULE F)).
+    apply (@cat_lid (Module F)).
 Qed.
 Next Obligation.
     apply set_type_eq; cbn.
-    apply (@cat_rid (MODULE F)).
+    apply (@cat_rid (Module F)).
 Qed.
 
 Definition to_free_from := make_free_from free_module to_free.

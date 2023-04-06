@@ -768,6 +768,6 @@ Definition tensor_algebra_n := make_algebra
     tensor_n_mult_rid
     tensor_n_scalar_lmult
     tensor_n_scalar_rmult
-: ALGEBRA F.
+: Algebra F.
 
 End TensorAlgebraGrade.

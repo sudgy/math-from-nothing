@@ -113,7 +113,7 @@ Definition module_homo_compose {R : CRingObj} {L M N : ModuleObj R}
         (λ x, f (g x))
         module_homo_compose_plus module_homo_compose_scalar.
 
-Global Program Instance MODULE (R : CRingObj) : Category := {
+Global Program Instance Module (R : CRingObj) : Category := {
     cat_U := ModuleObj R;
     cat_morphism M N := ModuleObjHomomorphism M N;
     cat_compose {L M N} f g := module_homo_compose f g;
