@@ -30,12 +30,19 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem in_list_single {U} : ∀ a b : U, in_list [a] b ↔ a = b.
+Theorem in_list_single_eq {U} : ∀ a b : U, in_list [a] b ↔ a = b.
 Proof.
     intros a b.
     rewrite in_list_add.
     rewrite (prop_is_false (in_list_end b)).
     rewrite or_rfalse.
+    reflexivity.
+Qed.
+
+Theorem in_list_single {U} : ∀ a : U, in_list [a] a.
+Proof.
+    intros a.
+    rewrite in_list_single_eq.
     reflexivity.
 Qed.
 
@@ -200,7 +207,7 @@ Proof.
         +   intros contr.
             apply in_list_conc in contr as [b_in|b_eq].
             *   contradiction (b_nin b_in).
-            *   rewrite in_list_single in b_eq.
+            *   rewrite in_list_single_eq in b_eq.
                 symmetry in b_eq; contradiction (neq b_eq).
         +   exact (IHl a_nin).
 Qed.
