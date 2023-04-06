@@ -45,13 +45,13 @@ Fixpoint list_image {A B : Type} (f : A → B) (l : list A) :=
     end.
 Arguments list_image : simpl never.
 
-Theorem list_end_neq {U} : ∀ (a : U) l, a ꞉ l ≠ [].
+Theorem list_end_neq {U} : ∀ {a : U} {l}, a ꞉ l ≠ [].
 Proof.
     intros a l eq.
     inversion eq.
 Qed.
 
-Theorem list_inversion {U} : ∀ (a b : U) al bl, a ꞉ al = b ꞉ bl →
+Theorem list_inversion {U} : ∀ {a b : U} {al bl}, a ꞉ al = b ꞉ bl →
     a = b ∧ al = bl.
 Proof.
     intros a b al bl eq.
@@ -59,14 +59,14 @@ Proof.
     split; reflexivity.
 Qed.
 
-Theorem list_single_eq {U} : ∀ (a b : U) al bl, a ꞉ al = b ꞉ bl → a = b.
+Theorem list_single_eq {U} : ∀ {a b : U} {al bl}, a ꞉ al = b ꞉ bl → a = b.
 Proof.
     intros a b al bl eq.
     apply list_inversion in eq.
     apply eq.
 Qed.
 
-Theorem list_add_eq {U} : ∀ (x : U) al bl, x ꞉ al = x ꞉ bl → al = bl.
+Theorem list_add_eq {U} : ∀ {x : U} {al bl}, x ꞉ al = x ꞉ bl → al = bl.
 Proof.
     intros x al bl eq.
     apply list_inversion in eq.
