@@ -379,14 +379,20 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem plus_3 : ∀ a b c, a + (b + c) = b + (a + c).
+Proof.
+    intros a b c.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    apply plus_comm.
+Qed.
+
 Theorem plus_4 : ∀ a b c d, a + b + (c + d) = a + c + (b + d).
 Proof.
     intros a b c d.
     do 2 rewrite <- plus_assoc.
     apply lplus.
-    do 2 rewrite plus_assoc.
-    apply rplus.
-    apply plus_comm.
+    apply plus_3.
 Qed.
 
 (* begin hide *)
