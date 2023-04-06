@@ -83,7 +83,7 @@ Proof.
         rewrite list_reverse_add.
         rewrite list_image_conc.
         rewrite list_image_single.
-        rewrite list_prod_mult.
+        rewrite list_prod_conc.
         rewrite list_prod_single.
         rewrite geo_reverse_vector.
         reflexivity.

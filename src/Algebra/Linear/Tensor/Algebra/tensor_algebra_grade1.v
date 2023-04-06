@@ -216,7 +216,7 @@ Proof.
         rewrite ulist_sum_add, ulist_sum_end.
         rewrite scalar_id, plus_rid.
         rewrite list_image_conc.
-        rewrite list_prod_mult.
+        rewrite list_prod_conc.
         reflexivity.
     -   unfold linear_list_in; cbn.
         rewrite ulist_prop_add.

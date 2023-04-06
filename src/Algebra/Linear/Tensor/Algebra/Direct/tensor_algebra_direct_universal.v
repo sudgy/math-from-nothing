@@ -175,7 +175,7 @@ Proof.
             unfold h1.
             do 3 rewrite (free_extend_free _ _).
             rewrite list_image_conc.
-            apply list_prod_mult.
+            apply list_prod_conc.
         }
         assert (∀ x y, eq_equal (ideal_equiv (tensor_ideal V)) x y →
             h1 x = h1 y) as wd.

@@ -58,7 +58,7 @@ Proof.
     apply plus_rid.
 Qed.
 
-Theorem list_sum_plus :
+Theorem list_sum_conc :
     ∀ l1 l2, list_sum (l1 + l2) = list_sum l1 + list_sum l2.
 Proof.
     intros l1 l2.
@@ -91,7 +91,7 @@ Theorem list_sum_minus : ∀ al bl,
     list_sum (al + (list_image neg bl)) = list_sum al - list_sum bl.
 Proof.
     intros al bl.
-    rewrite list_sum_plus.
+    rewrite list_sum_conc.
     rewrite list_sum_neg.
     reflexivity.
 Qed.
@@ -113,7 +113,7 @@ Proof.
     apply mult_rid.
 Qed.
 
-Theorem list_prod_mult :
+Theorem list_prod_conc :
     ∀ l1 l2, list_prod (l1 + l2) = list_prod l1 * list_prod l2.
 Proof.
     intros l1 l2.

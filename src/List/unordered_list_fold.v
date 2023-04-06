@@ -35,13 +35,13 @@ Proof.
     -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
-        rewrite list_sum_plus.
+        rewrite list_sum_conc.
         do 2 rewrite list_sum_add.
         pose proof (list_perm_split l3 l4 a) as eq2.
         pose proof (list_perm_trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.
         rewrite (IHl1 _ eq3).
-        rewrite list_sum_plus.
+        rewrite list_sum_conc.
         do 2 rewrite plus_assoc.
         apply rplus.
         apply plus_comm.
@@ -67,7 +67,7 @@ Proof.
     intros a b.
     equiv_get_value a b.
     unfold ulist_sum, plus; equiv_simpl.
-    apply list_sum_plus.
+    apply list_sum_conc.
 Qed.
 
 Theorem ulist_sum_neg : ∀ l, ulist_sum (ulist_image neg l) = -ulist_sum l.
@@ -113,13 +113,13 @@ Proof.
     -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
         apply (list_perm_in eq) in a_in.
         apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
-        rewrite list_prod_mult.
+        rewrite list_prod_conc.
         do 2 rewrite list_prod_add.
         pose proof (list_perm_split l3 l4 a) as eq2.
         pose proof (list_perm_trans eq eq2) as eq3.
         apply list_perm_add_eq in eq3.
         rewrite (IHl1 _ eq3).
-        rewrite list_prod_mult.
+        rewrite list_prod_conc.
         do 2 rewrite mult_assoc.
         apply rmult.
         apply mult_comm.
@@ -146,7 +146,7 @@ Proof.
     intros a b.
     equiv_get_value a b.
     unfold ulist_prod, plus; equiv_simpl.
-    apply list_prod_mult.
+    apply list_prod_conc.
 Qed.
 (* begin hide *)
 End Product.
