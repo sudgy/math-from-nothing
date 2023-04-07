@@ -409,3 +409,6 @@ Proof.
 Qed.
 
 End GeometricCategory.
+
+Declare Scope geo_scope.
+Delimit Scope geo_scope with geo.

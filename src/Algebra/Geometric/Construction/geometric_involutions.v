@@ -330,5 +330,5 @@ Qed.
 
 End GeometricInvolutions.
 
-Notation "a '∗'" := (geo_involute _ a) (at level 10).
-Notation "a '†'" := (geo_reverse _ a) (at level 10).
+Notation "a '∗'" := (geo_involute _ a) (at level 10) : geo_scope.
+Notation "a '†'" := (geo_reverse _ a) (at level 10) : geo_scope.

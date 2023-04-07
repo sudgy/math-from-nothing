@@ -397,7 +397,7 @@ Proof.
     -   exact IHl.
 Qed.
 
-Theorem exterior_grade_sum : ∀ x (i : nat), of_grade (H9 := exterior_grade) i x →
+Theorem ext_grade_sum : ∀ x (i : nat), of_grade (H9 := exterior_grade) i x →
     ∃ l : ulist (U * set_type (λ l : list V, list_size l = i)),
     ulist_sum (ulist_image
         (λ x, fst x · list_prod (list_image φ [snd x|])) l) = x.
