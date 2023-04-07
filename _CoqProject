@@ -209,6 +209,7 @@
 ./src/Algebra/Geometric/old_geometric_versor.v
 
 ./src/Algebra/Geometric/Construction/geometric_construct.v
+./src/Algebra/Geometric/Construction/geometric_universal.v
 
 ./src/Topology/topology_base.v
 ./src/Topology/topology_basis.v
