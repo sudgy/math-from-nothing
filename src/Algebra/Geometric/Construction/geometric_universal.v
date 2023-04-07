@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import algebra_category.
+Require Export algebra_category.
 Require Import geometric_construct.
 Require Export linear_bilinear_form.
 Require Import linear_free.
