@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export mult_field.
+Require Export unordered_list.
 
 #[universes(template)]
 Class ScalarMult U V := {
@@ -170,6 +171,42 @@ Proof.
     intros contr2.
     rewrite plus_0_anb_a_b in contr2.
     contradiction.
+Qed.
+
+Theorem list_sum_scalar : ∀ a l,
+    list_sum (list_image (scalar_mult a) l) = a · list_sum l.
+Proof.
+    intros a l.
+    induction l as [|v l].
+    {
+        rewrite list_image_end.
+        rewrite list_sum_end.
+        rewrite scalar_ranni.
+        reflexivity.
+    }
+    rewrite list_image_add.
+    do 2 rewrite list_sum_add.
+    rewrite IHl.
+    rewrite scalar_ldist.
+    reflexivity.
+Qed.
+
+Theorem ulist_sum_scalar : ∀ a l,
+    ulist_sum (ulist_image (scalar_mult a) l) = a · ulist_sum l.
+Proof.
+    intros a l.
+    induction l as [|v l] using ulist_induction.
+    {
+        rewrite ulist_image_end.
+        rewrite ulist_sum_end.
+        rewrite scalar_ranni.
+        reflexivity.
+    }
+    rewrite ulist_image_add.
+    do 2 rewrite ulist_sum_add.
+    rewrite IHl.
+    rewrite scalar_ldist.
+    reflexivity.
 Qed.
 
 (* begin hide *)
