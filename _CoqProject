@@ -213,6 +213,8 @@
 ./src/Algebra/Geometric/Construction/geometric_sum.v
 ./src/Algebra/Geometric/Construction/geometric_involutions.v
 ./src/Algebra/Geometric/Construction/exterior_base.v
+./src/Algebra/Geometric/Construction/exterior_grade1.v
+./src/Algebra/Geometric/Construction/exterior_grade2.v
 
 ./src/Topology/topology_base.v
 ./src/Topology/topology_basis.v
