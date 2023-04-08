@@ -1,77 +1,23 @@
 Require Import init.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_involutions.
-Require Import old_geometric_involutions_grade.
-Require Import old_geometric_grade.
-Require Import old_geometric_exterior_isomorphism.
-Require Import old_geometric_decomposition.
+Require Export geometric_base.
 
-(* begin hide *)
 Section GeometricNorm.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPA := cring_plus_assoc F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UL := cring_ldist F.
-Let UMA := cring_mult_assoc F.
-Let UMC := cring_mult_comm F.
-Let UMO := cring_mult_lid F.
-
-Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UL UMA UMC UMO.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GMA := geo_mult_assoc B.
-Let GML := geo_mult_lid B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
 
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GMA GML GMR GS GSO GSL
-    GSR GSC GSML GSMR GG.
+Existing Instances GG.
 
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation geo := (geometric_algebra B).
 
 Local Open Scope geo_scope.
 
-(* end hide *)
-Definition scalar_part (A : geo B) := ex_val
+Definition scalar_part (A : geo) := ex_val
     (geo_grade_zero_scalar B (grade_project A 0) (grade_project_grade A 0)).
 
 Theorem scalar_part_eq : ∀ A, σ (scalar_part A) = grade_project A 0.
@@ -118,7 +64,7 @@ Qed.
 Theorem scalar_part_comm : ∀ A B, scalar_part (A * B) = scalar_part (B * A).
 Proof.
     intros a b.
-    induction a as [|a a' m am a'm IHa] using grade_induction.
+    induction a as [|a a' m am a'm IHa] using (grade_induction (VG := GG)).
     {
         rewrite mult_lanni, mult_ranni.
         reflexivity.
@@ -127,7 +73,7 @@ Proof.
     do 2 rewrite scalar_part_plus.
     rewrite IHa.
     apply rplus; clear a' a'm IHa.
-    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := GG)).
     {
         rewrite mult_lanni, mult_ranni.
         reflexivity.
@@ -166,9 +112,9 @@ Proof.
             contradiction.
 Qed.
 
-Definition geo_norm2 (A : geo B) := scalar_part (A† * A).
+Definition geo_norm2 (A : geo) := scalar_part (A† * A).
 
-Definition geo_normalized (A : geo B) := geo_norm2 A = 1.
+Definition geo_normalized (A : geo) := geo_norm2 A = 1.
 (* begin hide *)
 
 (* Eventually define it for real numbers as well *)

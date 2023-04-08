@@ -4,100 +4,37 @@ Require Import order_minmax.
 Require Import mult_div.
 Require Import nat_domain.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_grade.
-Require Import old_geometric_exterior_isomorphism.
-Require Import old_exterior_grade.
-Require Import old_geometric_involutions.
-Require Import old_geometric_involutions_grade.
+Require Export geometric_grade.
+Require Import geometric_exterior_isomorphism.
+Require Import exterior_grade2.
+Require Import geometric_involutions.
+Require Import geometric_involutions_grade.
+Require Import exterior_base.
 
-(* begin hide *)
 Section GeometricDecompose.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GMA := geo_mult_assoc B.
-Let GML := geo_mult_lid B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
-
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GMA GML GMR GS GSO GSL
-    GSR GSC GSML GSMR GG.
-
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
-Local Notation "'E'" := (geo_to_ext B).
-Local Notation "'G'" := (ext_to_geo B).
-
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EO := ext_one V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let EMR := ext_mult_rid V.
-Let EMA := ext_mult_assoc V.
-Let ES := ext_scalar V.
-Let ESO := ext_scalar_id V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
 Let EG := exterior_grade V.
 Let EGA := exterior_grade_mult V.
 
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR.
+Existing Instances GG EG EGA.
+
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation E := (geo_to_ext B).
+Local Notation G := (ext_to_geo B).
+Local Notation geo := (geometric_algebra B).
+Local Notation ext := (exterior_algebra V).
 
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
 (* end hide *)
-Theorem geo_mult_inner_grade : ∀ v (A : geo B) i, of_grade (nat_suc i) A
-    → of_grade i (geo_mult_inner B v A).
+Theorem geo_mult_inner_grade : ∀ v (A : geo) i, of_grade (nat_suc i) (H9 := GG) A
+    → of_grade i (H9 := GG) (geo_mult_inner B v A).
 Proof.
     intros v A' i [A [Ai A_eq]]; subst A'; cbn.
     rewrite <- ext_to_geo_inner.
@@ -107,12 +44,12 @@ Proof.
     exact Ai.
 Qed.
 
-Theorem mult_inner_grade_add : ∀ v (A : geo B) n,
+Theorem mult_inner_grade_add : ∀ v (A : geo) n,
     grade_project (geo_mult_inner B v A) n =
     geo_mult_inner B v (grade_project A (nat_suc n)).
 Proof.
     intros v A n.
-    induction A as [|A A' i Ai A'i IHA] using grade_induction.
+    induction A as [|A A' i Ai A'i IHA] using (grade_induction (VG := GG)).
     {
         rewrite geo_mult_inner_rzero.
         do 2 rewrite grade_project_zero.
@@ -143,16 +80,12 @@ Proof.
         reflexivity.
 Qed.
 
-(* begin hide *)
-Existing Instances EG EGA.
-
-(* end hide *)
-Theorem exterior_grade_add : ∀ v (A : ext V) n,
+Theorem exterior_grade_add : ∀ v (A : ext) n,
     grade_project (vector_to_ext V v * A) (nat_suc n) =
     vector_to_ext V v * grade_project A n.
 Proof.
     intros v A n.
-    induction A as [|A A' i Ai A'i IHA] using grade_induction.
+    induction A as [|A A' i Ai A'i IHA] using (grade_induction (VG := EG)).
     {
         rewrite mult_ranni.
         do 2 rewrite grade_project_zero.
@@ -183,11 +116,9 @@ Proof.
         reflexivity.
 Qed.
 
-(* begin hide *)
 Remove Hints EG EGA : typeclass_instances.
 
-(* end hide *)
-Lemma geo_grade_decompose1 : ∀ (a b : geo B) (r s n : nat),
+Lemma geo_grade_decompose1 : ∀ (a b : geo) (r s n : nat),
     of_grade r a → of_grade s b → r ≤ s →
     (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
     grade_project (a * b) n = 0.
@@ -197,7 +128,7 @@ Proof.
     induction r using strong_induction; intros.
     assert (∀ m c, m < r → s = m + c → ∀ n,
         (n < c ∨ m + s < n ∨ (∃ z, n = c + 2 * z + 1)) →
-        ∀ a : geo B, of_grade m a → grade_project (a * b) n = 0) as H'.
+        ∀ a : geo, of_grade m a → grade_project (a * b) n = 0) as H'.
     {
         clear n n_lt a ar.
         intros m c ltq s_eq n.
@@ -214,7 +145,7 @@ Proof.
     rename a into a'.
     destruct ar as [a [ar a_eq]]; subst a'.
     cbn.
-    change (module_V (algebra_module (exterior_algebra V))) with (ext V) in a.
+    change (module_V (algebra_module (exterior_algebra V))) with (algebra_V ext) in a.
     rename ar into ar'.
     assert (of_grade (H9 := EG) r a) as ar by exact ar'.
     clear ar'.
@@ -439,7 +370,7 @@ Proof.
             apply ext_to_geo_zero.
 Qed.
 
-Lemma geo_grade_decompose2 : ∀ (a b : geo B) (r s n : nat),
+Lemma geo_grade_decompose2 : ∀ (a b : geo) (r s n : nat),
     of_grade r a → of_grade s b →
     (n < r ⊖ s ∨ r + s < n ∨ (∃ z, n = r ⊖ s + 2 * z + 1)) →
     grade_project (a * b) n = 0.
@@ -458,9 +389,9 @@ Proof.
         apply geo_reverse_zero.
 Qed.
 
-Theorem geo_grade_decompose : ∀ (a b : geo B) (r s : nat),
+Theorem geo_grade_decompose : ∀ (a b : geo) (r s : nat),
     of_grade r a → of_grade s b →
-    a * b = sum (U := geo B)
+    a * b = sum (U := geo)
         (λ n, grade_project (a * b) (r ⊖ s + 2*n)) 0 (nat_suc (min r s)).
 Proof.
     intros a b r s ar bs.
@@ -542,7 +473,7 @@ Proof.
             exact n_leq.
 Qed.
 
-Theorem geo_mult_project_bigger : ∀ (a b : geo B) (r s : nat),
+Theorem geo_mult_project_bigger : ∀ (a b : geo) (r s : nat),
     of_grade r a → of_grade s b →
     ∀ n, r + s < n → grade_project (a * b) n = 0.
 Proof.
@@ -552,7 +483,7 @@ Proof.
     exact n_gt.
 Qed.
 
-Theorem geo_mult_project_smaller : ∀ (a b : geo B) (r s : nat),
+Theorem geo_mult_project_smaller : ∀ (a b : geo) (r s : nat),
     of_grade r a → of_grade s b →
     ∀ n, n < r ⊖ s → grade_project (a * b) n = 0.
 Proof.

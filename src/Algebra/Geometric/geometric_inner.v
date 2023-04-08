@@ -2,68 +2,24 @@ Require Import init.
 
 Require Import linear_extend.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_grade.
-Require Import old_geometric_involutions_grade.
+Require Export geometric_base.
 
-(* begin hide *)
 Section GeometricInner.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
 
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSO GSL GSR GSC GSML
-    GSMR GG.
+Existing Instances GG.
 
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation geo := (geometric_algebra B).
 
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
-(* end hide *)
 Definition geo_inner_base i j a b (ai : of_grade i a) (bj : of_grade j b)
     := grade_project (a * b) (i ⊖ j).
 
@@ -191,9 +147,9 @@ Proof.
     -   symmetry; apply scalar_ranni.
 Qed.
 
-Definition geo_inner := bilinear_extend geo_inner_base : geo B → geo B → geo B.
-Definition geo_lcontr := bilinear_extend geo_lcontr_base : geo B → geo B → geo B.
-Definition geo_rcontr := bilinear_extend geo_rcontr_base : geo B → geo B → geo B.
+Definition geo_inner := bilinear_extend geo_inner_base : geo → geo → geo.
+Definition geo_lcontr := bilinear_extend geo_lcontr_base : geo → geo → geo.
+Definition geo_rcontr := bilinear_extend geo_rcontr_base : geo → geo → geo.
 
 (* begin show *)
 Local Infix "•" := geo_inner (at level 34, left associativity).
@@ -372,10 +328,10 @@ Qed.
 Theorem lrcontr_reverse : ∀ a b, (a ⌋ b)† = b† ⌊ a†.
 Proof.
     intros a b.
-    induction a as [|a a' m am a'm IHa] using grade_induction.
+    induction a as [|a a' m am a'm IHa] using (grade_induction (VG := GG)).
     {
         rewrite lcontr_lanni.
-        rewrite geo_reverse_zero.
+        do 2 rewrite geo_reverse_zero.
         rewrite rcontr_ranni.
         reflexivity.
     }
@@ -384,10 +340,10 @@ Proof.
     rewrite rcontr_ldist.
     rewrite IHa.
     apply rplus; clear a' a'm IHa.
-    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := GG)).
     {
         rewrite lcontr_ranni.
-        rewrite geo_reverse_zero.
+        do 2 rewrite geo_reverse_zero.
         rewrite rcontr_lanni.
         reflexivity.
     }
@@ -420,10 +376,10 @@ Qed.
 Theorem inner_reverse : ∀ a b, (a • b)† = b† • a†.
 Proof.
     intros a b.
-    induction a as [|a a' m am a'm IHa] using grade_induction.
+    induction a as [|a a' m am a'm IHa] using (grade_induction (VG := GG)).
     {
         rewrite inner_lanni.
-        rewrite geo_reverse_zero.
+        do 2 rewrite geo_reverse_zero.
         rewrite inner_ranni.
         reflexivity.
     }
@@ -432,10 +388,10 @@ Proof.
     rewrite inner_ldist.
     rewrite IHa.
     apply rplus; clear a' a'm IHa.
-    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := GG)).
     {
         rewrite inner_ranni.
-        rewrite geo_reverse_zero.
+        do 2 rewrite geo_reverse_zero.
         rewrite inner_lanni.
         reflexivity.
     }
@@ -485,10 +441,10 @@ Qed.
 Theorem inner_involute : ∀ a b, (a • b)∗ = a∗ • b∗.
 Proof.
     intros a b.
-    induction a as [|a a' m am a'm IHa] using grade_induction.
+    induction a as [|a a' m am a'm IHa] using (grade_induction (VG := GG)).
     {
         rewrite inner_lanni.
-        rewrite geo_involute_zero.
+        do 2 rewrite geo_involute_zero.
         rewrite inner_lanni.
         reflexivity.
     }
@@ -497,10 +453,10 @@ Proof.
     rewrite inner_rdist.
     rewrite IHa.
     apply rplus; clear a' a'm IHa.
-    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := GG)).
     {
         rewrite inner_ranni.
-        rewrite geo_involute_zero.
+        do 2 rewrite geo_involute_zero.
         rewrite inner_ranni.
         reflexivity.
     }
@@ -522,10 +478,10 @@ Qed.
 Theorem lcontr_involute : ∀ a b, (a ⌋ b)∗ = a∗ ⌋ b∗.
 Proof.
     intros a b.
-    induction a as [|a a' m am a'm IHa] using grade_induction.
+    induction a as [|a a' m am a'm IHa] using (grade_induction (VG := GG)).
     {
         rewrite lcontr_lanni.
-        rewrite geo_involute_zero.
+        do 2 rewrite geo_involute_zero.
         rewrite lcontr_lanni.
         reflexivity.
     }
@@ -534,10 +490,10 @@ Proof.
     rewrite lcontr_rdist.
     rewrite IHa.
     apply rplus; clear a' a'm IHa.
-    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := GG)).
     {
         rewrite lcontr_ranni.
-        rewrite geo_involute_zero.
+        do 2 rewrite geo_involute_zero.
         rewrite lcontr_ranni.
         reflexivity.
     }

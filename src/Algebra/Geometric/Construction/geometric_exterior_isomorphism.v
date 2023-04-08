@@ -7,76 +7,18 @@ Require Import module_category.
 Require Import algebra_category.
 Require Import linear_bilinear_form.
 
-Require Export old_geometric_construct.
-Require Export old_exterior_construct.
-Require Export old_exterior_to_geometric.
-Require Export old_geometric_to_exterior.
+Require Import geometric_universal.
+Require Import geometric_sum.
+Require Import exterior_base.
+Require Export exterior_to_geometric.
+Require Export geometric_to_exterior.
 
-(* begin hide *)
 Section GeometricExteriorIso.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let EO := ext_one V.
-Let EMA := ext_mult_assoc V.
-Let ES := ext_scalar V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
-
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EL ER EO EMA ES ESL ESR.
-
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GS := geo_scalar B.
-Let GSL := geo_scalar_ldist B.
-Let GSC := geo_scalar_comp B.
-Let GSMR := geo_scalar_rmult B.
-
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GL GR GS GSL GSC GSMR.
-
-(* end hide *)
-Lemma ext_inner_inner : ∀ a b (x : ext V),
+Lemma ext_inner_inner : ∀ a b (x : exterior_algebra V),
     ext_inner B a (ext_inner B b x) + ext_inner B b (ext_inner B a x) = 0.
 Proof.
     intros a b x.
@@ -85,7 +27,7 @@ Proof.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        do 4 rewrite ext_inner_rzero.
+        do 3 rewrite ext_inner_rzero.
         symmetry; apply neg_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -122,7 +64,7 @@ Proof.
     apply plus_comm.
 Qed.
 
-Lemma geo_mult_inner_inner : ∀ a b (x : geo B),
+Lemma geo_mult_inner_inner : ∀ a b (x : geometric_algebra B),
     geo_mult_inner B a (geo_mult_inner B b x) +
     geo_mult_inner B b (geo_mult_inner B a x) = 0.
 Proof.
@@ -169,7 +111,7 @@ Proof.
     apply plus_comm.
 Qed.
 
-Lemma geo_to_ext_inner : ∀ a (x : geo B),
+Lemma geo_to_ext_inner : ∀ a (x : geometric_algebra B),
     geo_to_ext B (geo_mult_inner B a x) = ext_inner B a (geo_to_ext B x).
 Proof.
     intros a x.
@@ -220,7 +162,7 @@ Proof.
     symmetry; apply ext_inner_inner.
 Qed.
 
-Lemma ext_to_geo_inner : ∀ a (x : ext V),
+Lemma ext_to_geo_inner : ∀ a (x : exterior_algebra V),
     ext_to_geo B (ext_inner B a x) = geo_mult_inner B a (ext_to_geo B x).
 Proof.
     intros a x.
@@ -229,7 +171,7 @@ Proof.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_inner_rzero.
-        do 2 rewrite ext_to_geo_zero.
+        rewrite ext_to_geo_zero.
         symmetry; apply geo_mult_inner_rzero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -295,8 +237,7 @@ Proof.
     {
         rewrite list_image_end; cbn.
         rewrite list_prod_end.
-        replace (ext_to_geo B 1) with (@one _ (geo_one B))
-            by (symmetry; apply (ext_to_geo_one B)).
+        rewrite ext_to_geo_one.
         apply geo_to_ext_one.
     }
     rewrite list_image_add; cbn.

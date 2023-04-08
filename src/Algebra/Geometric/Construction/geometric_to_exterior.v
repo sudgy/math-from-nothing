@@ -9,76 +9,23 @@ Require Import linear_bilinear_form.
 Require Import linear_sum.
 Require Import linear_transformation_space.
 
-Require Export old_geometric_construct.
-Require Export old_geometric_universal.
-Require Export old_exterior_construct.
-Require Import old_exterior_universal.
+Require Import geometric_universal.
+Require Import geometric_sum.
+Require Import exterior_base.
 
-(* begin hide *)
 Section GeometricToExterior.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
-
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EO := ext_one V.
-Let EMA := ext_mult_assoc V.
-Let EML := ext_mult_lid V.
-Let EMR := ext_mult_rid V.
-Let ES := ext_scalar V.
-Let ESO := ext_scalar_id V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
-Let ESC := ext_scalar_comp V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let ESML := ext_scalar_lmult V.
-Let ESMR := ext_scalar_rmult V.
-
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EMA EML EMR ES ESO ESL ESR ESC
-    EL ER ESML ESMR.
+Context (B : set_type (bilinear_form (V := V))).
 
 Let E12 := direct_sum (algebra_module (exterior_algebra V))
                        (algebra_module (exterior_algebra V)).
-Let E12P := module_plus E12.
-Let E12S := module_scalar E12.
 
-Existing Instances E12P E12S.
-
-Definition ext_inner_base1 (a : module_V V) (v : module_V V) (p : module_V E12)
+Definition ext_inner_base1 (a : V) (v : V) (p : E12)
     := (
         vector_to_ext V v * fst p,
         -vector_to_ext V v * snd p + [B|] a v · (fst p)
-    ) : module_V E12.
+    ) : E12.
 
 Lemma ext_inner_base_plus : ∀ a v p1 p2, ext_inner_base1 a v (p1 + p2) =
     ext_inner_base1 a v p1 + ext_inner_base1 a v p2.
@@ -113,19 +60,13 @@ Proof.
         reflexivity.
 Qed.
 
+Let E3 := linear_trans_algebra E12.
+
 Definition ext_inner_base2 (a : module_V V) (v : module_V V) :=
     make_module_homomorphism F E12 E12
     (ext_inner_base1 a v)
     (ext_inner_base_plus a v)
-    (ext_inner_base_scalar a v).
-
-Let E3 := linear_trans_algebra E12.
-Let E3P := algebra_plus E3.
-Let E3Z := algebra_zero E3.
-Let E3S := algebra_scalar E3.
-Let E3M := algebra_mult E3.
-
-Existing Instances E3P E3Z E3S E3M.
+    (ext_inner_base_scalar a v) : E3.
 
 Lemma ext_inner_base2_plus : ∀ a v1 v2, ext_inner_base2 a (v1 + v2) =
     ext_inner_base2 a v1 + ext_inner_base2 a v2.
@@ -138,9 +79,9 @@ Proof.
     unfold ext_inner_base1; cbn.
     unfold plus at 5; cbn.
     apply f_equal2.
-    -   rewrite (vector_to_ext_plus V).
+    -   rewrite module_homo_plus.
         apply rdist.
-    -   rewrite (vector_to_ext_plus V).
+    -   rewrite module_homo_plus.
         rewrite neg_plus.
         rewrite rdist.
         do 2 rewrite <- plus_assoc.
@@ -163,9 +104,9 @@ Proof.
     unfold ext_inner_base1; cbn.
     unfold scalar_mult at 5; cbn.
     apply f_equal2.
-    -   rewrite (vector_to_ext_scalar V).
+    -   rewrite module_homo_scalar.
         apply scalar_lmult.
-    -   rewrite (vector_to_ext_scalar V).
+    -   rewrite module_homo_scalar.
         rewrite bilinear_form_rscalar.
         rewrite <- scalar_comp.
         rewrite scalar_ldist.
@@ -237,7 +178,6 @@ Qed.
 
 Definition ext_inner a v := snd (ext_inner_f a v (1, 0)).
 
-(* end hide *)
 Theorem ext_inner_rplus :
     ∀ a u v, ext_inner a (u + v) = ext_inner a u + ext_inner a v.
 Proof.
@@ -351,7 +291,7 @@ Proof.
     intros a α.
     unfold ext_inner.
     unfold ext_inner_f.
-    rewrite scalar_to_ext_one_scalar.
+    rewrite <- (scalar_id 1).
     rewrite algebra_homo_scalar.
     rewrite algebra_homo_one.
     unfold scalar_mult; cbn.
@@ -368,8 +308,7 @@ Proof.
     intros a v.
     rewrite <- (mult_rid (vector_to_ext V v)).
     rewrite ext_inner_add.
-    unfold EO.
-    rewrite <- scalar_to_ext_one at 2.
+    rewrite <- (scalar_id 1) at 2.
     rewrite ext_inner_scalar.
     rewrite mult_ranni.
     rewrite neg_zero, plus_rid.
@@ -576,7 +515,7 @@ Proof.
     unfold plus at 1 4 5 6; cbn.
     unfold linear_trans_plus_base; cbn.
     rewrite ext_inner_lplus.
-    rewrite (vector_to_ext_plus V).
+    rewrite module_homo_plus.
     rewrite rdist.
     do 2 rewrite <- plus_assoc.
     apply lplus.
@@ -596,7 +535,7 @@ Proof.
     unfold scalar_mult at 3 4, plus at 1 2; cbn.
     unfold linear_trans_plus_base, linear_trans_scalar_base; cbn.
     rewrite ext_inner_lscalar.
-    rewrite (vector_to_ext_scalar V).
+    rewrite module_homo_scalar.
     rewrite scalar_lmult.
     reflexivity.
 Qed.
@@ -638,22 +577,6 @@ Definition geo_to_ext_base :=
 Definition geo_to_ext_f_homo := [geo_to_ext_base|].
 Definition geo_to_ext_f := algebra_homo_f geo_to_ext_f_homo.
 
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSR := geo_scalar_rdist B.
-
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GMR GS GSO GSR.
-
 Theorem geo_to_ext_f_eq :
     ∀ v, geo_to_ext_f (vector_to_geo B v) = geo_to_ext_base1 v.
 Proof.
@@ -666,7 +589,7 @@ Proof.
     apply algebra_homo_mult.
 Qed.
 
-Definition geo_to_ext (v : geo B) := geo_to_ext_f v 1 : ext V.
+Definition geo_to_ext (v : geometric_algebra B) := geo_to_ext_f v 1 : exterior_algebra V.
 
 (* end hide *)
 Theorem geo_to_ext_plus : ∀ u v,
@@ -735,11 +658,10 @@ Theorem geo_to_ext_of_scalar : ∀ α,
     geo_to_ext (scalar_to_geo B α) = scalar_to_ext V α.
 Proof.
     intros α.
-    rewrite scalar_to_geo_one_scalar.
+    unfold scalar_to_ext, scalar_to_geo.
     rewrite geo_to_ext_scalar.
-    change 1 with (one (U := geo B)).
     rewrite geo_to_ext_one.
-    symmetry; apply scalar_to_ext_one_scalar.
+    reflexivity.
 Qed.
 
 Theorem geo_to_ext_vector : ∀ v,
@@ -748,10 +670,9 @@ Proof.
     intros v.
     rewrite <- (mult_rid (vector_to_geo B v)).
     rewrite geo_to_ext_add.
-    change 1 with (one (U := geo B)).
     rewrite geo_to_ext_one.
     rewrite mult_rid.
-    replace 1 with (scalar_to_ext V 1) by apply scalar_to_ext_one.
+    rewrite <- (scalar_id 1).
     rewrite ext_inner_scalar.
     apply plus_lid.
 Qed.

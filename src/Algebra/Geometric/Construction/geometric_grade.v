@@ -2,89 +2,31 @@ Require Import init.
 
 Require Export linear_grade.
 Require Import linear_grade_isomorphism.
+Require Export linear_bilinear_form.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_exterior_isomorphism.
-Require Import old_exterior_grade.
+Require Export geometric_universal.
+Require Import geometric_exterior_isomorphism.
+Require Import exterior_grade2.
+Require Import exterior_base.
 Require Export nat.
 
-(* begin hide *)
 Section GeometricGrade.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation E := (geo_to_ext B).
+Local Notation G := (ext_to_geo B).
+Local Notation geo := (geometric_algebra B).
+Local Notation ext := (exterior_algebra V).
 
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GS := geo_scalar B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSO := geo_scalar_id B.
-Let GSC := geo_scalar_comp B.
-Let GSMR := geo_scalar_rmult B.
-
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GS GSL GSR GSO GSC GSMR.
-
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
-Local Notation "'E'" := (geo_to_ext B).
-Local Notation "'G'" := (ext_to_geo B).
-
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EO := ext_one V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let EMR := ext_mult_rid V.
-Let EMA := ext_mult_assoc V.
-Let ES := ext_scalar V.
-Let ESO := ext_scalar_id V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
 Let EG := exterior_grade V.
 Let EGA := exterior_grade_mult V.
 
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR
-    EG EGA.
+Existing Instances EG EGA.
 
-(* end hide *)
 Definition geo_grade := grade_isomorphism (ext_to_geo_homo B) (ext_to_geo_iso B).
 
 Existing Instance geo_grade.
@@ -99,7 +41,7 @@ Proof.
     -   apply ext_to_geo_of_scalar.
 Qed.
 
-Theorem geo_grade_zero_scalar : ∀ v : geo B, of_grade 0 v → (∃ a, v = σ a).
+Theorem geo_grade_zero_scalar : ∀ v : geo, of_grade 0 v → (∃ a, v = σ a).
 Proof.
     intros v.
     intros [v' [v0 v_eq]].
@@ -120,7 +62,7 @@ Proof.
     -   apply ext_to_geo_vector.
 Qed.
 
-Theorem geo_grade_one_vector : ∀ v : geo B, of_grade 1 v → (∃ a, v = φ a).
+Theorem geo_grade_one_vector : ∀ v : geo, of_grade 1 v → (∃ a, v = φ a).
 Proof.
     intros v.
     intros [v' [v0 v_eq]].
@@ -131,7 +73,7 @@ Proof.
     apply ext_to_geo_vector.
 Qed.
 
-Theorem geo_orthogonal_grade : ∀ l : list (module_V V),
+Theorem geo_orthogonal_grade : ∀ l : list V,
     list_prop2 (λ a b, [B|] a b = 0) l →
     of_grade (H9 := geo_grade) (list_size l) (list_prod (list_image φ l)).
 Proof.
@@ -178,11 +120,11 @@ Proof.
             reflexivity.
 Qed.
 
-Theorem ext_to_geo_project : ∀ (a : ext V) (n : nat),
+Theorem ext_to_geo_project : ∀ (a : ext) (n : nat),
     grade_project (G a) n = G (grade_project (VG := EG) a n).
 Proof.
     intros a n.
-    induction a as [|a a' i ai a'i IHa] using grade_induction.
+    induction a as [|a a' i ai a'i IHa] using (grade_induction (VG := EG)).
     {
         rewrite ext_to_geo_zero.
         do 2 rewrite grade_project_zero.
@@ -208,7 +150,7 @@ Proof.
         apply (grade_project_of_grade_neq _ _ _ ai' neq).
 Qed.
 
-Theorem geo_to_ext_project : ∀ (a : geo B) (n : nat),
+Theorem geo_to_ext_project : ∀ (a : geo) (n : nat),
     grade_project (VG := EG) (E a) n = E (grade_project a n).
 Proof.
     intros a n.
@@ -217,7 +159,5 @@ Proof.
     rewrite ext_to_geo_to_ext.
     reflexivity.
 Qed.
-(* begin hide *)
 
 End GeometricGrade.
-(* end hide *)

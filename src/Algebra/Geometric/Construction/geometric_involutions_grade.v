@@ -1,107 +1,33 @@
 Require Import init.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_exterior_isomorphism.
-Require Import old_geometric_grade.
-Require Import old_exterior_grade.
-Require Export old_geometric_involutions.
-Require Import old_exterior_involutions.
+Require Import geometric_exterior_isomorphism.
+Require Export geometric_grade.
+Require Import exterior_grade2.
+Require Export geometric_involutions.
+Require Import exterior_involutions.
+Require Export geometric_sum.
 
-(* begin hide *)
 Section GeometricInvolutions.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPA := cring_plus_assoc F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UL := cring_ldist F.
-Let UMA := cring_mult_assoc F.
-Let UMC := cring_mult_comm F.
-Let UMO := cring_mult_lid F.
-
-Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UL UMA UMC UMO.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GMA := geo_mult_assoc B.
-Let GML := geo_mult_lid B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
-
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GMA GML GMR GS GSO GSL
-    GSR GSC GSML GSMR GG.
-
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
-Local Notation "'E'" := (geo_to_ext B).
-Local Notation "'G'" := (ext_to_geo B).
-
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EO := ext_one V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let EML := ext_mult_lid V.
-Let EMR := ext_mult_rid V.
-Let EMA := ext_mult_assoc V.
-Let ES := ext_scalar V.
-Let ESO := ext_scalar_id V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
-Let ESC := ext_scalar_comp V.
-Let ESML := ext_scalar_lmult V.
-Let ESMR := ext_scalar_rmult V.
 Let EG := exterior_grade V.
 Let EGA := exterior_grade_mult V.
+Existing Instances GG EG EGA.
 
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EML EMR EMA ES ESO ESL
-    ESR ESC ESML ESMR EG EGA.
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation E := (geo_to_ext B).
+Local Notation G := (ext_to_geo B).
+Local Notation geo := (geometric_algebra B).
+Local Notation ext := (exterior_algebra V).
 
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
-(* end hide *)
-Theorem geo_mult_inner_involute : ∀ a (X : geo B),
+Theorem geo_mult_inner_involute : ∀ a (X : geo),
     (geo_mult_inner B a X)∗ = -geo_mult_inner B a (X∗).
 Proof.
     intros a X.
@@ -110,7 +36,7 @@ Proof.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite geo_involute_zero.
-        rewrite geo_mult_inner_rzero.
+        do 2 rewrite geo_mult_inner_rzero.
         rewrite neg_zero, geo_involute_zero.
         reflexivity.
     }
@@ -131,7 +57,7 @@ Proof.
         rewrite list_image_end; cbn.
         rewrite list_prod_end.
         rewrite geo_involute_one.
-        rewrite <- scalar_to_geo_one.
+        do 2 rewrite <- scalar_to_geo_one.
         rewrite geo_mult_inner_scalar.
         rewrite neg_zero, geo_involute_zero.
         reflexivity.
@@ -162,7 +88,7 @@ Proof.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_involute_zero.
-        rewrite ext_to_geo_zero.
+        do 2 rewrite ext_to_geo_zero.
         apply geo_involute_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -180,7 +106,7 @@ Proof.
         rewrite list_image_end; cbn.
         rewrite list_prod_end.
         rewrite ext_involute_one.
-        rewrite ext_to_geo_one.
+        do 2 rewrite ext_to_geo_one.
         apply geo_involute_one.
     }
     rewrite list_image_add; cbn.
@@ -202,7 +128,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem geo_to_ext_involute : ∀ X : geo B, ext_involute (E X) = E (X∗).
+Theorem geo_to_ext_involute : ∀ X : geo, ext_involute (E X) = E (X∗).
 Proof.
     intros X.
     rewrite <- (geo_to_ext_to_geo B (ext_involute (E X))).
@@ -223,7 +149,7 @@ Proof.
     rewrite <- plus_assoc.
     rewrite <- ldist.
     rewrite <- rdist.
-    rewrite <- vector_to_geo_plus.
+    rewrite <- module_homo_plus.
     do 3 rewrite geo_contract.
     rewrite bilinear_form_lplus.
     do 2 rewrite bilinear_form_rplus.
@@ -232,7 +158,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ext_inner_grade : ∀ v (A : ext V) i, of_grade (nat_suc i) A
+Theorem ext_inner_grade : ∀ v (A : ext) i, of_grade (nat_suc i) A
     → of_grade i (ext_inner B v A).
 Proof.
     intros v A i Ai.
@@ -286,7 +212,7 @@ Proof.
             exact l_size'.
 Qed.
 
-Theorem geo_mult_inner_swap : ∀ a (X : geo B),
+Theorem geo_mult_inner_swap : ∀ a (X : geo),
     2 · geo_mult_inner B a X = φ a * X - X∗ * φ a.
 Proof.
     intros a X.
@@ -328,13 +254,12 @@ Proof.
     {
         rewrite list_image_end; cbn.
         rewrite list_prod_end.
-        rewrite <- scalar_to_geo_one at 1.
-        rewrite geo_mult_inner_scalar.
-        rewrite scalar_ranni.
         rewrite geo_involute_one.
         rewrite mult_lid, mult_rid.
         rewrite plus_rinv.
-        reflexivity.
+        rewrite <- (scalar_id (one (U := geo))).
+        rewrite geo_mult_inner_scalar.
+        apply scalar_ranni.
     }
     rewrite list_image_add; cbn.
     rewrite list_prod_add.
@@ -370,10 +295,10 @@ Proof.
     symmetry; apply vector_bilinear_eq.
 Qed.
 
-Theorem ext_to_geo_reverse : ∀ X : ext V, (G X)† = G (ext_reverse X).
+Theorem ext_to_geo_reverse : ∀ X : ext, (G X)† = G (ext_reverse X).
 Proof.
     intros X.
-    induction X as [|X X' n Xn X'n IHX] using grade_induction.
+    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := EG)).
     {
         rewrite ext_reverse_zero.
         do 2 rewrite ext_to_geo_zero.
@@ -393,7 +318,7 @@ Proof.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_reverse_zero.
-        rewrite ext_to_geo_zero.
+        do 2 rewrite ext_to_geo_zero.
         apply geo_reverse_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -430,15 +355,15 @@ Proof.
         change (nat_suc n) with (1 + n).
         apply (of_grade_mult _ _ _ _ (vector_to_ext_grade V a) Xn).
     }
-    rewrite (ext_reverse_grade _ _ aXn).
+    rewrite (ext_reverse_grade _ _ _ aXn).
     rewrite ext_to_geo_scalar.
-    do 2 rewrite ext_to_geo_add.
+    rewrite ext_to_geo_add.
     rewrite geo_reverse_plus.
     rewrite geo_reverse_neg.
     rewrite geo_reverse_mult.
     rewrite geo_reverse_vector.
     rewrite (IHn n (nat_lt_suc n) _ Xn).
-    rewrite (ext_reverse_grade _ _ Xn).
+    rewrite (ext_reverse_grade _ _ _ Xn).
     rewrite ext_to_geo_scalar.
     rewrite <- (ext_to_geo_to_ext B (geo_mult_inner B a (G X))) at 1.
     rewrite geo_to_ext_inner.
@@ -466,7 +391,7 @@ Proof.
     pose proof (ext_inner_grade a X n Xn) as aXn'.
     pose proof (trans (nat_lt_suc n) (nat_lt_suc (nat_suc n))) as ltq.
     rewrite (IHn n ltq _ aXn').
-    rewrite (ext_reverse_grade _ _ aXn').
+    rewrite (ext_reverse_grade _ _ _ aXn').
     rewrite ext_to_geo_scalar.
     rewrite ext_to_geo_inner.
     rewrite (nat_pow_neg_binom2 n).
@@ -481,7 +406,7 @@ Proof.
     rewrite scalar_lneg.
     apply lplus.
     rewrite ext_to_geo_involute.
-    rewrite (ext_involute_grade _ _ Xn).
+    rewrite (ext_involute_grade _ _ _ Xn).
     rewrite ext_to_geo_scalar.
     do 2 rewrite scalar_lmult.
     rewrite scalar_comp.
@@ -500,7 +425,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem geo_to_ext_reverse : ∀ X : geo B, ext_reverse (E X) = E (X†).
+Theorem geo_to_ext_reverse : ∀ X : geo, ext_reverse (E X) = E (X†).
 Proof.
     intros X.
     rewrite <- (geo_to_ext_to_geo B (ext_reverse (E X))).
@@ -509,27 +434,27 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem geo_involute_grade : ∀ (X : geo B) (n : nat), of_grade (H9 := GG) n X →
+Theorem geo_involute_grade : ∀ (X : geo) (n : nat), of_grade (H9 := GG) n X →
     X∗ = (-(1))^n · X.
 Proof.
     intros X' n [X [Xn X_eq]]; subst X'.
     cbn.
     rewrite ext_to_geo_involute.
-    rewrite (ext_involute_grade _ _ Xn).
+    rewrite (ext_involute_grade _ _ _ Xn).
     apply ext_to_geo_scalar.
 Qed.
 
-Theorem geo_reverse_grade : ∀ (X : geo B) (n : nat), of_grade (H9 := GG) n X →
+Theorem geo_reverse_grade : ∀ (X : geo) (n : nat), of_grade (H9 := GG) n X →
     X† = (-(1))^(binom n 2) · X.
 Proof.
     intros X' n [X [Xn X_eq]]; subst X'.
     cbn.
     rewrite ext_to_geo_reverse.
-    rewrite (ext_reverse_grade _ _ Xn).
+    rewrite (ext_reverse_grade _ _ _ Xn).
     apply ext_to_geo_scalar.
 Qed.
 
-Theorem of_grade_involute : ∀ (X : geo B) n, of_grade n X → of_grade n (X∗).
+Theorem of_grade_involute : ∀ (X : geo) n, of_grade n X → of_grade n (X∗).
 Proof.
     intros X n Xn.
     rewrite (geo_involute_grade _ _ Xn).
@@ -537,7 +462,7 @@ Proof.
     exact Xn.
 Qed.
 
-Theorem of_grade_reverse : ∀ (X : geo B) n, of_grade n X → of_grade n (X†).
+Theorem of_grade_reverse : ∀ (X : geo) n, of_grade n X → of_grade n (X†).
 Proof.
     intros X n Xn.
     rewrite (geo_reverse_grade _ _ Xn).
@@ -545,11 +470,11 @@ Proof.
     exact Xn.
 Qed.
 
-Theorem geo_involute_project : ∀ (X : geo B) n,
+Theorem geo_involute_project : ∀ (X : geo) n,
     (grade_project X n)∗ = grade_project (X∗) n.
 Proof.
     intros X n.
-    induction X as [|X X' i Xi X'i IHX] using grade_induction.
+    induction X as [|X X' i Xi X'i IHX] using (grade_induction (VG := GG)).
     {
         rewrite grade_project_zero.
         do 2 rewrite geo_involute_zero.
@@ -574,11 +499,11 @@ Proof.
     apply geo_involute_zero.
 Qed.
 
-Theorem geo_reverse_project : ∀ (X : geo B) n,
+Theorem geo_reverse_project : ∀ (X : geo) n,
     (grade_project X n)† = grade_project (X†) n.
 Proof.
     intros X n.
-    induction X as [|X X' i Xi X'i IHX] using grade_induction.
+    induction X as [|X X' i Xi X'i IHX] using (grade_induction (VG := GG)).
     {
         rewrite grade_project_zero.
         do 2 rewrite geo_reverse_zero.
@@ -603,10 +528,10 @@ Proof.
     apply geo_reverse_zero.
 Qed.
 
-Theorem geo_reverse_involute : ∀ X : geo B, X†∗ = X∗†.
+Theorem geo_reverse_involute : ∀ X : geo, X†∗ = X∗†.
 Proof.
     intros X.
-    induction X as [|X X' n Xn X'n IHX] using grade_induction.
+    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := GG)).
     {
         rewrite geo_involute_zero.
         do 2 rewrite geo_reverse_zero.

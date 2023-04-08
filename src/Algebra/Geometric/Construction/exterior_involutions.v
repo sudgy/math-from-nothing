@@ -239,3 +239,6 @@ Qed.
 
 End ExteriorInvolutions.
 (* end hide *)
+
+Arguments ext_involute {F V}.
+Arguments ext_reverse {F V}.

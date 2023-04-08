@@ -262,7 +262,7 @@ Definition exterior_grade_mult := graded_algebra_isomorphism f f_iso.
 
 Existing Instances exterior_grade exterior_grade_mult.
 
-Theorem scalar_to_exterior_grade : ∀ a, of_grade (H9 := exterior_grade) 0 (σ a).
+Theorem scalar_to_ext_grade : ∀ a, of_grade (H9 := exterior_grade) 0 (σ a).
 Proof.
     intros a.
     unfold of_grade; cbn.
@@ -279,7 +279,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem exterior_grade_zero_scalar : ∀ v, of_grade 0 v ↔ (∃ a, v = σ a).
+Theorem ext_grade_zero_scalar : ∀ v, of_grade 0 v ↔ (∃ a, v = σ a).
 Proof.
     intros v.
     split.
@@ -314,10 +314,10 @@ Proof.
         rewrite (proof_irrelevance _ (ext_n_one_in V)).
         apply algebra_homo_one.
     -   intros [a v_eq]; subst v.
-        apply scalar_to_exterior_grade.
+        apply scalar_to_ext_grade.
 Qed.
 
-Theorem vector_to_exterior_grade : ∀ v, of_grade 1 (φ v).
+Theorem vector_to_ext_grade : ∀ v, of_grade 1 (φ v).
 Proof.
     intros v.
     unfold of_grade; cbn.
@@ -329,7 +329,7 @@ Proof.
     -   apply ext_algebra_iso_eq.
 Qed.
 
-Theorem exterior_grade_one_vector : ∀ v, of_grade 1 v ↔ (∃ a, v = φ a).
+Theorem ext_grade_one_vector : ∀ v, of_grade 1 v ↔ (∃ a, v = φ a).
 Proof.
     intros v.
     split.
@@ -374,7 +374,7 @@ Proof.
         rewrite eq.
         apply ext_algebra_iso_eq.
     -   intros [a v_eq]; subst v.
-        apply vector_to_exterior_grade.
+        apply vector_to_ext_grade.
 Qed.
 
 Theorem ext_list_grade : ∀ l,
@@ -387,13 +387,13 @@ Proof.
         rewrite list_size_end.
         rewrite list_image_end, list_prod_end.
         rewrite <- scalar_id.
-        apply scalar_to_exterior_grade.
+        apply scalar_to_ext_grade.
     }
     rewrite list_size_add.
     rewrite list_image_add, list_prod_add.
     change (nat_suc (list_size l)) with (1 + list_size l).
     apply (of_grade_mult (VG := exterior_grade)).
-    -   apply vector_to_exterior_grade.
+    -   apply vector_to_ext_grade.
     -   exact IHl.
 Qed.
 

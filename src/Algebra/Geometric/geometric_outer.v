@@ -4,103 +4,30 @@ Require Import order_minmax.
 
 Require Import linear_extend.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_grade.
-Require Import old_geometric_exterior_isomorphism.
-Require Import old_geometric_decomposition.
-Require Import old_exterior_involutions.
-Require Import old_geometric_involutions_grade.
-Require Import old_exterior_grade.
+Require Export geometric_base.
 
-(* begin hide *)
 Section GeometricOuter.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GMA := geo_mult_assoc B.
-Let GML := geo_mult_lid B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
 
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GMA GML GMR GS GSO GSL
-    GSR GSC GSML GSMR GG.
+Existing Instances GG.
 
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
-Local Notation "'E'" := (geo_to_ext B).
-Local Notation "'G'" := (ext_to_geo B).
-
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EO := ext_one V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let EML := ext_mult_lid V.
-Let EMR := ext_mult_rid V.
-Let EMA := ext_mult_assoc V.
-Let ES := ext_scalar V.
-Let ESO := ext_scalar_id V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
-Let ESML := ext_scalar_lmult V.
-Let ESMR := ext_scalar_rmult V.
-
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EML EMR EMA ES ESO ESL
-    ESR ESML ESMR.
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation E := (geo_to_ext B).
+Local Notation G := (ext_to_geo B).
+Local Notation geo := (geometric_algebra B).
+Local Notation ext := (exterior_algebra V).
 
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
 (* end hide *)
-Definition geo_outer_base i j (a b : geo B) (ai : of_grade i a) (bj : of_grade j b)
-    := grade_project (a * b) (i + j) : geo B.
+Definition geo_outer_base i j (a b : geo) (ai : of_grade i a) (bj : of_grade j b)
+    := grade_project (a * b) (i + j) : geo.
 
 Lemma geo_outer_ldist_base : bilinear_extend_ldist_base geo_outer_base.
 Proof.
@@ -134,7 +61,7 @@ Proof.
     apply grade_project_scalar.
 Qed.
 
-Definition geo_outer := bilinear_extend geo_outer_base : geo B → geo B → geo B.
+Definition geo_outer := bilinear_extend geo_outer_base : geo → geo → geo.
 
 (** Note: Because Coq already uses ∧ for logical and, this symbol is actually
 \bigwedge, not \wedge!
@@ -199,13 +126,11 @@ Proof.
     -   exact geo_outer_rscalar_base.
 Qed.
 
-(* begin hide *)
 Let EG := exterior_grade V.
 Let EGA := exterior_grade_mult V.
 
 Existing Instances EG EGA.
 
-(* end hide *)
 Theorem outer_exterior : ∀ a b, a ⋀ b = G (E a * E b).
 Proof.
     intros a' b'.
@@ -214,10 +139,10 @@ Proof.
     remember (E a') as a.
     remember (E b') as b.
     clear a' b' Heqa Heqb.
-    induction b as [|b b' n bn b'n IHb] using grade_induction.
+    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := EG)).
     {
         rewrite mult_ranni.
-        rewrite ext_to_geo_zero.
+        do 2 rewrite ext_to_geo_zero.
         apply outer_ranni.
     }
     rewrite ldist.
@@ -230,7 +155,7 @@ Proof.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_lanni.
-        rewrite ext_to_geo_zero.
+        do 2 rewrite ext_to_geo_zero.
         apply outer_lanni.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -332,7 +257,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem outer_assoc : ∀ a b c : geo B, a ⋀ (b ⋀ c) = (a ⋀ b) ⋀ c.
+Theorem outer_assoc : ∀ a b c : geo, a ⋀ (b ⋀ c) = (a ⋀ b) ⋀ c.
 Proof.
     intros a b c.
     do 4 rewrite outer_exterior.
@@ -341,7 +266,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem outer_lid : ∀ a : geo B, 1 ⋀ a = a.
+Theorem outer_lid : ∀ a : geo, 1 ⋀ a = a.
 Proof.
     intros a.
     rewrite outer_exterior.
@@ -350,7 +275,7 @@ Proof.
     apply ext_to_geo_to_ext.
 Qed.
 
-Theorem outer_rid : ∀ a : geo B, a ⋀ 1 = a.
+Theorem outer_rid : ∀ a : geo, a ⋀ 1 = a.
 Proof.
     intros a.
     rewrite outer_exterior.

@@ -1,73 +1,24 @@
 Require Import init.
 
-Require Export old_geometric_construct.
-Require Import old_geometric_involutions.
-Require Import old_geometric_involutions_grade.
-Require Import old_geometric_grade.
-Require Import old_geometric_norm.
-Require Import old_geometric_product_formulae.
+Require Import geometric_norm.
+Require Import geometric_product_formulae.
+Require Export geometric_base.
 
-(* begin hide *)
 Section GeometricVersor.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GMA := geo_mult_assoc B.
-Let GML := geo_mult_lid B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
+Existing Instances GG.
 
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GMA GML GMR GS GSO GSL
-    GSR GSC GSML GSMR GG.
-
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation geo := (geometric_algebra B).
 
 Local Open Scope geo_scope.
 
-(* end hide *)
-Definition versor (A : geo B) := ∃ l : list (module_V V),
+Definition versor (A : geo) := ∃ l : list (module_V V),
         A = list_prod (list_image φ l).
 
 Theorem versor_reverse : ∀ A, versor A → versor (A†).
@@ -127,7 +78,7 @@ Proof.
 Qed.
 
 Lemma vector_sandwich_grade : ∀ a,
-    ∀ (X : geo B) (n : nat), of_grade n X → of_grade n (φ a * X * φ a).
+    ∀ (X : geo) (n : nat), of_grade n X → of_grade n (φ a * X * φ a).
 Proof.
     intros a X n Xn.
     rewrite <- mult_assoc.
@@ -194,7 +145,7 @@ Proof.
 Qed.
 
 Theorem versor_sandwich_grade : ∀ A, versor A →
-    ∀ (X : geo B) (n : nat), of_grade n X → of_grade n (A† * X * A).
+    ∀ (X : geo) (n : nat), of_grade n X → of_grade n (A† * X * A).
 Proof.
     intros A [l A_eq] X n Xn; subst A.
     revert X Xn.
@@ -215,11 +166,11 @@ Proof.
         exact Xn.
 Qed.
 
-Theorem versor_outermorphism : ∀ A, versor A → ∀ (X Y : geo B),
+Theorem versor_outermorphism : ∀ A, versor A → ∀ (X Y : geo),
     (A† * X * A) ⋀ (A† * Y * A) = geo_norm2 B A · (A† * (X ⋀ Y) * A).
 Proof.
     intros A A_versor X Y.
-    induction X as [|X X' m Xm X'm IHX] using grade_induction.
+    induction X as [|X X' m Xm X'm IHX] using (grade_induction (VG := GG)).
     {
         rewrite mult_ranni, mult_lanni.
         rewrite outer_lanni.
@@ -235,7 +186,7 @@ Proof.
     rewrite ldist, rdist.
     rewrite scalar_ldist.
     apply rplus; clear X' X'm.
-    induction Y as [|Y Y' n Yn Y'n IHY] using grade_induction.
+    induction Y as [|Y Y' n Yn Y'n IHY] using (grade_induction (VG := GG)).
     {
         rewrite mult_ranni, mult_lanni.
         rewrite outer_ranni.
@@ -267,11 +218,12 @@ Proof.
     rewrite <- mult_assoc.
     rewrite (mult_assoc X).
     remember (X * Y) as x.
+    rewrite <- Heqx.
     clear X Y Xm Yn AXm AYn Heqx.
-    induction x as [|x x' i xi x'i IHx] using grade_induction.
+    induction x as [|x x' i xi x'i IHx] using (grade_induction (VG := GG)).
     {
         rewrite mult_lanni, mult_ranni.
-        rewrite grade_project_zero.
+        do 2 rewrite grade_project_zero.
         rewrite mult_ranni, mult_lanni.
         reflexivity.
     }

@@ -4,104 +4,34 @@ Require Import order_minmax.
 
 Require Import linear_transformation_space.
 
-Require Export old_geometric_construct.
-Require Export old_geometric_inner.
-Require Export old_geometric_outer.
-Require Import old_geometric_grade.
-Require Import old_geometric_exterior_isomorphism.
-Require Import old_geometric_involutions_grade.
-Require Import old_geometric_decomposition.
-Require Import old_exterior_grade.
+Require Export geometric_inner.
+Require Export geometric_outer.
+Require Export geometric_base.
 
-(* begin hide *)
 Section GeometricFormulae.
 
-(* end hide *)
 Context {F : CRingObj} {V : ModuleObj F}.
-(* begin hide *)
+Context (B : set_type (bilinear_form (V := V))).
 
-Let UP := cring_plus F.
-Let UZ := cring_zero F.
-Let UN := cring_neg F.
-Let UPC := cring_plus_comm F.
-Let UPZ := cring_plus_lid F.
-Let UPN := cring_plus_linv F.
-Let UM := cring_mult F.
-Let UO := cring_one F.
-Let UMC := cring_mult_comm F.
-
-Existing Instances UP UZ UN UPC UPZ UPN UM UO UMC.
-
-Let VP := module_plus V.
-Let VS := module_scalar V.
-
-Existing Instances VP VS.
-
-(* end hide *)
-Context (B : set_type bilinear_form).
-
-(* begin hide *)
-Let GP := geo_plus B.
-Let GZ := geo_zero B.
-Let GN := geo_neg B.
-Let GPA := geo_plus_assoc B.
-Let GPC := geo_plus_comm B.
-Let GPZ := geo_plus_lid B.
-Let GPN := geo_plus_linv B.
-Let GM := geo_mult B.
-Let GO := geo_one B.
-Let GL := geo_ldist B.
-Let GR := geo_rdist B.
-Let GMA := geo_mult_assoc B.
-Let GML := geo_mult_lid B.
-Let GMR := geo_mult_rid B.
-Let GS := geo_scalar B.
-Let GSO := geo_scalar_id B.
-Let GSL := geo_scalar_ldist B.
-Let GSR := geo_scalar_rdist B.
-Let GSC := geo_scalar_comp B.
-Let GSML := geo_scalar_lmult B.
-Let GSMR := geo_scalar_rmult B.
 Let GG := geo_grade B.
-
-Existing Instances GP GZ GN GPA GPC GPZ GPN GM GO GL GR GMA GML GMR GS GSO GSL
-    GSR GSC GSML GSMR GG.
-
-Local Notation "'φ'" := (vector_to_geo B).
-Local Notation "'σ'" := (scalar_to_geo B).
-Local Notation "'E'" := (geo_to_ext B).
-Local Notation "'G'" := (ext_to_geo B).
-
-Let EP := ext_plus V.
-Let EZ := ext_zero V.
-Let EN := ext_neg V.
-Let EPA := ext_plus_assoc V.
-Let EPC := ext_plus_comm V.
-Let EPZ := ext_plus_lid V.
-Let EPN := ext_plus_linv V.
-Let EM := ext_mult V.
-Let EO := ext_one V.
-Let EL := ext_ldist V.
-Let ER := ext_rdist V.
-Let EMR := ext_mult_rid V.
-Let EMA := ext_mult_assoc V.
-Let ES := ext_scalar V.
-Let ESO := ext_scalar_id V.
-Let ESL := ext_scalar_ldist V.
-Let ESR := ext_scalar_rdist V.
 Let EG := exterior_grade V.
 Let EGA := exterior_grade_mult V.
+Existing Instances GG EG EGA.
 
-Existing Instances EP EZ EN EPA EPC EPZ EPN EM EO EL ER EMR EMA ES ESO ESL ESR.
+Local Notation φ := (vector_to_geo B).
+Local Notation σ := (scalar_to_geo B).
+Local Notation E := (geo_to_ext B).
+Local Notation G := (ext_to_geo B).
+Local Notation geo := (geometric_algebra B).
+Local Notation ext := (exterior_algebra V).
 
 Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
-(* end hide *)
 Theorem lcontr_mult_inner : ∀ v X, φ v ⌋ X = geo_mult_inner B v X.
 Proof.
     intros v X.
-    induction X as [|X X' n Xn X'n IHX] using grade_induction.
+    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := GG)).
     {
         rewrite geo_mult_inner_rzero.
         apply lcontr_ranni.
@@ -273,7 +203,7 @@ Qed.
 Theorem vector_lmult : ∀ v X, φ v * X = φ v ⌋ X + φ v ⋀ X.
 Proof.
     intros v X.
-    induction X as [|X X' n Xn X'n IHX] using grade_induction.
+    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := GG)).
     {
         rewrite mult_ranni.
         rewrite lcontr_ranni.
@@ -296,7 +226,7 @@ Proof.
         apply geo_grade_zero_scalar in Xn as [a eq]; subst X.
         rewrite lcontr_vector_scalar.
         rewrite plus_lid.
-        rewrite scalar_to_geo_one_scalar at 2.
+        unfold scalar_to_geo at 2.
         rewrite outer_rscalar.
         rewrite outer_rid.
         rewrite <- scalar_to_geo_comm.
