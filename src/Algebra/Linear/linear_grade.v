@@ -215,7 +215,7 @@ Proof.
     cbn in v_eq.
     case_grade_project v i vi vi_eq vi_in v_nin.
     -   rewrite v_eq in vi_in.
-        apply in_ulist_single in vi_in.
+        apply in_ulist_single_eq in vi_in.
         subst vi; cbn.
         reflexivity.
     -   rewrite not_ex in v_nin.
@@ -309,7 +309,7 @@ Proof.
         rewrite ulist_image_add, ulist_unique_add in l_uni.
         exfalso; apply (land l_uni).
         rewrite <- vi_eq.
-        apply (in_ulist_image l vi).
+        apply (in_ulist_image (l:=l) (a:=vi)).
         exact vi_in.
     -   apply IHl.
         +   rewrite ulist_image_add, ulist_unique_add in l_uni.
@@ -398,7 +398,7 @@ Proof.
                             exact (ex_proof bc_homo).
                     }
                     rewrite c_bc_eq.
-                    apply (in_ulist_image l bc).
+                    apply (in_ulist_image (l:=l) (a:=bc)).
                     exact bc_in.
                 -   rewrite ulist_prop_add; cbn.
                     split; [>exact n|].
@@ -477,7 +477,7 @@ Proof.
             destruct av_uni as [vj_nin av_uni].
             exfalso; apply vj_nin.
             rewrite vj_eq, <- avj_eq.
-            apply (in_ulist_image l avj).
+            apply (in_ulist_image (l:=l) (a:=avj)).
             exact avj_in.
         +   rewrite not_ex in avj_nin.
             specialize (avj_nin vj).

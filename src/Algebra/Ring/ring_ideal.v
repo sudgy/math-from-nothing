@@ -347,7 +347,7 @@ Lemma ideal_generated_by_plus : ∀ a b,
 Proof.
     intros a b [al al_eq] [bl bl_eq]; subst a b.
     exists (al + bl).
-    rewrite ulist_image_conc, ulist_sum_plus.
+    rewrite ulist_image_conc, ulist_sum_conc.
     reflexivity.
 Qed.
 

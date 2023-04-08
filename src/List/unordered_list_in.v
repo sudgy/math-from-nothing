@@ -73,38 +73,23 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem in_ulist_single {U} : ∀ (a b : U), in_ulist (a ː ulist_end) b → a = b.
+Theorem in_ulist_single_eq {U} : ∀ (a b : U), in_ulist ⟦a⟧ b ↔ a = b.
 Proof.
-    intros a b b_in.
-    rewrite in_ulist_add in b_in.
-    destruct b_in as [b_in|b_in].
-    -   exact b_in.
-    -   contradiction (in_ulist_end _ b_in).
-Qed.
-
-Theorem ulist_unique_end {U} : ulist_unique (@ulist_end U).
-Proof.
-    unfold ulist_unique, ulist_end; equiv_simpl.
-    exact true.
-Qed.
-
-Theorem ulist_unique_single {U} : ∀ a : U, ulist_unique (a ː ulist_end).
-Proof.
-    intros a.
-    unfold ulist_unique, ulist_add, ulist_end; equiv_simpl.
-    apply list_unique_single.
-Qed.
-
-Theorem ulist_unique_add {U} : ∀ (a : U) l,
-    ulist_unique (a ː l) ↔ ¬in_ulist l a ∧ ulist_unique l.
-Proof.
-    intros a l.
-    equiv_get_value l.
-    unfold ulist_unique, in_ulist, ulist_add; equiv_simpl.
+    intros a b.
+    rewrite in_ulist_add.
+    rewrite (prop_is_false (in_ulist_end _)).
+    rewrite or_rfalse.
     reflexivity.
 Qed.
 
-Theorem in_ulist_conc {U} : ∀ l1 l2 (a : U),
+Theorem in_ulist_single {U} : ∀ a : U, in_ulist ⟦a⟧ a.
+Proof.
+    intros a.
+    apply in_ulist_single_eq.
+    reflexivity.
+Qed.
+
+Theorem in_ulist_conc {U} : ∀ {l1 l2} {a : U},
     in_ulist (l1 + l2) a → in_ulist l1 a ∨ in_ulist l2 a.
 Proof.
     intros l1 l2 a.
@@ -113,7 +98,7 @@ Proof.
     apply in_list_conc.
 Qed.
 
-Theorem in_ulist_lconc {U} : ∀ l1 l2 (a : U),
+Theorem in_ulist_lconc {U} : ∀ l1 l2 {a : U},
     in_ulist l1 a → in_ulist (l1 + l2) a.
 Proof.
     intros l1 l2 a.
@@ -121,7 +106,7 @@ Proof.
     unfold in_ulist, plus; equiv_simpl.
     apply in_list_lconc.
 Qed.
-Theorem in_ulist_rconc {U} : ∀ l1 l2 (a : U),
+Theorem in_ulist_rconc {U} : ∀ l1 l2 {a : U},
     in_ulist l2 a → in_ulist (l1 + l2) a.
 Proof.
     intros l1 l2 a.
@@ -130,7 +115,7 @@ Proof.
     apply in_list_rconc.
 Qed.
 
-Theorem in_ulist_split {U} : ∀ l (a : U), in_ulist l a → ∃ l', l = a ː l'.
+Theorem in_ulist_split {U} : ∀ {l} {a : U}, in_ulist l a → ∃ l', l = a ː l'.
 Proof.
     intros l a a_in.
     equiv_get_value l.
@@ -141,7 +126,7 @@ Proof.
     exact eq.
 Qed.
 
-Theorem in_ulist_image {U V} : ∀ l a (f : U → V),
+Theorem in_ulist_image {U V} : ∀ {l a} (f : U → V),
     in_ulist l a → in_ulist (ulist_image f l) (f a).
 Proof.
     intros l a f.
@@ -150,7 +135,7 @@ Proof.
     apply in_list_image.
 Qed.
 
-Theorem image_in_ulist {U V} : ∀ l y (f : U → V),
+Theorem image_in_ulist {U V} : ∀ {l y} {f : U → V},
     in_ulist (ulist_image f l) y → ∃ x, f x = y ∧ in_ulist l x.
 Proof.
     intros l y f.
@@ -163,14 +148,37 @@ Proof.
     exact H.
 Qed.
 
-Theorem ulist_image_unique {U V} : ∀ (l : ulist U) (f : U → V),
-    ulist_unique (ulist_image f l) → ulist_unique l.
+Theorem ulist_unique_end {U} : ulist_unique (@ulist_end U).
 Proof.
-    intros l f.
-    equiv_get_value l.
-    unfold ulist_image, ulist_unique; equiv_simpl.
-    apply list_image_unique.
+    unfold ulist_unique, ulist_end; equiv_simpl.
+    exact true.
 Qed.
+
+Theorem ulist_unique_add {U} : ∀ (a : U) l,
+    ulist_unique (a ː l) ↔ ¬in_ulist l a ∧ ulist_unique l.
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold ulist_unique, in_ulist, ulist_add; equiv_simpl.
+    reflexivity.
+Qed.
+
+Theorem ulist_unique_single {U} : ∀ a : U, ulist_unique (a ː ulist_end).
+Proof.
+    intros a.
+    unfold ulist_unique, ulist_add, ulist_end; equiv_simpl.
+    apply list_unique_single.
+Qed.
+
+Tactic Notation "ulist_unique_induction" ident(l) ident(uni) "as"
+    simple_intropattern(a) simple_intropattern(nin) simple_intropattern(IHl) :=
+    move uni before l;
+    induction l as [|a l IHl] using ulist_induction;
+    [>|
+        rewrite ulist_unique_add in uni;
+        specialize (IHl (rand uni));
+        destruct uni as [nin uni]
+    ].
 
 Theorem ulist_in_unique_eq {U} : ∀ al bl : ulist U,
     ulist_unique al → ulist_unique bl →
@@ -185,4 +193,42 @@ Proof.
     specialize (ins x).
     equiv_simpl in ins.
     exact ins.
+Qed.
+
+Theorem ulist_unique_lconc {U} : ∀ (l1 l2 : ulist U),
+    ulist_unique (l1 + l2) → ulist_unique l1.
+Proof.
+    intros l1 l2.
+    equiv_get_value l1 l2.
+    unfold ulist_unique, plus; equiv_simpl.
+    apply list_unique_lconc.
+Qed.
+
+Theorem ulist_unique_rconc {U} : ∀ (l1 l2 : ulist U),
+    ulist_unique (l1 + l2) → ulist_unique l2.
+Proof.
+    intros l1 l2.
+    rewrite plus_comm.
+    apply ulist_unique_lconc.
+Qed.
+
+Theorem ulist_unique_conc {U} : ∀ (l1 l2 : ulist U),
+    ulist_unique (l1 + l2) → (∀ x, in_ulist l1 x → ¬in_ulist l2 x).
+Proof.
+    intros l1 l2.
+    equiv_get_value l1 l2.
+    unfold ulist_unique, plus, in_ulist; equiv_simpl.
+    intros uni x.
+    equiv_simpl.
+    apply list_unique_conc.
+    exact uni.
+Qed.
+
+Theorem ulist_image_unique {U V} : ∀ (l : ulist U) (f : U → V),
+    ulist_unique (ulist_image f l) → ulist_unique l.
+Proof.
+    intros l f.
+    equiv_get_value l.
+    unfold ulist_image, ulist_unique; equiv_simpl.
+    apply list_image_unique.
 Qed.

@@ -487,7 +487,7 @@ Proof.
             exists (laA + l').
             rewrite ulist_image_conc.
             change (V ⊗ tensor_power n) with (tensor_power (nat_suc n)).
-            rewrite ulist_sum_plus.
+            rewrite ulist_sum_conc.
             rewrite <- IHl; clear IHl.
             rewrite ulist_image_add, ulist_sum_add; cbn.
             apply rplus.

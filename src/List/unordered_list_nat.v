@@ -46,11 +46,27 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ulist_size_plus {U} : ∀ l1 l2 : ulist U,
+Theorem ulist_size_single {U} : ∀ x : U, ulist_size ⟦x⟧ = 1.
+Proof.
+    intros x.
+    rewrite ulist_size_add, ulist_size_end.
+    reflexivity.
+Qed.
+
+Theorem ulist_size_conc {U} : ∀ l1 l2 : ulist U,
     ulist_size (l1 + l2) = ulist_size l1 + ulist_size l2.
 Proof.
     intros l1 l2.
     equiv_get_value l1 l2.
     unfold ulist_size, plus; equiv_simpl.
     apply list_size_conc.
+Qed.
+
+Theorem ulist_image_size {A B} : ∀ l (f : A → B),
+    ulist_size (ulist_image f l) = ulist_size l.
+Proof.
+    intros l f.
+    equiv_get_value l.
+    unfold ulist_size, ulist_image; equiv_simpl.
+    apply list_image_size.
 Qed.

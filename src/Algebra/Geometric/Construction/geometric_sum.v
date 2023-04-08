@@ -21,7 +21,7 @@ Lemma S_plus_in : ∀ a b, S a → S b → S (a + b).
 Proof.
     intros a b [u a_eq] [v b_eq]; subst a b.
     exists (u + v).
-    rewrite ulist_image_conc, ulist_sum_plus.
+    rewrite ulist_image_conc, ulist_sum_conc.
     reflexivity.
 Qed.
 

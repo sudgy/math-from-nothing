@@ -355,7 +355,7 @@ Next Obligation.
                 -   exact (wlog b a b_eq x x_in).
             }
             rewrite eq.
-            apply (in_ulist_image l b).
+            apply (in_ulist_image (l:=l) (a:=b)).
             exact b_in.
     -   clear l_in l_uni.
         rewrite <- (module_homo_zero g).

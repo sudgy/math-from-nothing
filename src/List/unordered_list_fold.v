@@ -62,7 +62,14 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ulist_sum_plus : ∀ a b, ulist_sum (a + b) = ulist_sum a + ulist_sum b.
+Theorem list_sum_single : ∀ x, ulist_sum ⟦x⟧ = x.
+Proof.
+    intros x.
+    rewrite ulist_sum_add, ulist_sum_end.
+    apply plus_rid.
+Qed.
+
+Theorem ulist_sum_conc : ∀ a b, ulist_sum (a + b) = ulist_sum a + ulist_sum b.
 Proof.
     intros a b.
     equiv_get_value a b.
@@ -82,7 +89,7 @@ Theorem ulist_sum_minus : ∀ a b,
     ulist_sum (a + (ulist_image neg b)) = ulist_sum a - ulist_sum b.
 Proof.
     intros a b.
-    rewrite ulist_sum_plus.
+    rewrite ulist_sum_conc.
     rewrite ulist_sum_neg.
     reflexivity.
 Qed.
@@ -140,7 +147,14 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ulist_prod_mult :
+Theorem ulist_prod_single : ∀ x, ulist_prod ⟦x⟧ = x.
+Proof.
+    intros x.
+    rewrite ulist_prod_add, ulist_prod_end.
+    apply mult_rid.
+Qed.
+
+Theorem ulist_prod_conc :
     ∀ a b, ulist_prod (a + b) = ulist_prod a * ulist_prod b.
 Proof.
     intros a b.

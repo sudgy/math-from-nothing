@@ -628,7 +628,7 @@ Proof.
     }
     exists (ul + vl).
     subst u v.
-    rewrite ulist_image_conc, ulist_sum_plus.
+    rewrite ulist_image_conc, ulist_sum_conc.
     reflexivity.
 Qed.
 

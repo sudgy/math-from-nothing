@@ -190,7 +190,7 @@ Proof.
         rewrite Heqal' in y_in.
         cbn in y_in.
         unfold linear_remove_zeros_base in y_in.
-        apply (ulist_filter_in_S _ [al|] _ y_in).
+        apply (ulist_filter_in_set _ [al|] _ y_in).
     }
     assert (∀ x, in_ulist [bl'|] x → 0 ≠ fst x) as bl'_nz.
     {
@@ -198,7 +198,7 @@ Proof.
         rewrite Heqbl' in y_in.
         cbn in y_in.
         unfold linear_remove_zeros_base in y_in.
-        apply (ulist_filter_in_S _ [bl|] _ y_in).
+        apply (ulist_filter_in_set _ [bl|] _ y_in).
     }
     clear Sal Sbl al bl Heqal' Heqbl'.
     destruct al' as [al' al'_comb].

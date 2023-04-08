@@ -159,7 +159,7 @@ Proof.
                 intros j_in.
                 apply a_nin.
                 apply image_in_ulist in j_in as [a' [a'_eq a'_in]].
-                pose proof (in_ulist_image _ _ (λ x, subspace_set
+                pose proof (in_ulist_image (λ x, subspace_set
                     (grade_subspace (ex_val [|x]))) a'_in) as a'_in'.
                 cbn in a'_in'.
                 assert (subspace_set (grade_subspace (ex_val [|a'])) =
@@ -311,7 +311,7 @@ Proof.
                 -   apply (ex_proof [|a]).
             }
             rewrite <- eq'.
-            apply (in_ulist_image l a').
+            apply (in_ulist_image (l:=l) (a:=a')).
             exact a'_in.
         +   apply IHl.
             *   apply l_uni.

@@ -56,7 +56,7 @@ Proof.
     -   apply S_ind.
 Qed.
 
-Theorem ulist_end_neq {U} : ∀ (a : U) l, a ː l ≠ ⟦⟧.
+Theorem ulist_end_neq {U} : ∀ {a : U} {l}, a ː l ≠ ⟦⟧.
 Proof.
     intros a l contr.
     equiv_get_value l.
@@ -66,13 +66,29 @@ Proof.
     inversion contr.
 Qed.
 
-Theorem ulist_single_eq {U} : ∀ (a b : U), ⟦a⟧ = ⟦b⟧ → a = b.
+Theorem ulist_single_eq {U} : ∀ {a b : U}, ⟦a⟧ = ⟦b⟧ → a = b.
 Proof.
     intros a b eq.
     unfold ulist_add, ulist_end in eq; equiv_simpl in eq.
     pose proof (list_perm_single eq) as eq2.
     inversion eq2.
     reflexivity.
+Qed.
+
+Theorem ulist_swap {U} : ∀ (a b : U) l, a ː b ː l = b ː a ː l.
+Proof.
+    intros a b l.
+    equiv_get_value l.
+    unfold ulist_add; equiv_simpl.
+    apply list_perm_swap.
+Qed.
+
+Theorem ulist_add_eq {U} : ∀ {a : U} {l1 l2}, a ː l1 = a ː l2 → l1 = l2.
+Proof.
+    intros a l1 l2.
+    equiv_get_value l1 l2.
+    unfold ulist_add; equiv_simpl.
+    apply list_perm_add_eq.
 Qed.
 
 Lemma uconc_wd U : ∀ al1 al2 bl1 bl2 : list U,
@@ -88,20 +104,12 @@ Global Instance ulist_plus U : Plus (ulist U) := {
     plus := binary_op (binary_self_wd (E := ulist_equiv U) (uconc_wd U))
 }.
 
-Theorem ulist_add_conc_add {U} : ∀ (a : U) l1 l2,
-    a ː (l1 + l2) = (a ː l1) + l2.
+Theorem ulist_conc_add {U} : ∀ (a : U) l1 l2,
+    (a ː l1) + l2 = a ː (l1 + l2).
 Proof.
     intros a l1 l2.
     equiv_get_value l1 l2.
     unfold plus, ulist_add; equiv_simpl.
-    apply list_perm_refl.
-Qed.
-
-Theorem ulist_add_conc {U} : ∀ (a : U) l, a ː l = (⟦a⟧) + l.
-Proof.
-    intros a l.
-    equiv_get_value l.
-    unfold ulist_end, ulist_add, plus; equiv_simpl.
     apply list_perm_refl.
 Qed.
 
@@ -137,6 +145,14 @@ Proof.
     exact plus_rid.
 Qed.
 
+Theorem ulist_conc_single {U} : ∀ (a : U) l, (⟦a⟧) + l = a ː l.
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold ulist_end, ulist_add, plus; equiv_simpl.
+    apply list_perm_refl.
+Qed.
+
 Global Instance ulist_plus_assoc U : PlusAssoc (ulist U).
 Proof.
     split.
@@ -145,22 +161,6 @@ Proof.
     unfold plus; equiv_simpl.
     rewrite plus_assoc.
     apply list_perm_refl.
-Qed.
-
-Theorem ulist_swap {U} : ∀ (a b : U) l, a ː b ː l = b ː a ː l.
-Proof.
-    intros a b l.
-    equiv_get_value l.
-    unfold ulist_add; equiv_simpl.
-    apply list_perm_swap.
-Qed.
-
-Theorem ulist_skip {U} : ∀ (a : U) l1 l2, a ː l1 = a ː l2 → l1 = l2.
-Proof.
-    intros a l1 l2.
-    equiv_get_value l1 l2.
-    unfold ulist_add; equiv_simpl.
-    apply list_perm_add_eq.
 Qed.
 
 Global Instance ulist_plus_lcancel U : PlusLcancel (ulist U).
@@ -231,6 +231,14 @@ Proof.
     equiv_get_value l.
     unfold ulist_image, ulist_add; equiv_simpl.
     apply list_perm_refl.
+Qed.
+
+Theorem ulist_image_single {A B : Type} : ∀ a (f : A → B),
+    ulist_image f ⟦a⟧ = ⟦f a⟧.
+Proof.
+    intros a f.
+    rewrite ulist_image_add, ulist_image_end.
+    reflexivity.
 Qed.
 
 Theorem ulist_image_conc {A B : Type} : ∀ a b (f : A → B),
