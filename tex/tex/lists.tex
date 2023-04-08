@@ -1099,6 +1099,187 @@ explicitly saying that every value in a list satisfies a predicate).
 
 \section{Permutations}
 
+\begin{definition}
+    Let $a$ and $b$ be two lists.  Then we say that $a$ is a permutation of $b$,
+    written $a \sim b$, if for all $x : \U$, $|a|_x = |b|_x$.
+\end{definition}
+
+\begin{instance}
+    Permutations of lists is an equivalence relation.
+\end{instance}
+\begin{proof}
+    \textit{Reflexivity.}  Given a list $a$, we must prove that for all $x$,
+    $|a|_x = |a|_x$, which is trivial.
+
+    \textit{Symmetry.}  Let $a$ and $b$ be lists such that $a \sim b$.  Then for
+    all $x : \U$, we have $|a|_x = |b|_x$, so $|b|_x = |a|_x$, showing that $b
+    \sim a$.
+
+    \textit{Transitivity.} Let $a$, $b$, and $c$ be lists such that $a \sim b$
+    and $b \sim c$.  Then for all $x : \U$, we have $|a|_x = |b|_x$ and $|b|_x =
+    |c|_x$, so $|a|_x = |c|_x$, showing that $a \sim c$.
+\end{proof}
+
+\begin{theorem} \label{list-perm-skip}
+    For all values $x$ and lists $a$ and $b$, if $a \sim b$, then $x : a \sim x
+    : b$.
+\end{theorem}
+\begin{proof}
+    Let $y$ be any value.  Then
+    \begin{align*}
+        |a|_y &= |b|_y \\
+        |[x]|_y + |a|_y &= |[x]|_y + |b|_y \\
+        |[x] + a|_y &= |[x] + b|_y \\
+        |x : a|_y &= |x : b|_y.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{list-perm-swap}
+    For all values $x$ and $y$ and lists $a$, $x : y : a \sim y : x : a$.
+\end{theorem}
+\begin{proof}
+    Let $z$ be any value.  Then
+    \begin{align*}
+        |a|_z &= |a|_z \\
+        |[x]|_z + |[y]|_z + |a|_z &= |[y]|_z + |[x]|_z + |a|_z \\
+        |[x] + [y] + a|_z &= |[y] + [x] + a|_z \\
+        |x : y : a|_z &= |y : x : a|_z.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{list-perm-nil-eq}
+    For all lists $a$, if $[] \sim a$, then $[] = a$.
+\end{theorem}
+\begin{proof}
+    Assume that $[] \neq a$.  Then there exists a value $x$ and list $a'$ such
+    that $a = x : a'$, so we have $[] \sim x : a'$.  This implies that $|[]|_x =
+    |x : a'|_x$, so $0 = S(|a'|_x)$, which is impossible.  Thus, $[] = a$.
+\end{proof}
+
+\begin{theorem} \label{list-perm-lpart}
+    For all lists $a$, $b$, and $c$, if $a \sim b$, then $a + c \sim b + c$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be any value.  Then
+    \begin{align*}
+        |a|_x &= |b|_x \\
+        |a|_x + |c|_x &= |b|_x + |c|_x \\
+        |a + c|_x &= |b + c|_x.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{list-perm-rpart}
+    For all lists $a$, $b$, and $c$, if $b \sim c$, then $a + b \sim a + c$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be any value.  Then
+    \begin{align*}
+        |b|_x &= |c|_x \\
+        |a|_x + |b|_x &= |a|_x + |c|_x \\
+        |a + b|_x &= |a + c|_x.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{list-perm-comm}
+    For all lists $a$ and $b$, $a + b \sim b + a$.
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{list-count-comm}.
+\end{proof}
+
+\begin{theorem} \label{list-perm-split}
+    For all lists $a$ and $b$ and values $x$, $a + x : b \sim x : a + b$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{list-perm-comm} we have $a + x : b \sim x : b + a$.  By
+    Theorem \ref{list-perm-comm} we also have $a + b \sim b + a$, so by Theorem
+    \ref{list-perm-skip} we have $x : b + a \sim x : a + b$.  Thus, by
+    transitivity, $a + x : b \sim x : a + b$.
+\end{proof}
+
+\begin{theorem} \label{list-split-perm}
+    For all lists $a$ and values $x$, if $x \in a$, then there exists a list $b$
+    such that $a \sim x : b$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{in-list-split}, there exists lists $b$ and $c$ such that $a
+    = b + x : c$.  Then by Theorem \ref{list-perm-split}, $b + x : c \sim x : b
+    + c$, showing that $a \sim x : b + c$.
+\end{proof}
+
+\begin{theorem} \label{list-perm-conc-lcancel}
+    For all lists $a$, $b$, and $c$, if $a + b \sim a + c$, then $b \sim c$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be any value.  Then
+    \begin{align*}
+        |a + b|_x &= |a + c|_x \\
+        |a|_x + |b|_x &= |a|_x + |c|_x \\
+        |b|_x &= |c|_x.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{list-perm-conc-rcancel}
+    For all lists $a$, $b$, and $c$, if $b + a \sim c + a$, then $b \sim c$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be any value.  Then
+    \begin{align*}
+        |b + a|_x &= |c + a|_x \\
+        |b|_x + |a|_x &= |c|_x + |a|_x \\
+        |b|_x &= |c|_x.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{list-perm-add-eq}
+    For all values $x$ and lists $a$ and $b$, if $x : a \sim x : b$, then $a
+    \sim b$.
+\end{theorem}
+\begin{proof}
+    This follows from Theorem \ref{list-perm-conc-lcancel}.
+\end{proof}
+
+\begin{theorem} \label{list-in-unique-perm}
+    For all lists $a$ and $b$, if they both have unique elements, and if $z \in
+    a \leftrightarrow z \in b$ for all $x : \U$, then $a \sim b$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be any value.  There are two cases: when $x \in a$, and when $x
+    \notin a$.  When $x \in a$, then $x \in b$ as well, so by Theorem
+    \ref{list-count-in-unique}, $|a|_x = 1 = |b|_x$.  When $x \notin a$, then $x
+    \notin b$ as well, so by Theorem \ref{list-count-nin}, $|a|_x = 0 = |b|_x$.
+\end{proof}
+
+\begin{theorem} \label{list-perm-in}
+    For all lists $a$ and $b$, if $a \sim b$, then for all $x$, $x \in a
+    \leftrightarrow x \in b$.
+\end{theorem}
+\begin{proof}
+    By symmetry we only need to prove that if $x \in a$, then $x \in b$.
+    Because $x \in a$, by Theorem \ref{list-count-in}, we have $|a|_x \neq 0$.
+    Because $a \sim b$, $|b|_x \neq 0$ as well, so $x \in b$ by Theorem
+    \ref{list-count-in}.
+\end{proof}
+
+\begin{theorem} \label{list-perm-single}
+    For all values $x$ and lists $a$, if $[x] \sim a$, then $a = [x]$.
+\end{theorem}
+\begin{proof}
+    We have $x \in [x]$, so by Theorem \ref{list-perm-in} we have $x \in a$.  By
+    Theorem \ref{in-list-split}, we have lists $b$ and $c$ such that $a = b + x
+    : c$.  By Theorem \ref{list-perm-split}, we have $[x] \sim x : b + c$.  By
+    Theorem \ref{list-perm-add-eq}, we have $[] \sim b + c$ so by Theorem
+    \ref{list-perm-nil-eq} we have $[] = b + c$.  This means that $b = []$ and
+    $c = []$,  meaning that $a = [] + x : [] = [x]$.
+\end{proof}
+
+\begin{theorem} \label{list-perm-reverse}
+    For all lists $a$, $a \sim a^{-1}$.
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{list-count-reverse}.
+\end{proof}
+
 \section{Unordered Lists}
 
 \end{document}

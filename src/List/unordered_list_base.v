@@ -115,7 +115,7 @@ Proof.
     intros a b.
     equiv_get_value a b.
     unfold plus; equiv_simpl.
-    apply list_perm_conc.
+    apply list_perm_comm.
 Qed.
 
 Global Instance ulist_plus_lid U : PlusLid (ulist U).

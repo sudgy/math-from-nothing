@@ -40,7 +40,7 @@ Proof.
         cbn.
         split; [>|apply list_unique_comm; exact IHal].
         intros a_in.
-        apply (trans2 (list_perm_conc _ _)) in eq2.
+        apply (trans2 (list_perm_comm _ _)) in eq2.
         apply (list_perm_in eq2) in a_in.
         contradiction.
 Qed.
