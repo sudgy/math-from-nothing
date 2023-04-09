@@ -5,43 +5,34 @@ Require Import unordered_list_base.
 
 Require Import equivalence.
 
-Unset Keyed Unification.
-
 Lemma in_ulist_wd U : ∀ (a : U) l1 l2, list_permutation l1 l2 →
     in_list l1 a = in_list l2 a.
 Proof.
     intros a l1 l2 eq.
     apply propositional_ext.
-    revert a.
-    exact (list_perm_in eq).
+    apply (list_perm_in eq).
 Qed.
 Definition in_ulist {U} l a
     := unary_op (E := ulist_equiv U) (in_ulist_wd U a) l.
 
-Theorem list_perm_unique {U} : ∀ al bl : list U,
+Lemma ulist_unique_wd' {U} : ∀ al bl : list U,
     list_permutation al bl → list_unique al → list_unique bl.
 Proof.
     intros al bl albl al_uni.
-    revert bl albl al_uni.
-    induction al as [|a al]; intros.
+    revert bl albl.
+    list_unique_induction al al_uni as a a_nin IHal; intros bl albl.
     -   apply list_perm_nil_eq in albl.
         rewrite <- albl.
-        exact true.
-    -   destruct al_uni as [a_nin al_uni].
-        assert (in_list (a ꞉ al) a) as a_in by (left; reflexivity).
-        apply (list_perm_in albl) in a_in.
-        apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
-        pose proof (list_perm_split l1 l2 a) as eq.
-        pose proof (trans albl eq) as eq2.
-        apply list_perm_add_eq in eq2.
-        specialize (IHal _ eq2 al_uni).
+        apply list_unique_end.
+    -   apply list_perm_split_eq in albl as [l1 [l2 [l_eq eq]]]; subst bl.
+        specialize (IHal _ eq).
         apply list_unique_comm.
         rewrite list_conc_add.
-        cbn.
+        rewrite list_unique_add.
         split; [>|apply list_unique_comm; exact IHal].
         intros a_in.
-        apply (trans2 (list_perm_comm _ _)) in eq2.
-        apply (list_perm_in eq2) in a_in.
+        apply (trans2 (list_perm_comm _ _)) in eq.
+        apply (list_perm_in eq) in a_in.
         contradiction.
 Qed.
 
@@ -50,9 +41,9 @@ Lemma ulist_unique_wd U : ∀ l1 l2 : list U, list_permutation l1 l2 →
 Proof.
     intros l1 l2 eq.
     apply propositional_ext; split.
-    -   exact (list_perm_unique _ _ eq).
+    -   exact (ulist_unique_wd' _ _ eq).
     -   apply list_perm_sym in eq.
-        exact (list_perm_unique _ _ eq).
+        exact (ulist_unique_wd' _ _ eq).
 Qed.
 Definition ulist_unique {U} :=
     unary_op (E := ulist_equiv U) (ulist_unique_wd U).
@@ -61,7 +52,7 @@ Theorem in_ulist_end {U} : ∀ a : U, ¬in_ulist ulist_end a.
 Proof.
     intros a contr.
     unfold in_ulist, ulist_end in contr; equiv_simpl in contr.
-    exact contr.
+    contradiction (in_list_end contr).
 Qed.
 
 Theorem in_ulist_add_eq {U} : ∀ (a b : U) l,
@@ -70,6 +61,7 @@ Proof.
     intros a b l.
     equiv_get_value l.
     unfold in_ulist, ulist_add; equiv_simpl.
+    rewrite in_list_add_eq.
     reflexivity.
 Qed.
 
@@ -167,6 +159,7 @@ Proof.
     intros a l.
     equiv_get_value l.
     unfold ulist_unique, in_ulist, ulist_add; equiv_simpl.
+    rewrite list_unique_add.
     reflexivity.
 Qed.
 
@@ -227,8 +220,7 @@ Proof.
     unfold ulist_unique, plus, in_ulist; equiv_simpl.
     intros uni x.
     equiv_simpl.
-    apply list_unique_conc.
-    exact uni.
+    apply (list_unique_conc _ _ uni).
 Qed.
 
 Theorem ulist_image_unique {U V} : ∀ (l : ulist U) (f : U → V),
