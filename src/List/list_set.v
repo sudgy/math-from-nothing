@@ -294,6 +294,23 @@ Proof.
         +   exact (IHl x_in).
 Qed.
 
+Theorem list_in_prop {U} : ∀ (a : list U) (S : U → Prop),
+    (∀ x, in_list a x → S x) → list_prop S a.
+Proof.
+    intros a S x_in.
+    induction a as [|x a].
+    -   apply list_prop_end.
+    -   rewrite list_prop_add.
+        split.
+        +   apply x_in.
+            apply in_list_add.
+        +   apply IHa.
+            intros y y_in.
+            apply x_in.
+            rewrite in_list_add_eq.
+            right; exact y_in.
+Qed.
+
 Theorem list_prop_in_sub {U} : ∀ {a b : list U} {S},
     list_prop S b → (∀ x, in_list a x → in_list b x) → list_prop S a.
 Proof.

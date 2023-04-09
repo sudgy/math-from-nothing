@@ -7,22 +7,15 @@ Require Import unordered_list_in.
 Require Import equivalence.
 
 Lemma ulist_filter_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
-    to_equiv (ulist_equiv U) (list_filter S l1) =
-    to_equiv (ulist_equiv U) (list_filter S l2).
+    list_permutation (list_filter S l1) (list_filter S l2).
 Proof.
-    intros S l1 l2 eq.
-    equiv_simpl.
-    intros x.
+    intros S l1 l2 eq x.
     revert l2 eq.
     induction l1; intros.
     -   apply list_perm_nil_eq in eq.
         subst l2.
         reflexivity.
-    -   assert (in_list (a ꞉ l1) a) as a_in by (left; reflexivity).
-        apply (list_perm_in eq) in a_in.
-        apply in_list_split in a_in as [l3 [l4 l2_eq]]; subst l2.
-        apply (trans2 (list_perm_split l3 l4 a)) in eq.
-        apply list_perm_add_eq in eq.
+    -   apply list_perm_split_eq in eq as [l3 [l4 [l_eq eq]]]; subst l2.
         specialize (IHl1 _ eq).
         rewrite list_filter_conc.
         rewrite list_count_conc.
@@ -32,44 +25,30 @@ Proof.
             rewrite IHl1.
             rewrite list_filter_conc.
             rewrite list_count_conc.
-            do 2 rewrite plus_assoc.
-            apply rplus.
-            apply plus_comm.
+            apply plus_3.
         +   do 2 rewrite (list_filter_add_nin nSa).
             rewrite IHl1.
             rewrite list_filter_conc, list_count_conc.
             reflexivity.
 Qed.
-Definition ulist_filter {U} S :=
-    unary_op (E := ulist_equiv U) (ulist_filter_wd U S).
+Definition ulist_filter {U} S := unary_op (E := ulist_equiv U)
+    (unary_self_wd (E := ulist_equiv U) (ulist_filter_wd U S)).
 
-Theorem list_prop_perm {U} : ∀ (S : U → Prop) (l1 l2 : list U),
+Theorem ulist_prop_wd' {U} : ∀ (S : U → Prop) (l1 l2 : list U),
     list_permutation l1 l2 → list_prop S l1 → list_prop S l2.
 Proof.
     intros S l1 l2 eq Sl1.
     revert l2 eq.
-    induction l1; intros.
+    list_prop_induction l1 Sl1 as a a_nin IHl1; intros.
     -   apply list_perm_nil_eq in eq.
         subst l2.
-        exact true.
-    -   destruct Sl1 as [a_in Sl1].
-        assert (in_list (a ꞉ l1) a) as a_in' by (left; reflexivity).
-        apply (list_perm_in eq) in a_in'.
-        apply in_list_split in a_in' as [l3 [l4 eq']]; subst l2.
-        pose proof (list_perm_split l3 l4 a) as eq2.
-        pose proof (trans eq eq2) as eq3.
-        apply list_perm_add_eq in eq3.
-        specialize (IHl1 Sl1 _ eq3).
-        clear eq eq2 eq3.
-        induction l3 as [|b l3].
-        +   rewrite list_conc_lid in *.
-            cbn.
-            split; assumption.
-        +   rewrite list_conc_add in *.
-            cbn in *.
-            split.
-            *   apply IHl1.
-            *   apply IHl3; apply IHl1.
+        apply list_prop_end.
+    -   apply list_perm_split_eq in eq as [l3 [l4 [l_eq eq]]]; subst l2.
+        specialize (IHl1 _ eq).
+        rewrite list_prop_conc in *.
+        destruct IHl1 as [l3_in l4_in].
+        rewrite list_prop_add.
+        repeat split; assumption.
 Qed.
 
 Lemma ulist_prop_wd U : ∀ (S : U → Prop) l1 l2, list_permutation l1 l2 →
@@ -78,9 +57,9 @@ Proof.
     intros S l1 l2 eq.
     apply propositional_ext.
     split.
-    -   exact (list_prop_perm S _ _ eq).
+    -   exact (ulist_prop_wd' S _ _ eq).
     -   apply list_perm_sym in eq.
-        exact (list_prop_perm S _ _ eq).
+        exact (ulist_prop_wd' S _ _ eq).
 Qed.
 Definition ulist_prop {U} S :=
     unary_op (E := ulist_equiv U) (ulist_prop_wd U S).
@@ -90,7 +69,8 @@ Theorem ulist_filter_end {U} : ∀ S : U → Prop,
 Proof.
     intros S.
     unfold ulist_filter, ulist_end; equiv_simpl.
-    apply list_perm_refl.
+    rewrite list_filter_end.
+    apply refl.
 Qed.
 
 Theorem ulist_filter_add_in {U} : ∀ (S : U → Prop) a l, S a →
@@ -100,7 +80,7 @@ Proof.
     equiv_get_value l.
     unfold ulist_filter, ulist_add; equiv_simpl.
     rewrite (list_filter_add_in Sa).
-    apply list_perm_refl.
+    apply refl.
 Qed.
 
 Theorem ulist_filter_add_nin {U} : ∀ (S : U → Prop) a l, ¬S a →
@@ -110,7 +90,7 @@ Proof.
     equiv_get_value l.
     unfold ulist_filter, ulist_add; equiv_simpl.
     rewrite (list_filter_add_nin Sa).
-    apply list_perm_refl.
+    apply refl.
 Qed.
 
 Theorem ulist_filter_single_in {U} : ∀ (S : U → Prop) a,
@@ -213,7 +193,7 @@ Theorem ulist_prop_end {U} : ∀ S : U → Prop, ulist_prop S ulist_end.
 Proof.
     intros S.
     unfold ulist_prop, ulist_end; equiv_simpl.
-    exact true.
+    apply list_prop_end.
 Qed.
 
 Theorem ulist_prop_add {U} : ∀ S (a : U) l,
@@ -222,6 +202,7 @@ Proof.
     intros S a l.
     equiv_get_value l.
     unfold ulist_prop, ulist_add; equiv_simpl.
+    rewrite list_prop_add.
     reflexivity.
 Qed.
 
@@ -259,8 +240,7 @@ Proof.
     intros l S T sub.
     equiv_get_value l.
     unfold ulist_prop; equiv_simpl.
-    apply list_prop_sub.
-    exact sub.
+    apply (list_prop_sub _ _ _ sub).
 Qed.
 
 Theorem ulist_prop_filter {U} : ∀ (l : ulist U) S, ulist_prop S (ulist_filter S l).
@@ -280,6 +260,20 @@ Proof.
     intros Sa x.
     equiv_simpl.
     apply (list_prop_in _ _ Sa).
+Qed.
+
+Theorem ulist_in_prop {U} : ∀ (a : ulist U) (S : U → Prop),
+    (∀ x, in_ulist a x → S x) → ulist_prop S a.
+Proof.
+    intros a S.
+    equiv_get_value a.
+    unfold ulist_prop, in_ulist; equiv_simpl.
+    intros x_in.
+    apply list_in_prop.
+    intros x x_in2.
+    specialize (x_in x).
+    equiv_simpl in x_in.
+    exact (x_in x_in2).
 Qed.
 
 Theorem ulist_prop_in_sub {U} : ∀ {a b : ulist U} {S},
@@ -309,15 +303,9 @@ Theorem ulist_prop_split {U} : ∀ l (S : U → Prop),
     (∀ a l', l = a ː l' → S a) → ulist_prop S l.
 Proof.
     intros l S ind.
-    induction l using ulist_induction.
-    -   apply ulist_prop_end.
-    -   rewrite ulist_prop_add.
-        split.
-        +   apply (ind a l).
-            reflexivity.
-        +   apply IHl.
-            intros b l' eq.
-            apply (ind b (a ː l')).
-            rewrite eq.
-            apply ulist_swap.
+    apply ulist_in_prop.
+    intros x x_in.
+    apply in_ulist_split in x_in as [l' l_eq]; subst l.
+    apply (ind _ l').
+    reflexivity.
 Qed.
