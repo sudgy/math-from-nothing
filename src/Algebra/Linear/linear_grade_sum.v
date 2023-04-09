@@ -581,7 +581,7 @@ Next Obligation.
         apply ulist_prop_add in l_in as [[j aj] l_in].
         apply IHl; clear IHl.
         -   exact l_in.
-        -   rewrite ulist_image_add, in_ulist_add in v_nin.
+        -   rewrite ulist_image_add, in_ulist_add_eq in v_nin.
             rewrite not_or in v_nin.
             apply v_nin.
         -   rewrite ulist_image_add, ulist_sum_add in eq2.
@@ -607,7 +607,7 @@ Next Obligation.
             unfold single_to_grade_sum; cbn.
             unfold single_to_grade_sum_base.
             destruct (sem (j = i)) as [ij_eq|ij_neq].
-            +   rewrite in_ulist_add in v_nin.
+            +   rewrite in_ulist_add_eq in v_nin.
                 rewrite not_or in v_nin.
                 subst.
                 destruct v_nin; contradiction.

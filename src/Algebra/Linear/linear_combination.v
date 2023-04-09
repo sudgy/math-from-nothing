@@ -79,7 +79,7 @@ Proof.
         intros v [α v_in].
         apply v_combs.
         exists α.
-        rewrite in_ulist_add.
+        rewrite in_ulist_add_eq.
         right.
         exact v_in.
     }
@@ -88,7 +88,7 @@ Proof.
     {
         apply v_combs.
         exists (fst a).
-        rewrite in_ulist_add.
+        rewrite in_ulist_add_eq.
         left.
         destruct a; reflexivity.
     }
@@ -213,7 +213,7 @@ Proof.
     rewrite ulist_image_end, ulist_sum_end in eq.
     rewrite plus_rid in eq.
     apply eq; clear eq.
-    setoid_rewrite in_ulist_add.
+    setoid_rewrite in_ulist_add_eq.
     intros u [b [u_eq|contr]].
     2: contradiction (in_ulist_end _ contr).
     inversion u_eq.
@@ -239,7 +239,7 @@ Proof.
     {
         unfold linear_combination_set, l; cbn.
         do 2 rewrite ulist_image_add, ulist_unique_add.
-        rewrite in_ulist_add.
+        rewrite in_ulist_add_eq.
         rewrite ulist_image_end.
         rewrite not_or.
         cbn.
@@ -256,8 +256,8 @@ Proof.
     do 2 rewrite scalar_id in eq.
     rewrite plus_rid in eq.
     apply eq; clear eq.
-    setoid_rewrite in_ulist_add.
-    setoid_rewrite in_ulist_add.
+    setoid_rewrite in_ulist_add_eq.
+    setoid_rewrite in_ulist_add_eq.
     intros w [a [w_eq|[w_eq|contr]]].
     3: contradiction (in_ulist_end _ contr).
     all: inversion w_eq; subst.

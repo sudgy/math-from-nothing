@@ -227,7 +227,7 @@ Proof.
             apply (of_grade_unique _ _ _ v_nz).
             *   apply (ex_proof v_homo).
             *   exact v_in.
-        +   rewrite in_ulist_add in v_nin.
+        +   rewrite in_ulist_add_eq in v_nin.
             rewrite not_or in v_nin.
             destruct v_nin; contradiction.
 Qed.
@@ -247,7 +247,7 @@ Proof.
     pose proof (grade_decomposition_homo [v|v_homo] v_nz) as v_eq.
     cbn in v_eq.
     rewrite v_eq in vj_in.
-    rewrite in_ulist_add in vj_in.
+    rewrite in_ulist_add_eq in vj_in.
     destruct vj_in as [vj_eq'|vj_in]; [>|contradiction (in_ulist_end _ vj_in)].
     subst vj; cbn.
     cbn in vj_eq.
@@ -357,7 +357,7 @@ Proof.
             }
             rewrite l_eq2.
             rewrite l_eq in a_in.
-            apply in_ulist_add in a_in as [a_eq|a_in]; [>|exact a_in].
+            apply in_ulist_add_eq in a_in as [a_eq|a_in]; [>|exact a_in].
             subst c.
             symmetry in c_eq; contradiction.
         +   assert (homogeneous ([b|] + [c|])) as bc_homo.
@@ -408,10 +408,10 @@ Proof.
                     apply v_nz.
             }
             rewrite l_eq2.
-            rewrite in_ulist_add.
+            rewrite in_ulist_add_eq.
             right.
             rewrite l_eq in a_in.
-            apply in_ulist_add in a_in as [a_eq|a_in]; [>|exact a_in].
+            apply in_ulist_add_eq in a_in as [a_eq|a_in]; [>|exact a_in].
             subst c.
             symmetry in c_eq; contradiction.
     -   rewrite not_ex in c_nex.
@@ -435,7 +435,7 @@ Proof.
                 split; [>exact b_nz|apply grade_decomposition_nz].
         }
         rewrite l_eq.
-        rewrite in_ulist_add.
+        rewrite in_ulist_add_eq.
         right.
         exact a_in.
 Qed.
@@ -469,7 +469,7 @@ Proof.
         case_grade_project (a + v) j avj avj_eq avj_in avj_nin.
         +   apply in_ulist_split in vj_in2 as [l l_eq].
             rewrite l_eq in avj_in.
-            rewrite in_ulist_add in avj_in.
+            rewrite in_ulist_add_eq in avj_in.
             destruct avj_in as [eq|avj_in]; [>subst; reflexivity|].
             pose proof (grade_decomposition_uni (a + v)) as av_uni.
             rewrite l_eq in av_uni.
@@ -635,12 +635,12 @@ Proof.
         rewrite ulist_image_add, ulist_unique_add in v_uni.
         rewrite vi_eq in v_uni.
         destruct v_uni as [i_nin v_uni].
-        apply in_ulist_add in u_in as [u_eq|u_in].
+        apply in_ulist_add_eq in u_in as [u_eq|u_in].
         +   rewrite u_eq.
             reflexivity.
         +   apply in_ulist_split in u_in as [l' l'_eq].
             subst l.
-            rewrite ulist_image_add, in_ulist_add in i_nin.
+            rewrite ulist_image_add, in_ulist_add_eq in i_nin.
             rewrite not_or in i_nin.
             cbn in i_nin.
             rewrite_ex_val i' i'_eq.

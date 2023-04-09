@@ -24,16 +24,23 @@ Proof.
     exact true.
 Qed.
 
-Theorem in_list_add {U} : ∀ (a b : U) l,
+Theorem in_list_add_eq {U} : ∀ (a b : U) l,
     in_list (a ꞉ l) b ↔ a = b ∨ in_list l b.
 Proof.
     reflexivity.
 Qed.
 
+Theorem in_list_add {U} : ∀ (a : U) l, in_list (a ꞉ l) a.
+Proof.
+    intros a l.
+    rewrite in_list_add_eq.
+    left; reflexivity.
+Qed.
+
 Theorem in_list_single_eq {U} : ∀ a b : U, in_list [a] b ↔ a = b.
 Proof.
     intros a b.
-    rewrite in_list_add.
+    rewrite in_list_add_eq.
     rewrite (prop_is_false (in_list_end b)).
     rewrite or_rfalse.
     reflexivity.
@@ -55,9 +62,9 @@ Proof.
     induction l1.
     -   rewrite list_conc_lid in in12.
         contradiction (x_nin in12).
-    -   rewrite in_list_add.
+    -   rewrite in_list_add_eq.
         rewrite list_conc_add in in12.
-        rewrite in_list_add in in12.
+        rewrite in_list_add_eq in in12.
         destruct in12 as [eq|in12].
         +   left; exact eq.
         +   right; exact (IHl1 in12).
@@ -71,7 +78,7 @@ Proof.
     -   rewrite list_conc_lid.
         exact x_in.
     -   rewrite list_conc_add.
-        rewrite in_list_add.
+        rewrite in_list_add_eq.
         right.
         exact IHl1.
 Qed.
@@ -82,9 +89,9 @@ Proof.
     intros l1 l2 x x_in.
     induction l1.
     -   contradiction x_in.
-    -   rewrite in_list_add in x_in.
+    -   rewrite in_list_add_eq in x_in.
         rewrite list_conc_add.
-        rewrite in_list_add.
+        rewrite in_list_add_eq.
         destruct x_in as [x_eq|x_in].
         +   left.
             exact x_eq.
@@ -107,7 +114,7 @@ Proof.
     intros l x x_in.
     induction l.
     -   contradiction x_in.
-    -   rewrite in_list_add in x_in.
+    -   rewrite in_list_add_eq in x_in.
         destruct x_in as [x_eq|x_in].
         +   subst a.
             exists [], l.
@@ -126,8 +133,8 @@ Proof.
     intros l a f a_in.
     induction l as [|b l].
     -   contradiction a_in.
-    -   rewrite list_image_add, in_list_add.
-        rewrite in_list_add in a_in.
+    -   rewrite list_image_add, in_list_add_eq.
+        rewrite in_list_add_eq in a_in.
         destruct a_in as [eq|a_in].
         +   left.
             rewrite eq.
@@ -143,19 +150,19 @@ Proof.
     induction l.
     -   rewrite list_image_end in y_in.
         contradiction y_in.
-    -   rewrite list_image_add, in_list_add in y_in.
+    -   rewrite list_image_add, in_list_add_eq in y_in.
         destruct y_in as [y_eq|y_in].
         +   exists a.
             split.
             *   exact y_eq.
-            *   rewrite in_list_add.
+            *   rewrite in_list_add_eq.
                 left.
                 reflexivity.
         +   specialize (IHl y_in) as [x [x_eq x_in]].
             exists x.
             split.
             *   exact x_eq.
-            *   rewrite in_list_add.
+            *   rewrite in_list_add_eq.
                 right.
                 exact x_in.
 Qed.
@@ -199,7 +206,7 @@ Proof.
     list_unique_induction l l_uni as b b_nin IHl.
     -   rewrite list_conc_lid.
         apply list_unique_single.
-    -   rewrite in_list_add in a_nin.
+    -   rewrite in_list_add_eq in a_nin.
         rewrite not_or in a_nin.
         destruct a_nin as [neq a_nin].
         rewrite list_conc_add, list_unique_add.
@@ -266,7 +273,7 @@ Proof.
     -   contradiction x_in1.
     -   rewrite list_conc_add, list_unique_add in uni.
         destruct uni as [a_nin uni].
-        rewrite in_list_add in x_in1.
+        rewrite in_list_add_eq in x_in1.
         destruct x_in1 as [eq|x_in1].
         +   subst a.
             apply (in_list_rconc l1 l2) in x_in2.

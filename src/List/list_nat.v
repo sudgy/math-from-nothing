@@ -178,7 +178,7 @@ Proof.
         induction l as [|x l].
         +   rewrite list_count_end in neq.
             contradiction.
-        +   rewrite in_list_add.
+        +   rewrite in_list_add_eq.
             apply or_right.
             intros neq'.
             rewrite (list_count_add_neq neq') in neq.

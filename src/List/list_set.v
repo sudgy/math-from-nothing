@@ -96,10 +96,10 @@ Proof.
     induction l.
     -   rewrite list_filter_end in x_in.
         contradiction x_in.
-    -   rewrite in_list_add.
+    -   rewrite in_list_add_eq.
         classic_case (S a) as [Sa|Sa].
         +   rewrite (list_filter_add_in Sa) in x_in.
-            rewrite in_list_add in x_in.
+            rewrite in_list_add_eq in x_in.
             destruct x_in as [x_eq|x_in].
             *   subst a.
                 split; [>|exact Sa].
@@ -287,7 +287,7 @@ Proof.
     intros a S a_in x x_in.
     list_prop_induction a a_in as y Sy IHl.
     -   contradiction x_in.
-    -   rewrite in_list_add in x_in.
+    -   rewrite in_list_add_eq in x_in.
         destruct x_in as [eq|x_in].
         +   subst.
             exact Sy.
@@ -304,12 +304,12 @@ Proof.
         split.
         +   apply (list_prop_in _ _ b_in).
             apply sub.
-            rewrite in_list_add.
+            rewrite in_list_add_eq.
             left; reflexivity.
         +   apply IHa.
             intros y y_in.
             apply sub.
-            rewrite in_list_add.
+            rewrite in_list_add_eq.
             right; exact y_in.
 Qed.
 

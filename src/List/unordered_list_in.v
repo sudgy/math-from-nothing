@@ -64,7 +64,7 @@ Proof.
     exact contr.
 Qed.
 
-Theorem in_ulist_add {U} : ∀ (a b : U) l,
+Theorem in_ulist_add_eq {U} : ∀ (a b : U) l,
     in_ulist (b ː l) a ↔ b = a ∨ in_ulist l a.
 Proof.
     intros a b l.
@@ -73,10 +73,17 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem in_ulist_add {U} : ∀ (a : U) l, in_ulist (a ː l) a.
+Proof.
+    intros a l.
+    rewrite in_ulist_add_eq.
+    left; reflexivity.
+Qed.
+
 Theorem in_ulist_single_eq {U} : ∀ (a b : U), in_ulist ⟦a⟧ b ↔ a = b.
 Proof.
     intros a b.
-    rewrite in_ulist_add.
+    rewrite in_ulist_add_eq.
     rewrite (prop_is_false (in_ulist_end _)).
     rewrite or_rfalse.
     reflexivity.

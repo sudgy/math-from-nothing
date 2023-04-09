@@ -378,7 +378,7 @@ Proof.
                 -   unfold x''; intros contr.
                     rewrite plus_0_anb_a_b in contr.
                     subst x'.
-                    rewrite in_ulist_add in bl_x.
+                    rewrite in_ulist_add_eq in bl_x.
                     rewrite not_or in bl_x.
                     destruct bl_x as [neq bl_x].
                     apply neq.
@@ -386,7 +386,7 @@ Proof.
                 -   exact x''_eq.
                 -   exact x''_in.
             }
-            rewrite in_ulist_add in bl_x.
+            rewrite in_ulist_add_eq in bl_x.
             rewrite not_or in bl_x.
             exists [_|x''_homo], al', bl'.
             unfold x''; cbn.
@@ -560,10 +560,10 @@ Proof.
                     apply rplus.
                     apply plus_comm.
                 *   do 2 rewrite ulist_image_add, ulist_unique_add; cbn.
-                    rewrite in_ulist_add.
+                    rewrite in_ulist_add_eq.
                     rewrite not_or.
                     do 2 rewrite ulist_image_add, ulist_unique_add in al_uni.
-                    rewrite in_ulist_add in al_uni.
+                    rewrite in_ulist_add_eq in al_uni.
                     rewrite not_or in al_uni.
                     assert (ex_val a''_homo = ex_val [|a']) as eq'.
                     {
@@ -627,13 +627,13 @@ Proof.
                 apply lplus.
                 apply plus_comm.
             +   do 2 rewrite ulist_image_add, ulist_unique_add; cbn.
-                rewrite in_ulist_add.
+                rewrite in_ulist_add_eq.
                 rewrite not_or.
                 rewrite ulist_image_add, ulist_unique_add in al_uni.
                 destruct al_uni as [x_nin al_uni].
                 repeat split; try assumption.
                 *   do 2 rewrite ulist_image_add, ulist_unique_add in bl_uni.
-                    rewrite in_ulist_add in bl_uni.
+                    rewrite in_ulist_add_eq in bl_uni.
                     rewrite not_or in bl_uni.
                     rewrite a_eq.
                     apply bl_uni.

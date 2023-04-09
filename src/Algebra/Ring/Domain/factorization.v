@@ -142,7 +142,7 @@ Proof.
                 classic_case (unit u) as [uu|unu].
                 *   exists u.
                     split; [>exact uu|].
-                    rewrite in_ulist_add.
+                    rewrite in_ulist_add_eq.
                     left.
                     symmetry; exact b_eq.
                 *   specialize (b_irr _ _ unu p_nu).
@@ -150,7 +150,7 @@ Proof.
             +   specialize (IHl' l'_irr p_div) as [u [uu up_in]].
                 exists u.
                 split; [>exact uu|].
-                rewrite in_ulist_add.
+                rewrite in_ulist_add_eq.
                 right; exact up_in.
     }
     apply in_ulist_split in p_in as [l'' l'_eq]; subst l'; rename l'' into l'.

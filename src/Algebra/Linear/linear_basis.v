@@ -107,7 +107,7 @@ Proof.
         unfold linear_list_in in in_l; cbn in in_l.
         unfold linear_combination_set in uni; cbn in uni.
         do 2 rewrite ulist_image_add, ulist_unique_add in uni.
-        rewrite in_ulist_add in uni.
+        rewrite in_ulist_add_eq in uni.
         rewrite not_or in uni.
         apply (land (land uni)).
         do 2 rewrite ulist_prop_add in in_l.
@@ -235,7 +235,7 @@ Proof.
                 clear - al'_comb.
                 unfold linear_combination_set in al'_comb.
                 do 2 rewrite ulist_image_add, ulist_unique_add in al'_comb.
-                rewrite in_ulist_add in al'_comb.
+                rewrite in_ulist_add_eq in al'_comb.
                 rewrite not_or in al'_comb.
                 rewrite neq_sym.
                 apply al'_comb.
@@ -268,7 +268,7 @@ Proof.
                     clear - bl'_comb.
                     unfold linear_combination_set in bl'_comb.
                     do 2 rewrite ulist_image_add, ulist_unique_add in bl'_comb.
-                    rewrite in_ulist_add in bl'_comb.
+                    rewrite in_ulist_add_eq in bl'_comb.
                     rewrite not_or in bl'_comb.
                     rewrite neq_sym.
                     apply bl'_comb.
@@ -310,7 +310,7 @@ Proof.
                 rewrite plus_0_anb_a_b in contr.
                 subst a.
                 apply bl_x.
-                rewrite in_ulist_add.
+                rewrite in_ulist_add_eq.
                 left.
                 destruct x; reflexivity.
             +   exact l_in.
@@ -331,7 +331,7 @@ Proof.
                 -   rewrite singleton_eq.
                     rewrite not_ex in n.
                     specialize (n (fst a)).
-                    rewrite in_ulist_add in n.
+                    rewrite in_ulist_add_eq in n.
                     rewrite not_or in n.
                     destruct n as [neq x_nin].
                     intros contr.
@@ -365,7 +365,7 @@ Proof.
             2: split.
             +   intros contr.
                 apply (al'_nz x).
-                *   rewrite in_ulist_add.
+                *   rewrite in_ulist_add_eq.
                     left.
                     reflexivity.
                 *   exact contr.
@@ -700,7 +700,7 @@ Proof.
                                 unfold linear_combination_set in l_comb.
                                 do 2 rewrite ulist_image_add, ulist_unique_add
                                     in l_comb; cbn in l_comb.
-                                rewrite in_ulist_add in l_comb.
+                                rewrite in_ulist_add_eq in l_comb.
                                 rewrite not_or in l_comb.
                                 contradiction (land (land l_comb)).
                                 reflexivity.
@@ -752,14 +752,14 @@ Proof.
                             subst v.
                             exfalso; apply v_nin.
                             exists (fst a).
-                            rewrite in_ulist_add.
+                            rewrite in_ulist_add_eq.
                             left; destruct a; reflexivity.
                         +   apply IHl.
                             *   exact B'l.
                             *   intros [b v_in].
                                 apply v_nin.
                                 exists b.
-                                rewrite in_ulist_add.
+                                rewrite in_ulist_add_eq.
                                 right; exact v_in.
                 }
                 apply (B_ind [l|l_comb] Bl l_eq).
