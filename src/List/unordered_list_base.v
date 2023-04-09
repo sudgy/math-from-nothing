@@ -33,18 +33,13 @@ Theorem ulist_induction {U} : ∀ S : ulist U → Prop,
     S ⟦⟧ → (∀ a l, S l → S (a ː l)) → ∀ l, S l.
 Proof.
     intros S S_end S_add l.
+    unfold ulist_end in S_end.
     equiv_get_value l.
     induction l.
     -   exact S_end.
-    -   assert (to_equiv (ulist_equiv U) (a ꞉ l) =
-            a ː (to_equiv (ulist_equiv U) l)) as eq.
-        {
-            unfold ulist_add; equiv_simpl.
-            apply list_perm_refl.
-        }
-        rewrite eq.
-        apply S_add.
-        exact IHl.
+    -   specialize (S_add a _ IHl).
+        unfold ulist_add in S_add; equiv_simpl in S_add.
+        exact S_add.
 Qed.
 
 Theorem ulist_destruct {U} : ∀ S : ulist U → Prop,
@@ -59,11 +54,12 @@ Qed.
 Theorem ulist_end_neq {U} : ∀ {a : U} {l}, a ː l ≠ ⟦⟧.
 Proof.
     intros a l contr.
+    symmetry in contr.
     equiv_get_value l.
     unfold ulist_add, ulist_end in contr; equiv_simpl in contr.
-    apply list_perm_sym in contr.
     apply list_perm_nil_eq in contr.
-    inversion contr.
+    symmetry in contr.
+    exact (list_end_neq contr).
 Qed.
 
 Theorem ulist_single_eq {U} : ∀ {a b : U}, ⟦a⟧ = ⟦b⟧ → a = b.
@@ -71,8 +67,8 @@ Proof.
     intros a b eq.
     unfold ulist_add, ulist_end in eq; equiv_simpl in eq.
     pose proof (list_perm_single eq) as eq2.
-    inversion eq2.
-    reflexivity.
+    apply list_single_eq in eq2.
+    symmetry; exact eq2.
 Qed.
 
 Theorem ulist_swap {U} : ∀ (a b : U) l, a ː b ː l = b ː a ː l.
@@ -96,9 +92,9 @@ Lemma uconc_wd U : ∀ al1 al2 bl1 bl2 : list U,
     list_permutation (al1 + bl1) (al2 + bl2).
 Proof.
     intros al1 al2 bl1 bl2 eq1 eq2.
-    pose proof (list_perm_rpart al1 eq2).
-    pose proof (list_perm_lpart bl2 eq1).
-    exact (trans H H0).
+    pose proof (list_perm_rpart al1 eq2) as eq3.
+    pose proof (list_perm_lpart bl2 eq1) as eq4.
+    exact (trans eq3 eq4).
 Qed.
 Global Instance ulist_plus U : Plus (ulist U) := {
     plus := binary_op (binary_self_wd (E := ulist_equiv U) (uconc_wd U))
@@ -110,7 +106,8 @@ Proof.
     intros a l1 l2.
     equiv_get_value l1 l2.
     unfold plus, ulist_add; equiv_simpl.
-    apply list_perm_refl.
+    rewrite list_conc_add.
+    apply refl.
 Qed.
 
 Global Instance ulist_zero U : Zero (ulist U) := {
@@ -132,7 +129,8 @@ Proof.
     intros l.
     equiv_get_value l.
     unfold ulist_end, plus, zero; equiv_simpl.
-    apply list_perm_refl.
+    rewrite list_conc_lid.
+    apply refl.
 Qed.
 
 Theorem ulist_conc_lid {U} : ∀ l : ulist U, ⟦⟧ + l = l.
@@ -150,7 +148,8 @@ Proof.
     intros a l.
     equiv_get_value l.
     unfold ulist_end, ulist_add, plus; equiv_simpl.
-    apply list_perm_refl.
+    rewrite list_conc_single.
+    apply refl.
 Qed.
 
 Global Instance ulist_plus_assoc U : PlusAssoc (ulist U).
@@ -160,7 +159,7 @@ Proof.
     equiv_get_value a b c.
     unfold plus; equiv_simpl.
     rewrite plus_assoc.
-    apply list_perm_refl.
+    apply refl.
 Qed.
 
 Global Instance ulist_plus_lcancel U : PlusLcancel (ulist U).
@@ -172,56 +171,40 @@ Proof.
     apply list_perm_conc_lcancel.
 Qed.
 
-Unset Keyed Unification.
-
-Theorem list_image_perm {U V} : ∀ al bl (f : U → V),
+Theorem ulist_image_wd {U V} : ∀ (f : U → V) al bl,
     list_permutation al bl →
-    list_permutation (list_image f al) (list_image f bl).
+    to_equiv (ulist_equiv V) (list_image f al) =
+    to_equiv (ulist_equiv V) (list_image f bl).
 Proof.
-    intros al bl f albli x.
+    intros f al bl albli.
+    equiv_simpl.
+    intros x.
     revert bl albli.
     induction al as [|a al]; intros.
     -   apply list_perm_nil_eq in albli.
         subst bl.
-        rewrite list_image_end.
-        cbn.
         reflexivity.
-    -   assert (in_list (a ꞉ al) a) as a_in by (left; reflexivity).
-        apply (list_perm_in albli) in a_in.
-        apply in_list_split in a_in as [l1 [l2 eq]]; subst bl.
-        pose proof (list_perm_split l1 l2 a) as eq.
-        pose proof (trans albli eq) as eq2.
-        apply list_perm_add_eq in eq2.
-        specialize (IHal _ eq2).
+    -   apply list_perm_split_eq in albli as [l1 [l2 [l_eq l_perm]]]; subst bl.
+        specialize (IHal _ l_perm).
         rewrite list_image_conc.
         do 2 rewrite list_image_add.
         rewrite list_count_conc.
         do 2 rewrite list_count_add.
         rewrite IHal.
         rewrite list_image_conc, list_count_conc.
-        do 2 rewrite plus_assoc.
-        apply rplus.
-        apply plus_comm.
+        apply plus_3.
 Qed.
 
-Lemma ulist_image_wd A B : ∀ (f : A → B) a b, list_permutation a b →
-    to_equiv (ulist_equiv B) (list_image f a) =
-    to_equiv (ulist_equiv B) (list_image f b).
-Proof.
-    intros a b f ab.
-    equiv_simpl.
-    apply list_image_perm.
-    exact ab.
-Qed.
 Definition ulist_image {A B} (f : A → B) :=
-    unary_op (E := ulist_equiv A) (ulist_image_wd A B f).
+    unary_op (E := ulist_equiv A) (@ulist_image_wd A B f).
 
 Theorem ulist_image_end {A B : Type} : ∀ f : A → B,
     ulist_image f ⟦⟧ = ⟦⟧.
 Proof.
     intros f.
     unfold ulist_end, ulist_image; equiv_simpl.
-    apply list_perm_refl.
+    rewrite list_image_end.
+    apply refl.
 Qed.
 
 Theorem ulist_image_add {A B : Type} : ∀ a l (f : A → B),
@@ -230,7 +213,8 @@ Proof.
     intros a l f.
     equiv_get_value l.
     unfold ulist_image, ulist_add; equiv_simpl.
-    apply list_perm_refl.
+    rewrite list_image_add.
+    apply refl.
 Qed.
 
 Theorem ulist_image_single {A B : Type} : ∀ a (f : A → B),
@@ -248,7 +232,7 @@ Proof.
     equiv_get_value a b.
     unfold ulist_image, plus; equiv_simpl.
     rewrite list_image_conc.
-    apply list_perm_refl.
+    apply refl.
 Qed.
 
 Theorem ulist_image_comp {A B C : Type} :
@@ -259,5 +243,5 @@ Proof.
     equiv_get_value l.
     unfold ulist_image; equiv_simpl.
     rewrite list_image_comp.
-    apply list_perm_refl.
+    apply refl.
 Qed.

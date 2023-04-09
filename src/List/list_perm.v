@@ -172,23 +172,35 @@ Proof.
     -   apply sym; exact eq.
 Qed.
 
+Theorem list_perm_split_eq {U} :
+    ∀ {a : U} {l l'}, list_permutation (a ꞉ l) l' →
+    ∃ l1 l2, l' = l1 + a ꞉ l2 ∧ list_permutation l (l1 + l2).
+Proof.
+    intros a l l' eq.
+    pose proof (in_list_add a l) as a_in.
+    apply (list_perm_in eq) in a_in.
+    apply in_list_split in a_in as [l1 [l2 l_eq]]; subst l'.
+    exists l1, l2.
+    split; [>reflexivity|].
+    pose proof (list_perm_split l1 l2 a) as eq2.
+    pose proof (trans eq eq2) as eq3.
+    apply list_perm_add_eq in eq3.
+    exact eq3.
+Qed.
+
 Theorem list_perm_single {U} : ∀ {x : U} {l}, list_permutation [x] l → l = [x].
 Proof.
     intros x l l_perm.
-    pose proof (in_list_single x) as x_in.
-    apply (list_perm_in l_perm) in x_in.
-    apply in_list_split in x_in as [l1 [l2 eq]]; subst l.
-    pose proof (list_perm_split l1 l2 x) as eq.
-    pose proof (trans l_perm eq) as eq2.
-    apply list_perm_add_eq in eq2.
-    apply list_perm_nil_eq in eq2.
+    apply list_perm_split_eq in l_perm as [l1 [l2 [l_eq l_perm]]].
+    subst l.
+    apply list_perm_nil_eq in l_perm.
     destruct l1.
     -   rewrite list_conc_lid.
-        rewrite list_conc_lid in eq2.
-        rewrite <- eq2.
+        rewrite list_conc_lid in l_perm.
+        rewrite <- l_perm.
         reflexivity.
-    -   symmetry in eq2.
-        contradiction (list_end_neq eq2).
+    -   symmetry in l_perm.
+        contradiction (list_end_neq l_perm).
 Qed.
 
 Theorem list_perm_reverse {U} : ∀ l : list U,
