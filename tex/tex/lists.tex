@@ -785,6 +785,21 @@ explicitly saying that every value in a list satisfies a predicate).
     $x \in S$, so the theorem is true by induction.
 \end{proof}
 
+\begin{theorem} \label{list-in-prop}
+    For all lists $a$ and sets $S$, if $x \in S$ whenever $x \in a$, then $a \in
+    S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, $[] \in S$, so the
+    base case is true.  Now assume that if $x \in S$ whenever $x \in a$, we have
+    $a \in S$.  We must prove that for some value $y$, if $x \in S$ whenever $x
+    \in (y : a)$, we have $(y : a) \in S$.  Because $y \in y : a$, we have $y
+    \in S$.  Now for any $x \in a$, we have $x \in (y : a)$, so $x \in S$.
+    Thus, the condition for the inductive hypothesis is true, meaning that $a
+    \in S$.  Thus, because $y \in S$ and $a \in S$, we have $(y : a) \in S$ as
+    required, so the theorem is true by induction.
+\end{proof}
+
 \begin{theorem} \label{list-prop-in-sub}
     For all lists $a$ and $b$ and sets $S$, if for all $x \in a$ we have $x \in
     b$, and if $b \in S$, then $a \in S$.
@@ -1028,7 +1043,7 @@ explicitly saying that every value in a list satisfies a predicate).
 
 \begin{definition}
     Given a list $a$, we define the product of the list $\prod a$ to be
-    $\cdot(a, 0)$, where $\cdot$ represents multiplication.
+    $\cdot(a, 1)$, where $\cdot$ represents multiplication.
 \end{definition}
 
 \begin{theorem}
@@ -1261,16 +1276,27 @@ explicitly saying that every value in a list satisfies a predicate).
     \ref{list-count-in}.
 \end{proof}
 
+\begin{theorem} \label{list-perm-split-eq}
+    For all values $x$ and lists $a$ and $b$, if $x : a \sim b$, then there
+    exists lists $c$ and $d$ such that $b = c + x : d$ and $a \sim c + d$.
+\end{theorem}
+\begin{proof}
+    We have $x \in x : a$, so by Theorem \ref{list-perm-in} we have $x \in b$.
+    By Theorem \ref{in-list-split} we have lists $c$ and $d$ such that $b = c +
+    x : d$, so all that we need to prove is that $a \sim c + d$.  We know that
+    $x : a \sim c + x : d$, and by Theorem \ref{list-perm-split}, $c + x : d
+    \sim x : c + d$.  Thus, by transitivity, $x : a \sim x : c + d$, so by
+    Theorem \ref{list-perm-add-eq} we have $a \sim c + d$ as required.
+\end{proof}
+
 \begin{theorem} \label{list-perm-single}
     For all values $x$ and lists $a$, if $[x] \sim a$, then $a = [x]$.
 \end{theorem}
 \begin{proof}
-    We have $x \in [x]$, so by Theorem \ref{list-perm-in} we have $x \in a$.  By
-    Theorem \ref{in-list-split}, we have lists $b$ and $c$ such that $a = b + x
-    : c$.  By Theorem \ref{list-perm-split}, we have $[x] \sim x : b + c$.  By
-    Theorem \ref{list-perm-add-eq}, we have $[] \sim b + c$ so by Theorem
-    \ref{list-perm-nil-eq} we have $[] = b + c$.  This means that $b = []$ and
-    $c = []$,  meaning that $a = [] + x : [] = [x]$.
+    By Theorem \ref{list-perm-split-eq} we have lists $c$ and $d$ such that $a =
+    c + x : d$ and $[] \sim c + d$.  By Theorem \ref{list-perm-nil-eq}, we have
+    $[] = c + d$.  This means that $b = []$ and $c = []$,  meaning that $a = []
+    + x : [] = [x]$.
 \end{proof}
 
 \begin{theorem} \label{list-perm-reverse}
@@ -1281,5 +1307,573 @@ explicitly saying that every value in a list satisfies a predicate).
 \end{proof}
 
 \section{Unordered Lists}
+
+Because permutation of lists is an equivalence relation, we can think of
+equivalence classes of lists under permutations, which leads us to the following
+definition.
+
+\begin{definition}
+    Let $\A$ be a type.  Then we define the type $\L_U(\A)$, the type of
+    unordered lists of $\A$, to be the type  $\L(\A)/\usim$, where $\usim$ is
+    the permutation relation.
+\end{definition}
+
+\begin{lemma}
+    Adding elements to lists is well-defined under $\usim$.
+\end{lemma}
+\begin{proof}
+    We must prove that if there are two lists $a$ and $b$ such that $a \sim b$,
+    then for all values $x$, $x : a \sim x : b$.  This follows directly from
+    Theorem \ref{list-perm-skip}.
+\end{proof}
+
+\begin{definition}
+    Let $x$ be a value in $\U$.  Then we define adding an element to an
+    unordered list to be the unary operation given by Theorem \ref{unary-op-ex}
+    and the previous lemma, although we will think of it as a binary operation
+    $\U \to \L_U(\U) \to \L_U(\U)$.  We will notate it in the same way as for
+    lists, where adding an element $x$ to an unordered list $a$ is written $x :
+    a$.
+\end{definition}
+
+We will write $\llbracket a, b, \cdots, n\rrbracket$ to mean $a : b : \cdots : n
+: \llbracket \rrbracket$, where $\llbracket \rrbracket$ is the empty unordered
+list, as defined under the canonical inclusion $\L(\U) \to \L_U(\U)$.
+
+\begin{theorem} \label{ulist-end-neq}
+    For all values $x$ and unordered lists $a$, $x : a \neq \llbracket
+    \rrbracket$.
+\end{theorem}
+\begin{proof}
+    If $x : a = \llbracket \rrbracket$, then by Theorem \ref{list-perm-nil-eq},
+    we would have $x : a = []$, which is impossible.
+\end{proof}
+
+\begin{theorem} \label{ulist-single-eq}
+    For all values $a$ and $b$, if $\llbracket a \rrbracket = \llbracket b
+    \rrbracket$, then $a = b$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{list-perm-single}, we have $[a] = [b]$, so $a = b$.
+\end{proof}
+
+\begin{theorem} \label{ulist-swap}
+    For all values $x$ and $y$ and unordered lists $a$, $x : y : a = y : x : a$.
+\end{theorem}
+\begin{proof}
+    This is just a restatement of Theorem \ref{list-perm-swap}.
+\end{proof}
+
+\begin{theorem} \label{ulist-add-eq}
+    For all values $x$ and unordered lists $a$ and $b$, if $x : a = x : b$, then
+    $a = b$.
+\end{theorem}
+\begin{proof}
+    This is just a restatement of Theorem \ref{list-perm-add-eq}.
+\end{proof}
+
+Unordered lists may seem harder to use than lists, but the following theorem
+shows us that unordered lists act very similarly to normal lists:
+
+\begin{theorem}[Unordered list induction]
+    For all sets $S : \set{\L_U(\U)}$, if $\llbracket\rrbracket \in S$ and if
+    for all lists $a$ with $a \in S$, we also have $x : a \in S$ for all values
+    $x$, then $S = \bm U$.
+\end{theorem}
+\begin{proof}
+    Let $a$ be any list.  We must prove that $[a] \in S$, where $[a]$ is the
+    image of $a$ under the canonical inclusion map $\L(\U) \to \L_U(\U)$.  We
+    will prove this by induction on $a$.  When $a$ is empty, then $[a] =
+    \llbracket \rrbracket$, and $\llbracket \rrbracket \in S$ by assumption, so
+    the base case is true.  Now assume that $[a] \in S$, and let $x$ be any
+    value.  We must prove that $[x : a] \in S$.  By assumption, because $[a] \in
+    S$, we know that $x : [a] \in S$.  $x : [a] = [x : a]$ by definition, so $[x
+    : a] \in S$.  Thus, the theorem is true by induction.
+\end{proof}
+
+This theorem shows us that we can induct on unordered lists in exactly the same
+way as on ordered lists.  However, we still need to define operations on
+unordered lists before we can really do things with them.  Thus, we must prove
+that any of the operations that we might want to do on unordered lists are
+well-defined.
+
+\begin{lemma}
+    Concatenation of lists is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    We mult prove that if $a \sim b$ and $c \sim d$, then $a + c \sim b + d$.
+    By Theorem \ref{list-perm-rpart} we have $a + c \sim a + d$, and by Theorem
+    \ref{list-perm-lpart} we have $a + d \sim b + d$.  Thus, by transitivity, $a
+    + c \sim b + d$.
+\end{proof}
+
+\begin{lemma}
+    Applying a function to a list is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    We must prove that for all functions $f : \U \to \V$, that for all lists $a$
+    and $b$, if $a \sim b$, then $f(a) \sim f(b)$.  Let $y$ be any value in
+    $\V$.  We must prove that $|f(a)|_y = |f(b)|_y$.  We will prove this by
+    induction on $a$.  When $a = []$, then because $a \sim b$, we have $b = []$,
+    so the base case is trivial.  Now assume that for all lists $b$, if $a \sim
+    b$, then $|f(a)|_y = |f(b)|_y$.  Let $x$ be any value such that $x : a \sim
+    b$.  We must prove that $|f(x : a)|_y = |f(b)|_y$.  Because $x : a \sim b$,
+    by Theorem \ref{list-perm-split-eq} we have lists $c$ and $d$ such that $b =
+    c + x : d$ and $a \sim c + d$.  Then by the inductive hypothesis, we have
+    $|f(a)|_y = |f(c + d)|_y$, so
+    \begin{align*}
+        |f(x : a)|_y
+        &= |[f(x)]|_y + |f(a)|_y \\
+        &= |[f(x)]|_y + |f(c + d)|_y \\
+        &= |[f(x)]|_y + |f(c)|_y + |f(d)|_y \\
+        &= |f(c)|_y + |[f(x)]|_y + |f(d)|_y \\
+        &= |f(c + x : d)|_y \\
+        &= |f(b)|_y,
+    \end{align*}
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    Values being in lists is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    This is a direct consequence of Lemma \ref{list-perm-in}.
+\end{proof}
+
+\begin{lemma}
+    Lists having unique elements is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    By symmetry, all we have to do is prove that if $a$ has unique elements and
+    $a \sim b$, then $b$ has unique elements.  The proof will be by induction on
+    $a$.  If $a = []$, then because $a \sim b$, $b = []$ as well, and $[]$ has
+    unique elements, so the base case is true.  Now assume that for all lists
+    $b$ such that $a \sim b$, $b$ has unique elements, and assume that $x : a
+    \sim b$ for some value $x$ and that $x \notin a$.  We must prove that $b$
+    has unique elements.  By Theorem \ref{list-perm-split-eq}, there exist lists
+    $c$ and $d$ such that $b = c + x : d$ and $a \sim c + d$.  By the inductive
+    hypothesis, $c + d$ has unique elements.  By Theorem \ref{list-unique-comm},
+    we know that $d + c$ has unique elements.  Because $x \notin a$ and $a \sim
+    c + d \sim d + c$, we know that $x \notin d + c$ by Theorem
+    \ref{list-perm-in}.  Because $d + c$ has unique elements and $x \notin d +
+    c$, we know that $x : d + c$ has unique elements.  By Theorem
+    \ref{list-unique-comm}, this means that $c + x : d = b$ has unique elements,
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    Filtering lists is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    We must prove that for all lists $a$ and $b$ and sets $S$, if $a \sim b$,
+    then $a^S \sim b^S$.  Let $x$ be any value in $\U$.  We must prove that
+    $|a^S|_x = |b^S|_x$.  The proof will be by induction on $a$.  When $a = []$,
+    then $b = []$, so $|[]^S|_x = |[]^S|_x$, meaning that the base case is true.
+    Now assume that for any list $b$ such that $a \sim b$, we have $|a^S|_x =
+    |b^S|_x$, and assume that there is some value $y$ such that $y : a \sim b$.
+    By Theorem \ref{list-perm-split-eq} there exist lists $c$ and $d$ such that
+    $b = c + y : d$ and that $a \sim c + d$.  By the inductive hypothesis, we
+    have
+    \[
+        |a^S|_x = |(c + d)^S|_x = |c^S + d^S|_x = |c^S|_x + |d^S|_x.
+    \]
+    We must now prove that
+    \[
+        |(y : a)^S|_x = |(c + y : d)^S|_x = |c^S + (y : d)^S|_x
+        = |c^S|_x + |(y : d)^S|_x.
+    \]
+    There are two cases: when $y \in S$, and when $y \notin S$.  When $y \in S$,
+    we have
+    \begin{align*}
+        |(y : a)^S|_x
+        &= |y : a^S|_x \\
+        &= |[y]|_x + |a^S|_x \\
+        &= |[y]|_x + |c^S|_x + |d^S|_x \\
+        &= |c^S|_x + |[y]|_x + |d^S|_x \\
+        &= |c^S|_x + |(y : d)^S|_x.
+    \intertext{When $y \notin S$,}
+        |(y : a)^S|_x
+        &= |a^S|_x \\
+        &= |c^S|_x + |d^S|_x \\
+        &= |c^S|_x + |(y : d)^S|_x.
+    \end{align*}
+    Either way, the inductive case is true, so the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    Every element of a list being in a set is well-defined under permutation of
+    lists.
+\end{lemma}
+\begin{proof}
+    We must prove that for all sets $S$ and lists $a$ and $b$ such that $a \sim
+    b$, if $a \in S$, then $b \in S$.  The proof will be by induction on $a$.
+    When $a = []$, $b = []$ as well, and $[] \in b$ by definition, so the base
+    case is true.  Now assume that there is some element $x$ such that $(x : a)
+    \in S$, $x : a \sim b$, and that for all lists $b$ such that $a \sim b$, $b
+    \in S$.  Because $x : a \sim b$, by Theorem \ref{list-perm-split-eq}, there
+    exist lists $c$ and $d$ such that $b = c + x : d$ and $a \sim c + d$.  Then
+    by the inductive hypothesis $c + d \in S$.  By Theorem \ref{list-prop-conc},
+    we have $c \in S$ and $d \in S$.  Because $x : a \in S$, we have $x \in S$.
+    Thus, because $c \in S$, $x \in S$, and $d \in S$, we have $c + x : d \in
+    S$, showing that the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    The size of a list is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    We must prove that for all lists $a$ and $b$ with $a \sim b$, $|a| = |b|$.
+    The proof will be by induction on $a$.  When $a = []$, $b = []$ as well, so
+    $|[]| = |[]|$, showing that the base case is true.  Now assume that for all
+    lists $b$ such that $a \sim b$, $|a| = |b|$, and that there exists an
+    element $x$ such that $x : a \sim b$.  We must prove that $|x : a| = |b|$.
+    By Theorem \ref{list-perm-split-eq}, there exist lists $c$ and $d$ such that
+    $b = c + x : d$ and $a \sim c + d$.  Then by the inductive hypothesis, $|a|
+    = |c + d|$.  Thus,
+    \[
+        |x : a| = 1 + |a| = 1 + |c| + |d| = |c| + 1 + |d| = |c + x : d|,
+    \]
+    showing that the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    The count of elements in a list is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    We must prove that for all lists $a$ and $b$ with $a \sim b$, for all
+    elements $x$, $|a|_x = |b|_x$.  This is precisely the definition of $a \sim
+    b$.
+\end{proof}
+
+\begin{lemma}
+    The sum of a list is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    We must prove that for all lists $a$ and $b$ with $a \sim b$, we have $\sum
+    a = \sum b$.  The proof will be by induction on $a$.  When $a = []$, $b =
+    []$ as well, and $\sum [] = \sum []$, so the base case is true.  Now assume
+    that for all lists $b$ such that $a \sim b$, $\sum a = \sum b$, and let $x$
+    be an element such that $x : a \sim b$.  Then by Theorem
+    \ref{list-perm-split}, there exist lists $c$ and $d$ such that $b = c + x :
+    d$ and $a \sim c + d$.  Then by the inductive hypothesis, $\sum a = \sum (c
+    + d) = \sum c + \sum d$, so
+    \[
+        \sum (x : a) = x + \sum a = x + \sum c + \sum d = \sum c + x + \sum d
+        = \sum (c + x : d),
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    The product of a list is well-defined under permutation of lists.
+\end{lemma}
+\begin{proof}
+    The proof is identical in form to the previous proof.  Note that this
+    requires multiplication to be commutative.
+\end{proof}
+
+Thus, almost all of the operations that we can do on lists, we can do on
+unordered lists as well.  The few exceptions are the reverse of a list, checking
+if the elements of a list satisfy a relation, and permutations themselves.  The
+reverse of an unordered list is equal to itself so the reverse is useless.
+Similarly, permutation is equality in unordered lists, so permutations of
+unordered lists are also useless.  While there is no strict reason that checking
+if all of the elements of a list satisfy a relation can't be defined for
+unordered lists, the original definition is asymmetric, so I didn't bother with
+it.
+
+At this point, almost all theorems about the usual operations on lists are
+trivially true for unordered lists as well.  I will now list all of the theorems
+that are true for unordered lists, most of which are trivial.  I will only
+provide proofs of statements that don't readily follow from the corresponding
+theorem for lists.
+
+\begin{theorem} \label{ulist-conc-add}
+    For all values $x$ and unordered lists $a$ and $b$, $(x : a) + b = x : (a +
+    b)$.
+\end{theorem}
+
+\begin{instance}
+    Concatenation of unordered lists is commutative.
+\end{instance}
+\begin{proof}
+    This is just a restatement of Theorem \ref{list-perm-comm}.
+\end{proof}
+
+\begin{instance}
+    $\llbracket \rrbracket$ is an additive identity.
+\end{instance}
+
+\begin{theorem} \label{ulist-conc-single}
+    For all values $x$ and unordered lists $a$, $\llbracket x \rrbracket + a = x
+    : a$.
+\end{theorem}
+
+\begin{instance}
+    Concatenation of unordered lists is associative.
+\end{instance}
+
+\begin{instance}
+    Concatenation of unordered lists is cancellative.
+\end{instance}
+
+\begin{theorem}
+    For all $x : \A$, $f(\llbracket x\rrbracket) = \llbracket f(x)\rrbracket$.
+\end{theorem}
+
+\begin{theorem}
+    For all unordered lists $a$ and $b$, $f(a + b) = f(a) + f(b)$.
+\end{theorem}
+
+\begin{theorem}
+    Let $\A$, $\B$, and $\C$ be types, and $f$ a function from $\A$ to $\B$ and
+    $g$ a function from $\B$ to $\C$.  Then for all unordered lists $a :
+    \L_U(\A)$,
+    \[
+        g(f(a)) = (g \circ f)(a).
+    \]
+\end{theorem}
+
+\begin{theorem}
+    For all elements $x$ and $y$, $x \in \llbracket y\rrbracket \leftrightarrow
+    x = y$.
+\end{theorem}
+
+\begin{theorem} \label{in-ulist-conc}
+    For all unordered lists $a$ and $b$ and for all values $x$, if $x \in (a +
+    b)$, then either $x \in a$ or $x \in b$.
+\end{theorem}
+
+\begin{theorem} \label{in-ulist-lconc}
+    For all unordered lists $a$ and $b$ and values $x$, if $x \in a$, then $x
+    \in (a + b)$.
+\end{theorem}
+
+\begin{theorem} \label{in-ulist-rconc}
+    For all unordered lists $a$ and $b$ and values $x$, if $x \in b$, then $x
+    \in (a + b)$.
+\end{theorem}
+
+\begin{theorem} \label{in-ulist-split}
+    For all unordered lists $a$ and values $x$, in $x \in a$, then there exists
+    an unordered list $b$ such that $a = x : b$.
+\end{theorem}
+\begin{proof}
+    This is just a restatement of Theorem \ref{list-split-perm}.
+\end{proof}
+
+\begin{theorem} \label{in-ulist-image}
+    For all unordered lists $a$, values $x$, and functions $f : \U \to \V$, if
+    $x \in a$, then $f(x) \in f(a)$.
+\end{theorem}
+
+\begin{theorem} \label{image-in-ulist}
+    For all unordered lists $a$, values $y$, and functions $f : \U \to \V$, if
+    $y \in f(a)$, then there exists an $x \in a$ such that $f(x) = y$.
+\end{theorem}
+
+\begin{theorem}
+    For all values $a$, $\llbracket a\rrbracket$ has unique elements.
+\end{theorem}
+
+\begin{theorem} \label{ulist-in-unique-eq}
+    For all unordered lists $a$ and $b$, if they both have unique elements and
+    if for all values $x$, $x \in a \leftrightarrow x \in b$, then $a = b$.
+\end{theorem}
+\begin{proof}
+    This is just a restatement of Theorem \ref{list-in-unique-perm}.
+\end{proof}
+
+\begin{theorem} \label{ulist-unique-lconc}
+    For all unordered lists $a$ and $b$, if $a + b$ has unique elements, then
+    $a$ has unique elements.
+\end{theorem}
+
+\begin{theorem} \label{ulist-unique-rconc}
+    For all unordered lists $a$ and $b$, if $a + b$ has unique elements, then
+    $b$ has unique elements.
+\end{theorem}
+
+\begin{theorem} \label{ulist-unique-conc}
+    For all unordered lists $a$ and $b$, if $a + b$ has unique elements, then
+    for every $x \in a$, we have $x \notin b$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-image-unique}
+    For all unordered lists $a$ and functions $f : \U \to \V$, if $f(a)$ has
+    unique elements, then $a$ does as well.
+\end{theorem}
+
+\begin{theorem}
+    For all sets $S$ and values $x$, if $x \in S$, then $\llbracket
+    x\rrbracket^S = \llbracket x\rrbracket$.
+\end{theorem}
+
+\begin{theorem}
+    For all sets $S$ and values $x$, if $x \in S$, then $\llbracket
+    x\rrbracket^S = \llbracket \rrbracket$.
+\end{theorem}
+
+\begin{theorem}
+    For all sets $S$ and unordered lists $a$ and $b$, $(a + b)^S = a^S + b^S$.
+\end{theorem}
+
+\begin{lemma} \label{ulist-filter-in-both}
+    For all sets $S$, unordered lists $a$, and values $x$, if $x \in a^S$, then
+    $x \in a$ and $x \in S$.
+\end{lemma}
+
+\begin{theorem} \label{ulist-filter-in}
+    For all sets $S$, unordered lists $a$, and values $x$, if $x \in a^S$, then
+    $x \in a$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-filter-in-set}
+    For all sets $S$, unordered lists $a$, and values $x$, if $x \in a^S$, then
+    $x \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-filter-unique}
+    For all sets $S$ and unordered lists $a$, if $a$ has unique elements, then
+    $a^S$ has unique elements.
+\end{theorem}
+
+\begin{theorem} \label{ulist-filter-image-in}
+    For all sets $S : \set{\U}$, functions $f : \U \to \V$, unordered lists $a$,
+    and values $y : \V$, if $y \in f(a^S)$, then $y \in f(a)$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-filter-image-unique}
+    For all sets $S : \set{\U}$, function $f : \U \to \V$, and unordered lists
+    $a$, if $f(a)$ has unique elements, then $f(a^S)$ has unique elements.
+\end{theorem}
+
+\begin{theorem} \label{ulist-filter-inter}
+    For all sets $S$ and $T$ and unordered lists $a$, $(a^S)^T = a^{S \cap T}$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-filter-filter}
+    For all sets $S$ and unordered lists $a$, $(a^S)^S = a^S$.
+\end{theorem}
+
+\begin{theorem}
+    For all sets $S$ and values $x$, $\llbracket x\rrbracket \in S$ if and only
+    if $x \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-conc}
+    For all sets $S$ and unordered lists $a$ and $b$, $(a + b) \in S$ if and
+    only if $a \in S$ and $b \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-sub}
+    For all sets $S$ and $T$ with $S \subseteq T$ and all unordered lists $a$,
+    if $a \in S$, then $a \in T$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-filter}
+    For all unordered lists $a$ and sets $S$, $a^S \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-in}
+    For all unordered lists $a$ and sets $S$, if $a \in S$, then for all $x \in
+    a$, we have $x \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-in-prop}
+    For all unordered lists $a$ and sets $S$, if $x \in S$ whenever $x \in a$,
+    then $a \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-in-sub}
+    For all unordered lists $a$ and $b$ and sets $S$, if for all $x \in a$ we
+    have $x \in b$, and if $b \in S$, then $a \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-other-filter}
+    For all unordered lists $a$ and sets $S$ and $T$, if $a \in S$, then $a^T
+    \in S$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prop-split}
+    For all unordered lists $a$ and sets $S$, if, for all values $x$ and lists
+    $b$ such that $a = x : b$, we have $x \in S$, then we have $a \in S$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ulist-in-prop}, we need to prove that whenever $x \in a$, we
+    have $x \in S$.  By Theorem \ref{in-ulist-split}, we have a list $b$ such
+    that $a = x : b$.  Thus, by assumption, $x \in S$.
+\end{proof}
+
+\begin{theorem}
+    For all values $x$, $|\llbracket x\rrbracket| = 1$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-size-conc}
+    For all unordered lists $a$ and $b$, $|a + b| = |a| + |b|$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-image-size}
+    For all unordered lists $a$ and functions $f : \U \to \V$, we have $|f(a)| =
+    |a|$.
+\end{theorem}
+
+\begin{theorem}
+    For all values $x$, $|\llbracket x\rrbracket |_x = 1$.
+\end{theorem}
+
+\begin{theorem}
+    For all values $x$ and $y$ with $x \neq y$, $|\llbracket x\rrbracket|_y =
+    0$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-count-conc}
+    For all unordered lists $a$ and $b$ and values $x$, $|a + b|_x = |a|_x +
+    |b|_x$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-count-in}
+    For all unordered lists $a$ and values $x$, $x \in a$ if and only if $0 \neq
+    |a|_x$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-count-nin}
+    For all unordered lists $a$ and values $x$, $x \notin a$ if and only if $0 =
+    |a|_x$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-count-unique}
+    For all unordered lists $a$, if $a$ has unique elements, then for all values
+    $x$, $|a|_x \leq 1$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-count-in-unique}
+    For all unordered lists $a$ and values $x$, if $a$ has unique elements and
+    $x \in a$, then $|a|_x = 1$.
+\end{theorem}
+
+\begin{theorem}
+    For all elements $x$, $\sum \llbracket x\rrbracket = x$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-sum-conc}
+    For all unordered lists $a$ and $b$, $\sum (a + b) = \sum a + \sum b$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-sum-neg}
+    For all unordered lists $a$, $\sum (-a) = -\sum a$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-sum-minus}
+    For all unordered lists $a$ and $b$, $\sum (a + (-b)) = \sum a - \sum b$.
+\end{theorem}
+
+\begin{theorem}
+    For all unordered elements $x$, $\prod \llbracket x\rrbracket = x$.
+\end{theorem}
+
+\begin{theorem} \label{ulist-prod-conc}
+    For all unordered lists $a$ and $b$, $\prod (a + b) = (\prod a) (\prod b)$.
+\end{theorem}
 
 \end{document}

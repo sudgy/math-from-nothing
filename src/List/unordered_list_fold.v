@@ -1,4 +1,3 @@
-
 Require Import init.
 
 Require Export mult_ring.
