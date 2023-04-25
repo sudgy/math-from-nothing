@@ -13,7 +13,8 @@ Proof.
     apply eq.
 Qed.
 
-Theorem func_eq {A B} : ∀ f1 f2 : A → B, f1 = f2 → ∀ x, f1 x = f2 x.
+Theorem func_eq {A} {B : A → Type} :
+    ∀ f1 f2 : ∀ x, B x, f1 = f2 → ∀ x, f1 x = f2 x.
 Proof.
     intros f1 f2 eq x.
     rewrite eq; reflexivity.
