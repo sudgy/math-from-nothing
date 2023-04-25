@@ -297,3 +297,19 @@ Proof.
             apply in_list_image.
         +   exact IHl.
 Qed.
+
+Theorem list_image_unique_inj {U V} : ∀ (l : list U) (f : U → V),
+    Injective f → list_unique l → list_unique (list_image f l).
+Proof.
+    intros l f f_inj l_uni.
+    list_unique_induction l l_uni as a a_nin IHl.
+    -   rewrite list_image_end.
+        apply list_unique_end.
+    -   rewrite list_image_add, list_unique_add.
+        split; [>|exact IHl].
+        intros contr.
+        apply image_in_list in contr as [x [x_eq x_in]].
+        apply inj in x_eq.
+        subst x.
+        contradiction.
+Qed.

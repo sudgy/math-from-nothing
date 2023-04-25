@@ -231,3 +231,12 @@ Proof.
     unfold ulist_image, ulist_unique; equiv_simpl.
     apply list_image_unique.
 Qed.
+
+Theorem ulist_image_unique_inj {U V} : ∀ (l : ulist U) (f : U → V),
+    Injective f → ulist_unique l → ulist_unique (ulist_image f l).
+Proof.
+    intros l f.
+    equiv_get_value l.
+    unfold ulist_unique, ulist_image; equiv_simpl.
+    apply list_image_unique_inj.
+Qed.
