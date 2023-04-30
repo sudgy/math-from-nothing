@@ -240,3 +240,35 @@ Proof.
     unfold ulist_unique, ulist_image; equiv_simpl.
     apply list_image_unique_inj.
 Qed.
+
+Theorem ulist_sub_ex {U} :
+    ∀ a b : ulist U, ulist_unique a → (∀ x, in_ulist a x → in_ulist b x) →
+    ∃ l, b = a + l.
+Proof.
+    intros a b a_uni sub.
+    revert b sub.
+    ulist_unique_induction a a_uni as x x_nin IHa; intros.
+    -   exists b.
+        rewrite ulist_conc_lid.
+        reflexivity.
+    -   pose proof (sub _ (in_ulist_add x a)) as x_in.
+        apply in_ulist_split in x_in as [b' b_eq]; subst b.
+        specialize (IHa b').
+        prove_parts IHa.
+        {
+            intros y y_in.
+            specialize (sub y).
+            rewrite in_ulist_add_eq in sub.
+            specialize (sub (make_ror y_in)).
+            rewrite in_ulist_add_eq in sub.
+            destruct sub as [eq|sub].
+            -   subst.
+                contradiction.
+            -   exact sub.
+        }
+        destruct IHa as [l eq].
+        subst b'.
+        exists l.
+        rewrite ulist_conc_add.
+        reflexivity.
+Qed.
