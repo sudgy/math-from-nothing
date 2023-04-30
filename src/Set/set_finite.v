@@ -310,6 +310,61 @@ Proof.
         exact eq.
 Qed.
 
+Theorem simple_finite_union {U} : ∀ S T : U → Prop,
+    simple_finite (set_type S) → simple_finite (set_type T) →
+    simple_finite (set_type (S ∪ T)).
+Proof.
+    intros S T [m [f f_inj]] [n [g g_inj]].
+    exists (m + n).
+    assert (∀ x, initial_segment (m + n) [f x|]) as f_in.
+    {
+        intros x.
+        pose proof [|f x] as ltq.
+        unfold initial_segment in *.
+        apply (lt_le_trans ltq).
+        apply nat_le_self_rplus.
+    }
+    assert (∀ x, initial_segment (m + n) (m + [g x|])) as g_in.
+    {
+        intros x.
+        pose proof [|g x] as ltq.
+        unfold initial_segment in *.
+        apply lt_lplus.
+        exact ltq.
+    }
+    exists (λ x, match or_to_strong _ _ [|x] with
+                 | strong_or_left a => [_|f_in [_|a]]
+                 | strong_or_right b => [_|g_in [_|b]]
+                 end).
+    split.
+    intros [a a_in] [b b_in] eq.
+    cbn in eq.
+    destruct (or_to_strong _ _ a_in) as [a_in'|a_in'];
+    destruct (or_to_strong _ _ b_in) as [b_in'|b_in'].
+    all: apply set_type_eq in eq; cbn in eq.
+    -   rewrite set_type_eq in eq.
+        apply inj in eq.
+        rewrite set_type_eq2.
+        rewrite set_type_eq2 in eq.
+        exact eq.
+    -   pose proof [|f [a|a_in']] as ltq.
+        unfold initial_segment in ltq.
+        rewrite eq in ltq.
+        apply (le_lt_trans (nat_le_self_rplus _ _)) in ltq.
+        contradiction (irrefl _ ltq).
+    -   pose proof [|f [b|b_in']] as ltq.
+        unfold initial_segment in ltq.
+        rewrite <- eq in ltq.
+        apply (le_lt_trans (nat_le_self_rplus _ _)) in ltq.
+        contradiction (irrefl _ ltq).
+    -   apply plus_lcancel in eq.
+        rewrite set_type_eq in eq.
+        apply inj in eq.
+        rewrite set_type_eq2.
+        rewrite set_type_eq2 in eq.
+        exact eq.
+Qed.
+
 Section MinMax.
 
 Context {U : Type}.
