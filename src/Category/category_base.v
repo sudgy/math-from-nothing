@@ -36,6 +36,8 @@ Notation "𝟙" := (cat_id _).
 Definition cat_domain `{C0 : Category} {A B} (f : cat_morphism A B) := A.
 Definition cat_codomain `{C0 : Category} {A B} (f : cat_morphism A B) := B.
 
+Definition cat_is_inverse `{C0 : Category} {A B}
+    (f : cat_morphism A B) (g : cat_morphism B A) := f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
 Definition isomorphism `{C0 : Category} {A B} (f : cat_morphism A B)
     := ∃ g, f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
 
