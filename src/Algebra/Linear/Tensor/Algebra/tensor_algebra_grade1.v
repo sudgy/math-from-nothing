@@ -7,6 +7,7 @@ Require Import linear_span.
 Require Import linear_subspace.
 Require Import linear_grade_sum.
 Require Import linear_extend.
+Require Import linear_bilinear.
 
 Require Import nat.
 Require Import list.
@@ -45,14 +46,14 @@ Definition tensor_n_module := make_module
 
 End Single.
 
-Definition tensor_n_algebra_module := grade_sum nat tensor_n_module.
+Definition tensor_n_algebra_module := sum_module nat tensor_n_module.
 
-Definition tensor_n_grade := grade_sum_grade nat tensor_n_module
-    : GradedSpace U (module_V tensor_n_algebra_module).
+Definition tensor_n_grade := sum_module_grade nat tensor_n_module
+    : GradedSpace (module_V tensor_n_algebra_module) nat.
 Local Existing Instances tensor_n_grade.
 
 Definition to_tensor_n {k} (X : module_V (tensor_n_module k))
-    := single_to_grade_sum nat tensor_n_module X
+    := single_to_sum_module nat tensor_n_module X
     : module_V tensor_n_algebra_module.
 
 Definition to_tensor_n_k {m n : nat} (eq : m = n)
@@ -86,7 +87,7 @@ Theorem to_tensor_n_plus : ∀ {k} (u v : module_V (tensor_n_module k)),
 Proof.
     intros k u v.
     unfold to_tensor_n.
-    apply single_to_grade_sum_plus.
+    apply single_to_sum_module_plus.
 Qed.
 
 Theorem to_tensor_n_scalar : ∀ {k} a (v : module_V (tensor_n_module k)),
@@ -94,7 +95,7 @@ Theorem to_tensor_n_scalar : ∀ {k} a (v : module_V (tensor_n_module k)),
 Proof.
     intros k a v.
     unfold to_tensor_n.
-    apply single_to_grade_sum_scalar.
+    apply single_to_sum_module_scalar.
 Qed.
 
 Lemma vector_to_tensor_n_in :
@@ -157,11 +158,13 @@ Proof.
     apply vector_to_tensor_scalar.
 Qed.
 
-Lemma tensor_n_algebra_mult_in : ∀ m n a b,
-    subspace_set (tensor_n_subspace m) a → subspace_set (tensor_n_subspace n) b
-    → subspace_set (tensor_n_subspace (m + n)) (a * b).
+Lemma tensor_n_algebra_mult_in : ∀ m n
+    (a : tensor_n_module m) (b : tensor_n_module n),
+    subspace_set (tensor_n_subspace (m + n)) ([a|] * [b|]).
 Proof.
-    intros m n a b a_in b_in.
+    intros m n a b.
+    destruct a as [a a_in].
+    destruct b as [b b_in].
     cbn in *.
     rewrite (span_linear_combination U) in *.
     destruct a_in as [[u u_comb] [a_eq u_in]]; subst a.
@@ -229,215 +232,100 @@ Proof.
 Qed.
 
 Definition tensor_n_mult_base i j
-    (a : module_V tensor_n_algebra_module)
-    (b : module_V tensor_n_algebra_module)
-    (ai : of_grade i a) (bj : of_grade j b)
-    := to_tensor_n
-        [[ex_val ai|] * [ex_val bj|] |
-            tensor_n_algebra_mult_in i j [ex_val ai|] [ex_val bj|]
-                [|ex_val ai] [|ex_val bj]].
+    (a : tensor_n_module i) (b : tensor_n_module j)
+    := to_tensor_n [[a|] * [b|] | tensor_n_algebra_mult_in i j a b].
 
-Lemma tensor_n_mult_tm : ∀ i j a b AH BH,
-    tensor_n_mult_base i j (to_tensor_n a) (to_tensor_n b) AH BH
-    = to_tensor_n [[a|] * [b|] |
-        tensor_n_algebra_mult_in i j [a|] [b|] [|a] [|b]].
+Theorem tensor_n_mult_base_bilinear : ∀ i j, bilinear (tensor_n_mult_base i j).
 Proof.
-    intros i j a b AH BH.
-    unfold tensor_n_mult_base.
-    rewrite_ex_val a' a'_eq.
-    rewrite_ex_val b' b'_eq.
-    unfold to_tensor_n in a'_eq, b'_eq.
-    apply single_to_grade_sum_eq in a'_eq, b'_eq.
-    subst a' b'.
-    reflexivity.
-Qed.
-
-Theorem tensor_n_mult_base_ldist :
-    bilinear_extend_ldist_base tensor_n_mult_base.
-Proof.
-    intros u' v' w' i j iu jv jw.
-    pose proof iu as [u u_eq].
-    pose proof jv as [v v_eq].
-    pose proof jw as [w w_eq].
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := i)) in u_eq.
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := j)) in v_eq, w_eq.
-    subst u' v' w'.
-    assert (of_grade j (to_tensor_n (v + w))) as vwj.
-    {
+    intros i j.
+    repeat split.
+    -   intros a u v.
+        unfold tensor_n_mult_base.
         unfold to_tensor_n.
-        rewrite single_to_grade_sum_plus.
-        apply of_grade_plus; assumption.
-    }
-    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ vwj)
-        by (symmetry; apply single_to_grade_sum_plus).
-    do 3 rewrite tensor_n_mult_tm.
-    unfold to_tensor_n.
-    rewrite <- single_to_grade_sum_plus.
-    apply f_equal.
-    unfold plus at 6; cbn.
-    apply set_type_eq; cbn.
-    apply ldist.
-Qed.
-
-Theorem tensor_n_mult_base_rdist :
-    bilinear_extend_rdist_base tensor_n_mult_base.
-Proof.
-    intros u' v' w' i j iu iv jw.
-    pose proof iu as [u u_eq].
-    pose proof iv as [v v_eq].
-    pose proof jw as [w w_eq].
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := i)) in u_eq, v_eq.
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := j)) in w_eq.
-    subst u' v' w'.
-    assert (of_grade i (to_tensor_n (u + v))) as uvi.
-    {
+        rewrite <- single_to_sum_module_scalar.
+        apply f_equal.
+        unfold scalar_mult at 1; cbn.
+        apply set_type_eq; cbn.
+        apply scalar_lmult.
+    -   intros a u v.
+        unfold tensor_n_mult_base.
         unfold to_tensor_n.
-        rewrite single_to_grade_sum_plus.
-        apply of_grade_plus; assumption.
-    }
-    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ uvi)
-        by (symmetry; apply single_to_grade_sum_plus).
-    do 3 rewrite tensor_n_mult_tm.
-    unfold to_tensor_n.
-    rewrite <- single_to_grade_sum_plus.
-    apply f_equal.
-    unfold plus at 6; cbn.
-    apply set_type_eq; cbn.
-    apply rdist.
-Qed.
-
-Theorem tensor_n_mult_base_lscalar :
-    bilinear_extend_lscalar_base tensor_n_mult_base.
-Proof.
-    intros a u' v' i j iu jv.
-    pose proof iu as [u u_eq].
-    pose proof jv as [v v_eq].
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := i)) in u_eq.
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := j)) in v_eq.
-    subst u' v'.
-    assert (of_grade i (to_tensor_n (a · u))) as aui.
-    {
+        rewrite <- single_to_sum_module_scalar.
+        apply f_equal.
+        unfold scalar_mult at 1; cbn.
+        apply set_type_eq; cbn.
+        apply scalar_rmult.
+    -   intros u v w.
+        unfold tensor_n_mult_base.
         unfold to_tensor_n.
-        rewrite single_to_grade_sum_scalar.
-        apply of_grade_scalar; assumption.
-    }
-    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ aui)
-        by (symmetry; apply single_to_grade_sum_scalar).
-    do 2 rewrite tensor_n_mult_tm.
-    unfold to_tensor_n.
-    rewrite <- single_to_grade_sum_scalar.
-    apply f_equal.
-    unfold scalar_mult at 4; cbn.
-    apply set_type_eq; cbn.
-    apply scalar_lmult.
-Qed.
-
-Theorem tensor_n_mult_base_rscalar :
-    bilinear_extend_rscalar_base tensor_n_mult_base.
-Proof.
-    intros a u' v' i j iu jv.
-    pose proof iu as [u u_eq].
-    pose proof jv as [v v_eq].
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := i)) in u_eq.
-    change (single_to_grade_sum nat tensor_n_module)
-        with (to_tensor_n (k := j)) in v_eq.
-    subst u' v'.
-    assert (of_grade j (to_tensor_n (a · v))) as avj.
-    {
+        rewrite <- single_to_sum_module_plus.
+        apply f_equal.
+        unfold plus at 3; cbn.
+        apply set_type_eq; cbn.
+        apply rdist.
+    -   intros u v w.
+        unfold tensor_n_mult_base.
         unfold to_tensor_n.
-        rewrite single_to_grade_sum_scalar.
-        apply of_grade_scalar; assumption.
-    }
-    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ avj)
-        by (symmetry; apply single_to_grade_sum_scalar).
-    do 2 rewrite tensor_n_mult_tm.
-    unfold to_tensor_n.
-    rewrite <- single_to_grade_sum_scalar.
-    apply f_equal.
-    unfold scalar_mult at 4; cbn.
-    apply set_type_eq; cbn.
-    apply scalar_rmult.
+        rewrite <- single_to_sum_module_plus.
+        apply f_equal.
+        unfold plus at 3; cbn.
+        apply set_type_eq; cbn.
+        apply ldist.
 Qed.
 
 Instance tensor_n_mult : Mult (module_V tensor_n_algebra_module) := {
-    mult A B := bilinear_extend tensor_n_mult_base A B
+    mult A B := bilinear_extend (λ i j, [_|tensor_n_mult_base_bilinear i j]) A B
 }.
 
 Local Instance tensor_n_mult_ldist : Ldist (module_V tensor_n_algebra_module).
 Proof.
     split.
     apply bilinear_extend_ldist.
-    -   apply tensor_n_mult_base_ldist.
-    -   apply tensor_n_mult_base_rscalar.
 Qed.
 Local Instance tensor_n_mult_rdist : Rdist (module_V tensor_n_algebra_module).
 Proof.
     split.
     apply bilinear_extend_rdist.
-    -   apply tensor_n_mult_base_rdist.
-    -   apply tensor_n_mult_base_lscalar.
 Qed.
 Local Instance tensor_n_scalar_lmult
     : ScalarLMult U (module_V tensor_n_algebra_module).
 Proof.
     split.
     apply bilinear_extend_lscalar.
-    -   apply tensor_n_mult_base_rdist.
-    -   apply tensor_n_mult_base_lscalar.
 Qed.
 Local Instance tensor_n_scalar_rmult
     : ScalarRMult U (module_V tensor_n_algebra_module).
 Proof.
     split.
     apply bilinear_extend_rscalar.
-    -   apply tensor_n_mult_base_ldist.
-    -   apply tensor_n_mult_base_rscalar.
 Qed.
 
 Theorem to_tensor_n_mult : ∀ m n a b
     (ma : subspace_set (tensor_n_subspace m) a)
     (nb : subspace_set (tensor_n_subspace n) b),
     to_tensor_n [a|ma] * to_tensor_n [b|nb] =
-    to_tensor_n [a * b|tensor_n_algebra_mult_in m n a b ma nb].
+    to_tensor_n [a * b|tensor_n_algebra_mult_in m n [a|ma] [b|nb]].
 Proof.
     intros m n a b ma nb.
     unfold mult at 1; cbn.
-    assert (of_grade (H9 := tensor_n_grade) m (to_tensor_n [a|ma])) as ma'.
+    assert (of_grade m (to_tensor_n [a|ma])) as ma'.
     {
+        apply of_grade_ex.
         exists [a|ma].
         reflexivity.
     }
-    assert (of_grade (H9 := tensor_n_grade) n (to_tensor_n [b|nb])) as nb'.
+    assert (of_grade n (to_tensor_n [b|nb])) as nb'.
     {
+        apply of_grade_ex.
         exists [b|nb].
         reflexivity.
     }
-    rewrite (bilinear_extend_homo _
-        tensor_n_mult_base_ldist tensor_n_mult_base_rdist
-        tensor_n_mult_base_lscalar tensor_n_mult_base_rscalar _ _ _ _ ma' nb').
-    rewrite tensor_n_mult_tm; cbn.
+    rewrite (bilinear_extend_homo _ _ _ _ _ ma' nb').
+    unfold grade_to; cbn.
+    unfold tensor_n_mult_base.
+    apply to_tensor_n_eq.
+    do 2 rewrite single_to_sum_module_base_eq.
     reflexivity.
-Qed.
-
-Instance tensor_n_grade_mult : GradedAlgebraObj U (module_V tensor_n_algebra_module).
-Proof.
-    split.
-    intros u' v' i j iu vj.
-    destruct iu as [u u_eq]; subst u'.
-    destruct vj as [v v_eq]; subst v'.
-    destruct u as [u u_in], v as [v v_in].
-    rewrite to_tensor_n_mult.
-    pose proof (tensor_n_algebra_mult_in _ _ _ _ u_in v_in) as uv_in.
-    exists [_|uv_in].
-    apply f_equal.
-    apply set_type_eq; reflexivity.
 Qed.
 
 Lemma tensor_n_one_in : subspace_set (tensor_n_subspace 0) 1.
@@ -517,8 +405,9 @@ Theorem tensor_n_sum_grade : ∀ {n} x, of_grade n x →
         (λ p, fst p · to_tensor_n [_|tensor_n_base_in (snd p)]) l).
 Proof.
     intros n x nx.
+    apply of_grade_ex in nx.
     destruct nx as [v x_eq]; subst x.
-    change (single_to_grade_sum nat tensor_n_module v) with (to_tensor_n v).
+    change (single_to_sum_module nat tensor_n_module v) with (to_tensor_n v).
     assert (linear_combination_of (tensor_n_base n) [v|]) as v_in.
     {
         rewrite <- (span_linear_combination U).
@@ -582,15 +471,17 @@ Proof.
     induction l' as [|a l] using ulist_induction.
     {
         do 2 rewrite ulist_image_end, ulist_sum_end.
-        apply single_to_grade_sum_zero.
+        apply single_to_sum_module_zero.
     }
     do 2 rewrite ulist_image_add, ulist_sum_add.
-    rewrite to_tensor_n_plus.
+    rewrite single_to_sum_module_plus.
+    rewrite module_homo_plus.
     rewrite IHl.
     apply rplus.
     clear l IHl.
     destruct a as [a v]; cbn.
-    rewrite to_tensor_n_scalar.
+    rewrite single_to_sum_module_scalar.
+    unfold grade_from; cbn.
     apply f_equal.
     unfold x_transfer.
     apply f_equal.
@@ -602,18 +493,19 @@ Theorem tensor_n_sum : ∀ x, ∃ l : ulist (U * list (module_V V)),
         (list_image vector_to_tensor_n (snd p))) l).
 Proof.
     intros x.
-    induction x as [|u v i iu iv IHx] using grade_induction.
+    induction x as [|u v] using grade_induction.
     {
         exists ulist_end.
         rewrite ulist_image_end, ulist_sum_end.
         reflexivity.
     }
-    destruct IHx as [vl v_eq].
+    destruct IHv as [vl v_eq].
+    destruct u as [u [i iu]].
     assert (∃ ul : ulist (U * list (module_V V)),
         u = ulist_sum (ulist_image (λ p, fst p · list_prod
             (list_image vector_to_tensor_n (snd p))) ul)) as [ul u_eq].
     {
-        clear v iv vl v_eq.
+        clear v vl v_eq.
         pose proof (tensor_n_sum_grade _ iu) as [l l_eq].
         subst u.
         clear iu.
@@ -703,7 +595,7 @@ Proof.
         reflexivity.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    change (grade_sum_type nat tensor_n_module) with (module_V (tensor_n_algebra_module)).
+    change (sum_module_type nat tensor_n_module) with (module_V (tensor_n_algebra_module)).
     do 3 rewrite rdist.
     rewrite IHl.
     apply rplus.
@@ -720,7 +612,7 @@ Proof.
         reflexivity.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    change (grade_sum_type nat tensor_n_module) with (module_V (tensor_n_algebra_module)).
+    change (sum_module_type nat tensor_n_module) with (module_V (tensor_n_algebra_module)).
     rewrite rdist.
     do 2 rewrite ldist.
     rewrite rdist.
@@ -739,7 +631,7 @@ Proof.
         reflexivity.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
-    change (grade_sum_type nat tensor_n_module) with (module_V (tensor_n_algebra_module)).
+    change (sum_module_type nat tensor_n_module) with (module_V (tensor_n_algebra_module)).
     do 3 rewrite ldist.
     rewrite IHl.
     apply rplus.
@@ -769,5 +661,22 @@ Definition tensor_algebra_n := make_algebra
     tensor_n_scalar_lmult
     tensor_n_scalar_rmult
 : Algebra F.
+
+Instance tensor_n_grade_mult : GradedAlgebra tensor_algebra_n nat.
+Proof.
+    split.
+    intros u' v' i j iu vj.
+    apply of_grade_ex in iu, vj.
+    destruct iu as [u u_eq]; subst u'.
+    destruct vj as [v v_eq]; subst v'.
+    destruct u as [u u_in], v as [v v_in].
+    rewrite to_tensor_n_mult.
+    pose proof (tensor_n_algebra_mult_in _ _ [u|u_in] [v|v_in]) as uv_in.
+    apply of_grade_ex.
+    exists [_|uv_in].
+    unfold grade_from; cbn.
+    apply f_equal.
+    apply set_type_eq; reflexivity.
+Qed.
 
 End TensorAlgebraGrade.

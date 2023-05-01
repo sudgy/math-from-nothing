@@ -128,52 +128,32 @@ Proof.
             cbn.
             apply mult_rid.
         }
-        assert (HomomorphismPlus h1) as h1_plus.
-        {
-            split.
-            apply (free_extend_plus _ _).
-        }
-        assert (∀ α v, h1 (α · v) = α · h1 v) as h1_scalar.
-        {
-            apply (free_extend_scalar _ _).
-        }
         assert (HomomorphismMult h1) as h1_mult.
         {
             split.
             intros a b.
-            rewrite (grade_decomposition_eq a).
-            rewrite (grade_decomposition_eq b).
-            pose (u := grade_decomposition a).
-            pose (v := grade_decomposition b).
-            fold u v.
-            clearbody u v.
-            clear a b.
-            induction u as [|a u] using ulist_induction.
+            induction a as [|a u] using grade_induction.
             {
-                rewrite ulist_image_end, ulist_sum_end.
                 rewrite mult_lanni.
-                rewrite homo_zero.
+                rewrite module_homo_zero.
                 rewrite mult_lanni.
                 reflexivity.
             }
-            rewrite ulist_image_add, ulist_sum_add.
             rewrite rdist.
-            do 2 rewrite (homo_plus (f := h1)).
+            do 2 rewrite module_homo_plus.
             rewrite rdist.
             rewrite IHu.
             apply rplus.
             clear u IHu.
-            induction v as [|b v] using ulist_induction.
+            induction b as [|b v] using grade_induction.
             {
-                rewrite ulist_image_end, ulist_sum_end.
                 rewrite mult_ranni.
-                rewrite homo_zero.
+                rewrite module_homo_zero.
                 rewrite mult_ranni.
                 reflexivity.
             }
-            rewrite ulist_image_add, ulist_sum_add.
             rewrite ldist.
-            do 2 rewrite (homo_plus (f := h1)).
+            do 2 rewrite module_homo_plus.
             rewrite ldist.
             rewrite IHv.
             apply rplus.
@@ -183,11 +163,11 @@ Proof.
             apply to_free_ex in au as [α a_eq]; subst a.
             apply to_free_ex in bv as [β b_eq]; subst b.
             rewrite scalar_lmult, scalar_rmult.
-            do 4 rewrite h1_scalar.
+            do 4 rewrite module_homo_scalar.
             rewrite scalar_lmult, scalar_rmult.
             do 2 apply f_equal.
             unfold mult at 1; cbn.
-            change (linear_grade_sum.grade_sum_type _ _)
+            change (sum_module_type _ _)
                 with (module_V (free_linear U (list V))).
             rewrite (free_bilinear_free _ _).
             unfold h1.
@@ -201,8 +181,8 @@ Proof.
             intros x y eq.
             cbn in eq.
             rewrite <- plus_0_anb_a_b.
-            rewrite <- homo_neg.
-            rewrite <- homo_plus.
+            rewrite <- module_homo_neg.
+            rewrite <- module_homo_plus.
             remember (x - y) as v.
             rewrite <- Heqv in eq.
             clear x y Heqv.
@@ -210,11 +190,11 @@ Proof.
             induction l as [|a l] using ulist_induction.
             {
                 rewrite ulist_image_end, ulist_sum_end.
-                setoid_rewrite homo_zero.
+                rewrite module_homo_zero.
                 reflexivity.
             }
             rewrite ulist_image_add, ulist_sum_add.
-            rewrite homo_plus.
+            rewrite module_homo_plus.
             rewrite <- IHl; clear l IHl.
             rewrite plus_rid.
             destruct a as [[a b] v]; cbn.
@@ -224,23 +204,23 @@ Proof.
                 clear a b.
                 destruct v as [v [v_in|[v_in|v_in]]]; cbn.
                 -   destruct v_in as [a [b v_eq]]; subst v.
-                    do 2 setoid_rewrite homo_plus.
-                    setoid_rewrite homo_neg.
+                    do 2 rewrite module_homo_plus.
+                    do 2 rewrite module_homo_neg.
                     do 3 rewrite h1_vec.
                     rewrite <- plus_assoc.
                     rewrite module_homo_plus.
                     rewrite <- neg_plus.
                     apply plus_rinv.
                 -   destruct v_in as [α [u v_eq]]; subst v.
-                    rewrite homo_plus.
-                    rewrite homo_neg.
-                    rewrite h1_scalar.
+                    rewrite module_homo_plus.
+                    rewrite module_homo_neg.
+                    rewrite module_homo_scalar.
                     do 2 rewrite h1_vec.
                     rewrite module_homo_scalar.
                     apply plus_rinv.
                 -   destruct v_in as [u v_eq]; subst v.
-                    rewrite homo_plus, homo_neg.
-                    rewrite h1_scalar.
+                    rewrite module_homo_plus, module_homo_neg.
+                    rewrite module_homo_scalar.
                     unfold h1.
                     do 2 rewrite (free_extend_free _ _).
                     rewrite list_image_end, list_prod_end.
@@ -260,7 +240,7 @@ Proof.
             equiv_get_value u v.
             unfold plus at 1; cbn.
             unfold h; equiv_simpl.
-            apply homo_plus.
+            apply module_homo_plus.
         }
         assert (∀ a v, h (a · v) = a · h v) as h_scalar.
         {
@@ -268,7 +248,7 @@ Proof.
             equiv_get_value v.
             unfold scalar_mult at 1; cbn.
             unfold h; equiv_simpl.
-            apply h1_scalar.
+            apply module_homo_scalar.
         }
         assert (∀ u v, h (u * v) = h u * h v) as h_mult.
         {
@@ -302,22 +282,17 @@ Proof.
         equiv_get_value v.
         change (to_equiv (ideal_equiv (ga_ideal B)) v) with
             (to_qring (ga_ideal B) v).
-        rewrite (grade_decomposition_eq v).
-        remember (grade_decomposition v) as l.
-        clear v Heql.
-        induction l as [|a l] using ulist_induction.
+        induction v as [|a v] using grade_induction.
         {
-            rewrite ulist_image_end, ulist_sum_end.
             rewrite to_qring_zero.
             do 2 rewrite algebra_homo_zero.
             reflexivity.
         }
-        rewrite ulist_image_add, ulist_sum_add.
         rewrite to_qring_plus.
         do 2 rewrite algebra_homo_plus.
-        rewrite IHl.
+        rewrite IHv.
         apply rplus.
-        clear l IHl.
+        clear v IHv.
         destruct a as [v [l vl]]; cbn.
         apply to_free_ex in vl as [α v_eq]; subst v.
         rewrite to_qring_scalar.
@@ -329,7 +304,6 @@ Proof.
             do 2 rewrite algebra_homo_one.
             reflexivity.
         }
-        cbn.
         rewrite <- list_conc_single.
         rewrite <- (free_bilinear_free U (list V)
             (λ a b, to_free U (list V) (a + b) : free_linear _ _) [a] l).

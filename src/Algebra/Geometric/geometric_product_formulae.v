@@ -31,7 +31,7 @@ Local Open Scope nat_scope.
 Theorem lcontr_mult_inner : ∀ v X, φ v ⌋ X = geo_mult_inner B v X.
 Proof.
     intros v X.
-    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := GG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite geo_mult_inner_rzero.
         apply lcontr_ranni.
@@ -39,10 +39,10 @@ Proof.
     rewrite lcontr_ldist.
     rewrite geo_mult_inner_rplus.
     rewrite IHX.
-    apply rplus; clear X' X'n IHX.
+    apply rplus; clear X' IHX.
     pose proof (vector_to_geo_grade B v) as v1.
+    destruct X as [X [n Xn]]; cbn.
     rewrite (lcontr_homo _ _ _ _ _ v1 Xn).
-    unfold geo_lcontr_base.
     nat_destruct n.
     {
         unfold zero at 1, one; cbn.
@@ -59,16 +59,14 @@ Proof.
     rewrite ext_to_geo_inner.
     rewrite ext_to_geo_to_ext.
     rewrite ext_to_geo_project.
-    assert (of_grade (H9 := EG)
+    assert (of_grade
         (nat_suc (nat_suc n)) (vector_to_ext V v * E X)) as Xn'.
     {
         change (nat_suc (nat_suc n)) with (1 + nat_suc n).
-        apply (of_grade_mult (H13 := EGA)).
+        apply of_grade_mult.
         -   apply vector_to_ext_grade.
-        -   destruct Xn as [X' [X'n X'_eq]]; subst X.
-            cbn.
-            rewrite geo_to_ext_to_geo.
-            exact X'n.
+        -   apply (geo_to_ext_of_grade B).
+            exact Xn.
     }
     assert (nat_suc (nat_suc n) ≠ n) as neq.
     {
@@ -203,7 +201,7 @@ Qed.
 Theorem vector_lmult : ∀ v X, φ v * X = φ v ⌋ X + φ v ⋀ X.
 Proof.
     intros v X.
-    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := GG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite mult_ranni.
         rewrite lcontr_ranni.
@@ -214,13 +212,14 @@ Proof.
     rewrite ldist.
     rewrite lcontr_ldist.
     rewrite outer_ldist.
-    rewrite IHX; clear IHX.
+    rewrite IHX'; clear IHX'.
     do 2 rewrite plus_assoc.
     apply rplus.
     rewrite <- plus_assoc.
     rewrite (plus_comm (φ v ⌋ X')).
     rewrite plus_assoc.
-    apply rplus; clear X' X'n.
+    apply rplus; clear X'.
+    destruct X as [X [n Xn]]; cbn.
     nat_destruct n.
     {
         apply geo_grade_zero_scalar in Xn as [a eq]; subst X.

@@ -47,22 +47,22 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
     TPA TPZ TPN TSM TSMC TSMO TSML TSMR.
 
 (* end hide *)
-Definition tensor_algebra_base := module_V (grade_sum nat (tensor_power V)).
-Definition tensor_algebra_plus := grade_sum_plus nat (tensor_power V).
-Definition tensor_algebra_zero := grade_sum_zero nat (tensor_power V).
-Definition tensor_algebra_neg := grade_sum_neg nat (tensor_power V).
-Definition tensor_algebra_plus_comm := grade_sum_plus_comm nat (tensor_power V).
-Definition tensor_algebra_plus_assoc := grade_sum_plus_assoc nat (tensor_power V).
-Definition tensor_algebra_plus_lid := grade_sum_plus_lid nat (tensor_power V).
-Definition tensor_algebra_plus_linv := grade_sum_plus_linv nat (tensor_power V).
-Definition tensor_algebra_scalar_mult := grade_sum_scalar_mult nat (tensor_power V).
-Definition tensor_algebra_scalar_comp := grade_sum_scalar_comp nat (tensor_power V).
-Definition tensor_algebra_scalar_id := grade_sum_scalar_id nat (tensor_power V).
-Definition tensor_algebra_scalar_ldist := grade_sum_scalar_ldist nat (tensor_power V).
-Definition tensor_algebra_scalar_rdist := grade_sum_scalar_rdist nat (tensor_power V).
-Definition tensor_grade := grade_sum_grade nat (tensor_power V).
-Definition power_to_tensor {k} A := single_to_grade_sum nat (tensor_power V) (k:=k) A.
-Definition power_to_tensor_base {k} A := single_to_grade_sum_base nat (tensor_power V) (k:=k) A.
+Definition tensor_algebra_base := module_V (sum_module nat (tensor_power V)).
+Definition tensor_algebra_plus := sum_module_plus nat (tensor_power V).
+Definition tensor_algebra_zero := sum_module_zero nat (tensor_power V).
+Definition tensor_algebra_neg := sum_module_neg nat (tensor_power V).
+Definition tensor_algebra_plus_comm := sum_module_plus_comm nat (tensor_power V).
+Definition tensor_algebra_plus_assoc := sum_module_plus_assoc nat (tensor_power V).
+Definition tensor_algebra_plus_lid := sum_module_plus_lid nat (tensor_power V).
+Definition tensor_algebra_plus_linv := sum_module_plus_linv nat (tensor_power V).
+Definition tensor_algebra_scalar_mult := sum_module_scalar_mult nat (tensor_power V).
+Definition tensor_algebra_scalar_comp := sum_module_scalar_comp nat (tensor_power V).
+Definition tensor_algebra_scalar_id := sum_module_scalar_id nat (tensor_power V).
+Definition tensor_algebra_scalar_ldist := sum_module_scalar_ldist nat (tensor_power V).
+Definition tensor_algebra_scalar_rdist := sum_module_scalar_rdist nat (tensor_power V).
+Definition tensor_grade := sum_module_grade nat (tensor_power V).
+Definition power_to_tensor {k} A := single_to_sum_module nat (tensor_power V) (k:=k) A.
+Definition power_to_tensor_base {k} A := single_to_sum_module_base nat (tensor_power V) (k:=k) A.
 
 Let k_tensor k := module_V (tensor_power V k).
 
@@ -81,21 +81,21 @@ Qed.
 Theorem power_to_tensor_eq : ∀ k, ∀ (A B : k_tensor k),
     power_to_tensor A = power_to_tensor B → A = B.
 Proof.
-    apply single_to_grade_sum_eq.
+    apply single_to_sum_module_eq.
 Qed.
 Theorem power_to_tensor_plus : ∀ k (A B : k_tensor k),
     power_to_tensor (A + B) =
     power_to_tensor A + power_to_tensor B.
 Proof.
-    apply single_to_grade_sum_plus.
+    apply single_to_sum_module_plus.
 Qed.
 Theorem power_to_tensor_scalar : ∀ k α (A : k_tensor k),
     power_to_tensor (α · A) = α · power_to_tensor A.
 Proof.
-    apply single_to_grade_sum_scalar.
+    apply single_to_sum_module_scalar.
 Qed.
 Lemma power_to_tensor_zero : ∀ k, (power_to_tensor (k := k) 0) = 0.
-    apply single_to_grade_sum_zero.
+    apply single_to_sum_module_zero.
 Qed.
 (* begin hide *)
 

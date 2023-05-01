@@ -33,14 +33,14 @@ Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
 (* end hide *)
-Theorem geo_mult_inner_grade : ∀ v (A : geo) i, of_grade (nat_suc i) (H9 := GG) A
-    → of_grade i (H9 := GG) (geo_mult_inner B v A).
+Theorem geo_mult_inner_grade : ∀ v (A : geo) i, of_grade (nat_suc i) A
+    → of_grade i (geo_mult_inner B v A).
 Proof.
-    intros v A' i [A [Ai A_eq]]; subst A'; cbn.
-    rewrite <- ext_to_geo_inner.
-    exists (ext_inner B v A).
-    split; [>|reflexivity].
+    intros v A i Ai.
+    apply geo_to_ext_of_grade.
+    rewrite geo_to_ext_inner.
     apply ext_inner_grade.
+    rewrite <- geo_to_ext_of_grade.
     exact Ai.
 Qed.
 
@@ -49,7 +49,7 @@ Theorem mult_inner_grade_add : ∀ v (A : geo) n,
     geo_mult_inner B v (grade_project A (nat_suc n)).
 Proof.
     intros v A n.
-    induction A as [|A A' i Ai A'i IHA] using (grade_induction (VG := GG)).
+    induction A as [|A A'] using grade_induction.
     {
         rewrite geo_mult_inner_rzero.
         do 2 rewrite grade_project_zero.
@@ -60,7 +60,8 @@ Proof.
     do 2 rewrite grade_project_plus.
     rewrite geo_mult_inner_rplus.
     rewrite IHA; clear IHA.
-    apply rplus; clear A' A'i.
+    apply rplus; clear A'.
+    destruct A as [A [i Ai]]; cbn.
     classic_case (i = nat_suc n) as [eq|neq].
     -   subst i.
         rewrite (grade_project_of_grade _ _ Ai).
@@ -85,7 +86,7 @@ Theorem exterior_grade_add : ∀ v (A : ext) n,
     vector_to_ext V v * grade_project A n.
 Proof.
     intros v A n.
-    induction A as [|A A' i Ai A'i IHA] using (grade_induction (VG := EG)).
+    induction A as [|A A'] using grade_induction.
     {
         rewrite mult_ranni.
         do 2 rewrite grade_project_zero.
@@ -96,7 +97,8 @@ Proof.
     do 2 rewrite grade_project_plus.
     rewrite ldist.
     rewrite IHA; clear IHA.
-    apply rplus; clear A' A'i.
+    apply rplus; clear A'.
+    destruct A as [A [i Ai]].
     assert (of_grade (nat_suc i) (vector_to_ext V v * A)) as Ai'.
     {
         change (nat_suc i) with (1 + i).
@@ -142,13 +144,11 @@ Proof.
     apply nat_le_ex in leq as [c eq]; subst s.
     rewrite nat_abs_minus_comm in n_lt.
     rewrite nat_abs_minus_plus in n_lt.
+    apply geo_to_ext_of_grade in ar.
+    rewrite <- (ext_to_geo_to_ext _ a).
     rename a into a'.
-    destruct ar as [a [ar a_eq]]; subst a'.
-    cbn.
-    change (module_V (algebra_module (exterior_algebra V))) with (algebra_V ext) in a.
-    rename ar into ar'.
-    assert (of_grade (H9 := EG) r a) as ar by exact ar'.
-    clear ar'.
+    remember (E a') as a.
+    clear Heqa a'.
     apply ext_grade_sum in ar as [l l_eq]; subst a.
     induction l as [|[α a] l] using ulist_induction.
     {
@@ -204,9 +204,10 @@ Proof.
     assert (of_grade r (G (list_prod (list_image (vector_to_ext V) l))))
         as l_grade.
     {
-        exists (list_prod (list_image (vector_to_ext V) l)).
-        split; [>|reflexivity].
-        rewrite <- l_size'.
+        apply ext_to_geo_of_grade.
+        rewrite list_size_add in l_size.
+        rewrite nat_suc_eq in l_size.
+        subst r.
         apply ext_list_grade.
     }
     apply lrplus.
@@ -304,20 +305,20 @@ Proof.
             {
                 remember (E _) as A.
                 clear HeqA.
-                induction A as [|A A' i Ai A'i IHA]
-                    using (grade_induction (VG := EG)).
+                induction A as [|A A'] using (grade_induction (H := EG)).
                 -   rewrite mult_ranni.
                     rewrite grade_project_zero.
                     apply ext_to_geo_zero.
                 -   rewrite ldist.
                     rewrite grade_project_plus.
                     rewrite ext_to_geo_plus.
-                    rewrite IHA; clear A' A'i IHA.
-                    assert (of_grade (H9 := EG) (nat_suc i)
+                    rewrite IHA; clear A' IHA.
+                    destruct A as [A [i Ai]]; cbn.
+                    assert (of_grade (H := EG) (nat_suc i)
                         (vector_to_ext V v * A)) as A_grade.
                     {
                         change (nat_suc i) with (1 + i).
-                        apply (of_grade_mult (H13 := EGA)).
+                        apply (of_grade_mult (GradedAlgebra := EGA)).
                         -   apply vector_to_ext_grade.
                         -   exact Ai.
                     }
@@ -380,7 +381,7 @@ Proof.
     -   apply (geo_grade_decompose1 a b r s n ar bs leq n_eq).
     -   rewrite nat_abs_minus_comm in n_eq.
         rewrite (plus_comm r s) in n_eq.
-        rewrite <- (geo_reverse_reverse B (grade_project (VG := GG) (a * b) n)).
+        rewrite <- (geo_reverse_reverse B (grade_project (a * b) n)).
         rewrite geo_reverse_project.
         rewrite geo_reverse_mult.
         apply of_grade_reverse in ar.
@@ -456,7 +457,7 @@ Proof.
             -   exact eq.
             -   intros contr; inversion contr.
         }
-        symmetry; apply (sum_grade_project_single (VG := GG) _ _ _ _ _ f_inj m).
+        symmetry; apply (sum_grade_project_single _ _ _ _ _ f_inj m).
         +   exact c_eq.
         +   apply nat_pos.
         +   rewrite plus_lid.

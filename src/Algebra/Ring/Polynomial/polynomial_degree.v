@@ -102,7 +102,7 @@ Theorem polynomial_coefficient_one_zero : co 1 0 = 1.
 Proof.
     unfold co, polynomial_coefficient.
     unfold one, PO, polynomial_one at 1; cbn.
-    unfold single_to_grade_sum_base; cbn.
+    unfold single_to_sum_module_base; cbn.
     destruct (sem (0 = 0)) as [eq|neq]; [>|contradiction].
     destruct eq; cbn.
     reflexivity.
@@ -112,7 +112,7 @@ Theorem polynomial_coefficient_xn : ∀ (f : polynomial F) m n,
     co (f * polynomial_xn F m) (m + n) = co f n.
 Proof.
     intros f m n.
-    induction f as [|f f' i fi f'i IHf] using grade_induction.
+    induction f as [|f f' IHf] using grade_induction.
     {
         rewrite mult_lanni.
         do 2 rewrite polynomial_coefficient_zero.
@@ -122,7 +122,8 @@ Proof.
     do 2 rewrite polynomial_coefficient_plus.
     rewrite IHf.
     apply rplus.
-    clear f' f'i IHf.
+    clear f' IHf.
+    destruct f as [f [i fi]]; cbn.
     apply polynomial_xn_ex in fi as [a f_eq].
     subst f.
     rewrite scalar_lmult.
@@ -132,8 +133,8 @@ Proof.
     rewrite (plus_comm m).
     unfold co, polynomial_coefficient.
     unfold polynomial_xn; cbn.
-    unfold single_to_grade_sum_base; cbn.
-    unfold grade_I, PG, polynomial_grade in i; cbn in i.
+    unfold single_to_sum_module_base; cbn.
+    unfold PG, polynomial_grade in i; cbn in i.
     destruct (sem (i + m = n + m)) as [eq1|neq1]; cbn.
     all: destruct (sem (i = n)) as [eq2|neq2]; cbn.
     -   destruct eq1, eq2; cbn.
@@ -158,7 +159,7 @@ Qed.
 Theorem polynomial_coefficient_eval_zero : ∀ f, polynomial_eval f 0 = co f 0.
 Proof.
     intros f.
-    induction f as [|f f' n fn f'n IHf] using grade_induction.
+    induction f as [|f f'] using grade_induction.
     {
         rewrite <- to_polynomial_zero.
         rewrite polynomial_eval_constant by exact UMER.
@@ -171,7 +172,8 @@ Proof.
     rewrite polynomial_coefficient_plus.
     rewrite IHf.
     apply rplus.
-    clear f' f'n IHf.
+    clear f' IHf.
+    destruct f as [f [n fn]]; cbn.
     apply polynomial_xn_ex in fn as [a eq]; subst f.
     rewrite polynomial_eval_scalar.
     rewrite polynomial_coefficient_scalar.
@@ -185,7 +187,7 @@ Proof.
         reflexivity.
     -   rewrite zero_nat_pow by apply nat_zero_suc.
         cbn.
-        unfold single_to_grade_sum_base; cbn.
+        unfold single_to_sum_module_base; cbn.
         destruct (sem (nat_suc n = 0)) as [eq|neq]; [>inversion eq|].
         reflexivity.
 Qed.
@@ -194,8 +196,8 @@ Lemma polynomial_degree_ex : ∀ f : polynomial F, ∃ n, ∀ m, n < m → 0 = c
 Proof.
     intros f.
     destruct f as [f f_fin]; cbn in *.
-    unfold grade_sum_base in f.
-    unfold grade_sum_finite in f_fin.
+    unfold sum_module_base in f.
+    unfold sum_module_finite in f_fin.
     cbn in *.
     classic_case (∀ n, 0 = f n) as [f_z|f_nz].
     {
@@ -290,13 +292,13 @@ Proof.
     -   apply polynomial_degree_leq.
         intros m m_gt.
         unfold polynomial_xn; cbn.
-        unfold single_to_grade_sum_base; cbn.
+        unfold single_to_sum_module_base; cbn.
         destruct (sem (n = m)) as [eq|neq].
         +   destruct m_gt; contradiction.
         +   reflexivity.
     -   apply polynomial_degree_geq.
         unfold polynomial_xn; cbn.
-        unfold single_to_grade_sum_base; cbn.
+        unfold single_to_sum_module_base; cbn.
         destruct (sem (n = n)) as [eq|neq].
         +   destruct eq; cbn.
             apply not_trivial_one.
@@ -322,7 +324,7 @@ Proof.
     intros n.
     unfold scalar_mult, polynomial_scalar; cbn.
     unfold one, polynomial_one; cbn.
-    unfold single_to_grade_sum_base; cbn.
+    unfold single_to_sum_module_base; cbn.
     destruct (sem (0 = n)) as [n_z|n_nz]; cbn.
     -   destruct n_z; cbn.
         unfold scalar_mult; cbn.
@@ -456,7 +458,7 @@ Proof.
             rewrite polynomial_coefficient_scalar.
             unfold co, polynomial_coefficient.
             unfold polynomial_xn; cbn.
-            unfold single_to_grade_sum_base; cbn.
+            unfold single_to_sum_module_base; cbn.
             destruct (sem (nat_suc n = nat_suc n)) as
                 [eq'|neq]; [>destruct eq'; cbn|contradiction].
             rewrite mult_rid.
@@ -480,7 +482,7 @@ Proof.
             rewrite polynomial_coefficient_scalar.
             unfold co, polynomial_coefficient.
             unfold polynomial_xn; cbn.
-            unfold single_to_grade_sum_base; cbn.
+            unfold single_to_sum_module_base; cbn.
             rewrite neq_sym in neq.
             destruct (sem (nat_suc n = m)) as [eq|neq'];
                 [>contradiction|clear neq'].

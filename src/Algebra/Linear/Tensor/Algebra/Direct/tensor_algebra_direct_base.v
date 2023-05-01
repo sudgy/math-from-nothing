@@ -83,7 +83,7 @@ Local Instance FR_mult_assoc : MultAssoc FR.
 Proof.
     split.
     intros a b c.
-    induction a as [|a' v a aa av IHa] using grade_induction.
+    induction a as [|a' v] using grade_induction.
     {
         do 3 rewrite mult_lanni.
         reflexivity.
@@ -91,14 +91,15 @@ Proof.
     do 3 rewrite rdist.
     rewrite IHa.
     apply rplus.
+    destruct a' as [a' [a aa]]; cbn.
     apply to_free_ex in aa as [α a_eq]; subst a'.
     do 3 rewrite scalar_lmult.
     apply f_equal.
-    clear v α av IHa.
-    induction b as [|b' v b bb bv IHb] using grade_induction.
+    clear v α IHa.
+    induction b as [|b' v] using grade_induction.
     {
         rewrite mult_lanni.
-        rewrite mult_ranni.
+        do 2 rewrite mult_ranni.
         rewrite mult_lanni.
         reflexivity.
     }
@@ -107,13 +108,14 @@ Proof.
     rewrite rdist.
     rewrite IHb.
     apply rplus.
+    destruct b' as [b' [b bb]]; cbn.
     apply to_free_ex in bb as [β b_eq]; subst b'.
     rewrite scalar_lmult.
     do 2 rewrite scalar_rmult.
     rewrite scalar_lmult.
     apply f_equal.
-    clear v β bv IHb.
-    induction c as [|c' v c cc cv IHc] using grade_induction.
+    clear v β IHb.
+    induction c as [|c' v] using grade_induction.
     {
         do 3 rewrite mult_ranni.
         reflexivity.
@@ -121,10 +123,11 @@ Proof.
     do 3 rewrite ldist.
     rewrite IHc.
     apply rplus.
+    destruct c' as [c' [c cc]]; cbn.
     apply to_free_ex in cc as [γ c_eq]; subst c'.
     do 3 rewrite scalar_rmult.
     apply f_equal.
-    clear v γ cv IHc.
+    clear v γ IHc.
     unfold mult; cbn.
     do 4 rewrite (free_bilinear_free F (list (module_V V))).
     rewrite plus_assoc.
@@ -137,17 +140,18 @@ Local Instance FR_mult_lid : MultLid FR.
 Proof.
     split.
     intros a.
-    induction a as [|a' v a aa av IHa] using grade_induction.
+    induction a as [|a' v] using grade_induction.
     {
         apply mult_ranni.
     }
     rewrite ldist.
     rewrite IHa.
     apply rplus.
+    destruct a' as [a' [a aa]]; cbn.
     apply to_free_ex in aa as [α a_eq]; subst a'.
     rewrite scalar_rmult.
     apply f_equal.
-    clear v α av IHa.
+    clear v α IHa.
     unfold one, mult; cbn.
     rewrite (free_bilinear_free F (list (module_V V))).
     rewrite list_conc_lid.
@@ -157,17 +161,18 @@ Local Instance FR_mult_rid : MultRid FR.
 Proof.
     split.
     intros a.
-    induction a as [|a' v a aa av IHa] using grade_induction.
+    induction a as [|a' v] using grade_induction.
     {
         apply mult_lanni.
     }
     rewrite rdist.
     rewrite IHa.
     apply rplus.
+    destruct a' as [a' [a aa]]; cbn.
     apply to_free_ex in aa as [α a_eq]; subst a'.
     rewrite scalar_lmult.
     apply f_equal.
-    clear v α av IHa.
+    clear v α IHa.
     unfold one, mult; cbn.
     rewrite (free_bilinear_free F (list (module_V V))).
     rewrite list_conc_rid.

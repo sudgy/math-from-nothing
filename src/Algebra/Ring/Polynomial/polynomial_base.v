@@ -50,7 +50,7 @@ Definition polynomial_scalar_id := module_scalar_id polynomial_module : ScalarId
 Definition polynomial_scalar_ldist := module_scalar_ldist polynomial_module : ScalarLdist U polynomial.
 Definition polynomial_scalar_rdist := module_scalar_rdist polynomial_module : ScalarRdist U polynomial.
 Definition polynomial_scalar_comp := module_scalar_comp polynomial_module : ScalarComp U polynomial.
-Definition polynomial_grade := free_grade F nat : GradedSpace U polynomial.
+Definition polynomial_grade := free_grade F nat : GradedSpace polynomial nat.
 Local Existing Instances polynomial_plus polynomial_zero polynomial_neg
     polynomial_plus_comm polynomial_plus_assoc polynomial_plus_lid
     polynomial_plus_linv polynomial_scalar polynomial_scalar_id
@@ -90,64 +90,52 @@ Local Program Instance polynomial_mult_assoc : MultAssoc polynomial.
 Next Obligation.
     unfold mult; cbn.
 
-    rewrite (grade_decomposition_eq a).
-    remember (grade_decomposition a) as l; clear Heql.
-    induction l as [|v l] using ulist_induction.
+    induction a as [|v a IHa] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
         do 3 rewrite (free_bilinear_lanni F nat).
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    do 3 rewrite (free_bilinear_rdist F nat).
-    rewrite IHl; clear IHl.
-    apply rplus; clear l.
+    do 3 rewrite free_bilinear_rdist.
+    rewrite IHa; clear IHa.
+    apply rplus; clear a.
     destruct v as [v [i vi]]; cbn.
     apply polynomial_xn_ex in vi as [α v_eq]; subst v.
     do 3 rewrite (free_bilinear_lscalar F nat).
     apply f_equal; clear α.
 
-    rewrite (grade_decomposition_eq b).
-    remember (grade_decomposition b) as l; clear Heql.
-    induction l as [|v l] using ulist_induction.
+    induction b as [|v b IHb] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite (free_bilinear_lanni F nat).
-        do 2 rewrite (free_bilinear_ranni F nat).
-        rewrite (free_bilinear_lanni F nat).
+        rewrite free_bilinear_lanni.
+        do 2 rewrite free_bilinear_ranni.
+        rewrite free_bilinear_lanni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    rewrite (free_bilinear_rdist F nat).
-    do 2 rewrite (free_bilinear_ldist F nat).
-    rewrite (free_bilinear_rdist F nat).
-    rewrite IHl; clear IHl.
-    apply rplus; clear l.
+    rewrite free_bilinear_rdist.
+    do 2 rewrite free_bilinear_ldist.
+    rewrite free_bilinear_rdist.
+    rewrite IHb; clear IHb.
+    apply rplus; clear b.
     destruct v as [v [j vj]]; cbn.
     apply polynomial_xn_ex in vj as [α v_eq]; subst v.
-    rewrite (free_bilinear_lscalar F nat).
-    do 2 rewrite (free_bilinear_rscalar F nat).
-    rewrite (free_bilinear_lscalar F nat).
+    rewrite free_bilinear_lscalar.
+    do 2 rewrite free_bilinear_rscalar.
+    rewrite free_bilinear_lscalar.
     apply f_equal; clear α.
 
-    rewrite (grade_decomposition_eq c).
-    remember (grade_decomposition c) as l; clear Heql.
-    induction l as [|v l] using ulist_induction.
+    induction c as [|v c IHc] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
-        do 3 rewrite (free_bilinear_ranni F nat).
+        do 3 rewrite free_bilinear_ranni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    do 3 rewrite (free_bilinear_ldist F nat).
-    rewrite IHl; clear IHl.
-    apply rplus; clear l.
+    do 3 rewrite free_bilinear_ldist.
+    rewrite IHc; clear IHc.
+    apply rplus; clear c.
     destruct v as [v [k vk]]; cbn.
     apply polynomial_xn_ex in vk as [α v_eq]; subst v.
-    do 3 rewrite (free_bilinear_rscalar F nat).
+    do 3 rewrite free_bilinear_rscalar.
     apply f_equal; clear α.
 
-    do 4 rewrite (free_bilinear_free F nat).
+    do 4 rewrite free_bilinear_free.
     rewrite plus_assoc.
     reflexivity.
 Qed.
@@ -155,46 +143,38 @@ Local Program Instance polynomial_mult_comm : MultComm polynomial.
 Next Obligation.
     unfold mult; cbn.
 
-    rewrite (grade_decomposition_eq a).
-    remember (grade_decomposition a) as l; clear Heql.
-    induction l as [|v l] using ulist_induction.
+    induction a as [|v a] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite (free_bilinear_lanni F nat).
-        rewrite (free_bilinear_ranni F nat).
+        rewrite free_bilinear_lanni.
+        rewrite free_bilinear_ranni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    rewrite (free_bilinear_ldist F nat).
-    rewrite (free_bilinear_rdist F nat).
-    rewrite IHl; clear IHl.
-    apply rplus; clear l.
+    rewrite free_bilinear_ldist.
+    rewrite free_bilinear_rdist.
+    rewrite IHa; clear IHa.
+    apply rplus; clear a.
     destruct v as [v [i vi]]; cbn.
     apply polynomial_xn_ex in vi as [α v_eq]; subst v.
-    rewrite (free_bilinear_lscalar F nat).
-    rewrite (free_bilinear_rscalar F nat).
+    rewrite free_bilinear_lscalar.
+    rewrite free_bilinear_rscalar.
     apply f_equal; clear α.
 
-    rewrite (grade_decomposition_eq b).
-    remember (grade_decomposition b) as l; clear Heql.
-    induction l as [|v l] using ulist_induction.
+    induction b as [|v b] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite (free_bilinear_lanni F nat).
-        rewrite (free_bilinear_ranni F nat).
+        rewrite free_bilinear_lanni.
+        rewrite free_bilinear_ranni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    rewrite (free_bilinear_ldist F nat).
-    rewrite (free_bilinear_rdist F nat).
-    rewrite IHl; clear IHl.
-    apply rplus; clear l.
+    rewrite free_bilinear_ldist.
+    rewrite free_bilinear_rdist.
+    rewrite IHb; clear IHb.
+    apply rplus; clear b.
     destruct v as [v [j vj]]; cbn.
     apply polynomial_xn_ex in vj as [α v_eq]; subst v.
-    rewrite (free_bilinear_lscalar F nat).
-    rewrite (free_bilinear_rscalar F nat).
+    rewrite free_bilinear_lscalar.
+    rewrite free_bilinear_rscalar.
     apply f_equal; clear α.
-    do 2 rewrite (free_bilinear_free F nat).
+    do 2 rewrite free_bilinear_free.
     rewrite plus_comm.
     reflexivity.
 Qed.
@@ -205,22 +185,19 @@ Local Program Instance polynomial_mult_lid : MultLid polynomial.
 Next Obligation.
     rewrite mult_comm.
     unfold mult, one; cbn.
-    rewrite (grade_decomposition_eq a).
-    remember (grade_decomposition a) as l; clear Heql.
-    induction l as [|v l] using ulist_induction.
+    induction a as [|v a] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
-        apply (free_bilinear_lanni F nat).
+        rewrite free_bilinear_lanni.
+        reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    rewrite (free_bilinear_rdist F nat).
-    rewrite IHl; clear IHl.
-    apply rplus; clear l.
+    rewrite free_bilinear_rdist.
+    rewrite IHa; clear IHa.
+    apply rplus; clear a.
     destruct v as [v [i vi]]; cbn.
     apply polynomial_xn_ex in vi as [α v_eq]; subst v.
-    rewrite (free_bilinear_lscalar F nat).
+    rewrite free_bilinear_lscalar.
     apply f_equal.
-    rewrite (free_bilinear_free F nat).
+    rewrite free_bilinear_free.
     rewrite plus_rid.
     reflexivity.
 Qed.
@@ -245,8 +222,8 @@ Proof.
     intros contr.
     unfold one in contr; cbn in contr.
     unfold polynomial_xn, to_free in contr.
-    rewrite <- (single_to_grade_sum_zero nat _ 0) in contr.
-    apply single_to_grade_sum_eq in contr.
+    rewrite <- (single_to_sum_module_zero nat _ 0) in contr.
+    apply single_to_sum_module_eq in contr.
     apply not_trivial_one.
     exact contr.
 Qed.
@@ -315,9 +292,7 @@ Theorem polynomial_xn_grade : ∀ n : nat, of_grade n (polynomial_xn n).
 Proof.
     intros n.
     unfold polynomial_xn.
-    unfold to_free.
-    unfold of_grade; cbn.
-    unfold grade_sum_subspace_set.
+    apply of_grade_ex.
     exists 1.
     reflexivity.
 Qed.
@@ -340,15 +315,15 @@ Let USMO := module_scalar_id (cring_module F).
 Local Existing Instances USM USML USMR USMC USMO.
 
 Definition polynomial_eval (f : polynomial) (x : U)
-    := free_extend F nat (nat_pow x) f : U.
+    := free_extend F nat (nat_pow x : nat → cring_module F) f : U.
 
 Theorem polynomial_eval_constant :
     ∀ a x : U, polynomial_eval (to_polynomial a) x = a.
 Proof.
     intros a x.
     unfold polynomial_eval, to_polynomial.
-    rewrite (free_extend_scalar F nat).
-    rewrite (free_extend_free F nat).
+    rewrite module_homo_scalar.
+    rewrite free_extend_free.
     unfold zero; cbn.
     unfold scalar_mult; cbn.
     apply mult_rid.
@@ -383,7 +358,8 @@ Theorem polynomial_eval_plus : ∀ f g x,
 Proof.
     intros f g x.
     unfold polynomial_eval.
-    apply (free_extend_plus F nat).
+    rewrite module_homo_plus.
+    reflexivity.
 Qed.
 
 Theorem polynomial_eval_neg : ∀ f x,
@@ -391,7 +367,8 @@ Theorem polynomial_eval_neg : ∀ f x,
 Proof.
     intros f x.
     unfold polynomial_eval.
-    apply (free_extend_neg F nat).
+    rewrite module_homo_neg.
+    reflexivity.
 Qed.
 
 Theorem polynomial_eval_scalar : ∀ f a x,
@@ -399,7 +376,7 @@ Theorem polynomial_eval_scalar : ∀ f a x,
 Proof.
     intros f a x.
     unfold polynomial_eval.
-    rewrite (free_extend_scalar F nat).
+    rewrite module_homo_scalar.
     unfold scalar_mult; cbn.
     reflexivity.
 Qed.
@@ -408,10 +385,10 @@ Theorem polynomial_eval_mult : ∀ f g x,
     polynomial_eval (f * g) x = polynomial_eval f x * polynomial_eval g x.
 Proof.
     intros f g x.
-    induction f as [|f f' m fm f'm IHf] using grade_induction.
+    induction f as [|f f'] using grade_induction.
     {
         rewrite mult_lanni.
-        rewrite <- to_polynomial_zero.
+        do 2 rewrite <- to_polynomial_zero.
         rewrite (polynomial_eval_constant 0 x).
         rewrite mult_lanni.
         reflexivity.
@@ -421,11 +398,11 @@ Proof.
     rewrite IHf.
     rewrite rdist.
     apply rplus.
-    clear f' f'm IHf.
-    induction g as [|g g' n gn g'n IHg] using grade_induction.
+    clear f' IHf.
+    induction g as [|g g'] using grade_induction.
     {
         rewrite mult_ranni.
-        rewrite <- to_polynomial_zero.
+        do 2 rewrite <- to_polynomial_zero.
         rewrite (polynomial_eval_constant 0 x).
         rewrite mult_ranni.
         reflexivity.
@@ -435,7 +412,10 @@ Proof.
     rewrite IHg.
     rewrite ldist.
     apply rplus.
-    clear g' g'n IHg.
+    clear g' IHg.
+    destruct f as [f [m fm]].
+    destruct g as [g [n gn]].
+    cbn.
     apply polynomial_xn_ex in fm as [a f_eq].
     apply polynomial_xn_ex in gn as [b g_eq].
     subst f g.

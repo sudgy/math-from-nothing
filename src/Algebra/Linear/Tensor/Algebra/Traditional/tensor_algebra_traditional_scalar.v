@@ -79,66 +79,63 @@ Theorem scalar_to_tensor_scalar : ∀ α (A : tensor_algebra_base V),
     scalar_to_tensor α * A = α · A.
 Proof.
     intros α A.
-    rewrite (grade_decomposition_eq A).
-    remember (grade_decomposition A) as al.
-    clear Heqal A.
-    induction al using ulist_induction.
+    induction A as [|a A] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_ranni.
         rewrite scalar_ranni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
     rewrite ldist.
     rewrite scalar_ldist.
-    rewrite IHal; clear IHal.
-    apply rplus; clear al.
+    rewrite IHA; clear IHA.
+    apply rplus; clear A.
     assert (of_grade 0 (scalar_to_tensor α)) as α0.
     {
+        apply of_grade_ex.
         exists α.
         reflexivity.
     }
     destruct a as [a [i ai]]; cbn.
     rewrite (tensor_mult_homo _ _ _ _ _ α0 ai).
-    pose proof ai as [a' a_eq].
+    pose proof ai as ai'.
+    apply of_grade_ex in ai' as [a' a_eq].
     subst a; cbn.
     unfold scalar_to_tensor.
-    rewrite power_to_tensor_tm.
+    unfold tensor_mult_base.
     rewrite tensor_power_lscalar.
-    apply power_to_tensor_scalar.
+    rewrite power_to_tensor_scalar.
+    unfold grade_from, grade_to; cbn.
+    do 2 rewrite single_to_sum_module_base_eq.
+    reflexivity.
 Qed.
 
 Theorem scalar_to_tensor_comm : ∀ α (A : tensor_algebra_base V),
     scalar_to_tensor α * A = A * scalar_to_tensor α.
 Proof.
     intros α A.
-    rewrite (grade_decomposition_eq A).
-    remember (grade_decomposition A) as al.
-    clear Heqal A.
-    induction al using ulist_induction.
+    induction A as [|a A] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
         rewrite mult_lanni.
         rewrite mult_ranni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
     rewrite ldist.
     rewrite rdist.
-    rewrite IHal; clear IHal.
-    apply rplus; clear al.
+    rewrite IHA; clear IHA.
+    apply rplus; clear A.
     assert (of_grade 0 (scalar_to_tensor α)) as α0.
     {
+        apply of_grade_ex.
         exists α.
         reflexivity.
     }
     destruct a as [a [i ai]]; cbn.
     rewrite (tensor_mult_homo _ _ _ _ _ α0 ai).
     rewrite (tensor_mult_homo _ _ _ _ _ ai α0).
-    pose proof ai as [a' a_eq]; subst a.
+    apply of_grade_ex in ai as [a' a_eq]; subst a.
     unfold scalar_to_tensor.
-    do 2 rewrite power_to_tensor_tm.
+    cbn.
+    unfold tensor_mult_base.
     rewrite tensor_power_lscalar.
     rewrite <- tensor_power_rscalar.
     symmetry.

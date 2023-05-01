@@ -155,10 +155,10 @@
 ./src/Algebra/Linear/Examples/linear_transformation_space.v
 ./src/Algebra/Linear/Examples/linear_sum.v
 ./src/Algebra/Linear/Examples/linear_unital_zero.v
-./src/Algebra/Linear/Grade/linear_free.v
-./src/Algebra/Linear/Grade/linear_grade_base.v
+./src/Algebra/Linear/Grade/linear_sum_module.v
 ./src/Algebra/Linear/Grade/linear_grade.v
 ./src/Algebra/Linear/Grade/linear_grade_sum.v
+./src/Algebra/Linear/Grade/linear_free.v
 ./src/Algebra/Linear/Grade/linear_grade_isomorphism.v
 ./src/Algebra/Linear/Grade/linear_extend.v
 ./src/Algebra/Linear/Grade/linear_basis.v

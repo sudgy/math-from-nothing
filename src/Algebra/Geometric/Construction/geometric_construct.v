@@ -40,19 +40,21 @@ Local Instance FR_mult_assoc : MultAssoc FR.
 Proof.
     split.
     intros a b c.
-    induction a as [|a' v a aa av IHa] using grade_induction.
+    induction a as [|a v] using grade_induction.
     {
         do 3 rewrite mult_lanni.
         reflexivity.
     }
     do 3 rewrite rdist.
-    rewrite IHa.
+    rewrite IHv.
     apply rplus.
+    destruct a as [a' [a aa]]; cbn.
     apply to_free_ex in aa as [α a_eq]; subst a'.
     do 3 rewrite scalar_lmult.
     apply f_equal.
-    clear v α av IHa.
-    induction b as [|b' v b bb bv IHb] using grade_induction.
+    clear v α IHv.
+    change (sum_module_type _ _) with (module_V FR).
+    induction b as [|b v] using grade_induction.
     {
         rewrite mult_lanni.
         rewrite mult_ranni.
@@ -62,28 +64,30 @@ Proof.
     rewrite rdist.
     do 2 rewrite ldist.
     rewrite rdist.
-    rewrite IHb.
+    rewrite IHv.
     apply rplus.
+    destruct b as [b' [b bb]]; cbn.
     apply to_free_ex in bb as [β b_eq]; subst b'.
     rewrite scalar_lmult.
     do 2 rewrite scalar_rmult.
     rewrite scalar_lmult.
     apply f_equal.
-    clear v β bv IHb.
-    induction c as [|c' v c cc cv IHc] using grade_induction.
+    clear v β IHv.
+    change (sum_module_type _ _) with (module_V FR).
+    induction c as [|c v] using grade_induction.
     {
         do 3 rewrite mult_ranni.
         reflexivity.
     }
     do 3 rewrite ldist.
-    rewrite IHc.
+    rewrite IHv.
     apply rplus.
+    destruct c as [c' [c cc]]; cbn.
     apply to_free_ex in cc as [γ c_eq]; subst c'.
     do 3 rewrite scalar_rmult.
     apply f_equal.
-    clear v γ cv IHc.
+    clear v γ IHv.
     unfold mult; cbn.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
     do 4 rewrite (free_bilinear_free U (list V)).
     rewrite plus_assoc.
     reflexivity.
@@ -95,19 +99,19 @@ Local Instance FR_mult_lid : MultLid FR.
 Proof.
     split.
     intros a.
-    induction a as [|a' v a aa av IHa] using grade_induction.
+    induction a as [|a v] using grade_induction.
     {
         apply mult_ranni.
     }
     rewrite ldist.
-    rewrite IHa.
+    rewrite IHv.
     apply rplus.
+    destruct a as [a' [a aa]]; cbn.
     apply to_free_ex in aa as [α a_eq]; subst a'.
     rewrite scalar_rmult.
     apply f_equal.
-    clear v α av IHa.
+    clear v α IHv.
     unfold one, mult; cbn.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
     rewrite (free_bilinear_free U (list (module_V V))).
     rewrite list_conc_lid.
     reflexivity.
@@ -116,19 +120,19 @@ Local Instance FR_mult_rid : MultRid FR.
 Proof.
     split.
     intros a.
-    induction a as [|a' v a aa av IHa] using grade_induction.
+    induction a as [|a v] using grade_induction.
     {
         apply mult_lanni.
     }
     rewrite rdist.
-    rewrite IHa.
+    rewrite IHv.
     apply rplus.
+    destruct a as [a' [a aa]]; cbn.
     apply to_free_ex in aa as [α a_eq]; subst a'.
     rewrite scalar_lmult.
     apply f_equal.
-    clear v α av IHa.
+    clear v α IHv.
     unfold one, mult; cbn.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
     rewrite (free_bilinear_free U (list (module_V V))).
     rewrite list_conc_rid.
     reflexivity.
@@ -169,7 +173,7 @@ Proof.
     cbn.
     change (ideal_generated_by_set ga_ideal_base) with (ideal_set ga_ideal).
     intros eq.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     rewrite <- scalar_rneg.
     rewrite <- scalar_ldist.
     rewrite <- (mult_lid (u - v)).
@@ -188,7 +192,7 @@ Proof.
     equiv_get_value v.
     unfold scalar_mult; equiv_simpl.
     apply f_equal.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     apply scalar_comp.
 Qed.
 Local Instance geometric_algebra_scalar_id : ScalarId U geometric_algebra_base.
@@ -198,7 +202,7 @@ Proof.
     equiv_get_value v.
     unfold scalar_mult; equiv_simpl.
     apply f_equal.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     apply scalar_id.
 Qed.
 Local Instance geometric_algebra_scalar_ldist : ScalarLdist U geometric_algebra_base.
@@ -208,7 +212,7 @@ Proof.
     equiv_get_value u v.
     unfold plus, scalar_mult; equiv_simpl.
     apply f_equal.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     apply scalar_ldist.
 Qed.
 Local Instance geometric_algebra_scalar_rdist : ScalarRdist U geometric_algebra_base.
@@ -218,7 +222,7 @@ Proof.
     equiv_get_value v.
     unfold scalar_mult, plus at 2; equiv_simpl.
     apply f_equal.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     apply scalar_rdist.
 Qed.
 Local Instance geometric_scalar_lmult : ScalarLMult U geometric_algebra_base.
@@ -261,7 +265,7 @@ Proof.
     cbn.
     rewrite ulist_sum_add, ulist_sum_end.
     rewrite mult_lid, mult_rid.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     rewrite plus_rid.
     rewrite neg_plus, plus_assoc.
     reflexivity.
@@ -286,7 +290,7 @@ Proof.
     cbn.
     rewrite ulist_sum_add, ulist_sum_end.
     rewrite mult_lid, mult_rid.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     rewrite plus_rid.
     reflexivity.
 Qed.
@@ -299,7 +303,7 @@ Proof.
     unfold scalar_mult; cbn.
     unfold to_qring; equiv_simpl.
     unfold mult; cbn.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     rewrite (free_bilinear_free U (list V)).
     rewrite list_conc_add, list_conc_lid.
     unfold ideal_generated_by_set.
@@ -314,7 +318,7 @@ Proof.
     cbn.
     rewrite ulist_sum_add, ulist_sum_end.
     rewrite mult_lid, mult_rid.
-    change (linear_grade_sum.grade_sum_type _ _) with (module_V FR).
+    change (sum_module_type _ _) with (module_V FR).
     rewrite plus_rid.
     reflexivity.
 Qed.

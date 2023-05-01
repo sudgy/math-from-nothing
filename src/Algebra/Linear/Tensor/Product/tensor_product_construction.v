@@ -198,13 +198,13 @@ Proof.
     intros T.
     equiv_get_value T.
     destruct T as [T T_fin'].
-    unfold grade_sum_finite in T_fin'.
+    unfold sum_module_finite in T_fin'.
     pose proof T_fin' as T_fin.
     (* TODO: Get rid of the use of cardinals here *)
     rewrite simple_finite_finite in T_fin.
     apply fin_nat_ex in T_fin as [n n_eq].
     revert T T_fin' n_eq.
-    unfold grade_sum_finite.
+    unfold sum_module_finite.
     nat_induction n.
     {
         intros T T_fin' eq.
@@ -316,7 +316,7 @@ Proof.
         unfold scalar_mult; cbn.
         replace (fst [x|], snd [x|]) with [x|].
         2: destruct [x|]; reflexivity.
-        unfold single_to_grade_sum_base.
+        unfold single_to_sum_module_base.
         assert ((v = [x|]) = ([x|] = v)) as eq.
         {
             apply propositional_ext; split; intro; symmetry; assumption.

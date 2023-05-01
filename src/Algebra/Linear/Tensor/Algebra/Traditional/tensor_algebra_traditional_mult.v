@@ -8,6 +8,7 @@ Require Import tensor_product_assoc.
 Require Import module_category.
 Require Import linear_grade.
 Require Import linear_extend.
+Require Import linear_bilinear.
 
 Require Import nat.
 Require Import set.
@@ -69,256 +70,126 @@ Existing Instances UP UZ UN UPA UPC UPZ UPN UM UO UMA UMC UMO UMD TP TZ TN TPC
 (* end hide *)
 Let k_tensor k := module_V (tensor_power V k).
 
-Definition tensor_mult_base i j a b (ai : of_grade i a) (bj : of_grade j b)
-    := power_to_tensor V (tensor_power_mult V _ _
-        (tensor_mult _ _ (ex_val ai) (ex_val bj))).
+Definition tensor_mult_base i j (a : tensor_power V i) (b : tensor_power V j)
+    := power_to_tensor V (tensor_power_mult V _ _ (tensor_mult _ _ a b))
+    : tensor_algebra_base V.
 
-Lemma power_to_tensor_tm :
-    ∀ k1 k2 (A : k_tensor k1) (B : k_tensor k2) AH BH,
-    tensor_mult_base k1 k2 (power_to_tensor V A) (power_to_tensor V B) AH BH
-    = power_to_tensor V
-        (tensor_power_mult V _ _ (tensor_mult _ _ A B)).
+Theorem tensor_mult_base_bilinear : ∀ i j, bilinear (tensor_mult_base i j).
 Proof.
-    intros k1 k2 A B Ak1 Bk2.
-    unfold tensor_mult_base.
-    rewrite_ex_val A' A'_eq.
-    rewrite_ex_val B' B'_eq.
-    apply power_to_tensor_eq in A'_eq.
-    apply power_to_tensor_eq in B'_eq.
-    subst A' B'.
-    reflexivity.
-Qed.
-
-Theorem tensor_mult_base_ldist : bilinear_extend_ldist_base tensor_mult_base.
-Proof.
-    intros u' v' w' i j ui vj wj.
-    pose proof ui as [u u_eq].
-    pose proof vj as [v v_eq].
-    pose proof wj as [w w_eq].
-    subst u' v' w'.
-    assert (of_grade j (power_to_tensor V (v + w))) as vwj.
-    {
-        rewrite power_to_tensor_plus.
-        apply of_grade_plus; assumption.
-    }
-    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ vwj)
-        by (symmetry; apply power_to_tensor_plus).
-    do 3 rewrite power_to_tensor_tm.
-    rewrite (tensor_ldist (tensor_power V i)).
-    rewrite module_homo_plus.
-    rewrite power_to_tensor_plus.
-    reflexivity.
-Qed.
-Theorem tensor_mult_base_rdist : bilinear_extend_rdist_base tensor_mult_base.
-Proof.
-    intros u' v' w' i j ui vi wj.
-    pose proof ui as [u u_eq].
-    pose proof vi as [v v_eq].
-    pose proof wj as [w w_eq].
-    subst u' v' w'.
-    assert (of_grade i (power_to_tensor V (u + v))) as uvi.
-    {
-        rewrite power_to_tensor_plus.
-        apply of_grade_plus; assumption.
-    }
-    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ uvi)
-        by (symmetry; apply power_to_tensor_plus).
-    do 3 rewrite power_to_tensor_tm.
-    rewrite (tensor_rdist (tensor_power V i)).
-    rewrite module_homo_plus.
-    rewrite power_to_tensor_plus.
-    reflexivity.
-Qed.
-Theorem tensor_mult_base_lscalar :
-    bilinear_extend_lscalar_base tensor_mult_base.
-Proof.
-    intros a u' v' i j ui vj.
-    pose proof ui as [u u_eq].
-    pose proof vj as [v v_eq].
-    subst u' v'.
-    assert (of_grade i (power_to_tensor V (a · u))) as aui.
-    {
-        rewrite power_to_tensor_scalar.
-        apply of_grade_scalar.
-        exact ui.
-    }
-    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ aui)
-        by (symmetry; apply power_to_tensor_scalar).
-    do 2 rewrite power_to_tensor_tm.
-    rewrite (tensor_lscalar (tensor_power V i)).
-    rewrite module_homo_scalar.
-    rewrite power_to_tensor_scalar.
-    reflexivity.
-Qed.
-Theorem tensor_mult_base_rscalar :
-    bilinear_extend_rscalar_base tensor_mult_base.
-Proof.
-    intros a u' v' i j ui vj.
-    pose proof ui as [u u_eq].
-    pose proof vj as [v v_eq].
-    subst u' v'.
-    assert (of_grade j (power_to_tensor V (a · v))) as avj.
-    {
-        rewrite power_to_tensor_scalar.
-        apply of_grade_scalar.
-        exact vj.
-    }
-    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ avj)
-        by (symmetry; apply power_to_tensor_scalar).
-    do 2 rewrite power_to_tensor_tm.
-    rewrite (tensor_rscalar (tensor_power V i)).
-    rewrite module_homo_scalar.
-    rewrite power_to_tensor_scalar.
-    reflexivity.
+    intros i j.
+    repeat split.
+    -   intros a u v.
+        unfold tensor_mult_base.
+        rewrite tensor_lscalar.
+        rewrite module_homo_scalar.
+        apply power_to_tensor_scalar.
+    -   intros a u v.
+        unfold tensor_mult_base.
+        rewrite tensor_rscalar.
+        rewrite module_homo_scalar.
+        apply power_to_tensor_scalar.
+    -   intros u v w.
+        unfold tensor_mult_base.
+        rewrite tensor_rdist.
+        rewrite module_homo_plus.
+        apply power_to_tensor_plus.
+    -   intros u v w.
+        unfold tensor_mult_base.
+        rewrite tensor_ldist.
+        rewrite module_homo_plus.
+        apply power_to_tensor_plus.
 Qed.
 
 Instance tensor_mult_class : Mult (tensor_algebra_base V) := {
-    mult A B := bilinear_extend tensor_mult_base A B
+    mult A B := bilinear_extend (λ i j, [_|tensor_mult_base_bilinear i j]) A B
 }.
 
-(* begin show *)
 Local Program Instance tensor_mult_ldist : Ldist (tensor_algebra_base V).
-(* end show *)
 Next Obligation.
-    apply bilinear_extend_ldist.
-    -   apply tensor_mult_base_ldist.
-    -   apply tensor_mult_base_rscalar.
+    exact (bilinear_extend_ldist (λ i j, [_|tensor_mult_base_bilinear i j]) a b c).
 Qed.
 
-(* begin show *)
 Local Program Instance tensor_mult_rdist : Rdist (tensor_algebra_base V).
-(* end show *)
 Next Obligation.
-    apply bilinear_extend_rdist.
-    -   apply tensor_mult_base_rdist.
-    -   apply tensor_mult_base_lscalar.
+    exact (bilinear_extend_rdist (λ i j, [_|tensor_mult_base_bilinear i j]) a b c).
 Qed.
 
-(* begin show *)
 Local Program Instance tensor_scalar_lmult : ScalarLMult U (tensor_algebra_base V).
-(* end show *)
 Next Obligation.
-    apply bilinear_extend_lscalar.
-    -   apply tensor_mult_base_rdist.
-    -   apply tensor_mult_base_lscalar.
+    exact (bilinear_extend_lscalar (λ i j, [_|tensor_mult_base_bilinear i j]) a u v).
 Qed.
 
-(* begin show *)
 Local Program Instance tensor_scalar_rmult : ScalarRMult U (tensor_algebra_base V).
-(* end show *)
 Next Obligation.
-    apply bilinear_extend_rscalar.
-    -   apply tensor_mult_base_ldist.
-    -   apply tensor_mult_base_rscalar.
+    exact (bilinear_extend_rscalar (λ i j, [_|tensor_mult_base_bilinear i j]) a u v).
 Qed.
 
-Theorem tensor_mult_homo : ∀ i j u v H1 H2,
-    u * v = tensor_mult_base i j u v H1 H2.
+Theorem tensor_mult_homo : ∀ i j u v (H1 : of_grade i u) (H2 : of_grade j v),
+    u * v = tensor_mult_base i j ([grade_to u|] i) ([grade_to v|] j).
 Proof.
-    apply bilinear_extend_homo.
-    -   apply tensor_mult_base_ldist.
-    -   apply tensor_mult_base_rdist.
-    -   apply tensor_mult_base_lscalar.
-    -   apply tensor_mult_base_rscalar.
-Qed.
-
-Lemma tensor_mult_base_grade : ∀ u v i j H1 H2,
-    of_grade (plus (U := nat) i j) (tensor_mult_base i j u v H1 H2).
-Proof.
-    intros u v i j ui vj.
-    exists (tensor_power_mult V _ _
-        (tensor_mult _ _ (ex_val ui) (ex_val vj))).
+    intros i j u v iu jv.
+    unfold mult; cbn.
+    rewrite (bilinear_extend_homo _ i j u v iu jv).
     reflexivity.
 Qed.
 
-Program Instance tensor_grade_mult : GradedAlgebraObj U (tensor_algebra_base V).
-Next Obligation.
-    rename H into ui, H0 into vj.
-    rewrite (tensor_mult_homo i j u v ui vj).
-    apply tensor_mult_base_grade.
+Lemma tensor_mult_base_grade : ∀ i j u v,
+    of_grade (plus (U := nat) i j) (tensor_mult_base i j u v).
+Proof.
+    intros i j u v.
+    apply of_grade_ex.
+    exists (tensor_power_mult V _ _ (tensor_mult _ _ u v)).
+    reflexivity.
 Qed.
 
 Program Instance tensor_mult_assoc : MultAssoc (tensor_algebra_base V).
 Next Obligation.
-    rewrite (grade_decomposition_eq a).
-    rewrite (grade_decomposition_eq b).
-    rewrite (grade_decomposition_eq c).
-    rename a into A, b into B, c into C.
-    remember (grade_decomposition A) as al.
-    remember (grade_decomposition B) as bl.
-    remember (grade_decomposition C) as cl.
-    clear Heqal Heqbl Heqcl.
-    induction cl as [|c cl] using ulist_induction.
+    induction a as [|a a'] using grade_induction.
     {
-        rewrite ulist_image_end, ulist_sum_end.
-        do 3 rewrite mult_ranni.
-        reflexivity.
-    }
-    rewrite ulist_image_add, ulist_sum_add.
-    do 3 rewrite ldist.
-    rewrite IHcl; clear IHcl.
-    apply rplus.
-    clear cl.
-    induction bl as [|b bl] using ulist_induction.
-    {
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite mult_lanni, mult_ranni.
-        rewrite mult_lanni.
-        reflexivity.
-    }
-    rewrite ulist_image_add, ulist_sum_add.
-    rewrite rdist.
-    do 2 rewrite ldist.
-    rewrite rdist.
-    rewrite IHbl; clear IHbl.
-    apply rplus.
-    clear bl.
-    induction al as [|a al] using ulist_induction.
-    {
-        rewrite ulist_image_end, ulist_sum_end.
         do 3 rewrite mult_lanni.
         reflexivity.
     }
-    rewrite ulist_image_add, ulist_sum_add.
-    rewrite rdist.
-    rewrite rdist.
-    rewrite rdist.
-    rewrite IHal; clear IHal.
+    do 3 rewrite rdist.
+    rewrite IHa.
     apply rplus.
+    clear a' IHa.
+    induction b as [|b b'] using grade_induction.
+    {
+        rewrite mult_lanni.
+        do 2 rewrite mult_ranni.
+        rewrite mult_lanni.
+        reflexivity.
+    }
+    rewrite ldist.
+    do 2 rewrite rdist.
+    rewrite ldist.
+    rewrite IHb.
+    apply rplus.
+    clear b' IHb.
+    induction c as [|c c'] using grade_induction.
+    {
+        do 3 rewrite mult_ranni.
+        reflexivity.
+    }
+    do 3 rewrite ldist.
+    rewrite IHc.
+    apply rplus.
+    clear c' IHc.
 
-    clear A B C al.
     destruct a as [a [i ai]]; cbn.
     destruct b as [b [j bj]]; cbn.
     destruct c as [c [k ck]]; cbn.
     rewrite (tensor_mult_homo j k b c bj ck).
     rewrite (tensor_mult_homo i j a b ai bj).
-    pose proof (tensor_mult_base_grade _ _ _ _ bj ck) as bcjk.
-    pose proof (tensor_mult_base_grade _ _ _ _ ai bj) as abij.
+    pose proof (tensor_mult_base_grade _ _ ([grade_to b|] j) ([grade_to c|] k))
+        as bcjk.
+    pose proof (tensor_mult_base_grade _ _ ([grade_to a|] i) ([grade_to b|] j))
+        as abij.
     rewrite (tensor_mult_homo _ _ _ _ ai bcjk).
     rewrite (tensor_mult_homo _ _ _ _ abij ck).
-    rename a into a', b into b', c into c'.
-    pose proof ai as [a a_eq].
-    pose proof bj as [b b_eq].
-    pose proof ck as [c c_eq].
-    subst a' b' c'.
-
-    pose proof (power_to_tensor_tm i j a b ai bj) as eq.
-    assert (of_grade (i + j) (power_to_tensor V (
-        tensor_power_mult V i j (tensor_mult _ _ a b)))) as abij'.
-    {
-        rewrite <- eq.
-        exact abij.
-    }
-    rewrite (bilinear_extend_base_leq _ _ _ _ _ _ _ abij' _ eq); clear eq.
-    pose proof (power_to_tensor_tm j k b c bj ck) as eq.
-    assert (of_grade (j + k) (power_to_tensor V (
-        tensor_power_mult V j k (tensor_mult _ _ b c)))) as bcjk'.
-    {
-        rewrite <- eq.
-        exact bcjk.
-    }
-    rewrite (bilinear_extend_base_req _ _ _ _ _ _ _ _ bcjk' eq); clear eq.
-    do 2 rewrite power_to_tensor_tm.
+    unfold tensor_mult_base; cbn.
+    unfold grade_to; cbn.
+    do 2 rewrite single_to_sum_module_base_eq.
     rewrite <- tensor_power_mult_assoc.
     cbn in i, j, k.
     destruct (plus_assoc i j k); cbn.

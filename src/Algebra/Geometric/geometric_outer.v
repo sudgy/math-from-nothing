@@ -3,6 +3,7 @@ Require Import init.
 Require Import order_minmax.
 
 Require Import linear_extend.
+Require Import linear_bilinear.
 
 Require Export geometric_base.
 
@@ -26,42 +27,34 @@ Local Open Scope geo_scope.
 Local Open Scope nat_scope.
 
 (* end hide *)
-Definition geo_outer_base i j (a b : geo) (ai : of_grade i a) (bj : of_grade j b)
-    := grade_project (a * b) (i + j) : geo.
+Definition geo_outer_base i j (a : grade_modules i) (b : grade_modules j)
+    := grade_project (grade_modules_from a * grade_modules_from b) (i + j) :geo.
 
-Lemma geo_outer_ldist_base : bilinear_extend_ldist_base geo_outer_base.
+Lemma geo_outer_bilinear : ∀ i j, bilinear (geo_outer_base i j).
 Proof.
-    intros u v w i j ui vj wj.
+    intros i j.
     unfold geo_outer_base.
-    rewrite ldist.
-    apply grade_project_plus.
+    repeat split.
+    -   intros a u v.
+        rewrite module_homo_scalar.
+        rewrite scalar_lmult.
+        apply grade_project_scalar.
+    -   intros a u v.
+        rewrite module_homo_scalar.
+        rewrite scalar_rmult.
+        apply grade_project_scalar.
+    -   intros a u v.
+        rewrite module_homo_plus.
+        rewrite rdist.
+        apply grade_project_plus.
+    -   intros a u v.
+        rewrite module_homo_plus.
+        rewrite ldist.
+        apply grade_project_plus.
 Qed.
 
-Lemma geo_outer_rdist_base : bilinear_extend_rdist_base geo_outer_base.
-Proof.
-    intros u v w i j ui vi wj.
-    unfold geo_outer_base.
-    rewrite rdist.
-    apply grade_project_plus.
-Qed.
-
-Lemma geo_outer_lscalar_base : bilinear_extend_lscalar_base geo_outer_base.
-Proof.
-    intros a u v i j ui vj.
-    unfold geo_outer_base.
-    rewrite scalar_lmult.
-    apply grade_project_scalar.
-Qed.
-
-Lemma geo_outer_rscalar_base : bilinear_extend_rscalar_base geo_outer_base.
-Proof.
-    intros a u v i j ui vj.
-    unfold geo_outer_base.
-    rewrite scalar_rmult.
-    apply grade_project_scalar.
-Qed.
-
-Definition geo_outer := bilinear_extend geo_outer_base : geo → geo → geo.
+Definition geo_outer := bilinear_extend (λ i j, [_|geo_outer_bilinear i j])
+    : geo → geo → geo.
 
 (** Note: Because Coq already uses ∧ for logical and, this symbol is actually
 \bigwedge, not \wedge!
@@ -73,29 +66,21 @@ Local Infix "⋀" := geo_outer (at level 34, left associativity).
 Theorem outer_ldist : ∀ a b c, a ⋀ (b + c) = a ⋀ b + a ⋀ c.
 Proof.
     apply bilinear_extend_ldist.
-    -   exact geo_outer_ldist_base.
-    -   exact geo_outer_rscalar_base.
 Qed.
 
 Theorem outer_rdist : ∀ a b c, (a + b) ⋀ c = a ⋀ c + b ⋀ c.
 Proof.
     apply bilinear_extend_rdist.
-    -   exact geo_outer_rdist_base.
-    -   exact geo_outer_lscalar_base.
 Qed.
 
 Theorem outer_lscalar : ∀ a u v, (a · u) ⋀ v = a · (u ⋀ v).
 Proof.
     apply bilinear_extend_lscalar.
-    -   apply geo_outer_rdist_base.
-    -   apply geo_outer_lscalar_base.
 Qed.
 
 Theorem outer_rscalar : ∀ a u v, u ⋀ (a · v) = a · (u ⋀ v).
 Proof.
     apply bilinear_extend_rscalar.
-    -   apply geo_outer_ldist_base.
-    -   apply geo_outer_rscalar_base.
 Qed.
 
 Theorem outer_lanni : ∀ a, 0 ⋀ a = 0.
@@ -115,15 +100,15 @@ Proof.
 Qed.
 
 Lemma outer_homo : ∀ i j u v (ui : of_grade i u) (vj : of_grade j v),
-    u ⋀ v = geo_outer_base i j u v ui vj.
+    u ⋀ v = grade_project (u * v) (i + j).
 Proof.
     intros i j u v ui vj.
     unfold geo_outer.
-    apply bilinear_extend_homo.
-    -   exact geo_outer_ldist_base.
-    -   exact geo_outer_rdist_base.
-    -   exact geo_outer_lscalar_base.
-    -   exact geo_outer_rscalar_base.
+    rewrite (bilinear_extend_homo _ _ _ _ _ ui vj); cbn.
+    unfold geo_outer_base.
+    rewrite grade_modules_from_to by exact ui.
+    rewrite grade_modules_from_to by exact vj.
+    reflexivity.
 Qed.
 
 Let EG := exterior_grade V.
@@ -139,7 +124,7 @@ Proof.
     remember (E a') as a.
     remember (E b') as b.
     clear a' b' Heqa Heqb.
-    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := EG)).
+    induction b as [|b b'] using grade_induction.
     {
         rewrite mult_ranni.
         do 2 rewrite ext_to_geo_zero.
@@ -149,7 +134,7 @@ Proof.
     do 2 rewrite ext_to_geo_plus.
     rewrite outer_ldist.
     rewrite IHb; clear IHb.
-    apply rplus; clear b' b'n.
+    apply rplus; clear b'.
     pose proof (ext_sum V a) as [l l_eq]; subst a.
     induction l as [|[α al] l] using ulist_induction.
     {
@@ -168,24 +153,18 @@ Proof.
     do 2 rewrite ext_to_geo_scalar.
     rewrite outer_lscalar.
     apply lscalar; clear α.
-    assert (of_grade (H9 := GG) (list_size al)
+    assert (of_grade (list_size al)
         (G (list_prod (list_image (vector_to_ext V) al)))) as al_grade.
     {
-        exists (list_prod (list_image (vector_to_ext V) al)).
-        split; [>|reflexivity].
+        apply ext_to_geo_of_grade.
         apply ext_list_grade.
     }
-    assert (of_grade (H9 := GG) n (G b)) as b_grade.
-    {
-        exists b.
-        split; [>exact bn|reflexivity].
-    }
+    destruct b as [b [n b_grade]]; cbn.
+    apply (ext_to_geo_of_grade B b n) in b_grade.
     rewrite (outer_homo _ _ _ _ al_grade b_grade).
-    unfold geo_outer_base.
     clear al_grade.
     induction al as [|v al].
     {
-        cbn.
         rewrite ext_to_geo_one.
         do 2 rewrite mult_lid.
         rewrite plus_lid.
@@ -206,10 +185,10 @@ Proof.
     rewrite ext_to_geo_add.
     rewrite rdist.
     rewrite grade_project_plus.
-    assert (of_grade (H9 := GG) m (G a)) as a_grade'.
+    assert (of_grade m (G a)) as a_grade'.
     {
-        exists a.
-        split; [>exact a_grade|reflexivity].
+        apply ext_to_geo_of_grade.
+        exact a_grade.
     }
     rewrite mult_lneg.
     rewrite grade_project_neg.

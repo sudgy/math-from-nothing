@@ -64,7 +64,7 @@ Qed.
 Theorem scalar_part_comm : ∀ A B, scalar_part (A * B) = scalar_part (B * A).
 Proof.
     intros a b.
-    induction a as [|a a' m am a'm IHa] using (grade_induction (VG := GG)).
+    induction a as [|a a'] using grade_induction.
     {
         rewrite mult_lanni, mult_ranni.
         reflexivity.
@@ -72,8 +72,8 @@ Proof.
     rewrite rdist, ldist.
     do 2 rewrite scalar_part_plus.
     rewrite IHa.
-    apply rplus; clear a' a'm IHa.
-    induction b as [|b b' n bn b'n IHb] using (grade_induction (VG := GG)).
+    apply rplus; clear a' IHa.
+    induction b as [|b b'] using grade_induction.
     {
         rewrite mult_lanni, mult_ranni.
         reflexivity.
@@ -81,7 +81,10 @@ Proof.
     rewrite rdist, ldist.
     do 2 rewrite scalar_part_plus.
     rewrite IHb.
-    apply rplus; clear b' b'n IHb.
+    apply rplus; clear b' IHb.
+    destruct a as [a [m am]].
+    destruct b as [b [n bn]].
+    cbn.
     classic_case (m = n) as [eq|neq].
     -   subst m.
         rewrite <- (geo_reverse_reverse B (a * b)).

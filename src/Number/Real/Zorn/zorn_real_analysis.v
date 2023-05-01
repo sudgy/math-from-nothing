@@ -138,7 +138,7 @@ Theorem polynomial_bounded : ∀ (f : polynomial real_cring) a b,
     ∃ M, ∀ x, a ≤ x → x ≤ b → |polynomial_eval f x| ≤ M.
 Proof.
     intros f a b.
-    induction f as [|f f' n fn fn' IHf] using grade_induction.
+    induction f as [|f f'] using grade_induction.
     {
         exists 0.
         intros x ax xb.
@@ -147,6 +147,7 @@ Proof.
         apply refl.
     }
     destruct IHf as [M1 M1_max].
+    destruct f as [f [n fn]]; cbn.
     apply polynomial_xn_ex in fn as [α f_eq]; subst f.
     pose proof (polynomial_bounded_xn n a b) as [M2 M2_max].
     exists (M1 + |α| * M2).
@@ -339,7 +340,7 @@ Theorem polynomial_continuous : ∀ (f : polynomial real_cring),
     |polynomial_eval f x - polynomial_eval f y| < ε.
 Proof.
     intros f.
-    induction f as [|f f' n fn fn' IHf] using grade_induction.
+    induction f as [|f f'] using grade_induction.
     {
         intros ε ε_pos.
         exists 1.
@@ -352,6 +353,7 @@ Proof.
         exact ε_pos.
     }
     intros ε ε_pos.
+    destruct f as [f [n fn]]; cbn.
     apply polynomial_xn_ex in fn as [a f_eq]; subst f.
     pose proof (polynomial_continuous_xn n) as xn_lim.
     classic_case (0 = a) as [a_z|a_nz].
@@ -396,7 +398,7 @@ Proof.
     rewrite <- (plus_assoc (a * (x^n)%nat)).
     rewrite (plus_comm _ (-(a * (y^n)%nat))).
     rewrite plus_assoc.
-    rewrite <- (plus_assoc _ (polynomial_eval _ _)).
+    rewrite <- (plus_assoc _ (polynomial_eval f' x)).
     apply abs_tri.
 Qed.
 

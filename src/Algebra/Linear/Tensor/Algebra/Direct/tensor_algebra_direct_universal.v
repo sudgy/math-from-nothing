@@ -115,47 +115,36 @@ Proof.
         assert (HomomorphismPlus h1) as h1_plus.
         {
             split.
-            apply (free_extend_plus _ _).
+            apply module_homo_plus.
         }
         assert (∀ α v, h1 (α · v) = α · h1 v) as h1_scalar.
         {
-            apply (free_extend_scalar _ _).
+            apply module_homo_scalar.
         }
         assert (HomomorphismMult h1) as h1_mult.
         {
             split.
             intros a b.
-            rewrite (grade_decomposition_eq a).
-            rewrite (grade_decomposition_eq b).
-            pose (u := grade_decomposition a).
-            pose (v := grade_decomposition b).
-            fold u v.
-            clearbody u v.
-            clear a b.
-            induction u as [|a u] using ulist_induction.
+            induction a as [|a u] using grade_induction.
             {
-                rewrite ulist_image_end, ulist_sum_end.
                 rewrite mult_lanni.
                 rewrite homo_zero.
                 rewrite mult_lanni.
                 reflexivity.
             }
-            rewrite ulist_image_add, ulist_sum_add.
             rewrite rdist.
             do 2 rewrite (homo_plus (f := h1)).
             rewrite rdist.
             rewrite IHu.
             apply rplus.
             clear u IHu.
-            induction v as [|b v] using ulist_induction.
+            induction b as [|b v] using grade_induction.
             {
-                rewrite ulist_image_end, ulist_sum_end.
                 rewrite mult_ranni.
                 rewrite homo_zero.
                 rewrite mult_ranni.
                 reflexivity.
             }
-            rewrite ulist_image_add, ulist_sum_add.
             rewrite ldist.
             do 2 rewrite (homo_plus (f := h1)).
             rewrite ldist.
@@ -275,22 +264,17 @@ Proof.
         equiv_get_value v.
         change (to_equiv (ideal_equiv (tensor_ideal V)) v) with
             (to_qring (tensor_ideal V) v).
-        rewrite (grade_decomposition_eq v).
-        remember (grade_decomposition v) as l.
-        clear v Heql.
-        induction l as [|a l] using ulist_induction.
+        induction v as [|a v] using grade_induction.
         {
-            rewrite ulist_image_end, ulist_sum_end.
             rewrite to_qring_zero.
             do 2 rewrite algebra_homo_zero.
             reflexivity.
         }
-        rewrite ulist_image_add, ulist_sum_add.
         rewrite to_qring_plus.
         do 2 rewrite algebra_homo_plus.
-        rewrite IHl.
+        rewrite IHv.
         apply rplus.
-        clear l IHl.
+        clear v IHv.
         destruct a as [v [l vl]]; cbn.
         apply to_free_ex in vl as [α v_eq]; subst v.
         rewrite to_qring_scalar.

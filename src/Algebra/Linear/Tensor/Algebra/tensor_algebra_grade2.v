@@ -42,106 +42,68 @@ Proof.
         change (module_homo_f (to_algebra_homo V (to_tensor_algebra V)))
             with (vector_to_tensor (V := V)) in h1_eq.
         pose (TNG := tensor_n_grade V).
-        pose (h2 (i : nat) (a : algebra_V (tensor_algebra_n V))
-            (H : of_grade i a) := h1 [ex_val H|]).
-        assert (linear_extend_plus_base (VG := TNG) h2) as h2_plus.
+        pose (TNGA := tensor_n_grade_mult V).
+        pose (h2 (i : nat) (a : tensor_n_module V i) := h1 [a|]).
+        assert (∀ i, ∀ u v, h2 i (u + v) = h2 i u + h2 i v) as h2_plus.
         {
-            intros u' v' i iu iv.
+            intros i u v.
             unfold h2.
-            rewrite_ex_val uv uv_eq.
-            rewrite_ex_val u u_eq.
-            rewrite_ex_val v v_eq.
-            rewrite <- algebra_homo_plus.
-            apply f_equal.
-            subst u' v'.
-            rewrite <- to_tensor_n_plus in uv_eq.
-            apply single_to_grade_sum_eq in uv_eq.
-            rewrite uv_eq.
-            reflexivity.
+            unfold plus at 1; cbn.
+            apply algebra_homo_plus.
         }
-        assert (linear_extend_scalar_base (VG := TNG) h2) as h2_scalar.
+        assert (∀ i, ∀ a v, h2 i (a · v) = a · h2 i v) as h2_scalar.
         {
-            intros a v' i iv.
+            intros i a v.
             unfold h2.
-            rewrite_ex_val av av_eq.
-            rewrite_ex_val v v_eq.
-            rewrite <- algebra_homo_scalar.
-            apply f_equal.
-            subst v'.
-            rewrite <- to_tensor_n_scalar in av_eq.
-            apply single_to_grade_sum_eq in av_eq.
-            rewrite av_eq.
-            reflexivity.
+            unfold scalar_mult at 1; cbn.
+            apply algebra_homo_scalar.
         }
-        pose (h3 := linear_extend (VG := TNG) h2
-            : algebra_V (tensor_algebra_n V) → algebra_V A).
-        assert (∀ u v, h3 (u + v) = h3 u + h3 v) as h3_plus.
-        {
-            apply (linear_extend_plus _ h2_plus h2_scalar).
-        }
-        assert (∀ a v, h3 (a · v) = a · h3 v) as h3_scalar.
-        {
-            apply (linear_extend_scalar _ h2_plus h2_scalar).
-        }
-        assert (h3 0 = 0) as h3_zero.
-        {
-            rewrite <- (scalar_lanni 0).
-            rewrite h3_scalar.
-            apply scalar_lanni.
-        }
+        pose (h3 := linear_extend (λ i,
+            make_module_homomorphism _ _ _ (h2 i) (h2_plus i) (h2_scalar i))
+            : ModuleObjHomomorphism (tensor_algebra_n V) A).
         assert (∀ u v, h3 (u * v) = h3 u * h3 v) as h3_mult.
         {
             intros u v.
-            induction u as [|u u' i iu iu' IHu]
-                using (grade_induction (VG := TNG)).
+            induction u as [|u u'] using grade_induction.
             {
-                rewrite h3_zero.
+                rewrite module_homo_zero.
                 do 2 rewrite mult_lanni.
-                exact h3_zero.
+                apply module_homo_zero.
             }
             rewrite rdist.
-            do 2 rewrite h3_plus.
+            do 2 rewrite module_homo_plus.
             rewrite rdist.
-            rewrite IHu.
+            rewrite IHu'.
             apply rplus.
-            clear u' iu' IHu.
-            induction v as [|v v' j jv jv' IHv]
-                using (grade_induction (VG := TNG)).
+            clear u' IHu'.
+            induction v as [|v v'] using grade_induction.
             {
-                rewrite h3_zero.
+                rewrite module_homo_zero.
                 do 2 rewrite mult_ranni.
-                exact h3_zero.
+                apply module_homo_zero.
             }
             rewrite ldist.
-            do 2 rewrite h3_plus.
+            do 2 rewrite module_homo_plus.
             rewrite ldist.
-            rewrite IHv.
+            rewrite IHv'.
             apply rplus.
-            clear v' jv' IHv.
-            destruct iu as [u' u_eq]; subst u.
-            destruct jv as [v' v_eq]; subst v.
-            change (single_to_grade_sum nat (tensor_n_module V) u')
-                with (to_tensor_n V u').
-            change (single_to_grade_sum nat (tensor_n_module V) v')
-                with (to_tensor_n V v').
-            destruct u' as [u u_in], v' as [v v_in].
-            rewrite to_tensor_n_mult.
+            clear v' IHv'.
+            destruct u as [u [i iu]].
+            destruct v as [v [j jv]].
+            cbn.
             unfold h3.
-            assert (∀ {i x} (H : subspace_set (tensor_n_subspace V i) x),
-                of_grade i (to_tensor_n V [x|H])) as n_grade.
-            {
-                intros a x H.
-                exists [x | H].
-                reflexivity.
-            }
-            do 3 rewrite (linear_extend_homo _ h2_scalar _ _ (n_grade _ _ _)).
+            rewrite (linear_extend_homo _ _ _ iu).
+            rewrite (linear_extend_homo _ _ _ jv).
+            rewrite (linear_extend_homo _ _ _ (of_grade_mult _ _ _ _ iu jv)).
+            cbn.
             unfold h2.
-            rewrite_ex_val uv uv_eq.
-            rewrite_ex_val u' u'_eq.
-            rewrite_ex_val v' v'_eq.
-            apply single_to_grade_sum_eq in uv_eq, u'_eq, v'_eq.
-            subst uv u' v'; cbn.
-            apply algebra_homo_mult.
+            rewrite <- algebra_homo_mult.
+            apply f_equal.
+            unfold mult at 1; cbn.
+            rewrite (bilinear_extend_homo _ _ _ _ _ iu jv); cbn.
+            unfold grade_to; cbn.
+            rewrite single_to_sum_module_base_eq.
+            reflexivity.
         }
         assert (h3 1 = 1) as h3_one.
         {
@@ -149,31 +111,34 @@ Proof.
             assert (of_grade 0 (one (U := algebra_V (tensor_algebra_n V))))
                 as o1.
             {
+                apply of_grade_ex.
                 exists [_|tensor_n_one_in V].
                 reflexivity.
             }
-            rewrite (linear_extend_homo _ h2_scalar _ _ o1).
+            rewrite (linear_extend_homo _ _ _ o1).
             unfold h2.
-            rewrite_ex_val o o_eq.
-            apply single_to_grade_sum_eq in o_eq.
-            subst o; cbn.
+            cbn.
+            unfold one at 1; cbn.
+            unfold grade_to; cbn.
+            rewrite single_to_sum_module_base_eq.
             apply algebra_homo_one.
         }
-        exists (make_algebra_homomorphism _ _ _
-            h3 h3_plus h3_scalar h3_mult h3_one).
+        exists (make_algebra_homomorphism _ _ _ h3
+            (module_homo_plus _ _ h3) (module_homo_scalar _ _ h3)
+            h3_mult h3_one).
         intros x.
         cbn.
         unfold h3.
         assert (of_grade 1 (vector_to_tensor_n V x)) as x1.
         {
+            apply of_grade_ex.
             exists [_|vector_to_tensor_n_in V x].
             reflexivity.
         }
-        rewrite (linear_extend_homo _ h2_scalar _ _ x1).
+        rewrite (linear_extend_homo _ _ _ x1); cbn.
         unfold h2.
-        rewrite_ex_val x' x'_eq.
-        apply single_to_grade_sum_eq in x'_eq.
-        subst x'; cbn.
+        unfold grade_to; cbn.
+        rewrite single_to_sum_module_base_eq.
         apply h1_eq.
     -   intros [f1 f1_eq] [f2 f2_eq].
         apply set_type_eq; cbn.
@@ -265,27 +230,25 @@ Existing Instances TAG TAGM.
 (* end hide *)
 Definition tensor_grade := grade_isomorphism
     (algebra_to_module_homomorphism f)
-    (algebra_to_module_iso f f_iso).
-Definition tensor_grade_mult := graded_algebra_isomorphism f f_iso.
+    (algebra_to_module_homomorphism g)
+    (graded_algebra_inv f g (ex_proof f_iso)).
+Definition tensor_grade_mult := graded_algebra_isomorphism f g (ex_proof f_iso).
 
 Existing Instances tensor_grade tensor_grade_mult.
 
-Theorem scalar_to_tensor_grade : ∀ a,
-    of_grade (H9 := tensor_grade) 0 (scalar_to_tensor V a).
+Theorem scalar_to_tensor_grade : ∀ a, of_grade 0 (scalar_to_tensor V a).
 Proof.
     intros a.
-    unfold of_grade; cbn.
-    exists (a · (@one _ (algebra_one (tensor_algebra_n V)))).
+    apply of_grade_ex.
+    exists (a · ([1|tensor_n_one_in V] : tensor_n_module V 0)).
     cbn.
-    split.
-    -   pose (o := [1|tensor_n_one_in V] : module_V (tensor_n_module V 0)).
-        exists (a · o).
-        unfold o.
-        rewrite single_to_grade_sum_scalar.
-        reflexivity.
-    -   rewrite algebra_homo_scalar.
-        rewrite algebra_homo_one.
-        reflexivity.
+    rewrite single_to_sum_module_scalar.
+    unfold grade_from; cbn.
+    rewrite algebra_homo_scalar.
+    unfold scalar_to_tensor.
+    apply f_equal.
+    symmetry.
+    apply algebra_homo_one.
 Qed.
 
 Theorem tensor_grade_zero_scalar : ∀ v,
@@ -293,14 +256,19 @@ Theorem tensor_grade_zero_scalar : ∀ v,
 Proof.
     intros v.
     split.
-    -   intros [v' [v_zero v_eq]]; subst v.
-        pose proof (tensor_n_sum_grade V _ v_zero) as [l v'_eq]; subst v'.
+    -   intros v_zero.
+        apply of_grade_iso_g in v_zero.
+        pose proof (tensor_n_sum_grade V _ v_zero) as [l v_eq].
         clear v_zero.
+        apply (f_equal f) in v_eq.
+        cbn in v_eq.
+        rewrite tensor_algebra_iso_fg in v_eq.
+        subst v.
         induction l as [|[a v] l] using ulist_induction.
         {
             rewrite ulist_image_end, ulist_sum_end.
             exists 0.
-            rewrite module_homo_zero.
+            rewrite algebra_homo_zero.
             rewrite scalar_to_tensor_zero.
             reflexivity.
         }
@@ -330,13 +298,11 @@ Qed.
 Theorem vector_to_tensor_grade : ∀ v, of_grade 1 (vector_to_tensor v).
 Proof.
     intros v.
-    unfold of_grade; cbn.
-    exists (vector_to_tensor_n V v).
-    cbn.
-    split.
-    -   exists [vector_to_tensor v| vector_to_tensor_n_in V v].
-        reflexivity.
-    -   apply tensor_algebra_iso_eq.
+    apply of_grade_ex.
+    exists [vector_to_tensor v|vector_to_tensor_n_in V v].
+    unfold grade_from; cbn.
+    rewrite tensor_algebra_iso_eq.
+    reflexivity.
 Qed.
 
 Theorem tensor_grade_one_vector : ∀ v,
@@ -344,14 +310,19 @@ Theorem tensor_grade_one_vector : ∀ v,
 Proof.
     intros v.
     split.
-    -   intros [v' [v_one v_eq]]; subst v.
-        pose proof (tensor_n_sum_grade V _ v_one) as [l v'_eq]; subst v'.
+    -   intros v_one.
+        apply of_grade_iso_g in v_one.
+        pose proof (tensor_n_sum_grade V _ v_one) as [l v_eq].
         clear v_one.
+        apply (f_equal f) in v_eq.
+        cbn in v_eq.
+        rewrite tensor_algebra_iso_fg in v_eq.
+        subst v.
         induction l as [|[a v] l] using ulist_induction.
         {
             rewrite ulist_image_end, ulist_sum_end.
             exists 0.
-            rewrite module_homo_zero.
+            rewrite algebra_homo_zero.
             symmetry.
             apply vector_to_tensor_zero.
         }
@@ -388,15 +359,19 @@ Proof.
         apply vector_to_tensor_grade.
 Qed.
 
-Theorem tensor_grade_sum : ∀ x (i : nat), of_grade (H9 := tensor_grade) i x →
+Theorem tensor_grade_sum : ∀ x (i : nat), of_grade i x →
     ∃ l : ulist (cring_U F *
         set_type (λ l : list (module_V V), list_size l = i)),
     ulist_sum (ulist_image
         (λ x, fst x · list_prod (list_image vector_to_tensor [snd x|])) l) = x.
 Proof.
-    intros x' i [x [x_in x_eq]]; subst x'.
-    pose proof (tensor_n_sum_grade V x x_in) as [l l_eq].
-    subst x; clear x_in.
+    intros x i ix.
+    apply of_grade_iso_g in ix.
+    pose proof (tensor_n_sum_grade V _ ix) as [l l_eq].
+    apply (f_equal f) in l_eq.
+    cbn in l_eq.
+    rewrite tensor_algebra_iso_fg in l_eq.
+    subst x; clear ix.
     assert (∀ x : set_type (tensor_n_base V i), list_size (ex_val [|x]) = i)
         as size_eq.
     {
@@ -438,7 +413,8 @@ Proof.
     rewrite IHl at 1; clear IHl.
     pose proof (vector_to_tensor_n_in V v) as v_in.
     pose proof (tensor_n_list_in V l) as l_in.
-    rewrite (proof_irrelevance _(tensor_n_algebra_mult_in V _ _ _ _ v_in l_in)).
+    rewrite (proof_irrelevance _
+        (tensor_n_algebra_mult_in V _ _ [_|v_in] [_|l_in])).
     rewrite <- (to_tensor_n_mult V _ _ _ _ v_in l_in).
     rewrite algebra_homo_mult.
     rewrite (proof_irrelevance _ (vector_to_tensor_n_in V v)).

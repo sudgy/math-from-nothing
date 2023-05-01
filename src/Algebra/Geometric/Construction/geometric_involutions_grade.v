@@ -6,6 +6,7 @@ Require Import exterior_grade2.
 Require Export geometric_involutions.
 Require Import exterior_involutions.
 Require Export geometric_sum.
+Require Export linear_grade_isomorphism.
 
 Section GeometricInvolutions.
 
@@ -206,7 +207,7 @@ Proof.
     -   apply of_grade_neg.
         rewrite l_size'.
         change (nat_suc i) with (1 + i).
-        apply (grade_mult (GradedAlgebraObj := EGA)).
+        apply of_grade_mult.
         +   apply vector_to_ext_grade.
         +   apply IHi.
             exact l_size'.
@@ -298,7 +299,7 @@ Qed.
 Theorem ext_to_geo_reverse : ∀ X : ext, (G X)† = G (ext_reverse X).
 Proof.
     intros X.
-    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := EG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite ext_reverse_zero.
         do 2 rewrite ext_to_geo_zero.
@@ -308,7 +309,8 @@ Proof.
     do 2 rewrite ext_to_geo_plus.
     rewrite geo_reverse_plus.
     rewrite IHX; clear IHX.
-    apply rplus; clear X' X'n.
+    apply rplus; clear X'.
+    destruct X as [X [n Xn]]; cbn.
     revert X Xn.
     induction n as [n IHn] using strong_induction.
     intros X Xn.
@@ -434,24 +436,32 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem geo_involute_grade : ∀ (X : geo) (n : nat), of_grade (H9 := GG) n X →
+Theorem geo_involute_grade : ∀ (X : geo) (n : nat), of_grade n X →
     X∗ = (-(1))^n · X.
 Proof.
-    intros X' n [X [Xn X_eq]]; subst X'.
-    cbn.
+    intros X n Xn.
+    rewrite <- (ext_to_geo_to_ext _ X) at 1.
     rewrite ext_to_geo_involute.
+    apply of_grade_iso_g in Xn.
+    cbn in Xn.
     rewrite (ext_involute_grade _ _ _ Xn).
-    apply ext_to_geo_scalar.
+    rewrite ext_to_geo_scalar.
+    rewrite ext_to_geo_to_ext.
+    reflexivity.
 Qed.
 
-Theorem geo_reverse_grade : ∀ (X : geo) (n : nat), of_grade (H9 := GG) n X →
+Theorem geo_reverse_grade : ∀ (X : geo) (n : nat), of_grade n X →
     X† = (-(1))^(binom n 2) · X.
 Proof.
-    intros X' n [X [Xn X_eq]]; subst X'.
-    cbn.
+    intros X n Xn.
+    rewrite <- (ext_to_geo_to_ext _ X) at 1.
     rewrite ext_to_geo_reverse.
+    apply of_grade_iso_g in Xn.
+    cbn in Xn.
     rewrite (ext_reverse_grade _ _ _ Xn).
-    apply ext_to_geo_scalar.
+    rewrite ext_to_geo_scalar.
+    rewrite ext_to_geo_to_ext.
+    reflexivity.
 Qed.
 
 Theorem of_grade_involute : ∀ (X : geo) n, of_grade n X → of_grade n (X∗).
@@ -474,10 +484,10 @@ Theorem geo_involute_project : ∀ (X : geo) n,
     (grade_project X n)∗ = grade_project (X∗) n.
 Proof.
     intros X n.
-    induction X as [|X X' i Xi X'i IHX] using (grade_induction (VG := GG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite grade_project_zero.
-        do 2 rewrite geo_involute_zero.
+        rewrite geo_involute_zero.
         rewrite grade_project_zero.
         reflexivity.
     }
@@ -485,7 +495,8 @@ Proof.
     do 2 rewrite geo_involute_plus.
     rewrite grade_project_plus.
     rewrite IHX; clear IHX.
-    apply rplus; clear X' X'i.
+    apply rplus; clear X'.
+    destruct X as [X [i Xi]]; cbn.
     pose proof (of_grade_involute _ _ Xi) as Xi'.
     classic_case (i = n) as [eq|neq].
     {
@@ -503,10 +514,10 @@ Theorem geo_reverse_project : ∀ (X : geo) n,
     (grade_project X n)† = grade_project (X†) n.
 Proof.
     intros X n.
-    induction X as [|X X' i Xi X'i IHX] using (grade_induction (VG := GG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite grade_project_zero.
-        do 2 rewrite geo_reverse_zero.
+        rewrite geo_reverse_zero.
         rewrite grade_project_zero.
         reflexivity.
     }
@@ -514,7 +525,8 @@ Proof.
     do 2 rewrite geo_reverse_plus.
     rewrite grade_project_plus.
     rewrite IHX; clear IHX.
-    apply rplus; clear X' X'i.
+    apply rplus; clear X'.
+    destruct X as [X [i Xi]]; cbn.
     pose proof (of_grade_reverse _ _ Xi) as Xi'.
     classic_case (i = n) as [eq|neq].
     {
@@ -531,7 +543,7 @@ Qed.
 Theorem geo_reverse_involute : ∀ X : geo, X†∗ = X∗†.
 Proof.
     intros X.
-    induction X as [|X X' n Xn X'n IHX] using (grade_induction (VG := GG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite geo_involute_zero.
         do 2 rewrite geo_reverse_zero.
@@ -541,7 +553,8 @@ Proof.
     do 2 rewrite geo_reverse_plus.
     rewrite geo_involute_plus.
     rewrite IHX; clear IHX.
-    apply rplus; clear X' X'n.
+    apply rplus; clear X'.
+    destruct X as [X [n Xn]]; cbn.
     rewrite (geo_reverse_grade _ _ Xn).
     rewrite (geo_involute_grade _ _ Xn).
     rewrite geo_reverse_scalar.

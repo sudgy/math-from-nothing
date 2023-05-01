@@ -86,7 +86,7 @@ Proof.
     rewrite vector_rmult.
     rewrite lcontr_ldist, outer_ldist.
     pose proof (vector_to_geo_grade B a) as a1.
-    repeat apply of_grade_plus.
+    apply of_grade_plus; apply of_grade_plus.
     -   rewrite <- (geo_reverse_reverse B (X ⌊ φ a)).
         rewrite rlcontr_reverse.
         rewrite geo_reverse_vector.
@@ -170,7 +170,7 @@ Theorem versor_outermorphism : ∀ A, versor A → ∀ (X Y : geo),
     (A† * X * A) ⋀ (A† * Y * A) = geo_norm2 B A · (A† * (X ⋀ Y) * A).
 Proof.
     intros A A_versor X Y.
-    induction X as [|X X' m Xm X'm IHX] using (grade_induction (VG := GG)).
+    induction X as [|X X'] using grade_induction.
     {
         rewrite mult_ranni, mult_lanni.
         rewrite outer_lanni.
@@ -185,8 +185,8 @@ Proof.
     rewrite outer_rdist.
     rewrite ldist, rdist.
     rewrite scalar_ldist.
-    apply rplus; clear X' X'm.
-    induction Y as [|Y Y' n Yn Y'n IHY] using (grade_induction (VG := GG)).
+    apply rplus; clear X'.
+    induction Y as [|Y Y'] using grade_induction.
     {
         rewrite mult_ranni, mult_lanni.
         rewrite outer_ranni.
@@ -201,7 +201,10 @@ Proof.
     rewrite outer_ldist.
     rewrite ldist, rdist.
     rewrite scalar_ldist.
-    apply rplus; clear Y' Y'n.
+    apply rplus; clear Y'.
+    destruct X as [X [m Xm]].
+    destruct Y as [Y [n Yn]].
+    cbn.
     pose proof (versor_sandwich_grade A A_versor X m Xm) as AXm.
     pose proof (versor_sandwich_grade A A_versor Y n Yn) as AYn.
     rewrite (outer_homo _ _ _ _ _ AXm AYn).
@@ -218,22 +221,22 @@ Proof.
     rewrite <- mult_assoc.
     rewrite (mult_assoc X).
     remember (X * Y) as x.
-    rewrite <- Heqx.
     clear X Y Xm Yn AXm AYn Heqx.
-    induction x as [|x x' i xi x'i IHx] using (grade_induction (VG := GG)).
+    induction x as [|x x'] using grade_induction.
     {
         rewrite mult_lanni, mult_ranni.
-        do 2 rewrite grade_project_zero.
+        rewrite grade_project_zero.
         rewrite mult_ranni, mult_lanni.
         reflexivity.
     }
     rewrite rdist, ldist.
     rewrite grade_project_plus.
-    rewrite IHx; clear IHx.
+    rewrite IHx'; clear IHx'.
     rewrite grade_project_plus.
     rewrite ldist, rdist.
-    apply rplus; clear x' x'i.
+    apply rplus; clear x'.
     rewrite mult_assoc.
+    destruct x as [x [i xi]]; cbn.
     pose proof (versor_sandwich_grade A A_versor x i xi) as Axi.
     classic_case (i = m + n) as [eq|neq].
     -   subst i.
