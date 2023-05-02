@@ -507,6 +507,22 @@ does not need to be considered as a part of the inductive hypothesis.
     the theorem is true by induction.
 \end{proof}
 
+\begin{theorem} \label{list-image-unique-inj}
+    For all lists $a$ and injective functions $f : \U \to \V$, if $a$ has unique
+    elements, then $f(a)$ does as well.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, $f([]) = []$ trivial
+    has unique elements, so the base case is true.  Now assume that $a$ has
+    unique elements, $f(a)$ has unique elements, and $x \notin a$ for some value
+    $x$.  We must prove that $f(x : a)$ has unique elements.  Because $f(a)$ has
+    unique elements, we just need to prove that $f(x) \notin f(a)$.  If $f(x)
+    \in f(a)$, be Theorem \ref{image-in-list} we would have some $y \in a$ such
+    that $f(x) = f(y)$.  Because $f$ is injective, we have $x = y$, but because
+    $x \notin a$ and $y \in a$ we have a contradiction.  Thus, $f(x) \notin
+    f(a)$, showing that the theorem is true by induction.
+\end{proof}
+
 \section{Lists and Sets}
 
 \begin{definition}
@@ -1704,6 +1720,31 @@ theorem for lists.
     unique elements, then $a$ does as well.
 \end{theorem}
 
+\begin{theorem} \label{ulist-image-unique-inj}
+    For all unordered lists $a$ and injective functions $f : \U \to \V$, if $a$
+    has unique elements, then $f(a)$ does as well.
+\end{theorem}
+
+\begin{theorem} \label{ulist-sub-ex}
+    For all unordered lists $a$ and $b$, if $a$ has unique elements, and if for
+    all $x$, $x \in a$ implies $x \in b$, then there exists a list $c$ such that
+    $b = a + c$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = \llbracket \rrbracket$,
+    then $c = b$ works, so the base case is true.  Now assume that there is a
+    value $x$ such that $x \notin a$, that $a$ has unique elements, and that for
+    all $b$ such that $x \in a$ implies $x \in b$, there exists a list $c$ such
+    that $b = a + c$.  We also have that for all $y \in x : a$ we have $y \in
+    b$.  We must prove that there exists a list $c$ such that $b = x : a + c$.
+    First, because $x \in x : a$, we have $x \in b$, so there exists a list $b'$
+    such that $b = x : b'$.  Then for all $y \in a$, we have $y \in x : a$, so
+    $y \in x : b'$.  We can't have $y = x$ because $y \in a$ and $x \notin a$,
+    so $y \in b'$.  Thus, for all $y \in a$, we have $y \in b'$, so by the
+    inductive hypothesis we have a list $c$ such that $b' = a + c$.  Then $b = x
+    : b' = b' : a + c$, showing that the theorem is true by induction.
+\end{proof}
+
 \begin{theorem}
     For all sets $S$ and values $x$, if $x \in S$, then $\llbracket
     x\rrbracket^S = \llbracket x\rrbracket$.
@@ -1875,5 +1916,59 @@ theorem for lists.
 \begin{theorem} \label{ulist-prod-conc}
     For all unordered lists $a$ and $b$, $\prod (a + b) = (\prod a) (\prod b)$.
 \end{theorem}
+
+\begin{theorem} \label{ulist-finite}
+    For all types $\U$, if $\U$ is simply finite, then there exists an unordered
+    list $a : \L_U(\U)$ such that $a$ has unique elements and that $x \in a$ for
+    all $x : \U$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{simple-finite-bij}, there exists a natural number $n$ such
+    that there is a bijective function $f : \U \to \T(n)$.  The proof will be by
+    induction on $n$.  When $n = 0$, there can't be any values in $\U$, so the
+    empty list works.  Thus, the base case is true.  Now assume that for all
+    types $\V$ and bijective functions $g : \V \to \T(n)$, there exists an
+    unordered list $a$ such that $a$ has unique elements and that $x \in a$ for
+    all $x : \V$, and that we have a bijective function $f : \U \to \T(S(n))$.
+    We must prove that there exists a list $a$ such that $a$ has unique elements
+    and that $x \in a$ for all $x : \U$.
+
+    Because $f$ is surjective, there exists some $x : \U$ such that $f(x) = n$.
+    Define a new type $\V$ given by $\T(\{a : \U \mid a \neq x\})$.  Then we can
+    define a new function $f' : \V \to \T(S(n))$ as the restriction of $f$ on
+    $\V$.  Now for any $a \in \V$, if $f'(a) = f(a) = n$, we would have $a = x$
+    by the injectivity of $f$.  Thus, $f'(a) \neq n$ and $f'(a) < S(n)$ for all
+    $a : \V$, meaning that $f'(a) < n$ for all $a : \V$.  Thus we can define a
+    function $g : \V \to \T(n)$ given by $g(a) = f(a)$.
+
+    We will now prove that this function $g$ is bijective.  For injectivity, let
+    $a$ and $b$ be values in $\V$ such that $g(a) = g(b)$.  This means that
+    $f(a) = f(b)$, so $a = b$ by the injectivity of $f$, showing that $g$ is
+    also injective.  For surjectivity, let $y$ be a natural number less than
+    $n$.  Then $y < S(n)$ as well, so by the surjectivity of $f$, there exists
+    an $a : \U$ such that $f(a) = y$.  Now if $a = x$, we would have $f(x) =
+    f(a)$, which would mean that $n = y$, which contradicts $y < n$.  Thus, $a
+    \neq x$.  This means that $a$ is in the set that defines $\V$.  Thus, $g(a)
+    = f(a) = y$, showing that $g$ is surjective.
+
+    We now have a type $\V$ with a bijective function $g : \V \to T(n)$, so by
+    the inductive hypothesis there exists a list $a$ of values in $\V$ such that
+    $a$ has unique elements and that $y \in a$ for all $y \in \V$.  We will show
+    that the list $x : \stv{a}$ is the list that we want, that is, that $x
+    :\stv{a}$ has unique elements and that $y \in x :\stv{a}$ for all $y : \U$.
+
+    First, because $a$ has unique values, by Theorem
+    \ref{ulist-image-unique-inj}, $\stv a$ has unique elements as well.  Also,
+    if $x \in \stv a$, by Theorem \ref{image-in-ulist} we would have some value
+    $x' : \V$ such that $\stv x' = x$ and $x' \in a$.  However, $\stp x'$ says
+    that $\stv x' \neq x$, which is a contradiction.  Thus, $x \notin \stv a$.
+    Because $\stv a$ has unique elements and $x \notin \stv a$, $x : \stv a$ has
+    unique elements.
+
+    To prove that $y \in x : \stv a$ for all $y : \U$, let $y$ be any value.  If
+    $x = y$, then the result is trivial.  If $x \neq y$, we see that $y$ is a
+    value in $\V$, which means that $y \in a$.  By Theorem \ref{in-ulist-image},
+    we have $y \in [a|]$ as required.
+\end{proof}
 
 \end{document}

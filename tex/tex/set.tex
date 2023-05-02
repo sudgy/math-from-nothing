@@ -1484,6 +1484,44 @@ finiteness in the cardinals, even though they are equivalent.
     $\N$ is not simply finite.
 \end{proof}
 
+\begin{theorem} \label{simple-finite-union}
+    For all sets $S$ and $T$, if $\T(S)$ and $\T(T)$ are simply finite, then
+    $\T(S \cup T)$ is simply finite.
+\end{theorem}
+\begin{proof}
+    Let $m$ and $n$ be natural numbers such that there are injective functions
+    $f : \T(S) \to \T(m)$ and $g : \T(S) \to \T(n)$.  Now because $f(x) < m$ for
+    all $x : \T(S)$, we also have $f(x) < m + n$ for all $x$.  Furthermore,
+    because $g(x) < n$ for all $x : \T(T)$, we have $m + g(x) < m + n$.  With
+    this we can define a function $h$ from $\T(S \cup T)$ to $\T(m + n)$:
+    \[
+        h(x) =
+        \begin{cases}
+            f(x) \quad &\text{if $x \in S$} \\
+            m + g(x) \quad &\text{if $x \in T$.}
+        \end{cases}
+    \]
+    It remains to prove that $h$ is injective.  Let $a$ and $b$ be values in
+    $\T(S \cup T)$ such that $h(a) = h(b)$.  We must prove that $a = b$.  There
+    are four cases, depending on when $a$ and $b$ are in $S$ or $T$.
+    \begin{case} $a \in S$ and $b \in S$. \\
+        Here we have $f(a) = f(b)$.  Because $f$ is injective, we have $a = b$
+        as required.
+    \end{case}
+    \begin{case} $a \in S$ and $b \in T$. \\
+        Here we have $f(a) = m + g(b)$.  But $f(a) < m$, meaning that $m + g(b)
+        < m$.  Thus, this case is impossible.
+    \end{case}
+    \begin{case} $a \in T$ and $b \in S$. \\
+        Here we have $m + g(a) = f(b)$.  But $f(b) < m$, meaning that $m + g(a)
+        < m$.  Thus, this case is impossible.
+    \end{case}
+    \begin{case} $a \in T$ and $b \in T$. \\
+        Here we have $m + g(a) = m + g(b)$.  By canceling $m$ we get $g(a) =
+        g(b)$.  Because $g$ is injective, we have $a = b$ as required.
+    \end{case}
+\end{proof}
+
 \begin{theorem} \label{simple-finite-min}
     If $\U$ is a totally-ordered simply finite set, then $\U$ has a minimum
     element.
