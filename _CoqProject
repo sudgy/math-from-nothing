@@ -248,6 +248,7 @@
 ./src/Analysis/Norm/norm_mult.v
 ./src/Analysis/Norm/analysis_geometric.v
 ./src/Analysis/Norm/analysis_linear.v
+./src/Analysis/Norm/analysis_bilinear.v
 ./src/Analysis/Norm/norm_function.v
 ./src/Analysis/Norm/analysis_scalar.v
 ./src/Analysis/Norm/analysis_algebraic.v

@@ -39,6 +39,20 @@ Class AbsNeg U `{AbsoluteValue U, Neg U} := {
 Definition cauchy_schwarz {U} `{AbsoluteValue U} f
     := ∀ u v, |f u v| ≤ |u| * |v|.
 
+Class NormedSpaceClass V `{
+    MG : AbelianGroupClass V,
+    SM : ScalarMult real V,
+    SMC : @ScalarComp real V real_mult SM,
+    SME : @ScalarId real V real_one SM,
+    SML : @ScalarLdist real V UP SM,
+    SMR : @ScalarRdist real V real_plus UP SM,
+    VA : AbsoluteValue V,
+    VAD : @AbsDefinite V VA UZ,
+    VAP : @AbsPositive V VA,
+    VAS : @AbsScalar V VA SM,
+    VAT : @AbsTriangle V VA UP
+}.
+
 (* begin hide *)
 Section Abs.
 

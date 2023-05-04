@@ -1,6 +1,7 @@
 Require Import init.
 Require Export analysis_geometric.
 Require Export analysis_linear.
+Require Export analysis_bilinear.
 Require Export analysis_norm.
 Require Export analysis_scalar.
 Require Export analysis_series.
