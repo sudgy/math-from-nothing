@@ -9,49 +9,7 @@ Require Import analysis_func_order.
 (* begin hide *)
 Section AnalysisDerivative.
 
-Context {U V} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusComm U UP,
-    @PlusAssoc U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-
-    USM : ScalarMult real U,
-    @ScalarId real U real_one USM,
-    @ScalarLdist real U UP USM,
-    @ScalarRdist real U real_plus UP USM,
-    @ScalarComp real U real_mult USM,
-
-    UA : AbsoluteValue U,
-    @AbsDefinite U UA UZ,
-    @AbsNeg U UA UN,
-    @AbsTriangle U UA UP,
-    @AbsPositive U UA,
-    @AbsScalar U UA USM,
-    NotTrivial U,
-
-    VP : Plus V,
-    VZ : Zero V,
-    VN : Neg V,
-    @PlusComm V VP,
-    @PlusAssoc V VP,
-    @PlusLid V VP VZ,
-    @PlusLinv V VP VZ VN,
-
-    VSM : ScalarMult real V,
-    @ScalarId real V real_one VSM,
-    @ScalarLdist real V VP VSM,
-    @ScalarRdist real V real_plus VP VSM,
-
-    VA : AbsoluteValue V,
-    @AbsDefinite V VA VZ,
-    @AbsNeg V VA VN,
-    @AbsTriangle V VA VP,
-    @AbsPositive V VA,
-    @AbsScalar V VA VSM
-}.
+Context {U V} `{NormedSpaceClass U, NormedSpaceClass V, NotTrivial U}.
 Existing Instance abs_metric.
 
 (* end hide *)
@@ -429,69 +387,7 @@ End AnalysisDerivative.
 
 Section ChainRule.
 
-Context {U V W} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    @PlusComm U UP,
-    @PlusAssoc U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-
-    USM : ScalarMult real U,
-    @ScalarId real U real_one USM,
-    @ScalarLdist real U UP USM,
-    @ScalarRdist real U real_plus UP USM,
-    @ScalarComp real U real_mult USM,
-
-    UA : AbsoluteValue U,
-    @AbsDefinite U UA UZ,
-    @AbsNeg U UA UN,
-    @AbsTriangle U UA UP,
-    @AbsPositive U UA,
-    @AbsScalar U UA USM,
-    NotTrivial U,
-
-    VP : Plus V,
-    VZ : Zero V,
-    VN : Neg V,
-    @PlusComm V VP,
-    @PlusAssoc V VP,
-    @PlusLid V VP VZ,
-    @PlusLinv V VP VZ VN,
-
-    VSM : ScalarMult real V,
-    @ScalarId real V real_one VSM,
-    @ScalarLdist real V VP VSM,
-    @ScalarRdist real V real_plus VP VSM,
-
-    VA : AbsoluteValue V,
-    @AbsDefinite V VA VZ,
-    @AbsNeg V VA VN,
-    @AbsTriangle V VA VP,
-    @AbsPositive V VA,
-    @AbsScalar V VA VSM,
-
-    WP : Plus W,
-    WZ : Zero W,
-    WN : Neg W,
-    @PlusComm W WP,
-    @PlusAssoc W WP,
-    @PlusLid W WP WZ,
-    @PlusLinv W WP WZ WN,
-
-    WSM : ScalarMult real W,
-    @ScalarId real W real_one WSM,
-    @ScalarLdist real W WP WSM,
-    @ScalarRdist real W real_plus WP WSM,
-
-    WA : AbsoluteValue W,
-    @AbsDefinite W WA WZ,
-    @AbsNeg W WA WN,
-    @AbsTriangle W WA WP,
-    @AbsPositive W WA,
-    @AbsScalar W WA WSM
-}.
+Context {U V W} `{NormedSpaceClass U, NormedSpaceClass V, NormedSpaceClass W}.
 
 Existing Instance abs_metric.
 Existing Instance subspace_metric.
