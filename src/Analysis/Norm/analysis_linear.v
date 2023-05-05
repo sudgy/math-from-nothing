@@ -56,7 +56,7 @@ Existing Instance abs_metric.
 [ModuleObj]s whereas this just requires a few typeclasses.
 *)
 Record linear_map := make_linear_map {
-    linear_map_f : U → V;
+    linear_map_f :> U → V;
     linear_map_scalar : ∀ a v, linear_map_f (a · v) = a · linear_map_f v;
     linear_map_plus : ∀ u v,
         linear_map_f (u + v) = linear_map_f u + linear_map_f v;

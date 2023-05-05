@@ -214,71 +214,65 @@ Qed.
 Definition bounded_bilinear_map (f : bilinear_map)
     := ∃ M : real, ∀ x y, |f(x, y)| ≤ M*|x|*|y|.
 
-Theorem bilinear_bounded_continuous : ∀ f : bilinear_map,
-    bounded_bilinear_map f → continuous f.
+Theorem bounded_bilinear_map_pos : ∀ f, bounded_bilinear_map f →
+    ∃ M : real, 0 < M ∧ ∀ x y, |f(x, y)| ≤ M*|x|*|y|.
 Proof.
-    intros f [M' f_bound'].
-    intros a.
-    rewrite metric_continuous_at.
-    intros ε ε_pos.
-    cbn.
+    intros f [M M_bound].
     classic_case (∀ x : V1, 0 = x) as [all_z|nz1].
     {
         exists 1.
         split; [>exact one_pos|].
-        intros x x_lt.
-        destruct a as [a1 a2], x as [x1 x2].
-        rewrite <- (all_z a1).
-        rewrite <- (all_z x1).
-        do 2 rewrite bilinear_map_lanni.
-        rewrite neg_zero, plus_lid.
-        rewrite <- abs_zero.
-        exact ε_pos.
+        intros x y.
+        rewrite <- (all_z x).
+        rewrite bilinear_map_lanni.
+        do 2 rewrite <- abs_zero.
+        rewrite mult_ranni, mult_lanni.
+        apply refl.
     }
     classic_case (∀ x : V2, 0 = x) as [all_z|nz2].
     {
         exists 1.
         split; [>exact one_pos|].
-        intros x x_lt.
-        destruct a as [a1 a2], x as [x1 x2].
-        rewrite <- (all_z a2).
-        rewrite <- (all_z x2).
-        do 2 rewrite bilinear_map_ranni.
-        rewrite neg_zero, plus_lid.
-        rewrite <- abs_zero.
-        exact ε_pos.
-    }
-    pose (M := M' + 1).
-    assert (∀ x y, |f(x, y)| ≤ M * |x| * |y|) as f_bound.
-    {
         intros x y.
-        apply (trans (f_bound' x y)).
-        do 2 rewrite <- mult_assoc.
-        apply le_rmult_pos.
-        -   apply le_mult; apply abs_pos.
-        -   apply lt_plus_one.
+        rewrite <- (all_z y).
+        rewrite bilinear_map_ranni.
+        do 2 rewrite <- abs_zero.
+        rewrite mult_ranni.
+        apply refl.
     }
-    assert (0 < M) as M_pos.
-    {
-        apply (lt_le_trans one_pos).
-        unfold M.
+    exists (M + 1).
+    split.
+    -   apply (lt_le_trans one_pos).
         rewrite <- le_plus_0_a_b_ab.
         rewrite not_all in nz1.
         rewrite not_all in nz2.
         destruct nz1 as [u u_nz].
         destruct nz2 as [v v_nz].
-        specialize (f_bound' u v).
-        rewrite <- mult_assoc in f_bound'.
-        apply (trans (abs_pos _)) in f_bound'.
-        rewrite <- (mult_lanni (|u|*|v|)) in f_bound'.
-        apply le_mult_rcancel_pos in f_bound'.
-        -   exact f_bound'.
-        -   apply lt_mult.
+        specialize (M_bound u v).
+        rewrite <- mult_assoc in M_bound.
+        apply (trans (abs_pos _)) in M_bound.
+        rewrite <- (mult_lanni (|u|*|v|)) in M_bound.
+        apply le_mult_rcancel_pos in M_bound.
+        +   exact M_bound.
+        +   apply lt_mult.
             all: apply abs_pos2.
             all: assumption.
-    }
-    clearbody M.
-    clear M' f_bound' nz1 nz2.
+    -   intros x y.
+        apply (trans (M_bound _ _)).
+        apply le_rmult_pos; [>apply abs_pos|].
+        apply le_rmult_pos; [>apply abs_pos|].
+        apply lt_plus_one.
+Qed.
+
+Theorem bilinear_bounded_continuous : ∀ f : bilinear_map,
+    bounded_bilinear_map f → continuous f.
+Proof.
+    intros f f_bound.
+    apply bounded_bilinear_map_pos in f_bound as [M [M_pos f_bound]].
+    intros a.
+    rewrite metric_continuous_at.
+    intros ε ε_pos.
+    cbn.
     pose (δ := min 1 (ε/(M * (|a| + 1)))).
     assert (0 < M * (|a| + 1)) as pos.
     {
@@ -477,3 +471,5 @@ Proof.
 Qed.
 
 End AnalysisBilinear.
+
+Arguments bilinear_map V1 V2 V3 {UP SM UP0 SM0 UP1 SM1}.

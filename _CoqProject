@@ -260,6 +260,7 @@
 ./src/Analysis/Real/analysis_real.v
 
 ./src/Analysis/Differential/analysis_frechet_derivative.v
+./src/Analysis/Differential/analysis_frechet_bilinear.v
 
 ./src/Number/Real/Dedekind/dedekind_real_base.v
 ./src/Number/Real/Dedekind/dedekind_real_order.v
