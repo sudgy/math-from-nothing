@@ -44,7 +44,7 @@ Context {U} `{
     @AbsNeg U UA UN,
     @AbsTriangle U UA UP,
     @AbsPositive U UA,
-    @AbsCauchySchwarz U UA UM,
+    @MultBounded U UA UM,
     @AbsMult U UA UM,
     @AbsScalar U UA SM
 }.
@@ -66,8 +66,8 @@ Proof.
     intros xf yf x y.
     apply seq_lim_bilinear.
     -   exact mult_bilinear.
-    -   unfold cauchy_schwarz.
-        apply abs_cs.
+    -   unfold bilinear_bounded.
+        apply mult_bound.
 Qed.
 
 Theorem continuous_mult : ∀ x (f g : U → U),
@@ -76,8 +76,8 @@ Proof.
     intros x f g.
     apply continuous_bilinear.
     -   exact mult_bilinear.
-    -   unfold cauchy_schwarz.
-        apply abs_cs.
+    -   unfold bilinear_bounded.
+        apply mult_bound.
 Qed.
 
 Theorem seq_lim_constant : ∀ a x xf, seq_lim xf x →

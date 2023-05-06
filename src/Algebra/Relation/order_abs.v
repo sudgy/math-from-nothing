@@ -24,8 +24,8 @@ Class AbsPositive U `{AbsoluteValue U} := {
 Class AbsMult U `{AbsoluteValue U, Mult U} := {
     abs_mult : ∀ a b : U, |a * b| = |a| * |b|
 }.
-Class AbsCauchySchwarz U `{AbsoluteValue U, Mult U} := {
-    abs_cs : ∀ a b : U, |a * b| ≤ |a| * |b|
+Class MultBounded U `{AbsoluteValue U, Mult U} := {
+    mult_bound : ∃ M, ∀ a b : U, |a * b| ≤ M * (|a| * |b|)
 }.
 Class AbsTriangle U `{AbsoluteValue U, Plus U} := {
     abs_tri : ∀ a b : U, |a + b| ≤ |a| + |b|;
@@ -36,8 +36,8 @@ Class AbsScalar U `{AbsoluteValue U, ScalarMult real U} := {
 Class AbsNeg U `{AbsoluteValue U, Neg U} := {
     abs_neg : ∀ (a : U), | -a| = |a|
 }.
-Definition cauchy_schwarz {U} `{AbsoluteValue U} f
-    := ∀ u v, |f u v| ≤ |u| * |v|.
+Definition bilinear_bounded {U} `{AbsoluteValue U} f
+    := ∃ M, ∀ u v, |f u v| ≤ M * (|u| * |v|).
 
 Class NormedSpaceClass V `{
     MG : AbelianGroupClass V,
@@ -153,8 +153,11 @@ Next Obligation.
     rewrite abs_one.
     apply abs_minus_one.
 Qed.
-Global Program Instance abs_mult_cs : AbsCauchySchwarz U.
+Global Program Instance abs_mult_cs : MultBounded U.
 Next Obligation.
+    exists 1.
+    intros a b.
+    rewrite mult_lid.
     rewrite abs_mult.
     apply refl.
 Qed.

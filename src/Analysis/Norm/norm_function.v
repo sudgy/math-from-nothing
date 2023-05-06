@@ -45,7 +45,7 @@ Context {U V} `{
     @AbsNeg U UA UN,
     @AbsTriangle U UA UP,
     @AbsPositive U UA,
-    @AbsCauchySchwarz U UA UM,
+    @MultBounded U UA UM,
     @AbsMult U UA UM,
     @AbsScalar U UA USM,
 
@@ -84,7 +84,7 @@ Context {U V} `{
     @AbsNeg V VA VN,
     @AbsTriangle V VA VP,
     @AbsPositive V VA,
-    @AbsCauchySchwarz V VA VM,
+    @MultBounded V VA VM,
     @AbsMult V VA VM,
     @AbsScalar V VA VSM
 }.

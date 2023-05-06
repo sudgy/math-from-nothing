@@ -43,7 +43,7 @@ Proof.
 Qed.
 
 Theorem continuous_bilinear : ∀ m x (f g : U → V),
-    bilinear m → cauchy_schwarz m →
+    bilinear m → bilinear_bounded m →
     continuous_at f x → continuous_at g x →
     continuous_at (λ a, m (f a) (g a)) x.
 Proof.

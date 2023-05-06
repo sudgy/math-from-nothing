@@ -44,7 +44,7 @@ Context {U} `{
     @AbsNeg U UA UN,
     @AbsTriangle U UA UP,
     @AbsPositive U UA,
-    @AbsCauchySchwarz U UA UM,
+    @MultBounded U UA UM,
     @AbsMult U UA UM,
     @AbsScalar U UA SM
 }.
@@ -64,7 +64,8 @@ Proof.
             rewrite abs_one.
             apply refl.
         -   cbn.
-            apply (trans (abs_cs _ _)).
+            rewrite nat_pow_suc.
+            rewrite abs_mult.
             apply le_rmult_pos with (|r|) in IHn.
             2: apply abs_pos.
             rewrite mult_lid in IHn.
@@ -79,7 +80,7 @@ Proof.
             apply r_bound.
         -   intros n.
             rewrite nat_pow_suc.
-            apply (trans (abs_cs _ _)).
+            rewrite abs_mult.
             rewrite <- (mult_rid (|r^n|)) at 2.
             apply le_lmult_pos.
             1: apply abs_pos.
@@ -108,7 +109,8 @@ Proof.
         intros n.
         unfold f, g.
         rewrite nat_pow_plus.
-        apply abs_cs.
+        rewrite abs_mult.
+        apply refl.
     }
     pose proof (seq_lim_le _ _ _ _ fg_leq L_lim2 L2_lim) as leq.
     assert (0 ≤ L) as L_pos.
@@ -161,7 +163,7 @@ Proof.
                 unfold abs at 1; cbn; case_if.
                 *   apply le_lplus.
                     rewrite <- le_neg.
-                    apply (trans (abs_cs _ _)).
+                    rewrite abs_mult.
                     destruct r_small as [r_small C0]; clear C0.
                     apply le_lmult_pos with (|r^N * r|) in r_small.
                     2: apply abs_pos.

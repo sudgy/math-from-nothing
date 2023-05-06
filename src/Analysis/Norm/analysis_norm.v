@@ -296,10 +296,8 @@ Proof.
     exact x_lim.
 Qed.
 
-(* TODO: Figure out if the cauchy_schwarz inequality is really needed, or if
- * some weaker condition will suffice *)
 Theorem seq_lim_bilinear : ∀ f xf yf (x y : V),
-    bilinear f → cauchy_schwarz f →
+    bilinear f → bilinear_bounded f →
     seq_lim xf x → seq_lim yf y → seq_lim (λ n, f (xf n) (yf n)) (f x y).
 Proof.
     intros f xf yf x y f_bil f_cs x_lim y_lim.
@@ -315,25 +313,39 @@ Proof.
     }
     pose proof (rand M_pos) as M_neq.
     pose proof (div_pos M_pos) as M'_pos.
+    destruct f_cs as [M' f_bound].
+    assert (0 < max M' 1) as M_pos'.
+    {
+        apply (lt_le_trans one_pos).
+        apply rmax.
+    }
     classic_case (zero = x) as [x_eq|x_neq].
     {
         subst x.
         pose proof (lt_mult ε_pos M'_pos) as εM_pos.
-        specialize (x_lim _ εM_pos) as [N x_lim].
+        pose proof (lt_mult (div_pos M_pos') εM_pos) as εMM_pos.
+        specialize (x_lim _ εMM_pos) as [N x_lim].
         exists N.
         intros n n_gt.
         specialize (x_lim n n_gt).
         rewrite bilinear_lanni, plus_lid, abs_neg by exact f_bil.
         rewrite plus_lid, abs_neg in x_lim.
         apply lt_rmult_pos with (max M 1) in x_lim; try exact M_pos.
+        rewrite mult_assoc in x_lim.
         rewrite mult_rlinv in x_lim by exact M_neq.
         specialize (M_bound n).
         apply (trans2 (lmax M one)) in M_bound.
         apply le_lmult_pos with (|xf n|) in M_bound.
         2: apply abs_pos.
+        rewrite <- lt_mult_llmove_pos in x_lim by exact M_pos'.
         apply (le_lt_trans2 x_lim).
+        apply (le_lmult_pos (max M' 1)) in M_bound; [>|apply M_pos'].
         apply (trans2 M_bound).
-        apply f_cs.
+        pose proof (lmax M' 1) as leq.
+        apply (le_rmult_pos (|xf n| * |yf n|)) in leq.
+        2: apply le_mult; apply abs_pos.
+        apply (trans2 leq).
+        apply f_bound.
     }
     assert (0 ≠ |x|) as x_neq2.
     {
@@ -351,26 +363,38 @@ Proof.
     pose proof (half_pos ε_pos) as ε2_pos.
     pose proof (lt_mult ε2_pos M'_pos) as εM_pos.
     pose proof (lt_mult ε2_pos x'_pos) as εa_pos.
-    specialize (x_lim _ εM_pos) as [N1 x_lim].
-    specialize (y_lim _ εa_pos) as [N2 y_lim].
+    specialize (x_lim _ (lt_mult (div_pos M_pos') εM_pos)) as [N1 x_lim].
+    specialize (y_lim _ (lt_mult (div_pos M_pos') εa_pos)) as [N2 y_lim].
     exists (max N1 N2).
     intros n n_gt.
     specialize (x_lim _ (trans (lmax _ _) n_gt)).
     specialize (y_lim _ (trans (rmax _ _) n_gt)).
     apply lt_rmult_pos with (max M 1) in x_lim.
     2: exact M_pos.
+    rewrite mult_assoc in x_lim.
     rewrite mult_rlinv in x_lim by exact M_neq.
     apply lt_rmult_pos with (|x|) in y_lim.
     2: exact x_pos.
+    rewrite mult_assoc in y_lim.
     rewrite mult_rlinv in y_lim by exact x_neq2.
     specialize (M_bound n).
     apply (trans2 (lmax M 1)) in M_bound.
     apply le_lmult_pos with (|x - xf n|) in M_bound.
     2: apply abs_pos.
     apply (le_lt_trans M_bound) in x_lim.
-    apply (le_lt_trans (f_cs _ _)) in x_lim.
-    rewrite mult_comm in y_lim.
-    apply (le_lt_trans (f_cs _ _)) in y_lim.
+    rewrite <- lt_mult_llmove_pos in x_lim by exact M_pos'.
+    rewrite <- lt_mult_llmove_pos in y_lim by exact M_pos'.
+    assert (∀ u v, |f u v| ≤ max M' 1 * (|u| * |v|)) as f_bound'.
+    {
+        intros u v.
+        apply (trans (f_bound _ _)).
+        apply le_rmult_pos.
+        1: apply le_mult; apply abs_pos.
+        apply lmax.
+    }
+    apply (le_lt_trans (f_bound' _ _)) in x_lim.
+    rewrite (mult_comm _ (|x|)) in y_lim.
+    apply (le_lt_trans (f_bound' _ _)) in y_lim.
     rewrite bilinear_rdist in x_lim by exact f_bil.
     rewrite bilinear_ldist in y_lim by exact f_bil.
     pose proof (lt_lrplus x_lim y_lim) as eq.
