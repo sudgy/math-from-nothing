@@ -1294,6 +1294,18 @@ forced to remember that the definition is not the traditional definition.
 \end{proof}
 
 \begin{theorem}
+    For all $a$ in $\N$ and $b$ and $c$ in $\U$, $a(bc) = (ab)c$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $0(bc) = 0 = (0b)c$,
+    so the base case is true.  Now assume that $a(bc) = (ab)c$.  Then
+    \[
+        S(a)(bc) = bc + a(bc) = bc + ab(c) = (b + ab)c = (S(a)b)c,
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
     For all $a : \N$ and $b : \U$, $-(ab) = a(-b)$.
 \end{theorem}
 \begin{proof}

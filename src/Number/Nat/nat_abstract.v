@@ -100,6 +100,19 @@ Proof.
         reflexivity.
 Qed.
 
+Theorem nat_mult_assoc : ∀ a b c, a × (b * c) = (a × b) * c.
+Proof.
+    intros a b c.
+    nat_induction a.
+    -   do 2 rewrite nat_mult_lanni.
+        rewrite mult_lanni.
+        reflexivity.
+    -   do 2 rewrite nat_mult_suc.
+        rewrite IHa.
+        rewrite rdist.
+        reflexivity.
+Qed.
+
 Theorem nat_mult_rneg : ∀ a b, -(a × b) = a × (-b).
 Proof.
     intros a b.
