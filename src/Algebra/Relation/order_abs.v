@@ -50,7 +50,46 @@ Class NormedSpaceClass V `{
     VAD : @AbsDefinite V VA UZ,
     VAP : @AbsPositive V VA,
     VAS : @AbsScalar V VA SM,
-    VAT : @AbsTriangle V VA UP
+    VAT : @AbsTriangle V VA UP,
+    VAN : @AbsNeg V VA UN
+}.
+
+Class NormedAlgebraClass V `{
+    MG : RingClass V,
+    SM : ScalarMult real V,
+    SMC : @ScalarComp real V real_mult SM,
+    SME : @ScalarId real V real_one SM,
+    SML : @ScalarLdist real V UP SM,
+    SMR : @ScalarRdist real V real_plus UP SM,
+    SMML : @ScalarLMult real V UM SM,
+    SMMR : @ScalarRMult real V UM SM,
+    VA : AbsoluteValue V,
+    VAD : @AbsDefinite V VA UZ,
+    VAP : @AbsPositive V VA,
+    VAM : @AbsMult V VA UM,
+    VAB : @MultBounded V VA UM,
+    VAS : @AbsScalar V VA SM,
+    VAT : @AbsTriangle V VA UP,
+    VAN : @AbsNeg V VA UN
+}.
+
+Class NormedFieldClass V `{
+    MG : FieldClass V,
+    SM : ScalarMult real V,
+    SMC : @ScalarComp real V real_mult SM,
+    SME : @ScalarId real V real_one SM,
+    SML : @ScalarLdist real V UP SM,
+    SMR : @ScalarRdist real V real_plus UP SM,
+    SMML : @ScalarLMult real V UM SM,
+    SMMR : @ScalarRMult real V UM SM,
+    VA : AbsoluteValue V,
+    VAD : @AbsDefinite V VA UZ,
+    VAP : @AbsPositive V VA,
+    VAM : @AbsMult V VA UM,
+    VAB : @MultBounded V VA UM,
+    VAS : @AbsScalar V VA SM,
+    VAT : @AbsTriangle V VA UP,
+    VAN : @AbsNeg V VA UN
 }.
 
 (* begin hide *)
