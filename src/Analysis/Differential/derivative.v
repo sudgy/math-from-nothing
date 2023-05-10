@@ -12,7 +12,7 @@ Definition derivative_at
     (f : set_type [O|] → U)
     (a : set_type [O|])
     (c : U)
-    := func_lim (λ x, (f x - f a) / ([x|] - [a|])) [a|] c.
+    := func_lim_base (λ x, (f x - f a) / ([x|] - [a|])) [a|] c.
 
 Definition differentiable_at
     {O : set_type (open (U := U))}
@@ -23,7 +23,8 @@ Definition differentiable_at
 Theorem derivative_unique : ∀ {O} (f : set_type [O|] → U) a c1 c2,
     derivative_at f a c1 → derivative_at f a c2 → c1 = c2.
 Proof.
-    intros O f a c1 c2 [a_lim c1_d] [C1 c2_d]; clear C1.
+    intros O f a c1 c2 c1_d c2_d.
+    pose proof (norm_open_limit_point _ _ [|O] [|a]) as a_lim.
     exact (func_lim_unique _ [a|] c1 c2 a_lim c1_d c2_d).
 Qed.
 
@@ -32,7 +33,7 @@ Existing Instance subspace_metric.
 Theorem derivative_continuous : ∀ {O} (f : set_type [O|] → U) a,
     differentiable_at f a → continuous_at f a.
 Proof.
-    intros O f a [c [a_lim c_d]].
+    intros O f a [c c_d].
     assert (func_lim_base (λ x : set_type [O|], [x|] - [a|]) [a|] 0) as lim.
     {
         rewrite <- (plus_rinv [a|]).
@@ -61,12 +62,7 @@ Theorem derivative_constant : ∀ (O : set_type open) a x,
     derivative_at (λ _ : set_type [O|], a) x 0.
 Proof.
     intros O a x.
-    split.
-    {
-        apply norm_open_limit_point.
-        -   apply [|O].
-        -   exact [|x].
-    }
+    unfold derivative_at.
     applys_eq constant_func_lim.
     apply functional_ext.
     intros y.
@@ -78,12 +74,6 @@ Theorem derivative_identity : ∀ (O : set_type open) a,
     derivative_at (λ x : set_type [O|], [x|]) a 1.
 Proof.
     intros O a.
-    split.
-    {
-        apply norm_open_limit_point.
-        -   apply [|O].
-        -   exact [|a].
-    }
     cbn.
     apply (func_lim_eq _ _ _ _ _ (constant_func_lim [O|] [a|] 1)).
     intros x neq.
@@ -96,8 +86,8 @@ Theorem derivative_plus : ∀ {O} (f g : set_type [O|] → U) a c d,
     derivative_at f a c → derivative_at g a d →
     derivative_at (λ x, f x + g x) a (c + d).
 Proof.
-    intros O f g a c d [a_lim fd] [C0 gd]; clear C0.
-    split; [>exact a_lim|].
+    intros O f g a c d fd gd.
+    unfold derivative_at.
     applys_eq (func_lim_plus _ _ _ _ _ _ fd gd); cbn.
     apply functional_ext; intros x.
     rewrite <- rdist.
@@ -111,8 +101,7 @@ Theorem chain_rule : ∀ {A B : set_type open}
     derivative_at f (g a) c → derivative_at (λ x, [g x|]) a d →
     derivative_at (λ x, f (g x)) a (c * d).
 Proof.
-    intros A B f g a c d [ga_lim fd] [a_lim gd].
-    split; [>exact a_lim|].
+    intros A B f g a c d fd gd.
     pose (D x := If x = g a then 0 else (f x - f (g a)) / ([x|] - [g a|]) - c).
     assert (continuous_at D (g a)) as D_cont.
     {
@@ -143,7 +132,7 @@ Proof.
             rewrite metric_subspace_topology.
             apply derivative_continuous.
             exists d.
-            split; assumption.
+            exact gd.
         -   exact D_cont.
         -   unfold D.
             rewrite if_true by reflexivity.
@@ -177,10 +166,8 @@ Theorem derivative_mult : ∀ {O} (f g : set_type [O|] → U) a c d,
     derivative_at f a c → derivative_at g a d →
     derivative_at (λ x, f x * g x) a (c * g a + f a * d).
 Proof.
-    intros O f g a c d fd [a_lim gd].
-    split; [>exact a_lim|].
+    intros O f g a c d fd gd.
     pose proof (derivative_continuous f a (ex_intro _ _ fd)) as f_cont.
-    destruct fd as [C0 fd]; clear C0.
     rewrite <- metric_subspace_topology in f_cont.
     apply func_lim_continuous in f_cont.
     pose proof (func_lim_mult _ _ _ _ _ _ f_cont gd) as lim1.
@@ -265,13 +252,7 @@ Theorem derivative_div : ∀ a,
 Proof.
     cbn.
     intros [a a_nz]; cbn.
-    split.
-    {
-        apply norm_open_limit_point.
-        -   exact nz_open.
-        -   exact a_nz.
-    }
-    cbn.
+    unfold derivative_at; cbn.
     pose proof (constant_func_lim (λ x, 0 ≠ x) a a) as lim1.
     pose proof (func_lim_id (λ x, 0 ≠ x) a) as lim2.
     pose proof (func_lim_mult _ _ _ _ _ _ lim1 lim2) as lim3.

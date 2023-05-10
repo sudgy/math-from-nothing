@@ -105,13 +105,6 @@ Proof.
     intros [a a_in]; cbn.
     unfold frechet_derivative_at; cbn.
     clear a_in.
-    assert (limit_point all a) as a_lim.
-    {
-        apply norm_open_limit_point.
-        -   apply all_open.
-        -   exact true.
-    }
-    split; [>exact a_lim|].
     destruct a as [a1 a2].
     rewrite metric_func_lim.
     intros ε ε_pos.
@@ -165,7 +158,7 @@ Proof.
                 exact r1_nz.
             +   apply abs_pos.
     }
-    clear a1 a2 x1 x2 Heqr1 Heqr2 a_lim neq.
+    clear a1 a2 x1 x2 Heqr1 Heqr2 neq.
     rewrite abs_mult.
     rewrite abs_abs.
     specialize (A_bounded r1 r2).
@@ -309,17 +302,14 @@ Proof.
     }
     assert (frechet_derivative_at O K a [K'|K'_bound]) as K_dif.
     {
-        split; [>apply F1_dif|].
-        cbn.
+        unfold frechet_derivative_at; cbn.
         clear K' K'_bound.
         unfold K, K'_f.
         clear K'_f K'_plus K'_scalar G G' K.
         unfold neg at 1 2; cbn.
         unfold plus at 1 2; cbn.
         unfold abs at 1; cbn.
-        destruct F1_dif as [a_lim F1_lim]; clear a_lim.
-        destruct F2_dif as [a_lim F2_lim]; clear a_lim.
-        pose proof (func_lim_plus _ _ _ _ _ _ F1_lim F2_lim) as lim.
+        pose proof (func_lim_plus _ _ _ _ _ _ F1_dif F2_dif) as lim.
         cbn in lim.
         rewrite plus_lid in lim.
         applys_eq lim.

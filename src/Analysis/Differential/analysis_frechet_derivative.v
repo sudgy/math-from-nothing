@@ -18,7 +18,7 @@ Definition frechet_derivative_at
     (f : set_type [O|] → V)
     (a : set_type [O|])
     (A : set_type (bounded_linear_map (U := U) (V := V)))
-    := func_lim
+    := func_lim_base
         (λ x, |f x - f a - linear_map_f [A|] ([x|] - [a|])| / |[x|] - [a|]|)
         [a|]
         0.
@@ -38,7 +38,7 @@ Theorem frechet_derivative_unique : ∀ a A B,
     frechet_derivative_at O f a A → frechet_derivative_at O f a B → A = B.
 Proof.
     clear g.
-    intros a [A A_bound] [B B_bound] [Oa A_dif] [Oa' B_dif]; clear Oa'.
+    intros a [A A_bound] [B B_bound] A_dif B_dif.
     apply set_type_eq; cbn.
     apply linear_map_eq.
     intros x.
@@ -219,7 +219,7 @@ Qed.
 Theorem frechet_differentiable_continuous : ∀ a,
     frechet_differentiable_at O f a → continuous_at f a.
 Proof.
-    intros a [A [Aa A_lim]].
+    intros a [A A_lim].
     rewrite <- metric_subspace_topology.
     rewrite func_lim_continuous by exact Aa.
     pose (bf (x : set_type [O|]) := |[x|] - [a|]|).
@@ -295,13 +295,6 @@ Proof.
     intros [F F_bound] [a a_in].
     unfold frechet_derivative_at; cbn.
     clear F_bound a_in.
-    assert (limit_point all a) as a_lim.
-    {
-        apply norm_open_limit_point.
-        -   apply all_open.
-        -   exact true.
-    }
-    split; [>exact a_lim|].
     pose proof (constant_func_lim all a (zero (U := real))) as lim.
     apply (func_lim_eq _ _ _ _ _ lim).
     intros [x x_in] x_neq; cbn in *.
@@ -325,13 +318,6 @@ Proof.
     intros x [a a_in].
     unfold frechet_derivative_at; cbn.
     clear a_in.
-    assert (limit_point all a) as a_lim.
-    {
-        apply norm_open_limit_point.
-        -   apply all_open.
-        -   exact true.
-    }
-    split; [>exact a_lim|].
     pose proof (constant_func_lim all a (zero (U := real))) as lim.
     apply (func_lim_eq _ _ _ _ _ lim).
     intros [y y_in] y_neq; cbn in *.
@@ -348,13 +334,12 @@ Theorem frechet_derivative_plus : ∀ a A B,
     frechet_derivative_at O (λ x, f x + g x) a
         [plus_linear_map [A|] [B|] | plus_linear_bounded A B].
 Proof.
-    intros a A B [Oa f_lim] [Oa' g_lim]; clear Oa'.
+    intros a A B f_lim g_lim.
     pose proof (func_lim_plus _ _ _ _ _ _ f_lim g_lim) as lim1.
     clear f_lim g_lim.
     cbn in lim1.
     rewrite plus_rid in lim1.
     pose proof (constant_func_lim [O|] [a|] (zero (U := real))) as lim2.
-    split; [>exact Oa|].
     eapply (func_squeeze _ _ _ _ _ _ _ lim2 lim1).
     Unshelve.
     intros x x_neq.
@@ -411,9 +396,6 @@ Proof.
         exists [g'|g'_bound].
         exact g'_lim.
     }
-    destruct g'_lim as [O1a g'_lim].
-    destruct f'_lim as [O2ga f'_lim].
-    split; [>exact O1a|].
     cbn in *.
     assert (func_lim_base (λ x, |linear_map_f f'
         ([g x|] - [g a|] - linear_map_f g' ([x|] - [a|]))| / |[x|] - [a|]|)
