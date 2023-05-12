@@ -13,15 +13,15 @@ anything here is incorrect/not specified in the best way.
 (* begin show *)
 Class Category := {
     cat_U : Type;
-    cat_morphism : cat_U → cat_U → Type;
+    morphism : cat_U → cat_U → Type;
     cat_compose : ∀ {A B C},
-        cat_morphism B C → cat_morphism A B → cat_morphism A C;
-    cat_id : ∀ A, cat_morphism A A;
+        morphism B C → morphism A B → morphism A C;
+    cat_id : ∀ A, morphism A A;
     cat_assoc : ∀ {A B C D}
-        (h : cat_morphism C D) (g : cat_morphism B C) (f : cat_morphism A B),
+        (h : morphism C D) (g : morphism B C) (f : morphism A B),
         cat_compose h (cat_compose g f) = cat_compose (cat_compose h g) f;
-    cat_lid : ∀ {A B} (f : cat_morphism A B), cat_compose (cat_id B) f = f;
-    cat_rid : ∀ {A B} (f : cat_morphism A B), cat_compose f (cat_id A) = f;
+    cat_lid : ∀ {A B} (f : morphism A B), cat_compose (cat_id B) f = f;
+    cat_rid : ∀ {A B} (f : morphism A B), cat_compose f (cat_id A) = f;
 }.
 (* end show *)
 
@@ -33,26 +33,26 @@ Coercion cat_U : Category >-> Sortclass.
 Infix "∘" := cat_compose.
 Notation "𝟙" := (cat_id _).
 
-Definition cat_domain `{C0 : Category} {A B} (f : cat_morphism A B) := A.
-Definition cat_codomain `{C0 : Category} {A B} (f : cat_morphism A B) := B.
+Definition cat_domain `{C0 : Category} {A B} (f : morphism A B) := A.
+Definition cat_codomain `{C0 : Category} {A B} (f : morphism A B) := B.
 
 Definition cat_is_inverse `{C0 : Category} {A B}
-    (f : cat_morphism A B) (g : cat_morphism B A) := f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
-Definition isomorphism `{C0 : Category} {A B} (f : cat_morphism A B)
+    (f : morphism A B) (g : morphism B A) := f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
+Definition isomorphism `{C0 : Category} {A B} (f : morphism A B)
     := ∃ g, f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
 
 Definition cat_inverse `{C0 : Category} {A B}
-    (f : cat_morphism A B) (H : isomorphism f) := ex_val H.
+    (f : morphism A B) (H : isomorphism f) := ex_val H.
 
 Definition isomorphic `{C0 : Category} A B
-    := ∃ f : cat_morphism A B, isomorphism f.
+    := ∃ f : morphism A B, isomorphism f.
 
 Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
 
 (* begin show *)
 Local Program Instance dual_category `(C0 : Category) : Category := {
     cat_U := cat_U C0;
-    cat_morphism A B := cat_morphism B A;
+    morphism A B := morphism B A;
     cat_compose {A B C} f g := cat_compose g f;
     cat_id A := cat_id A;
 }.
@@ -72,8 +72,8 @@ Qed.
 Local Program Instance product_category `(C1 : Category) `(C2 : Category) : Category
 := {
     cat_U := prod_type C1 C2;
-    cat_morphism A B
-        := prod_type (cat_morphism (fst A) (fst B)) (cat_morphism (snd A) (snd B));
+    morphism A B
+        := prod_type (morphism (fst A) (fst B)) (morphism (snd A) (snd B));
     cat_compose {A B C} f g := (fst f ∘ fst g, snd f ∘ snd g);
     cat_id A := (𝟙, 𝟙);
 }.
@@ -93,16 +93,16 @@ Qed.
 
 Class SubCategory `(C0 : Category) := {
     subcat_S : C0 → Prop;
-    subcat_morphism : ∀ {A B}, cat_morphism A B → Prop;
-    subcat_compose : ∀ {A B C} (f : cat_morphism B C) (g : cat_morphism A B),
-        subcat_morphism f → subcat_morphism g → subcat_morphism (f ∘ g);
-    subcat_id : ∀ A, subcat_morphism (cat_id A);
+    submorphism : ∀ {A B}, morphism A B → Prop;
+    subcat_compose : ∀ {A B C} (f : morphism B C) (g : morphism A B),
+        submorphism f → submorphism g → submorphism (f ∘ g);
+    subcat_id : ∀ A, submorphism (cat_id A);
 }.
 
 (* begin show *)
 Local Program Instance subcategory `(SubCategory) : Category := {
     cat_U := set_type subcat_S;
-    cat_morphism A B := set_type (subcat_morphism (A:=[A|]) (B:=[B|]));
+    morphism A B := set_type (submorphism (A:=[A|]) (B:=[B|]));
     cat_compose {A B C} f g := [_|subcat_compose [f|] [g|] [|f] [|g]];
     cat_id A := [_|subcat_id [A|]];
 }.
@@ -122,31 +122,31 @@ Qed.
 Global Remove Hints dual_category product_category subcategory : typeclass_instances.
 
 Definition full_subcategory `(SubCategory) := ∀ A B,
-    subcat_morphism (A:=A) (B:=B) = all.
+    submorphism (A:=A) (B:=B) = all.
 
 (* begin hide *)
 Section Category.
 
 Context `{C0 : Category}.
 
-Local Arguments cat_morphism {Category}.
+Local Arguments morphism {Category}.
 
 (* end hide *)
-Theorem lcompose : ∀ {A B C} {f g : cat_morphism A B} (h : cat_morphism B C),
+Theorem lcompose : ∀ {A B C} {f g : morphism A B} (h : morphism B C),
     f = g → h ∘ f = h ∘ g.
 Proof.
     intros A B C f g h eq.
     rewrite eq.
     reflexivity.
 Qed.
-Theorem rcompose : ∀ {A B C} {f g : cat_morphism B C} (h : cat_morphism A B),
+Theorem rcompose : ∀ {A B C} {f g : morphism B C} (h : morphism A B),
     f = g → f ∘ h = g ∘ h.
 Proof.
     intros A B C f g h eq.
     rewrite eq.
     reflexivity.
 Qed.
-Theorem lrcompose : ∀ {A B C} {f g : cat_morphism B C} {h i : cat_morphism A B},
+Theorem lrcompose : ∀ {A B C} {f g : morphism B C} {h i : morphism A B},
     f = g → h = i → f ∘ h = g ∘ i.
 Proof.
     intros A B C f g h i eq1 eq2.
@@ -162,7 +162,7 @@ Proof.
 Qed.
 
 Theorem compose_isomorphism : ∀ {A B C}
-    (f : cat_morphism B C) (g : cat_morphism A B),
+    (f : morphism B C) (g : morphism A B),
     isomorphism f → isomorphism g → isomorphism (f ∘ g).
 Proof.
     intros A B C f g [f' [f1 f2]] [g' [g1 g2]].
@@ -180,7 +180,7 @@ Proof.
         exact g2.
 Qed.
 
-Theorem cat_inverse_unique : ∀ {A B} (f : cat_morphism A B) g1 g2,
+Theorem cat_inverse_unique : ∀ {A B} (f : morphism A B) g1 g2,
     f ∘ g1 = 𝟙 → g1 ∘ f = 𝟙 → f ∘ g2 = 𝟙 → g2 ∘ f = 𝟙 → g1 = g2.
 Proof.
     intros A B f g1 g2 fg1 g1f fg2 g2f.
@@ -227,7 +227,7 @@ Proof.
     exact (isomorphic_trans eq2 eq1).
 Qed.
 
-Theorem dual_isomorphism : ∀ {A B} (f : cat_morphism A B),
+Theorem dual_isomorphism : ∀ {A B} (f : morphism A B),
     isomorphism (C0 := C0) f ↔ isomorphism (C0:=dual_category C0) f.
 Proof.
     intros A B f.
@@ -253,9 +253,9 @@ Defined.
 
 Theorem cat_eq : ∀ C1 C2,
     ∀ H : @cat_U C1 = @cat_U C2,
-    ∀ H' : (∀ A B, cat_morphism A B =
-                   cat_morphism (convert_type H A) (convert_type H B)),
-    (∀ A B C (f : cat_morphism B C) (g : cat_morphism A B),
+    ∀ H' : (∀ A B, morphism A B =
+                   morphism (convert_type H A) (convert_type H B)),
+    (∀ A B C (f : morphism B C) (g : morphism A B),
         convert_type (H' _ _) (f ∘ g) =
         (convert_type (H' _ _) f) ∘ (convert_type (H' _ _) g)) →
     (∀ A, convert_type (H' A A) (cat_id A) = cat_id (convert_type H A)) →
@@ -305,8 +305,8 @@ Proof.
     assert (@cat_U C = @cat_U (dual_category (dual_category C))) as H
         by reflexivity.
     pose (H2 := Logic.eq_refl (cat_U C)).
-    assert (∀ A B, cat_morphism A B =
-                   cat_morphism (convert_type H A) (convert_type H B)) as H'.
+    assert (∀ A B, morphism A B =
+                   morphism (convert_type H A) (convert_type H B)) as H'.
     {
         intros A B.
         rewrite (proof_irrelevance H H2).
@@ -318,7 +318,7 @@ Proof.
     all: subst H.
     all: unfold H2 in *; cbn in *.
     all: clear H2.
-    all: pose (H'2 A B := Logic.eq_refl (cat_morphism A B)).
+    all: pose (H'2 A B := Logic.eq_refl (morphism A B)).
     all: rewrite (proof_irrelevance H' H'2).
     all: cbn.
     all: reflexivity.

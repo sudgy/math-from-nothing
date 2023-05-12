@@ -223,7 +223,7 @@ Record free_from := make_free_from {
 }.
 
 Definition free_from_set (f g : free_from)
-    (h : cat_morphism (free_from_module f)
+    (h : morphism (free_from_module f)
                       (free_from_module g))
     := ∀ x, h (free_from_f f x) = free_from_f g x.
 
@@ -254,7 +254,7 @@ Qed.
 
 Program Instance FREE_FROM : Category := {
     cat_U := free_from;
-    cat_morphism f g := set_type (free_from_set f g);
+    morphism f g := set_type (free_from_set f g);
     cat_compose {F G H} f g := [_|free_from_set_compose_in f g];
     cat_id f := [_|free_from_set_id_in f];
 }.

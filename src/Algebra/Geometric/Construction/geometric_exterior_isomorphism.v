@@ -298,7 +298,7 @@ Definition ext_to_geo_homo := make_module_homomorphism
     (algebra_module (geometric_algebra B))
     (ext_to_geo B)
     (ext_to_geo_plus B)
-    (ext_to_geo_scalar B) : cat_morphism (algebra_module (exterior_algebra V)) _.
+    (ext_to_geo_scalar B) : morphism (algebra_module (exterior_algebra V)) _.
 
 Definition geo_to_ext_homo := make_module_homomorphism
     F
@@ -306,7 +306,7 @@ Definition geo_to_ext_homo := make_module_homomorphism
     (algebra_module (exterior_algebra V))
     (geo_to_ext B)
     (geo_to_ext_plus B)
-    (geo_to_ext_scalar B) : cat_morphism (algebra_module (geometric_algebra B)) _.
+    (geo_to_ext_scalar B) : morphism (algebra_module (geometric_algebra B)) _.
 
 Theorem ext_to_geo_to_ext_homo : ext_to_geo_homo ∘ geo_to_ext_homo = 𝟙.
 Proof.

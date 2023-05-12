@@ -13,8 +13,8 @@ Require Import unordered_list.
 Class GradedSpace {U} (V : Module U) (I : Type) := {
     grade_modules : I → Module U;
     grade_sum := sum_module I grade_modules;
-    grade_to : cat_morphism V grade_sum;
-    grade_from : cat_morphism grade_sum V;
+    grade_to : morphism V grade_sum;
+    grade_from : morphism grade_sum V;
     grade_to_from : ∀ x : grade_sum, grade_to (grade_from x) = x;
     grade_from_to : ∀ x : V, grade_from (grade_to x) = x;
 }.

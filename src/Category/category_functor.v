@@ -6,8 +6,8 @@ Require Export category_base.
 Class Functor `(C1 : Category) `(C2 : Category) := {
     functor_f : cat_U C1 → cat_U C2;
     functor_morphism : ∀ {A B},
-        cat_morphism A B → cat_morphism (functor_f A) (functor_f B);
-    functor_compose : ∀ {A B C} (f : cat_morphism B C) (g : cat_morphism A B),
+        morphism A B → morphism (functor_f A) (functor_f B);
+    functor_compose : ∀ {A B C} (f : morphism B C) (g : morphism A B),
         functor_morphism (f ∘ g) = functor_morphism f ∘ functor_morphism g;
     functor_id : ∀ A, functor_morphism (cat_id A) = 𝟙;
 }.
@@ -34,7 +34,7 @@ Local Program Instance compose_functor `{C1 : Category, C2 : Category, C3 : Cate
     `(F : @Functor C2 C3) `(G : @Functor C1 C2) : Functor C1 C3 :=
 {
     functor_f a := functor_f F (functor_f G a);
-    functor_morphism {A B} (f : cat_morphism A B) := ⌈F⌉ (⌈G⌉ f);
+    functor_morphism {A B} (f : morphism A B) := ⌈F⌉ (⌈G⌉ f);
 }.
 (* end show *)
 Next Obligation.
@@ -55,7 +55,7 @@ Local Program Instance inclusion_functor `{C : Category} `(S : @SubCategory C)
     : Functor (subcategory S) C :=
 {
     functor_f x := [x|];
-    functor_morphism {A B} (f : cat_morphism A B) := [f|];
+    functor_morphism {A B} (f : morphism A B) := [f|];
 }.
 (* end show *)
 Global Remove Hints id_functor compose_functor inclusion_functor : typeclass_instances.
@@ -131,7 +131,7 @@ End Functor.
 (* end hide *)
 Definition functor_morphism_convert_type `{C1 : Category, C2 : Category}
         `{F : @Functor C1 C2, G : @Functor C1 C2} {A B} (H : ∀ A, F A = G A)
-        (f : cat_morphism (F A) (F B)) : cat_morphism (G A) (G B).
+        (f : morphism (F A) (F B)) : morphism (G A) (G B).
     rewrite (H A) in f.
     rewrite (H B) in f.
     exact f.
@@ -139,7 +139,7 @@ Defined.
 
 Theorem functor_eq `{C1 : Category, C2 : Category} : ∀ {F G : @Functor C1 C2},
         ∀ (H : ∀ A, F A = G A),
-        (∀ {A B} (f : cat_morphism A B),
+        (∀ {A B} (f : morphism A B),
             functor_morphism_convert_type H (⌈F⌉ f) = ⌈G⌉ f) →
         F = G.
     intros [f1 morphism1 compose1 id1] [f2 morphism2 compose2 id2] H eq'.
@@ -224,7 +224,7 @@ Qed.
 
 Local Program Instance CATEGORY : Category := {
     cat_U := Category;
-    cat_morphism A B := Functor A B;
+    morphism A B := Functor A B;
     cat_compose {A B C} f g := f ○ g;
     cat_id A := id_functor A;
 }.

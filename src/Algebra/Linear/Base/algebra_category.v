@@ -165,7 +165,7 @@ Definition algebra_homo_compose {R : CRingObj} {L M N : AlgebraObj R}
 (* begin show *)
 Global Program Instance Algebra (R : CRingObj) : Category := {
     cat_U := AlgebraObj R;
-    cat_morphism M N := AlgebraObjHomomorphism M N;
+    morphism M N := AlgebraObjHomomorphism M N;
     cat_compose {L M N} f g := algebra_homo_compose f g;
     cat_id M := algebra_homo_id M;
 }.
@@ -190,7 +190,7 @@ Next Obligation.
 Qed.
 
 Theorem algebra_to_module_iso {R : CRingObj} {A B : Algebra R} :
-    ∀ f : cat_morphism A B, isomorphism f →
+    ∀ f : morphism A B, isomorphism f →
     isomorphism (C0 := Module R)(algebra_to_module_homomorphism f).
 Proof.
     intros f [g [fg gf]].

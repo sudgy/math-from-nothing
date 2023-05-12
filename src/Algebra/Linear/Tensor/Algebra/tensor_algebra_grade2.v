@@ -175,7 +175,7 @@ Proof.
 Qed.
 
 Lemma tensor_algebra_iso_ex :
-    ∃ f : cat_morphism (tensor_algebra_n V) (tensor_algebra V),
+    ∃ f : morphism (tensor_algebra_n V) (tensor_algebra V),
         isomorphism f ∧
         ∀ x, f (vector_to_tensor_n V x) =
             vector_to_tensor_homo V x.

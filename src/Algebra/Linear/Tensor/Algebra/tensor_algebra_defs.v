@@ -13,7 +13,7 @@ Record to_algebra := make_to_algebra {
 }.
 
 Definition to_algebra_set (f g : to_algebra)
-    (h : cat_morphism (to_algebra_algebra f)
+    (h : morphism (to_algebra_algebra f)
                       (to_algebra_algebra g))
     := ∀ x, h (to_algebra_homo f x) = to_algebra_homo g x.
 
@@ -44,7 +44,7 @@ Qed.
 
 Program Instance TO_ALGEBRA : Category := {
     cat_U := to_algebra;
-    cat_morphism f g := set_type (to_algebra_set f g);
+    morphism f g := set_type (to_algebra_set f g);
     cat_compose {F G H} f g := [_|to_algebra_set_compose_in f g];
     cat_id f := [_|to_algebra_set_id_in f];
 }.

@@ -95,7 +95,7 @@ Record to_ext := make_to_ext {
 }.
 
 Definition to_ext_set (f g : to_ext)
-    (h : cat_morphism (to_ext_algebra f)
+    (h : morphism (to_ext_algebra f)
                       (to_ext_algebra g))
     := ∀ x, h (to_ext_homo f x) = to_ext_homo g x.
 
@@ -126,7 +126,7 @@ Qed.
 
 Program Instance TO_EXT : Category := {
     cat_U := to_ext;
-    cat_morphism f g := set_type (to_ext_set f g);
+    morphism f g := set_type (to_ext_set f g);
     cat_compose {F G H} f g := [_|to_ext_set_compose_in f g];
     cat_id f := [_|to_ext_set_id_in f];
 }.

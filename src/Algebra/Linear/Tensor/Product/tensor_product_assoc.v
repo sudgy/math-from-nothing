@@ -94,7 +94,7 @@ Existing Instances T1_23_plus T1_23_scalar T12_3_plus T12_3_scalar.
 
 (* end hide *)
 Theorem tensor_product_assoc :
-    ∃ f : cat_morphism
+    ∃ f : morphism
             (tensor_product M (tensor_product N O))
             (tensor_product (tensor_product M N) O),
         isomorphism f ∧

@@ -7,13 +7,13 @@ Require Import set.
 (* begin show *)
 Local Program Instance TYPE : Category := {
     cat_U := Type;
-    cat_morphism A B := A → B;
+    morphism A B := A → B;
     cat_compose A B C f g := λ x, f (g x);
     cat_id A := (@identity A);
 }.
 (* end show *)
 
-Theorem set_category_isomorphism : ∀ {A B} (f : cat_morphism A B),
+Theorem set_category_isomorphism : ∀ {A B} (f : morphism A B),
     isomorphism f → Bijective f.
 Proof.
     intros A B f [g [g_eq1 g_eq2]].
@@ -41,7 +41,7 @@ Qed.
 (* begin show *)
 Local Program Instance SINGLETON : Category := {
     cat_U := singleton_type;
-    cat_morphism A B := singleton_type;
+    morphism A B := singleton_type;
     cat_compose A B C f g := Single;
     cat_id A := Single;
 }.

@@ -10,7 +10,7 @@ Require Import unordered_list.
 Section LinearExtend.
 
 Context {U} {V1 V2 : Module U} {I : Type} `{GradedSpace U V1 I}.
-Variable f_base : ∀ i : I, cat_morphism (grade_modules i) V2.
+Variable f_base : ∀ i : I, morphism (grade_modules i) V2.
 
 Definition linear_extend_base (v : V1)
     := ulist_sum (ulist_image

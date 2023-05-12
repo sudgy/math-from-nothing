@@ -282,7 +282,7 @@ Proof.
     pose (G_f B := ex_val (F_sur B)).
     pose (g B := ex_val (ex_proof (ex_proof (F_sur B)))).
     pose (h A := ex_val (ex_proof (F_sur A))).
-    pose (G_morphism A B (f : cat_morphism A B) :=
+    pose (G_morphism A B (f : morphism A B) :=
         ex_val (sur _ (Surjective := F_full _ _) (g B ∘ f ∘ h A))
     ).
     assert (∀ A, g A ∘ h A = 𝟙) as gh_id.
@@ -305,7 +305,7 @@ Proof.
         destruct (ex_to_type CC1) as [f' [f_eq1 f_eq2]]; cbn; clear CC1.
         exact f_eq1.
     }
-    assert (∀ {A B C} (f : cat_morphism B C) (g : cat_morphism A B),
+    assert (∀ {A B C} (f : morphism B C) (g : morphism A B),
         G_morphism _ _ (f ∘ g) = G_morphism _ _ f ∘ G_morphism _ _ g)
         as G_compose.
     {
@@ -351,8 +351,8 @@ Proof.
         functor_id := G_id;
     |}).
     pose (η_f A := ex_val (sur _ (Surjective := F_full _ _) (g (F A)))
-        : cat_morphism (𝟏 A) ((G ○ F) A)).
-    assert (∀ {A B} (f : cat_morphism A B),
+        : morphism (𝟏 A) ((G ○ F) A)).
+    assert (∀ {A B} (f : morphism A B),
         η_f B ∘ (⌈𝟏⌉ f) = (⌈G ○ F⌉ f) ∘ η_f A) as η_commute.
     {
         intros A B f0.
@@ -375,7 +375,7 @@ Proof.
         apply F_faith in eq.
         symmetry; exact eq.
     }
-    assert (∀ {A B} (f : cat_morphism A B),
+    assert (∀ {A B} (f : morphism A B),
         h B ∘ (⌈F ○ G⌉ f) = (⌈𝟏⌉ f) ∘ h A) as ε_commute.
     {
         intros A B f.
@@ -390,7 +390,7 @@ Proof.
         rewrite cat_lid.
         reflexivity.
     }
-    pose (ε_f B := h B : cat_morphism ((F ○ G) B) (𝟏 B)).
+    pose (ε_f B := h B : morphism ((F ○ G) B) (𝟏 B)).
     pose (η := {|nat_trans_f := η_f; nat_trans_commute := η_commute|}).
     pose (ε := {|nat_trans_f := ε_f; nat_trans_commute := ε_commute|}).
     exists G, η, ε.

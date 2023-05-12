@@ -115,7 +115,7 @@ Definition module_homo_compose {R : CRingObj} {L M N : ModuleObj R}
 
 Global Program Instance Module (R : CRingObj) : Category := {
     cat_U := ModuleObj R;
-    cat_morphism M N := ModuleObjHomomorphism M N;
+    morphism M N := ModuleObjHomomorphism M N;
     cat_compose {L M N} f g := module_homo_compose f g;
     cat_id M := module_homo_id M;
 }.

@@ -61,7 +61,7 @@ Definition to_generic_tensor {n} (A : module_V (tensor_power n))
     := make_generic_tensor_power n A.
 
 Definition tensor_power_nat_eq {m n : nat} (eq : m = n)
-        : cat_morphism (tensor_power m) (tensor_power n).
+        : morphism (tensor_power m) (tensor_power n).
     rewrite eq.
     exact 𝟙.
 Defined.
@@ -126,7 +126,7 @@ Proof.
 Qed.
 
 Fixpoint tensor_power_mult1 (n : nat)
-    : cat_morphism ((tensor_power n) ⊗ V) (tensor_power (nat_suc n))
+    : morphism ((tensor_power n) ⊗ V) (tensor_power (nat_suc n))
 :=
     match n with
     | nat_zero => tensor_product_comm_homo (cring_module F) V
@@ -139,7 +139,7 @@ Fixpoint tensor_power_mult1 (n : nat)
     end.
 
 Fixpoint tensor_power_mult (m n : nat)
-    : cat_morphism (tensor_power m ⊗ tensor_power n)
+    : morphism (tensor_power m ⊗ tensor_power n)
                    (tensor_power (m + n))
 :=
     match n with

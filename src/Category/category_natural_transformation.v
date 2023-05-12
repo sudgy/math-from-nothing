@@ -6,8 +6,8 @@ Class NatTransformation `{C1 : Category, C2 : Category}
     `(F : @Functor C1 C2, G : @Functor C1 C2) :=
 {
     nat_trans_f : ∀ A,
-        cat_morphism (F A) (G A);
-    nat_trans_commute : ∀ {A B} (f : cat_morphism A B),
+        morphism (F A) (G A);
+    nat_trans_commute : ∀ {A B} (f : morphism A B),
         nat_trans_f B ∘ (⌈F⌉ f) = (⌈G⌉ f) ∘ nat_trans_f A;
 }.
 
@@ -175,7 +175,7 @@ Qed.
 (* begin show *)
 Local Program Instance FUNCTOR `(C1 : Category, C2 : Category) : Category := {
     cat_U := Functor C1 C2;
-    cat_morphism F G := NatTransformation F G;
+    morphism F G := NatTransformation F G;
     cat_compose {A B C} α β := α □ β;
     cat_id F := id_nat_transformation F;
 }.
@@ -211,7 +211,7 @@ Proof.
         split; reflexivity.
     -   intros all_iso.
         pose (β_f A := ex_val (all_iso A)).
-        assert (∀ {A B} (f : cat_morphism A B),
+        assert (∀ {A B} (f : morphism A B),
             β_f B ∘ (⌈G⌉ f) = (⌈F⌉ f) ∘ β_f A) as β_commute.
         {
             intros A B f.

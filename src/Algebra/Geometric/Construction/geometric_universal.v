@@ -28,7 +28,7 @@ Record to_geo := make_to_geo {
 }.
 
 Definition to_geo_set (f g : to_geo)
-    (h : cat_morphism (to_geo_algebra f)
+    (h : morphism (to_geo_algebra f)
                       (to_geo_algebra g))
     := ∀ x, h ((to_geo_homo f) x) = (to_geo_homo g) x.
 
@@ -59,7 +59,7 @@ Qed.
 
 Program Instance TO_GEO : Category := {
     cat_U := to_geo;
-    cat_morphism f g := set_type (to_geo_set f g);
+    morphism f g := set_type (to_geo_set f g);
     cat_compose {F G H} f g := [_|to_geo_set_compose_in f g];
     cat_id f := [_|to_geo_set_id_in f];
 }.

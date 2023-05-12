@@ -57,7 +57,7 @@ Existing Instances TU1_plus TU1_scalar.
 
 (* end hide *)
 Theorem tensor_product_lid :
-    ∃ f : cat_morphism (tensor_product (cring_module F) M) M,
+    ∃ f : morphism (tensor_product (cring_module F) M) M,
         isomorphism f ∧ ∀ a v, f (a ⊗ v) = a · v.
 Proof.
     assert (bilinear (λ (a : U) (v : V1), a · v)) as f_bil.
@@ -191,7 +191,7 @@ Existing Instances T12_plus T12_scalar T21_plus T21_scalar.
 
 (* end hide *)
 Theorem tensor_product_comm :
-    ∃ f : cat_morphism (tensor_product M N) (tensor_product N M),
+    ∃ f : morphism (tensor_product M N) (tensor_product N M),
         isomorphism f ∧ ∀ a b, f (a ⊗12 b) = b ⊗21 a.
 Proof.
     assert (bilinear (λ a b, b ⊗21 a)) as f_bil
@@ -500,8 +500,8 @@ Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 (* end hide *)
 Theorem tensor_product_lriso :
-    ∀ (f1 : cat_morphism M1 M2) (f2 : cat_morphism N1 N2),
-    ∃ h : cat_morphism (tensor_product M1 N1) (tensor_product M2 N2),
+    ∀ (f1 : morphism M1 M2) (f2 : morphism N1 N2),
+    ∃ h : morphism (tensor_product M1 N1) (tensor_product M2 N2),
         ∀ u v, h (u ⊗1 v) = f1 u ⊗2 f2 v.
 Proof.
     intros f1 f2.
@@ -533,7 +533,7 @@ Qed.
 Definition tensor_product_lriso_homo f1 f2 := ex_val (tensor_product_lriso f1 f2).
 Definition tensor_product_lriso_f f1 f2 := (tensor_product_lriso_homo f1 f2).
 
-Variables (f1 : cat_morphism M1 M2) (f2 : cat_morphism N1 N2).
+Variables (f1 : morphism M1 M2) (f2 : morphism N1 N2).
 
 Let lrf := tensor_product_lriso_f f1 f2.
 
@@ -719,8 +719,8 @@ Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 (* end hide *)
 Theorem tensor_product_liso :
-    ∀ (f : cat_morphism M1 M2),
-    ∃ g : cat_morphism (tensor_product M1 N) (tensor_product M2 N),
+    ∀ (f : morphism M1 M2),
+    ∃ g : morphism (tensor_product M1 N) (tensor_product M2 N),
         (isomorphism f → isomorphism g) ∧
         ∀ u v, g (u ⊗1 v) = f u ⊗2 v.
 Proof.
@@ -735,7 +735,7 @@ Qed.
 Definition tensor_product_liso_homo f := ex_val (tensor_product_liso f).
 Definition tensor_product_liso_f f := module_homo_f (tensor_product_liso_homo f).
 
-Variable (f : cat_morphism M1 M2).
+Variable (f : morphism M1 M2).
 
 Let lf := tensor_product_liso_f f.
 
@@ -853,8 +853,8 @@ Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 
 (* end hide *)
 Theorem tensor_product_riso :
-    ∀ (f : cat_morphism N1 N2),
-    ∃ g : cat_morphism (tensor_product M N1) (tensor_product M N2),
+    ∀ (f : morphism N1 N2),
+    ∃ g : morphism (tensor_product M N1) (tensor_product M N2),
         (isomorphism f → isomorphism g) ∧
         ∀ u v, g (u ⊗1 v) = u ⊗2 f v.
 Proof.
@@ -869,7 +869,7 @@ Qed.
 Definition tensor_product_riso_homo f := ex_val (tensor_product_riso f).
 Definition tensor_product_riso_f f := module_homo_f (tensor_product_riso_homo f).
 
-Variable (f : cat_morphism N1 N2).
+Variable (f : morphism N1 N2).
 
 Let rf := tensor_product_riso_f f.
 

@@ -43,7 +43,7 @@ Record multilinear_from := make_multilinear {
 }.
 
 Definition multilinear_from_set (f g : multilinear_from)
-    (h : cat_morphism (multilinear_from_module f)
+    (h : morphism (multilinear_from_module f)
                       (multilinear_from_module g))
     := ∀ x (eq : list_size x = n),
         h (multilinear_from_f f x eq) = multilinear_from_f g x eq.
@@ -77,7 +77,7 @@ Qed.
 
 Program Instance MULTILINEAR_FROM : Category := {
     cat_U := multilinear_from;
-    cat_morphism f g := set_type (multilinear_from_set f g);
+    morphism f g := set_type (multilinear_from_set f g);
     cat_compose {F G H} f g := [_|multilinear_from_set_compose_in f g];
     cat_id f := [_|multilinear_from_set_id_in f];
 }.

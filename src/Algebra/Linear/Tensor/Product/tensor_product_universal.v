@@ -91,7 +91,7 @@ Record bilinear_from := make_bilinear {
 }.
 
 Definition bilinear_from_set (f g : bilinear_from)
-    (h : cat_morphism (bilinear_from_module f)
+    (h : morphism (bilinear_from_module f)
                       (bilinear_from_module g))
     := ∀ x y, h (bilinear_from_f f x y) = bilinear_from_f g x y.
 
@@ -122,7 +122,7 @@ Qed.
 
 Program Instance BILINEAR_FROM : Category := {
     cat_U := bilinear_from;
-    cat_morphism f g := set_type (bilinear_from_set f g);
+    morphism f g := set_type (bilinear_from_set f g);
     cat_compose {F G H} f g := [_|bilinear_from_set_compose_in f g];
     cat_id f := [_|bilinear_from_set_id_in f];
 }.

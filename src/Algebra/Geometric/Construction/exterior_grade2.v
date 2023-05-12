@@ -173,7 +173,7 @@ Proof.
 Qed.
 
 Lemma ext_algebra_iso_ex :
-    ∃ f : cat_morphism (ext_algebra_n V) (exterior_algebra V),
+    ∃ f : morphism (ext_algebra_n V) (exterior_algebra V),
         isomorphism f ∧
         ∀ x, f (vector_to_ext_n V x) = φ x.
 Proof.
