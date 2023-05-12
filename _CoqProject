@@ -79,9 +79,7 @@
 ./src/Category/category_functor.v
 ./src/Category/category_natural_transformation.v
 ./src/Category/category_equivalence.v
-./src/Category/category_adjoint.v
 ./src/Category/category_initterm.v
-./src/Category/category_slice.v
 ./src/Category/basic_categories.v
 
 ./src/Number/Int/int_base.v
