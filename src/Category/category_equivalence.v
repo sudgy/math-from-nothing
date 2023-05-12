@@ -3,26 +3,26 @@ Require Import init.
 Require Export category_base.
 Require Import category_natural_transformation.
 
-Definition cat_equivalence `{C1 : Category, C2 : Category}
-    `(F : @Functor C1 C2, G : @Functor C2 C1)
-    `(η : @NatTransformation C1 C1 𝟏 (G ○ F))
-    `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏)
+Definition cat_equivalence {C1 C2 : Category}
+    (F : Functor C1 C2) (G : Functor C2 C1)
+    (η : NatTransformation 𝟏 (G ○ F))
+    (ε : NatTransformation (F ○ G) 𝟏)
     := nat_isomorphism η ∧ nat_isomorphism ε.
 
-Definition cat_equivalent `(C1 : Category, C2 : Category)
-    := ∃ (F : @Functor C1 C2) (G : @Functor C2 C1) η ε,
+Definition cat_equivalent (C1 C2 : Category)
+    := ∃ (F : Functor C1 C2) (G : Functor C2 C1) η ε,
         cat_equivalence F G η ε.
 
 Notation "A ⋍ B" := (cat_equivalent A B) (at level 70, no associativity).
 
-Theorem cat_equiv_refl : ∀ `(C0 : Category), C0 ⋍ C0.
+Theorem cat_equiv_refl : ∀ (C0 : Category), C0 ⋍ C0.
 Proof.
     intros C0.
     exists 𝟏, 𝟏.
     unfold cat_equivalence.
     rewrite functor_lid.
     exists 𝕀, 𝕀.
-    assert (nat_isomorphism (F:=𝟏) (G:=𝟏) 𝕀) as H.
+    assert (nat_isomorphism (C1 := C0) (F:=𝟏) (G:=𝟏) 𝕀) as H.
     {
         exists 𝕀.
         cbn.
@@ -72,10 +72,10 @@ Qed.
 Section FunctorEquivalence1.
 
 (* end hide *)
-Context `{C1 : Category, C2 : Category}.
-Context `(F : @Functor C1 C2, G : @Functor C2 C1).
-Context `(η : @NatTransformation C1 C1 𝟏 (G ○ F)).
-Context `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏).
+Context {C1 C2 : Category}.
+Context (F : Functor C1 C2) (G : Functor C2 C1).
+Context (η : NatTransformation 𝟏 (G ○ F)).
+Context (ε : NatTransformation (F ○ G) 𝟏).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
@@ -193,10 +193,10 @@ Qed.
 (* begin hide *)
 Section FunctorEquivalence2.
 
-Context `{C1 : Category, C2 : Category}.
-Context `(F : @Functor C1 C2, G : @Functor C2 C1).
-Context `(η : @NatTransformation C1 C1 𝟏 (G ○ F)).
-Context `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏).
+Context {C1 C2 : Category}.
+Context (F : Functor C1 C2) (G : Functor C2 C1).
+Context (η : NatTransformation 𝟏 (G ○ F)).
+Context (ε : NatTransformation (F ○ G) 𝟏).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 (* end hide *)
@@ -255,10 +255,10 @@ Qed.
 End FunctorEquivalence2.
 Section FunctorEquivalence3.
 
-Context `{C1 : Category, C2 : Category}.
-Context `(F : @Functor C1 C2, G : @Functor C2 C1).
-Context `(η : @NatTransformation C1 C1 𝟏 (G ○ F)).
-Context `(ε : @NatTransformation C2 C2 (F ○ G) 𝟏).
+Context {C1 C2 : Category}.
+Context (F : Functor C1 C2) (G : Functor C2 C1).
+Context (η : NatTransformation 𝟏 (G ○ F)).
+Context (ε : NatTransformation (F ○ G) 𝟏).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 (* end hide *)
@@ -272,8 +272,8 @@ Qed.
 End FunctorEquivalence3.
 
 (* end hide *)
-Theorem functor_equivalence `{C1 : Category, C2 : Category} :
-    ∀ `(F : @Functor C1 C2),
+Theorem functor_equivalence {C1 C2 : Category} :
+    ∀ (F : Functor C1 C2),
     full_functor F → faithful_functor F → essentially_surjective F →
     cat_equivalent C1 C2.
 Proof.

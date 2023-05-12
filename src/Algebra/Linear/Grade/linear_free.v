@@ -252,12 +252,12 @@ Proof.
     reflexivity.
 Qed.
 
-Program Instance FREE_FROM : Category := {
+Program Definition FREE_FROM : Category := {|
     cat_U := free_from;
     morphism f g := set_type (free_from_set f g);
-    cat_compose {F G H} f g := [_|free_from_set_compose_in f g];
+    cat_compose F G H f g := [_|free_from_set_compose_in f g];
     cat_id f := [_|free_from_set_id_in f];
-}.
+|}.
 Next Obligation.
     apply set_type_eq; cbn.
     apply (@cat_assoc (Module U)).
@@ -271,7 +271,7 @@ Next Obligation.
     apply (@cat_rid (Module U)).
 Qed.
 
-Definition to_free_from := make_free_from free_linear to_free.
+Definition to_free_from := make_free_from free_linear to_free : FREE_FROM.
 
 Theorem free_module_universal : initial to_free_from.
 Proof.

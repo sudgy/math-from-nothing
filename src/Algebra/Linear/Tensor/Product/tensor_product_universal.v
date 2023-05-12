@@ -120,12 +120,12 @@ Proof.
     reflexivity.
 Qed.
 
-Program Instance BILINEAR_FROM : Category := {
+Program Definition BILINEAR_FROM : Category := {|
     cat_U := bilinear_from;
     morphism f g := set_type (bilinear_from_set f g);
-    cat_compose {F G H} f g := [_|bilinear_from_set_compose_in f g];
+    cat_compose F G H f g := [_|bilinear_from_set_compose_in f g];
     cat_id f := [_|bilinear_from_set_id_in f];
-}.
+|}.
 Next Obligation.
     apply set_type_eq; cbn.
     apply (@cat_assoc (Module F)).

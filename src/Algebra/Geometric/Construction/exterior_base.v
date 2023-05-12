@@ -124,12 +124,12 @@ Proof.
     reflexivity.
 Qed.
 
-Program Instance TO_EXT : Category := {
+Program Definition TO_EXT : Category := {|
     cat_U := to_ext;
     morphism f g := set_type (to_ext_set f g);
-    cat_compose {F G H} f g := [_|to_ext_set_compose_in f g];
+    cat_compose F G H f g := [_|to_ext_set_compose_in f g];
     cat_id f := [_|to_ext_set_id_in f];
-}.
+|}.
 Next Obligation.
     apply set_type_eq; cbn.
     apply (@cat_assoc (Algebra U)).

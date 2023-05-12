@@ -14,10 +14,10 @@ Definition terminal `{C0 : Category} (T : cat_U C0)
 (* begin hide *)
 Section InitTerm1.
 
-Context `{C0 : Category}.
+Context {C0 : Category}.
 
 (* end hide *)
-Theorem initial_all_iso : ∀ I1 I2, initial I1 → initial I2 →
+Theorem initial_all_iso : ∀ I1 I2 : C0, initial I1 → initial I2 →
     ∀ f : morphism I1 I2, isomorphism f.
 Proof.
     intros I1 I2 I1_init I2_init f.
@@ -31,7 +31,7 @@ Proof.
     split; reflexivity.
 Qed.
 
-Theorem initial_unique : ∀ I1 I2, initial I1 → initial I2 → I1 ≅ I2.
+Theorem initial_unique : ∀ I1 I2 : C0, initial I1 → initial I2 → I1 ≅ I2.
 Proof.
     intros I1 I2 I1_init I2_init.
     pose proof (I1_init I2) as I1_init'.
@@ -40,7 +40,7 @@ Proof.
     apply initial_all_iso; assumption.
 Qed.
 
-Theorem initial_iso_unique : ∀ I1 I2, initial I1 → initial I2 →
+Theorem initial_iso_unique : ∀ I1 I2 : C0, initial I1 → initial I2 →
     ∀ f g : morphism I1 I2, f = g.
 Proof.
     intros I1 I2 I1_init I2_init f g.
@@ -66,10 +66,10 @@ Qed.
 End InitTerm1.
 Section InitTerm2.
 
-Context `{C0 : Category}.
+Context {C0 : Category}.
 
 (* end hide *)
-Theorem terminal_all_iso : ∀ T1 T2, terminal T1 → terminal T2 →
+Theorem terminal_all_iso : ∀ T1 T2 : C0, terminal T1 → terminal T2 →
     ∀ f : morphism T1 T2, isomorphism f.
 Proof.
     intros T1 T2 T1_term T2_term f.
@@ -78,7 +78,7 @@ Proof.
     exact (initial_all_iso _ _ T2_term T1_term f).
 Qed.
 
-Theorem terminal_unique : ∀ T1 T2, terminal T1 → terminal T2 → T1 ≅ T2.
+Theorem terminal_unique : ∀ T1 T2 : C0, terminal T1 → terminal T2 → T1 ≅ T2.
 Proof.
     intros T1 T2 T1_term T2_term.
     apply terminal_dual_initial in T1_term, T2_term.
@@ -88,7 +88,7 @@ Proof.
     exact f_iso.
 Qed.
 
-Theorem terminal_iso_unique : ∀ T1 T2, terminal T1 → terminal T2 →
+Theorem terminal_iso_unique : ∀ T1 T2 : C0, terminal T1 → terminal T2 →
     ∀ f g : morphism T1 T2, f = g.
 Proof.
     intros T1 T2 T1_term T2_term f g.

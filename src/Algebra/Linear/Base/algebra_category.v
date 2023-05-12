@@ -163,12 +163,12 @@ Definition algebra_homo_compose {R : CRingObj} {L M N : AlgebraObj R}
         algebra_homo_compose_mult algebra_homo_compose_one.
 
 (* begin show *)
-Global Program Instance Algebra (R : CRingObj) : Category := {
+Program Definition Algebra (R : CRingObj) : Category := {|
     cat_U := AlgebraObj R;
     morphism M N := AlgebraObjHomomorphism M N;
-    cat_compose {L M N} f g := algebra_homo_compose f g;
+    cat_compose L M N f g := algebra_homo_compose f g;
     cat_id M := algebra_homo_id M;
-}.
+|}.
 (* end show *)
 Next Obligation.
     apply algebra_homomorphism_eq.

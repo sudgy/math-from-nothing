@@ -57,12 +57,12 @@ Proof.
     reflexivity.
 Qed.
 
-Program Instance TO_GEO : Category := {
+Program Definition TO_GEO : Category := {|
     cat_U := to_geo;
     morphism f g := set_type (to_geo_set f g);
-    cat_compose {F G H} f g := [_|to_geo_set_compose_in f g];
+    cat_compose F G H f g := [_|to_geo_set_compose_in f g];
     cat_id f := [_|to_geo_set_id_in f];
-}.
+|}.
 Next Obligation.
     apply set_type_eq; cbn.
     apply (@cat_assoc (Algebra U)).
