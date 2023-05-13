@@ -5,8 +5,8 @@ Require Import category_natural_transformation.
 
 Definition cat_equivalence {C1 C2 : Category}
     (F : Functor C1 C2) (G : Functor C2 C1)
-    (η : NatTransformation 𝟏 (G ○ F))
-    (ε : NatTransformation (F ○ G) 𝟏)
+    (η : NatTransformation 𝟙 (G ∘ F))
+    (ε : NatTransformation (F ∘ G) 𝟙)
     := nat_isomorphism η ∧ nat_isomorphism ε.
 
 Definition cat_equivalent (C1 C2 : Category)
@@ -18,15 +18,14 @@ Notation "A ⋍ B" := (cat_equivalent A B) (at level 70, no associativity).
 Theorem cat_equiv_refl : ∀ (C0 : Category), C0 ⋍ C0.
 Proof.
     intros C0.
-    exists 𝟏, 𝟏.
+    exists 𝟙, 𝟙.
     unfold cat_equivalence.
-    rewrite functor_lid.
-    exists 𝕀, 𝕀.
-    assert (nat_isomorphism (C1 := C0) (F:=𝟏) (G:=𝟏) 𝕀) as H.
+    rewrite cat_lid.
+    exists 𝟙, 𝟙.
+    assert (nat_isomorphism (C1 := C0) (F:=𝟙) (G:=𝟙) 𝟙) as H.
     {
-        exists 𝕀.
-        cbn.
-        rewrite nat_trans_lid.
+        exists 𝟙.
+        rewrite cat_lid.
         split; reflexivity.
     }
     split; exact H.
@@ -37,30 +36,30 @@ Proof.
     intros C1 C2 C3 C12 C23.
     destruct C12 as [F1 [G1 [η1 [ε1 [η1_iso ε1_iso]]]]].
     destruct C23 as [F2 [G2 [η2 [ε2 [η2_iso ε2_iso]]]]].
-    exists (F2 ○ F1), (G1 ○ G2).
-    assert (nat_isomorphic 𝟏 (G1 ○ F1)) as iso1 by (exists η1; exact η1_iso).
-    assert (nat_isomorphic (F1 ○ G1) 𝟏) as iso2 by (exists ε1; exact ε1_iso).
-    assert (nat_isomorphic 𝟏 (G2 ○ F2)) as iso3 by (exists η2; exact η2_iso).
-    assert (nat_isomorphic (F2 ○ G2) 𝟏) as iso4 by (exists ε2; exact ε2_iso).
-    assert (nat_isomorphic 𝟏 (G1 ○ G2 ○ (F2 ○ F1))) as [η η_iso].
+    exists (F2 ∘ F1), (G1 ∘ G2).
+    assert (nat_isomorphic 𝟙 (G1 ∘ F1)) as iso1 by (exists η1; exact η1_iso).
+    assert (nat_isomorphic (F1 ∘ G1) 𝟙) as iso2 by (exists ε1; exact ε1_iso).
+    assert (nat_isomorphic 𝟙 (G2 ∘ F2)) as iso3 by (exists η2; exact η2_iso).
+    assert (nat_isomorphic (F2 ∘ G2) 𝟙) as iso4 by (exists ε2; exact ε2_iso).
+    assert (nat_isomorphic 𝟙 (G1 ∘ G2 ∘ (F2 ∘ F1))) as [η η_iso].
     {
         unfold nat_isomorphic in *.
         apply (isomorphic_trans iso1).
-        rewrite <- (functor_lid F1) at 1.
-        rewrite <- functor_assoc.
+        rewrite <- (cat_lid F1) at 1.
+        rewrite <- cat_assoc.
         apply lnat_iso.
-        rewrite functor_assoc.
+        rewrite cat_assoc.
         apply rnat_iso.
         exact iso3.
     }
-    assert (nat_isomorphic (F2 ○ F1 ○ (G1 ○ G2)) 𝟏) as [ε ε_iso].
+    assert (nat_isomorphic (F2 ∘ F1 ∘ (G1 ∘ G2)) 𝟙) as [ε ε_iso].
     {
         unfold nat_isomorphic in *.
         apply (isomorphic_trans2 iso4).
-        rewrite <- (functor_lid G2) at 2.
-        rewrite <- functor_assoc.
+        rewrite <- (cat_lid G2) at 2.
+        rewrite <- cat_assoc.
         apply lnat_iso.
-        rewrite functor_assoc.
+        rewrite cat_assoc.
         apply rnat_iso.
         exact iso2.
     }
@@ -74,8 +73,8 @@ Section FunctorEquivalence1.
 (* end hide *)
 Context {C1 C2 : Category}.
 Context (F : Functor C1 C2) (G : Functor C2 C1).
-Context (η : NatTransformation 𝟏 (G ○ F)).
-Context (ε : NatTransformation (F ○ G) 𝟏).
+Context (η : NatTransformation 𝟙 (G ∘ F)).
+Context (ε : NatTransformation (F ∘ G) 𝟙).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
@@ -84,7 +83,7 @@ Proof.
     rewrite nat_isomorphism_A in η_iso.
     rewrite nat_isomorphism_A in ε_iso.
     pose (η'_f A := ex_val (ε_iso A)).
-    assert (∀ {A B} f, η'_f B ∘ (⌈𝟏⌉ f) = (⌈F ○ G⌉ f) ∘ η'_f A) as η'_commute.
+    assert (∀ {A B} f, η'_f B ∘ (⌈𝟏⌉ f) = (⌈F ∘ G⌉ f) ∘ η'_f A) as η'_commute.
     {
         intros A B f.
         unfold η'_f.
@@ -105,7 +104,7 @@ Proof.
     }
     pose (η' := {|nat_trans_f := η'_f; nat_trans_commute := η'_commute|}).
     pose (ε'_f A := ex_val (η_iso A)).
-    assert (∀ {A B} f, ε'_f B ∘ (⌈G ○ F⌉ f) = (⌈𝟏⌉ f) ∘ ε'_f A) as ε'_commute.
+    assert (∀ {A B} f, ε'_f B ∘ (⌈G ∘ F⌉ f) = (⌈𝟏⌉ f) ∘ ε'_f A) as ε'_commute.
     {
         intros A B f.
         unfold ε'_f.
@@ -195,8 +194,8 @@ Section FunctorEquivalence2.
 
 Context {C1 C2 : Category}.
 Context (F : Functor C1 C2) (G : Functor C2 C1).
-Context (η : NatTransformation 𝟏 (G ○ F)).
-Context (ε : NatTransformation (F ○ G) 𝟏).
+Context (η : NatTransformation 𝟙 (G ∘ F)).
+Context (ε : NatTransformation (F ∘ G) 𝟙).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 (* end hide *)
@@ -257,8 +256,8 @@ Section FunctorEquivalence3.
 
 Context {C1 C2 : Category}.
 Context (F : Functor C1 C2) (G : Functor C2 C1).
-Context (η : NatTransformation 𝟏 (G ○ F)).
-Context (ε : NatTransformation (F ○ G) 𝟏).
+Context (η : NatTransformation 𝟙 (G ∘ F)).
+Context (ε : NatTransformation (F ∘ G) 𝟙).
 Hypothesis equiv : cat_equivalence F G η ε.
 
 (* end hide *)
@@ -349,11 +348,11 @@ Proof.
         functor_morphism := G_morphism;
         functor_compose := G_compose;
         functor_id := G_id;
-    |}).
+    |} : Functor _ _).
     pose (η_f A := ex_val (sur _ (Surjective := F_full _ _) (g (F A)))
-        : morphism (𝟏 A) ((G ○ F) A)).
+        : morphism ((𝟏) A) ((G ∘ F) A)).
     assert (∀ {A B} (f : morphism A B),
-        η_f B ∘ (⌈𝟏⌉ f) = (⌈G ○ F⌉ f) ∘ η_f A) as η_commute.
+        η_f B ∘ (⌈𝟏⌉ f) = (⌈G ∘ F⌉ f) ∘ η_f A) as η_commute.
     {
         intros A B f0.
         cbn.
@@ -376,7 +375,7 @@ Proof.
         symmetry; exact eq.
     }
     assert (∀ {A B} (f : morphism A B),
-        h B ∘ (⌈F ○ G⌉ f) = (⌈𝟏⌉ f) ∘ h A) as ε_commute.
+        h B ∘ (⌈F ∘ G⌉ f) = (⌈𝟏⌉ f) ∘ h A) as ε_commute.
     {
         intros A B f.
         cbn.
@@ -390,7 +389,7 @@ Proof.
         rewrite cat_lid.
         reflexivity.
     }
-    pose (ε_f B := h B : morphism ((F ○ G) B) (𝟏 B)).
+    pose (ε_f B := h B : morphism ((F ∘ G) B) (𝟏 B)).
     pose (η := {|nat_trans_f := η_f; nat_trans_commute := η_commute|}).
     pose (ε := {|nat_trans_f := ε_f; nat_trans_commute := ε_commute|}).
     exists G, η, ε.

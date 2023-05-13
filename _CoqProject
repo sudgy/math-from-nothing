@@ -75,6 +75,7 @@
 ./src/List/unordered_list_fold.v
 ./src/List/unordered_list.v
 
+./src/Category/category_def.v
 ./src/Category/category_base.v
 ./src/Category/category_functor.v
 ./src/Category/category_natural_transformation.v

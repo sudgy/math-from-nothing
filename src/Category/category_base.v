@@ -1,42 +1,10 @@
 Require Import init.
 
+Require Export category_def.
+
 Require Import set.
 
-(* begin show *)
 Set Universe Polymorphism.
-(* end show *)
-
-(** Note: I am learning category theory while writing this.  Apologies if
-anything here is incorrect/not specified in the best way.
-*)
-
-(* begin show *)
-Record Category := make_category {
-    cat_U :> Type;
-    morphism : cat_U → cat_U → Type;
-    cat_compose : ∀ {A B C},
-        morphism B C → morphism A B → morphism A C;
-    cat_id : ∀ A, morphism A A;
-    cat_assoc : ∀ {A B C D}
-        (h : morphism C D) (g : morphism B C) (f : morphism A B),
-        cat_compose h (cat_compose g f) = cat_compose (cat_compose h g) f;
-    cat_lid : ∀ {A B} (f : morphism A B), cat_compose (cat_id B) f = f;
-    cat_rid : ∀ {A B} (f : morphism A B), cat_compose f (cat_id A) = f;
-}.
-(* end show *)
-
-Arguments cat_compose {c A B C} f g.
-Arguments morphism {c}.
-Arguments cat_id {c}.
-Arguments cat_assoc {c A B C D}.
-Arguments cat_lid {c A B}.
-Arguments cat_rid {c A B}.
-
-Infix "∘" := cat_compose.
-Notation "𝟙" := (cat_id _).
-
-Definition cat_domain {C0 : Category} {A B : C0} (f : morphism A B) := A.
-Definition cat_codomain {C0 : Category} {A B : C0} (f : morphism A B) := B.
 
 Definition cat_is_inverse {C0 : Category} {A B : C0}
     (f : morphism A B) (g : morphism B A) := f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
