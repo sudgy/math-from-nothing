@@ -157,15 +157,7 @@ Context U `{
 }.
 
 Definition scalar_cring := make_cring
-    (make_ring
-        (make_rng
-            U UP UZ UN UM UPA UPC UPZ UPN UMA UMD ldist_rdist
-        )
-        UO
-        UMO
-        mult_lid_rid
-    )
-    UMC.
+    U UP UZ UN UM UPA UPC UPZ UPN UMA UMD UO UMO UMC.
 
 Local Instance scalar_scalar_mult : ScalarMult U U := {
     scalar_mult a b := a * b

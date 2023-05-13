@@ -83,6 +83,7 @@
 
 ./src/Algebra/Plus/monoid_category.v
 ./src/Algebra/Plus/group_category.v
+./src/Algebra/Mult/ring_category.v
 
 ./src/Number/Int/int_base.v
 ./src/Number/Int/int_plus.v
@@ -92,7 +93,6 @@
 ./src/Algebra/int_abstract.v
 
 ./src/Algebra/Ring/ring_ideal.v
-./src/Algebra/Ring/ring_category.v
 ./src/Algebra/Ring/Domain/mult_div.v
 ./src/Algebra/Ring/Domain/euclidean_domain.v
 ./src/Algebra/Ring/Domain/gcd.v
