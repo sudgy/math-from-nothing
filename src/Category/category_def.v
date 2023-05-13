@@ -8,17 +8,18 @@ Set Universe Polymorphism.
 anything here is incorrect/not specified in the best way.
 *)
 
+Reserved Notation "𝟙".
 Record CategoryObj := make_category {
     cat_U :> Type;
     morphism : cat_U → cat_U → Type;
-    cat_compose : ∀ {A B C},
-        morphism B C → morphism A B → morphism A C;
-    cat_id : ∀ A, morphism A A;
+    cat_compose : ∀ {A B C}, morphism B C → morphism A B → morphism A C
+        where "a ∘ b" := (cat_compose a b);
+    cat_id : ∀ A, morphism A A where "𝟙" := (cat_id _);
     cat_assoc : ∀ {A B C D}
         (h : morphism C D) (g : morphism B C) (f : morphism A B),
-        cat_compose h (cat_compose g f) = cat_compose (cat_compose h g) f;
-    cat_lid : ∀ {A B} (f : morphism A B), cat_compose (cat_id B) f = f;
-    cat_rid : ∀ {A B} (f : morphism A B), cat_compose f (cat_id A) = f;
+        h ∘ (g ∘ f) = (h ∘ g) ∘ f;
+    cat_lid : ∀ {A B} (f : morphism A B), 𝟙 ∘ f = f;
+    cat_rid : ∀ {A B} (f : morphism A B), f ∘ 𝟙 = f;
 }.
 
 Arguments cat_compose {c A B C} f g.
@@ -63,14 +64,12 @@ Program Definition compose_functor {C1 C2 C3 : CategoryObj}
 Next Obligation.
 Proof.
     rewrite functor_compose.
-    rewrite functor_compose.
-    reflexivity.
+    apply functor_compose.
 Qed.
 Next Obligation.
 Proof.
     rewrite functor_id.
-    rewrite functor_id.
-    reflexivity.
+    apply functor_id.
 Qed.
 
 Definition functor_morphism_convert_type {C1 C2 : CategoryObj}
@@ -90,23 +89,15 @@ Theorem functor_eq {C1 C2 : CategoryObj} : ∀ {F G : FunctorObj C1 C2},
 Proof.
     intros [f1 morphism1 compose1 id1] [f2 morphism2 compose2 id2] H eq'.
     cbn in *.
-    assert (f1 = f2) as eq.
-    {
-        apply functional_ext.
-        exact H.
-    }
+    pose proof (functional_ext _ _ _ H) as eq.
     subst f2.
     assert (morphism1 = morphism2) as eq.
     {
-        apply functional_ext; intros A.
-        apply functional_ext; intros B.
-        apply functional_ext; intros f.
+        functional_intros A B f.
         rewrite <- eq'.
-        unfold functor_morphism_convert_type.
-        pose (HA := Logic.eq_refl (f1 A)).
-        pose (HB := Logic.eq_refl (f1 B)).
-        rewrite (proof_irrelevance (H A) HA).
-        rewrite (proof_irrelevance (H B) HB).
+        unfold functor_morphism_convert_type; cbn.
+        rewrite (proof_irrelevance (H A) (Logic.eq_refl)).
+        rewrite (proof_irrelevance (H B) (Logic.eq_refl)).
         cbn.
         reflexivity.
     }
@@ -127,7 +118,6 @@ Proof.
     eapply functor_eq.
     Unshelve.
     2: reflexivity.
-    intros X Y F.
     cbn.
     reflexivity.
 Qed.
@@ -136,7 +126,6 @@ Proof.
     eapply functor_eq.
     Unshelve.
     2: reflexivity.
-    intros X Y F.
     cbn.
     reflexivity.
 Qed.
@@ -145,15 +134,13 @@ Proof.
     eapply functor_eq.
     Unshelve.
     2: reflexivity.
-    intros X Y F.
     cbn.
     reflexivity.
 Qed.
 
 Record NatTransformationObj {C1 C2 : Category} (F G : morphism C1 C2) :=
 make_nat_trans_base {
-    nat_trans_f :> ∀ A,
-        morphism (F A) (G A);
+    nat_trans_f :> ∀ A, morphism (F A) (G A);
     nat_trans_commute : ∀ {A B} (f : morphism A B),
         nat_trans_f B ∘ (⌈F⌉ f) = (⌈G⌉ f) ∘ nat_trans_f A;
 }.
@@ -167,9 +154,8 @@ Program Definition id_nat_transformation {C1 : Category} {C2 : Category}
     nat_trans_f A := 𝟙
 |}.
 Next Obligation.
-    rewrite cat_lid.
     rewrite cat_rid.
-    reflexivity.
+    apply cat_lid.
 Qed.
 
 (* begin show *)
@@ -193,14 +179,10 @@ Qed.
 Theorem nat_trans_eq {C1 C2 : Category} {F G : morphism C1 C2} :
     ∀ (α β : NatTransformationObj F G), (∀ A, α A = β A) → α = β.
 Proof.
-    intros [f1 commute1] [f2 commute2] H.
-    cbn in *.
-    assert (f1 = f2) as eq.
-    {
-        apply functional_ext.
-        exact H.
-    }
-    subst f2; clear H.
+    intros [f1 commute1] [f2 commute2] eq.
+    cbn in eq.
+    apply functional_ext in eq.
+    subst f2.
     rewrite (proof_irrelevance commute2 commute1).
     reflexivity.
 Qed.
