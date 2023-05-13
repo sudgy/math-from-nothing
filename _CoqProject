@@ -79,12 +79,13 @@
 ./src/Category/category_natural_transformation.v
 ./src/Category/category_equivalence.v
 ./src/Category/category_initterm.v
-./src/Category/basic_categories.v
 
+./src/Category/basic_categories.v
 ./src/Algebra/Plus/monoid_category.v
 ./src/Algebra/Plus/group_category.v
 ./src/Algebra/Mult/ring_category.v
 ./src/Algebra/Mult/domain_category.v
+./src/Algebra/Mult/field_category.v
 
 ./src/Number/Int/int_base.v
 ./src/Number/Int/int_plus.v
