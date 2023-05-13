@@ -66,3 +66,21 @@ than [rewrite].  It can be useful when working with dependent types.  However,
 it's not as powerful as rewrite because it can't handle theorems with
 parameters. *)
 Ltac def_rewrite H := match type of H with | ?a = ?b => change a with b end.
+
+Tactic Notation "functional_intro" simple_intropattern(a)
+    := try apply functional_ext; intros a.
+Tactic Notation "functional_intros" simple_intropattern(a)
+    := functional_intro a.
+Tactic Notation "functional_intros" simple_intropattern(a)
+                                    simple_intropattern(b)
+    := functional_intro a; functional_intro b.
+Tactic Notation "functional_intros" simple_intropattern(a)
+                                    simple_intropattern(b)
+                                    simple_intropattern(c)
+    := functional_intro a; functional_intro b; functional_intro c.
+Tactic Notation "functional_intros" simple_intropattern(a)
+                                    simple_intropattern(b)
+                                    simple_intropattern(c)
+                                    simple_intropattern(d)
+    := functional_intro a; functional_intro b;
+       functional_intro c; functional_intro d.
