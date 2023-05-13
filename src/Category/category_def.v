@@ -34,7 +34,7 @@ Notation "𝟙" := (cat_id _).
 Definition cat_domain {C : CategoryObj} {A B : C} (f : morphism A B) := A.
 Definition cat_codomain {C : CategoryObj} {A B : C} (f : morphism A B) := B.
 
-Record FunctorObj (C1 C2 : CategoryObj) := make_functor {
+Record FunctorObj (C1 C2 : CategoryObj) := make_functor_base {
     functor_f :> C1 → C2;
     functor_morphism : ∀ {A B},
         morphism A B → morphism (functor_f A) (functor_f B);
@@ -151,7 +151,7 @@ Proof.
 Qed.
 
 Record NatTransformationObj {C1 C2 : Category} (F G : morphism C1 C2) :=
-{
+make_nat_trans_base {
     nat_trans_f :> ∀ A,
         morphism (F A) (G A);
     nat_trans_commute : ∀ {A B} (f : morphism A B),
@@ -233,5 +233,10 @@ Qed.
 Notation "'NatTransformation'" := (morphism (c := Functor _ _)).
 Notation "𝟏" := (𝟙 : Functor _ _).
 Notation "'𝕀'" := (𝟙 : NatTransformation _ _).
+
+Definition make_functor C1 C2 f a b c
+    := make_functor_base C1 C2 f a b c : Functor C1 C2.
+Definition make_nat_trans {C1 C2 : Category} (F G : Functor C1 C2) f c
+    := @make_nat_trans_base C1 C2 F G f c : NatTransformation F G.
 
 Unset Universe Polymorphism.
