@@ -1,0 +1,185 @@
+\documentclass[../math.tex]{subfiles}
+\externaldocument{../math.tex}
+
+\begin{document}
+
+\setcounter{chapter}{5}
+
+\chapter{Category Theory}
+
+Category theory is the general study of mathematical structures.  It can provide
+a unified way of describing many seemingly different aspects of math, and using
+it can often simplify many definitions and theorems.  However, I don't actually
+know much category theory, so I haven't developed much of it here.  I've mostly
+just defined categories, functors, and natural transformations and a few basic
+facts about them, and haven't even proven the Yoneda lemma.  I know that there
+are many things later on that could be simplified by the use of category theory,
+but the fact is I just haven't studied it enough yet.
+
+Another thing that I should point out is that in the Coq code, I am unable to
+make arguments using commutative diagrams.  Because this document is supposed to
+mirror the Coq code, I will not be using commutative diagrams here either.  This
+is not to say that I prefer not using commutative diagrams.  It's just that not
+using them makes this document a better representation of the Coq code.
+
+A quick note on the order here: In the Coq code, functors and natural
+transformations are defined the moment after categories are.  That's because
+it's helpful to have categories be objects in the category of categories, to
+have functors be both the morphisms there and the objects in the category of
+functors, and to have natural transformations be the morphisms in the category
+of functors.  By defining these notions first, they can be used as the
+definition of categories, functors, and natural transformations, allowing for
+similar notation to be used for all of them.  However, here we don't have to
+worry about making sure Coq will know what categories are objects are in, so
+I'll present things in a different order here.  Instead, I will define
+categories and several of the notions that are definable with just categories,
+then functors and their notions after that, and then natural transformations.
+
+\section{Categories}
+
+\begin{definition}
+    A Category is a combination of the following things:
+    \begin{itemize}
+        \item A $\Type$, which we call the objects of the category.  Given a
+            particular category $C$, we abuse the notation $A : C$ to mean that
+            $A$ is an object in $C$.
+        \item A function from objects $A$ and $B$ to a $\Type$ that we call $A
+            \to B$, the values of which are called the morphisms from $A$ to
+            $B$.  Given a morphism $A \to B$, we call $A$ the domain and $B$ the
+            codomain.
+        \item A function that takes in objects $A$, $B$, and
+            $C$ and morphisms $f : B \to C$ and $g : A \to B$, and produces a
+            new morphism $f \circ g : A \to C$, called the composition of $f$
+            and $g$.
+        \item A function that takes in an object $A$ and produces a morphism
+            $\mathds 1 : A \to A$ called the identity morphism.  If the object
+            $A$ needs to be explicit we will write $\mathds 1_A$.
+        \item A proof that composition of morphisms is associative, that is, for
+            all objects $A$, $B$, $C$, and $D$ and all morphisms $f : C \to D$,
+            $g : B \to C$, and $h : A \to B$, we have $f \circ (g \circ h) = (f
+            \circ g) \circ h$.
+        \item A proof that every identity morphism is a left identity, that is,
+            for all objects $A$ and $B$ and morphisms $f : A \to B$, we have
+            $\mathds 1_B \circ f = f$.
+        \item A proof that every identity morphism is a right identity, that is,
+            for all objects $A$ and $B$ and morphisms $f : A \to B$, we have
+            $f \circ \mathds 1_A= f$.
+    \end{itemize}
+\end{definition}
+
+\section{Functors}
+
+\begin{definition}
+    Given two categories $C_1$ and $C_2$, a functor $F$ from $C_1$ to $C_2$ is a
+    combination of the following things:
+    \begin{itemize}
+        \item A function $C_1 \to C_2$, which will be denoted by treating the
+            functor $F$ itself as a function.  For example, if $A : C_1$, then
+            $F(A) : C_2$.
+        \item For all objects $A$ and $B$ in $C_1$, a function from $A \to B$ to
+            $F(A) \to F(B)$.  Again, this will be denoted by treating $F$ as a
+            function, so if we have a morphism $f : A \to B$, then $F(f) : F(A)
+            \to F(B)$.  Thus, functors will be used to represent two different
+            functions that must be determined from context.
+        \item A proof that for all objects $A$, $B$, and $C$ in $C_1$ and
+            morphisms $f : B \to C$ and $g : A \to B$, we have $F(f \circ g) =
+            F(f) \circ F(g)$.
+        \item A proof that for all objects $A : C_1$, we have $F(\mathds 1_A) =
+            \mathds 1_{F(A)}$.
+    \end{itemize}
+\end{definition}
+
+\begin{theorem}
+    Given a category $C$, the identity map on both objects and morphisms is a
+    functor that we call the identity functor.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem}
+    Given three categories $C_1$, $C_2$, and $C_3$ and two functors $F : C_2 \to
+    C_3$ and $G : C_1 \to C_2$, the functions $F(G(A))$ and $F(G(f))$ are a
+    functor that we call the composition of $F$ and $G$.
+\end{theorem}
+\begin{proof}
+    As for composition,
+    \[
+        F(G(f \circ g)) = F(G(f) \circ G(g)) = F(G(f)) \circ F(G(g)).
+    \]
+    As for the identity,
+    \[
+        F(G(\mathds 1)) = F(\mathds 1) = \mathds 1.
+    \]
+\end{proof}
+
+\begin{theorem}
+    Categories form a category \Cat where the objects are categories, the
+    morphisms are functors between them, composition of functors is as defined
+    above, and the identity functor is as defined above.
+\end{theorem}
+\begin{proof}
+    Composition of functors is associative by the associativity of function
+    composition.  The identity functor is an identity because it is defined to
+    be the identity function.
+\end{proof}
+
+Thus, without confusion we may use the notation $\mathds 1$ to represent the
+identity functor and $F \circ G$ to represent the composition of two functors.
+
+\section{Natural Transformations}
+
+\begin{definition}
+    Given two categories $C_1$ and $C_2$ and two functors $F$ and $G$ from $C_1$
+    to $C_2$, a natural transformation $\alpha : F \to G$ is a combination of
+    the following things:
+    \begin{itemize}
+        \item A function from objects $A : C_1$ to morphisms $F(A) \to G(A)$,
+            which will be denoted $\alpha(A)$.
+        \item A proof that for all objects $A$ and $B$ in $C_1$ and morphisms $f
+            : A \to B$, we have $\alpha(B) \circ F(f) = G(f) \circ \alpha(A)$.
+    \end{itemize}
+\end{definition}
+
+\begin{theorem}
+    Given categories $C_1$ and $C_2$ and a functor $F : C_1 \to C_2$, the
+    function that takes objects $A : C_1$ to $\mathds 1_{F(A)}$ is a natural
+    transformation from $F$ to $F$ called the identity natural transformation.
+\end{theorem}
+\begin{proof}
+    We mult prove that for all objects $A$ and $B$ in $C_1$ and morphisms $f : A
+    \to B$, we have $\mathds 1 \circ F(f) = F(f) \circ \mathds 1$, which follows
+    from $\mathds 1$ being an identity.
+\end{proof}
+
+\begin{theorem}
+    Given categories $C_1$ and $C_2$, functors $F$, $G$, and $H$ from $C_1$
+    to $C_2$, and natural transformations $\alpha : G \to H$ and $\beta : F \to
+    G$, the function taking objects $A : C_1$ to $\alpha(A) \circ \beta(A)$ is a
+    natural transformation from $F$ to $H$ that we call the vertical composition
+    of $\alpha$ and $\beta$.
+\end{theorem}
+\begin{proof}
+    \[
+        \alpha(B) \circ \beta(B) \circ F(f) =
+        \alpha(B) \circ G(f) \circ \beta(A) =
+        H(f) \circ \alpha(A) \circ \beta(A).
+    \]
+\end{proof}
+
+\begin{theorem}
+    Given two categories $C_1$ and $C_2$, functors form a category $\Fct(C_1,
+    C_2)$ where the objects are functors from $C_1$ to $C_2$, the morphisms are
+    natural transformations between them, composition of natural transformations
+    is as defined above, and the identity natural transformation is as defined
+    above.
+\end{theorem}
+\begin{proof}
+    Every property needed follows from the corresponding property in $C_2$.
+\end{proof}
+
+Thus, like with functors, without confusion we may use the notation $\mathds 1$
+to represent the identity natural transformation and $\alpha \circ \beta$ to
+represent the vertical composition of two natural transformations.
+
+\end{document}
