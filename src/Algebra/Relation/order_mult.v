@@ -2,7 +2,7 @@ Require Import init.
 
 Require Export relation.
 Require Export plus_group.
-Require Export mult.
+Require Export mult_field.
 Require Export order_plus.
 
 Class OrderMult U `{Zero U, Mult U, Order U} := {

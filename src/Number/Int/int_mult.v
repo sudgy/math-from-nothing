@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Import nat.
-Require Export mult.
+Require Export mult_ring.
 Require Import set.
 
 Require Import int_plus.

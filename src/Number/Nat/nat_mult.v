@@ -2,7 +2,7 @@ Require Import init.
 
 Require Import nat_plus.
 
-Require Export mult.
+Require Export mult_ring.
 
 Global Instance nat_mult : Mult nat := {
     mult := fix mult a b :=

@@ -18,11 +18,9 @@
 ./src/Init/init.v
 
 ./src/Algebra/Plus/plus_group.v
-./src/Algebra/Plus/plus.v
 
 ./src/Algebra/Mult/mult_ring.v
 ./src/Algebra/Mult/mult_field.v
-./src/Algebra/Mult/mult.v
 
 ./src/Algebra/Relation/relation.v
 ./src/Algebra/Relation/order_bounds.v
