@@ -84,6 +84,7 @@
 ./src/Algebra/Plus/monoid_category.v
 ./src/Algebra/Plus/group_category.v
 ./src/Algebra/Mult/ring_category.v
+./src/Algebra/Mult/domain_category.v
 
 ./src/Number/Int/int_base.v
 ./src/Number/Int/int_plus.v
