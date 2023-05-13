@@ -82,6 +82,7 @@
 ./src/Category/basic_categories.v
 
 ./src/Algebra/Plus/monoid_category.v
+./src/Algebra/Plus/group_category.v
 
 ./src/Number/Int/int_base.v
 ./src/Number/Int/int_plus.v
