@@ -9,7 +9,6 @@ Program Definition hcompose_nat_transformation
 {|
     nat_trans_f A := β (G A) ∘ (⌈F'⌉ (α A))
 |}.
-(* end show *)
 Next Obligation.
     rewrite nat_trans_commute.
     rewrite <- cat_assoc.
