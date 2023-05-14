@@ -52,19 +52,119 @@ then functors and their notions after that, and then natural transformations.
             new morphism $f \circ g : A \to C$, called the composition of $f$
             and $g$.
         \item A function that takes in an object $A$ and produces a morphism
-            $\mathds 1 : A \to A$ called the identity morphism.  If the object
-            $A$ needs to be explicit we will write $\mathds 1_A$.
+            $\1 : A \to A$ called the identity morphism.  If the object
+            $A$ needs to be explicit we will write $\1_A$.
         \item A proof that composition of morphisms is associative, that is, for
             all objects $A$, $B$, $C$, and $D$ and all morphisms $f : C \to D$,
             $g : B \to C$, and $h : A \to B$, we have $f \circ (g \circ h) = (f
             \circ g) \circ h$.
         \item A proof that every identity morphism is a left identity, that is,
             for all objects $A$ and $B$ and morphisms $f : A \to B$, we have
-            $\mathds 1_B \circ f = f$.
+            $\1_B \circ f = f$.
         \item A proof that every identity morphism is a right identity, that is,
             for all objects $A$ and $B$ and morphisms $f : A \to B$, we have
-            $f \circ \mathds 1_A= f$.
+            $f \circ \1_A= f$.
     \end{itemize}
+\end{definition}
+
+\begin{definition}
+    Given a category $C$ and two objects $A$ and $B$, if $f : A \to B$ and $g :
+    B \to A$ are such that $f \circ g = \1$ and $g \circ f = \1$, then we
+    say that $f$ and $g$ are inverses.  If $f$ is a morphism such that there
+    exists a $g$ such that $f$ and $g$ are inverses, then we call $f$ an
+    isomorphism.  If there exists an isomorphism from $A$ to $B$, then we say
+    that $A$ and $B$ are isomorphic and we write $A \cong B$.
+\end{definition}
+
+\begin{theorem}
+    The identity morphism is an isomorphism.
+\end{theorem}
+\begin{proof}
+    The identity morphism is the inverse.
+\end{proof}
+
+\begin{theorem}
+    The composition of two isomorphisms is an isomorphism.
+\end{theorem}
+\begin{proof}
+    Let $A$, $B$, and $C$ be objects and let $f : B \to C$ and $g : A \to B$ be
+    isomorphisms.  This means that we have morphisms $f' : C \to B$ and $g' : B
+    \to A$ such that $f \circ f' = \1$, $f' \circ f = \1$, $g \circ g' = \1$,
+    and $g' \circ g = \1$.  Then we have
+    \[
+        f \circ g \circ g' \circ f' = f \circ f' = \1
+    \]
+    and
+    \[
+        g' \circ f' \circ f \circ g = g' \circ g = \1,
+    \]
+    showing that $g' \circ f'$ is an inverse of $f \circ g$.
+\end{proof}
+
+\begin{theorem}
+    If a morphism $f$ has two inverses $g_1$ and $g_2$, then $g_1 = g_2$.
+\end{theorem}
+\begin{proof}
+    By definition, we have $f \circ g_1 = \1$.  Composing on the left with $g_2$
+    on both sides we get
+    \[
+        g_2 \circ f \circ g_1 = g_1 = g_2.
+    \]
+\end{proof}
+
+\begin{theorem}
+    Objects being isomorphic is an equivalence relation.
+\end{theorem}
+\begin{proof}
+    Reflexivity follows from the identity morphism being an isomorphism.  For
+    symmetry, given an isomorphism $f : A \to B$, the inverse $g : B \to A$ is
+    an isomorphism.  Transitivity follows from the composition of isomorphisms
+    being an isomorphism.
+\end{proof}
+
+\begin{definition}
+    Given a category $C$, we can define its dual category $\dual{C}$ as the
+    category with objects the same as $C$, with morphisms from $A$ to $B$ as
+    being the morphisms in $C$ from $B$ to $A$, with the composition $f \circ g$
+    being the composition $g \circ f$ is $C$, and with identities being the same
+    as the identities in $C$.
+\end{definition}
+
+\begin{theorem}
+    A morphism is an isomorphism if and only if it is a morphism in the dual
+    category.
+\end{theorem}
+\begin{proof}
+    This follows directly from the symmetry of isomorphism.
+\end{proof}
+
+\begin{theorem}
+    For all categories $C$, $C = \dual{{\dual{C}}}$.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{definition}
+    Given two categories $C_1$ and $C_2$, we define their product $C_1 \times
+    C_2$ as the category where the objects are defined to be $C_1 \times C_2$
+    (where $C_1$ and $C_2$ are considered to be the objects in this case), the
+    morphisms $A \to B$ are defined to be $(P_1(A) \to P_1(B)) \times (P_2(A)
+    \to P_2(B))$, the composition of two morphisms $f$ and $g$ is defined to be
+    $(P_1(f) \circ P_1(g), P_2(f) \circ P_2(g))$, and the identity morphisms are
+    defined to be $(\1, \1)$.
+\end{definition}
+
+\begin{definition}
+    Given a category $C$, a subcategory of $C$ is subsets $O$ of the objects of
+    $C$ and $M$ of the morphisms of $C$ such that the composition of morphisms
+    in $M$ is in $M$ and that all identity morphisms are in $M$.  A subcategory
+    is trivially a category formed with $\T(O)$ and $\T(M)$.
+\end{definition}
+
+\begin{definition}
+    A subcategory is called a full subcategory if for all objects $A$ and $B$,
+    $M(A, B) = \mathbf U$.
 \end{definition}
 
 \section{Functors}
@@ -84,8 +184,8 @@ then functors and their notions after that, and then natural transformations.
         \item A proof that for all objects $A$, $B$, and $C$ in $C_1$ and
             morphisms $f : B \to C$ and $g : A \to B$, we have $F(f \circ g) =
             F(f) \circ F(g)$.
-        \item A proof that for all objects $A : C_1$, we have $F(\mathds 1_A) =
-            \mathds 1_{F(A)}$.
+        \item A proof that for all objects $A : C_1$, we have $F(\1_A) =
+            \1_{F(A)}$.
     \end{itemize}
 \end{definition}
 
@@ -124,7 +224,7 @@ then functors and their notions after that, and then natural transformations.
     be the identity function.
 \end{proof}
 
-Thus, without confusion we may use the notation $\mathds 1$ to represent the
+Thus, without confusion we may use the notation $\1$ to represent the
 identity functor and $F \circ G$ to represent the composition of two functors.
 
 \section{Natural Transformations}
@@ -143,13 +243,13 @@ identity functor and $F \circ G$ to represent the composition of two functors.
 
 \begin{theorem}
     Given categories $C_1$ and $C_2$ and a functor $F : C_1 \to C_2$, the
-    function that takes objects $A : C_1$ to $\mathds 1_{F(A)}$ is a natural
+    function that takes objects $A : C_1$ to $\1_{F(A)}$ is a natural
     transformation from $F$ to $F$ called the identity natural transformation.
 \end{theorem}
 \begin{proof}
     We mult prove that for all objects $A$ and $B$ in $C_1$ and morphisms $f : A
-    \to B$, we have $\mathds 1 \circ F(f) = F(f) \circ \mathds 1$, which follows
-    from $\mathds 1$ being an identity.
+    \to B$, we have $\1 \circ F(f) = F(f) \circ \1$, which follows from $\1$
+    being an identity.
 \end{proof}
 
 \begin{theorem}
@@ -178,7 +278,7 @@ identity functor and $F \circ G$ to represent the composition of two functors.
     Every property needed follows from the corresponding property in $C_2$.
 \end{proof}
 
-Thus, like with functors, without confusion we may use the notation $\mathds 1$
+Thus, like with functors, without confusion we may use the notation $\1$
 to represent the identity natural transformation and $\alpha \circ \beta$ to
 represent the vertical composition of two natural transformations.
 
