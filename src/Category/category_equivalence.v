@@ -22,13 +22,7 @@ Proof.
     unfold cat_equivalence.
     rewrite cat_lid.
     exists 𝟙, 𝟙.
-    assert (nat_isomorphism (C1 := C0) (F:=𝟙) (G:=𝟙) 𝟙) as H.
-    {
-        exists 𝟙.
-        rewrite cat_lid.
-        split; reflexivity.
-    }
-    split; exact H.
+    split; apply id_isomorphism.
 Qed.
 
 Theorem cat_equiv_trans : ∀ (C1 C2 C3 : Category), C1 ⋍ C2 → C2 ⋍ C3 → C1 ⋍ C3.
@@ -37,10 +31,14 @@ Proof.
     destruct C12 as [F1 [G1 [η1 [ε1 [η1_iso ε1_iso]]]]].
     destruct C23 as [F2 [G2 [η2 [ε2 [η2_iso ε2_iso]]]]].
     exists (F2 ∘ F1), (G1 ∘ G2).
-    assert (nat_isomorphic 𝟙 (G1 ∘ F1)) as iso1 by (exists η1; exact η1_iso).
-    assert (nat_isomorphic (F1 ∘ G1) 𝟙) as iso2 by (exists ε1; exact ε1_iso).
-    assert (nat_isomorphic 𝟙 (G2 ∘ F2)) as iso3 by (exists η2; exact η2_iso).
-    assert (nat_isomorphic (F2 ∘ G2) 𝟙) as iso4 by (exists ε2; exact ε2_iso).
+    assert (nat_isomorphic 𝟙 (G1 ∘ F1)) as iso1
+        by (exists η1 (ex_val η1_iso); exact (ex_proof η1_iso)).
+    assert (nat_isomorphic (F1 ∘ G1) 𝟙) as iso2
+        by (exists ε1 (ex_val ε1_iso); exact (ex_proof ε1_iso)).
+    assert (nat_isomorphic 𝟙 (G2 ∘ F2)) as iso3
+        by (exists η2 (ex_val η2_iso); exact (ex_proof η2_iso)).
+    assert (nat_isomorphic (F2 ∘ G2) 𝟙) as iso4
+        by (exists ε2 (ex_val ε2_iso); exact (ex_proof ε2_iso)).
     assert (nat_isomorphic 𝟙 (G1 ∘ G2 ∘ (F2 ∘ F1))) as [η η_iso].
     {
         unfold nat_isomorphic in *.
@@ -64,7 +62,11 @@ Proof.
         exact iso2.
     }
     exists η, ε.
-    split; assumption.
+    split.
+    -   exists η_iso.
+        exact iso_inv.
+    -   exists ε_iso.
+        exact iso_inv0.
 Qed.
 
 (* begin hide *)
@@ -171,10 +173,11 @@ Theorem functor_equiv_sur1 : essentially_surjective F.
 Proof.
     intros B.
     exists (G B).
-    exists (ε B).
     destruct equiv as [η_iso ε_iso].
     rewrite nat_isomorphism_A in ε_iso.
-    apply ε_iso.
+    pose proof (ε_iso B) as [B' B'_iso].
+    split.
+    exact (make_isomorphism _ _ B'_iso).
 Qed.
 
 (* begin hide *)
@@ -279,8 +282,8 @@ Proof.
     intros F F_full F_faith F_sur.
     exists F.
     pose (G_f B := ex_val (F_sur B)).
-    pose (g B := ex_val (ex_proof (ex_proof (F_sur B)))).
-    pose (h A := ex_val (ex_proof (F_sur A))).
+    pose (g B := iso_g (indefinite_description (ex_proof (F_sur B)))).
+    pose (h A := iso_f (indefinite_description (ex_proof (F_sur A)))).
     pose (G_morphism A B (f : morphism A B) :=
         ex_val (sur _ (Surjective := F_full _ _) (g B ∘ f ∘ h A))
     ).
@@ -290,8 +293,7 @@ Proof.
         unfold g, h.
         unfold ex_val, ex_proof.
         destruct (ex_to_type (F_sur A)) as [GA CC0]; cbn.
-        destruct (ex_to_type CC0) as [f CC1]; cbn; clear CC0.
-        destruct (ex_to_type CC1) as [f' [f_eq1 f_eq2]]; cbn; clear CC1.
+        destruct (indefinite_description CC0) as [f f' [f_eq1 f_eq2]]; cbn.
         exact f_eq2.
     }
     assert (∀ A, h A ∘ g A = 𝟙) as hg_id.
@@ -300,8 +302,7 @@ Proof.
         unfold g, h.
         unfold ex_val, ex_proof.
         destruct (ex_to_type (F_sur A)) as [GA CC0]; cbn.
-        destruct (ex_to_type CC0) as [f CC1]; cbn; clear CC0.
-        destruct (ex_to_type CC1) as [f' [f_eq1 f_eq2]]; cbn; clear CC1.
+        destruct (indefinite_description CC0) as [f f' [f_eq1 f_eq2]]; cbn.
         exact f_eq1.
     }
     assert (∀ {A B C} (f : morphism B C) (g : morphism A B),
@@ -310,9 +311,6 @@ Proof.
     {
         intros A B C f1 f2.
         unfold G_morphism.
-        change (ex_type_val (ex_to_type (F_sur A))) with (G_f A).
-        change (ex_type_val (ex_to_type (F_sur B))) with (G_f B).
-        change (ex_type_val (ex_to_type (F_sur C))) with (G_f C).
         rewrite_ex_val f12' f12'_eq.
         rewrite_ex_val f1' f1'_eq.
         rewrite_ex_val f2' f2'_eq.
@@ -395,7 +393,7 @@ Proof.
     exists G, η, ε.
     split; rewrite nat_isomorphism_A.
     -   intros A.
-        unfold isomorphism.
+        unfold is_isomorphism.
         exists (ex_val (sur _ (Surjective := F_full _ _) (h (F A)))).
         cbn.
         unfold η_f.
@@ -422,7 +420,7 @@ Proof.
             apply F_faith in eq.
             exact eq.
     -   intros A.
-        unfold isomorphism.
+        unfold is_isomorphism.
         exists (g A).
         cbn.
         unfold ε_f.

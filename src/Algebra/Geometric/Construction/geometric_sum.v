@@ -386,7 +386,7 @@ Theorem geo_sum : ∀ x, S x.
 Proof.
     intros x.
     pose proof (initial_unique _ _ (geometric_universal B) (S_universal))
-        as [[f f_eq] [[g g_eq] [fg gf]]].
+        as [[f f_eq] [g g_eq] [fg gf]].
     cbn in *.
     rewrite set_type_eq2 in fg.
     rewrite set_type_eq2 in gf.

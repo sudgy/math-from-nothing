@@ -12,7 +12,7 @@ Section Grade.
 Context {U} {V1 V2 : Module U} {I : Type} `{GradedSpace U V1 I}.
 
 Variables (f : morphism V1 V2) (g : morphism V2 V1)
-    (iso : cat_is_inverse f g).
+    (iso : is_isomorphism_pair f g).
 
 Lemma grade_iso_fg : ∀ x, f (g x) = x.
 Proof.
@@ -113,12 +113,12 @@ Section GradeAlgebraObj.
 Context {U : CRingObj} {V1 V2 : Algebra U} {I : Type}.
 Context `{VG : GradedSpace U (algebra_module V1) I}.
 Variables (f : morphism V1 V2) (g : morphism V2 V1)
-    (iso : cat_is_inverse f g).
+    (iso : is_isomorphism_pair f g).
 
 Context `{IP : Plus I}.
 Context `{GA : @GradedAlgebra U V1 I VG IP}.
 
-Lemma graded_algebra_inv : cat_is_inverse (C0 := Module U)
+Lemma graded_algebra_inv : is_isomorphism_pair (C0 := Module U)
     (algebra_to_module_homomorphism f)
     (algebra_to_module_homomorphism g).
 Proof.

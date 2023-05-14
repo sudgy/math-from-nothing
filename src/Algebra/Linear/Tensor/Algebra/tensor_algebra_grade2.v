@@ -176,13 +176,13 @@ Qed.
 
 Lemma tensor_algebra_iso_ex :
     ∃ f : morphism (tensor_algebra_n V) (tensor_algebra V),
-        isomorphism f ∧
+        is_isomorphism f ∧
         ∀ x, f (vector_to_tensor_n V x) =
             vector_to_tensor_homo V x.
 Proof.
     pose proof (initial_unique _ _
         tensor_algebra_n_universal (tensor_algebra_ex V))
-        as [[f f_eq] [[g g_eq] [fg gf]]].
+        as [[f f_eq] [g g_eq] [fg gf]].
     cbn in *.
     unfold to_algebra_set in *; cbn in *.
     change (ex_type_val (ex_to_type (_))) with (to_tensor_algebra V) in *.

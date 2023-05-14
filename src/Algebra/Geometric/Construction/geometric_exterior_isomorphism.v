@@ -323,14 +323,14 @@ Proof.
     apply geo_to_ext_to_geo.
 Qed.
 
-Theorem ext_to_geo_iso : isomorphism ext_to_geo_homo.
+Theorem ext_to_geo_iso : is_isomorphism ext_to_geo_homo.
 Proof.
     exists geo_to_ext_homo.
     split.
     -   exact ext_to_geo_to_ext_homo.
     -   exact geo_to_ext_to_geo_homo.
 Qed.
-Theorem geo_to_ext_iso : isomorphism geo_to_ext_homo.
+Theorem geo_to_ext_iso : is_isomorphism geo_to_ext_homo.
 Proof.
     exists ext_to_geo_homo.
     split.
@@ -338,12 +338,14 @@ Proof.
     -   exact ext_to_geo_to_ext_homo.
 Qed.
 
-Theorem geo_ext_iso : isomorphic
-    (algebra_module (geometric_algebra B))
+Theorem geo_ext_iso :
+    (algebra_module (geometric_algebra B)) ≅
     (algebra_module (exterior_algebra V)).
 Proof.
-    exists geo_to_ext_homo.
-    exact geo_to_ext_iso.
+    exists geo_to_ext_homo ext_to_geo_homo.
+    split.
+    -   exact geo_to_ext_to_geo_homo.
+    -   exact ext_to_geo_to_ext_homo.
 Qed.
 
 Theorem scalar_to_geo_eq : ∀ a b, scalar_to_geo B a = scalar_to_geo B b → a = b.

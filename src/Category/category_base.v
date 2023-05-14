@@ -6,18 +6,36 @@ Require Import set.
 
 Set Universe Polymorphism.
 
-Definition cat_is_inverse {C0 : Category} {A B : C0}
+Definition is_isomorphism_pair {C0 : Category} {A B : C0}
     (f : morphism A B) (g : morphism B A) := f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
-Definition isomorphism {C0 : Category} {A B : C0} (f : morphism A B)
-    := ∃ g, f ∘ g = 𝟙 ∧ g ∘ f = 𝟙.
+Definition is_isomorphism {C0 : Category} {A B : C0} (f : morphism A B)
+    := ∃ g, is_isomorphism_pair f g.
 
-Definition cat_inverse {C0 : Category} {A B : C0}
-    (f : morphism A B) (H : isomorphism f) := ex_val H.
+Record isomorphism {C : Category} (A B : C) := make_isomorphism {
+    iso_f : morphism A B;
+    iso_g : morphism B A;
+    iso_inv : is_isomorphism_pair iso_f iso_g;
+}.
 
-Definition isomorphic {C0 : Category} (A B : C0)
-    := ∃ f : morphism A B, isomorphism f.
+Arguments make_isomorphism {C A B}.
+Arguments iso_f {C A B}.
+Arguments iso_g {C A B}.
+Arguments iso_inv {C A B}.
 
-Notation "A ≅ B" := (isomorphic A B) (at level 70, no associativity).
+Notation "A ≅ B" := (isomorphism A B) (at level 70, no associativity).
+
+Theorem iso_fg : ∀ {C : Category} {A B : C} (AB : isomorphism A B),
+    iso_f AB ∘ iso_g AB = 𝟙.
+Proof.
+    intros C A B AB.
+    apply iso_inv.
+Qed.
+Theorem iso_gf : ∀ {C : Category} {A B : C} (AB : isomorphism A B),
+    iso_g AB ∘ iso_f AB = 𝟙.
+Proof.
+    intros C A B AB.
+    apply iso_inv.
+Qed.
 
 (* begin show *)
 Program Definition dual_category (C0 : Category) : Category := {|
@@ -125,7 +143,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem id_isomorphism : ∀ A : C0, isomorphism (cat_id A).
+Theorem id_isomorphism : ∀ A : C0, is_isomorphism (cat_id A).
 Proof.
     intros A.
     exists 𝟙.
@@ -134,7 +152,7 @@ Qed.
 
 Theorem compose_isomorphism : ∀ {A B C : C0}
     (f : morphism B C) (g : morphism A B),
-    isomorphism f → isomorphism g → isomorphism (f ∘ g).
+    is_isomorphism f → is_isomorphism g → is_isomorphism (f ∘ g).
 Proof.
     intros A B C f g [f' [f1 f2]] [g' [g1 g2]].
     exists (g' ∘ f').
@@ -165,21 +183,21 @@ Qed.
 Theorem isomorphic_refl : ∀ A : C0, A ≅ A.
 Proof.
     intros A.
-    exists 𝟙, 𝟙.
+    exists 𝟙 𝟙.
+    unfold is_isomorphism_pair.
     rewrite cat_lid.
     split; reflexivity.
 Qed.
 Theorem isomorphic_sym : ∀ A B : C0, A ≅ B → B ≅ A.
 Proof.
-    intros A B [f [g [eq1 eq2]]].
-    exists g, f.
+    intros A B [f g [eq1 eq2]].
+    exists g f.
     split; assumption.
 Qed.
 Theorem isomorphic_trans : ∀ {A B C : C0}, A ≅ B → B ≅ C → A ≅ C.
 Proof.
-    intros A B C [f1 [g1 [eq11 eq12]]] [f2 [g2 [eq21 eq22]]].
-    exists (f2 ∘ f1).
-    exists (g1 ∘ g2).
+    intros A B C [f1 g1 [eq11 eq12]] [f2 g2 [eq21 eq22]].
+    exists (f2 ∘ f1) (g1 ∘ g2).
     split.
     -   rewrite <- cat_assoc.
         rewrite (cat_assoc f1).
@@ -199,7 +217,7 @@ Proof.
 Qed.
 
 Theorem dual_isomorphism : ∀ {A B : C0} (f : morphism A B),
-    isomorphism (C0 := C0) f ↔ isomorphism (C0:=dual_category C0) f.
+    is_isomorphism (C0 := C0) f ↔ is_isomorphism (C0:=dual_category C0) f.
 Proof.
     intros A B f.
     split.

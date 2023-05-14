@@ -174,12 +174,12 @@ Qed.
 
 Lemma ext_algebra_iso_ex :
     ∃ f : morphism (ext_algebra_n V) (exterior_algebra V),
-        isomorphism f ∧
+        is_isomorphism f ∧
         ∀ x, f (vector_to_ext_n V x) = φ x.
 Proof.
     pose proof (initial_unique _ _
         ext_algebra_n_universal (exterior_universal V))
-        as [[f f_eq] [[g g_eq] [fg gf]]].
+        as [[f f_eq] [g g_eq] [fg gf]].
     cbn in *.
     unfold to_ext_set in *; cbn in *.
     change (ex_type_val (ex_to_type (_))) with (to_ext_algebra V) in *.

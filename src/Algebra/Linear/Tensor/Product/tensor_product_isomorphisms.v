@@ -58,7 +58,7 @@ Existing Instances TU1_plus TU1_scalar.
 (* end hide *)
 Theorem tensor_product_lid :
     ∃ f : morphism (tensor_product (cring_module F) M) M,
-        isomorphism f ∧ ∀ a v, f (a ⊗ v) = a · v.
+        is_isomorphism f ∧ ∀ a v, f (a ⊗ v) = a · v.
 Proof.
     assert (bilinear (λ (a : U) (v : V1), a · v)) as f_bil.
     {
@@ -141,7 +141,7 @@ Proof.
     apply (@module_homo_scalar _ _ _ tensor_product_lid_homo).
 Qed.
 
-Theorem tensor_product_lid_iso : isomorphism tensor_product_lid_homo.
+Theorem tensor_product_lid_iso : is_isomorphism tensor_product_lid_homo.
 Proof.
     apply (ex_proof tensor_product_lid).
 Qed.
@@ -192,7 +192,7 @@ Existing Instances T12_plus T12_scalar T21_plus T21_scalar.
 (* end hide *)
 Theorem tensor_product_comm :
     ∃ f : morphism (tensor_product M N) (tensor_product N M),
-        isomorphism f ∧ ∀ a b, f (a ⊗12 b) = b ⊗21 a.
+        is_isomorphism f ∧ ∀ a b, f (a ⊗12 b) = b ⊗21 a.
 Proof.
     assert (bilinear (λ a b, b ⊗21 a)) as f_bil
         by (repeat split; intros; apply tensor_bilinear).
@@ -277,7 +277,7 @@ Proof.
     apply (@module_homo_scalar _ _ _ tensor_product_comm_homo).
 Qed.
 
-Theorem tensor_product_comm_iso : isomorphism tensor_product_comm_homo.
+Theorem tensor_product_comm_iso : is_isomorphism tensor_product_comm_homo.
 Proof.
     apply (ex_proof tensor_product_comm).
 Qed.
@@ -391,7 +391,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem tensor_product_rid_iso : isomorphism tensor_product_rid_homo.
+Theorem tensor_product_rid_iso : is_isomorphism tensor_product_rid_homo.
 Proof.
     apply compose_isomorphism.
     -   apply tensor_product_lid_iso.
@@ -551,8 +551,8 @@ Proof.
     apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_lriso f1 f2))).
 Qed.
 
-Theorem tensor_product_lriso_iso : isomorphism f1 → isomorphism f2 →
-        isomorphism (tensor_product_lriso_homo f1 f2).
+Theorem tensor_product_lriso_iso : is_isomorphism f1 → is_isomorphism f2 →
+        is_isomorphism (tensor_product_lriso_homo f1 f2).
 Proof.
     intros [g1 [fg1 gf1]] [g2 [fg2 gf2]].
     inversion fg1 as [fg1']; clear fg1.
@@ -623,7 +623,7 @@ Proof.
             reflexivity.
 Qed.
 
-Theorem tensor_product_lriso_bij : isomorphism f1 → isomorphism f2 →
+Theorem tensor_product_lriso_bij : is_isomorphism f1 → is_isomorphism f2 →
         Bijective lrf.
 Proof.
     intros f1_iso f2_iso.
@@ -721,7 +721,7 @@ Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 Theorem tensor_product_liso :
     ∀ (f : morphism M1 M2),
     ∃ g : morphism (tensor_product M1 N) (tensor_product M2 N),
-        (isomorphism f → isomorphism g) ∧
+        (is_isomorphism f → is_isomorphism g) ∧
         ∀ u v, g (u ⊗1 v) = f u ⊗2 v.
 Proof.
     intros f.
@@ -753,13 +753,13 @@ Proof.
     apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_liso f))).
 Qed.
 
-Theorem tensor_product_liso_iso : isomorphism f →
-    isomorphism (tensor_product_liso_homo f).
+Theorem tensor_product_liso_iso : is_isomorphism f →
+    is_isomorphism (tensor_product_liso_homo f).
 Proof.
     apply (ex_proof (tensor_product_liso f)).
 Qed.
 
-Theorem tensor_product_liso_bij : isomorphism f → Bijective lf.
+Theorem tensor_product_liso_bij : is_isomorphism f → Bijective lf.
 Proof.
     intros f_iso.
     pose proof (tensor_product_liso_iso f_iso) as [[g g_plus g_scalar] [fg gf]].
@@ -855,7 +855,7 @@ Existing Instances T1_plus T1_scalar T2_plus T2_scalar.
 Theorem tensor_product_riso :
     ∀ (f : morphism N1 N2),
     ∃ g : morphism (tensor_product M N1) (tensor_product M N2),
-        (isomorphism f → isomorphism g) ∧
+        (is_isomorphism f → is_isomorphism g) ∧
         ∀ u v, g (u ⊗1 v) = u ⊗2 f v.
 Proof.
     intros f.
@@ -887,13 +887,13 @@ Proof.
     apply (@module_homo_scalar _ _ _ (ex_val (tensor_product_riso f))).
 Qed.
 
-Theorem tensor_product_riso_iso : isomorphism f →
-    isomorphism (tensor_product_riso_homo f).
+Theorem tensor_product_riso_iso : is_isomorphism f →
+    is_isomorphism (tensor_product_riso_homo f).
 Proof.
     apply (ex_proof (tensor_product_riso f)).
 Qed.
 
-Theorem tensor_product_riso_bij : isomorphism f → Bijective rf.
+Theorem tensor_product_riso_bij : is_isomorphism f → Bijective rf.
 Proof.
     intros f_iso.
     pose proof (tensor_product_riso_iso f_iso) as [[g g_plus g_scalar] [fg gf]].

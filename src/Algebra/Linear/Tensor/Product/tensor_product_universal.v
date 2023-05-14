@@ -475,7 +475,7 @@ Proof.
     pose (tsr := module_scalar_rdist (tensor_product_base)).
     intros T.
     pose proof (initial_unique  _ _
-        tensor_product_universal tensor_product_ex_base) as [g [h [gh hg]]].
+        tensor_product_universal tensor_product_ex_base) as [g h [gh hg]].
     destruct g as [g g_in], h as [h h_in].
     cbn in *.
     apply set_type_eq in gh; cbn in gh.

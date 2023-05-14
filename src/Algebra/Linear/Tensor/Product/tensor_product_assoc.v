@@ -97,7 +97,7 @@ Theorem tensor_product_assoc :
     ∃ f : morphism
             (tensor_product M (tensor_product N O))
             (tensor_product (tensor_product M N) O),
-        isomorphism f ∧
+        is_isomorphism f ∧
         ∀ a b c, f (a ⊗1_23 (b ⊗23 c)) = (a ⊗12 b) ⊗12_3 c.
 Proof.
     pose (T12_plus := module_plus V12).
@@ -439,7 +439,7 @@ Proof.
     apply (@module_homo_scalar _ _ _ (ex_val tensor_product_assoc)).
 Qed.
 
-Theorem tensor_product_assoc_iso : isomorphism tensor_product_assoc_homo.
+Theorem tensor_product_assoc_iso : is_isomorphism tensor_product_assoc_homo.
 Proof.
     apply (ex_proof tensor_product_assoc).
 Qed.
@@ -491,7 +491,7 @@ Proof.
     apply (@module_homo_scalar _ _ _ tensor_product_assoc_inv_homo).
 Qed.
 
-Theorem tensor_product_assoc_inv_iso : isomorphism tensor_product_assoc_inv_homo.
+Theorem tensor_product_assoc_inv_iso : is_isomorphism tensor_product_assoc_inv_homo.
 Proof.
     unfold af', tensor_product_assoc_inv_f, tensor_product_assoc_inv_homo.
     rewrite_ex_val f fg.

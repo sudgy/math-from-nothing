@@ -60,7 +60,7 @@ Qed.
 
 Definition essentially_surjective {C1 : Category} {C2 : Category}
     (F : Functor C1 C2)
-    := ∀ B, ∃ A, isomorphic (F A) B.
+    := ∀ B, ∃ A, inhabited ((F A) ≅ B).
 
 (* begin hide *)
 Section Functor.
@@ -68,11 +68,11 @@ Section Functor.
 Context {C1 : Category} {C2 : Category} {F : Functor C1 C2}.
 
 (* end hide *)
-Theorem functor_isomorphism : ∀ A B, isomorphic A B → isomorphic (F A) (F B).
+Theorem functor_isomorphism : ∀ A B, A ≅ B → (F A) ≅ (F B).
 Proof.
-    intros A B [f [g [fg gf]]].
-    exists (⌈F⌉ f).
-    exists (⌈F⌉ g).
+    intros A B [f g [fg gf]].
+    exists (⌈F⌉ f) (⌈F⌉ g).
+    unfold is_isomorphism_pair.
     rewrite <- functor_compose.
     rewrite <- functor_compose.
     rewrite fg, gf.

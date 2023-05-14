@@ -67,16 +67,17 @@ Qed.
 
 Definition nat_isomorphism {C1 C2 : Category}
     {F G : Functor C1 C2} (α : NatTransformation F G)
-    := isomorphism α.
+    := is_isomorphism α.
 
 Theorem nat_isomorphism_A {C1 C2 : Category} {F G : Functor C1 C2} :
-    ∀ α : NatTransformation F G, nat_isomorphism α ↔ (∀ A, isomorphism (α A)).
+    ∀ α : NatTransformation F G, nat_isomorphism α ↔ (∀ A, is_isomorphism (α A)).
 Proof.
     intros α.
     split.
     -   intros α_iso A.
         destruct α_iso as [β [β_eq1 β_eq2]].
         exists (β A).
+        unfold is_isomorphism_pair.
         do 2 rewrite <- nat_trans_compose_eq.
         rewrite β_eq1, β_eq2.
         cbn.
@@ -118,17 +119,15 @@ Proof.
             exact B_eq2.
 Qed.
 
-Definition nat_isomorphic {C1 C2 : Category} (F G : Functor C1 C2)
-    := isomorphic F G.
+Definition nat_isomorphic {C1 C2 : Category} (F G : Functor C1 C2) := F ≅ G.
 
 Theorem nat_isomorphic_wd {C1 C2 C3 : Category} :
     ∀ (F G : Functor C2 C3) (H I : Functor C1 C2),
     nat_isomorphic F G → nat_isomorphic H I →
     nat_isomorphic (F ∘ H) (G ∘ I).
 Proof.
-    intros F G H I [α [α' [α_eq1 α_eq2]]] [β [β' [β_eq1 β_eq2]]].
-    exists (α ○ β).
-    exists (α' ○ β').
+    intros F G H I [α α' [α_eq1 α_eq2]] [β β' [β_eq1 β_eq2]].
+    exists (α ○ β) (α' ○ β').
     split.
     -   rewrite <- nat_trans_interchange.
         rewrite α_eq1, β_eq1.
@@ -140,8 +139,7 @@ Qed.
 
 Theorem lnat_iso {C1 C2 C3 : Category} :
     ∀ {F G : Functor C1 C2} (H : Functor C2 C3),
-    isomorphic F G →
-    isomorphic (H ∘ F : Functor C1 C3) (H ∘ G).
+    F ≅ G → (H ∘ F : Functor C1 C3) ≅ (H ∘ G).
 Proof.
     intros F G H eq.
     pose proof (isomorphic_refl (C0:= Functor C2 C3) H) as eq2.
@@ -149,8 +147,7 @@ Proof.
 Qed.
 Theorem rnat_iso {C1 C2 C3 : Category} :
     ∀ {F G : Functor C2 C3} (H : Functor C1 C2),
-    isomorphic F G →
-    isomorphic (F ∘ H : Functor C1 C3) (G ∘ H).
+    F ≅ G → (F ∘ H : Functor C1 C3) ≅ (G ∘ H).
 Proof.
     intros F G H eq.
     pose proof (isomorphic_refl (C0:= Functor C1 C2) H) as eq2.
