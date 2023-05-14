@@ -35,6 +35,49 @@ Notation "𝟙" := (cat_id _).
 Definition cat_domain {C : CategoryObj} {A B : C} (f : morphism A B) := A.
 Definition cat_codomain {C : CategoryObj} {A B : C} (f : morphism A B) := B.
 
+Definition convert_type {A B : Type} (H : A = B) (x : A) : B.
+    destruct H.
+    exact x.
+Defined.
+
+Theorem cat_eq : ∀ C1 C2,
+    ∀ H : cat_U C1 = cat_U C2,
+    ∀ H' : (∀ A B, morphism A B =
+                   morphism (convert_type H A) (convert_type H B)),
+    (∀ A B C (f : morphism B C) (g : morphism A B),
+        convert_type (H' _ _) (f ∘ g) =
+        (convert_type (H' _ _) f) ∘ (convert_type (H' _ _) g)) →
+    (∀ A, convert_type (H' A A) (cat_id A) = cat_id (convert_type H A)) →
+    C1 = C2.
+Proof.
+    intros [U1 morphism1 compose1 id1 assoc1 lid1 rid1]
+           [U2 morphism2 compose2 id2 assoc2 lid2 rid2] H H' eq1 eq2.
+    cbn in *.
+    destruct H. (* Saying subst U2 causes a bug at Qed for some reason *)
+    cbn in *.
+    assert (morphism1 = morphism2) as eq.
+    {
+        functional_intros A B.
+        apply H'.
+    }
+    subst morphism2; cbn in *.
+    rewrite (proof_irrelevance H' (λ A B, Logic.eq_refl)) in eq1, eq2.
+    clear H'.
+    cbn in *.
+    assert (compose1 = compose2) as eq.
+    {
+        functional_intros A B C f g.
+        apply eq1.
+    }
+    subst compose2; clear eq1.
+    apply functional_ext in eq2.
+    subst id2.
+    rewrite (proof_irrelevance assoc2 assoc1).
+    rewrite (proof_irrelevance lid2 lid1).
+    rewrite (proof_irrelevance rid2 rid1).
+    reflexivity.
+Qed.
+
 Record FunctorObj (C1 C2 : CategoryObj) := make_functor_base {
     functor_f :> C1 → C2;
     functor_morphism : ∀ {A B},
@@ -115,27 +158,24 @@ Program Definition Category : CategoryObj := {|
 |}.
 Next Obligation.
 Proof.
-    eapply functor_eq.
-    Unshelve.
-    2: reflexivity.
-    cbn.
-    reflexivity.
+    unshelve eapply functor_eq.
+    -   reflexivity.
+    -   cbn.
+        reflexivity.
 Qed.
 Next Obligation.
 Proof.
-    eapply functor_eq.
-    Unshelve.
-    2: reflexivity.
-    cbn.
-    reflexivity.
+    unshelve eapply functor_eq.
+    -   reflexivity.
+    -   cbn.
+        reflexivity.
 Qed.
 Next Obligation.
 Proof.
-    eapply functor_eq.
-    Unshelve.
-    2: reflexivity.
-    cbn.
-    reflexivity.
+    unshelve eapply functor_eq.
+    -   reflexivity.
+    -   cbn.
+        reflexivity.
 Qed.
 
 Record NatTransformationObj {C1 C2 : Category} (F G : morphism C1 C2) :=

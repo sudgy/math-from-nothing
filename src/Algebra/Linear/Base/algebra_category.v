@@ -191,7 +191,7 @@ Qed.
 
 Theorem algebra_to_module_iso {R : CRingObj} {A B : Algebra R} :
     ∀ f : morphism A B, is_isomorphism f →
-    is_isomorphism (C0 := Module R)(algebra_to_module_homomorphism f).
+    is_isomorphism (C := Module R)(algebra_to_module_homomorphism f).
 Proof.
     intros f [g [fg gf]].
     exists (algebra_to_module_homomorphism g).

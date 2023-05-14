@@ -118,7 +118,7 @@ Variables (f : morphism V1 V2) (g : morphism V2 V1)
 Context `{IP : Plus I}.
 Context `{GA : @GradedAlgebra U V1 I VG IP}.
 
-Lemma graded_algebra_inv : is_isomorphism_pair (C0 := Module U)
+Lemma graded_algebra_inv : is_isomorphism_pair (C := Module U)
     (algebra_to_module_homomorphism f)
     (algebra_to_module_homomorphism g).
 Proof.

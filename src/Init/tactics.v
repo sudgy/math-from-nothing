@@ -84,3 +84,18 @@ Tactic Notation "functional_intros" simple_intropattern(a)
                                     simple_intropattern(d)
     := functional_intro a; functional_intro b;
        functional_intro c; functional_intro d.
+Tactic Notation "functional_intros" simple_intropattern(a)
+                                    simple_intropattern(b)
+                                    simple_intropattern(c)
+                                    simple_intropattern(d)
+                                    simple_intropattern(e)
+    := functional_intro a; functional_intro b;
+       functional_intro c; functional_intro d; functional_intro e.
+Tactic Notation "functional_intros" simple_intropattern(a)
+                                    simple_intropattern(b)
+                                    simple_intropattern(c)
+                                    simple_intropattern(d)
+                                    simple_intropattern(e)
+                                    simple_intropattern(f)
+    := functional_intro a; functional_intro b; functional_intro c;
+       functional_intro d; functional_intro e; functional_intro f.

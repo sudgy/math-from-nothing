@@ -160,7 +160,7 @@ Fixpoint tensor_power_mult (m n : nat)
     end.
 
 Theorem tensor_power_mult1_iso :
-    ∀ n, is_isomorphism (C0 := Module F) (tensor_power_mult1 n).
+    ∀ n, is_isomorphism (C := Module F) (tensor_power_mult1 n).
 Proof.
     intros n.
     induction n.
@@ -174,7 +174,7 @@ Proof.
 Qed.
 
 Theorem tensor_power_mult_iso :
-    ∀ m n, is_isomorphism (C0 := Module F) (tensor_power_mult m n).
+    ∀ m n, is_isomorphism (C := Module F) (tensor_power_mult m n).
 Proof.
     intros m n.
     revert m.
