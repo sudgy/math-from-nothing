@@ -96,9 +96,9 @@ Proof.
 Qed.
 
 Theorem cat_inverse_unique : ∀ {A B : C0} (f : morphism A B) g1 g2,
-    f ∘ g1 = 𝟙 → g1 ∘ f = 𝟙 → f ∘ g2 = 𝟙 → g2 ∘ f = 𝟙 → g1 = g2.
+    is_isomorphism_pair f g1 → is_isomorphism_pair f g2 → g1 = g2.
 Proof.
-    intros A B f g1 g2 fg1 g1f fg2 g2f.
+    intros A B f g1 g2 [fg1 g1f] [fg2 g2f].
     apply lcompose with g2 in fg1.
     rewrite cat_assoc in fg1.
     rewrite g2f in fg1.
@@ -110,9 +110,7 @@ Theorem isomorphic_refl : ∀ A : C0, A ≅ A.
 Proof.
     intros A.
     exists 𝟙 𝟙.
-    unfold is_isomorphism_pair.
-    rewrite cat_lid.
-    split; reflexivity.
+    split; apply cat_lid.
 Qed.
 Theorem isomorphic_sym : ∀ A B : C0, A ≅ B → B ≅ A.
 Proof.
@@ -122,19 +120,12 @@ Proof.
 Qed.
 Theorem isomorphic_trans : ∀ {A B C : C0}, A ≅ B → B ≅ C → A ≅ C.
 Proof.
-    intros A B C [f1 g1 [eq11 eq12]] [f2 g2 [eq21 eq22]].
-    exists (f2 ∘ f1) (g1 ∘ g2).
+    intros A B C [f1 g1 eq1] [f2 g2 eq2].
+    apply indefinite_description.
+    pose proof (compose_isomorphism f2 f1
+        (ex_intro _ g2 eq2) (ex_intro _ g1 eq1)) as [g eq].
     split.
-    -   rewrite <- cat_assoc.
-        rewrite (cat_assoc f1).
-        rewrite eq11.
-        rewrite cat_lid.
-        exact eq21.
-    -   rewrite <- cat_assoc.
-        rewrite (cat_assoc g2).
-        rewrite eq22.
-        rewrite cat_lid.
-        exact eq12.
+    exact (make_isomorphism _ _ eq).
 Qed.
 Theorem isomorphic_trans2 : ∀ {A B C : C0}, B ≅ C → A ≅ B → A ≅ C.
 Proof.
@@ -162,17 +153,15 @@ Next Obligation.
 Qed.
 
 Theorem dual_isomorphism : ∀ {C : Category} {A B : C} (f : morphism A B),
-    is_isomorphism (C := C) f ↔ is_isomorphism (C:=dual_category C) f.
+    is_isomorphism (C := C) f ↔ is_isomorphism (C := dual_category C) f.
 Proof.
-    intros A B f.
+    intros C A B f.
     split.
     -   intros [g [g_eq1 g_eq2]].
         exists g.
-        cbn in *.
         split; assumption.
     -   intros [g [g_eq1 g_eq2]].
         exists g.
-        cbn in *.
         split; assumption.
 Qed.
 
@@ -180,7 +169,7 @@ Theorem cat_dual_dual : ∀ C, C = dual_category (dual_category C).
 Proof.
     intros C.
     unshelve eapply cat_eq.
-    -   reflexivity.
+    -   reflexivity. (* This is actually asking about cat_U being equal *)
     -   cbn.
         reflexivity.
     -   cbn.
@@ -190,7 +179,7 @@ Proof.
 Qed.
 
 Program Definition product_category (C1 : Category) (C2 : Category) := {|
-    cat_U := prod_type C1 C2;
+    cat_U := C1 * C2;
     morphism A B
         := prod_type (morphism (fst A) (fst B)) (morphism (snd A) (snd B));
     cat_compose A B C f g := (fst f ∘ fst g, snd f ∘ snd g);
