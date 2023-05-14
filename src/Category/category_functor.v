@@ -43,11 +43,8 @@ Theorem inclusion_functor_faithful : ∀ {C : Category} (S : SubCategory C),
     faithful_functor (inclusion_functor S).
 Proof.
     intros C S A B.
-    split.
-    intros f g eq.
-    cbn in eq.
-    apply set_type_eq in eq.
-    exact eq.
+    cbn.
+    apply set_type_inj.
 Qed.
 
 Theorem inclusion_functor_full : ∀ {C : Category} (S : SubCategory C),

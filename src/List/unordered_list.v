@@ -78,9 +78,7 @@ Proof.
             cbn in neq.
             contradiction.
         +   apply ulist_image_unique_inj.
-            *   split.
-                intros a b.
-                apply set_type_eq.
+            *   apply set_type_inj.
             *   exact l_uni.
     -   intros y.
         classic_case (x = y) as [eq|neq].

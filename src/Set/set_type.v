@@ -79,6 +79,14 @@ Proof.
     exact H.
 Qed.
 
+Theorem set_type_inj {U} {S : U → Prop} : Injective (@set_value _ S).
+Proof.
+    split.
+    intros a b eq.
+    rewrite set_type_eq in eq.
+    exact eq.
+Qed.
+
 Tactic Notation "st_proof_simpl" constr(a) simple_intropattern(H) :=
     let go H1 H2 :=
         pose proof (H1 H2) as H;
