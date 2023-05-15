@@ -55,10 +55,23 @@ constr(x) constr(comm) constr(assoc) constr(cancel) "in" constr(H) :=
 
 (** Given a hypothesis [H : A → B → C], [prove_parts H] will add the goals [A]
 and [B] and will add the hypothesis [C] to the final goal. *)
+(*
 Ltac prove_parts_base H := let H' := fresh in
     match type of H with
     | ?A → ?B => assert A as H'
     end; [> clear H | specialize (H H'); clear H'].
+Ltac prove_parts H := repeat prove_parts_base H.
+*)
+Ltac prove_parts_specialize H A := let H' := fresh in
+    pose (H' := H A);
+    unfold H in H' + clearbody H';
+    clear H;
+    try clear A;
+    rename H' into H.
+Ltac prove_parts_base H := let H' := fresh in
+    match type of H with
+    | ?A → ?B => assert A as H'
+    end; [> clear H | prove_parts_specialize H H'].
 Ltac prove_parts H := repeat prove_parts_base H.
 
 (** This is meant to be like [rewrite] but will actually use [change] rather
