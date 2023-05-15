@@ -1,5 +1,6 @@
 \documentclass[../math.tex]{subfiles}
 \externaldocument{../math.tex}
+\externaldocument{set}
 
 \begin{document}
 
@@ -131,7 +132,7 @@ then functors and their notions after that, and then natural transformations.
 \end{definition}
 
 \begin{theorem}
-    A morphism is an isomorphism if and only if it is a morphism in the dual
+    A morphism is an isomorphism if and only if it is an isomorphism in the dual
     category.
 \end{theorem}
 \begin{proof}
@@ -180,7 +181,9 @@ then functors and their notions after that, and then natural transformations.
             $F(A) \to F(B)$.  Again, this will be denoted by treating $F$ as a
             function, so if we have a morphism $f : A \to B$, then $F(f) : F(A)
             \to F(B)$.  Thus, functors will be used to represent two different
-            functions that must be determined from context.
+            functions that must be determined from context.  If we want to talk
+            about the function taking morphisms from $A$ to $B$ to morphisms
+            from $F(A)$ to $F(B)$ itself, we will use $F_{A,B}$.
         \item A proof that for all objects $A$, $B$, and $C$ in $C_1$ and
             morphisms $f : B \to C$ and $g : A \to B$, we have $F(f \circ g) =
             F(f) \circ F(g)$.
@@ -226,6 +229,74 @@ then functors and their notions after that, and then natural transformations.
 
 Thus, without confusion we may use the notation $\1$ to represent the
 identity functor and $F \circ G$ to represent the composition of two functors.
+
+\begin{theorem}
+    Functors preserve isomorphisms, that is, if $F$ is a functor and $A \cong
+    B$, then $F(A) \cong F(B)$.
+\end{theorem}
+\begin{proof}
+    Because $A \cong B$, there exist morphisms $f : A \to B$ and $g : B \to A$
+    such that $f \circ g = \1$ and $g \circ f = \1$.  Then we have
+    \[
+        F(f) \circ F(g) = F(f \circ g) = F(\1) = \1
+    \]
+    and
+    \[
+        F(g) \circ F(f) = F(g \circ f) = F(\1) = \1,
+    \]
+    showing that $F(f)$ and $F(g)$ are inverses.  Thus, $F(A) \cong F(B)$.
+\end{proof}
+
+\begin{definition}
+    A functor $F$ is faithful if for all objects $A$ and $B$, $F_{A,B}$ is
+    injective.
+\end{definition}
+
+\begin{definition}
+    A functor $F$ is full if for all objects $A$ and $B$, $F_{A,B}$ is
+    surjective.
+\end{definition}
+
+\begin{definition}
+    A functor $F : C_1 \to C_2$ is essentially surjective if for all objects $B
+    : C_2$, there exists an $A : C_1$ such that $F(A) \cong B$.
+\end{definition}
+
+\begin{theorem}
+    The identity functor is faithful.
+\end{theorem}
+\begin{proof}
+    This follows from the identity function being injective.
+\end{proof}
+
+\begin{theorem}
+    The identity functor is full.
+\end{theorem}
+\begin{proof}
+    This follows from the identity function being surjective.
+\end{proof}
+
+\begin{definition}
+    Given a category $C$ and a subcategory $S$, the maps taking objects and
+    morphisms from $S$ to $C$ is a functor called the inclusion functor.
+\end{definition}
+
+\begin{theorem}
+    The inclusion functor is faithful.
+\end{theorem}
+\begin{proof}
+    This follows from Theorem \ref{set-type-inj}.
+\end{proof}
+
+\begin{theorem}
+    If $S$ is a full subcategory of $C$, then the inclusion functor from $S$ to
+    $C$ is full.
+\end{theorem}
+\begin{proof}
+    Let $f$ be a morphism in $S$ from objects $A$ to $B$.  We must prove that
+    $f$ is a morphism in $C$ as well.  This follows from $S$ being a full
+    subcategory of $C$.
+\end{proof}
 
 \section{Natural Transformations}
 

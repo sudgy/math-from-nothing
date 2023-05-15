@@ -253,7 +253,8 @@ This shows us that $\subseteq$ partially orders sets on a type.
 \end{proof}
 
 \begin{theorem} \label{union-minus}
-    For all sets $A$ and $B$, if $A \cap B = \empty$, then $A \cup B - B = A$.
+    For all sets $A$ and $B$, if $A \cap B = \varnothing$, then $A \cup B - B f
+    A$.
 \end{theorem}
 \begin{proof}
     The proof will be by antisymmetry.  Let $x \in A \cup B - B$.  Then $x \in A
@@ -262,8 +263,8 @@ This shows us that $\subseteq$ partially orders sets on a type.
     A$.  Thus, $A \cup B - B \subseteq A$.
 
     Now let $x \in A$.  This means that $x \in A \cup B$.  Because $A \cap B =
-    \empty$, we can't have $x \in B$.  Thus, $x \in A \cup B - B$, showing that
-    $A \subseteq A \cup B - B$.
+    \varnothing$, we can't have $x \in B$.  Thus, $x \in A \cup B - B$, showing
+    that $A \subseteq A \cup B - B$.
 
     Because $A \cup B - B \subseteq A$ and $A \subseteq A \cup B - B$, we have
     $A \cup B - B = A$ by antisymmetry.
@@ -576,6 +577,13 @@ the two types.
     \st{b'}{H_b}$.  We already have $a' = b'$, so all that's left is to prove
     that $H_a = H_b$.  Because $a' = b'$, we see that $H_a$ and $H_b$ are the
     same type, so they are equal by proof irrelevance.
+\end{proof}
+
+\begin{theorem} \label{set-type-inj}
+    The function $x \to \stv[x]$ is injective.
+\end{theorem}
+\begin{proof}
+    This follows directly from the previous theorem.
 \end{proof}
 
 In the future, because it matches up with traditional mathematics more, I will
