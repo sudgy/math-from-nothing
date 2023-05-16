@@ -7,7 +7,7 @@ Definition cat_equivalence {C1 C2 : Category}
     (F : Functor C1 C2) (G : Functor C2 C1)
     (η : NatTransformation 𝟙 (G ∘ F))
     (ε : NatTransformation (F ∘ G) 𝟙)
-    := nat_isomorphism η ∧ nat_isomorphism ε.
+    := is_isomorphism η ∧ is_isomorphism ε.
 
 Definition cat_equivalent (C1 C2 : Category)
     := ∃ (F : Functor C1 C2) (G : Functor C2 C1) η ε,
@@ -31,17 +31,16 @@ Proof.
     destruct C12 as [F1 [G1 [η1 [ε1 [η1_iso ε1_iso]]]]].
     destruct C23 as [F2 [G2 [η2 [ε2 [η2_iso ε2_iso]]]]].
     exists (F2 ∘ F1), (G1 ∘ G2).
-    assert (nat_isomorphic 𝟙 (G1 ∘ F1)) as iso1
+    assert (isomorphism (𝟙 : Functor _ _) (G1 ∘ F1)) as iso1
         by (exists η1 (ex_val η1_iso); exact (ex_proof η1_iso)).
-    assert (nat_isomorphic (F1 ∘ G1) 𝟙) as iso2
+    assert (isomorphism (F1 ∘ G1 : Functor _ _) 𝟙) as iso2
         by (exists ε1 (ex_val ε1_iso); exact (ex_proof ε1_iso)).
-    assert (nat_isomorphic 𝟙 (G2 ∘ F2)) as iso3
+    assert (isomorphism (𝟙 : Functor _ _) (G2 ∘ F2)) as iso3
         by (exists η2 (ex_val η2_iso); exact (ex_proof η2_iso)).
-    assert (nat_isomorphic (F2 ∘ G2) 𝟙) as iso4
+    assert (isomorphism (F2 ∘ G2 : Functor _ _) 𝟙) as iso4
         by (exists ε2 (ex_val ε2_iso); exact (ex_proof ε2_iso)).
-    assert (nat_isomorphic 𝟙 (G1 ∘ G2 ∘ (F2 ∘ F1))) as [η η_iso].
+    assert (isomorphism (𝟙 : Functor _ _) (G1 ∘ G2 ∘ (F2 ∘ F1))) as [η η_iso].
     {
-        unfold nat_isomorphic in *.
         apply (isomorphic_trans iso1).
         rewrite <- (cat_lid F1) at 1.
         rewrite <- cat_assoc.
@@ -50,9 +49,8 @@ Proof.
         apply rnat_iso.
         exact iso3.
     }
-    assert (nat_isomorphic (F2 ∘ F1 ∘ (G1 ∘ G2)) 𝟙) as [ε ε_iso].
+    assert (isomorphism (F2 ∘ F1 ∘ (G1 ∘ G2) : Functor _ _) 𝟙) as [ε ε_iso].
     {
-        unfold nat_isomorphic in *.
         apply (isomorphic_trans2 iso4).
         rewrite <- (cat_lid G2) at 2.
         rewrite <- cat_assoc.
@@ -82,8 +80,8 @@ Hypothesis equiv : cat_equivalence F G η ε.
 Theorem cat_equiv_sym_base : ∃ η' ε', cat_equivalence G F η' ε'.
 Proof.
     destruct equiv as [η_iso ε_iso].
-    rewrite nat_isomorphism_A in η_iso.
-    rewrite nat_isomorphism_A in ε_iso.
+    rewrite nat_isomorphism_components in η_iso.
+    rewrite nat_isomorphism_components in ε_iso.
     pose (η'_f A := ex_val (ε_iso A)).
     assert (∀ {A B} f, η'_f B ∘ (⌈𝟏⌉ f) = (⌈F ∘ G⌉ f) ∘ η'_f A) as η'_commute.
     {
@@ -129,7 +127,7 @@ Proof.
     pose (ε' := {|nat_trans_f := ε'_f; nat_trans_commute := ε'_commute|}).
     cbn in *.
     exists η', ε'.
-    split; rewrite nat_isomorphism_A.
+    split; rewrite nat_isomorphism_components.
     -   intros A.
         cbn.
         unfold η'_f.
@@ -158,8 +156,8 @@ Proof.
     rewrite eq in eq2; clear eq.
     rewrite <- eq3 in eq2; clear eq3.
     destruct equiv as [η_iso ε_iso].
-    rewrite nat_isomorphism_A in η_iso.
-    rewrite nat_isomorphism_A in ε_iso.
+    rewrite nat_isomorphism_components in η_iso.
+    rewrite nat_isomorphism_components in ε_iso.
     pose proof (η_iso B) as [h [h_eq1 h_eq2]].
     cbn in *.
     apply lcompose with h in eq2.
@@ -174,7 +172,7 @@ Proof.
     intros B.
     exists (G B).
     destruct equiv as [η_iso ε_iso].
-    rewrite nat_isomorphism_A in ε_iso.
+    rewrite nat_isomorphism_components in ε_iso.
     pose proof (ε_iso B) as [B' B'_iso].
     split.
     exact (make_isomorphism _ _ B'_iso).
@@ -220,8 +218,8 @@ Proof.
     split.
     intros f.
     destruct equiv as [η_iso ε_iso].
-    rewrite nat_isomorphism_A in η_iso.
-    rewrite nat_isomorphism_A in ε_iso.
+    rewrite nat_isomorphism_components in η_iso.
+    rewrite nat_isomorphism_components in ε_iso.
     pose proof (η_iso A) as [g' [g_eq1 g_eq2]].
     pose (g := nat_trans_f η A).
     pose proof (η_iso B) as [h [h_eq1 h_eq2]].
@@ -391,7 +389,7 @@ Proof.
     pose (η := {|nat_trans_f := η_f; nat_trans_commute := η_commute|}).
     pose (ε := {|nat_trans_f := ε_f; nat_trans_commute := ε_commute|}).
     exists G, η, ε.
-    split; rewrite nat_isomorphism_A.
+    split; rewrite nat_isomorphism_components.
     -   intros A.
         unfold is_isomorphism.
         exists (ex_val (sur _ (Surjective := F_full _ _) (h (F A)))).

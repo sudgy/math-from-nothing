@@ -261,4 +261,14 @@ Definition make_functor C1 C2 f a b c
 Definition make_nat_trans {C1 C2 : Category} (F G : Functor C1 C2) f c
     := @make_nat_trans_base C1 C2 F G f c : NatTransformation F G.
 
+Theorem nat_trans_compose_eq {C1 C2 : Category}
+    {F G H : Functor C1 C2} :
+    ∀ (α : NatTransformation G H) (β : NatTransformation F G),
+    ∀ A, (α ∘ β) A = α A ∘ β A.
+Proof.
+    intros α β A.
+    cbn.
+    reflexivity.
+Qed.
+
 Unset Universe Polymorphism.
