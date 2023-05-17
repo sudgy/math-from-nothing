@@ -71,14 +71,14 @@ Proof.
         {
             intros A B f.
             cbn.
-            rewrite_ex_val A' [A'_eq1 A'_eq2].
             rewrite_ex_val B' [B'_eq1 B'_eq2].
+            rewrite_ex_val A' [A'_eq1 A'_eq2].
             rewrite <- (cat_lid (⌈F⌉ f)).
-            rewrite <- A'_eq2.
-            rewrite <- (cat_assoc A').
+            rewrite <- B'_eq2.
+            rewrite <- (cat_assoc B').
             rewrite nat_trans_commute.
             do 2 rewrite <- cat_assoc.
-            rewrite B'_eq1, cat_rid.
+            rewrite A'_eq1, cat_rid.
             reflexivity.
         }
         exists β.

@@ -306,7 +306,8 @@ identity functor and $F \circ G$ to represent the composition of two functors.
     the following things:
     \begin{itemize}
         \item A function from objects $A : C_1$ to morphisms $F(A) \to G(A)$,
-            which will be denoted $\alpha(A)$.
+            which will be denoted $\alpha(A)$.  The image of this function is
+            called the components of $\alpha$.
         \item A proof that for all objects $A$ and $B$ in $C_1$ and morphisms $f
             : A \to B$, we have $\alpha(B) \circ F(f) = G(f) \circ \alpha(A)$.
     \end{itemize}
@@ -352,5 +353,137 @@ identity functor and $F \circ G$ to represent the composition of two functors.
 Thus, like with functors, without confusion we may use the notation $\1$
 to represent the identity natural transformation and $\alpha \circ \beta$ to
 represent the vertical composition of two natural transformations.
+
+\begin{theorem}
+    Given three categories $C_1$, $C_2$, and $C_3$, four functors $F_1$ and
+    $G_1$ from $C_1$ to $C_2$ and $F_2$ and $G_2$ from $C_2$ to $C_3$, and two
+    natural transformations $\alpha : F_1 \to G_1$ and $\beta : F_2 \to G_2$,
+    the function given by \[
+        (\beta \ocircle \alpha)(A : C_1) = \beta(G_1(A)) \circ F_2(\alpha(A))
+    \]
+    is a natural transformation from $F_2 \circ F_1$ to $G_2 \circ G_1$ that we
+    call the horizontal composition of $\beta$ and $\alpha$.
+\end{theorem}
+\begin{proof}
+    For all objects $A$ and $B$ and morphisms $f : A \to B$,
+    \begin{align*}
+         {}& \beta(G_1(B)) \circ F_2(\alpha(B)) \circ F_2(F_1(f)) \\
+        ={}& \beta(G_1(B)) \circ F_2(\alpha(B) \circ F_1(f)) \\
+        ={}& G_2(\alpha(B) \circ F_1(f)) \circ \beta(F_1(A)) \\
+        ={}& G_2(G_1(f) \circ \alpha(A)) \circ \beta(F_1(A)) \\
+        ={}& G_2(G_1(f)) \circ G_2(\alpha(A)) \circ \beta(F_1(A)) \\
+        ={}& G_2(G_1(f)) \circ \beta(G_1(A)) \circ F_2(\alpha(A)).
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{nat_trans_interchange}
+    For all categories $C_1$, $C_2$, and $C_3$, functors $F_1$, $G_1$, and $H_1$
+    from $C_1$ to $C_2$ and $F_2$, $G_2$, and $H_2$ from $C_2$ to $C_3$, and
+    natural transformations $\alpha_1 : F_1 \to G_1$, $\beta_1 : G_1 \to H_1$,
+    $\alpha_2 : F_2 \to G_2$, and $\beta_2 : G_2 \to H_2$,
+    \[
+        (\beta_2 \circ \alpha_2) \ocircle (\beta_1 \circ \alpha_1) =
+        (\beta_2 \ocircle \beta_1) \circ (\alpha_2 \ocircle \alpha_1).
+    \]
+\end{theorem}
+\begin{proof}
+    Let $A : C_1$.  Then
+    \begin{align*}
+         {}& ((\beta_2 \circ \alpha_2) \ocircle (\beta_1 \circ \alpha_1))(A) \\
+        ={}& (\beta_2 \circ \alpha_2)(H_1(A))
+            \circ F_2((\beta_1 \circ \alpha_1)(A)) \\
+        ={}& \beta_2(H_1(A)) \circ \alpha_2(H_1(A))
+            \circ F_2(\beta_1(A) \circ \alpha_1(A)) \\
+        ={}& \beta_2(H_1(A)) \circ \alpha_2(H_1(A))
+            \circ F_2(\beta_1(A)) \circ F_2(\alpha_1(A)) \\
+        ={}& \beta_2(H_1(A)) \circ G_2(\beta_1(A))
+            \circ \alpha_2(G_1(A)) \circ F_2(\alpha_1(A)) \\
+        ={}& (\beta_2 \ocircle \alpha_1)(A)
+            \circ (\alpha_2 \ocircle \alpha_1)(A) \\
+        ={}& ((\beta_2 \ocircle \alpha_1)
+            \circ (\alpha_2 \ocircle \alpha_1))(A).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all categories $C_1$, $C_2$, and $C_3$ and functors $F : C_2 \to C_3$
+    and $G : C_1 \to C_2$,
+    \[
+        \1_F \ocircle \1_G = \1_{F \circ G}.
+    \]
+\end{theorem}
+\begin{proof}
+    For all objects $A : C_1$,
+    \[
+        (\1_F \ocircle \1_G)(A)
+        = \1(G(A)) \circ F(\1(A))
+        = \1 \circ F(\1)
+        = \1
+        = \1(A).
+    \]
+\end{proof}
+
+\begin{definition}
+    If a natural transformation is an isomorphism in the category of functors,
+    then we say that it is a natural isomorphism, and that those two functors
+    are naturally isomorphic.
+\end{definition}
+
+\begin{theorem}
+    A natural transformation $\alpha$ is an isomorphism if and only if the
+    components of $\alpha$ are all isomorphisms.
+\end{theorem}
+\begin{proof}
+    Let $C_1$ and $C_2$ be categories with functors $F$ and $G$ from $C_1$ to
+    $C_2$, and let $\alpha : F \to G$.
+
+    First assume that $\alpha$ is a natural isomorphism and let $A : C_1$.  We
+    must find an inverse morphism to $\alpha(A)$.  Because $\alpha$ is a natural
+    isomorphism, there exists a $\beta$ such that $\alpha \circ \beta = \1$ and
+    $\beta \circ \alpha = \1$.  Now
+    \[
+        \alpha(A) \circ \beta(A) = (\alpha \circ \beta)(A) = \1(A) = \1,
+    \]
+    and similarly for $\beta(A) \circ \alpha(A)$, so $\beta(A)$ is the inverse
+    of $\alpha(A)$, showing that $\alpha(A)$ is an isomorphism.
+
+    Now assume that that all of the components of $\alpha$ are isomorphisms.
+    Let $\beta : G \to F$ be given by $\beta(A) = \text{inverse of
+    $\alpha(A)$}$.  Then for all objects $A$ and $B$ in $C_1$ and morphisms $f :
+    A \to B$,
+    \begin{align*}
+         {}& \beta(B) \circ G(f) \\
+        ={}& \beta(B) \circ G(f) \circ \alpha(A) \circ \beta(A) \\
+        ={}& \beta(B) \circ \alpha(B) \circ F(f) \circ \beta(A) \\
+        ={}& F(f) \circ \beta(A),
+    \end{align*}
+    showing that $\beta$ is a natural transformation.  Then by definition,
+    $\alpha \circ \beta = \1$ and $\beta \circ \alpha = \1$, showing that
+    $\alpha$ is a natural ismorphism.
+\end{proof}
+
+\begin{theorem}
+    Given categories $C_1$, $C_2$, and $C_3$, and functors $F$ and $G$ from
+    $C_2$ to $C_3$ and functors $H$ and $I$ from $C_1$ to $C_2$, if $F \cong G$
+    and $H \cong I$, then $F \circ H \cong G \circ I$.
+\end{theorem}
+\begin{proof}
+    Let $\alpha_1 : F \to G$ and $\alpha_2 : G \to F$ be inverses, and let
+    $\beta_1 : H \to I$ and $\beta_2 : I \to H$ be inverses.  We will prove that
+    $\alpha_1 \ocircle \beta_1$ and $\alpha_2 \ocircle \beta_2$ are inverses.
+    By Theorem \ref{nat_trans_interchange},
+    \[
+        (\alpha_1 \ocircle \beta_1) \circ (\alpha_2 \ocircle \beta_2)
+        = (\alpha_1 \circ \alpha_2) \ocircle (\beta_1 \circ \beta_2)
+        = \1 \ocircle \1 = \1.
+    \]
+    Similarly,
+    \[
+        (\alpha_2 \ocircle \beta_2) \circ (\alpha_1 \ocircle \beta_1)
+        = (\alpha_2 \circ \alpha_1) \ocircle (\beta_2 \circ \beta_1)
+        = \1 \ocircle \1 = \1.
+    \]
+    Thus, $F \circ H \cong G \circ I$.
+\end{proof}
 
 \end{document}
