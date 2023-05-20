@@ -192,6 +192,30 @@ Proof.
         split; assumption.
 Qed.
 
+Theorem dual_isomorphic1 : ∀ {C : Category} (A B : C),
+    A ≅ B → (A : dual_category C) ≅ (B : dual_category C).
+Proof.
+    intros C A B [f g fg].
+    apply is_isomorphism_pair_right in fg.
+    rewrite dual_isomorphism in fg.
+    apply indefinite_description.
+    destruct fg as [f' fg].
+    split.
+    exact (make_isomorphism _ f' fg).
+Qed.
+
+Theorem dual_isomorphic2 : ∀ {C : Category} (A B : C),
+    (A : dual_category C) ≅ (B : dual_category C) → A ≅ B.
+Proof.
+    intros C A B [f g fg].
+    apply is_isomorphism_pair_right in fg.
+    rewrite <- dual_isomorphism in fg.
+    apply indefinite_description.
+    destruct fg as [f' fg].
+    split.
+    exact (make_isomorphism _ f' fg).
+Qed.
+
 Theorem cat_dual_dual : ∀ C, C = dual_category (dual_category C).
 Proof.
     intros C.

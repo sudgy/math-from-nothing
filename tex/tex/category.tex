@@ -168,6 +168,30 @@ then functors and their notions after that, and then natural transformations.
     $M(A, B) = \mathbf U$.
 \end{definition}
 
+\begin{definition}
+    An object $A$ of a category $C$ is called an initial object in $C$ if for
+    all objects $B : C$, $A \to B$ is a singleton type.  Similarly, $A$ is
+    called a terminal object in $C$ if for all objects $B : C$, $B \to A$ is a
+    singleton type.
+\end{definition}
+
+\begin{theorem}
+    All initial objects in a category are isomorphic to each other.
+\end{theorem}
+\begin{proof}
+    Let $I_1$ and $I_2$ be two initial objects.  Then by them being initial, we
+    have morphisms $f : I_1 \to I_2$ and $g : I_2 \to I_1$.  Then because $I_2$
+    is initial, all morphisms in $I_2 \to I_2$ are the same, meaning that $f
+    \circ g = \1$.  Similarly, $g \circ f = \1$, showing that $I_1 \cong I_2$.
+\end{proof}
+
+\begin{theorem}
+    All terminal objects in a category are isomorphic to each other.
+\end{theorem}
+\begin{proof}
+    This is the dual version of the previous theorem.
+\end{proof}
+
 \section{Functors}
 
 \begin{definition}
