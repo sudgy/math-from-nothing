@@ -60,54 +60,19 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma field_homo_id_one (M : FieldObj) : 1 = (1 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition field_homo_id (M : FieldObj) :=
-    make_field_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_mult a b := Logic.eq_refl _|}
-    {|homo_one := field_homo_id_one M|}.
-
-Lemma field_homo_compose_plus : ∀ {L M N : FieldObj}
-    {f : FieldHomomorphism M N} {g : FieldHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma field_homo_compose_mult : ∀ {L M N : FieldObj}
-    {f : FieldHomomorphism M N} {g : FieldHomomorphism L M},
-    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_mult.
-    apply homo_mult.
-Qed.
-Lemma field_homo_compose_one : ∀ {L M N : FieldObj}
-    {f : FieldHomomorphism M N} {g : FieldHomomorphism L M},
-    f (g 1) = 1.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_one.
-    apply homo_one.
-Qed.
-Definition field_homo_compose {L M N : FieldObj}
-    (f : FieldHomomorphism M N) (g : FieldHomomorphism L M)
-    : FieldHomomorphism L N := make_field_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := field_homo_compose_plus|}
-        {|homo_mult := field_homo_compose_mult|}
-        {|homo_one := field_homo_compose_one|}.
-
 Program Definition Field : Category := {|
     cat_U := FieldObj;
     morphism M N := FieldHomomorphism M N;
-    cat_compose L M N f g := field_homo_compose f g;
-    cat_id M := field_homo_id M;
+    cat_compose L M N f g := make_field_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_mult_compose g f)
+        (homo_one_compose g f);
+    cat_id M := make_field_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_mult a b := Logic.eq_refl _|}
+        {|homo_one := Logic.eq_refl : identity 1 = 1|};
 |}.
 Next Obligation.
     apply field_homo_eq; cbn.

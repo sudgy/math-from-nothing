@@ -70,64 +70,21 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma ofield_homo_id_one (M : OrderedFieldObj) : 1 = (1 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition ofield_homo_id (M : OrderedFieldObj) :=
-    make_ofield_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_mult a b := Logic.eq_refl _|}
-    {|homo_one := ofield_homo_id_one M|}
-    {|homo_le := λ a b, identity|}.
-
-Lemma ofield_homo_compose_plus : ∀ {L M N : OrderedFieldObj}
-    {f : OrderedFieldHomomorphism M N} {g : OrderedFieldHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma ofield_homo_compose_mult : ∀ {L M N : OrderedFieldObj}
-    {f : OrderedFieldHomomorphism M N} {g : OrderedFieldHomomorphism L M},
-    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_mult.
-    apply homo_mult.
-Qed.
-Lemma ofield_homo_compose_one : ∀ {L M N : OrderedFieldObj}
-    {f : OrderedFieldHomomorphism M N} {g : OrderedFieldHomomorphism L M},
-    f (g 1) = 1.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_one.
-    apply homo_one.
-Qed.
-Lemma ofield_homo_compose_le : ∀ {L M N : OrderedFieldObj}
-    {f : OrderedFieldHomomorphism M N} {g : OrderedFieldHomomorphism L M},
-    ∀ a b, a ≤ b → f (g a) ≤ f (g b).
-Proof.
-    intros L M N f g a b leq.
-    do 2 apply homo_le.
-    exact leq.
-Qed.
-Definition ofield_homo_compose {L M N : OrderedFieldObj}
-    (f : OrderedFieldHomomorphism M N) (g : OrderedFieldHomomorphism L M)
-    : OrderedFieldHomomorphism L N := make_ofield_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := ofield_homo_compose_plus|}
-        {|homo_mult := ofield_homo_compose_mult|}
-        {|homo_one := ofield_homo_compose_one|}
-        {|homo_le := ofield_homo_compose_le|}.
-
 Program Definition OrderedField : Category := {|
     cat_U := OrderedFieldObj;
     morphism M N := OrderedFieldHomomorphism M N;
-    cat_compose L M N f g := ofield_homo_compose f g;
-    cat_id M := ofield_homo_id M;
+    cat_compose L M N f g := make_ofield_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_mult_compose g f)
+        (homo_one_compose g f)
+        (homo_le_compose g f);
+    cat_id M := make_ofield_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_mult a b := Logic.eq_refl _|}
+        {|homo_one := Logic.eq_refl : identity 1 = 1|}
+        {|homo_le := λ a b, identity|};
 |}.
 Next Obligation.
     apply ofield_homo_eq; cbn.
@@ -166,11 +123,3 @@ Program Definition ofield_to_field := {|
         (ofield_homo_plus _ _ f) (ofield_homo_mult _ _ f)
         (ofield_homo_one _ _ f);
 |} : Functor OrderedField Field.
-Next Obligation.
-    apply field_homo_eq; cbn.
-    reflexivity.
-Qed.
-Next Obligation.
-    apply field_homo_eq; cbn.
-    reflexivity.
-Qed.

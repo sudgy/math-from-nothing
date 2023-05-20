@@ -93,39 +93,17 @@ Proof.
     reflexivity.
 Qed.
 
-Definition rng_homo_id (M : RngObj) := make_rng_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_mult a b := Logic.eq_refl _|}.
-
-Lemma rng_homo_compose_plus : ∀ {L M N : RngObj}
-    {f : RngHomomorphism M N} {g : RngHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma rng_homo_compose_mult : ∀ {L M N : RngObj}
-    {f : RngHomomorphism M N} {g : RngHomomorphism L M},
-    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_mult.
-    apply homo_mult.
-Qed.
-Definition rng_homo_compose {L M N : RngObj}
-    (f : RngHomomorphism M N) (g : RngHomomorphism L M)
-    : RngHomomorphism L N := make_rng_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := rng_homo_compose_plus|}
-        {|homo_mult := rng_homo_compose_mult|}.
-
 Program Definition Rng : Category := {|
     cat_U := RngObj;
     morphism M N := RngHomomorphism M N;
-    cat_compose L M N f g := rng_homo_compose f g;
-    cat_id M := rng_homo_id M;
+    cat_compose L M N f g := make_rng_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_mult_compose g f);
+    cat_id M := make_rng_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_mult a b := Logic.eq_refl _|};
 |}.
 Next Obligation.
     apply rng_homo_eq; cbn.
@@ -169,53 +147,19 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma ring_homo_id_one (M : RingObj) : 1 = (1 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition ring_homo_id (M : RingObj) := make_ring_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_mult a b := Logic.eq_refl _|}
-    {|homo_one := ring_homo_id_one M|}.
-
-Lemma ring_homo_compose_plus : ∀ {L M N : RingObj}
-    {f : RingHomomorphism M N} {g : RingHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma ring_homo_compose_mult : ∀ {L M N : RingObj}
-    {f : RingHomomorphism M N} {g : RingHomomorphism L M},
-    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_mult.
-    apply homo_mult.
-Qed.
-Lemma ring_homo_compose_one : ∀ {L M N : RingObj}
-    {f : RingHomomorphism M N} {g : RingHomomorphism L M},
-    f (g 1) = 1.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_one.
-    apply homo_one.
-Qed.
-Definition ring_homo_compose {L M N : RingObj}
-    (f : RingHomomorphism M N) (g : RingHomomorphism L M)
-    : RingHomomorphism L N := make_ring_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := ring_homo_compose_plus|}
-        {|homo_mult := ring_homo_compose_mult|}
-        {|homo_one := ring_homo_compose_one|}.
-
 Program Definition Ring : Category := {|
     cat_U := RingObj;
     morphism M N := RingHomomorphism M N;
-    cat_compose L M N f g := ring_homo_compose f g;
-    cat_id M := ring_homo_id M;
+    cat_compose L M N f g := make_ring_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_mult_compose g f)
+        (homo_one_compose g f);
+    cat_id M := make_ring_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_mult a b := Logic.eq_refl _|}
+        {|homo_one := (Logic.eq_refl : identity 1 = 1)|};
 |}.
 Next Obligation.
     apply ring_homo_eq; cbn.
@@ -259,53 +203,20 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma cring_homo_id_one (M : CRingObj) : 1 = (1 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition cring_homo_id (M : CRingObj) := make_cring_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_mult a b := Logic.eq_refl _|}
-    {|homo_one := cring_homo_id_one M|}.
-
-Lemma cring_homo_compose_plus : ∀ {L M N : CRingObj}
-    {f : CRingHomomorphism M N} {g : CRingHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma cring_homo_compose_mult : ∀ {L M N : CRingObj}
-    {f : CRingHomomorphism M N} {g : CRingHomomorphism L M},
-    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_mult.
-    apply homo_mult.
-Qed.
-Lemma cring_homo_compose_one : ∀ {L M N : CRingObj}
-    {f : CRingHomomorphism M N} {g : CRingHomomorphism L M},
-    f (g 1) = 1.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_one.
-    apply homo_one.
-Qed.
-Definition cring_homo_compose {L M N : CRingObj}
-    (f : CRingHomomorphism M N) (g : CRingHomomorphism L M)
-    : CRingHomomorphism L N := make_cring_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := cring_homo_compose_plus|}
-        {|homo_mult := cring_homo_compose_mult|}
-        {|homo_one := cring_homo_compose_one|}.
 
 Program Definition CRing : Category := {|
     cat_U := CRingObj;
     morphism M N := CRingHomomorphism M N;
-    cat_compose L M N f g := cring_homo_compose f g;
-    cat_id M := cring_homo_id M;
+    cat_compose L M N f g := make_cring_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_mult_compose g f)
+        (homo_one_compose g f);
+    cat_id M := make_cring_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_mult a b := Logic.eq_refl _|}
+        {|homo_one := Logic.eq_refl : identity 1 = 1|};
 |}.
 Next Obligation.
     apply cring_homo_eq; cbn.
@@ -351,10 +262,6 @@ Program Definition rng_to_cgroup := {|
         (rng_to_cgroup_base A) (rng_to_cgroup_base B)
         f (rng_homo_plus _ _ f);
 |} : Functor Rng CGroup.
-Next Obligation.
-    apply cgroup_homo_eq; cbn.
-    reflexivity.
-Qed.
 
 Program Definition ring_to_rng := {|
     functor_f A := ring_rng A;
@@ -362,10 +269,6 @@ Program Definition ring_to_rng := {|
         (ring_rng A) (ring_rng B) f
         (ring_homo_plus _ _ f) (ring_homo_mult _ _ f);
 |} : Functor Ring Rng.
-Next Obligation.
-    apply rng_homo_eq; cbn.
-    reflexivity.
-Qed.
 
 Program Definition cring_to_ring := {|
     functor_f A := cring_ring A;
@@ -373,14 +276,6 @@ Program Definition cring_to_ring := {|
         (cring_ring A) (cring_ring B) f
         (cring_homo_plus _ _ f) (cring_homo_mult _ _ f) (cring_homo_one _ _ f);
 |} : Functor CRing Ring.
-Next Obligation.
-    apply ring_homo_eq; cbn.
-    reflexivity.
-Qed.
-Next Obligation.
-    apply ring_homo_eq; cbn.
-    reflexivity.
-Qed.
 
 Definition rng_to_group := cgroup_to_group ∘ rng_to_cgroup.
 Definition rng_to_cmonoid := cgroup_to_cmonoid ∘ rng_to_cgroup.
@@ -420,10 +315,6 @@ Next Obligation.
     apply monoid_homo_eq; cbn.
     reflexivity.
 Qed.
-Next Obligation.
-    apply monoid_homo_eq; cbn.
-    reflexivity.
-Qed.
 
 Section CRingToMultCMonoid.
 
@@ -445,10 +336,6 @@ Program Definition cring_to_mult_cmonoid := {|
         (cring_to_mult_cmonoid_base A) (cring_to_mult_cmonoid_base B) f
         {|homo_plus := homo_mult|} {|homo_zero := homo_one|}
 |} : Functor CRing CMonoid.
-Next Obligation.
-    apply cmonoid_homo_eq; cbn.
-    reflexivity.
-Qed.
 Next Obligation.
     apply cmonoid_homo_eq; cbn.
     reflexivity.

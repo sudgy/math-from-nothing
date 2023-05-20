@@ -302,16 +302,17 @@ End Field.
 
 Section MultHomo.
 
-Context {U V} `{FieldClass U, FieldClass V}.
+Context {U V W} `{FieldClass U, FieldClass V, FieldClass W}.
 (* end hide *)
-Context (f : U → V) `{
+Context (f : U → V) (g : V → W) `{
     @Injective U V f,
     @HomomorphismPlus U V UP UP0 f,
     @HomomorphismZero U V UZ UZ0 f,
     @HomomorphismNeg U V UN UN0 f,
     @HomomorphismMult U V UM UM0 f,
     @HomomorphismOne U V UE UE0 f,
-    @HomomorphismDiv U V UZ UD UD0 f
+    @HomomorphismDiv U V UZ UD UD0 f,
+    @HomomorphismDiv V W UZ0 UD0 UD1 g
 }.
 
 Global Instance field_inj : Injective f.
@@ -332,13 +333,22 @@ Global Instance field_homo_div : HomomorphismDiv f.
 Proof.
     split.
     intros a a_nz.
-    pose proof (inj_zero _ a_nz) as fa_nz.
+    pose proof (inj_zero f a_nz) as fa_nz.
     apply (mult_lcancel (f a) fa_nz).
     rewrite <- homo_mult.
     do 2 rewrite mult_rinv by assumption.
     apply homo_one.
 Qed.
 Local Remove Hints field_homo_div : typeclass_instances.
+
+Local Instance homo_div_compose : HomomorphismDiv (λ x, g (f x)).
+Proof.
+    split.
+    intros a a_nz.
+    setoid_rewrite homo_div; [>|exact a_nz].
+    apply homo_div.
+    apply inj_zero; assumption.
+Qed.
 
 (* begin hide *)
 End MultHomo.

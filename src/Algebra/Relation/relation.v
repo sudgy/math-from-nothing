@@ -305,14 +305,18 @@ End WellOrder.
 
 Section HomoLe.
 
-Context {U V} `{TotalOrder U, TotalOrder V}.
+Context {U V W} `{TotalOrder U, TotalOrder V, TotalOrder W}.
 (* end hide *)
-Context (f : U → V) `{
+Context (f : U → V) (g : V → W) `{
     @Injective U V f,
     @HomomorphismLe U V UO UO0 f,
     @HomomorphismLt U V UO UO0 f,
     @HomomorphismLe2 U V UO UO0 f,
-    @HomomorphismLt2 U V UO UO0 f
+    @HomomorphismLt2 U V UO UO0 f,
+    @HomomorphismLe V W UO0 UO1 g,
+    @HomomorphismLt V W UO0 UO1 g,
+    @HomomorphismLe2 V W UO0 UO1 g,
+    @HomomorphismLt2 V W UO0 UO1 g
 }.
 
 Global Instance homo_le_lt : HomomorphismLt f.
@@ -359,6 +363,38 @@ Proof.
         contradiction (irrefl _ (trans ltq ltq2)).
 Qed.
 Local Remove Hints homo_lt_lt2 : typeclass_instances.
+
+Local Instance homo_le_compose : HomomorphismLe (λ x, g (f x)).
+Proof.
+    split.
+    intros a b leq.
+    do 2 apply homo_le.
+    exact leq.
+Qed.
+
+Local Instance homo_lt_compose : HomomorphismLt (λ x, g (f x)).
+Proof.
+    split.
+    intros a b leq.
+    do 2 apply homo_lt.
+    exact leq.
+Qed.
+
+Local Instance homo_le2_compose : HomomorphismLe2 (λ x, g (f x)).
+Proof.
+    split.
+    intros a b.
+    rewrite <- homo_le2.
+    apply homo_le2.
+Qed.
+
+Local Instance homo_lt2_compose : HomomorphismLt2 (λ x, g (f x)).
+Proof.
+    split.
+    intros a b.
+    rewrite <- homo_lt2.
+    apply homo_lt2.
+Qed.
 
 (* begin hide *)
 End HomoLe.

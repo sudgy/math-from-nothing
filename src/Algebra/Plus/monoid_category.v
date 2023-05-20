@@ -41,43 +41,17 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma monoid_homo_id_zero (M : MonoidObj) : 0 = (0 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition monoid_homo_id (M : MonoidObj) := make_monoid_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_zero := monoid_homo_id_zero M|}.
-
-Lemma monoid_homo_compose_plus : ∀ {L M N : MonoidObj}
-    {f : MonoidHomomorphism M N} {g : MonoidHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma monoid_homo_compose_zero : ∀ {L M N : MonoidObj}
-    {f : MonoidHomomorphism M N} {g : MonoidHomomorphism L M},
-    f (g 0) = 0.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_zero.
-    apply homo_zero.
-Qed.
-Definition monoid_homo_compose {L M N : MonoidObj}
-    (f : MonoidHomomorphism M N) (g : MonoidHomomorphism L M)
-    : MonoidHomomorphism L N := make_monoid_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := monoid_homo_compose_plus|}
-        {|homo_zero := monoid_homo_compose_zero|}.
-
 Program Definition Monoid : Category := {|
     cat_U := MonoidObj;
     morphism M N := MonoidHomomorphism M N;
-    cat_compose L M N f g := monoid_homo_compose f g;
-    cat_id M := monoid_homo_id M;
+    cat_compose L M N f g := make_monoid_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_zero_compose g f);
+    cat_id M := make_monoid_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_zero := (Logic.eq_refl : identity 0 = 0)|};
 |}.
 Next Obligation.
     apply monoid_homo_eq.
@@ -166,43 +140,17 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma cmonoid_homo_id_zero (M : CMonoidObj) : 0 = (0 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition cmonoid_homo_id (M : CMonoidObj) := make_cmonoid_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_zero := cmonoid_homo_id_zero M|}.
-
-Lemma cmonoid_homo_compose_plus : ∀ {L M N : CMonoidObj}
-    {f : CMonoidHomomorphism M N} {g : CMonoidHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma cmonoid_homo_compose_zero : ∀ {L M N : CMonoidObj}
-    {f : CMonoidHomomorphism M N} {g : CMonoidHomomorphism L M},
-    f (g 0) = 0.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_zero.
-    apply homo_zero.
-Qed.
-Definition cmonoid_homo_compose {L M N : CMonoidObj}
-    (f : CMonoidHomomorphism M N) (g : CMonoidHomomorphism L M)
-    : CMonoidHomomorphism L N := make_cmonoid_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := cmonoid_homo_compose_plus|}
-        {|homo_zero := cmonoid_homo_compose_zero|}.
-
 Program Definition CMonoid : Category := {|
     cat_U := CMonoidObj;
     morphism M N := CMonoidHomomorphism M N;
-    cat_compose L M N f g := cmonoid_homo_compose f g;
-    cat_id M := cmonoid_homo_id M;
+    cat_compose L M N f g := make_cmonoid_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_zero_compose g f);
+    cat_id M := make_cmonoid_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_zero := (Logic.eq_refl : identity 0 = 0)|};
 |}.
 Next Obligation.
     apply cmonoid_homo_eq.
@@ -265,11 +213,3 @@ Program Definition cmonoid_to_monoid := {|
         (cmonoid_to_monoid_base A) (cmonoid_to_monoid_base B) f
         (cmonoid_homo_plus _ _ f) (cmonoid_homo_zero _ _ f);
 |} : Functor CMonoid Monoid.
-Next Obligation.
-    apply monoid_homo_eq; cbn.
-    reflexivity.
-Qed.
-Next Obligation.
-    apply monoid_homo_eq; cbn.
-    reflexivity.
-Qed.

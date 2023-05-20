@@ -40,29 +40,15 @@ Proof.
     reflexivity.
 Qed.
 
-Definition group_homo_id (M : GroupObj) := make_group_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}.
-
-Lemma group_homo_compose_plus : ∀ {L M N : GroupObj}
-    {f : GroupHomomorphism M N} {g : GroupHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Definition group_homo_compose {L M N : GroupObj}
-    (f : GroupHomomorphism M N) (g : GroupHomomorphism L M)
-    : GroupHomomorphism L N := make_group_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := group_homo_compose_plus|}.
-
 Program Definition Group : Category := {|
     cat_U := GroupObj;
     morphism M N := GroupHomomorphism M N;
-    cat_compose L M N f g := group_homo_compose f g;
-    cat_id M := group_homo_id M;
+    cat_compose L M N f g := make_group_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f);
+    cat_id M := make_group_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|};
 |}.
 Next Obligation.
     apply group_homo_eq.
@@ -110,16 +96,6 @@ Next Obligation.
     reflexivity.
 Qed.
 
-Theorem group_to_monoid_to_type :
-    monoid_to_type ∘ group_to_monoid = group_to_type.
-Proof.
-    eapply functor_eq.
-    Unshelve.
-    2: reflexivity.
-    cbn.
-    reflexivity.
-Qed.
-
 
 Record CGroupObj := make_cgroup_base {
     cgroup_U :> Type;
@@ -155,29 +131,15 @@ Proof.
     reflexivity.
 Qed.
 
-Definition cgroup_homo_id (M : CGroupObj) := make_cgroup_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}.
-
-Lemma cgroup_homo_compose_plus : ∀ {L M N : CGroupObj}
-    {f : CGroupHomomorphism M N} {g : CGroupHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Definition cgroup_homo_compose {L M N : CGroupObj}
-    (f : CGroupHomomorphism M N) (g : CGroupHomomorphism L M)
-    : CGroupHomomorphism L N := make_cgroup_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := cgroup_homo_compose_plus|}.
-
 Program Definition CGroup : Category := {|
     cat_U := CGroupObj;
     morphism M N := CGroupHomomorphism M N;
-    cat_compose L M N f g := cgroup_homo_compose f g;
-    cat_id M := cgroup_homo_id M;
+    cat_compose L M N f g := make_cgroup_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f);
+    cat_id M := make_cgroup_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|};
 |}.
 Next Obligation.
     apply cgroup_homo_eq.
@@ -237,9 +199,5 @@ Program Definition cgroup_to_group := {|
         (cgroup_to_group_base A) (cgroup_to_group_base B) f
         (cgroup_homo_plus _ _ f);
 |} : Functor CGroup Group.
-Next Obligation.
-    apply group_homo_eq; cbn.
-    reflexivity.
-Qed.
 
 Definition cgroup_to_monoid := group_to_monoid ∘ cgroup_to_group.

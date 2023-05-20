@@ -62,66 +62,21 @@ Proof.
     reflexivity.
 Qed.
 
-Lemma domain_homo_id_one (M : IntegralDomainObj) : 1 = (1 : M).
-Proof.
-    reflexivity.
-Qed.
-Definition domain_homo_id (M : IntegralDomainObj) :=
-    make_domain_homomorphism_base M M
-    identity
-    {|homo_plus a b := Logic.eq_refl _|}
-    {|homo_mult a b := Logic.eq_refl _|}
-    {|homo_one := domain_homo_id_one M|}
-    bij_inj.
-
-Lemma domain_homo_compose_plus : ∀ {L M N : IntegralDomainObj}
-    {f : IntegralDomainHomomorphism M N} {g : IntegralDomainHomomorphism L M},
-    ∀ a b, f (g (a + b)) = f (g a) + f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_plus.
-    apply homo_plus.
-Qed.
-Lemma domain_homo_compose_mult : ∀ {L M N : IntegralDomainObj}
-    {f : IntegralDomainHomomorphism M N} {g : IntegralDomainHomomorphism L M},
-    ∀ a b, f (g (a * b)) = f (g a) * f (g b).
-Proof.
-    intros L M N f g a b.
-    setoid_rewrite homo_mult.
-    apply homo_mult.
-Qed.
-Lemma domain_homo_compose_one : ∀ {L M N : IntegralDomainObj}
-    {f : IntegralDomainHomomorphism M N} {g : IntegralDomainHomomorphism L M},
-    f (g 1) = 1.
-Proof.
-    intros L M N f g.
-    setoid_rewrite homo_one.
-    apply homo_one.
-Qed.
-Lemma domain_homo_compose_inj : ∀ {L M N : IntegralDomainObj}
-    {f : IntegralDomainHomomorphism M N} {g : IntegralDomainHomomorphism L M},
-    Injective (λ x, f (g x)).
-Proof.
-    intros L M N f g.
-    split.
-    intros a b eq.
-    do 2 apply inj in eq.
-    exact eq.
-Qed.
-Definition domain_homo_compose {L M N : IntegralDomainObj}
-    (f : IntegralDomainHomomorphism M N) (g : IntegralDomainHomomorphism L M)
-    : IntegralDomainHomomorphism L N := make_domain_homomorphism_base L N
-        (λ x, f (g x))
-        {|homo_plus := domain_homo_compose_plus|}
-        {|homo_mult := domain_homo_compose_mult|}
-        {|homo_one := domain_homo_compose_one|}
-        domain_homo_compose_inj.
-
 Program Definition IntegralDomain : Category := {|
     cat_U := IntegralDomainObj;
     morphism M N := IntegralDomainHomomorphism M N;
-    cat_compose L M N f g := domain_homo_compose f g;
-    cat_id M := domain_homo_id M;
+    cat_compose L M N f g := make_domain_homomorphism_base L N
+        (λ x, f (g x))
+        (homo_plus_compose g f)
+        (homo_mult_compose g f)
+        (homo_one_compose g f)
+        (inj_comp g f);
+    cat_id M := make_domain_homomorphism_base M M
+        identity
+        {|homo_plus a b := Logic.eq_refl _|}
+        {|homo_mult a b := Logic.eq_refl _|}
+        {|homo_one := Logic.eq_refl : identity 1 = 1|}
+        bij_inj;
 |}.
 Next Obligation.
     apply domain_homo_eq; cbn.
@@ -160,14 +115,6 @@ Program Definition domain_to_cring := {|
         (domain_homo_plus _ _ f) (domain_homo_mult _ _ f)
         (domain_homo_one _ _ f);
 |} : Functor IntegralDomain CRing.
-Next Obligation.
-    apply cring_homo_eq; cbn.
-    reflexivity.
-Qed.
-Next Obligation.
-    apply cring_homo_eq; cbn.
-    reflexivity.
-Qed.
 
 Definition domain_to_ring := cring_to_ring ∘ domain_to_cring.
 Definition domain_to_rng := cring_to_rng ∘ domain_to_cring.

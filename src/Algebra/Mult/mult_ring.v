@@ -303,15 +303,17 @@ End MultRing.
 
 Section MultHomo.
 
-Context {U V} `{AllMultClass U, AllMultClass V}.
+Context {U V W} `{AllMultClass U, AllMultClass V, AllMultClass W}.
 (* end hide *)
-Context (f : U → V) `{
+Context (f : U → V) (g : V → W) `{
     @Injective U V f,
     @HomomorphismPlus U V UP UP0 f,
     @HomomorphismZero U V UZ UZ0 f,
     @HomomorphismNeg U V UN UN0 f,
     @HomomorphismMult U V UM UM0 f,
-    @HomomorphismOne U V UE UE0 f
+    @HomomorphismOne U V UE UE0 f,
+    @HomomorphismMult V W UM0 UM1 g,
+    @HomomorphismOne V W UE0 UE1 g
 }.
 
 Theorem homo_two : f 2 = 2.
@@ -333,6 +335,21 @@ Proof.
     setoid_rewrite homo_plus.
     rewrite homo_one, homo_three.
     reflexivity.
+Qed.
+
+Local Instance homo_mult_compose : HomomorphismMult (λ x, g (f x)).
+Proof.
+    split.
+    intros a b.
+    setoid_rewrite homo_mult.
+    apply homo_mult.
+Qed.
+
+Local Instance homo_one_compose : HomomorphismOne (λ x, g (f x)).
+Proof.
+    split.
+    setoid_rewrite homo_one.
+    apply homo_one.
 Qed.
 
 (* begin hide *)

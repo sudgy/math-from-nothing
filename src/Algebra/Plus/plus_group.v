@@ -400,13 +400,16 @@ End PlusGroup2.
 
 Section PlusHomo.
 
-Context {U V} `{AllPlusClass U, AllPlusClass V}.
+Context {U V W} `{AllPlusClass U, AllPlusClass V, AllPlusClass W}.
 (* end hide *)
-Context (f : U → V) `{
+Context (f : U → V) (g : V → W) `{
     @Injective U V f,
     @HomomorphismPlus U V UP UP0 f,
     @HomomorphismZero U V UZ UZ0 f,
-    @HomomorphismNeg U V UN UN0 f
+    @HomomorphismNeg U V UN UN0 f,
+    @HomomorphismPlus V W UP0 UP1 g,
+    @HomomorphismZero V W UZ0 UZ1 g,
+    @HomomorphismNeg V W UN0 UN1 g
 }.
 
 Theorem homo_zero_inj : (∀ a, 0 = f a → 0 = a) → Injective f.
@@ -448,6 +451,29 @@ Proof.
     apply homo_zero.
 Qed.
 Local Remove Hints group_homo_neg : typeclass_instances.
+
+Local Instance homo_plus_compose : HomomorphismPlus (λ x, g (f x)).
+Proof.
+    split.
+    intros a b.
+    setoid_rewrite homo_plus.
+    apply homo_plus.
+Qed.
+
+Local Instance homo_zero_compose : HomomorphismZero (λ x, g (f x)).
+Proof.
+    split.
+    setoid_rewrite homo_zero.
+    apply homo_zero.
+Qed.
+
+Local Instance homo_neg_compose : HomomorphismNeg (λ x, g (f x)).
+Proof.
+    split.
+    intros a.
+    setoid_rewrite homo_neg.
+    apply homo_neg.
+Qed.
 
 (* begin hide *)
 End PlusHomo.
