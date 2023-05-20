@@ -429,7 +429,7 @@ represent the vertical composition of two natural transformations.
     are naturally isomorphic.
 \end{definition}
 
-\begin{theorem}
+\begin{theorem} \label{nat_isomorphism_components}
     A natural transformation $\alpha$ is an isomorphism if and only if the
     components of $\alpha$ are all isomorphisms.
 \end{theorem}
@@ -484,6 +484,206 @@ represent the vertical composition of two natural transformations.
         = \1 \ocircle \1 = \1.
     \]
     Thus, $F \circ H \cong G \circ I$.
+\end{proof}
+
+\begin{definition}
+    Given two categories $C_1$ and $C_2$, we say that they are equivalent if
+    there exist functors $F : C_1 \to C_2$ and $G : C_2 \to C_1$ such that there
+    exist natural isomorphisms $\eta : \1 \to G \circ F$ and $\varepsilon : F
+    \circ G \to \1$.  If two categories $C_1$ and $C_2$ are equivalent, we write
+    $C_1 \simeq C_2$.
+\end{definition}
+
+\begin{theorem}
+    Equivalence of categories is an equivalence relation.
+\end{theorem}
+\begin{proof}
+    For reflexivity, the identity functors and identity natural transformations
+    work.  For symmetry, given functors $F : C_1 \to C_2$ and $G : C_2 \to C_1$
+    such that $\1 \cong G \circ F$ and $F \circ G \cong \1$, we have $\1 \cong F
+    \circ G$ and $G \circ F \cong \1$, showing that $G$ and $F$ are the functors
+    needed to show that $C_2 \simeq C_1$.
+
+    Transitivity takes just a bit more work.  Let $C_1$, $C_2$, and $C_3$ be
+    categories such that there exist functors $F_1 : C_1 \to C_2$, $G_1 : C_2
+    \to C_1$, $F_2 : C_2 \to C_3$, and $G_2 : C_3 \to C_2$ such that $\1 \cong
+    G_1 \circ F_1$, $F_1 \circ G_1 \cong \1$, $\1 \cong G_2 \circ F_2$, and $F_2
+    \circ G_2 \cong \1$.  We have
+    \begin{align*}
+        \1 &\cong G_2 \circ F_2 \\
+        G_1 \circ F_1 &\cong G_1 \circ G_2 \circ F_2 \circ F_1,
+    \end{align*}
+    and with $\1 \cong G_1 \circ F_1$, by transitivity we have $\1 \cong G_1
+    \circ G_2 \circ F_2 \circ F_1$.  Similarly,
+    \begin{align*}
+        F_1 \circ G_1 &\cong \1 \\
+        F_2 \circ F_1 \circ G_1 \circ G_2 &\cong F_2 \circ G_2,
+    \end{align*}
+    and with $F_2 \circ G_2 \circ \1$, by transitivity we have $F_2
+    \circ F_1 \circ G_1 \circ G_2 \cong \1$.  Thus, we see that $F_2 \circ F_1$
+    and $G_1 \circ G_2$ are the functors needed to shaw that $C_1 \simeq C_3$.
+\end{proof}
+
+\begin{theorem}
+    A functor $F : C_1 \to C_2$ is a part of an equivalence if and only if it is
+    full, faithful, and essentially surjective.
+\end{theorem}
+\begin{proof}
+    First, assume that there exist functors $F : C_1 \to C_2$ and $G : C_2 \to
+    C_1$ such that $\1 \cong G \circ F$ and $F \circ G \cong \1$.  We will prove
+    that $F$ is full, faithful, and essentially surjective.  Because equivalence
+    of categories is symmetric, the results will hold for $G$ as well.
+
+    To prove that $F$ is faithful, we must prove that for all objects $A$ and
+    $B$ and morphisms $f$ and $g$ from $A$ to $B$, if $F(f) = F(g)$, then $f =
+    g$.  Because $F(f) = F(g)$, we have $G(F(f)) = G(F(g))$.  Because $\1 \cong
+    G \circ F$, we have a natural isomorphism $\eta : \1 \to G \circ F$.  By
+    naturality of $\eta$, we have
+    \[
+        \eta(B) \circ f = G(F(f)) \circ \eta(A)
+    \]
+    and
+    \[
+        \eta(B) \circ g = G(F(g)) \circ \eta(A).
+    \]
+    Combining these results with $G(F(f)) = G(F(g))$, we get
+    \[
+        \eta(B) \circ f = \eta(B) \circ g.
+    \]
+    By Theorem \ref{nat_isomorphism_components}, $\eta(B)$ is an isomorphism, so
+    we can cancel it to show that $f = g$.
+
+    To show that $F$ is essentially surjective, let $B : C_2$.  We must prove
+    that there exists an $A : C_1$ such that $F(A) \cong B$.  We will show that
+    $A = G(B)$ is the correct choice.  Because $F \circ G \cong \1$, we have a
+    natural isomorphism $\varepsilon : F \circ G \to \1$.  By Theorem
+    \ref{nat_isomorphism_components}, $\varepsilon(B)$ is an isomorphism from
+    $F(G(B))$ to $B$, showing that $F(G(B)) \cong B$, as required.
+
+    To show that $F$ is full, let $A$ and $B$ be objects in $C_1$ and let $f :
+    F(A) \to F(B)$.  We must show that there exists a morphism $f' : A \to B$
+    such that $F(f') = f$.  Because $\1 \cong G \circ F$, we have a natural
+    isomorphism $\eta : \1 \to G \circ F$.  By Theorem
+    \ref{nat_isomorphism_components}, $\eta(A)$ and $\eta(B)$ are both
+    isomorphisms, so we have morphisms $g : G(F(A)) \to A$ and $h : G(F(B)) \to
+    B$ such that
+    \begin{align*}
+        \eta(A) \circ g &= \1, \\
+        g \circ \eta(A) &= \1, \\
+        \eta(B) \circ h &= \1, \\
+        \intertext{and}
+        h \circ \eta(B) &= \1. \\
+    \end{align*}
+    Then
+    \begin{align*}
+        G(f) &= \eta(B) \circ h \circ G(f) \\
+        &= G(F(h)) \circ \eta(G(F(B)) \circ G(f) \\
+        &= G(F(h)) \circ G(F(G(f))) \circ \eta(G(F(A))) \\
+        &= G(F(h)) \circ G(F(G(f))) \circ \eta(G(F(A))) \circ \eta(A) \circ g \\
+        &= G(F(h)) \circ G(F(G(f))) \circ G(F(\eta(A)))) \circ \eta(A) \circ g \\
+        &= G(F(h)) \circ G(F(G(f))) \circ G(F(\eta(A)))) \\
+        &= G(F(h \circ G(f) \circ \eta(A))).
+    \end{align*}
+    Because $G$ is faithful (by the first part of this proof), we get
+    \[
+        F(h \circ G(f) \circ \eta(A)) = f,
+    \]
+    showing that $h \circ G(f) \circ \eta(A)$ is the morphism required to show
+    that $F$ is full.
+
+    We will now prove the converse.  Let $C_1$ and $C_2$ be categories such that
+    there is a functor $F : C_1 \to C_2$ that is full, faithful, and essentially
+    surjective.
+
+    We must first define a functor $G : C_2 \to C_1$.  For objects $B : C_2$, we
+    will define $G(B)$ to be an object $A$ such that $F(A) \cong B$ as
+    guaranteed by $F$ being essentially surjective.  We will also define
+    functions $g : C_2 \to (A \to F(G(A)))$ and $g^{-1} : C_2 \to (F(G(A)) \to
+    A)$ which are the morphisms of the isomorphism between $A$ and $F(G(A))$.
+    Then for objects $A$ and $B$ in $C_2$ and morphisms $f : A \to B$, we will
+    define $G(f)$ to be a morphism such that $F(G(f)) = g(B) \circ f \circ
+    g^{-1}(A)$ as guaranteed by $F$ being full.  To prove that $G$ is a functor,
+    we must prove that it respects compositions and identities.
+
+    To prove that $G$ respects compositions, let $A$, $B$, and $C$ be objects in
+    $C_2$ and $f_1 : B \to C$ and $f_2 : A \to B$ be morphisms.  Then we have
+    \[
+        g(C) \circ f_1 \circ f_2 \circ g^{-1}(A) = g(C) \circ f_1 \circ g^{-1}(B) \circ
+        g(B) \circ f_2 \circ g^{-1}(A),
+    \]
+    so by the definition of $G$, we have
+    \[
+        F(G(f_1 \circ f_2)) = F(G(f_1)) \circ F(G(f_2))
+        = F(G(f_1) \circ G(f_2)).
+    \]
+    Because $F$ is faithful, we have
+    \[
+        G(f_1 \circ f_2) = G(f_1) \circ G(f_2)
+    \]
+    as required.
+
+    To prove that $G$ respects the identity, note that for all objects $A : C_2$
+    we have
+    \[
+        g(A) \circ \1 \circ g^{-1}(A) = \1,
+    \]
+    so by the definition of $G$ we have
+    \[
+        F(G(\1)) = \1 = F(\1).
+    \]
+    Because $F$ is faithful, we get
+    \[
+        G(\1) = \1
+    \]
+    as required.
+
+    Now that we have the functor $G : C_2 \to C_1$, we must find natural
+    isomorphisms $\eta : \1 \to G \circ F$ and $\varepsilon : F \circ G \to \1$.
+    Define $\eta(A)$ to be a morphism such that $F(\eta(A)) = g(F(A))$ as
+    guaranteed by $F$ being full.  We must prove that $\eta$ is natural, that
+    is, for all objects $A$ and $B$ in $C_1$ and morphisms $f : A \to B$, we
+    have
+    \[
+        \eta(B) \circ f = G(F(f)) \circ \eta(A).
+    \]
+    First,
+    \begin{align*}
+        g(F(B)) \circ F(f)
+            &= g(F(B)) \circ F(f) \circ g^{-1}(F(A)) \circ g(F(A)) \\
+                           &= F(G(F(f))) \circ g(F(A)) \\
+        F(\eta(B)) \circ F(f) &= F(G(F(f))) \circ F(\eta(A)) \\
+        F(\eta(B) \circ f) &= F(G(F(f)) \circ \eta(A)).
+    \end{align*}
+    Then because $F$ is faithful, we have
+    \[
+        \eta(B) \circ f = G(F(f)) \circ \eta(A)
+    \]
+    as required.
+
+    Define $\varepsilon(A) = g^{-1}(A)$.  Then
+    \begin{align*}
+        g^{-1}(B) \circ F(G(f))
+        &= g^{-1}(B) \circ g(B) \circ f \circ g^{-1}(A) \\
+        &= f \circ g^{-1}(A)
+    \end{align*}
+    showing $\varepsilon$ is natural.
+
+    We will now show that $\eta$ and $\varepsilon$ are isomorphisms, using
+    Theorem \ref{nat_isomorphism_components}.  For $\eta$, let $A : C_1$.
+    Because $F$ is full, there exists a morphism $f$ such that $F(f) =
+    g^{-1}(F(A))$.  Then
+    \begin{align*}
+        g(F(A)) \circ g^{-1}(F(A)) &= \1 \\
+        F(\eta(A)) \circ F(f) &= \1 \\
+        F(\eta(A) \circ f) &= F(\1),
+    \end{align*}
+    and because $F$ is faithful, we have $\eta(A) \circ f = \1$.  Practically
+    the same argument shows that $f \circ \eta(A) = \1$ as well, showing that
+    $\eta(A)$ is an isomorphism.
+
+    For $\varepsilon$, let $A : C_2$.  Then because $\varepsilon(A) =
+    g^{-1}(A)$, $g(A)$ is the inverse of $\varepsilon(A)$, showing that
+    $\varepsilon(A)$ is an isomorphism.
 \end{proof}
 
 \end{document}
