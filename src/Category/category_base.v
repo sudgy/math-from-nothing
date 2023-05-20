@@ -133,6 +133,33 @@ Proof.
     exact (isomorphic_trans eq2 eq1).
 Qed.
 
+Theorem is_isomorphism_pair_left : ∀ {A B : C0}
+    (a : morphism A B) b, is_isomorphism_pair a b → is_isomorphism a.
+Proof.
+    intros A B a b eq.
+    exists b.
+    exact eq.
+Qed.
+
+Theorem is_isomorphism_pair_right : ∀ {A B : C0}
+    (a : morphism A B) b, is_isomorphism_pair a b → is_isomorphism b.
+Proof.
+    intros A B a b eq.
+    exists a.
+    split; apply eq.
+Qed.
+
+Theorem is_isomorphism_isomorphic : ∀ {A B : C0}
+    (f : morphism A B), is_isomorphism f → A ≅ B.
+Proof.
+    intros A B f f_iso.
+    apply indefinite_description.
+    destruct f_iso as [g [fg gf]].
+    split.
+    exists f g.
+    split; assumption.
+Qed.
+
 End Isomorphism.
 
 Program Definition dual_category (C0 : Category) : Category := {|
