@@ -6,7 +6,7 @@
 
 \setcounter{chapter}{1}
 
-\chapter{Elementary Algebra} \label{chap-ealgebra}
+\chapter{Elementary Algebra} \label{chap_ealgebra}
 
 In this chapter we will develop an extensive system of classes that encode basic
 algebraic manipulations.  Note that the classes we define will not be things
@@ -156,7 +156,7 @@ Several of these classes together provide instances of some of the others.
 The previous instances allows us to only check for one-sided addition laws when
 addition is commutative.
 
-\begin{instance} \label{plus-linv-lcancel}
+\begin{instance} \label{plus_linv_lcancel}
     If addition is associative, zero is a left identity, and negation is a left
     inverse, then addition is left cancellative.
 \end{instance}
@@ -171,7 +171,7 @@ addition is commutative.
     \end{align*}
 \end{proof}
 
-\begin{instance} \label{plus-rinv-rcancel}
+\begin{instance} \label{plus_rinv_rcancel}
     If addition is associative, zero is a right identity, and negation is a
     right inverse, then addition is right cancellative.
 \end{instance}
@@ -202,7 +202,7 @@ Coq does this automatically.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{neg-plus}
+\begin{theorem} \label{neg_plus}
     For all $a$ and $b$ in $\U$, $-(a + b) = -b + -a$.  Furthermore, if addition
     is commutative, $-(a + b) = -a + -b$.
 \end{theorem}
@@ -215,14 +215,14 @@ Coq does this automatically.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{not-trivial-zero}
+\begin{theorem} \label{not_trivial_zero}
     If $\U$ is nontrivial, then there exists an $A : \U$ such that $a \neq 0$.
 \end{theorem}
 \begin{proof}
-    This is a direct application of Theorem \ref{not-trivial2}.
+    This is a direct application of Theorem \ref{not_trivial2}.
 \end{proof}
 
-\begin{theorem} \label{homo-zero-inj}
+\begin{theorem} \label{homo_zero_inj}
     If $f$ is additive and preserves additive inverses, if $0 = f(a)$ implies
     that $0 = a$ for all $a$ in $\U$, then $f$ is injective.
 \end{theorem}
@@ -233,7 +233,7 @@ Coq does this automatically.
     setting $b - c = a$, the theorem is true by hypothesis.
 \end{proof}
 
-\begin{theorem} \label{homo-inj-zero}
+\begin{theorem} \label{homo_inj_zero}
     If $f$ preserves the additive identity and is injective, then $0 \neq a$
     implies that $0 \neq f(a)$ for all $a : \U$.
 \end{theorem}
@@ -346,7 +346,7 @@ of the others.
     Trivial.
 \end{proof}
 
-\begin{instance} \label{ldist-rdist}
+\begin{instance} \label{ldist_rdist}
     If multiplication is commutative and left distributive, then multiplication
     is right distributive.
 \end{instance}
@@ -354,7 +354,7 @@ of the others.
     Trivial.
 \end{proof}
 
-\begin{instance} \label{mult-lanni-ranni}
+\begin{instance} \label{mult_lanni_ranni}
     If multiplication is commutative and zero is a left annihilator, then zero
     is a right annihilator.
 \end{instance}
@@ -373,7 +373,7 @@ of the others.
 Like with addition, the previous instances allows us to only check for one-sided
 multiplication laws when multiplication is commutative.
 
-\begin{instance} \label{ring-mult-lanni}
+\begin{instance} \label{ring_mult_lanni}
     If addition is cancellative, zero is an identity, and multiplication is
     right distributive, then zero is a left annihilator.
 \end{instance}
@@ -387,20 +387,20 @@ multiplication laws when multiplication is commutative.
     \end{align*}
 \end{proof}
 
-\begin{instance} \label{ring-mult-ranni}
+\begin{instance} \label{ring_mult_ranni}
     If addition is cancellative, zero is an identity, and multiplication is
     left distributive, then zero is a right annihilator.
 \end{instance}
 \begin{proof}
     The proof is the same in form to the proof of Instance
-    \ref{ring-mult-lanni}.
+    \ref{ring_mult_lanni}.
 \end{proof}
 
-\begin{theorem} \label{not-trivial-one}
+\begin{theorem} \label{not_trivial_one}
     If $\U$ is not trivial, then $0 \neq 1$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{not-trivial-zero}, there exists an $a : \U$ such that $a
+    By Theorem \ref{not_trivial_zero}, there exists an $a : \U$ such that $a
     \neq 0$.  But if $0 = 1$, we could multiply both sides by $a$ to get $0 =
     a$, which is a contradiction, so we must have $0 \neq 1$.
 \end{proof}
@@ -488,7 +488,7 @@ axioms.
     so we have either $0 = a$ or $0 = b$.
 \end{proof}
 
-\begin{theorem} \label{mult-nz}
+\begin{theorem} \label{mult_nz}
     For all $a \neq 0$ and $b \neq 0$, $ab \neq 0$.
 \end{theorem}
 \begin{proof}
@@ -548,7 +548,7 @@ reciprocal of zero, but do not put any constraints on what its value is.
 \end{instance}
 \begin{proof}
     The proof is the same in form to the proofs of Instances
-    \ref{plus-linv-lcancel} and \ref{plus-rinv-rcancel}.
+    \ref{plus_linv_lcancel} and \ref{plus_rinv_rcancel}.
 \end{proof}
 
 \begin{theorem}
@@ -589,7 +589,7 @@ reciprocal of zero, but do not put any constraints on what its value is.
     multiplication is commutative, $(ab)^{-1} = a^{-1}b^{-1}$.
 \end{theorem}
 \begin{proof}
-    This proof is the same in form to the proof of Theorem \ref{neg-plus}.
+    This proof is the same in form to the proof of Theorem \ref{neg_plus}.
 \end{proof}
 
 \begin{theorem}
@@ -605,7 +605,7 @@ reciprocal of zero, but do not put any constraints on what its value is.
     multiplicative identity, then $f$ is injective.
 \end{instance}
 \begin{proof}
-    We will use Theorem \ref{homo-zero-inj}.  Let $a$ be such that $0 = f(a)$
+    We will use Theorem \ref{homo_zero_inj}.  Let $a$ be such that $0 = f(a)$
     and assume for a contradiction that $0 \neq a$.  Then by multiplying by
     $f(a^{-1})$ on both sides of $0 = f(a)$ we get \[
         0 = f(a) f(a^{-1}) = f(a a^{-1}) = f(1) = 1,
@@ -618,7 +618,7 @@ reciprocal of zero, but do not put any constraints on what its value is.
     preserves multiplicative inverses.
 \end{instance}
 \begin{proof}
-    Let $a \neq 0$.  Then by Theorem \ref{homo-inj-zero}, $f(a) \neq 0$ as well.
+    Let $a \neq 0$.  Then by Theorem \ref{homo_inj_zero}, $f(a) \neq 0$ as well.
     Then we know that \[
         f(a) f(a^{-1}) = f(a a^{-1}) = f(1) = 1 = f(a) f(a)^{-1},
     \]
@@ -826,7 +826,7 @@ number of theorems that need to be proved.
     inequalities in both directions.
 \end{class}
 
-\begin{instance} \label{wo-connex}
+\begin{instance} \label{wo_connex}
     A relation that is well ordered is connex.
 \end{instance}
 \begin{proof}
@@ -836,7 +836,7 @@ number of theorems that need to be proved.
     \leq a$.  Thus, the relation is connex.
 \end{proof}
 
-\begin{instance} \label{wo-trans}
+\begin{instance} \label{wo_trans}
     A relation that is well ordered and antisymmetric is transitive.
 \end{instance}
 \begin{proof}
@@ -852,7 +852,7 @@ number of theorems that need to be proved.
 Notice now that to prove that a set is well-ordered, all we need to do is prove
 that it is antisymmetric and that every set has a minimum.
 
-\begin{instance} \label{homo-le-lt}
+\begin{instance} \label{homo_le_lt}
     If $f$ is injective and preserves inequalities in one direction, then it
     preserves strict inequalities in one direction.
 \end{instance}
@@ -862,7 +862,7 @@ that it is antisymmetric and that every set has a minimum.
     contrapositive of the definition of injectivity.
 \end{proof}
 
-\begin{instance} \label{homo-le-le2}
+\begin{instance} \label{homo_le_le2}
     If $f$ is injective and preserves inequalities in one direction, then it
     preserves inequalities in both directions.
 \end{instance}
@@ -874,7 +874,7 @@ that it is antisymmetric and that every set has a minimum.
     f(b)$.  By injectivity we have $a = b$, contradicting $b < a$.
 \end{proof}
 
-\begin{instance} \label{homo-lt-lt2}
+\begin{instance} \label{homo_lt_lt2}
     If $f$ preserves strict inequalities in one direction, then it preserves
     strict inequalities in both directions.
 \end{instance}
@@ -934,21 +934,21 @@ following classes and theorems.
 \end{proof}
 
 \begin{instance}
-    Under the conditions of Instance \ref{plus-linv-lcancel}, if $\leq$ is left
+    Under the conditions of Instance \ref{plus_linv_lcancel}, if $\leq$ is left
     additive, then $\leq$ is left addition cancellative.
 \end{instance}
 \begin{proof}
     The proof is identical in the form to the proof of Instance
-    \ref{plus-linv-lcancel}.
+    \ref{plus_linv_lcancel}.
 \end{proof}
 
 \begin{instance}
-    Under the conditions of Instance \ref{plus-rinv-rcancel}, if $\leq$ is right
+    Under the conditions of Instance \ref{plus_rinv_rcancel}, if $\leq$ is right
     additive, then $\leq$ is right addition cancellative.
 \end{instance}
 \begin{proof}
     The proof is identical in the form to the proof of Instance
-    \ref{plus-rinv-rcancel}.
+    \ref{plus_rinv_rcancel}.
 \end{proof}
 
 \begin{theorem}
@@ -985,7 +985,7 @@ to utilize this theorem in types like the natural numbers.
     This proof is identical in form to the previous proof.
 \end{proof}
 
-\begin{theorem} \label{le-lrplus}
+\begin{theorem} \label{le_lrplus}
     If $a \leq b$ and $c \leq d$, then $a + c \leq b + d$.
 \end{theorem}
 \begin{proof}
@@ -993,21 +993,21 @@ to utilize this theorem in types like the natural numbers.
     \leq b + d$, and by transitivity we get $a + c \leq b + d$.
 \end{proof}
 
-\begin{theorem} \label{lt-le-lrplus}
+\begin{theorem} \label{lt_le_lrplus}
     If $a < b$ and $c \leq d$, then $a + c < b + d$.
 \end{theorem}
 \begin{proof}
     This proof is identical in form to the previous proof.
 \end{proof}
 
-\begin{theorem} \label{le-lt-lrplus}
+\begin{theorem} \label{le_lt_lrplus}
     If $a \leq b$ and $c < d$, then $a + c < b + d$.
 \end{theorem}
 \begin{proof}
     This proof is identical in form to the previous proofs.
 \end{proof}
 
-\begin{theorem} \label{lt-lrplus}
+\begin{theorem} \label{lt_lrplus}
     If $a < b$ and $c < d$, then $a + c < b + d$.
 \end{theorem}
 \begin{proof}
@@ -1116,7 +1116,7 @@ formalized in the following classes and theorems.
     $c^{-1}ca \leq c^{-1}cb$, so $a \leq b$.
 \end{proof}
 
-\begin{theorem} \label{le-lmult-neg}
+\begin{theorem} \label{le_lmult_neg}
     If $a \leq b$ and $c \leq 0$, then $cb \leq ca$.
 \end{theorem}
 \begin{proof}
@@ -1124,14 +1124,14 @@ formalized in the following classes and theorems.
     get $-ca \leq -cb$, so $cb \leq ca$.
 \end{proof}
 
-\begin{theorem} \label{le-rmult-neg}
+\begin{theorem} \label{le_rmult_neg}
     If $a \leq b$ and $c \leq 0$, then $bc \leq ac$.
 \end{theorem}
 \begin{proof}
     This proof is identical in form to the previous one.
 \end{proof}
 
-\begin{theorem} \label{le-mult-lcancel-neg}
+\begin{theorem} \label{le_mult_lcancel_neg}
     If $ca \leq cb$ and $c < 0$, then $b \leq a$.
 \end{theorem}
 \begin{proof}
@@ -1139,14 +1139,14 @@ formalized in the following classes and theorems.
     -c$, so we can cancel $-c$ to get $-a \leq -b$, so $b \leq a$.
 \end{proof}
 
-\begin{theorem} \label{le-mult-rcancel-neg}
+\begin{theorem} \label{le_mult_rcancel_neg}
     If $ac \leq bc$ and $c < 0$, then $b \leq a$.
 \end{theorem}
 \begin{proof}
     This proof is identical in form to the previous one.
 \end{proof}
 
-\begin{theorem} \label{le-lrmult-pos}
+\begin{theorem} \label{le_lrmult_pos}
     If $a \leq b$, $c \leq d$, $0 \leq a$, and $0 \leq c$, then $ac \leq bd$.
 \end{theorem}
 \begin{proof}
@@ -1164,7 +1164,7 @@ not equal, and the rest of the proofs will be skipped.
     If $0 < a$ and $0 < b$, then $0 < ab$.
 \end{theorem}
 \begin{proof}
-    We must prove that $0 \neq ab$.  This follows from Theorem \ref{mult-nz}.
+    We must prove that $0 \neq ab$.  This follows from Theorem \ref{mult_nz}.
 \end{proof}
 
 \begin{theorem}
@@ -1200,28 +1200,28 @@ not equal, and the rest of the proofs will be skipped.
     If $a < b$ and $c < 0$, then $cb < ca$.
 \end{theorem}
 \begin{proof}
-    This proof is identical in form to Theorem \ref{le-lmult-neg}.
+    This proof is identical in form to Theorem \ref{le_lmult_neg}.
 \end{proof}
 
 \begin{theorem}
     If $a < b$ and $c < 0$, then $bc < ac$.
 \end{theorem}
 \begin{proof}
-    This proof is identical in form to Theorem \ref{le-rmult-neg}.
+    This proof is identical in form to Theorem \ref{le_rmult_neg}.
 \end{proof}
 
 \begin{theorem}
     If $ca < cb$ and $c < 0$, then $b < a$.
 \end{theorem}
 \begin{proof}
-    This proof is identical in form to Theorem \ref{le-mult-lcancel-neg}.
+    This proof is identical in form to Theorem \ref{le_mult_lcancel_neg}.
 \end{proof}
 
 \begin{theorem}
     If $ac < bc$ and $c < 0$, then $b < a$.
 \end{theorem}
 \begin{proof}
-    This proof is identical in form to Theorem \ref{le-mult-rcancel-neg}.
+    This proof is identical in form to Theorem \ref{le_mult_rcancel_neg}.
 \end{proof}
 
 \begin{theorem}
@@ -1242,7 +1242,7 @@ not equal, and the rest of the proofs will be skipped.
 
 We can now move on to slightly more interesting theorems.
 
-\begin{theorem} \label{square-pos}
+\begin{theorem} \label{square_pos}
     For all $a$, $0 \leq aa$.
 \end{theorem}
 \begin{proof}
@@ -1257,10 +1257,10 @@ We can now move on to slightly more interesting theorems.
 \end{theorem}
 \begin{proof}
     Assume that $a \leq b$.  Then the result follows directly from Theorem
-    \ref{le-lrmult-pos}.
+    \ref{le_lrmult_pos}.
 
     Now assume that $aa \leq bb$.  If $a = 0$, the result would follow from
-    Theorem \ref{square-pos}, so assume that $a \neq 0$.  From $aa \leq bb$ we
+    Theorem \ref{square_pos}, so assume that $a \neq 0$.  From $aa \leq bb$ we
     get $0 \leq bb - aa = (b + a)(b - a)$.  Because $0 < a$ and $0 \leq b$, we
     know that $0 < b + a$, so we can cancel $b + a$ from $0 \leq (b + a)(b - a)$
     to get $0 \leq b - a$.  Thus, $a \leq b$ as required.
@@ -1273,11 +1273,11 @@ We can now move on to slightly more interesting theorems.
     This proof is identical in form to the previous proof.
 \end{proof}
 
-\begin{theorem} \label{one-pos}
+\begin{theorem} \label{one_pos}
     $0 < 1$.
 \end{theorem}
 \begin{proof}
-    We know that $0 \neq 1$ from Theorem \ref{not-trivial-one}, so we only need
+    We know that $0 \neq 1$ from Theorem \ref{not_trivial_one}, so we only need
     to prove that $0 \leq 1$.  Asume that $1 < 0$.  Then $0 < -1$, and because
     $<$ is multiplicative, we get $0 < (-1)(-1) = 1$.  But this contradicts $1 <
     0$, so it must be the case that $0 \leq 1$.
@@ -1293,7 +1293,7 @@ We can now move on to slightly more interesting theorems.
 Several simple statements follow from some of the previous theorems, such as $0
 < 2$, $1 < 2$, etc.
 
-\begin{theorem} \label{inv-ge-one}
+\begin{theorem} \label{inv_ge_one}
     If $1 \leq a$, then $a^{-1} \leq 1$.
 \end{theorem}
 \begin{proof}
@@ -1301,7 +1301,7 @@ Several simple statements follow from some of the previous theorems, such as $0
     multiply both sides of $1 \leq a$ by $a^{-1}$ to get $a^{-1} \leq 1$.
 \end{proof}
 
-\begin{theorem} \label{inv-le-one}
+\begin{theorem} \label{inv_le_one}
     If $0 < a \leq 1$, then $1 \leq a^{-1}$.
 \end{theorem}
 \begin{proof}
@@ -1312,14 +1312,14 @@ Several simple statements follow from some of the previous theorems, such as $0
     If $1 < a$, then $a^{-1} < 1$.
 \end{theorem}
 \begin{proof}
-    This proof is identical in form to Theorem \ref{inv-ge-one}.
+    This proof is identical in form to Theorem \ref{inv_ge_one}.
 \end{proof}
 
 \begin{theorem}
     If $0 < a < 1$, then $1 < a^{-1}$.
 \end{theorem}
 \begin{proof}
-    This proof is identical in form to Theorem \ref{inv-le-one}.
+    This proof is identical in form to Theorem \ref{inv_le_one}.
 \end{proof}
 
 \begin{theorem}
@@ -1353,7 +1353,7 @@ Several simple statements follow from some of the previous theorems, such as $0
     \]
 \end{proof}
 
-\begin{theorem} \label{le-div-pos}
+\begin{theorem} \label{le_div_pos}
     If $0 < a$ and $a \leq b$, then $b^{-1} \leq a^{-1}$.
 \end{theorem}
 \begin{proof}
@@ -1361,7 +1361,7 @@ Several simple statements follow from some of the previous theorems, such as $0
     of $a \leq b$ by $a^{-1}$ and by $b^{-1}$ to get $b^{-1} \leq a^{-1}$.
 \end{proof}
 
-\begin{theorem} \label{le-div-neg}
+\begin{theorem} \label{le_div_neg}
     If $b < 0$ and $a \leq b$, then $b^{-1} \leq a^{-1}$.
 \end{theorem}
 \begin{proof}
@@ -1374,14 +1374,14 @@ Several simple statements follow from some of the previous theorems, such as $0
     If $0 < a$ and $a < b$, then $b^{-1} < a^{-1}$.
 \end{theorem}
 \begin{proof}
-    The proof is identical in form to the proof of Theorem \ref{le-div-pos}.
+    The proof is identical in form to the proof of Theorem \ref{le_div_pos}.
 \end{proof}
 
 \begin{theorem}
     If $b < 0$ and $a < b$, then $b^{-1} < a^{-1}$.
 \end{theorem}
 \begin{proof}
-    The proof is identical in form to the proof of Theorem \ref{le-div-neg}.
+    The proof is identical in form to the proof of Theorem \ref{le_div_neg}.
 \end{proof}
 
 \begin{theorem}
@@ -1484,7 +1484,7 @@ $S$ be a set on $\U$.
     bound has a supremum.
 \end{class}
 
-\begin{theorem} \label{upper-bound-leq}
+\begin{theorem} \label{upper_bound_leq}
     If $a$ is not an upper bound of $S$ and $b$ is an upper bound of $S$, then
     $a < b$.
 \end{theorem}
@@ -1494,7 +1494,7 @@ $S$ be a set on $\U$.
     by transitivity we get $a < b$.
 \end{proof}
 
-\begin{theorem} \label{lower-bound-leq}
+\begin{theorem} \label{lower_bound_leq}
     If $a$ is not a lower bound of $S$ and $b$ is a lower bound of $S$, then $a
     < b$.
 \end{theorem}
@@ -1530,7 +1530,7 @@ $S$ be a set on $\U$.
 \begin{proof}
     Assume that $\alpha$ is the supremum of $S$.  Let $x$ be an element of $C$.
     Because $x \in C$, $x$ is not an upper bound of $S$.  Thus, by Theorem
-    \ref{upper-bound-leq}, $x < \alpha$, so $\alpha$ is an upper bound of $C$.
+    \ref{upper_bound_leq}, $x < \alpha$, so $\alpha$ is an upper bound of $C$.
 
     Now let $y$ be another upper bound of $C$.  Assume for a contradiction that
     $y < \alpha$.  Because $\U$ is dense, there exists a $z$ such that $y < z <
@@ -1569,7 +1569,7 @@ group, and norms from linear algebra.  We will look at the first one here.
     \]
 \end{definition}
 
-\begin{theorem} \label{abs-pos-eq}
+\begin{theorem} \label{abs_pos_eq}
     If $0 \leq x$, then $|x| = x$.
 \end{theorem}
 \begin{proof}
@@ -1640,7 +1640,7 @@ group, and norms from linear algebra.  We will look at the first one here.
 \end{theorem}
 \begin{proof}
     Because $x \leq 0$ we have $0 \leq -x$.  By the previous theorem we have
-    $|x| = |{-x}|$, so by Theorem \ref{abs-pos-eq} $|x| = -x$.
+    $|x| = |{-x}|$, so by Theorem \ref{abs_pos_eq} $|x| = -x$.
 \end{proof}
 
 \begin{theorem}
@@ -1668,7 +1668,7 @@ group, and norms from linear algebra.  We will look at the first one here.
     follows from the lemma.
 \end{proof}
 
-\begin{theorem} \label{abs-le}
+\begin{theorem} \label{abs_le}
     For all $a$ and $b$, $|a| \leq b \leftrightarrow -b \leq a \leq b$.
 \end{theorem}
 \begin{proof}
@@ -1683,14 +1683,14 @@ group, and norms from linear algebra.  We will look at the first one here.
     \leq b$, and if $a \leq 0$ we have $|a| = -a \leq b$.
 \end{proof}
 
-\begin{theorem} \label{abs-lt}
+\begin{theorem} \label{abs_lt}
     For all $a$ and $b$, $|a| < b \leftrightarrow -b < a < b$.
 \end{theorem}
 \begin{proof}
     This proof is identical in form to the previous proof.
 \end{proof}
 
-\begin{theorem} \label{abs-le-pos}
+\begin{theorem} \label{abs_le_pos}
     For all $x$, $x \leq |x|$.
 \end{theorem}
 \begin{proof}
@@ -1698,7 +1698,7 @@ group, and norms from linear algebra.  We will look at the first one here.
     \leq -x = |x|$, so by transitivity we get $x \leq |x|$.
 \end{proof}
 
-\begin{theorem} \label{abs-le-neg}
+\begin{theorem} \label{abs_le_neg}
     For all $x$, $-x \leq |x|$.
 \end{theorem}
 \begin{proof}
@@ -1710,11 +1710,11 @@ group, and norms from linear algebra.  We will look at the first one here.
     For all $a$ and $b$, $|a + b| \leq |a| + |b|$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{abs-le}, we only need to prove $-|a| - |b| \leq a + b \leq
+    By Theorem \ref{abs_le}, we only need to prove $-|a| - |b| \leq a + b \leq
     |a| + |b|$.  The first of these can be rewritten as $-a - b \leq |a| + |b|$.
-    By Theorem \ref{abs-le-neg}, we have $-a \leq |a|$ and $-b \leq |b|$, and
+    By Theorem \ref{abs_le_neg}, we have $-a \leq |a|$ and $-b \leq |b|$, and
     adding these gets the required result.  The second of these, $a + b \leq |a|
-    + |b|$, is similar.  By Theorem \ref{abs-le-pos}, we have $a \leq |a|$ and
+    + |b|$, is similar.  By Theorem \ref{abs_le_pos}, we have $a \leq |a|$ and
     $b \leq |b|$, and adding these again gets the required result.
 \end{proof}
 
@@ -1730,7 +1730,7 @@ group, and norms from linear algebra.  We will look at the first one here.
     For all $a$ and $b$, $||a| - |b|| \leq |a - b|$.
 \end{theorem}
 \begin{proof}
-    We can use Theorem \ref{abs-le}, and one of the cases was already covered by
+    We can use Theorem \ref{abs_le}, and one of the cases was already covered by
     the previous theorem.  So we just need to prove $-|a - b| \leq |a| - |b|$.
     Rearranging, we get $|b| - |a| \leq |a - b| = |b - a|$, so the result again
     follows by the previous theorem.
@@ -1741,7 +1741,7 @@ group, and norms from linear algebra.  We will look at the first one here.
 \end{theorem}
 \begin{proof}
     We know that $0 \leq |x|$, so the result follows from Theorem
-    \ref{abs-pos-eq}.
+    \ref{abs_pos_eq}.
 \end{proof}
 
 \begin{theorem}
@@ -1819,7 +1819,7 @@ When working with $\min$ and $\max$, the previous theorems allow us to consider
 the cases $a \leq b$ and $b \leq a$ rather than $a \leq b$ and $b < a$, which
 can make some proofs a bit simpler.
 
-\begin{theorem} \label{min-comm}
+\begin{theorem} \label{min_comm}
     For all $a$ and $b$, $\min(a, b) = \min(b, a)$.
 \end{theorem}
 \begin{proof}
@@ -1827,7 +1827,7 @@ can make some proofs a bit simpler.
     we get $\min(a, b) = b = \min(b, a)$.
 \end{proof}
 
-\begin{theorem} \label{max-comm}
+\begin{theorem} \label{max_comm}
     For all $a$ and $b$, $\max(a, b) = \max(b, a)$.
 \end{theorem}
 \begin{proof}
@@ -1924,7 +1924,7 @@ numbers with no ambiguity.
     For all $a$ and $b$, $\min(a, b) \leq b$.
 \end{theorem}
 \begin{proof}
-    This follows from Theorems \ref{lmin} and \ref{min-comm}.
+    This follows from Theorems \ref{lmin} and \ref{min_comm}.
 \end{proof}
 
 \begin{theorem} \label{lmax}
@@ -1939,7 +1939,7 @@ numbers with no ambiguity.
     For all $a$ and $b$, $b \leq \max(a, b)$.
 \end{theorem}
 \begin{proof}
-    This follows from Theorems \ref{lmax} and \ref{max-comm}.
+    This follows from Theorems \ref{lmax} and \ref{max_comm}.
 \end{proof}
 
 \begin{theorem}

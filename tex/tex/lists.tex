@@ -166,7 +166,7 @@ that are not lists will be assumed to be of this type.
     b^{-1} + a^{-1}$ for all lists $a$ and $b$.
 \end{proof}
 
-\begin{theorem} \label{list-reverse-reverse}
+\begin{theorem} \label{list_reverse_reverse}
     For all lists $a$, $(a^{-1})^{-1} = a$.
 \end{theorem}
 \begin{proof}
@@ -306,7 +306,7 @@ does not need to be considered as a part of the inductive hypothesis.
     \]
 \end{proof}
 
-\begin{theorem} \label{in-list-conc}
+\begin{theorem} \label{in_list_conc}
     For all lists $a$ and $b$ and for all values $x$, if $x \in (a + b)$, then
     either $x \in a$ or $x \in b$.
 \end{theorem}
@@ -321,7 +321,7 @@ does not need to be considered as a part of the inductive hypothesis.
     theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{in-list-rconc}
+\begin{theorem} \label{in_list_rconc}
     For all lists $a$ and $b$ and values $x$, if $x \in b$, then $x \in (a +
     b)$.
 \end{theorem}
@@ -333,7 +333,7 @@ does not need to be considered as a part of the inductive hypothesis.
     result is trivial.  Thus, the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{in-list-lconc}
+\begin{theorem} \label{in_list_lconc}
     For all lists $a$ and $b$ and values $x$, if $x \in a$, then $x \in (a +
     b)$.
 \end{theorem}
@@ -347,17 +347,17 @@ does not need to be considered as a part of the inductive hypothesis.
     the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{in-list-comm}
+\begin{theorem} \label{in_list_comm}
     For all lists $a$ and $b$ and values $x$, if $x \in (a + b)$, then $x \in (b
     + a)$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{in-list-conc}, we have either $x \in a$ or $x \in b$.  If $x
-    \in a$, the result follows from Theorem \ref{in-list-lconc}, and if $x \in
-    b$, the result follows from Theorem \ref{in-list-rconc}.
+    By Theorem \ref{in_list_conc}, we have either $x \in a$ or $x \in b$.  If $x
+    \in a$, the result follows from Theorem \ref{in_list_lconc}, and if $x \in
+    b$, the result follows from Theorem \ref{in_list_rconc}.
 \end{proof}
 
-\begin{theorem} \label{in-list-split}
+\begin{theorem} \label{in_list_split}
     For all lists $a$ and values $x$, in $x \in a$, then there exist lists $b$
     and $c$ such that $a = b + x : c$.
 \end{theorem}
@@ -373,7 +373,7 @@ does not need to be considered as a part of the inductive hypothesis.
     true by induction.
 \end{proof}
 
-\begin{theorem} \label{in-list-image}
+\begin{theorem} \label{in_list_image}
     For all lists $a$, values $x$, and functions $f : \U \to \V$, if $x \in a$,
     then $f(x) \in f(a)$.
 \end{theorem}
@@ -387,7 +387,7 @@ does not need to be considered as a part of the inductive hypothesis.
     so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{image-in-list}
+\begin{theorem} \label{image_in_list}
     For all lists $a$, values $y$, and functions $f : \U \to \V$, if $y \in
     f(a)$, then there exists an $x \in a$ such that $f(x) = y$.
 \end{theorem}
@@ -411,7 +411,7 @@ does not need to be considered as a part of the inductive hypothesis.
     unique elements.  Both of these are trivial.
 \end{proof}
 
-\begin{lemma} \label{list-unique-comm-add}
+\begin{lemma} \label{list_unique_comm_add}
     For all lists $a$ and values $x$, if $x : a$ has unique elements, then $a +
     [x]$ has unique elements.
 \end{lemma}
@@ -424,7 +424,7 @@ does not need to be considered as a part of the inductive hypothesis.
     $y \notin a$.  We must prove that $y : a + [x]$ has unique elements, that
     is, that $y \notin (a + [x])$ and that $(a + [x])$ has unique elements.  The
     latter follows from the inductive hypothesis.  To prove that $y \notin (a +
-    [x])$, assume that $y \in (a + [x])$.  Then by Theorem \ref{in-list-conc},
+    [x])$, assume that $y \in (a + [x])$.  Then by Theorem \ref{in_list_conc},
     either $y \in a$ or $y \in [x]$.  If $y \in a$, that contradicts $y \notin
     a$ from before.  If $y \in [x]$, then $y = x$ contradicting $y \neq x$ from
     before.  Both cases have a contradiction, so our assumption that $y \in (a +
@@ -432,7 +432,7 @@ does not need to be considered as a part of the inductive hypothesis.
     step is true, so by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{list-unique-comm}
+\begin{theorem} \label{list_unique_comm}
     For all lists $a$ and $b$, $a + b$ has unique elements if and only if $b +
     a$ has unique elements.
 \end{theorem}
@@ -446,12 +446,12 @@ does not need to be considered as a part of the inductive hypothesis.
     Now assume that for all lists $b$, if $a + b$ has unique elements, then $b +
     a$ has unique elements.  We need to prove that if $x : a + b$ has unique
     elements, then $b + x : a$ has unique elements.  By Lemma
-    \ref{list-unique-comm-add}, we know that $a + b + [x] = a + (b + [x])$ has
+    \ref{list_unique_comm_add}, we know that $a + b + [x] = a + (b + [x])$ has
     unique elements.  Then by the inductive hypothesis, $(b + [x]) + a = b + x :
     a$ has unique elements.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{list-unique-lconc}
+\begin{theorem} \label{list_unique_lconc}
     For all lists $a$ and $b$, if $a + b$ has unique elements, then $a$ has
     unique elements.
 \end{theorem}
@@ -460,21 +460,21 @@ does not need to be considered as a part of the inductive hypothesis.
     base case is true.  Now assume that $a$ has unique elements and let $x$ be
     such that $x : a + b$ has unique elements.  Because $x : a + b$ has unique
     elements, we know that $x \notin a + b$.  By the contrapositive of Theorem
-    \ref{in-list-lconc}, we know that $x \notin a$.  Thus, $x \notin a$ and $a$
+    \ref{in_list_lconc}, we know that $x \notin a$.  Thus, $x \notin a$ and $a$
     has unique elements, showing that $x : a$ has unique elements.  Thus, the
     theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-unique-rconc}
+\begin{theorem} \label{list_unique_rconc}
     For all lists $a$ and $b$, if $a + b$ has unique elements, then $b$ has
     unique elements.
 \end{theorem}
 \begin{proof}
-    This is just the combination of Theorems \ref{list-unique-lconc} and
-    \ref{list-unique-comm}.
+    This is just the combination of Theorems \ref{list_unique_lconc} and
+    \ref{list_unique_comm}.
 \end{proof}
 
-\begin{theorem} \label{list-unique-conc}
+\begin{theorem} \label{list_unique_conc}
     For all lists $a$ and $b$, if $a + b$ has unique elements, then for every $x
     \in a$, we have $x \notin b$.
 \end{theorem}
@@ -485,13 +485,13 @@ does not need to be considered as a part of the inductive hypothesis.
     $y$ such that $x \in y : a$ and $y : a + b$ has unique elements.  Because $y
     : a + b$ has unique elements, we have $y \notin (a + b)$.  Because $x \in y
     : a$, we have two cases: when $x = y$, and when $x \in a$.  When $x = y$, we
-    have $x \in b$, and by Theorem \ref{in-list-rconc} we have $x \in (a + b)$,
+    have $x \in b$, and by Theorem \ref{in_list_rconc} we have $x \in (a + b)$,
     contradicting $x \notin (a + b)$.  When $x \in a$, this directly
     contradicts the inductive hypothesis.  Thus, by induction, we have a
     contradiction, meaning that we can't have both $x \in a$ and $x \in b$.
 \end{proof}
 
-\begin{theorem} \label{list-image-unique}
+\begin{theorem} \label{list_image_unique}
     For all lists $a$ and functions $f : \U \to \V$, if $f(a)$ has unique
     elements, then $a$ does as well.
 \end{theorem}
@@ -502,12 +502,12 @@ does not need to be considered as a part of the inductive hypothesis.
     elements, then $x : a$ has unique elements.  Because $f(x) : f(a)$ has
     unique elements, we know that $f(x) \notin f(a)$ and that $f(a)$ has unique
     elements.  Because $f(x) \notin f(a)$, by the contrapositive of Theorem
-    \ref{in-list-image}, we know that $x \notin a$.  By the inductive
+    \ref{in_list_image}, we know that $x \notin a$.  By the inductive
     hypothesis, $a$ has unique elements.  Thus, $x : a$ has unique elements, so
     the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-image-unique-inj}
+\begin{theorem} \label{list_image_unique_inj}
     For all lists $a$ and injective functions $f : \U \to \V$, if $a$ has unique
     elements, then $f(a)$ does as well.
 \end{theorem}
@@ -517,7 +517,7 @@ does not need to be considered as a part of the inductive hypothesis.
     unique elements, $f(a)$ has unique elements, and $x \notin a$ for some value
     $x$.  We must prove that $f(x : a)$ has unique elements.  Because $f(a)$ has
     unique elements, we just need to prove that $f(x) \notin f(a)$.  If $f(x)
-    \in f(a)$, be Theorem \ref{image-in-list} we would have some $y \in a$ such
+    \in f(a)$, be Theorem \ref{image_in_list} we would have some $y \in a$ such
     that $f(x) = f(y)$.  Because $f$ is injective, we have $x = y$, but because
     $x \notin a$ and $y \in a$ we have a contradiction.  Thus, $f(x) \notin
     f(a)$, showing that the theorem is true by induction.
@@ -534,7 +534,7 @@ does not need to be considered as a part of the inductive hypothesis.
     \end{align*}
 \end{definition}
 
-\begin{definition} \label{list-prop}
+\begin{definition} \label{list_prop}
     Let $a$ be a list, and let $S$ be a set.  We will define $a \in S$, meaning
     that every element in $a$ is in $S$, recursively:
     \begin{align*}
@@ -555,7 +555,7 @@ not need to be considered as a part of the inductive hypothesis.
         x : a \in \usim &= a \in (x \usim) \wedge a \in \usim.
     \end{align*}
     Note that in the last expression, the first $\in$ is being used in the sense
-    of definition \ref{list-prop}, while the second $\in$ is the recursive one.
+    of definition \ref{list_prop}, while the second $\in$ is the recursive one.
 \end{definition}
 
 Note that this definition only checks that elements are related in one
@@ -612,7 +612,7 @@ explicitly saying that every value in a list satisfies a predicate).
     Either way, the inductive step is true, so the theorem is true by induction.
 \end{proof}
 
-\begin{lemma} \label{list-filter-in-both}
+\begin{lemma} \label{list_filter_in_both}
     For all sets $S$, lists $a$, and values $x$, if $x \in a^S$, then $x \in a$
     and $x \in S$.
 \end{lemma}
@@ -630,21 +630,21 @@ explicitly saying that every value in a list satisfies a predicate).
     step is true in all cases, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-filter-in}
+\begin{theorem} \label{list_filter_in}
     For all sets $S$, lists $a$, and values $x$, if $x \in a^S$, then $x \in a$.
 \end{theorem}
 \begin{proof}
-    This is just a special case of Lemma \ref{list-filter-in-both}.
+    This is just a special case of Lemma \ref{list_filter_in_both}.
 \end{proof}
 
-\begin{theorem} \label{list-filter-in-set}
+\begin{theorem} \label{list_filter_in_set}
     For all sets $S$, lists $a$, and values $x$, if $x \in a^S$, then $x \in S$.
 \end{theorem}
 \begin{proof}
-    This is just a special case of Lemma \ref{list-filter-in-both}.
+    This is just a special case of Lemma \ref{list_filter_in_both}.
 \end{proof}
 
-\begin{theorem} \label{list-filter-unique}
+\begin{theorem} \label{list_filter_unique}
     For all sets $S$ and lists $a$, if $a$ has unique elements, then $a^S$ has
     unique elements.
 \end{theorem}
@@ -656,24 +656,24 @@ explicitly saying that every value in a list satisfies a predicate).
     elements, we know that $x \notin a$ and that $a$ has unique elements.  There
     are two cases: when $x \in S$, and when $x \notin S$.  When $x \in S$, we
     must prove that $x : a^S$ has unique elements.  $x \notin a^S$ follows from
-    the contrapositive of Theorem \ref{list-filter-in}, and $a^S$ having unique
+    the contrapositive of Theorem \ref{list_filter_in}, and $a^S$ having unique
     elements is the inductive hypothesis.  When $x \notin S$, we must prove that
     $a^S$ has unique elements, which is the inductive hypothesis.  Either way,
     $(x : a)^S$ has unique elements, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-filter-image-in}
+\begin{theorem} \label{list_filter_image_in}
     For all sets $S : \set{\U}$, functions $f : \U \to \V$, lists $a$, and
     values $y : \V$, if $y \in f(a^S)$, then $y \in f(a)$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{image-in-list}, there is some $x \in a^S$ such that $f(x) =
+    By Theorem \ref{image_in_list}, there is some $x \in a^S$ such that $f(x) =
     y$.  Because $x \in a^S$, we know that $x \in a$ by Theorem
-    \ref{in-list-image}.  Thus, by Theorem \ref{list-filter-in}, $f(x) = y \in
+    \ref{in_list_image}.  Thus, by Theorem \ref{list_filter_in}, $f(x) = y \in
     f(a)$.
 \end{proof}
 
-\begin{theorem} \label{list-filter-image-unique}
+\begin{theorem} \label{list_filter_image_unique}
     For all sets $S : \set{\U}$, function $f : \U \to \V$, and lists $a$, if
     $f(a)$ has unique elements, then $f(a^S)$ has unique elements.
 \end{theorem}
@@ -686,13 +686,13 @@ explicitly saying that every value in a list satisfies a predicate).
     S$, and when $x \notin S$.  When $x \in S$, we have $f((x : a)^S) = f(x :
     a^S) = f(x) : f(a^S)$.  $f(a^S)$ has unique elements by the inductive
     hypothesis, so we just need to prove that $f(x) \notin f(a^S)$, which
-    follows from the contrapositive of Theorem \ref{list-filter-image-in}.  When
+    follows from the contrapositive of Theorem \ref{list_filter_image_in}.  When
     $x \notin S$, we have $f((x : a)^S) = f(a^S)$, which has unique elements by
     the inductive hypothesis.  In both cases, $f((x : a)^S)$ has unique
     elements, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-filter-inter}
+\begin{theorem} \label{list_filter_inter}
     For all sets $S$ and $T$ and lists $a$, $(a^S)^T = a^{S \cap T}$.
 \end{theorem}
 \begin{proof}
@@ -718,12 +718,12 @@ explicitly saying that every value in a list satisfies a predicate).
     All cases work, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-filter-filter}
+\begin{theorem} \label{list_filter_filter}
     For all sets $S$ and lists $a$, $(a^S)^S = a^S$.
 \end{theorem}
 \begin{proof}
-    This is just the combination of Theorem \ref{list-filter-inter} and Theorem
-    \ref{inter-idemp}.
+    This is just the combination of Theorem \ref{list_filter_inter} and Theorem
+    \ref{inter_idemp}.
 \end{proof}
 
 \begin{theorem}
@@ -737,7 +737,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \]
 \end{proof}
 
-\begin{theorem} \label{list-prop-conc}
+\begin{theorem} \label{list_prop_conc}
     For all sets $S$ and lists $a$ and $b$, $(a + b) \in S$ if and only if $a
     \in S$ and $b \in S$.
 \end{theorem}
@@ -761,7 +761,7 @@ explicitly saying that every value in a list satisfies a predicate).
     induction.
 \end{proof}
 
-\begin{theorem} \label{list-prop-sub}
+\begin{theorem} \label{list_prop_sub}
     For all sets $S$ and $T$ with $S \subseteq T$ and all lists $a$, if $a \in
     S$, then $a \in T$.
 \end{theorem}
@@ -773,7 +773,7 @@ explicitly saying that every value in a list satisfies a predicate).
     T$ by the inductive hypothesis.  Thus, $(x : a) \in T$.
 \end{proof}
 
-\begin{theorem} \label{list-prop-filter}
+\begin{theorem} \label{list_prop_filter}
     For all lists $a$ and sets $S$, $a^S \in S$.
 \end{theorem}
 \begin{proof}
@@ -787,7 +787,7 @@ explicitly saying that every value in a list satisfies a predicate).
     S$, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-prop-in}
+\begin{theorem} \label{list_prop_in}
     For all lists $a$ and sets $S$, if $a \in S$, then for all $x \in a$, we
     have $x \in S$.
 \end{theorem}
@@ -801,7 +801,7 @@ explicitly saying that every value in a list satisfies a predicate).
     $x \in S$, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-in-prop}
+\begin{theorem} \label{list_in_prop}
     For all lists $a$ and sets $S$, if $x \in S$ whenever $x \in a$, then $a \in
     S$.
 \end{theorem}
@@ -816,7 +816,7 @@ explicitly saying that every value in a list satisfies a predicate).
     required, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-prop-in-sub}
+\begin{theorem} \label{list_prop_in_sub}
     For all lists $a$ and $b$ and sets $S$, if for all $x \in a$ we have $x \in
     b$, and if $b \in S$, then $a \in S$.
 \end{theorem}
@@ -825,23 +825,23 @@ explicitly saying that every value in a list satisfies a predicate).
     is true.  Now assume that if for all $x \in a$ we have $x \in b$, then we
     have $a \in S$.  We must prove that for some value $y$ with $x \in (y : a)$
     implying $x \in b$, we have $(y : a) \in S$.  Because $y \in (y : a)$, we
-    have $y \in b$, and because $b \in S$, by Theorem \ref{list-prop-in} we have
+    have $y \in b$, and because $b \in S$, by Theorem \ref{list_prop_in} we have
     $y \in S$.  Also, any $x \in a$ is $(y : a)$ as well, so we have that any $x
     \in a$ is in $b$.  Thus, by the inductive hypothesis, we have $a \in S$.
     Thus, $y \in S$ and $a \in S$, showing that $(y : a) \in S$, showing that
     the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-prop-other-filter}
+\begin{theorem} \label{list_prop_other_filter}
     For all lists $a$ and sets $S$ and $T$, if $a \in S$, then $a^T \in S$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{list-prop-in-sub}, it suffices to prove that for all $x \in
+    By Theorem \ref{list_prop_in_sub}, it suffices to prove that for all $x \in
     a^T$, we have $x \in a$, which follows directly from Theorem
-    \ref{list-filter-in}.
+    \ref{list_filter_in}.
 \end{proof}
 
-\begin{theorem} \label{list-prop2-single}
+\begin{theorem} \label{list_prop2_single}
     For all relations $\usim$ and values $x$, $[x] \in \usim$.
 \end{theorem}
 \begin{proof}
@@ -883,7 +883,7 @@ explicitly saying that every value in a list satisfies a predicate).
     $|[x]| = 1 + |[]| = 1 + 0 = 1$.
 \end{proof}
 
-\begin{theorem} \label{list-size-conc}
+\begin{theorem} \label{list_size_conc}
     For all lists $a$ and $b$, $|a + b| = |a| + |b|$.
 \end{theorem}
 \begin{proof}
@@ -899,15 +899,15 @@ explicitly saying that every value in a list satisfies a predicate).
     so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-size-comm}
+\begin{theorem} \label{list_size_comm}
     For all lists $a$ and $b$, $|a + b| = |b + a|$.
 \end{theorem}
 \begin{proof}
-    This is just the combination of Theorem \ref{list-size-conc} and the
+    This is just the combination of Theorem \ref{list_size_conc} and the
     commutativity of the addition of natural numbers.
 \end{proof}
 
-\begin{theorem} \label{list-image-size}
+\begin{theorem} \label{list_image_size}
     For all lists $a$ and functions $f : \U \to \V$, we have $|f(a)| = |a|$.
 \end{theorem}
 \begin{proof}
@@ -941,7 +941,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \]
 \end{proof}
 
-\begin{theorem} \label{list-count-conc}
+\begin{theorem} \label{list_count_conc}
     For all lists $a$ and $b$ and values $x$, $|a + b|_x = |a|_x + |b|_x$.
 \end{theorem}
 \begin{proof}
@@ -958,15 +958,15 @@ explicitly saying that every value in a list satisfies a predicate).
     so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-count-comm}
+\begin{theorem} \label{list_count_comm}
     For all lists $a$ and $b$ and values $x$, $|a + b|_x = |b + a|_x$.
 \end{theorem}
 \begin{proof}
-    This is just the combination of Theorem \ref{list-count-conc} and the
+    This is just the combination of Theorem \ref{list_count_conc} and the
     commutativity of the addition of natural numbers.
 \end{proof}
 
-\begin{theorem} \label{list-count-reverse}
+\begin{theorem} \label{list_count_reverse}
     For all lists $a$ and values $x$, $|a|_x = |a^{-1}|_x$.
 \end{theorem}
 \begin{proof}
@@ -983,12 +983,12 @@ explicitly saying that every value in a list satisfies a predicate).
     so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-count-in}
+\begin{theorem} \label{list_count_in}
     For all lists $a$ and values $x$, $x \in a$ if and only if $0 \neq |a|_x$.
 \end{theorem}
 \begin{proof}
     For the forward direction, let $x \in a$.  Then by Theorem
-    \ref{in-list-split}, there exist lists $b$ and $c$ such that $a = b + x :
+    \ref{in_list_split}, there exist lists $b$ and $c$ such that $a = b + x :
     c$.  Then
     \[
         |a|_x = |b + x : c|_x = |b|_x + |[x]|_x + |c|_x = |b|_x + 1 + |c|_x.
@@ -1004,14 +1004,14 @@ explicitly saying that every value in a list satisfies a predicate).
     the inductive hypothesis.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{list-count-nin}
+\begin{theorem} \label{list_count_nin}
     For all lists $a$ and values $x$, $x \notin a$ if and only if $0 = |a|_x$.
 \end{theorem}
 \begin{proof}
     This is just the previous theorem stated in a slightly different way.
 \end{proof}
 
-\begin{theorem} \label{list-count-unique}
+\begin{theorem} \label{list_count_unique}
     For all lists $a$, if $a$ has unique elements, then for all values $x$,
     $|a|_x \leq 1$.
 \end{theorem}
@@ -1020,7 +1020,7 @@ explicitly saying that every value in a list satisfies a predicate).
     1$, so the base case is true.  Now assume that $|a|_x \leq 1$.  Then we must
     prove that for all values $y$ such that $y : a$ has unique elements, then
     $|y : a|_x \leq 1$.  Because $y : a$ has unique elements, we know that $y
-    \notin a$, so by Theorem \ref{list-count-nin} we have $0 = |a|_y$.  There
+    \notin a$, so by Theorem \ref{list_count_nin} we have $0 = |a|_y$.  There
     are now two cases: when $x = y$, and when $x \neq y$.  When $x = y$, we have
     \[
         |y : a|_x = |y : a|_y = 1 + |a|_y = 1 + 0 \leq 1.
@@ -1033,13 +1033,13 @@ explicitly saying that every value in a list satisfies a predicate).
     $|y : a|_x \leq 1$, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-count-in-unique}
+\begin{theorem} \label{list_count_in_unique}
     For all lists $a$ and values $x$, if $a$ has unique elements and $x \in a$,
     then $|a|_x = 1$.
 \end{theorem}
 \begin{proof}
-    This follows directly from antisymmetry and Theorems \ref{list-count-unique}
-    and \ref{list-count-in}.
+    This follows directly from antisymmetry and Theorems \ref{list_count_unique}
+    and \ref{list_count_in}.
 \end{proof}
 
 \section{Folds}
@@ -1071,7 +1071,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \]
 \end{proof}
 
-\begin{theorem} \label{list-sum-conc}
+\begin{theorem} \label{list_sum_conc}
     For all lists $a$ and $b$, $\sum (a + b) = \sum a + \sum b$.
 \end{theorem}
 \begin{proof}
@@ -1088,7 +1088,7 @@ explicitly saying that every value in a list satisfies a predicate).
     so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-sum-neg}
+\begin{theorem} \label{list_sum_neg}
     For all lists $a$, $\sum (-a) = -\sum a$.
 \end{theorem}
 \begin{proof}
@@ -1105,7 +1105,7 @@ explicitly saying that every value in a list satisfies a predicate).
     so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{list-sum-minus}
+\begin{theorem} \label{list_sum_minus}
     For all lists $a$ and $b$, $\sum (a + (-b)) = \sum a - \sum b$.
 \end{theorem}
 \begin{proof}
@@ -1121,11 +1121,11 @@ explicitly saying that every value in a list satisfies a predicate).
     \]
 \end{proof}
 
-\begin{theorem} \label{list-prod-conc}
+\begin{theorem} \label{list_prod_conc}
     For all lists $a$ and $b$, $\prod (a + b) = (\prod a) (\prod b)$.
 \end{theorem}
 \begin{proof}
-    The proof is identical in form to the proof of Theorem \ref{list-sum-conc}.
+    The proof is identical in form to the proof of Theorem \ref{list_sum_conc}.
 \end{proof}
 
 \section{Permutations}
@@ -1151,7 +1151,7 @@ explicitly saying that every value in a list satisfies a predicate).
     |c|_x$, so $|a|_x = |c|_x$, showing that $a \sim c$.
 \end{proof}
 
-\begin{theorem} \label{list-perm-skip}
+\begin{theorem} \label{list_perm_skip}
     For all values $x$ and lists $a$ and $b$, if $a \sim b$, then $x : a \sim x
     : b$.
 \end{theorem}
@@ -1165,7 +1165,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{list-perm-swap}
+\begin{theorem} \label{list_perm_swap}
     For all values $x$ and $y$ and lists $a$, $x : y : a \sim y : x : a$.
 \end{theorem}
 \begin{proof}
@@ -1178,7 +1178,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{list-perm-nil-eq}
+\begin{theorem} \label{list_perm_nil_eq}
     For all lists $a$, if $[] \sim a$, then $[] = a$.
 \end{theorem}
 \begin{proof}
@@ -1187,7 +1187,7 @@ explicitly saying that every value in a list satisfies a predicate).
     |x : a'|_x$, so $0 = S(|a'|_x)$, which is impossible.  Thus, $[] = a$.
 \end{proof}
 
-\begin{theorem} \label{list-perm-lpart}
+\begin{theorem} \label{list_perm_lpart}
     For all lists $a$, $b$, and $c$, if $a \sim b$, then $a + c \sim b + c$.
 \end{theorem}
 \begin{proof}
@@ -1199,7 +1199,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{list-perm-rpart}
+\begin{theorem} \label{list_perm_rpart}
     For all lists $a$, $b$, and $c$, if $b \sim c$, then $a + b \sim a + c$.
 \end{theorem}
 \begin{proof}
@@ -1211,34 +1211,34 @@ explicitly saying that every value in a list satisfies a predicate).
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{list-perm-comm}
+\begin{theorem} \label{list_perm_comm}
     For all lists $a$ and $b$, $a + b \sim b + a$.
 \end{theorem}
 \begin{proof}
-    This follows directly from Theorem \ref{list-count-comm}.
+    This follows directly from Theorem \ref{list_count_comm}.
 \end{proof}
 
-\begin{theorem} \label{list-perm-split}
+\begin{theorem} \label{list_perm_split}
     For all lists $a$ and $b$ and values $x$, $a + x : b \sim x : a + b$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{list-perm-comm} we have $a + x : b \sim x : b + a$.  By
-    Theorem \ref{list-perm-comm} we also have $a + b \sim b + a$, so by Theorem
-    \ref{list-perm-skip} we have $x : b + a \sim x : a + b$.  Thus, by
+    By Theorem \ref{list_perm_comm} we have $a + x : b \sim x : b + a$.  By
+    Theorem \ref{list_perm_comm} we also have $a + b \sim b + a$, so by Theorem
+    \ref{list_perm_skip} we have $x : b + a \sim x : a + b$.  Thus, by
     transitivity, $a + x : b \sim x : a + b$.
 \end{proof}
 
-\begin{theorem} \label{list-split-perm}
+\begin{theorem} \label{list_split_perm}
     For all lists $a$ and values $x$, if $x \in a$, then there exists a list $b$
     such that $a \sim x : b$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{in-list-split}, there exists lists $b$ and $c$ such that $a
-    = b + x : c$.  Then by Theorem \ref{list-perm-split}, $b + x : c \sim x : b
+    By Theorem \ref{in_list_split}, there exists lists $b$ and $c$ such that $a
+    = b + x : c$.  Then by Theorem \ref{list_perm_split}, $b + x : c \sim x : b
     + c$, showing that $a \sim x : b + c$.
 \end{proof}
 
-\begin{theorem} \label{list-perm-conc-lcancel}
+\begin{theorem} \label{list_perm_conc_lcancel}
     For all lists $a$, $b$, and $c$, if $a + b \sim a + c$, then $b \sim c$.
 \end{theorem}
 \begin{proof}
@@ -1250,7 +1250,7 @@ explicitly saying that every value in a list satisfies a predicate).
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{list-perm-conc-rcancel}
+\begin{theorem} \label{list_perm_conc_rcancel}
     For all lists $a$, $b$, and $c$, if $b + a \sim c + a$, then $b \sim c$.
 \end{theorem}
 \begin{proof}
@@ -1262,64 +1262,64 @@ explicitly saying that every value in a list satisfies a predicate).
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{list-perm-add-eq}
+\begin{theorem} \label{list_perm_add_eq}
     For all values $x$ and lists $a$ and $b$, if $x : a \sim x : b$, then $a
     \sim b$.
 \end{theorem}
 \begin{proof}
-    This follows from Theorem \ref{list-perm-conc-lcancel}.
+    This follows from Theorem \ref{list_perm_conc_lcancel}.
 \end{proof}
 
-\begin{theorem} \label{list-in-unique-perm}
+\begin{theorem} \label{list_in_unique_perm}
     For all lists $a$ and $b$, if they both have unique elements, and if $z \in
     a \leftrightarrow z \in b$ for all $x : \U$, then $a \sim b$.
 \end{theorem}
 \begin{proof}
     Let $x$ be any value.  There are two cases: when $x \in a$, and when $x
     \notin a$.  When $x \in a$, then $x \in b$ as well, so by Theorem
-    \ref{list-count-in-unique}, $|a|_x = 1 = |b|_x$.  When $x \notin a$, then $x
-    \notin b$ as well, so by Theorem \ref{list-count-nin}, $|a|_x = 0 = |b|_x$.
+    \ref{list_count_in_unique}, $|a|_x = 1 = |b|_x$.  When $x \notin a$, then $x
+    \notin b$ as well, so by Theorem \ref{list_count_nin}, $|a|_x = 0 = |b|_x$.
 \end{proof}
 
-\begin{theorem} \label{list-perm-in}
+\begin{theorem} \label{list_perm_in}
     For all lists $a$ and $b$, if $a \sim b$, then for all $x$, $x \in a
     \leftrightarrow x \in b$.
 \end{theorem}
 \begin{proof}
     By symmetry we only need to prove that if $x \in a$, then $x \in b$.
-    Because $x \in a$, by Theorem \ref{list-count-in}, we have $|a|_x \neq 0$.
+    Because $x \in a$, by Theorem \ref{list_count_in}, we have $|a|_x \neq 0$.
     Because $a \sim b$, $|b|_x \neq 0$ as well, so $x \in b$ by Theorem
-    \ref{list-count-in}.
+    \ref{list_count_in}.
 \end{proof}
 
-\begin{theorem} \label{list-perm-split-eq}
+\begin{theorem} \label{list_perm_split_eq}
     For all values $x$ and lists $a$ and $b$, if $x : a \sim b$, then there
     exists lists $c$ and $d$ such that $b = c + x : d$ and $a \sim c + d$.
 \end{theorem}
 \begin{proof}
-    We have $x \in x : a$, so by Theorem \ref{list-perm-in} we have $x \in b$.
-    By Theorem \ref{in-list-split} we have lists $c$ and $d$ such that $b = c +
+    We have $x \in x : a$, so by Theorem \ref{list_perm_in} we have $x \in b$.
+    By Theorem \ref{in_list_split} we have lists $c$ and $d$ such that $b = c +
     x : d$, so all that we need to prove is that $a \sim c + d$.  We know that
-    $x : a \sim c + x : d$, and by Theorem \ref{list-perm-split}, $c + x : d
+    $x : a \sim c + x : d$, and by Theorem \ref{list_perm_split}, $c + x : d
     \sim x : c + d$.  Thus, by transitivity, $x : a \sim x : c + d$, so by
-    Theorem \ref{list-perm-add-eq} we have $a \sim c + d$ as required.
+    Theorem \ref{list_perm_add_eq} we have $a \sim c + d$ as required.
 \end{proof}
 
-\begin{theorem} \label{list-perm-single}
+\begin{theorem} \label{list_perm_single}
     For all values $x$ and lists $a$, if $[x] \sim a$, then $a = [x]$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{list-perm-split-eq} we have lists $c$ and $d$ such that $a =
-    c + x : d$ and $[] \sim c + d$.  By Theorem \ref{list-perm-nil-eq}, we have
+    By Theorem \ref{list_perm_split_eq} we have lists $c$ and $d$ such that $a =
+    c + x : d$ and $[] \sim c + d$.  By Theorem \ref{list_perm_nil_eq}, we have
     $[] = c + d$.  This means that $b = []$ and $c = []$,  meaning that $a = []
     + x : [] = [x]$.
 \end{proof}
 
-\begin{theorem} \label{list-perm-reverse}
+\begin{theorem} \label{list_perm_reverse}
     For all lists $a$, $a \sim a^{-1}$.
 \end{theorem}
 \begin{proof}
-    This follows directly from Theorem \ref{list-count-reverse}.
+    This follows directly from Theorem \ref{list_count_reverse}.
 \end{proof}
 
 \section{Unordered Lists}
@@ -1340,12 +1340,12 @@ definition.
 \begin{proof}
     We must prove that if there are two lists $a$ and $b$ such that $a \sim b$,
     then for all values $x$, $x : a \sim x : b$.  This follows directly from
-    Theorem \ref{list-perm-skip}.
+    Theorem \ref{list_perm_skip}.
 \end{proof}
 
 \begin{definition}
     Let $x$ be a value in $\U$.  Then we define adding an element to an
-    unordered list to be the unary operation given by Theorem \ref{unary-op-ex}
+    unordered list to be the unary operation given by Theorem \ref{unary_op_ex}
     and the previous lemma, although we will think of it as a binary operation
     $\U \to \L_U(\U) \to \L_U(\U)$.  We will notate it in the same way as for
     lists, where adding an element $x$ to an unordered list $a$ is written $x :
@@ -1356,36 +1356,36 @@ We will write $\llbracket a, b, \cdots, n\rrbracket$ to mean $a : b : \cdots : n
 : \llbracket \rrbracket$, where $\llbracket \rrbracket$ is the empty unordered
 list, as defined under the canonical inclusion $\L(\U) \to \L_U(\U)$.
 
-\begin{theorem} \label{ulist-end-neq}
+\begin{theorem} \label{ulist_end_neq}
     For all values $x$ and unordered lists $a$, $x : a \neq \llbracket
     \rrbracket$.
 \end{theorem}
 \begin{proof}
-    If $x : a = \llbracket \rrbracket$, then by Theorem \ref{list-perm-nil-eq},
+    If $x : a = \llbracket \rrbracket$, then by Theorem \ref{list_perm_nil_eq},
     we would have $x : a = []$, which is impossible.
 \end{proof}
 
-\begin{theorem} \label{ulist-single-eq}
+\begin{theorem} \label{ulist_single_eq}
     For all values $a$ and $b$, if $\llbracket a \rrbracket = \llbracket b
     \rrbracket$, then $a = b$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{list-perm-single}, we have $[a] = [b]$, so $a = b$.
+    By Theorem \ref{list_perm_single}, we have $[a] = [b]$, so $a = b$.
 \end{proof}
 
-\begin{theorem} \label{ulist-swap}
+\begin{theorem} \label{ulist_swap}
     For all values $x$ and $y$ and unordered lists $a$, $x : y : a = y : x : a$.
 \end{theorem}
 \begin{proof}
-    This is just a restatement of Theorem \ref{list-perm-swap}.
+    This is just a restatement of Theorem \ref{list_perm_swap}.
 \end{proof}
 
-\begin{theorem} \label{ulist-add-eq}
+\begin{theorem} \label{ulist_add_eq}
     For all values $x$ and unordered lists $a$ and $b$, if $x : a = x : b$, then
     $a = b$.
 \end{theorem}
 \begin{proof}
-    This is just a restatement of Theorem \ref{list-perm-add-eq}.
+    This is just a restatement of Theorem \ref{list_perm_add_eq}.
 \end{proof}
 
 Unordered lists may seem harder to use than lists, but the following theorem
@@ -1418,8 +1418,8 @@ well-defined.
 \end{lemma}
 \begin{proof}
     We mult prove that if $a \sim b$ and $c \sim d$, then $a + c \sim b + d$.
-    By Theorem \ref{list-perm-rpart} we have $a + c \sim a + d$, and by Theorem
-    \ref{list-perm-lpart} we have $a + d \sim b + d$.  Thus, by transitivity, $a
+    By Theorem \ref{list_perm_rpart} we have $a + c \sim a + d$, and by Theorem
+    \ref{list_perm_lpart} we have $a + d \sim b + d$.  Thus, by transitivity, $a
     + c \sim b + d$.
 \end{proof}
 
@@ -1434,7 +1434,7 @@ well-defined.
     so the base case is trivial.  Now assume that for all lists $b$, if $a \sim
     b$, then $|f(a)|_y = |f(b)|_y$.  Let $x$ be any value such that $x : a \sim
     b$.  We must prove that $|f(x : a)|_y = |f(b)|_y$.  Because $x : a \sim b$,
-    by Theorem \ref{list-perm-split-eq} we have lists $c$ and $d$ such that $b =
+    by Theorem \ref{list_perm_split_eq} we have lists $c$ and $d$ such that $b =
     c + x : d$ and $a \sim c + d$.  Then by the inductive hypothesis, we have
     $|f(a)|_y = |f(c + d)|_y$, so
     \begin{align*}
@@ -1453,7 +1453,7 @@ well-defined.
     Values being in lists is well-defined under permutation of lists.
 \end{lemma}
 \begin{proof}
-    This is a direct consequence of Lemma \ref{list-perm-in}.
+    This is a direct consequence of Lemma \ref{list_perm_in}.
 \end{proof}
 
 \begin{lemma}
@@ -1466,14 +1466,14 @@ well-defined.
     unique elements, so the base case is true.  Now assume that for all lists
     $b$ such that $a \sim b$, $b$ has unique elements, and assume that $x : a
     \sim b$ for some value $x$ and that $x \notin a$.  We must prove that $b$
-    has unique elements.  By Theorem \ref{list-perm-split-eq}, there exist lists
+    has unique elements.  By Theorem \ref{list_perm_split_eq}, there exist lists
     $c$ and $d$ such that $b = c + x : d$ and $a \sim c + d$.  By the inductive
-    hypothesis, $c + d$ has unique elements.  By Theorem \ref{list-unique-comm},
+    hypothesis, $c + d$ has unique elements.  By Theorem \ref{list_unique_comm},
     we know that $d + c$ has unique elements.  Because $x \notin a$ and $a \sim
     c + d \sim d + c$, we know that $x \notin d + c$ by Theorem
-    \ref{list-perm-in}.  Because $d + c$ has unique elements and $x \notin d +
+    \ref{list_perm_in}.  Because $d + c$ has unique elements and $x \notin d +
     c$, we know that $x : d + c$ has unique elements.  By Theorem
-    \ref{list-unique-comm}, this means that $c + x : d = b$ has unique elements,
+    \ref{list_unique_comm}, this means that $c + x : d = b$ has unique elements,
     so the theorem is true by induction.
 \end{proof}
 
@@ -1487,7 +1487,7 @@ well-defined.
     then $b = []$, so $|[]^S|_x = |[]^S|_x$, meaning that the base case is true.
     Now assume that for any list $b$ such that $a \sim b$, we have $|a^S|_x =
     |b^S|_x$, and assume that there is some value $y$ such that $y : a \sim b$.
-    By Theorem \ref{list-perm-split-eq} there exist lists $c$ and $d$ such that
+    By Theorem \ref{list_perm_split_eq} there exist lists $c$ and $d$ such that
     $b = c + y : d$ and that $a \sim c + d$.  By the inductive hypothesis, we
     have
     \[
@@ -1526,9 +1526,9 @@ well-defined.
     When $a = []$, $b = []$ as well, and $[] \in b$ by definition, so the base
     case is true.  Now assume that there is some element $x$ such that $(x : a)
     \in S$, $x : a \sim b$, and that for all lists $b$ such that $a \sim b$, $b
-    \in S$.  Because $x : a \sim b$, by Theorem \ref{list-perm-split-eq}, there
+    \in S$.  Because $x : a \sim b$, by Theorem \ref{list_perm_split_eq}, there
     exist lists $c$ and $d$ such that $b = c + x : d$ and $a \sim c + d$.  Then
-    by the inductive hypothesis $c + d \in S$.  By Theorem \ref{list-prop-conc},
+    by the inductive hypothesis $c + d \in S$.  By Theorem \ref{list_prop_conc},
     we have $c \in S$ and $d \in S$.  Because $x : a \in S$, we have $x \in S$.
     Thus, because $c \in S$, $x \in S$, and $d \in S$, we have $c + x : d \in
     S$, showing that the theorem is true by induction.
@@ -1543,7 +1543,7 @@ well-defined.
     $|[]| = |[]|$, showing that the base case is true.  Now assume that for all
     lists $b$ such that $a \sim b$, $|a| = |b|$, and that there exists an
     element $x$ such that $x : a \sim b$.  We must prove that $|x : a| = |b|$.
-    By Theorem \ref{list-perm-split-eq}, there exist lists $c$ and $d$ such that
+    By Theorem \ref{list_perm_split_eq}, there exist lists $c$ and $d$ such that
     $b = c + x : d$ and $a \sim c + d$.  Then by the inductive hypothesis, $|a|
     = |c + d|$.  Thus,
     \[
@@ -1570,7 +1570,7 @@ well-defined.
     []$ as well, and $\sum [] = \sum []$, so the base case is true.  Now assume
     that for all lists $b$ such that $a \sim b$, $\sum a = \sum b$, and let $x$
     be an element such that $x : a \sim b$.  Then by Theorem
-    \ref{list-perm-split}, there exist lists $c$ and $d$ such that $b = c + x :
+    \ref{list_perm_split}, there exist lists $c$ and $d$ such that $b = c + x :
     d$ and $a \sim c + d$.  Then by the inductive hypothesis, $\sum a = \sum (c
     + d) = \sum c + \sum d$, so
     \[
@@ -1604,7 +1604,7 @@ that are true for unordered lists, most of which are trivial.  I will only
 provide proofs of statements that don't readily follow from the corresponding
 theorem for lists.
 
-\begin{theorem} \label{ulist-conc-add}
+\begin{theorem} \label{ulist_conc_add}
     For all values $x$ and unordered lists $a$ and $b$, $(x : a) + b = x : (a +
     b)$.
 \end{theorem}
@@ -1613,14 +1613,14 @@ theorem for lists.
     Concatenation of unordered lists is commutative.
 \end{instance}
 \begin{proof}
-    This is just a restatement of Theorem \ref{list-perm-comm}.
+    This is just a restatement of Theorem \ref{list_perm_comm}.
 \end{proof}
 
 \begin{instance}
     $\llbracket \rrbracket$ is an additive identity.
 \end{instance}
 
-\begin{theorem} \label{ulist-conc-single}
+\begin{theorem} \label{ulist_conc_single}
     For all values $x$ and unordered lists $a$, $\llbracket x \rrbracket + a = x
     : a$.
 \end{theorem}
@@ -1655,35 +1655,35 @@ theorem for lists.
     x = y$.
 \end{theorem}
 
-\begin{theorem} \label{in-ulist-conc}
+\begin{theorem} \label{in_ulist_conc}
     For all unordered lists $a$ and $b$ and for all values $x$, if $x \in (a +
     b)$, then either $x \in a$ or $x \in b$.
 \end{theorem}
 
-\begin{theorem} \label{in-ulist-lconc}
+\begin{theorem} \label{in_ulist_lconc}
     For all unordered lists $a$ and $b$ and values $x$, if $x \in a$, then $x
     \in (a + b)$.
 \end{theorem}
 
-\begin{theorem} \label{in-ulist-rconc}
+\begin{theorem} \label{in_ulist_rconc}
     For all unordered lists $a$ and $b$ and values $x$, if $x \in b$, then $x
     \in (a + b)$.
 \end{theorem}
 
-\begin{theorem} \label{in-ulist-split}
+\begin{theorem} \label{in_ulist_split}
     For all unordered lists $a$ and values $x$, in $x \in a$, then there exists
     an unordered list $b$ such that $a = x : b$.
 \end{theorem}
 \begin{proof}
-    This is just a restatement of Theorem \ref{list-split-perm}.
+    This is just a restatement of Theorem \ref{list_split_perm}.
 \end{proof}
 
-\begin{theorem} \label{in-ulist-image}
+\begin{theorem} \label{in_ulist_image}
     For all unordered lists $a$, values $x$, and functions $f : \U \to \V$, if
     $x \in a$, then $f(x) \in f(a)$.
 \end{theorem}
 
-\begin{theorem} \label{image-in-ulist}
+\begin{theorem} \label{image_in_ulist}
     For all unordered lists $a$, values $y$, and functions $f : \U \to \V$, if
     $y \in f(a)$, then there exists an $x \in a$ such that $f(x) = y$.
 \end{theorem}
@@ -1692,40 +1692,40 @@ theorem for lists.
     For all values $a$, $\llbracket a\rrbracket$ has unique elements.
 \end{theorem}
 
-\begin{theorem} \label{ulist-in-unique-eq}
+\begin{theorem} \label{ulist_in_unique_eq}
     For all unordered lists $a$ and $b$, if they both have unique elements and
     if for all values $x$, $x \in a \leftrightarrow x \in b$, then $a = b$.
 \end{theorem}
 \begin{proof}
-    This is just a restatement of Theorem \ref{list-in-unique-perm}.
+    This is just a restatement of Theorem \ref{list_in_unique_perm}.
 \end{proof}
 
-\begin{theorem} \label{ulist-unique-lconc}
+\begin{theorem} \label{ulist_unique_lconc}
     For all unordered lists $a$ and $b$, if $a + b$ has unique elements, then
     $a$ has unique elements.
 \end{theorem}
 
-\begin{theorem} \label{ulist-unique-rconc}
+\begin{theorem} \label{ulist_unique_rconc}
     For all unordered lists $a$ and $b$, if $a + b$ has unique elements, then
     $b$ has unique elements.
 \end{theorem}
 
-\begin{theorem} \label{ulist-unique-conc}
+\begin{theorem} \label{ulist_unique_conc}
     For all unordered lists $a$ and $b$, if $a + b$ has unique elements, then
     for every $x \in a$, we have $x \notin b$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-image-unique}
+\begin{theorem} \label{ulist_image_unique}
     For all unordered lists $a$ and functions $f : \U \to \V$, if $f(a)$ has
     unique elements, then $a$ does as well.
 \end{theorem}
 
-\begin{theorem} \label{ulist-image-unique-inj}
+\begin{theorem} \label{ulist_image_unique_inj}
     For all unordered lists $a$ and injective functions $f : \U \to \V$, if $a$
     has unique elements, then $f(a)$ does as well.
 \end{theorem}
 
-\begin{theorem} \label{ulist-sub-ex}
+\begin{theorem} \label{ulist_sub_ex}
     For all unordered lists $a$ and $b$, if $a$ has unique elements, and if for
     all $x$, $x \in a$ implies $x \in b$, then there exists a list $c$ such that
     $b = a + c$.
@@ -1759,41 +1759,41 @@ theorem for lists.
     For all sets $S$ and unordered lists $a$ and $b$, $(a + b)^S = a^S + b^S$.
 \end{theorem}
 
-\begin{lemma} \label{ulist-filter-in-both}
+\begin{lemma} \label{ulist_filter_in_both}
     For all sets $S$, unordered lists $a$, and values $x$, if $x \in a^S$, then
     $x \in a$ and $x \in S$.
 \end{lemma}
 
-\begin{theorem} \label{ulist-filter-in}
+\begin{theorem} \label{ulist_filter_in}
     For all sets $S$, unordered lists $a$, and values $x$, if $x \in a^S$, then
     $x \in a$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-filter-in-set}
+\begin{theorem} \label{ulist_filter_in_set}
     For all sets $S$, unordered lists $a$, and values $x$, if $x \in a^S$, then
     $x \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-filter-unique}
+\begin{theorem} \label{ulist_filter_unique}
     For all sets $S$ and unordered lists $a$, if $a$ has unique elements, then
     $a^S$ has unique elements.
 \end{theorem}
 
-\begin{theorem} \label{ulist-filter-image-in}
+\begin{theorem} \label{ulist_filter_image_in}
     For all sets $S : \set{\U}$, functions $f : \U \to \V$, unordered lists $a$,
     and values $y : \V$, if $y \in f(a^S)$, then $y \in f(a)$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-filter-image-unique}
+\begin{theorem} \label{ulist_filter_image_unique}
     For all sets $S : \set{\U}$, function $f : \U \to \V$, and unordered lists
     $a$, if $f(a)$ has unique elements, then $f(a^S)$ has unique elements.
 \end{theorem}
 
-\begin{theorem} \label{ulist-filter-inter}
+\begin{theorem} \label{ulist_filter_inter}
     For all sets $S$ and $T$ and unordered lists $a$, $(a^S)^T = a^{S \cap T}$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-filter-filter}
+\begin{theorem} \label{ulist_filter_filter}
     For all sets $S$ and unordered lists $a$, $(a^S)^S = a^S$.
 \end{theorem}
 
@@ -1802,47 +1802,47 @@ theorem for lists.
     if $x \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-conc}
+\begin{theorem} \label{ulist_prop_conc}
     For all sets $S$ and unordered lists $a$ and $b$, $(a + b) \in S$ if and
     only if $a \in S$ and $b \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-sub}
+\begin{theorem} \label{ulist_prop_sub}
     For all sets $S$ and $T$ with $S \subseteq T$ and all unordered lists $a$,
     if $a \in S$, then $a \in T$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-filter}
+\begin{theorem} \label{ulist_prop_filter}
     For all unordered lists $a$ and sets $S$, $a^S \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-in}
+\begin{theorem} \label{ulist_prop_in}
     For all unordered lists $a$ and sets $S$, if $a \in S$, then for all $x \in
     a$, we have $x \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-in-prop}
+\begin{theorem} \label{ulist_in_prop}
     For all unordered lists $a$ and sets $S$, if $x \in S$ whenever $x \in a$,
     then $a \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-in-sub}
+\begin{theorem} \label{ulist_prop_in_sub}
     For all unordered lists $a$ and $b$ and sets $S$, if for all $x \in a$ we
     have $x \in b$, and if $b \in S$, then $a \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-other-filter}
+\begin{theorem} \label{ulist_prop_other_filter}
     For all unordered lists $a$ and sets $S$ and $T$, if $a \in S$, then $a^T
     \in S$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prop-split}
+\begin{theorem} \label{ulist_prop_split}
     For all unordered lists $a$ and sets $S$, if, for all values $x$ and lists
     $b$ such that $a = x : b$, we have $x \in S$, then we have $a \in S$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{ulist-in-prop}, we need to prove that whenever $x \in a$, we
-    have $x \in S$.  By Theorem \ref{in-ulist-split}, we have a list $b$ such
+    By Theorem \ref{ulist_in_prop}, we need to prove that whenever $x \in a$, we
+    have $x \in S$.  By Theorem \ref{in_ulist_split}, we have a list $b$ such
     that $a = x : b$.  Thus, by assumption, $x \in S$.
 \end{proof}
 
@@ -1850,11 +1850,11 @@ theorem for lists.
     For all values $x$, $|\llbracket x\rrbracket| = 1$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-size-conc}
+\begin{theorem} \label{ulist_size_conc}
     For all unordered lists $a$ and $b$, $|a + b| = |a| + |b|$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-image-size}
+\begin{theorem} \label{ulist_image_size}
     For all unordered lists $a$ and functions $f : \U \to \V$, we have $|f(a)| =
     |a|$.
 \end{theorem}
@@ -1868,27 +1868,27 @@ theorem for lists.
     0$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-count-conc}
+\begin{theorem} \label{ulist_count_conc}
     For all unordered lists $a$ and $b$ and values $x$, $|a + b|_x = |a|_x +
     |b|_x$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-count-in}
+\begin{theorem} \label{ulist_count_in}
     For all unordered lists $a$ and values $x$, $x \in a$ if and only if $0 \neq
     |a|_x$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-count-nin}
+\begin{theorem} \label{ulist_count_nin}
     For all unordered lists $a$ and values $x$, $x \notin a$ if and only if $0 =
     |a|_x$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-count-unique}
+\begin{theorem} \label{ulist_count_unique}
     For all unordered lists $a$, if $a$ has unique elements, then for all values
     $x$, $|a|_x \leq 1$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-count-in-unique}
+\begin{theorem} \label{ulist_count_in_unique}
     For all unordered lists $a$ and values $x$, if $a$ has unique elements and
     $x \in a$, then $|a|_x = 1$.
 \end{theorem}
@@ -1897,15 +1897,15 @@ theorem for lists.
     For all elements $x$, $\sum \llbracket x\rrbracket = x$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-sum-conc}
+\begin{theorem} \label{ulist_sum_conc}
     For all unordered lists $a$ and $b$, $\sum (a + b) = \sum a + \sum b$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-sum-neg}
+\begin{theorem} \label{ulist_sum_neg}
     For all unordered lists $a$, $\sum (-a) = -\sum a$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-sum-minus}
+\begin{theorem} \label{ulist_sum_minus}
     For all unordered lists $a$ and $b$, $\sum (a + (-b)) = \sum a - \sum b$.
 \end{theorem}
 
@@ -1913,17 +1913,17 @@ theorem for lists.
     For all unordered elements $x$, $\prod \llbracket x\rrbracket = x$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-prod-conc}
+\begin{theorem} \label{ulist_prod_conc}
     For all unordered lists $a$ and $b$, $\prod (a + b) = (\prod a) (\prod b)$.
 \end{theorem}
 
-\begin{theorem} \label{ulist-finite}
+\begin{theorem} \label{ulist_finite}
     For all types $\U$, if $\U$ is simply finite, then there exists an unordered
     list $a : \L_U(\U)$ such that $a$ has unique elements and that $x \in a$ for
     all $x : \U$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{simple-finite-bij}, there exists a natural number $n$ such
+    By Theorem \ref{simple_finite_bij}, there exists a natural number $n$ such
     that there is a bijective function $f : \U \to \T(n)$.  The proof will be by
     induction on $n$.  When $n = 0$, there can't be any values in $\U$, so the
     empty list works.  Thus, the base case is true.  Now assume that for all
@@ -1958,8 +1958,8 @@ theorem for lists.
     :\stv{a}$ has unique elements and that $y \in x :\stv{a}$ for all $y : \U$.
 
     First, because $a$ has unique values, by Theorem
-    \ref{ulist-image-unique-inj}, $\stv a$ has unique elements as well.  Also,
-    if $x \in \stv a$, by Theorem \ref{image-in-ulist} we would have some value
+    \ref{ulist_image_unique_inj}, $\stv a$ has unique elements as well.  Also,
+    if $x \in \stv a$, by Theorem \ref{image_in_ulist} we would have some value
     $x' : \V$ such that $\stv x' = x$ and $x' \in a$.  However, $\stp x'$ says
     that $\stv x' \neq x$, which is a contradiction.  Thus, $x \notin \stv a$.
     Because $\stv a$ has unique elements and $x \notin \stv a$, $x : \stv a$ has
@@ -1967,7 +1967,7 @@ theorem for lists.
 
     To prove that $y \in x : \stv a$ for all $y : \U$, let $y$ be any value.  If
     $x = y$, then the result is trivial.  If $x \neq y$, we see that $y$ is a
-    value in $\V$, which means that $y \in a$.  By Theorem \ref{in-ulist-image},
+    value in $\V$, which means that $y \in a$.  By Theorem \ref{in_ulist_image},
     we have $y \in [a|]$ as required.
 \end{proof}
 

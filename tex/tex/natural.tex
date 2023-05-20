@@ -7,7 +7,7 @@
 
 \setcounter{chapter}{2}
 
-\chapter{The Natural Numbers} \label{chap-natural}
+\chapter{The Natural Numbers} \label{chap_natural}
 
 \begin{definition}[Natural Numbers]
     Define the type $\N$ inductively with two constructors: a value constructor
@@ -208,7 +208,7 @@ previous theorem any more.
     $a$ and $b$.
 \end{proof}
 
-\begin{instance} \label{nat-ldist}
+\begin{instance} \label{nat_ldist}
     Multiplication in $\N$ is left distributive over addition.
 \end{instance}
 \begin{proof}
@@ -241,11 +241,11 @@ $0b = 0$ from the definition of multiplication, but what about $0 = b0$?  This
 came from the fact that you can prove the annihilation property from the
 distributive property.  However, we've only proven left distributivity, not
 right distributivity.  We haven't proved commutativity yet so we can't use
-Instance \ref{mult-lanni-ranni} or Instance \ref{ldist-rdist} either.  So is the
-proof even valid?  It is, because Instance \ref{ring-mult-ranni} uses
+Instance \ref{mult_lanni_ranni} or Instance \ref{ldist_rdist} either.  So is the
+proof even valid?  It is, because Instance \ref{ring_mult_ranni} uses
 \textit{left} distributivity to prove that zero is a \textit{right} annihilator.
-Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
-\ref{nat-ldist}.
+Thus, $0 = b0$ is a valid step here through Instances \ref{ring_mult_ranni} and
+\ref{nat_ldist}.
 
 \begin{instance}
     Multiplication in $\N$ is associative.
@@ -261,7 +261,7 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
     associative.
 \end{proof}
 
-\begin{theorem} \label{nat-neq-suc-mult}
+\begin{theorem} \label{nat_neq_suc_mult}
     For all $a$ and $b$ in $\N$, $0 \neq S(a)S(b)$.
 \end{theorem}
 \begin{proof}
@@ -283,12 +283,12 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
 
     First, when $a = 0$, we must prove that $0 = S(c')b$ implies that $0 = b$.
     If $0 \neq b$, we could write $b = S(b')$ and thus $0 = S(c')S(b')$, which
-    contradicts Theorem \ref{nat-neq-suc-mult}.  Thus, the base case is true.
+    contradicts Theorem \ref{nat_neq_suc_mult}.  Thus, the base case is true.
 
     Now assume that for all $b$, $S(c')a = S(c')b \rightarrow a = b$, and that
     $S(c')S(a) = S(c')b$.  We must prove that $S(a) = b$.  Now if $b = 0$, we
     would have $S(c')S(a) = 0$, which again contradicts Theorem
-    \ref{nat-neq-suc-mult}, so $b \neq 0$.  This means that we can write $b =
+    \ref{nat_neq_suc_mult}, so $b \neq 0$.  This means that we can write $b =
     S(b')$ for some $b'$, so we now have
     \begin{align*}
         S(c')S(a) &= S(c')S(b') \\
@@ -321,7 +321,7 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
     \end{itemize}
 \end{instance}
 
-\begin{theorem} \label{nat-neg-eq}
+\begin{theorem} \label{nat_neg_eq}
     For all $a$, if $a \leq 0$, then $a = 0$.
 \end{theorem}
 \begin{proof}
@@ -329,7 +329,7 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
     \vtt{False} by definition.
 \end{proof}
 
-\begin{theorem} \label{nat-pos2}
+\begin{theorem} \label{nat_pos2}
     For all $n : \N$, $0 < S(n)$.
 \end{theorem}
 \begin{proof}
@@ -337,11 +337,11 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
     $\N$ we have $0 \neq S(n)$.
 \end{proof}
 
-\begin{theorem} \label{nat-neg2}
+\begin{theorem} \label{nat_neg2}
     For all $n : \N$, $n \nless 0$.
 \end{theorem}
 \begin{proof}
-    If $n < 0$, we would have $n \leq 0$, so by Theorem \ref{nat-neg-eq} we
+    If $n < 0$, we would have $n \leq 0$, so by Theorem \ref{nat_neg_eq} we
     would have $n = 0$, which contradicts $n < 0$.
 \end{proof}
 
@@ -349,19 +349,19 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring-mult-ranni} and
     $0 < 1$.
 \end{theorem}
 \begin{proof}
-    This is a direct application of Theorem \ref{nat-pos2}.
+    This is a direct application of Theorem \ref{nat_pos2}.
 \end{proof}
-\noindent Note that we can't use Theorem \ref{one-pos} in this case because the
+\noindent Note that we can't use Theorem \ref{one_pos} in this case because the
 proof used additive inverses, which don't exist in the natural numbers.
 
-\begin{theorem} \label{nat-sucs-le}
+\begin{theorem} \label{nat_sucs_le}
     For all $a$ and $b$, $S(a) \leq S(b) \leftrightarrow a \leq b$.
 \end{theorem}
 \begin{proof}
     This is true by definition.
 \end{proof}
 
-\begin{theorem} \label{nat-sucs-lt}
+\begin{theorem} \label{nat_sucs_lt}
     For all $a$ and $b$, $S(a) < S(b) \leftrightarrow a < b$.
 \end{theorem}
 \begin{proof}
@@ -370,7 +370,7 @@ proof used additive inverses, which don't exist in the natural numbers.
         (S(a) \leq S(b) \wedge S(a) \neq S(b)) \leftrightarrow
         (a \leq b \wedge a \neq b).
     \]
-    From Theorem \ref{nat-sucs-le} we know that $S(a) \leq S(b) \leftrightarrow
+    From Theorem \ref{nat_sucs_le} we know that $S(a) \leq S(b) \leftrightarrow
     a \leq b$, and by the properties of inductive definitions we know that $S(a)
     \neq S(b) \leftrightarrow a \neq b$.
 \end{proof}
@@ -385,7 +385,7 @@ proof used additive inverses, which don't exist in the natural numbers.
     \leq b \vee b \leq a$.  We must prove that $S(a) \leq b \vee b \leq S(a)$.
     Now when $b = 0$, we would have $0 \leq S(a)$ as required.  When $b \neq 0$,
     we have $b = S(b')$ for some $b : \N$.  Thus we now must prove that $S(a)
-    \leq S(b') \vee S(b') \leq S(a)$.  By Theorem \ref{nat-sucs-le}, this is
+    \leq S(b') \vee S(b') \leq S(a)$.  By Theorem \ref{nat_sucs_le}, this is
     equivalent to proving $a \leq b' \vee b' \leq a$, which follows from the
     inductive hypothesis.  Thus, by induction, the order on $\N$ is connex.
 \end{proof}
@@ -424,13 +424,13 @@ proof used additive inverses, which don't exist in the natural numbers.
     $b = S(b')$.  We now have $a \leq S(b')$ and $S(b') \leq S(c)$.  Again, if
     $a = 0$, we have $a = 0 \leq S(c)$, so consider when $a \neq 0$.  Then there
     is an $a' : \N$ such that $a = S(a')$.  Thus we now have $S(a') \leq S(b')$
-    and $S(b') \leq S(c)$.  By Theorem \ref{nat-sucs-le}, this is the same as
+    and $S(b') \leq S(c)$.  By Theorem \ref{nat_sucs_le}, this is the same as
     $a' \leq b'$ and $b' \leq c$.  Then by the inductive hypothesis, we have $a'
     \leq c$, so $a = S(a') \leq S(c)$ as required.  Thus, by induction, the
     order on $\N$ is transitive.
 \end{proof}
 
-\begin{theorem} \label{nat-le-suc}
+\begin{theorem} \label{nat_le_suc}
     For all $a : \N$, $a \leq S(a)$.
 \end{theorem}
 \begin{proof}
@@ -439,7 +439,7 @@ proof used additive inverses, which don't exist in the natural numbers.
     \leftrightarrow a \leq S(a)$, so the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{nat-lt-suc}
+\begin{theorem} \label{nat_lt_suc}
     For all $a : \N$, $a < S(a)$.
 \end{theorem}
 \begin{proof}
@@ -516,8 +516,8 @@ proof used additive inverses, which don't exist in the natural numbers.
     case is true.  Now assume that for all $b$, $S(c')a \leq S(c')b \rightarrow
     a \leq b$, and assume that $S(c')S(a) \leq S(c')b$.  We must prove that
     $S(a) \leq b$.  If $b = 0$, we would have $S(c')S(a) \leq 0$, so by Theorem
-    \ref{nat-neg-eq}, $S(c')S(a) = 0$.  But this is impossible due to Theorem
-    \ref{nat-neq-suc-mult}, so we must have $b \neq 0$.  Thus, there is some
+    \ref{nat_neg_eq}, $S(c')S(a) = 0$.  But this is impossible due to Theorem
+    \ref{nat_neq_suc_mult}, so we must have $b \neq 0$.  Thus, there is some
     $b'$ such that $b = S(b')$.  Then
     \begin{align*}
         S(c')S(a) &\leq S(c')b \\
@@ -531,7 +531,7 @@ proof used additive inverses, which don't exist in the natural numbers.
     left multiplication cancellative.
 \end{proof}
 
-\begin{theorem} \label{nat-lt-suc-le}
+\begin{theorem} \label{nat_lt_suc_le}
     For all $a$ and $b$ in $\N$, $a < S(b) \leftrightarrow a \leq b$.
 \end{theorem}
 \begin{proof}
@@ -545,11 +545,11 @@ proof used additive inverses, which don't exist in the natural numbers.
     S(b') = b$, so the inductive case is true.  Thus, by induction, the forward
     implication is true.
 
-    Now assume that $a \leq b$.  By Theorem \ref{nat-lt-suc} we have $b < S(b)$,
+    Now assume that $a \leq b$.  By Theorem \ref{nat_lt_suc} we have $b < S(b)$,
     so by transitivity we have $a < S(b)$.
 \end{proof}
 
-\begin{theorem} \label{nat-le-suc-lt}
+\begin{theorem} \label{nat_le_suc_lt}
     For all $a$ and $b$ in $\N$, $S(a) \leq b \leftrightarrow a < b$.
 \end{theorem}
 \begin{proof}
@@ -559,27 +559,27 @@ proof used additive inverses, which don't exist in the natural numbers.
     \[
         S(a) \leq S(b) \leftrightarrow a < S(b).
     \]
-    By Theorem \ref{nat-sucs-le} this is the same as
+    By Theorem \ref{nat_sucs_le} this is the same as
     \[
         a \leq b \leftrightarrow a < S(b),
     \]
-    which is precisely Theorem \ref{nat-lt-suc-le}.
+    which is precisely Theorem \ref{nat_lt_suc_le}.
 \end{proof}
 
-\begin{theorem} \label{nat-le-self-lplus}
+\begin{theorem} \label{nat_le_self_lplus}
     For all $a$ and $b$ in $\N$, $a \leq a + b$.
 \end{theorem}
 \begin{proof}
     We know that $0 \leq b$, and adding $a$ to both sides yields $a \leq a + b$.
 \end{proof}
 
-\begin{theorem} \label{nat-le-self-lmult}
+\begin{theorem} \label{nat_le_self_lmult}
     For all $a$ and $b$ in $\N$, if $0 \neq b$, $a \leq ba$.
 \end{theorem}
 \begin{proof}
     We use induction on $a$.  When $a = 0$, $0 \leq 0 = b0$, so the base case is
     true.  Now assume that $a \leq ba$.  Because $0 \neq b$, $1 \leq b$.  By
-    Theorem \ref{le-lrplus} we get
+    Theorem \ref{le_lrplus} we get
     \begin{align*}
         1 + a &\leq b + ba \\
         S(a) &\leq bS(a),
@@ -587,11 +587,11 @@ proof used additive inverses, which don't exist in the natural numbers.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{proof} \label{nat-neq0-leq1}
+\begin{proof} \label{nat_neq0_leq1}
     For all natural numbers $a$, if $0 \neq a$, then $1 \leq a$.
 \end{proof}
 \begin{proof}
-    By Theorem \ref{nat-le-suc-lt}, then is the same as proving that $0 < a$,
+    By Theorem \ref{nat_le_suc_lt}, then is the same as proving that $0 < a$,
     which is true by the definition of $\leq$ and $0 \neq a$.
 \end{proof}
 
@@ -608,7 +608,7 @@ proof used additive inverses, which don't exist in the natural numbers.
     Now assume that $n \in T$, that is, that for all $m < n$, $m \in S$.  We
     must prove that for all $m < S(n)$, $m \in S$.  By the conditions of the
     theorem, we can prove that $m \in S$ by proving that for all $m' < m$, $m'
-    \in S$.  Because $m < S(n)$, by Theorem \ref{nat-lt-suc-le}, we have $m \leq
+    \in S$.  Because $m < S(n)$, by Theorem \ref{nat_lt_suc_le}, we have $m \leq
     n$, so by transitivity we have $m' < n$.  Thus, by the inductive hypothesis,
     $m' \in S$, meaning that $m \in S$, so the inductive step is true.
 
@@ -640,7 +640,7 @@ While a normal definition of subtraction is impossible in the natural numbers,
 there are many situations where a suitable substitute is useful.  The most
 useful of these substitutes are probably the following two theorems.
 
-\begin{theorem} \label{nat-le-ex}
+\begin{theorem} \label{nat_le_ex}
     For all $a$ and $b$ in $\N$, if $a \leq b$, then there exists a $c : \N$
     such that $a + c = b$.
 \end{theorem}
@@ -663,7 +663,7 @@ useful of these substitutes are probably the following two theorems.
     so the inductive case in true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-lt-ex}
+\begin{theorem} \label{nat_lt_ex}
     For all $a$ and $b$ in $\N$, if $a < b$, then there exists a $c : \N$
     such that $a + S(c) = b$.
 \end{theorem}
@@ -676,7 +676,7 @@ useful of these substitutes are probably the following two theorems.
 
 Another approach to defining subtraction is to only define it for cases where
 where the difference is still positive.  We can do this with optional types,
-which were defined in Section \ref{sec-types}.
+which were defined in Section \ref{sec_types}.
 
 \begin{definition}
     Let $a$ and $b$ be natural numbers.  Then we can define a function $\ominus
@@ -689,7 +689,7 @@ which were defined in Section \ref{sec-types}.
     \end{itemize}
 \end{definition}
 
-\begin{theorem} \label{nat-minus-eq}
+\begin{theorem} \label{nat_minus_eq}
     For all $a : \N$, $a \ominus a = \val 0$.
 \end{theorem}
 \begin{proof}
@@ -699,18 +699,18 @@ which were defined in Section \ref{sec-types}.
     Thus, by induction, $a \ominus a = \val 0$.
 \end{proof}
 
-\begin{theorem} \label{nat-minus-zero}
+\begin{theorem} \label{nat_minus_zero}
     For all $a : \N$, $a \ominus 0 = \val a$.
 \end{theorem}
 \begin{proof}
     This is true by definition.
 \end{proof}
 
-\begin{theorem} \label{nat-minus-lt}
+\begin{theorem} \label{nat_minus_lt}
     If $a < b$, then $a \ominus b = \nil$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{nat-lt-ex}, there is some $c$ such that $a + S(c) = b$.  We
+    By Theorem \ref{nat_lt_ex}, there is some $c$ such that $a + S(c) = b$.  We
     now need to prove that $a \ominus (a + S(c)) = a \ominus S(a + c) = \nil$.
     We will do so by induction on $a$.  When $a = 0$, $0 \ominus S(c) = \nil$,
     so the base case is true.  Now assume that $a \ominus S(a + c) = \nil$.
@@ -722,7 +722,7 @@ which were defined in Section \ref{sec-types}.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-minus-plus}
+\begin{theorem} \label{nat_minus_plus}
     For all $a$ and $b$, $(a + b) \ominus a = \val b$.
 \end{theorem}
 \begin{proof}
@@ -787,28 +787,28 @@ absolute value of the difference of two natural numbers.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-abs-minus-min}
+\begin{theorem} \label{nat_abs_minus_min}
     For all $a$ and $b$ in $\N$, $|a - b| + \min(a, b) = \max(a, b)$.
 \end{theorem}
 \begin{proof}
     There are two cases: $a \leq b$, and $b \leq a$.
     \begin{case} $a \leq b$. \\
         The equation to be proved becomes $|a - b| + a = b$.  By Theorem
-        \ref{nat-le-ex}, there is some $c$ such that $a + c = b$.  Then
+        \ref{nat_le_ex}, there is some $c$ such that $a + c = b$.  Then
         \[
             |a - b| + a = |a - (a + c)| + a = c + a = b.
         \]
     \end{case}
     \begin{case} $b \leq a$. \\
         The equation to be proved becomes $|a - b| + b = a$.  By Theorem
-        \ref{nat-le-ex}, there is some $c$ such that $b + c = a$.  Then
+        \ref{nat_le_ex}, there is some $c$ such that $b + c = a$.  Then
         \[
             |a - b| + b = |(b + c) - b| + b = c + b = a.
         \]
     \end{case}
 \end{proof}
 
-\begin{theorem} \label{nat-abs-minus-zero}
+\begin{theorem} \label{nat_abs_minus_zero}
     For all $a$ and $b$ in $\N$, If $|a - b| = 0$, then $a = b$.
 \end{theorem}
 \begin{proof}
@@ -835,7 +835,7 @@ with Euclidean division.
 \begin{proof}
     Define a set $S$ by $S = \{n : \N \mid a < bn\}$.  Now because $b \neq 0$,
     we have $0 < b$, and adding $a$ to both sides we get $a < b + a$.
-    Furthermore, by Theorem \ref{nat-le-self-lmult}, $a \leq ba$, and adding $b$
+    Furthermore, by Theorem \ref{nat_le_self_lmult}, $a \leq ba$, and adding $b$
     to both sides we get $b + a \leq b + ba = b(1 + a)$.  Thus, by transitivity,
     $a < b(1 + a)$, showing that $1 + a \in S$.
 
@@ -846,7 +846,7 @@ with Euclidean division.
 
     Now if $a < bq$, we would have $q \in S$, which contradicts the minimality
     of $q'$ in $S$.  Thus, we have $bq \leq a$.  Then by Theorem
-    \ref{nat-le-ex}, we have some $r$ such that $bq + r = a$.  We thus have our
+    \ref{nat_le_ex}, we have some $r$ such that $bq + r = a$.  We thus have our
     required $q$ and $r$, and we only need to show that $r < b$.  From $a < q +
     bq$, we get $bq + r < b + bq$, and canceling $bq$ we get $r < b$ as
     required.
@@ -878,7 +878,7 @@ is that it is useful in a proof involving the cardinals.
     \end{itemize}
 \end{definition}
 
-\begin{theorem} \label{factorial-nz}
+\begin{theorem} \label{factorial_nz}
     For all $n : \N$, $n! \neq 0$.
 \end{theorem}
 \begin{proof}
@@ -901,7 +901,7 @@ is that it is useful in a proof involving the cardinals.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{binom-greater}
+\begin{theorem} \label{binom_greater}
     For all $n$ and $k$ with $n < k$, $\displaystyle \binom{n}{k} = 0$.
 \end{theorem}
 \begin{proof}
@@ -932,7 +932,7 @@ is that it is useful in a proof involving the cardinals.
         \binom{S(n)}{S(n)} = \binom{n}{n} + \binom{n}{S(n)} = 1 + 0 = 1,
     \]
     where in the second-to-last step we used the inductive hypothesis and
-    Theorem \ref{binom-greater}
+    Theorem \ref{binom_greater}
 \end{proof}
 
 \begin{theorem}
@@ -1004,7 +1004,7 @@ is that it is useful in a proof involving the cardinals.
     \[
         \binom{m + n}{m} m! n! = \binom{n + m}{n} n! m!.
     \]
-    By Theorem \ref{factorial-nz}, we can cancel $m!$ and $n!$ to get the
+    By Theorem \ref{factorial_nz}, we can cancel $m!$ and $n!$ to get the
     desired result.
 \end{proof}
 
@@ -1413,7 +1413,7 @@ forced to remember that the definition is not the traditional definition.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-pow-not-zero}
+\begin{theorem} \label{nat_pow_not_zero}
     For all $a : \U$ and $n : \N$, if $a \neq 0$, then $a^n \neq 0$.
 \end{theorem}
 \begin{proof}
@@ -1423,7 +1423,7 @@ forced to remember that the definition is not the traditional definition.
     inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-pow-neg-even}
+\begin{theorem} \label{nat_pow_neg_even}
     For all $n : \N$, $(-1)^{2n} = 1$, where $1 : \U$.
 \end{theorem}
 \begin{proof}
@@ -1436,7 +1436,7 @@ forced to remember that the definition is not the traditional definition.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-pow-neg-odd}
+\begin{theorem} \label{nat_pow_neg_odd}
     For all $n : \N$, $(-1)^{2n + 1} = -1$, where $-1 : \U$.
 \end{theorem}
 \begin{proof}
@@ -1445,7 +1445,7 @@ forced to remember that the definition is not the traditional definition.
     \]
 \end{proof}
 
-\begin{theorem} \label{nat-pow-neg-binom2}
+\begin{theorem} \label{nat_pow_neg_binom2}
     For all $n : \N$,
     \[
         (-1)^{\binom{n + 2}{2}} = -(-1)^{\binom{n}{2}},
@@ -1464,7 +1464,7 @@ forced to remember that the definition is not the traditional definition.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{nat-pow-pos}
+\begin{theorem} \label{nat_pow_pos}
     For all $a : \U$ with $0 \leq a$, $0 \leq a^n$ for all $n : \N$.
 \end{theorem}
 \begin{proof}
@@ -1474,7 +1474,7 @@ forced to remember that the definition is not the traditional definition.
     is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-pow-pos2}
+\begin{theorem} \label{nat_pow_pos2}
     For all $a : \U$ with $0 < a$, $0 < a^n$ for all $n : \N$.
 \end{theorem}
 \begin{proof}
@@ -1486,11 +1486,11 @@ forced to remember that the definition is not the traditional definition.
     $a^m \leq a^n$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{nat-le-ex}, there exists some $c : \N$ such that $m + c =
+    By Theorem \ref{nat_le_ex}, there exists some $c : \N$ such that $m + c =
     n$.  We now need to prove that $a^m \leq a^{m + c}$, which we will do by
     induction on $c$.  When $c = 0$, we have $a^m \leq a^m$, so the base case is
     true.  Now assume that $a^m \leq a^{m + c}$.  Because $1 \leq a$, we have $0
-    < a$, so by Theorem \ref{nat-pow-pos2} we have $0 < a^{m + c}$.  We can thus
+    < a$, so by Theorem \ref{nat_pow_pos2} we have $0 < a^{m + c}$.  We can thus
     multiply the inequality $1 \leq a$ by $a^{m + c}$ to get $a^{m + c} \leq
     a^{m + c}a = a^{m + S(c)}$.  Because $a^m \leq a^{m + c}$ and $a^{m + c}
     \leq a^{m + S(c)}$, by transitivity we have $a^m \leq a^{m + S(c)}$, so the
@@ -1503,12 +1503,12 @@ forced to remember that the definition is not the traditional definition.
 \end{theorem}
 \begin{proof}
     Before proving the theorem the following lemma is useful: For all $n : \N$,
-    $a^n < a^na$.  Because $1 < a$, $0 < a$, so by Theorem \ref{nat-pow-pos2},
+    $a^n < a^na$.  Because $1 < a$, $0 < a$, so by Theorem \ref{nat_pow_pos2},
     $0 < a^n$.  Thus, we can multiply the inequality $1 < a$ by $a^n$ to get
     $a^n < a^na$.
 
     Now let $m$ and $n$ be natural numbers such that $m < n$.  By Theorem
-    \ref{nat-lt-ex}, there exists some $c : \N$ such that $m + S(c) = n$.  We
+    \ref{nat_lt_ex}, there exists some $c : \N$ such that $m + S(c) = n$.  We
     now need to prove that $a^m < a^{m + S(c)}$, which we will do by induction
     on $c$.  When $c = 0$, we have $a^m < a^ma$, which follows from the lemma,
     so the base case is true.  Now assume that $a^m < a^{m + S(c)}$.  Then by
@@ -1517,7 +1517,7 @@ forced to remember that the definition is not the traditional definition.
     Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{nat-pow-le-one}
+\begin{theorem} \label{nat_pow_le_one}
     For all $a : \U$ with $1 \leq a$, $1 \leq a^n$ for all $n : \N$.
 \end{theorem}
 \begin{proof}
@@ -1528,7 +1528,7 @@ forced to remember that the definition is not the traditional definition.
     is true.  Thus, the theorem is true by induction.
 \end{proof}
 
-\begin{theorem} \label{nat-pow-lt-one}
+\begin{theorem} \label{nat_pow_lt_one}
     For all $a : \U$ with $1 < a$, $1 < a^{S(n)}$ for all $n : \N$.
 \end{theorem}
 \begin{proof}
@@ -1669,7 +1669,7 @@ not have nullity $n$ for all $n \neq 0$.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-\begin{theorem} \label{from-nat-pos2}
+\begin{theorem} \label{from_nat_pos2}
     For all $n : \N$, $0_\U \leq \iN(n)$.
 \end{theorem}
 \begin{proof}
@@ -1680,7 +1680,7 @@ not have nullity $n$ for all $n \neq 0$.
     is true.
 \end{proof}
 
-\begin{theorem} \label{from-nat-pos}
+\begin{theorem} \label{from_nat_pos}
     For all $n : \N$, $0_\U < \iN(S(n))$.
 \end{theorem}
 \begin{proof}
@@ -1706,7 +1706,7 @@ not have nullity $n$ for all $n \neq 0$.
     \rightarrow \iN(a) \leq \iN(b)$.  We will use induction on $a$ with the
     statement ``For all $b : \N$, $a \leq b \rightarrow \iN(a) \leq \iN(b)$.''
     When $a = 0$ we need to prove $\iN(0) = 0 \leq \iN(b)$, which follows from
-    Theorem \ref{from-nat-pos2}, so the base case is true.  Now assume that for
+    Theorem \ref{from_nat_pos2}, so the base case is true.  Now assume that for
     all $b : \N$, $a \leq b \rightarrow \iN(a) \leq \iN(b)$, and that $S(a) \leq
     b$.  Then if $b = 0$, we would have $S(a) \leq 0$, which is impossible.
     Thus, $b \neq 0$, so there exists a $b'$ such that $b = S(b')$.  Then
@@ -1722,8 +1722,8 @@ not have nullity $n$ for all $n \neq 0$.
     so the inductive case is true.  Thus, by induction, the theorem is true.
 \end{proof}
 
-Notice that by Instances \ref{homo-le-lt}, \ref{homo-le-le2}, and
-\ref{homo-lt-lt2}, $\iN$ preserves both strict and non-strict inequalities in
+Notice that by Instances \ref{homo_le_lt}, \ref{homo_le_le2}, and
+\ref{homo_lt_lt2}, $\iN$ preserves both strict and non-strict inequalities in
 both directions.
 
 \begin{instance}
@@ -1824,7 +1824,7 @@ The following theorem can be useful sometimes in analysis.
     We will prove this new inequality by induction on $n'$, so we need to prove
     that $n' < 2^{n'}$.  First, when $n' = 0$, we have $0 < 1 = 2^0$, so the
     base case is true.  Now assume that $n' < 2^{n'}$.  Then we have $S(n') < 1
-    + 2^{n'}$.  By Theorem \ref{nat-pow-le-one}, we have $1 \leq 2^{n'}$, and by
+    + 2^{n'}$.  By Theorem \ref{nat_pow_le_one}, we have $1 \leq 2^{n'}$, and by
     adding $2^{n'}$ to both sides we get $1 + 2^{n'} \leq 2^{n'} + 2^{n'} =
     2^{n'}2 = 2^{S(n')}$.  Thus, by transitivity, we have $S(n') < 2^{S(n')}$,
     so the inductive case is true.  Thus, the theorem is true by induction.

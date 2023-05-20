@@ -8,9 +8,9 @@
 
 \setcounter{chapter}{3}
 
-\chapter{Basic Set Theory} \label{chap-set}
+\chapter{Basic Set Theory} \label{chap_set}
 
-As mentioned in Chapter \ref{chap-foundations}, sets are thought of as
+As mentioned in Chapter \ref{chap_foundations}, sets are thought of as
 predicates.  To be precise, given a type $\U$, sets are thought of as functions
 $S : \U \rightarrow \vtt{Prop}$, where $a \in S$ is defined to be $S(a)$.  Note
 that this is very different from the usual way of thinking about sets.  While in
@@ -89,7 +89,7 @@ operations on sets are only defined for sets on the same type.
 \end{definition}
 
 While most uses of the Cartesian product are better handled using a product type
-as defined in Section \ref{sec-types}, there are still a few cases where the
+as defined in Section \ref{sec_types}, there are still a few cases where the
 Cartesian product of sets is useful, so we will still define it here.
 \begin{definition}
     Given two types $\U$ and $\V$ with sets $S : \U \to \Prop$ and $T : \V \to
@@ -135,7 +135,7 @@ of $\U$.
 
 This shows us that $\subseteq$ partially orders sets on a type.
 
-\begin{theorem} \label{strict-subset-ex}
+\begin{theorem} \label{strict_subset_ex}
     For all sets $S$ and $T$, if $S \subset T$, then there exists an $x$ such
     that $x \in T$ and $x \notin S$.
 \end{theorem}
@@ -160,7 +160,7 @@ This shows us that $\subseteq$ partially orders sets on a type.
     Let $x \in S$.  $x \in \bm U$ is always true, so $S \subseteq \bm U$.
 \end{proof}
 
-\begin{theorem} \label{empty-eq}
+\begin{theorem} \label{empty_eq}
     For all sets $S$, $S = \varnothing$ if and only if $\forall x, x \notin S$.
 \end{theorem}
 \begin{proof}
@@ -171,7 +171,7 @@ This shows us that $\subseteq$ partially orders sets on a type.
     as well.
 \end{proof}
 
-\begin{theorem} \label{empty-neq}
+\begin{theorem} \label{empty_neq}
     For all sets $S$, $S \neq \varnothing$ if and only if $\exists x, x \in S$.
 \end{theorem}
 \begin{proof}
@@ -182,7 +182,7 @@ This shows us that $\subseteq$ partially orders sets on a type.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{all-eq}
+\begin{theorem} \label{all_eq}
     For all sets $S$, $S = \bm U$ if and only if $\forall x, x \in S$.
 \end{theorem}
 \begin{proof}
@@ -192,7 +192,7 @@ This shows us that $\subseteq$ partially orders sets on a type.
     reverse implication is true as well.
 \end{proof}
 
-\begin{theorem} \label{all-neq}
+\begin{theorem} \label{all_neq}
     For all sets $S$, $S \neq \bm U$ if and only if $\exists x, x \notin S$.
 \end{theorem}
 \begin{proof}
@@ -203,56 +203,56 @@ This shows us that $\subseteq$ partially orders sets on a type.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{union-comm}
+\begin{theorem} \label{union_comm}
     For all sets $S$ and $T$, $S \cup T = T \cup S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{or-comm}.
+    This follows from predicate extensionality and Theorem \ref{or_comm}.
 \end{proof}
 
-\begin{theorem} \label{union-assoc}
+\begin{theorem} \label{union_assoc}
     For all sets $R$, $S$, and $T$, $R \cup (S \cup T) = (R \cup S) \cup T$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{or-assoc}.
+    This follows from predicate extensionality and Theorem \ref{or_assoc}.
 \end{proof}
 
-\begin{theorem} \label{union-lid}
+\begin{theorem} \label{union_lid}
     For all sets $S$, $\varnothing \cup S = S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{or-lfalse}.
+    This follows from predicate extensionality and Theorem \ref{or_lfalse}.
 \end{proof}
 
-\begin{theorem} \label{union-lanni}
+\begin{theorem} \label{union_lanni}
     For all sets $S$, $\bm U \cup S = \bm U$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{or-ltrue}.
+    This follows from predicate extensionality and Theorem \ref{or_ltrue}.
 \end{proof}
 
-\begin{theorem} \label{union-lsub}
+\begin{theorem} \label{union_lsub}
     For all sets $S$ and $T$, $S \subseteq S \cup T$.
 \end{theorem}
 \begin{proof}
     Trivial.
 \end{proof}
 
-\begin{theorem} \label{union-compl-all}
+\begin{theorem} \label{union_compl_all}
     For all sets $S$, $S \cup S^c = \bm U$.
 \end{theorem}
 \begin{proof}
-    This follows from Theorem \ref{all-eq} and the law of the excluded middle.
+    This follows from Theorem \ref{all_eq} and the law of the excluded middle.
 \end{proof}
 
-\begin{theorem} \label{union-idemp}
+\begin{theorem} \label{union_idemp}
     For all sets $S$, $S \cup S = S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{or-idemp}.
+    This follows from predicate extensionality and Theorem \ref{or_idemp}.
 \end{proof}
 
-\begin{theorem} \label{union-minus}
+\begin{theorem} \label{union_minus}
     For all sets $A$ and $B$, if $A \cap B = \varnothing$, then $A \cup B - B f
     A$.
 \end{theorem}
@@ -270,42 +270,42 @@ This shows us that $\subseteq$ partially orders sets on a type.
     $A \cup B - B = A$ by antisymmetry.
 \end{proof}
 
-\begin{theorem} \label{inter-comm}
+\begin{theorem} \label{inter_comm}
     For all sets $S$ and $T$, $S \cap T = T \cap S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{and-comm}.
+    This follows from predicate extensionality and Theorem \ref{and_comm}.
 \end{proof}
 
-\begin{theorem} \label{inter-assoc}
+\begin{theorem} \label{inter_assoc}
     For all sets $R$, $S$, and $T$, $R \cap (S \cap T) = (R \cap S) \cap T$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{and-assoc}.
+    This follows from predicate extensionality and Theorem \ref{and_assoc}.
 \end{proof}
 
-\begin{theorem} \label{inter-lid}
+\begin{theorem} \label{inter_lid}
     For all sets $S$, $\bm U \cap S = S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{and-ltrue}.
+    This follows from predicate extensionality and Theorem \ref{and_ltrue}.
 \end{proof}
 
-\begin{theorem} \label{inter-lanni}
+\begin{theorem} \label{inter_lanni}
     For all sets $S$, $\varnothing \cap S = \varnothing$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{and-lfalse}.
+    This follows from predicate extensionality and Theorem \ref{and_lfalse}.
 \end{proof}
 
-\begin{theorem} \label{inter-lsub}
+\begin{theorem} \label{inter_lsub}
     For all sets $S$ and $T$, $S \cap T \subseteq S$.
 \end{theorem}
 \begin{proof}
     Trivial.
 \end{proof}
 
-\begin{theorem} \label{lsub-inter-equal}
+\begin{theorem} \label{lsub_inter_equal}
     For all sets $S$ and $T$, if $S \subseteq T$, $S \cap T = S$.
 \end{theorem}
 \begin{proof}
@@ -315,38 +315,38 @@ This shows us that $\subseteq$ partially orders sets on a type.
     \cap T$.
 \end{proof}
 
-\begin{theorem} \label{inter-compl-empty}
+\begin{theorem} \label{inter_compl_empty}
     For all sets $S$, $S \cap S^c = \varnothing$.
 \end{theorem}
 \begin{proof}
     $x \in S$ and $x \in S^c = x \notin S$ is a contradiction, so this follows
-    from Theorem \ref{empty-eq}.
+    from Theorem \ref{empty_eq}.
 \end{proof}
 
-\begin{theorem} \label{inter-idemp}
+\begin{theorem} \label{inter_idemp}
     For all sets $S$, $S \cap S = S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{and-idemp}.
+    This follows from predicate extensionality and Theorem \ref{and_idemp}.
 \end{proof}
 
-\begin{theorem} \label{union-ldist}
+\begin{theorem} \label{union_ldist}
     For all sets $R$, $S$, and $T$, $R \cup (S \cap T) = (R \cup S) \cap (R \cup
     T)$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{or-and-ldist}.
+    This follows from predicate extensionality and Theorem \ref{or_and_ldist}.
 \end{proof}
 
-\begin{theorem} \label{inter-ldist}
+\begin{theorem} \label{inter_ldist}
     For all sets $R$, $S$, and $T$, $R \cap (S \cup T) = (R \cap S) \cup (R \cap
     T)$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{and-or-ldist}.
+    This follows from predicate extensionality and Theorem \ref{and_or_ldist}.
 \end{proof}
 
-\begin{theorem} \label{union-inter-self}
+\begin{theorem} \label{union_inter_self}
     For all sets $S$ and $T$, $S \cup (S \cap T) = S$.
 \end{theorem}
 \begin{proof}
@@ -356,7 +356,7 @@ This shows us that $\subseteq$ partially orders sets on a type.
     way, $x \in S$, so $S \cup (S \cap T) \subseteq S$.
 \end{proof}
 
-\begin{theorem} \label{inter-union-self}
+\begin{theorem} \label{inter_union_self}
     For all sets $S$ and $T$, $S \cap (S \cup T) = S$.
 \end{theorem}
 \begin{proof}
@@ -366,39 +366,39 @@ This shows us that $\subseteq$ partially orders sets on a type.
     \subseteq S \cap (S \cup T)$.
 \end{proof}
 
-\begin{theorem} \label{compl-compl}
+\begin{theorem} \label{compl_compl}
     For all sets $S$, $(S^c)^c = S$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{not-not}.
+    This follows from predicate extensionality and Theorem \ref{not_not}.
 \end{proof}
 
-\begin{theorem} \label{compl-empty}
+\begin{theorem} \label{compl_empty}
     $\varnothing^c = \bm U$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{not-false}.
+    This follows from predicate extensionality and Theorem \ref{not_false}.
 \end{proof}
 
-\begin{theorem} \label{compl-all}
+\begin{theorem} \label{compl_all}
     $\bm U^c = \varnothing$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{not-true}.
+    This follows from predicate extensionality and Theorem \ref{not_true}.
 \end{proof}
 
-\begin{theorem} \label{union-compl}
+\begin{theorem} \label{union_compl}
     For all sets $A$ and $B$, $(A \cup B)^c = A^c \cap B^c$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{not-or}.
+    This follows from predicate extensionality and Theorem \ref{not_or}.
 \end{proof}
 
-\begin{theorem} \label{inter-compl}
+\begin{theorem} \label{inter_compl}
     For all sets $A$ and $B$, $(A \cap B)^c = A^c \cup B^c$.
 \end{theorem}
 \begin{proof}
-    This follows from predicate extensionality and Theorem \ref{not-and}.
+    This follows from predicate extensionality and Theorem \ref{not_and}.
 \end{proof}
 
 \begin{theorem}
@@ -460,7 +460,7 @@ This shows us that $\subseteq$ partially orders sets on a type.
 \end{theorem}
 \begin{proof}
     This follows directly from the definition of $\ominus$ with Theorem
-    \ref{union-comm}.
+    \ref{union_comm}.
 \end{proof}
 
 \begin{theorem}
@@ -557,7 +557,7 @@ Note that this is technically the same thing as strong existence.  However,
 because the two concepts are fundamentally distinct, we will distinguish between
 the two types.
 
-\begin{theorem} \label{set-type-simpl}
+\begin{theorem} \label{set_type_simpl}
     For all sets $S$, $X : \T(S)$, and $H : \stv{X} \in S$, $\st{\stv{X}}{H} =
     x$.
 \end{theorem}
@@ -566,7 +566,7 @@ the two types.
     = \st{x}{H'}$.  This follows from proof irrelevance.
 \end{proof}
 
-\begin{theorem} \label{set-type-eq}
+\begin{theorem} \label{set_type_eq}
     For all sets $S$ and values $a$ and $b$ in $\T(S)$, $a = b$ if and only if
     $\stv{a} = \stv{b}$.
 \end{theorem}
@@ -579,7 +579,7 @@ the two types.
     same type, so they are equal by proof irrelevance.
 \end{proof}
 
-\begin{theorem} \label{set-type-inj}
+\begin{theorem} \label{set_type_inj}
     The function $x \to \stv[x]$ is injective.
 \end{theorem}
 \begin{proof}
@@ -606,7 +606,7 @@ exact uses of $\T$ can be found in the Coq code.
 
 In the rest of this subsection, let $X$ be a set on $\U$.
 
-\begin{theorem} \label{to-set-type-in}
+\begin{theorem} \label{to_set_type_in}
     For all sets $A$ with $A \subseteq X$, if $x \in A$, then $\st{x}{H} \in
     A_X$, where $H$ is the proof that $x \in X$ using $A \subseteq X$ and $x \in
     A$.
@@ -615,7 +615,7 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     We must prove that $x \in A$, which is true by hypothesis.
 \end{proof}
 
-\begin{theorem} \label{from-set-type-in}
+\begin{theorem} \label{from_set_type_in}
     For all sets $A$ on $\T(X)$, for all $x \in A$, $\stv x \in A_\U$.
 \end{theorem}
 \begin{proof}
@@ -624,21 +624,21 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     see that $\stv x \in A_\U$.
 \end{proof}
 
-\begin{theorem} \label{to-from-set-type}
+\begin{theorem} \label{to_from_set_type}
     For all sets $A$ on $\T(X)$, $(A_\U)_X = A$.
 \end{theorem}
 \begin{proof}
     The proof will be by antisymmetry.  Let $x \in (A_\U)_X$.  This means $H :
     \stv x \in X$, and that $\st{\stv x}{H} \in A$.  By Theorem
-    \ref{set-type-simpl} we have $\st{\stv x}{H} = x$, so $x \in A$.  Thus,
+    \ref{set_type_simpl} we have $\st{\stv x}{H} = x$, so $x \in A$.  Thus,
     $(A_\U)_X \subseteq A$.
 
     Now let $x \in A$.  To prove that $x \in (A_\U)_X$, it suffices to show that
     $\stv x \in A_\U$.  Because $x \in A$, this follows from Theorem
-    \ref{from-set-type-in}.  Thus, $A \subseteq (A_\U)_X$.
+    \ref{from_set_type_in}.  Thus, $A \subseteq (A_\U)_X$.
 \end{proof}
 
-\begin{theorem} \label{from-to-set-type}
+\begin{theorem} \label{from_to_set_type}
     For all sets $A$ on $\U$, if $A \subseteq X$, then $(A_X)_\U = A$.
 \end{theorem}
 \begin{proof}
@@ -652,7 +652,7 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     \in A$.  Thus, $A \subseteq (A_X)_\U$.
 \end{proof}
 
-\begin{theorem} \label{to-set-type-inter}
+\begin{theorem} \label{to_set_type_inter}
     For all sets $A$ on $\U$, $A_X = (A \cap X)_X$.
 \end{theorem}
 \begin{proof}
@@ -665,7 +665,7 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     $\stv x \in X$, so $x \in A_X$.
 \end{proof}
 
-\begin{theorem} \label{to-set-type-sub}
+\begin{theorem} \label{to_set_type_sub}
     For all sets $A$ and $B$ on $\U$, if $A \subseteq B$, then $A_X \subseteq
     B_X$.
 \end{theorem}
@@ -674,7 +674,7 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     $\stv x \in B$.  Thus, $x \in B_X$, showing that $A_X \subseteq B_X$.
 \end{proof}
 
-\begin{theorem} \label{to-from-set-type-sub}
+\begin{theorem} \label{to_from_set_type_sub}
     For all sets $A$ on $\U$ and $B$ on $\T(X)$, if $A \subseteq X$ and $A_X
     \subseteq B$, then $A \subseteq B_\U$.
 \end{theorem}
@@ -685,7 +685,7 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     $x \in B_\U$, so $A \subseteq B_\U$.
 \end{proof}
 
-\begin{theorem} \label{from-set-type-sub-X}
+\begin{theorem} \label{from_set_type_sub_X}
     For all sets $A$ on $\T(X)$, $A_\U \subseteq X$.
 \end{theorem}
 \begin{proof}
@@ -693,7 +693,7 @@ In the rest of this subsection, let $X$ be a set on $\U$.
     Thus, $A_\U \subseteq X$.
 \end{proof}
 
-\begin{theorem} \label{from-set-type-union}
+\begin{theorem} \label{from_set_type_union}
     For all sets $A$ and $B$ on $\T(X)$, if $A \cup B = \bm U\footnote{Note that
     this is the universal set \textit{in $\T(X)$}, not in $\U$}$, then $A_\U
     \cup B_\U = X$.
@@ -756,14 +756,14 @@ from $\A$ to $\B$.
     $f^{-1}(T)$ as the set $f^{-1}(T) = \{x : \A \mid f(x) \in T\}$.
 \end{definition}
 
-\begin{theorem} \label{image-under-in}
+\begin{theorem} \label{image_under_in}
     For all sets $S : \A \rightarrow \Prop$ and $x \in S$, $f(x) \in f(S)$.
 \end{theorem}
 \begin{proof}
     We know that $x \in S$ and $f(x) = f(x)$, so $f(x) \in f(S)$.
 \end{proof}
 
-\begin{theorem} \label{image-inverse-sub}
+\begin{theorem} \label{image_inverse_sub}
     For all sets $T : \B \rightarrow \Prop$, $f(f^{-1}(T)) \subseteq T$.
 \end{theorem}
 \begin{proof}
@@ -772,7 +772,7 @@ from $\A$ to $\B$.
     Thus, $f(f^{-1}(T)) \subseteq T$.
 \end{proof}
 
-\begin{theorem} \label{image-sub}
+\begin{theorem} \label{image_sub}
     If $S$ and $T$ are sets on $\A$ such that $S \subseteq T$, then $f(S)
     \subseteq f(T)$.
 \end{theorem}
@@ -783,7 +783,7 @@ from $\A$ to $\B$.
     f(T)$.
 \end{proof}
 
-\begin{theorem} \label{inverse-complement}
+\begin{theorem} \label{inverse_complement}
     For all sets $T : \B \rightarrow \Prop$, $f^{-1}(T^c) = f^{-1}(T)^c$.
 \end{theorem}
 \begin{proof}
@@ -793,7 +793,7 @@ from $\A$ to $\B$.
     definition of the two sets is equivalent.
 \end{proof}
 
-\begin{theorem} \label{inverse-image-bij-inv}
+\begin{theorem} \label{inverse_image_bij_inv}
     If $f$ is bijective with an inverse $g : \B \rightarrow \A$, then for all
     sets $S : \U \rightarrow \Prop$, $g^{-1}(S) = f(S)$.
 \end{theorem}
@@ -807,20 +807,20 @@ from $\A$ to $\B$.
     that $y \in g^{-1}(S)$.
 \end{proof}
 
-\begin{theorem} \label{bij-inverse-image}
+\begin{theorem} \label{bij_inverse_image}
     If $f$ is bijective, then for all sets $T : \B \rightarrow \Prop$,
     $f(f^{-1}(T)) = T$.
 \end{theorem}
 \begin{proof}
     The proof will be by antisymmetry.  $f(f^{-1}(T)) \subseteq T$ was already
-    proved in Theorem \ref{image-inverse-sub}, so we only need to prove that
+    proved in Theorem \ref{image_inverse_sub}, so we only need to prove that
     $T \subseteq f(f^{-1}(T))$.  Let $y \in T$.  Because $f$ is bijective, it
     has an inverse $g : \B \rightarrow \A$.  Then $g(y) \in f^{-1}(T)$ because
     $f(g(y)) = y \in T$.  Because $g(y) \in f^{-1}(T)$ and $y = f(g(y))$, we
     have $y \in f(f^{-1}(T))$ as required.
 \end{proof}
 
-\begin{theorem} \label{inj-inverse-image}
+\begin{theorem} \label{inj_inverse_image}
     If $f$ is injective, then for all sets $S : \A \rightarrow \Prop$,
     $f^{-1}(f(S)) = S$.
 \end{theorem}
@@ -831,7 +831,7 @@ from $\A$ to $\B$.
 
     Now let $x \in S$.  We need to prove that $x \in f^{-1}(f(S))$ which is
     equivalent to showing that $f(x) \in f(S)$.  This follows from Theorem
-    \ref{image-under-in}.
+    \ref{image_under_in}.
 \end{proof}
 
 \section{Sets of Sets}
@@ -1017,7 +1017,7 @@ and
     (\bigcap \mathcal S)^c$.
 \end{proof}
 
-\begin{theorem} \label{inverse-union}
+\begin{theorem} \label{inverse_union}
     For all functions $f : \A \rightarrow \B$ and collections $\mathcal T : \col
     \B$,
     \[
@@ -1074,11 +1074,11 @@ quite sets.
     Then we define $[a] = \st{[ [a]]}{H}$.
 \end{definition}
 
-\begin{theorem} \label{equiv-eq}
+\begin{theorem} \label{equiv_eq}
     For all $a, b : \A$, $[a] = [b] \leftrightarrow a \sim b$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{set-type-eq}, we only need to show that $[ [a]] = [ [b]]
+    By Theorem \ref{set_type_eq}, we only need to show that $[ [a]] = [ [b]]
     \leftrightarrow a \sim b$.
 
     For the forward implication, we must prove that $[ [a]] = [ [b]] \to a \sim
@@ -1102,7 +1102,7 @@ quite sets.
 \end{theorem}
 \begin{proof}
     By $[|X]$, there exists an $x : \A$ such that $[ [x]] = [X|]$.  To prove
-    $[x] = X$, by Theorem \ref{set-type-eq}, it suffices to prove $\stv{[x]} =
+    $[x] = X$, by Theorem \ref{set_type_eq}, it suffices to prove $\stv{[x]} =
     \stv{X}$.  We have $\stv{[x]} = [ [x]]$ by definition, and we already know
     that $[ [x]] = [X|]$.
 \end{proof}
@@ -1112,14 +1112,14 @@ quite sets.
     the previous theorem.
 \end{definition}
 
-\begin{theorem} \label{from-equiv-eq}
+\begin{theorem} \label{from_equiv_eq}
     For all $X : \A/\usim$, $[\{X\}] = X$.
 \end{theorem}
 \begin{proof}
     This is true by definition.
 \end{proof}
 
-\begin{theorem} \label{unary-op-ex}
+\begin{theorem} \label{unary_op_ex}
     For all types $\B$ and functions $f : \A \to \B$, if $a \sim b \to f(a) =
     f(b)$ for all $a$ and $b$ in $\A$, then there exists a function $f' :
     \A/\usim \to \B$ such that for all $x : \A$, we have $f'([x]) = f(x)$.
@@ -1128,16 +1128,16 @@ quite sets.
     Define the function $f' : \A/\usim \to \B$ given by $f'(X) = f(\{X\})$.  We
     must prove that for all $x : \A$, $f(\{[x]\}) = f(x)$.  Because $f$ is
     well-defined, it suffices to prove that $\{[x]\} \sim x$.  By Theorem
-    \ref{equiv-eq} this is equivalent to $[\{[x]\}] = [x]$, which is true by
-    Theorem \ref{from-equiv-eq}.
+    \ref{equiv_eq} this is equivalent to $[\{[x]\}] = [x]$, which is true by
+    Theorem \ref{from_equiv_eq}.
 \end{proof}
 
 At this point we can forget about the construction of $\A/\usim$ and just use
 the previous few theorems.  More complicated functions can be created through
-clever applications of Theorem \ref{unary-op-ex}.  Binary functions are slightly
+clever applications of Theorem \ref{unary_op_ex}.  Binary functions are slightly
 less trivial:
 
-\begin{theorem} \label{binary-op-ex}
+\begin{theorem} \label{binary_op_ex}
     For all types $\B$ and functions $f : \A \to \A \to \B$, if $a \sim b \to c
     \sim d \to f(a, c) = f(b, d)$ for all $a$, $b$, $c$, and $d$ in $\A$, then
     there exists a function $f' : \A/\usim \to \A/\usim \to \B$ such that for
@@ -1146,7 +1146,7 @@ less trivial:
 \begin{proof}
     First fix a value $a : \A$.  Now consider the function $f_a : \A \to \B$
     given by $f_a(b) = f(a, b)$.  Because $f$ is well-defined, $f_a$ is
-    well-defined as an unary function, so by Theorem \ref{unary-op-ex} there
+    well-defined as an unary function, so by Theorem \ref{unary_op_ex} there
     exists a function $f_a' : \A/\usim \to \B$ such that for all $x : \A$,
     $f_a'([x]) = f_a(x) = f(a, x)$.
 
@@ -1176,13 +1176,13 @@ less trivial:
 \end{proof}
 
 To convert a function $f : \A \to \A$ to a function $f' : \A/\usim \to
-\A/\usim$, just apply Theorem \ref{unary-op-ex} to the function $f'' : \A \to
+\A/\usim$, just apply Theorem \ref{unary_op_ex} to the function $f'' : \A \to
 \A/\usim$ given by $f''(x) = [f(x)]$.  The condition for being well-defined
 simplifies to checking that $a \sim b \to f(a) \sim f(b)$.  A similar process
 works for binary functions as well.
 
 To convert a function $f : \A \to \B \to \C$ to a function $f' : \A/\usim \to \B
-\to \C$, one can fix a $b : \B$ and apply Theorem \ref{unary-op-ex} to the
+\to \C$, one can fix a $b : \B$ and apply Theorem \ref{unary_op_ex} to the
 function $f_b : \A \to \C$ given by $f_b(a) = f(a, b)$.
 
 \section{Sets and Order}
@@ -1290,25 +1290,25 @@ finiteness in the cardinals, even though they are equivalent.
     a natural number $n$ and an injective function $f : \U \to \T(n)$.
 \end{definition}
 
-\begin{theorem} \label{simple-finite-trans}
+\begin{theorem} \label{simple_finite_trans}
     For all types $\U$ and $\V$, if $\V$ is simply finite and there exists an
     injective function from $\U$ to $\V$, then $\U$ is simply finite.
 \end{theorem}
 \begin{proof}
     Let $f : \U \to \V$ be injective.  Because $\V$ is simply finite, there
     exists a natural number $n$ and an injective function $g : \V \to \T(n)$.
-    Then by Theorem \ref{inj-comp}, $g \circ f$ is an injective function from
+    Then by Theorem \ref{inj_comp}, $g \circ f$ is an injective function from
     $\U$ to $\T(n)$, so $\U$ is simply finite.
 \end{proof}
 
-\begin{theorem} \label{simple-finite-nat}
+\begin{theorem} \label{simple_finite_nat}
     For all $n : \N$, $\T(n)$ is simply finite.
 \end{theorem}
 \begin{proof}
     The identity function is injective.
 \end{proof}
 
-\begin{theorem} \label{simple-finite-sum}
+\begin{theorem} \label{simple_finite_sum}
     If $\U$ and $\V$ are simply finite types, then $\U + \V$ is as well.
 \end{theorem}
 \begin{proof}
@@ -1345,13 +1345,13 @@ finiteness in the cardinals, even though they are equivalent.
     \end{case}
 \end{proof}
 
-\begin{theorem} \label{simple-finite-prod}
+\begin{theorem} \label{simple_finite_prod}
     If $\U$ and $\V$ are simply finite types, then $\U \times \V$ is as well.
 \end{theorem}
 \begin{proof}
     Let $m$ and $n$ be natural numbers such that there are injective functions
     $f : \U \to \T(m)$ and $g : \V \to \T(n)$.  We know that for all $a : \U$
-    and $b : \V$, $f(a) < m$ and $g(b) < n$.  By Theorem \ref{nat-le-suc-lt},
+    and $b : \V$, $f(a) < m$ and $g(b) < n$.  By Theorem \ref{nat_le_suc_lt},
     $S(f(a)) \leq m$.  We can multiply this inequality by $n$ to get $nS(f(a)) =
     nf(a) + n \leq mn$.  Because $g(b) < n$, we have $nf(a) + g(b) < mn$.  Thus,
     we can define a function $h : \U \times \V \to \T(mn)$ with $h(a, b) = nf(a)
@@ -1365,7 +1365,7 @@ finiteness in the cardinals, even though they are equivalent.
     \]
     For the sake of a contradiction, assume that $f(a_1) \neq f(b_1)$.  Without
     loss of generality we can assume that $f(a_1) < f(b_1)$.  By Theorem
-    \ref{nat-lt-ex}, there exists some $c$ such that $f(a_1) + S(c) = f(b_1)$.
+    \ref{nat_lt_ex}, there exists some $c$ such that $f(a_1) + S(c) = f(b_1)$.
     Then we have
     \[
         nf(a_1) + g(a_2) = nf(a_1) + nS(c) + g(b_2).
@@ -1394,7 +1394,7 @@ finiteness in the cardinals, even though they are equivalent.
     $a_2 = b_2$, so $h$ is injective.
 \end{proof}
 
-\begin{theorem} \label{simple-finite-bij}
+\begin{theorem} \label{simple_finite_bij}
     If $\U$ is a simply finite type, then there exists an $n : \N$ and a
     bijective function $f : \U \to \T(n)$.
 \end{theorem}
@@ -1414,7 +1414,7 @@ finiteness in the cardinals, even though they are equivalent.
 
     Define a new type $\V = \T(\{x : \U \mid x \neq a\})$.  We will now prove
     that for all $x : \V$, $f(x) < n$.  First, by definition of $f$, we have
-    $f(x) < S(n)$, which by Theorem \ref{nat-lt-suc-le} means that $f(x) \leq
+    $f(x) < S(n)$, which by Theorem \ref{nat_lt_suc_le} means that $f(x) \leq
     n$.  Assume for a contradiction that $f(x) = n$.  Then because $f(a) = n$,
     we have $f(x) = f(a)$, and by injectivity, $x = a$, which is a
     contradiction.  Thus, $f(x) \neq n$.  Because $f(x) \leq n$ and $f(x) \neq
@@ -1448,7 +1448,7 @@ finiteness in the cardinals, even though they are equivalent.
     bijective function from $\U$ to $\T(S(m))$.
 \end{proof}
 
-\begin{theorem} \label{nat-not-finite}
+\begin{theorem} \label{nat_not_finite}
     The natural numbers are not simply finite.
 \end{theorem}
 \begin{proof}
@@ -1476,7 +1476,7 @@ finiteness in the cardinals, even though they are equivalent.
     n$, we have $g(x) = f(a)$.  Now when $x < a$, we have $g(x) = f(x) = f(a)$,
     and by injectivity we have $x = a$, contradicting $x < a$.  Now when $\neg(x
     < a)$, we have $g(x) = f(S(x)) = f(a)$, and by injectivity we have $S(x) =
-    a$, meaning that $\neg(x < S(x))$, contradicting Theorem \ref{nat-lt-suc}.
+    a$, meaning that $\neg(x < S(x))$, contradicting Theorem \ref{nat_lt_suc}.
     Thus, both cases have a contradiction, so we have $g(x) \neq n$, meaning
     that $g(x) < n$ for all $x : \N$.  This means that $g$ is a function from
     $\N \to \T(n)$.
@@ -1486,7 +1486,7 @@ finiteness in the cardinals, even though they are equivalent.
     a$, we have $f(x) = f(y)$, and by injectivity of $f$ we get $x = y$.  If $x
     < a$ and $a \leq y$, we get $f(x) = f(S(y))$, and by injectivity of $f$ we
     get $x = S(y)$.  But this implies $S(y) < a \leq y$, contradicting Theorem
-    \ref{nat-lt-suc}.  The case $a \leq x$ and $y < a$ is similar.  If $a \leq
+    \ref{nat_lt_suc}.  The case $a \leq x$ and $y < a$ is similar.  If $a \leq
     x$ and $a \leq y$, then $f(S(x)) = f(S(y))$, and by injectivity of $f$ we
     get $S(x) = S(y)$, so $x = y$.  By exhausting all cases, we see that $g$ is
     injective.
@@ -1497,7 +1497,7 @@ finiteness in the cardinals, even though they are equivalent.
     $\N$ is not simply finite.
 \end{proof}
 
-\begin{theorem} \label{simple-finite-union}
+\begin{theorem} \label{simple_finite_union}
     For all sets $S$ and $T$, if $\T(S)$ and $\T(T)$ are simply finite, then
     $\T(S \cup T)$ is simply finite.
 \end{theorem}
@@ -1535,7 +1535,7 @@ finiteness in the cardinals, even though they are equivalent.
     \end{case}
 \end{proof}
 
-\begin{theorem} \label{simple-finite-min}
+\begin{theorem} \label{simple_finite_min}
     If $\U$ is a totally-ordered simply finite set, then $\U$ has a minimum
     element.
 \end{theorem}
@@ -1560,11 +1560,11 @@ finiteness in the cardinals, even though they are equivalent.
     Because $\U$ is simply finite, there exists a natural number $n$ and an
     injective function $g : \U \to \T(n)$.  The function $g \circ f : \N \to
     \T(n)$ is thus an injective function, proving that $\N$ is simply finite,
-    contradicting Theorem \ref{nat-not-finite}.  Thus, $\U$ has a minimum
+    contradicting Theorem \ref{nat_not_finite}.  Thus, $\U$ has a minimum
     element.
 \end{proof}
 
-\begin{theorem} \label{simple-finite-max}
+\begin{theorem} \label{simple_finite_max}
     If $\U$ is a totally-ordered simply finite set, then $\U$ has a maximum
     element.
 \end{theorem}
@@ -1578,7 +1578,7 @@ In a well-ordered type, there are two useful theorems that we can use:
 transfinite induction and transfinite recursion.  In this section, let $\U$ be a
 well-ordered type.
 
-\begin{theorem}[Transfinite Induction] \label{transfinite-induction}
+\begin{theorem}[Transfinite Induction] \label{transfinite_induction}
     For all sets $S : \set{\U}$, if for all $\alpha : \U$, $\beta \in S$ for all
     $\beta < \alpha$ implies that $\alpha \in S$, then $\alpha \in S$ for all
     $\alpha : \U$.
@@ -1636,7 +1636,7 @@ $\T(\U_p)$ to $\A$ given by $(g \uparrow p)(x) = g(\stv x)$.
     This proof is similar in form to the previous theorem.
 \end{proof}
 
-\begin{lemma} \label{transfinite-recursion-part}
+\begin{lemma} \label{transfinite_recursion_part}
     For all $g : \forall n, \T(\U_n) \to \A$, if for all $n : \U$ and $a :
     \T(\U_n)$ we have $g(n, a) = f(\stv a, g(n) \uparrow a)$, then for all $n :
     \U$ and $a : \T(U_n)$, we have $g(n, a) = f(\stv a, g(\stv a))$.
@@ -1648,7 +1648,7 @@ $\T(\U_p)$ to $\A$ given by $(g \uparrow p)(x) = g(\stv x)$.
     of transfinite recursion.
 \end{proof}
 
-\begin{lemma} \label{transfinite-recursion-part-initial}
+\begin{lemma} \label{transfinite_recursion_part_initial}
     For all $\alpha : \U$ and $g : \forall n : \T(\U_\alpha), \T(\U_{\stv n})
     \to \A$, if for all $n : \T(\U_\alpha)$ and $a : \T(\U_{\stv n})$ we have
     $g(n, a) = f(\stv a, g(n) \uparrow a)$, then for all $n : \T(\U_\alpha)$ and
@@ -1658,7 +1658,7 @@ $\T(\U_p)$ to $\A$ given by $(g \uparrow p)(x) = g(\stv x)$.
     This proof is similar in form to the previous theorem.
 \end{proof}
 
-\begin{lemma} \label{transfinite-recursion-initial}
+\begin{lemma} \label{transfinite_recursion_initial}
     For all $\alpha : \U$, there exists a function $g : \T(\U_\alpha) \to \A$
     such that for all $n$, $g(n) = f(\stv n, g \uparrow n)$.
 \end{lemma}
@@ -1669,7 +1669,7 @@ $\T(\U_p)$ to $\A$ given by $(g \uparrow p)(x) = g(\stv x)$.
     We can now define the function $g(n)$ as $g(n) = f(\stv n, h_n)$.  Then for
     all $n < \alpha$, we must prove that $f(\stv n, h_n) = f(\stv n, f(\stv n,
     h_n) \uparrow n)$.  It suffices to prove that $h_n = f(\stv n, h_n) \uparrow
-    n$.  This follows from Lemma \ref{transfinite-recursion-part-initial}.
+    n$.  This follows from Lemma \ref{transfinite_recursion_part_initial}.
 \end{proof}
 
 \begin{theorem}[Transfinite Recursion]
@@ -1677,13 +1677,13 @@ $\T(\U_p)$ to $\A$ given by $(g \uparrow p)(x) = g(\stv x)$.
     g \uparrow n)$.
 \end{theorem}
 \begin{proof}
-    By Lemma \ref{transfinite-recursion-initial}, for all $\alpha$, there exists
+    By Lemma \ref{transfinite_recursion_initial}, for all $\alpha$, there exists
     a function $h_\alpha : \T(\U_\alpha) \to \A$ such that for all $n :
     \T(\U_\alpha)$, $h_\alpha(n) = f(\stv n, h_\alpha \uparrow n)$.  We can now
     define the function $g(n)$ as $g(n) = f(n, h_n)$.  Then for all $n$, we must
     prove that $f(n, h_n) = f(n, f(n, h_n) \uparrow n)$.  It suffices to prove
     that $h_n = f(n, h_n) \uparrow n$.  This follows from Lemma
-    \ref{transfinite-recursion-part}.
+    \ref{transfinite_recursion_part}.
 \end{proof}
 
 \section{Zorn's Lemma}
@@ -1725,7 +1725,7 @@ $x$ such that for all $a \in S$, $a < x$.
     $\mathcal C$.
 \end{definition}
 
-\begin{lemma} \label{conforming-add-wo}
+\begin{lemma} \label{conforming_add_wo}
     If $A \in \mathcal F$ is a conforming set, then $A \cup \{f(A)\}$
     well-orders $\U$.
 \end{lemma}
@@ -1748,7 +1748,7 @@ $x$ such that for all $a \in S$, $a < x$.
     = \{f(A)\}$.  In this case, $f(A)$ is trivially the least element of $S$.
 \end{proof}
 
-\begin{lemma} \label{conforming-add-conforming}
+\begin{lemma} \label{conforming_add_conforming}
     If $A \in \mathcal F$ is a conforming set, then $A \cup \{f(A)\}$ is
     conforming.
 \end{lemma}
@@ -1781,7 +1781,7 @@ $x$ such that for all $a \in S$, $a < x$.
     that this case is true as well.
 \end{proof}
 
-\begin{lemma} \label{zorn-initial1}
+\begin{lemma} \label{zorn_initial1}
     For all conforming sets $A$ and $B$ and values $a$ and $b$, if $b \in A$, $a
     \in B$, and $b \notin B$, then $a < b$.
 \end{lemma}
@@ -1823,7 +1823,7 @@ $x$ such that for all $a \in S$, $a < x$.
     false, proving the lemma.
 \end{proof}
 
-\begin{lemma} \label{zorn-initial2}
+\begin{lemma} \label{zorn_initial2}
     For all conforming sets $A$ and $B$ and values $a$ and $b$, if $a \leq b$,
     $a \in A$, and $b \in B$, then $a \in B$.
 \end{lemma}
@@ -1846,7 +1846,7 @@ $x$ such that for all $a \in S$, $a < x$.
     that for all $y \in S$, we have $a \leq y$.  Because $y \in S \subseteq
     \bigcup \mathcal C$, there exists a conforming set $B$ such that $y \in B$.
     Now if $y \in A$, then $a \leq y$ because $a$ is the minimum element of $A
-    \cap S$.  If $y \notin A$, then $a < y$ by Lemma \ref{zorn-initial1}.
+    \cap S$.  If $y \notin A$, then $a < y$ by Lemma \ref{zorn_initial1}.
     Either way, $a \leq y$, so $a$ is the minimum element of $S$, showing that
     $\bigcup \mathcal C$ well-orders $\U$.
 
@@ -1860,19 +1860,19 @@ $x$ such that for all $a \in S$, $a < x$.
     \bigcup \mathcal C$, and because $c < x$, we have $c \in P(\bigcup \mathcal
     C, x)$.  Thus, $P(A, x) \subseteq P(\bigcup \mathcal C, x)$.  Now let $c \in
     P(\bigcup \mathcal C, x)$.  Because $c \in \bigcup \mathcal C$, there exists
-    a conforming set $B$ with $c \in B$.  By Lemma \ref{zorn-initial2} we know
+    a conforming set $B$ with $c \in B$.  By Lemma \ref{zorn_initial2} we know
     that $c \in A$, and because $c < x$, we have $c \in P(A, x)$.  Thus,
     $P(\bigcup \mathcal C, x) \subseteq P(A, x)$, so by antisymmetry we have
     $P(A, x) = P(\bigcup \mathcal C, x)$.
 \end{proof}
 
-\begin{lemma} \label{union-no-sub}
+\begin{lemma} \label{union_no_sub}
     $\bigcup \mathcal C$ has no strict upper bound.
 \end{lemma}
 \begin{proof}
     Assume that it does have a strict upper bound.  Then $\bigcup \mathcal C \in
     \mathcal F$.  Define $x = f(\bigcup \mathcal C)$.  By Lemma
-    \ref{conforming-add-conforming}, we know that $\bigcup \mathcal C \cup
+    \ref{conforming_add_conforming}, we know that $\bigcup \mathcal C \cup
     \{x\}$ is conforming, so $\bigcup \mathcal C \cup \{x\} \subseteq \bigcup
     \mathcal C$, showing that $x \in \bigcup \mathcal C$.  However, this implies
     that $x < x$, which is a contradiction.  Thus, $\bigcup \mathcal C$ has no
@@ -1889,7 +1889,7 @@ that has no strict upper bound.  From this fact, Zorn's lemma itself is trivial.
 \begin{proof}
     $\bigcup \mathcal C$ is a chain, so it has an upper bound $m$.  If there
     existed some element $x > m$, $x$ would be a strict upper bound of $\bigcup
-    \mathcal C$, contradicting Lemma \ref{union-no-sub}.  Thus, $m$ is a maximal
+    \mathcal C$, contradicting Lemma \ref{union_no_sub}.  Thus, $m$ is a maximal
     element of $\U$.
 \end{proof}
 
@@ -1937,7 +1937,7 @@ order is called a preorder.
 
 Using $\sim$, we can prove a version of Zorn's lemma that is valid on preorders:
 
-\begin{theorem}[Zorn's lemma on preorders] \label{preorder-zorn}
+\begin{theorem}[Zorn's lemma on preorders] \label{preorder_zorn}
     If every chain in $\U$ has an upper bound, then there exists an element $a :
     \U$ such that for all $x \geq a$, we also have $a \geq x$.
 \end{theorem}
@@ -1961,7 +1961,7 @@ Using $\sim$, we can prove a version of Zorn's lemma that is valid on preorders:
 
 \subsection{Zern's lemma on subsets}
 
-\begin{theorem} \label{set-zorn}
+\begin{theorem} \label{set_zorn}
     Let $\U$ be a type and $\mathcal S$ be a collection of sets on $\U$.  If
     for every chain $\mathcal F$ made up of sets in $\mathcal S$, we have
     $\bigcup \mathcal F \in \mathcal S$ as well, then $\mathcal S$ has a maximal
@@ -2188,8 +2188,8 @@ Using $\sim$, we can prove a version of Zorn's lemma that is valid on preorders:
     showing that $W = \bm U$.
 
     We now have a relation defined on $\U$ that is antisymmetric and
-    well-ordered on all of $\U$.  By Instances \ref{wo-connex} and
-    \ref{wo-trans}, this is enough to prove that $\U$ is well-ordered.
+    well-ordered on all of $\U$.  By Instances \ref{wo_connex} and
+    \ref{wo_trans}, this is enough to prove that $\U$ is well-ordered.
 \end{proof}
 
 Note: While trying to find simpler proofs of the well-ordering theorem (yes, the

@@ -3,7 +3,7 @@
 
 \begin{document}
 
-\chapter{Foundations} \label{chap-foundations}
+\chapter{Foundations} \label{chap_foundations}
 
 \section{Calculus of Inductive Constructions}
 
@@ -145,7 +145,7 @@ of losing all description of that value (hence the name of the axiom).  As an
 example, here are some simple but useful theorems that indefinite description
 gives us:
 
-\begin{theorem} \label{ex-to-type}
+\begin{theorem} \label{ex_to_type}
     Given a type $\mathbb A$ and a predicate $P : \mathbb A \rightarrow
     \verb|Prop|$,
     \[
@@ -162,14 +162,14 @@ gives us:
     P\}$, so we know that $\verb|inhabited | \{x \mid P\}$.
 \end{proof}
 
-\begin{theorem} \label{or-to-strong}
+\begin{theorem} \label{or_to_strong}
     For all propositions $A$ and $B$,
     \[
         A \vee B \rightarrow \{A\} + \{B\}.
     \]
 \end{theorem}
 \begin{proof}
-    The proof is very similar to the proof of Theorem \ref{ex-to-type} and won't
+    The proof is very similar to the proof of Theorem \ref{ex_to_type} and won't
     be repeated.
 \end{proof}
 
@@ -184,7 +184,7 @@ here.
 \begin{theorem}[Excluded Middle]
     For all propositions $P$, $P \vee \neg P$.
 \end{theorem}
-\noindent By Theorem \ref{or-to-strong}, we also have $\{P\} + \{\neg P\}$.
+\noindent By Theorem \ref{or_to_strong}, we also have $\{P\} + \{\neg P\}$.
 
 These last several theorems make many of the usual constructions in math work
 and will be used implicitly in the future.
@@ -194,7 +194,7 @@ and will be used implicitly in the future.
 We now have the basic machinery necessary to prove many basic logical theorems.
 Many of these proofs will implicitly be using propositional extensionality.
 
-\begin{theorem} \label{false-rect}
+\begin{theorem} \label{false_rect}
     For all types $\mathbb A$, $\verb|False| \rightarrow \mathbb A$.
 \end{theorem}
 \begin{proof}
@@ -204,7 +204,7 @@ Many of these proofs will implicitly be using propositional extensionality.
 \end{proof}
 \noindent This is how we formalize some proofs by contradiction.
 
-\begin{theorem} \label{not-not}
+\begin{theorem} \label{not_not}
     For all propositions $P$, $P = \neg\neg P$.
 \end{theorem}
 \begin{proof}
@@ -257,7 +257,7 @@ by contradiction and will deal with them in a more traditional way.
     \rightarrow B)$.
 \end{proof}
 
-\begin{theorem} \label{not-and}
+\begin{theorem} \label{not_and}
     For all propositions $A$ and $B$, $\neg(A \wedge B) = \neg A \vee \neg B$.
 \end{theorem}
 \begin{proof}
@@ -270,7 +270,7 @@ by contradiction and will deal with them in a more traditional way.
     would have a contradiction, so $\neg(A \wedge B)$.
 \end{proof}
 
-\begin{theorem} \label{not-or}
+\begin{theorem} \label{not_or}
     For all propositions $A$ and $B$, $\neg(A \vee B) = \neg A \wedge \neg B$.
 \end{theorem}
 \begin{proof}
@@ -328,7 +328,7 @@ by contradiction and will deal with them in a more traditional way.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{and-assoc}
+\begin{theorem} \label{and_assoc}
     For all propositions $A$, $B$, and $C$, $A \wedge (B \wedge C) = (A \wedge
     B) \wedge C$.
 \end{theorem}
@@ -336,7 +336,7 @@ by contradiction and will deal with them in a more traditional way.
     Trivial.
 \end{proof}
 
-\begin{theorem} \label{or-assoc}
+\begin{theorem} \label{or_assoc}
     For all propositions $A$, $B$, and $C$, $A \vee (B \vee C) = (A \vee B)
     \wedge C$.
 \end{theorem}
@@ -344,21 +344,21 @@ by contradiction and will deal with them in a more traditional way.
     Trivial.
 \end{proof}
 
-\begin{theorem} \label{and-comm}
+\begin{theorem} \label{and_comm}
     For all propositions $A$ and $B$, $A \wedge B = B \wedge A$.
 \end{theorem}
 \begin{proof}
     Trivial.
 \end{proof}
 
-\begin{theorem} \label{or-comm}
+\begin{theorem} \label{or_comm}
     For all propositions $A$ and $B$, $A \vee B = B \vee A$.
 \end{theorem}
 \begin{proof}
     Trivial.
 \end{proof}
 
-\begin{theorem} \label{and-or-ldist}
+\begin{theorem} \label{and_or_ldist}
     For all propositions $A$, $B$, and $C$, $A \wedge (B \vee C) = (A \wedge B)
     \vee (A \wedge C)$.
 \end{theorem}
@@ -373,15 +373,15 @@ by contradiction and will deal with them in a more traditional way.
     \vee C)$ is true.  Either way, we have $A \wedge (B \vee C)$.
 \end{proof}
 
-\begin{theorem} \label{and-or-rdist}
+\begin{theorem} \label{and_or_rdist}
     For all propositions $A$, $B$, and $C$, $(A \vee B) \wedge C = (A \wedge C)
     \vee (B \wedge C)$.
 \end{theorem}
 \begin{proof}
-    This follows from Theorems \ref{and-comm} and \ref{and-or-ldist}.
+    This follows from Theorems \ref{and_comm} and \ref{and_or_ldist}.
 \end{proof}
 
-\begin{theorem} \label{or-and-ldist}
+\begin{theorem} \label{or_and_ldist}
     For all propositions $A$, $B$, and $C$, $A \vee (B \wedge C) = (A \vee B)
     \wedge (A \vee C)$.
 \end{theorem}
@@ -399,15 +399,15 @@ by contradiction and will deal with them in a more traditional way.
     \wedge C)$.
 \end{proof}
 
-\begin{theorem} \label{or-and-rdist}
+\begin{theorem} \label{or_and_rdist}
     For all propositions $A$, $B$, and $C$, $(A \wedge B) \vee C = (A \vee C)
     \wedge (B \vee C)$.
 \end{theorem}
 \begin{proof}
-    This follows from Theorems \ref{or-comm} and \ref{or-and-ldist}.
+    This follows from Theorems \ref{or_comm} and \ref{or_and_ldist}.
 \end{proof}
 
-\begin{theorem} \label{or-lfalse}
+\begin{theorem} \label{or_lfalse}
     For all propositions $P$, $\vtt{False} \vee P = P$.
 \end{theorem}
 \begin{proof}
@@ -417,7 +417,7 @@ by contradiction and will deal with them in a more traditional way.
     Now assume $P$.  Then $\vtt{False} \vee P$ because $P$ is true.
 \end{proof}
 
-\begin{theorem} \label{or-ltrue}
+\begin{theorem} \label{or_ltrue}
     For all propositions $P$, $\vtt{True} \vee P = \vtt{True}$.
 \end{theorem}
 \begin{proof}
@@ -425,14 +425,14 @@ by contradiction and will deal with them in a more traditional way.
     reverse implication is true because $A \rightarrow A \vee B$.
 \end{proof}
 
-\begin{theorem} \label{and-lfalse}
+\begin{theorem} \label{and_lfalse}
     For all propositions $P$, $\vtt{False} \wedge P = \vtt{False}$.
 \end{theorem}
 \begin{proof}
     Both implications assume \vtt{False}, so the theorem is true vacuously.
 \end{proof}
 
-\begin{theorem} \label{and-ltrue}
+\begin{theorem} \label{and_ltrue}
     For all propositions $P$, $\vtt{True} \wedge P = P$.
 \end{theorem}
 \begin{proof}
@@ -441,7 +441,7 @@ by contradiction and will deal with them in a more traditional way.
     we get $\vtt{True} \wedge P$, so the reverse implication is true as well.
 \end{proof}
 
-\begin{theorem} \label{or-idemp}
+\begin{theorem} \label{or_idemp}
     For all propositions $P$, $P \vee P = P$.
 \end{theorem}
 \begin{proof}
@@ -450,7 +450,7 @@ by contradiction and will deal with them in a more traditional way.
     reverse implication is true.
 \end{proof}
 
-\begin{theorem} \label{and-idemp}
+\begin{theorem} \label{and_idemp}
     For all propositions $P$, $P \wedge P = P$.
 \end{theorem}
 \begin{proof}
@@ -459,7 +459,7 @@ by contradiction and will deal with them in a more traditional way.
     reverse implication is true.
 \end{proof}
 
-\begin{theorem} \label{or-both}
+\begin{theorem} \label{or_both}
     For all propositions $P$, $P \vee \neg P = \vtt{True}$.
 \end{theorem}
 \begin{proof}
@@ -467,7 +467,7 @@ by contradiction and will deal with them in a more traditional way.
     from the law of the excluded middle.
 \end{proof}
 
-\begin{theorem} \label{and-both}
+\begin{theorem} \label{and_both}
     For all propositions $P$, $P \wedge \neg P = \vtt{False}$.
 \end{theorem}
 \begin{proof}
@@ -478,16 +478,16 @@ by contradiction and will deal with them in a more traditional way.
 
 We can also prove some theorems about the nature of \verb|Prop| itself.
 
-\begin{theorem} \label{not-true}
+\begin{theorem} \label{not_true}
     $\neg \verb|True| = \verb|False|.$
 \end{theorem}
 \begin{proof}
     Assume $\neg \verb|True|$.  However, because we know that \verb|True| is
     true, we have a contradiction.  The reverse implication follows from Theorem
-    \ref{false-rect}.
+    \ref{false_rect}.
 \end{proof}
 
-\begin{theorem} \label{not-false}
+\begin{theorem} \label{not_false}
     $\neg \verb|False| = \verb|True|.$
 \end{theorem}
 \begin{proof}
@@ -498,7 +498,7 @@ We can also prove some theorems about the nature of \verb|Prop| itself.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{prop-eq-true}
+\begin{theorem} \label{prop_eq_true}
     For all propositions $P$, $P = (P = \vtt{True})$.
 \end{theorem}
 \begin{proof}
@@ -511,7 +511,7 @@ We can also prove some theorems about the nature of \verb|Prop| itself.
     $\vtt{True}$, which is trivial.  Thus, $(P = \vtt{True}) \rightarrow P$.
 \end{proof}
 
-\begin{theorem} \label{prop-eq-false}
+\begin{theorem} \label{prop_eq_false}
     For all propositions $P$, $\neg P = (P = \vtt{False})$.
 \end{theorem}
 \begin{proof}
@@ -523,15 +523,15 @@ We can also prove some theorems about the nature of \verb|Prop| itself.
     \vtt{False}$, which is equal to $\vtt{True}$, which is trivial.
 \end{proof}
 
-\begin{theorem} \label{prop-split}
+\begin{theorem} \label{prop_split}
     For all propositions $P$, $(P = \vtt{True}) \vee (P = \vtt{False})$.
 \end{theorem}
 \begin{proof}
-    By theorems \ref{prop-eq-true} and \ref{prop-eq-false}, this is equivalent
+    By theorems \ref{prop_eq_true} and \ref{prop_eq_false}, this is equivalent
     to $P \vee \neg P$, which is just the law of the excluded middle.
 \end{proof}
 
-\begin{theorem} \label{prop-neq}
+\begin{theorem} \label{prop_neq}
     $\vtt{True} \neq \vtt{False}$.
 \end{theorem}
 \begin{proof}
@@ -545,24 +545,24 @@ We can also prove some theorems about the nature of \verb|Prop| itself.
     For all propositions $P$, $P \neq (\neg P)$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{prop-split}, $P$ is either \vtt{True} or \vtt{False}.  When
+    By Theorem \ref{prop_split}, $P$ is either \vtt{True} or \vtt{False}.  When
     $P$ is \vtt{True}, we then get $(\vtt{True} \neq (\neg \vtt{True})) =
-    (\vtt{True} \neq \vtt{False})$, which is Theorem \ref{prop-neq}.  When $P$
+    (\vtt{True} \neq \vtt{False})$, which is Theorem \ref{prop_neq}.  When $P$
     is \vtt{False}, we then get $(\vtt{False} \neq (\neg \vtt{False})) =
-    (\vtt{False} \neq \vtt{True})$, which is again Theorem \ref{prop-neq}.
+    (\vtt{False} \neq \vtt{True})$, which is again Theorem \ref{prop_neq}.
 \end{proof}
 \noindent The last few theorems will be used later to prove that the cardinality
 of \vtt{Prop} is two.
 
-\begin{theorem} \label{not-eq-eq}
+\begin{theorem} \label{not_eq_eq}
     For all propositions $A$ and $B$, if $(\neg A) = (\neg B)$, then $A = B$.
 \end{theorem}
 \begin{proof}
     We can apply $\neg$ to both sides of $(\neg A) = (\neg B)$ to get $(\neg
-    \neg A) = (\neg \neg B)$, so by Theorem \ref{not-not} we have $A = B$.
+    \neg A) = (\neg \neg B)$, so by Theorem \ref{not_not} we have $A = B$.
 \end{proof}
 
-\begin{theorem} \label{not-eq-iff}
+\begin{theorem} \label{not_eq_iff}
     For all propositions $A$ and $B$, $(A \leftrightarrow B) \leftrightarrow
     (\neg A \leftrightarrow \neg B)$.
 \end{theorem}
@@ -572,21 +572,21 @@ of \vtt{Prop} is two.
     and the reverse direction is the previous theorem.
 \end{proof}
 
-\begin{theorem} \label{prop-is-true}
+\begin{theorem} \label{prop_is_true}
     For all propositions $P$, $P \to P = \verb|True|$.
 \end{theorem}
 \begin{proof}
-    This is a direct consequence of Theorem \ref{prop-eq-true}.
+    This is a direct consequence of Theorem \ref{prop_eq_true}.
 \end{proof}
 
-\begin{theorem} \label{prop-is-false}
+\begin{theorem} \label{prop_is_false}
     For all propositions $P$, $\neg P \to P = \verb|False|$.
 \end{theorem}
 \begin{proof}
-    This is a direct consequence of Theorem \ref{prop-eq-false}.
+    This is a direct consequence of Theorem \ref{prop_eq_false}.
 \end{proof}
 
-\begin{theorem} \label{or-left}
+\begin{theorem} \label{or_left}
     For all propositions $A$ and $B$, $(\neg B \to A) \to A \vee B$.
 \end{theorem}
 \begin{proof}
@@ -594,7 +594,7 @@ of \vtt{Prop} is two.
     \to A$, so $A \vee B$.
 \end{proof}
 
-\begin{theorem} \label{or-right}
+\begin{theorem} \label{or_right}
     For all propositions $A$ and $B$, $(\neg A \to B) \to A \vee B$.
 \end{theorem}
 \begin{proof}
@@ -614,7 +614,7 @@ of \vtt{Prop} is two.
     Given types $\mathbb A$ and $\mathbb B$ and a proof that $\mathbb A
     \rightarrow \vtt{False}$, we define the empty function $\varnothing_{\mathbb
     A \mathbb B} : \mathbb A \rightarrow \mathbb B$ by utilizing Theorem
-    \ref{false-rect} on all inputs.
+    \ref{false_rect} on all inputs.
 \end{definition}
 
 \begin{definition}
@@ -648,7 +648,7 @@ of \vtt{Prop} is two.
     is bijective.
 \end{proof}
 
-\begin{instance} \label{inj-comp}
+\begin{instance} \label{inj_comp}
     The composition of injective functions is injective.
 \end{instance}
 \begin{proof}
@@ -658,7 +658,7 @@ of \vtt{Prop} is two.
     $f$ is injective, we have $a = b$ as required.
 \end{proof}
 
-\begin{instance} \label{sur-comp}
+\begin{instance} \label{sur_comp}
     The composition of surjective functions is surjective.
 \end{instance}
 \begin{proof}
@@ -669,14 +669,14 @@ of \vtt{Prop} is two.
     Thus, $g(f(a)) = g(b) = c$, so $g \circ f$ is surjective.
 \end{proof}
 
-\begin{instance} \label{bij-comp}
+\begin{instance} \label{bij_comp}
     The composition of bijective functions is bijective.
 \end{instance}
 \begin{proof}
-    This is just the combination of Theorems \ref{inj-comp} and \ref{sur-comp}.
+    This is just the combination of Theorems \ref{inj_comp} and \ref{sur_comp}.
 \end{proof}
 
-\begin{instance} \label{empty-inj}
+\begin{instance} \label{empty_inj}
     The empty function is injective.
 \end{instance}
 \begin{proof}
@@ -711,7 +711,7 @@ of \vtt{Prop} is two.
 \end{proof}
 
 The previous theorem implicitly used indefinite description (in particular,
-Theorem \ref{ex-to-type}) in its definition of $g$.  These uses of indefinite
+Theorem \ref{ex_to_type}) in its definition of $g$.  These uses of indefinite
 description will no longer be pointed out in the future.
 
 \begin{definition}
@@ -750,7 +750,7 @@ description will no longer be pointed out in the future.
     $f(a) = b$, so $f$ is surjective.
 \end{proof}
 
-\section{Basic Types} \label{sec-types}
+\section{Basic Types} \label{sec_types}
 
 There are a few basic types that we can create that are useful.
 
@@ -796,7 +796,7 @@ first \Prop being true.
     values $a$ and $b$ in $\A$ with $a \neq b$.
 \end{class}
 
-\begin{theorem} \label{not-trivial2}
+\begin{theorem} \label{not_trivial2}
     If $\A$ is a nontrivial type, then for all $c : \A$, there exists a $d : \A$
     such that $c \neq d$.
 \end{theorem}
