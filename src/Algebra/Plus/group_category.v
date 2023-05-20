@@ -33,8 +33,7 @@ Theorem group_homo_eq {M N : GroupObj} :
     ∀ f g : GroupHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus] [g g_plus] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     reflexivity.
@@ -51,21 +50,15 @@ Program Definition Group : Category := {|
         {|homo_plus a b := Logic.eq_refl _|};
 |}.
 Next Obligation.
-    apply group_homo_eq.
-    intros x.
-    cbn.
+    apply group_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply group_homo_eq.
-    intros x.
-    cbn.
+    apply group_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply group_homo_eq.
-    intros x.
-    cbn.
+    apply group_homo_eq; cbn.
     reflexivity.
 Qed.
 
@@ -124,8 +117,7 @@ Theorem cgroup_homo_eq {M N : CGroupObj} :
     ∀ f g : CGroupHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus] [g g_plus] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     reflexivity.
@@ -142,21 +134,15 @@ Program Definition CGroup : Category := {|
         {|homo_plus a b := Logic.eq_refl _|};
 |}.
 Next Obligation.
-    apply cgroup_homo_eq.
-    intros x.
-    cbn.
+    apply cgroup_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply cgroup_homo_eq.
-    intros x.
-    cbn.
+    apply cgroup_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply cgroup_homo_eq.
-    intros x.
-    cbn.
+    apply cgroup_homo_eq; cbn.
     reflexivity.
 Qed.
 

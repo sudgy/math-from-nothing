@@ -85,8 +85,7 @@ Theorem rng_homo_eq {M N : RngObj} :
     ∀ f g : RngHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus f_mult] [g g_plus g_mult] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     rewrite (proof_irrelevance f_mult g_mult).
@@ -138,8 +137,7 @@ Theorem ring_homo_eq {M N : RingObj} :
     ∀ f g : RingHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus f_mult f_one] [g g_plus g_mult g_one] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     rewrite (proof_irrelevance f_mult g_mult).
@@ -159,7 +157,7 @@ Program Definition Ring : Category := {|
         identity
         {|homo_plus a b := Logic.eq_refl _|}
         {|homo_mult a b := Logic.eq_refl _|}
-        {|homo_one := (Logic.eq_refl : identity 1 = 1)|};
+        {|homo_one := Logic.eq_refl : identity 1 = 1|};
 |}.
 Next Obligation.
     apply ring_homo_eq; cbn.

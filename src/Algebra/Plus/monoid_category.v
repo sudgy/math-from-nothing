@@ -33,8 +33,7 @@ Theorem monoid_homo_eq {M N : MonoidObj} :
     ∀ f g : MonoidHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus f_zero] [g g_plus g_zero] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     rewrite (proof_irrelevance f_zero g_zero).
@@ -51,24 +50,18 @@ Program Definition Monoid : Category := {|
     cat_id M := make_monoid_homomorphism_base M M
         identity
         {|homo_plus a b := Logic.eq_refl _|}
-        {|homo_zero := (Logic.eq_refl : identity 0 = 0)|};
+        {|homo_zero := Logic.eq_refl : identity 0 = 0|};
 |}.
 Next Obligation.
-    apply monoid_homo_eq.
-    intros x.
-    cbn.
+    apply monoid_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply monoid_homo_eq.
-    intros x.
-    cbn.
+    apply monoid_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply monoid_homo_eq.
-    intros x.
-    cbn.
+    apply monoid_homo_eq; cbn.
     reflexivity.
 Qed.
 
@@ -132,8 +125,7 @@ Theorem cmonoid_homo_eq {M N : CMonoidObj} :
     ∀ f g : CMonoidHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus f_zero] [g g_plus g_zero] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     rewrite (proof_irrelevance f_zero g_zero).
@@ -150,24 +142,18 @@ Program Definition CMonoid : Category := {|
     cat_id M := make_cmonoid_homomorphism_base M M
         identity
         {|homo_plus a b := Logic.eq_refl _|}
-        {|homo_zero := (Logic.eq_refl : identity 0 = 0)|};
+        {|homo_zero := Logic.eq_refl : identity 0 = 0|};
 |}.
 Next Obligation.
-    apply cmonoid_homo_eq.
-    intros x.
-    cbn.
+    apply cmonoid_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply cmonoid_homo_eq.
-    intros x.
-    cbn.
+    apply cmonoid_homo_eq; cbn.
     reflexivity.
 Qed.
 Next Obligation.
-    apply cmonoid_homo_eq.
-    intros x.
-    cbn.
+    apply cmonoid_homo_eq; cbn.
     reflexivity.
 Qed.
 

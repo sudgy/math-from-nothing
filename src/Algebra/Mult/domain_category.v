@@ -52,8 +52,7 @@ Theorem domain_homo_eq {M N : IntegralDomainObj} :
     ∀ f g : IntegralDomainHomomorphism M N, (∀ x, f x = g x) → f = g.
 Proof.
     intros [f f_plus f_mult f_one f_inj] [g g_plus g_mult g_one g_inj] eq.
-    cbn in eq.
-    apply functional_ext in eq.
+    cbn in eq; apply functional_ext in eq.
     subst g.
     rewrite (proof_irrelevance f_plus g_plus).
     rewrite (proof_irrelevance f_mult g_mult).
