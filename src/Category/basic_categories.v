@@ -1,6 +1,8 @@
 Require Import init.
 
 Require Import category_base.
+Require Import category_product.
+Require Import set.
 
 Program Definition SINGLETON : Category := {|
     cat_U := singleton_type;
@@ -81,4 +83,52 @@ Proof.
     -   intros f_bij.
         exists (bij_inv f).
         split; apply functional_ext; apply bij_inv_inv.
+Qed.
+
+Global Program Instance type_has_product : HasProducts TYPE := {
+    product A B := make_product_obj A B (A * B)%type fst snd
+}.
+Next Obligation.
+    intros [P p1 p2].
+    cbn.
+    apply singleton_ex; [>split|].
+    -   apply ex_set_type.
+        exists (λ x, (p1 x, p2 x)).
+        split; cbn.
+        all: apply functional_ext; reflexivity.
+    -   intros [a [a_eq1 a_eq2]] [b [b_eq1 b_eq2]].
+        cbn in *.
+        rewrite set_type_eq2.
+        functional_intros x.
+        rewrite a_eq1 in b_eq1.
+        rewrite a_eq2 in b_eq2.
+        pose proof (func_eq _ _ b_eq1 x) as eq1.
+        pose proof (func_eq _ _ b_eq2 x) as eq2.
+        cbn in eq1, eq2.
+        apply prod_combine; assumption.
+Qed.
+
+Global Program Instance type_has_coproducts : HasCoproducts TYPE := {
+    coproduct A B := make_product_obj A B (A + B)%type inl inr
+}.
+Next Obligation.
+    intros [S i1 i2].
+    cbn.
+    apply singleton_ex; [>split|].
+    -   apply ex_set_type.
+        exists (λ x, match x with
+            | inl a => i1 a
+            | inr b => i2 b
+        end).
+        split; cbn.
+        all: apply functional_ext; reflexivity.
+    -   intros [a [a_eq1 a_eq2]] [b [b_eq1 b_eq2]].
+        cbn in *.
+        rewrite set_type_eq2.
+        functional_intros x.
+        destruct x as [x|x].
+        +   rewrite a_eq1 in b_eq1.
+            exact (func_eq _ _ b_eq1 x).
+        +   rewrite a_eq2 in b_eq2.
+            exact (func_eq _ _ b_eq2 x).
 Qed.
