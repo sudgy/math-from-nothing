@@ -1,6 +1,8 @@
 \documentclass[../math.tex]{subfiles}
 \externaldocument{../math.tex}
+\externaldocument{foundations}
 \externaldocument{set}
+\externaldocument{lists}
 
 \begin{document}
 
@@ -708,6 +710,150 @@ represent the vertical composition of two natural transformations.
     For $\varepsilon$, let $A : C_2$.  Then because $\varepsilon(A) =
     g^{-1}(A)$, $g(A)$ is the inverse of $\varepsilon(A)$, showing that
     $\varepsilon(A)$ is an isomorphism.
+\end{proof}
+
+\section{Examples}
+
+\begin{definition}
+    The category with $\S$ (the singleton type) as its objects and with $\S$
+    being the one morphism in $\S \to \S$ is called the singleton category.
+\end{definition}
+
+\begin{definition}
+    Types form a category where the morphisms are functions, the composition of
+    morphisms is the composition of functions, and the identity morphisms are
+    the identity functions.  At the possible risk of confusion, we will call
+    this category \Type.
+\end{definition}
+
+\begin{theorem}
+    In \Type, isomorphisms are bijective.
+\end{theorem}
+\begin{proof}
+    This is a direct consequence of Instance \ref{inverse_ex_bijective}.
+\end{proof}
+
+\begin{definition}
+    A monoid is a type equipped with a definition of addition and zero such that
+    addition is associative and zero is a left and right identity.  A monoid
+    homomorphism is a function from a monoid to another monoid that is additive
+    and preserves the additive identity.  Monoids and their homomorphisms form a
+    category called \vtt{Mon}.
+\end{definition}
+
+\begin{definition}
+    A commutative monoid is a monoid such that addition is commutative.
+    Commutative monoid homomorphisms are defined the same as monoid
+    homomorphisms are.  Commutative monoids and their homomorphisms form a
+    category called \vtt{CMon}.
+\end{definition}
+
+\begin{definition}
+    A group is a monoid with additive inverses.  A group homomorphism is a
+    function from a group to another group that is additive.  Groups and their
+    homomorphisms form a category called \vtt{Grp}.
+\end{definition}
+
+\begin{definition}
+    A commutative group is a group such that addition is commutative.
+    Commutative group homomorphisms are defined the same as group homomorphisms
+    are.  Commutative groups and their homomorphisms form a category called
+    \vtt{CGrp}.  Note that these are usually called Abelian groups by others.
+    No offense to Abel, but I like the consistency of using ``commutative'' for
+    all commutative versions of structures.
+\end{definition}
+
+\begin{definition}
+    A rng is a commutative group that also has an associative multiplication
+    that distributes over addition.  A rng homomorphism is a function from from
+    a rng to another rng that is additive and multiplicative.  Rngs and their
+    homomorphisms form a category called \vtt{Rng}.
+\end{definition}
+
+\begin{definition}
+    A ring is a rng that also has a multiplicative identity.  A ring
+    homomorphism is a rng homomorphism that also preserves the multiplicative
+    identity.  Rings and their homomorphisms form a category called \vtt{Ring}.
+\end{definition}
+
+\begin{definition}
+    A commutative ring is a ring such that multiplication is commutative.
+    Commutative ring homomorphisms are defined the same as ring homomorphisms
+    are.  Commutative ring and their homomorphisms form a category called
+    \vtt{CRing}.
+\end{definition}
+
+\begin{definition}
+    An integral domain is a commutative ring such that multiplication is
+    cancellative.  An integral domain homomorphism is an injective ring
+    homomorphism.  Integral domains and their homomorphisms form a category
+    called \vtt{Domain}.  Note that morphisms in this category are required to
+    be injective.
+\end{definition}
+
+\begin{definition}
+    A field is a commutative ring with multiplicative inverses.  A field
+    homomorphism is the same thing as a ring homomorphism.  Fields and their
+    homomorphisms form a category called \vtt{Field}.
+\end{definition}
+
+\begin{definition}
+    An ordered field is a field with a total order that is additive and
+    multiplicative.  An ordered field homomorphism is a field homomorphism that
+    preserve inequalities in one direction.  Ordered fields and their
+    homomorphisms form a category called \vtt{OField}.
+\end{definition}
+
+Because each algebraic structure builds off of other ones (including just
+\Type), there exist functors taking more complicated structures to simpler ones
+that we call forgetful functors.  There are a few other simple functors we can
+define with what we have right now as well.
+
+\begin{definition}
+    Given a ring, we can think of multiplication as being a kind of addition,
+    which allows us to create a functor from rings to monoids that we call the
+    multiplicative monoid of that ring.  Applied to commutative rings, we get a
+    commutative monoid.
+\end{definition}
+
+\begin{definition}
+    Given a field, multiplication of nonzero elements can be considered to be a
+    kind of addition as well, and in this case it forms a group.  Thus, we can
+    create a functor from fields to commutative groups that we call the
+    multiplicative group of that ring.  Note that the underlying set of the
+    multiplicative monoid and the multiplicative group of a field are not the
+    same, because one includes zero and the other doesn't.
+\end{definition}
+
+\begin{theorem}
+    The functions taking a type $\U$ to $\L(\U)$ and a function $f : \U \to \V$
+    to the function $\L(\U) \to \L(\V)$ given by $f(a)$ for lists $a$ is a
+    functor from types to monoids that we call a free functor.
+\end{theorem}
+\begin{proof}
+    We must prove that this functor respects composition and identities.  That
+    it respects composition is precisely Theorem \ref{list_image_comp}.  To
+    prove that it respects identities, we must prove that for all lists $a$,
+    \[
+        \1_{\U}(a) = \1_{\L(\U)}(a) = a,
+    \]
+    which we will do by induction.  When $a = []$, the result is trivial, so the
+    base case is true.  Now assume that $\1_{\U}(a) = a$.  Then for all values
+    $x : \U$,
+    \[
+        \1_{\U}(x : a) = \1_{\U}(x) : \1_{\U}(a) = x : a,
+    \]
+    so the free functor respects identities by induction.
+\end{proof}
+
+\begin{theorem}
+    The functions taking a type $\U$ to $\L_U(\U)$ and a function $f : \U \to
+    \V$ to the function $\L_U(\U) \to \L_U(\V)$ given by $f(a)$ for unordered
+    lists $a$ is a functor from types to commutative monoids that we call a free
+    functor.
+\end{theorem}
+\begin{proof}
+    The proof is identical in form to the previous theorem.
 \end{proof}
 
 \end{document}
