@@ -68,6 +68,7 @@ Qed.
 
 End Product.
 
+Arguments product_obj {C A B}.
 Arguments obj_π1 {C A B}.
 Arguments obj_π2 {C A B}.
 
@@ -84,5 +85,92 @@ Class HasCoproducts (C : Category) := {
     ι1 (A B : C) := obj_π1 (coproduct A B);
     ι2 (A B : C) := obj_π2 (coproduct A B);
 }.
+
+Section ProductComm.
+
+Context {C : Category} `{HasProducts C}.
+
+Local Notation "A × B" := (product_obj (product A B)).
+
+Context (A B : C).
+
+Let BA := make_product_obj A B (B×A) (π2 B A) (π1 B A) : ProductCat A B.
+
+Lemma product_comm_term : terminal BA.
+Proof.
+    intros [P p1 p2].
+    pose proof (product_term B A (make_product_obj B A P p2 p1)) as term.
+    cbn in *.
+    apply singleton_ex; [>split|].
+    -   apply ex_set_type.
+        apply ex_singleton in term as [f [f_eq1 f_eq2]]; cbn in *.
+        exists f.
+        split; assumption.
+    -   intros [a a_in] [b b_in].
+        rewrite set_type_eq2.
+        assert (product_set B A (make_product_obj B A P p2 p1)
+            (product B A) a) as a_in2.
+        {
+            destruct a_in as [a_in1 a_in2].
+            split; assumption.
+        }
+        assert (product_set B A (make_product_obj B A P p2 p1)
+            (product B A) b) as b_in2.
+        {
+            destruct b_in as [b_in1 b_in2].
+            split; assumption.
+        }
+        pose proof (singleton_unique2 [a|a_in2] [b|b_in2]) as eq.
+        rewrite set_type_eq2 in eq.
+        exact eq.
+Qed.
+
+Definition product_comm_f :=
+    [iso_f (terminal_unique _ _ (product_term A B) product_comm_term)|]
+    : morphism (A × B) (B × A).
+
+Definition product_comm_g :=
+    [iso_g (terminal_unique _ _ (product_term A B) product_comm_term)|]
+    : morphism (B × A) (A × B).
+
+Let f := product_comm_f.
+Let g := product_comm_g.
+
+Theorem product_comm_iso : is_isomorphism_pair f g.
+Proof.
+    unfold f, g, product_comm_f, product_comm_g.
+    destruct (terminal_unique _ _ _ _) as [f' g' [fg gf]]; cbn.
+    apply set_type_eq in fg, gf.
+    split; assumption.
+Qed.
+
+Theorem product_comm : A × B ≅ B × A.
+Proof.
+    exists f g.
+    exact product_comm_iso.
+Qed.
+
+Theorem product_comm_f1 : π1 A B = π2 B A ∘ f.
+Proof.
+    unfold f, product_comm_f.
+    apply [|iso_f (terminal_unique _ BA _ _)].
+Qed.
+Theorem product_comm_f2 : π2 A B = π1 B A ∘ f.
+Proof.
+    unfold f, product_comm_f.
+    apply [|iso_f (terminal_unique _ BA _ _)].
+Qed.
+Theorem product_comm_g1 : π1 B A = π2 A B ∘ g.
+Proof.
+    unfold g, product_comm_g.
+    apply [|iso_g (terminal_unique _ BA _ _)].
+Qed.
+Theorem product_comm_g2 : π2 B A = π1 A B ∘ g.
+Proof.
+    unfold g, product_comm_g.
+    apply [|iso_g (terminal_unique _ BA _ _)].
+Qed.
+
+End ProductComm.
 
 Unset Universe Polymorphism.
