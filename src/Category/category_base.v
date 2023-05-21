@@ -45,6 +45,12 @@ Record isomorphism {C : Category} (A B : C) := make_isomorphism {
     iso_inv : is_isomorphism_pair iso_f iso_g;
 }.
 
+Definition monomorphism {C : Category} {A B : C} (f : morphism A B)
+    := ∀ Z, ∀ g h : morphism Z A, f ∘ g = f ∘ h → g = h.
+
+Definition epimorphism {C : Category} {A B : C} (f : morphism A B)
+    := ∀ Z, ∀ g h : morphism B Z, g ∘ f = h ∘ f → g = h.
+
 Arguments make_isomorphism {C A B}.
 Arguments iso_f {C A B}.
 Arguments iso_g {C A B}.
@@ -158,6 +164,30 @@ Proof.
     split.
     exists f g.
     split; assumption.
+Qed.
+
+Theorem isomorphism_monomorphism : ∀ {A B : C0}
+    (f : morphism A B), is_isomorphism f → monomorphism f.
+Proof.
+    intros A B f [g [fg gf]].
+    intros C h1 h2 eq.
+    apply (lcompose g) in eq.
+    do 2 rewrite cat_assoc in eq.
+    rewrite gf in eq.
+    do 2 rewrite cat_lid in eq.
+    exact eq.
+Qed.
+
+Theorem isomorphism_epimorphism : ∀ {A B : C0}
+    (f : morphism A B), is_isomorphism f → epimorphism f.
+Proof.
+    intros A B f [g [fg gf]].
+    intros C h1 h2 eq.
+    apply (rcompose g) in eq.
+    do 2 rewrite <- cat_assoc in eq.
+    rewrite fg in eq.
+    do 2 rewrite cat_rid in eq.
+    exact eq.
 Qed.
 
 End Isomorphism.
