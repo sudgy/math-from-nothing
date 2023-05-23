@@ -100,10 +100,10 @@ Next Obligation.
         cbn in *.
         rewrite set_type_eq2.
         functional_intros x.
-        rewrite a_eq1 in b_eq1.
-        rewrite a_eq2 in b_eq2.
-        pose proof (func_eq _ _ b_eq1 x) as eq1.
-        pose proof (func_eq _ _ b_eq2 x) as eq2.
+        rewrite <- b_eq1 in a_eq1.
+        rewrite <- b_eq2 in a_eq2.
+        pose proof (func_eq _ _ a_eq1 x) as eq1.
+        pose proof (func_eq _ _ a_eq2 x) as eq2.
         cbn in eq1, eq2.
         apply prod_combine; assumption.
 Qed.
@@ -127,8 +127,8 @@ Next Obligation.
         rewrite set_type_eq2.
         functional_intros x.
         destruct x as [x|x].
-        +   rewrite a_eq1 in b_eq1.
-            exact (func_eq _ _ b_eq1 x).
-        +   rewrite a_eq2 in b_eq2.
-            exact (func_eq _ _ b_eq2 x).
+        +   rewrite <- b_eq1 in a_eq1.
+            exact (func_eq _ _ a_eq1 x).
+        +   rewrite <- b_eq2 in a_eq2.
+            exact (func_eq _ _ a_eq2 x).
 Qed.

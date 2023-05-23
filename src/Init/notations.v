@@ -9,6 +9,8 @@ Reserved Notation "x ≠ y" (at level 70).
 
 Reserved Notation "x · y" (at level 40, left associativity).
 Reserved Notation "x × y" (at level 40, left associativity).
+Reserved Notation "x ∏ y" (at level 40, left associativity).
+Reserved Notation "x ∐ y" (at level 40, left associativity).
 
 Reserved Notation "a ~ b" (at level 70, no associativity).
 Reserved Notation "a ⊕ b" (at level 50, left associativity).
