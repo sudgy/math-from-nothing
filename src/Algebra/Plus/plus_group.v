@@ -360,15 +360,22 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem neg_plus_group : ∀ a b, -(a + b) = -b + -a.
+Proof.
+    intros a b.
+    apply (plus_lcancel (a + b)).
+    rewrite plus_rinv.
+    rewrite <- plus_assoc.
+    rewrite plus_lrinv.
+    rewrite plus_rinv.
+    reflexivity.
+Qed.
+
 Theorem neg_plus : ∀ a b, -(a + b) = -a + -b.
 Proof.
     intros a b.
-    rewrite <- plus_llmove.
-    rewrite <- plus_0_ab_b_na.
-    rewrite plus_assoc.
-    rewrite (plus_comm b a).
-    rewrite plus_rinv.
-    reflexivity.
+    rewrite neg_plus_group.
+    apply plus_comm.
 Qed.
 
 Theorem zero_eq_neg : ∀ a, 0 = a ↔ 0 = -a.
