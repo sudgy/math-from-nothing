@@ -179,6 +179,39 @@ addition is commutative.
     This proof is the same in form as the previous one.
 \end{proof}
 
+\begin{instance}
+    The composition of two additive functions is additive.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two additive functions.  Then for all $a$ and $b$,
+    \[
+        f(g(a + b)) = f(g(a) + g(b)) = f(g(a)) + f(g(b)).
+    \]
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve the additive identity
+    preserves the additive identity.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve the additive identity.  Then
+    \[
+        f(g(0)) = f(0) = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve additive inverses preserves
+    additive inverses.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve additive inverses.  Then for
+    all $x$,
+    \[
+        f(g(-x)) = f(-g(x)) = -f(g(x)).
+    \]
+\end{proof}
+
 Throughout the rest of this section, the classes required will no longer be
 specified and will have to be determined from the proofs.  As said previously,
 Coq does this automatically.
@@ -396,6 +429,27 @@ multiplication laws when multiplication is commutative.
     \ref{ring_mult_lanni}.
 \end{proof}
 
+\begin{instance}
+    The composition of two multiplicative functions is multiplicative.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two multiplicative functions.  Then for all $a$ and $b$,
+    \[
+        f(g(ab)) = f(g(a)g(b)) = f(g(a))f(g(b)).
+    \]
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve the multiplicative identity
+    preserves the multiplicative identity.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve the additive identity.  Then
+    \[
+        f(g(1)) = f(1) = 1.
+    \]
+\end{proof}
+
 \begin{theorem} \label{not_trivial_one}
     If $\U$ is not trivial, then $0 \neq 1$.
 \end{theorem}
@@ -607,7 +661,8 @@ reciprocal of zero, but do not put any constraints on what its value is.
 \begin{proof}
     We will use Theorem \ref{homo_zero_inj}.  Let $a$ be such that $0 = f(a)$
     and assume for a contradiction that $0 \neq a$.  Then by multiplying by
-    $f(a^{-1})$ on both sides of $0 = f(a)$ we get \[
+    $f(a^{-1})$ on both sides of $0 = f(a)$ we get
+    \[
         0 = f(a) f(a^{-1}) = f(a a^{-1}) = f(1) = 1,
     \]
     which contradicts non-triviality.
@@ -623,6 +678,22 @@ reciprocal of zero, but do not put any constraints on what its value is.
         f(a) f(a^{-1}) = f(a a^{-1}) = f(1) = 1 = f(a) f(a)^{-1},
     \]
     and by canceling $f(a)$ we get $f(a^{-1}) = f(a)^{-1}$.
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve multiplicative inverses
+    preserves multiplicative inverses, if the first function is injective.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve multiplicative inverses and
+    assume that $g$ is injective.  Then for all $x \neq 0$,
+    \[
+        f(g(x^{-1})) = f(g(x)^{-1}).
+    \]
+    Because $g$ is injective, we know that $g(x) \neq 0$, so
+    \[
+        f(g(x)^{-1}) = f(g(x))^{-1}.
+    \]
 \end{proof}
 
 \section{Relations}
@@ -885,6 +956,55 @@ that it is antisymmetric and that every set has a minimum.
     because $f$ preserves strict inequalities in one direction we have $f(b) <
     f(a)$.  We can't have both $f(a) < f(b)$ and $f(b) < f(a)$, so it must be
     the case that $a < b$.
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve inequalities in one direction
+    preserves inequalities in one direction.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve inequalities in one
+    direction.  Then for all $a$ and $b$,
+    \[
+        a \leq b \to g(a) \leq g(b) \to f(g(a)) \leq f(g(b)).
+    \]
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve strict inequalities in one
+    direction preserves strict inequalities in one direction.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve strict inequalities in one
+    direction.  Then for all $a$ and $b$,
+    \[
+        a < b \to g(a) < g(b) \to f(g(a)) < f(g(b)).
+    \]
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve inequalities in one both
+    directions preserves inequalities in both directions.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve inequalities in both
+    directions.  Then for all $a$ and $b$,
+    \[
+        a \leq b \leftrightarrow g(a) \leq g(b) \leftrightarrow f(g(a)) \leq
+        f(g(b)).
+    \]
+\end{proof}
+
+\begin{instance}
+    The composition of two functions that preserve strict inequalities in both
+    directions preserves strict inequalities in both directions.
+\end{instance}
+\begin{proof}
+    Let $f$ and $g$ be two functions that preserve strict inequalities in both
+    directions.  Then for all $a$ and $b$,
+    \[
+        a < b \leftrightarrow g(a) < g(b) \leftrightarrow f(g(a)) < f(g(b)).
+    \]
 \end{proof}
 
 \subsection{Order and Addition}
