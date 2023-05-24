@@ -120,9 +120,31 @@ Proof.
     -   do 2 rewrite nat_mult_lanni.
         apply neg_zero.
     -   do 2 rewrite nat_mult_suc.
-        rewrite neg_plus.
+        rewrite neg_plus_group.
         rewrite IHa.
+        rewrite <- (nat_mult_lid (-b)) at 2.
+        rewrite <- nat_mult_rdist.
+        rewrite (plus_comm a 1).
+        rewrite nat_mult_rdist.
+        rewrite nat_mult_lid.
         reflexivity.
+Qed.
+
+Theorem nat_mult_commute : ∀ a b c, a × c + b × c = b × c + a × c.
+Proof.
+    intros a b c.
+    do 2 rewrite <- nat_mult_rdist.
+    rewrite plus_comm.
+    reflexivity.
+Qed.
+
+Theorem nat_mult_commute_neg : ∀ a b c, a × c - b × c = -(b × c) + a × c.
+Proof.
+    intros a b c.
+    rewrite <- plus_rrmove.
+    rewrite <- plus_assoc.
+    rewrite <-plus_llmove.
+    apply nat_mult_commute.
 Qed.
 
 Theorem nat_pow_zero : ∀ a, a ^ 0 = 1.
