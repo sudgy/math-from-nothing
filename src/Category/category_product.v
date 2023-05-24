@@ -81,13 +81,6 @@ Class HasProducts (C : Category) := {
 
 Notation "A ∏ B" := (product_obj (product A B)).
 
-Class HasCoproducts (C : Category) := {
-    coproduct (A B : C) : ProductCat (C := dual_category C) A B;
-    coproduct_init : ∀ A B, terminal (coproduct A B);
-    ι1 (A B : C) := obj_π1 (coproduct A B);
-    ι2 (A B : C) := obj_π2 (coproduct A B);
-}.
-
 Section Product.
 
 Context {C : Category} `{HasProducts C}.

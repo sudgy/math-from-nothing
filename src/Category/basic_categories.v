@@ -2,6 +2,7 @@ Require Import init.
 
 Require Import category_base.
 Require Import category_product.
+Require Import category_coproduct.
 Require Import set.
 
 Program Definition SINGLETON : Category := {|
@@ -109,7 +110,7 @@ Next Obligation.
 Qed.
 
 Global Program Instance type_has_coproducts : HasCoproducts TYPE := {
-    coproduct A B := make_product_obj A B (A + B)%type inl inr
+    coproduct A B := make_coproduct_obj A B (A + B)%type inl inr
 }.
 Next Obligation.
     intros [S i1 i2].

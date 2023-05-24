@@ -80,6 +80,7 @@
 ./src/Category/category_equivalence.v
 ./src/Category/category_initterm.v
 ./src/Category/category_product.v
+./src/Category/category_coproduct.v
 
 ./src/Category/basic_categories.v
 ./src/Algebra/Plus/monoid_category.v
