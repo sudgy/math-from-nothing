@@ -380,3 +380,5 @@ Proof.
 Qed.
 
 End IntAbstract.
+
+Infix "×" := int_mult (at level 40, left associativity) : int_scope.

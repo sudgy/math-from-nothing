@@ -150,6 +150,7 @@
 ./src/Number/Complex/complex.v
 
 ./src/Algebra/Group/group_subgroup.v
+./src/Algebra/Group/group_order.v
 
 ./src/Algebra/Linear/Base/linear_base.v
 ./src/Algebra/Linear/Base/module_category.v
