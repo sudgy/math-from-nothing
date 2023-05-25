@@ -1312,9 +1312,32 @@ forced to remember that the definition is not the traditional definition.
     The proof will be by induction on $a$.  When $a = 0$, $-(0b) = 0 = 0(-b)$,
     so the base case is true.  Now assume that $-(ab) = a(-b)$.  Then
     \[
-        -(S(a)b) = -(b + ab) = -b - (ab) = -b + a(-b) = S(a)(-b),
+        -(S(a)b) = -(b + ab) = -(ab) - b = a(-b) - b = S(a)(-b),
     \]
     so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{nat_mult_commute}
+    For all natural numbers $a$ and $b$ and $c : \U$, $ac + bc = bc + ac$ even
+    when addition in $\U$ is not commutative.
+\end{theorem}
+\begin{proof}
+    \[
+        ac + bc = (a + b)c = (b + a)c = ba + ac.
+    \]
+\end{proof}
+
+\begin{theorem} \label{nat_mult_commute_neg}
+    For all natural numbers $a$ and $b$ and $c : \U$, $ac - bc = -bc + ac$ even
+    when addition in $\U$ is not commutative.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        ac - bc &= -bc + ac \\
+        ac &= -bc + ac + bc \\
+        bc + ac &= ac + bc,
+    \end{align*}
+    which follows from Theorem \ref{nat_mult_commute}.
 \end{proof}
 
 \subsection{Exponentiating by Natural Numbers}
