@@ -79,6 +79,18 @@ then functors and their notions after that, and then natural transformations.
     that $A$ and $B$ are isomorphic and we write $A \cong B$.
 \end{definition}
 
+\begin{definition}
+    Given a category $C$, two objects $A$ and $B$, and a morphism $f : A \to B$,
+    if for all objects $Z$ and morphisms $g$ and $h$ in $Z \to A$ we have $g =
+    h$ if $f \circ g = f \circ h$, then $f$ is called a monomorphism.
+\end{definition}
+
+\begin{definition}
+    Given a category $C$, two objects $A$ and $B$, and a morphism $f : A \to B$,
+    if for all objects $Z$ and morphisms $g$ and $h$ in $B \to Z$ we have $g =
+    h$ if $g \circ f = h \circ f$, then $f$ is called an epimorphism.
+\end{definition}
+
 \begin{theorem}
     The identity morphism is an isomorphism.
 \end{theorem}
@@ -123,6 +135,22 @@ then functors and their notions after that, and then natural transformations.
     symmetry, given an isomorphism $f : A \to B$, the inverse $g : B \to A$ is
     an isomorphism.  Transitivity follows from the composition of isomorphisms
     being an isomorphism.
+\end{proof}
+
+\begin{theorem} \label{isomorphism_monomorphism}
+    If a morphism is an isomorphism, then it is a monomorphism.
+\end{theorem}
+\begin{proof}
+    Let $f$ be an isomorphism from $A$ to $B$ then it has an inverse $f^{-1} : B
+    \to A$.  Then for all morphisms $g$ and $h$ such that $f \circ g = f \circ
+    h$, we can apply $f^{-1}$ on the left to get $g = h$.
+\end{proof}
+
+\begin{theorem} \label{isomorphism_epimorphism}
+    If a morphism is an isomorphism, then it is an epimorphism.
+\end{theorem}
+\begin{proof}
+    The proof is similar in form to the proof of the previous theorem.
 \end{proof}
 
 \begin{definition}
