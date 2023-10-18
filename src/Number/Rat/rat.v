@@ -13,7 +13,7 @@ Require Export nat_abstract.
 
 Definition rat := frac int.
 Definition int_to_rat (a : int) := to_frac int a : rat.
-Definition nat_to_rat (a : nat) := int_to_rat (nat_to_int a) : rat.
+Definition nat_to_rat (a : nat) := int_to_rat (from_nat a) : rat.
 
 Definition rat_not_trivial := frac_not_trivial int.
 Definition rat_plus := frac_plus int.
@@ -52,7 +52,7 @@ Qed.
 Theorem nat_to_rat_eq : ∀ a b, nat_to_rat a = nat_to_rat b → a = b.
 Proof.
     intros a b eq.
-    apply nat_to_int_eq.
+    apply (inj (f := (from_nat (U := int)))).
     apply int_to_rat_eq.
     exact eq.
 Qed.
@@ -68,7 +68,7 @@ Theorem nat_to_rat_plus : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_rat.
-    rewrite nat_to_int_plus.
+    setoid_rewrite homo_plus.
     rewrite int_to_rat_plus.
     reflexivity.
 Qed.
@@ -89,7 +89,7 @@ Theorem nat_to_rat_mult : ∀ a b,
 Proof.
     intros a b.
     unfold nat_to_rat.
-    rewrite nat_to_int_mult.
+    setoid_rewrite homo_mult.
     rewrite int_to_rat_mult.
     reflexivity.
 Qed.
@@ -105,7 +105,7 @@ Proof.
     intros a b.
     unfold nat_to_rat.
     rewrite int_to_rat_le.
-    apply nat_to_int_le.
+    symmetry; apply homo_le2.
 Qed.
 Theorem int_to_rat_lt : ∀ a b, int_to_rat a < int_to_rat b ↔ a < b.
 Proof.
@@ -118,7 +118,7 @@ Proof.
     intros a b.
     unfold nat_to_rat.
     rewrite int_to_rat_lt.
-    apply nat_to_int_lt.
+    symmetry; apply homo_lt2.
 Qed.
 
 Theorem from_nat_rat : ∀ a, from_nat a = nat_to_rat a.
@@ -130,5 +130,7 @@ Proof.
         rewrite IHa.
         change (nat_suc a) with (1 + a).
         rewrite nat_to_rat_plus.
+        unfold nat_to_rat at 2.
+        setoid_rewrite homo_one.
         reflexivity.
 Qed.

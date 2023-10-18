@@ -191,13 +191,15 @@ Global Instance int_not_trivial_class : NotTrivial int := {
 
 Close Scope int_scope.
 (* end hide *)
-Theorem nat_to_int_mult : ∀ a b,
-        nat_to_int (a * b) = nat_to_int a * nat_to_int b.
+
+Theorem from_nat_int : ∀ n, from_nat n = to_equiv int_equiv (n, 0).
 Proof.
-    intros a b.
-    unfold mult at 2, nat_to_int; simpl; equiv_simpl; simpl.
-    do 2 rewrite mult_lanni.
-    rewrite mult_ranni.
-    do 3 rewrite plus_rid.
-    reflexivity.
+    intros n.
+    nat_induction n.
+    -   reflexivity.
+    -   rewrite from_nat_suc.
+        rewrite IHn.
+        unfold one, plus; equiv_simpl.
+        do 3 rewrite plus_rid.
+        reflexivity.
 Qed.

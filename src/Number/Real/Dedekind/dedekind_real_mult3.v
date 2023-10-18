@@ -3,6 +3,7 @@ Require Import init.
 Require Import rat.
 Require Import set.
 Require Import nat.
+Require Import int. (* Get rid of this later *)
 
 Require Export dedekind_real_base.
 Require Import dedekind_real_order.
@@ -347,7 +348,8 @@ Proof.
                 {
                     rewrite Heqm.
                     change 0 with (nat_to_rat 0).
-                    change 1 with (nat_to_rat 1).
+                    change 1 with (int_to_rat 1).
+                    rewrite <- (homo_one (V := int)).
                     rewrite <- nat_to_rat_plus.
                     rewrite plus_comm.
                     rewrite nat_to_rat_lt.
@@ -381,7 +383,9 @@ Proof.
                     change (nat_suc m') with (1 + m') in contr.
                     rewrite plus_comm in contr.
                     rewrite nat_to_rat_plus in contr.
-                    change (nat_to_rat 1) with (one (U := rat)) in contr.
+                    unfold nat_to_rat at 2 in contr.
+                    rewrite homo_one in contr.
+                    change (int_to_rat 1) with (one (U := rat)) in contr.
                     rewrite <- Heqm, <- Heqn in contr.
                     apply le_mult_adb_1_a_b_pos in contr.
                     2: exact n_pos.
@@ -397,7 +401,9 @@ Proof.
                     rewrite plus_comm in nam.
                     rewrite nat_to_rat_plus in nam.
                     rewrite <- Heqm in nam.
-                    change (nat_to_rat 1) with (one (U := rat)) in nam.
+                    unfold nat_to_rat in nam.
+                    rewrite homo_one in nam.
+                    change (int_to_rat 1) with (one (U := rat)) in nam.
                     rewrite mult_comm in nam.
                     contradiction.
                 }
@@ -438,7 +444,9 @@ Proof.
                     apply nat_to_rat_eq in contr.
                     contradiction.
                 }
-                change 1 with (nat_to_rat 1) in ltq.
+                change 1 with (int_to_rat 1) in ltq.
+                rewrite <- (homo_one (f := from_nat) (V := int)) in ltq.
+                change (int_to_rat (from_nat 1)) with (nat_to_rat 1) in ltq.
                 rewrite nat_to_rat_lt in ltq.
                 apply n_nz.
                 apply antisym.
@@ -465,7 +473,9 @@ Proof.
                 change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
                 rewrite nat_to_rat_plus in nam.
                 rewrite <- Heqm in nam.
-                change (nat_to_rat 1) with (one (U := rat)) in nam.
+                unfold nat_to_rat in nam.
+                rewrite homo_one in nam.
+                change (int_to_rat 1) with (one (U := rat)) in nam.
                 rewrite plus_comm in nam.
                 apply lt_rmult_pos with (m + 1) in m_eq.
                 2: exact m1_pos.

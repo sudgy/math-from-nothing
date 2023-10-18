@@ -157,17 +157,14 @@ Proof.
 Qed.
 
 Theorem nat_to_int_to_abstract : ∀ n,
-    int_to_abstract (nat_to_int n) = from_nat n.
+    int_to_abstract (from_nat n) = from_nat n.
 Proof.
     nat_induction n.
-    -   unfold int_to_abstract, nat_to_int; equiv_simpl.
-        unfold int_to_abstract_base; cbn.
-        rewrite homo_zero.
-        rewrite neg_zero.
-        apply plus_lid.
-    -   cbn.
-        change (nat_suc n) with (1 + n).
-        rewrite nat_to_int_plus.
+    -   rewrite homo_zero.
+        rewrite int_to_abstract_zero.
+        setoid_rewrite homo_zero.
+        reflexivity.
+    -   rewrite from_nat_suc.
         rewrite int_to_abstract_plus.
         rewrite IHn.
         rewrite int_to_abstract_one.

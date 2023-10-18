@@ -136,11 +136,8 @@ Proof.
         rewrite nat_mult_nat.
         apply refl.
     -   unfold le; equiv_simpl.
-        exists nat_to_int.
-        split.
-        intros a b eq.
-        apply nat_to_int_eq.
-        exact eq.
+        exists from_nat.
+        exact from_nat_inj.
 Qed.
 
 Theorem rat_size : |rat| = |nat|.

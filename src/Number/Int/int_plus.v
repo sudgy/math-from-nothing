@@ -110,18 +110,3 @@ Global Instance int_plus_linv_class : PlusLinv int := {
     plus_linv := int_plus_linv;
 }.
 (* end hide *)
-Theorem nat_to_int_plus : ∀ a b,
-    nat_to_int (a + b) = nat_to_int a + nat_to_int b.
-Proof.
-    intros a b.
-    unfold plus at 2, nat_to_int; equiv_simpl.
-    do 2 rewrite plus_rid.
-    reflexivity.
-Qed.
-
-Theorem nat_nz_int : ∀ n, 0 ≠ nat_to_int (nat_suc n).
-Proof.
-    intros n n_eq.
-    apply nat_to_int_eq in n_eq.
-    inversion n_eq.
-Qed.
