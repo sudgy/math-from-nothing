@@ -205,7 +205,7 @@ then functors and their notions after that, and then natural transformations.
     singleton type.
 \end{definition}
 
-\begin{theorem}
+\begin{theorem} \label{initial_unique}
     All initial objects in a category are isomorphic to each other.
 \end{theorem}
 \begin{proof}
@@ -215,7 +215,7 @@ then functors and their notions after that, and then natural transformations.
     \circ g = \1$.  Similarly, $g \circ f = \1$, showing that $I_1 \cong I_2$.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem} \label{terminal_unique}
     All terminal objects in a category are isomorphic to each other.
 \end{theorem}
 \begin{proof}
@@ -738,6 +738,323 @@ represent the vertical composition of two natural transformations.
     For $\varepsilon$, let $A : C_2$.  Then because $\varepsilon(A) =
     g^{-1}(A)$, $g(A)$ is the inverse of $\varepsilon(A)$, showing that
     $\varepsilon(A)$ is an isomorphism.
+\end{proof}
+
+\section{Products and Coproducts}
+
+Throughout this section, let $C$ be a category and $A$ and $B$ be objects.
+
+\begin{definition}
+    Define a category $C_{AB}$ where the objects are objects $P : C$ with
+    morphisms $\pi_{P1} : P \to A$ and $\pi_{P2} : P \to B$.  The morphisms in
+    $C_{AB}$ are morphisms $h : P_1 \to P_2$ such that
+    \[
+        \pi_{P_2 1} \circ h = \pi_{P_1 1}
+    \]
+    and
+    \[
+        \pi_{P_2 2} \circ h = \pi_{P_1 2}.
+    \]
+    The composition of these morphisms is the composition of the underlying
+    morphism, and the identity morphism is the identity morphism in $C$.
+\end{definition}
+\begin{proof}[Proof that this definition does define a category]
+    There are several things that we must prove: that the composition of two
+    morphisms and the identity morphisms still satisfy the necessary
+    requirements for morphisms in this category, that composition is
+    associative, and that the identity morphisms are identities.
+
+    First, let $a$, $b$, and $c$ be objects in $C_{AB}$, and let $f : b \to c$
+    and $g : a \to b$ such that
+    \begin{align*}
+        \pi_{c1} \circ f &= \pi_{b1}, \\
+        \pi_{c2} \circ f &= \pi_{b2}, \\
+        \pi_{b1} \circ g &= \pi_{a1}, \\
+    \intertext{and}
+        \pi_{b2} \circ g &= \pi_{a2}.
+    \end{align*}
+    Then
+    \[
+        \pi_{c1} \circ f \circ g = \pi_{b2} \circ g = \pi_{a1}
+    \]
+    and
+    \[
+        \pi_{c2} \circ f \circ g = \pi_{b2} \circ g = \pi_{a1},
+    \]
+    showing that $f \circ g$ is a morphisms in $C_{AB}$.
+
+    Now let $f : C_{AB}$.  Then
+    \[
+        \pi_{f1} \circ \1 = \pi_{f1}
+    \]
+    and
+    \[
+        \pi_{f2} \circ \1 = \pi_{f2},
+    \]
+    so $\1$ is a morphism in $C_{AB}$.
+
+    That composition of morphisms is associative and that $\1$ is an identity in
+    $C_{AB}$ follows from the same facts in $C$.
+\end{proof}
+
+\begin{class}
+    If, for every pair of objects $A$ and $B$ in $C$, there exists an object $A
+    \prod B : C_{AB}$ that is a terminal object in $C_{AB}$, we say that $C$ has
+    products.  That $A \prod B$ is terminal in $C_{AB}$ will be called the
+    universal property of $A \prod B$.
+\end{class}
+
+Note that the notation for products here is $A \prod B$, not $A \times B$.  This
+is mainly because I wanted to reserve $\times$ for other uses in the Coq code,
+and I'm just being consistent here.
+
+While the above definition of products is snappy, it can be confusing having to
+deal with both $C$ and $C_{AB}$.  Thus, from now on, we will consider products
+$A \prod B$ to be objects in $C$, not $C_{AB}$, and we also have morphisms
+$\pi_{1AB} : A \prod B \to A$ and $\pi_{2AB} : A \prod B \to B$.  If the objects
+$A$ and $B$ are obvious from context, they will just be called $\pi_1$ and
+$\pi_2$.
+
+It's not clear how exactly the universal property, as it is currently stated,
+can be used, so here's a couple special cases:
+
+\begin{theorem} \label{product_f} \label{product_f1} \label{product_f2}
+    For any $P : C$ and morphisms $p_1 : P \to A$ and $p_2 : P \to B$, there
+    exists a morphism $f : P \to A \prod B$ such that $\pi_1 \circ f = p_1$ and
+    $\pi_2 \circ f = p_2$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the universal property of $A \prod B$.
+\end{proof}
+
+\begin{theorem} \label{product_f_uni} \label{product_f_uni2}
+    For any $P$ with morphisms $p_1 : P \to A$ and $p_2 : P \to B$, for all
+    morphisms $f$ and $g$ in $P \to A \prod B$, if $\pi_1 \circ f = p_1$, $\pi_2
+    \circ f = p_2$, $\pi_1 \circ g = p_1$, and $\pi_2 \circ g = p_2$, then $f =
+    g$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the universal property of $A \prod B$.
+\end{proof}
+
+\begin{theorem} \label{product_unique}
+    For any $P : C$ with morphisms $p_1 : P \to A$ and $p_2 : P \to B$, if for
+    all other $P' : C$ with morphisms $p_1' : P' \to A$ and $p_2' : P \to B$,
+    there exists exactly one morphism $h : P' \to P$ such that $p_1 \circ h =
+    p_1'$ and $p_2 \circ h = p_2'$, then there exists an isomorphism pair $f : P
+    \to A \prod B$ and $g : A \prod B \to P$ such that
+    \begin{align*}
+        \pi_1 \circ f &= p_1, \\
+        \pi_2 \circ f &= p_2, \\
+        p_1 \circ g &= \pi_1, \\
+    \intertext{and}
+        p_2 \circ g &= \pi_2.
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    The condition in the theorem is precisely the statement that $P$ along with
+    $p_1$ and $p_2$ is terminal in $C_{AB}$, so the result follows from Theorem
+    \ref{terminal_unique}.
+\end{proof}
+
+\begin{theorem} \label{product_mono}
+    For all objects $Z : C$ and morphisms $f$ and $g$ in $Z \to A \prod B$,
+    if
+    \[
+        \pi_1 \circ f = \pi_1 \circ g
+    \]
+    and
+    \[
+        \pi_2 \circ f = \pi_2 \circ g,
+    \]
+    then $f = g$.
+\end{theorem}
+\begin{proof}
+    Consider $Z$ with the morphisms $\pi_1 \circ f$ and $\pi_2 \circ f$.  Then
+    by Theorem \ref{product_f_uni2}, $f = g$.
+\end{proof}
+
+\begin{theorem} \label{product_comm}
+    There exists an isomorphism pair $f : A \prod B \to B \prod A$ and $g : B
+    \prod A \to A \prod B$ such that
+    \begin{align*}
+        \pi_{2BA} \circ f &= \pi_{1AB}, \\
+        \pi_{1BA} \circ f &= \pi_{2AB}, \\
+        \pi_{2AB} \circ g &= \pi_{2BA}, \\
+    \intertext{and}
+        \pi_{1AB} \circ g &= \pi_{1BA}.
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    We will prove that $B \prod A$ along with $\pi_{2BA}$ and $\pi_{1BA}$
+    satisfies the conditions of Theorem \ref{product_unique}, from which the
+    result directly follows.  Let $P : C$ and let $p_1 : P \to A$ and $p_2 : P
+    \to B$ be morphisms.  We must prove that there is exactly one morphism $f :
+    P \to B \prod A$ such that $\pi_{2BA} \circ f = p_1$ and $\pi_{1BA} \circ f
+    = p_2$.  We will prove existence and uniqueness separately.
+
+    For existence, by the universal property of $B \prod A$, we have a morphism
+    $f : P \to B \prod A$ such that
+    \[
+        \pi_{2BA} \circ f = p_1
+    \]
+    and
+    \[
+        \pi_{1BA} \circ f = p_2,
+    \]
+    showing that there exists a morphism from $P$ to $BA$.
+
+    For uniqueness, let $a$ and $b$ be morphisms in $P \to B \prod A$ such that
+    \begin{align*}
+        \pi_{2BA} \circ a &= p_1, \\
+        \pi_{1BA} \circ a &= p_2, \\
+        \pi_{2BA} \circ b &= p_1, \\
+    \intertext{and}
+        \pi_{1BA} \circ b &= p_2.
+    \end{align*}
+    By Theorem \ref{product_f_uni2}, $a = b$.
+\end{proof}
+
+\begin{theorem} \label{product_assoc}
+    Let $\mathcal C$ be a category and $A$, $B$, and $C$ be objects in $\mathcal
+    C$.  Then there exists an isomorphism pair $f : A \prod (B \prod C) \to (A
+    \prod B) \prod C$ and $g : (A \prod B) \prod C \to A \prod (B \prod C)$ such
+    that
+    \begin{align*}
+        \pi_{1AB} \circ \pi_{1(A \prod B) C} \circ f &= \pi_{1A(B \prod C)}, \\
+        \pi_{2AB} \circ \pi_{1(A \prod B) C} \circ f
+            &= \pi_{1BC} \circ \pi_{2A(B \prod C)}, \\
+        \pi_{2(A \prod B) C} \circ f &= \pi_{2BC} \circ \pi_{2A(B \prod C)}, \\
+        \pi_{1A(B \prod C)} \circ g &= \pi_{1AB} \circ \pi_{1(A \prod B) C}, \\
+        \pi_{1BC} \circ \pi_{2A(B \prod C)} \circ g
+            &= \pi_{2AB} \circ \pi_{1(A \prod B) C}, \\
+    \intertext{and}
+        \pi_{2BC} \circ \pi_{2A(B \prod C)} \circ g &= \pi_{2(A \prod B) C}.
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    Define three new projections
+    \begin{align*}
+        \pi_1' &= \pi_{1AB} \circ \pi_{1(A \prod B) C}
+            : (A \cprod B) \cprod C \to A, \\
+        \pi_2' &= \pi_{2AB} \circ \pi_{1(A \prod B) C}
+            : (A \cprod B) \cprod C \to B, \\
+    \intertext{and}
+        \pi_3' &= \pi_{2(A \prod B) C}
+            : (A \cprod B) \cprod C \to C.
+    \end{align*}
+    Using $\pi_2'$ and $\pi_3'$ we can create an object $P_{BC}$ in $\mathcal
+    C_{BC}$.  By Theorem \ref{product_f}, there exists a morphism $\pi_{23}' :
+    (A \prod B) \prod C \to B \prod C$ such that
+    \[
+        \pi_{1BC} \circ \pi_{23}' = \pi_2'
+    \]
+    and
+    \[
+        \pi_{2BC} \circ \pi_{23}' = \pi_3'.
+    \]
+    Then using $\pi_1'$ and $\pi_{23}'$, we can create an object $P_{ABC}$ in
+    $\mathcal C_{A(B \prod C)}$.  We will show that $P_{ABC}$ is terminal in
+    $\mathcal C_{A(B \prod C)}$.  Let $P : \mathcal C$ with morphisms $p_1 : P
+    \to A$ and $p_{23} : P \to B \prod C$.  Define
+    \[
+        p_2 = \pi_{1BC} \circ p_{23} : P \to B
+    \]
+    and
+    \[
+        p_3 = \pi_{2BC} \circ p_{23} : P \to C.
+    \]
+    Using $p_1$ and $p_2$, we can create an object $P_{AB} : \mathcal C_{AB}$.
+    By Theorem \ref{product_f}, there exists a morphism $f : P \to (A \prod B)$
+    such that
+    \[
+        \pi_{1AB} \circ f = p_1
+    \]
+    and
+    \[
+        \pi_{2AB} \circ f = p_2.
+    \]
+    By Theorem \ref{product_unique}, it suffices to prove that there exists
+    exactly one morphism from $P$ to $P_{ABC}$.  We will do this by proving that
+    one exists, and then showing that it's unique.
+
+    For existence, using $f$ and $p_3$, we can create an object $P' : \mathcal
+    C_{(A \prod B) C}$.  By Theorem \ref{product_f}, there exists a morphism $g
+    : P \to (A \prod B) \prod C$ such that
+    \[
+        \pi_{1 (A \prod B) C} \circ g = f
+    \]
+    and
+    \[
+        \pi_{2 (A \prod B) C} \circ g = p_3.
+    \]
+    Then
+    \begin{equation} \label{product_assoc1}
+        \pi_1' \circ g
+        = \pi_{1AB} \circ \pi_{1 (A \prod B) C} \circ g
+        = \pi_{1AB} \circ f = p_1.
+    \end{equation}
+    We also have
+    \[
+        \pi_{1BC} \circ \pi_{23}' \circ g
+        = \pi_2' \circ g
+        = \pi_{2AB} \circ \pi_{1 (A \prod B) C} \circ g
+        = \pi_{2AB} \circ f
+        = p_2
+        = \pi_{1BC} \circ p_{23}
+    \]
+    and
+    \[
+        \pi_{2BC} \circ \pi_{23}' \circ g
+        = \pi_3' \circ g
+        = \pi_{2 (A \prod B) C} \circ g'
+        = \pi_{2BC} \circ p_{23},
+    \]
+    so by Theorem \ref{product_mono},
+    \begin{equation} \label{product_assoc2}
+        \pi_{23}' \circ g = p_{23}.
+    \end{equation}
+    By equations \ref{product_assoc1} and \ref{product_assoc2}, $g$ is a
+    morphism from $P$ to $P_{ABC}$.
+
+    For uniqueness, let $a_1$ and $a_2$ be morphisms in $P \to (A \prod B) \prod
+    C$ such that
+    \[
+        \pi_1' \circ a_i = p_1
+    \]
+    and
+    \[
+        \pi_{23}' \circ a_i = p_{23}.
+    \]
+    Then
+    \[
+        \pi_{1AB} \circ \pi_{1 (A \prod B) C} \circ a_i
+        = \pi_1' \circ a_i
+        = p_1
+        = \pi_{1AB} \circ f
+    \]
+    and
+    \[
+        \pi_{2AB} \circ \pi_{1 (A \prod B) C} \circ a_i
+        = \pi_2' \circ a_i
+        = \pi_{1BC} \circ \pi_{23}' \circ a_i
+        = \pi_{1BC} \circ p_{23}
+        = p_2
+        = \pi_{2AB} \circ f,
+    \]
+    so by Theorem \ref{product_mono},
+    \[
+        \pi_{1 (A \prod B) C} \circ a_i = f.
+    \]
+    Also,
+    \[
+        \pi_{2 (A \prod B) C} \circ a_i
+        = \pi_3' \circ a_i
+        = \pi_{2BC} \circ \pi_{23}' \circ a_i
+        = \pi_{2BC} \circ p_{23}
+        = p_3.
+    \]
+    Thus, by Theorem \ref{product_f_uni} in $(A \prod B) \prod C$, $a_1 = a_2$.
 \end{proof}
 
 \section{Examples}

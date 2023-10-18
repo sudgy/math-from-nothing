@@ -237,21 +237,19 @@ Proof.
     pose (p3 := π2 B C ∘ p23).
     pose (P12 := make_product_obj A B P p1 p2).
     pose (f := product_f P12).
-    pose (P' := make_product_obj _ _ P f p3).
-    pose (g := product_f P').
     cbn.
     apply singleton_ex; [>split|].
-    -   apply ex_set_type.
+    -   pose (P' := make_product_obj _ _ P f p3).
+        pose (g := product_f P').
+        apply ex_set_type.
         unfold product_set; cbn.
         exists g.
-        unfold π1'.
         split.
-        +   rewrite <- cat_assoc.
+        +   unfold π1'.
+            rewrite <- cat_assoc.
             rewrite (product_f1 P').
             exact (product_f1 P12).
-        +   (*unfold p2 in f_in2.
-            unfold p3 in g_in2.*)
-            apply product_mono.
+        +   apply product_mono.
             *   rewrite cat_assoc.
                 rewrite (product_f1 ABC_BC); cbn.
                 unfold π2'.
@@ -326,18 +324,17 @@ Proof.
     exact product_assoc_iso.
 Qed.
 
-Theorem product_assoc_f1 : π1 A (B ∏ C) = π1 A B ∘ π1 (A ∏ B) C ∘ f.
+Theorem product_assoc_f1 : π1 A B ∘ π1 (A ∏ B) C ∘ f = π1 A (B ∏ C).
 Proof.
     unfold f, product_assoc_f.
-    symmetry; apply [|iso_f (terminal_unique _ ABC _ _)].
+    apply [|iso_f (terminal_unique _ ABC _ _)].
 Qed.
-Theorem product_assoc_f2 : π1 B C ∘ π2 A (B ∏ C) = π2 A B ∘ π1 (A ∏ B) C ∘ f.
+Theorem product_assoc_f2 : π2 A B ∘ π1 (A ∏ B) C ∘ f = π1 B C ∘ π2 A (B ∏ C).
 Proof.
     pose proof [|iso_f (terminal_unique _ ABC (product_term A (B ∏ C))
         product_assoc_term)] as eq.
     unfold product_set in eq; cbn in eq.
     change [_|] with f in eq.
-    change [_|] with f.
     change (obj_π1 _) with (π1 A (B ∏ C)) in eq.
     change (obj_π2 _) with (π2 A (B ∏ C)) in eq.
     rewrite <- (rand eq).
@@ -345,9 +342,10 @@ Proof.
     cbn in eq'.
     unfold π2' in eq'.
     rewrite <- eq'.
-    apply cat_assoc.
+    rewrite cat_assoc.
+    reflexivity.
 Qed.
-Theorem product_assoc_f3 : π2 B C ∘ π2 A (B ∏ C) = π2 (A ∏ B) C ∘ f.
+Theorem product_assoc_f3 : π2 (A ∏ B) C ∘ f = π2 B C ∘ π2 A (B ∏ C).
 Proof.
     pose proof [|iso_f (terminal_unique _ ABC (product_term A (B ∏ C))
         product_assoc_term)] as eq.
@@ -360,9 +358,10 @@ Proof.
     cbn in eq'.
     unfold π3' in eq'.
     rewrite <- eq'.
-    apply cat_assoc.
+    rewrite cat_assoc.
+    reflexivity.
 Qed.
-Theorem product_assoc_g1 : π1 A B ∘ π1 (A ∏ B) C = π1 A (B ∏ C) ∘ g.
+Theorem product_assoc_g1 : π1 A (B ∏ C) ∘ g = π1 A B ∘ π1 (A ∏ B) C.
 Proof.
     pose proof product_assoc_iso as fg.
     pose proof (is_isomorphism_pair_left _ _ fg) as f_iso.
@@ -372,7 +371,7 @@ Proof.
     rewrite (rand fg), cat_rid.
     symmetry; apply product_assoc_f1.
 Qed.
-Theorem product_assoc_g2 : π2 A B ∘ π1 (A ∏ B) C = π1 B C ∘ π2 A (B ∏ C) ∘ g.
+Theorem product_assoc_g2 : π1 B C ∘ π2 A (B ∏ C) ∘ g = π2 A B ∘ π1 (A ∏ B) C.
 Proof.
     pose proof product_assoc_iso as fg.
     pose proof (is_isomorphism_pair_left _ _ fg) as f_iso.
@@ -382,7 +381,7 @@ Proof.
     rewrite (rand fg), cat_rid.
     symmetry; apply product_assoc_f2.
 Qed.
-Theorem product_assoc_g3 : π2 (A ∏ B) C = π2 B C ∘ π2 A (B ∏ C) ∘ g.
+Theorem product_assoc_g3 : π2 B C ∘ π2 A (B ∏ C) ∘ g = π2 (A ∏ B) C.
 Proof.
     pose proof product_assoc_iso as fg.
     pose proof (is_isomorphism_pair_left _ _ fg) as f_iso.
