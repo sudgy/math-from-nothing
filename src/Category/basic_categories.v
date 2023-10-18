@@ -86,7 +86,7 @@ Proof.
         split; apply functional_ext; apply bij_inv_inv.
 Qed.
 
-Global Program Instance type_has_product : HasProducts TYPE := {
+Global Program Instance type_has_products : HasProducts TYPE := {
     product A B := make_product_obj A B (A * B)%type fst snd
 }.
 Next Obligation.

@@ -1179,13 +1179,6 @@ corresponding theorems for products by duality.
     this category \Type.
 \end{definition}
 
-\begin{theorem}
-    In \Type, isomorphisms are bijective.
-\end{theorem}
-\begin{proof}
-    This is a direct consequence of Instance \ref{inverse_ex_bijective}.
-\end{proof}
-
 \begin{definition}
     A monoid is a type equipped with a definition of addition and zero such that
     addition is associative and zero is a left and right identity.  A monoid
@@ -1307,6 +1300,95 @@ define with what we have right now as well.
 \end{theorem}
 \begin{proof}
     The proof is identical in form to the previous theorem.
+\end{proof}
+
+\section{The Category of Types}
+
+While particular categories will be explored more in the future, because types
+have already been described previously, we will explore the category of types
+here.
+
+\begin{theorem}
+    In \Type, a morphism is a monomorphism if and only if it is injective.
+\end{theorem}
+\begin{proof}
+    Let $\A$ and $\B$ be types with a function $f : \A \to \B$.  First assume
+    that $f$ is a monomorphism, and let $a$ and $b$ be values in $\A$ such that
+    $f(a) = f(b)$.  Then $f \circ (\lambda \_, a) = f \circ (\lambda \_, b)$,
+    and because $f$ is a monomorphism, $\lambda \_, a = \lambda \_, b$.  Thus,
+    $a = b$.
+
+    Now assume that $f$ is injective.  Then if $g$ and $h$ are morphisms such
+    that $f \circ g = f \circ h$, we must prove that for all $x$, $g(x) = h(x)$.
+    Because $f \circ g = f \circ h$, we have $f(g(x)) = f(h(x))$, so the result
+    follows from the injectivity of $f$.
+\end{proof}
+
+\begin{theorem}
+    In \Type, a morphism is an epimorphism if and only if it is surjective.
+\end{theorem}
+\begin{proof}
+    Let $\A$ and $\B$ be types with a function $f : \A \to \B$.  First assume
+    that $f$ is an epimorphism, and let $y : \B$.  Define $g : \A \to \Prop$ to
+    always have the value \vtt{True}, and define $h : \A \to \Prop$ to be equal
+    to $h(z) = \exists a, f(a) = z$.  Note that $g \circ f$ always has the value
+    \vtt{True}.  Furthermore, $h \circ f$ is the function $\lambda z, \exists a,
+    f(a) = f(z)$, which is also always \vtt{True}.  Thus, $g \circ f = h \circ
+    f$, and because $f$ is an epimorphism, $g = h$.  This means that $\exists a,
+    f(a) = z$ is always true, so $f$ is surjective.
+
+    Now assume that $f$ is surjective.  Then if $g$ and $h$ are morphisms such
+    that $g \circ f = h \circ f$, we must prove that for all $y : \B$, $g(y) =
+    h(y)$.  Because $f$ is surjective, there exists an $x$ such that $f(x) = y$.
+    Because $g \circ f = h \circ f$, we have $g(f(x)) = h(f(x))$, so $g(y) =
+    h(y)$ as required.
+\end{proof}
+
+\begin{theorem}
+    In \Type, a morphism is an isomorphism if and only if it is bijective.
+\end{theorem}
+\begin{proof}
+    This is a direct consequence of Instance \ref{inverse_ex_bijective} and
+    Theorem \ref{bijective_inverse_ex}.
+\end{proof}
+
+\begin{theorem}
+    \Type has products, which for types $\A$ and $\B$ is given by $\A \times \B$
+    and the projection operators $P_1$ and $P_2$.
+\end{theorem}
+\begin{proof}
+    We must prove that $\A \times \B$ satisfies the universal property of
+    products, that is, if $\P$ is a type with morphisms $p_1 : \P \to \A$ and
+    $p_2 : \P \to \B$, then there exists exactly one morphism $h$ from $\P$ to
+    $\A \times \B$ such that $P_1 \circ h = p_1$ and $P_2 \circ h = p_2$.
+    For existence, note that $h(x) = (p1(x), p2(x))$ works.  For uniqueness, let
+    $a$ and $b$ be morphisms from $\P$ to $\A \times \B$ such that $P_1 \circ a
+    = p_1$, $P_2 \circ a = p_2$, $P_1 \circ b = p_1$, and $P_2 \circ b = p_2$.
+    This means that $P_1 \circ a = P_1 \circ b$ and $P_2 \circ a = P_2 \circ b$.
+    Thus, for all $x : \P$, $P_1(a(x)) = P_1(b(x))$ and $P_2(a(x)) = P_2(b(x))$.
+    By the definition of the product type, this means that $a(x) = b(x)$, so $a
+    = b$.
+\end{proof}
+
+\begin{theorem}
+    \Type has coproducts, which for types $\A$ and $\B$ is given by $\A + \B$
+    and the constructors of $\A + \B$.
+\end{theorem}
+\begin{proof}
+    Call the constructors of $\A + \B$ $\iota_1$ and $\iota_2$.  We must prove
+    that $\A + \B$ satisfies the universal property of coproducts, that is, if
+    $\S$ is a type with morphisms $i_1 : \A \to \S$ and $i_2 : \A \to \S$, then
+    there exists exactly one morphism $h$ from $\A + \B$ to $\P$ such that $h
+    \circ \iota_1 = i_1$ and $h \circ \iota_2 = i_2$.  For existence, we can
+    just take a value in $\A + \B$ and if it was constructed from $\A$, set the
+    result to $i_1$, and if it was constructed from $\B$, set the result to
+    $i_2$.  For uniqueness, let $a$ and $b$ be morphisms from $\A + \B$ to $P$
+    such that $a \circ \iota_1 = i_1$, $a \circ \iota_2 = i_2$, $b \circ \iota_1
+    = i_1$, and $b \circ \iota_2 = i_2$.  This means that $a \circ \iota_1 = b
+    \circ \iota_1$ and $a \circ \iota_2 = b \circ \iota_2$.  Let $x : \A + \B$.
+    Then if $x : \A$, from $a \circ \iota_1 = b \circ \iota_1$ we have $a(x) =
+    b(x)$, and if $x : \B$, from $a \circ \iota_2 = b\circ \iota_2$ we have
+    $a(x) = b(x)$.  Either way, $a(x) = b(x)$, so $a = b$.
 \end{proof}
 
 \end{document}
