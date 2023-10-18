@@ -249,31 +249,31 @@ Proof.
     exact coproduct_assoc_iso.
 Qed.
 
-Theorem coproduct_assoc_f1 : ι1 (A ∐ B) C ∘ ι1 A B = f ∘ ι1 A (B ∐ C).
+Theorem coproduct_assoc_f1 : f ∘ ι1 A (B ∐ C) = ι1 (A ∐ B) C ∘ ι1 A B.
 Proof.
     exact (product_assoc_g1 (C0 := dual_category C0) A B C).
 Qed.
-Theorem coproduct_assoc_f2 : ι1 (A ∐ B) C ∘ ι2 A B = f ∘ ι2 A (B ∐ C) ∘ ι1 B C.
+Theorem coproduct_assoc_f2 : f ∘ ι2 A (B ∐ C) ∘ ι1 B C = ι1 (A ∐ B) C ∘ ι2 A B.
 Proof.
     rewrite <- cat_assoc.
     exact (product_assoc_g2 (C0 := dual_category C0) A B C).
 Qed.
-Theorem coproduct_assoc_f3 : ι2 (A ∐ B) C = f ∘ ι2 A (B ∐ C) ∘ ι2 B C.
+Theorem coproduct_assoc_f3 : f ∘ ι2 A (B ∐ C) ∘ ι2 B C = ι2 (A ∐ B) C.
 Proof.
     rewrite <- cat_assoc.
     exact (product_assoc_g3 (C0 := dual_category C0) A B C).
 Qed.
-Theorem coproduct_assoc_g1 : ι1 A (B ∐ C) = g ∘ ι1 (A ∐ B) C ∘ ι1 A B.
+Theorem coproduct_assoc_g1 : g ∘ ι1 (A ∐ B) C ∘ ι1 A B = ι1 A (B ∐ C).
 Proof.
     rewrite <- cat_assoc.
     exact (product_assoc_f1 (C0 := dual_category C0) A B C).
 Qed.
-Theorem coproduct_assoc_g2 : ι2 A (B ∐ C) ∘ ι1 B C = g ∘ ι1 (A ∐ B) C ∘ ι2 A B.
+Theorem coproduct_assoc_g2 : g ∘ ι1 (A ∐ B) C ∘ ι2 A B = ι2 A (B ∐ C) ∘ ι1 B C.
 Proof.
     rewrite <- cat_assoc.
     exact (product_assoc_f2 (C0 := dual_category C0) A B C).
 Qed.
-Theorem coproduct_assoc_g3 : ι2 A (B ∐ C) ∘ ι2 B C = g ∘ ι2 (A ∐ B) C.
+Theorem coproduct_assoc_g3 : g ∘ ι2 (A ∐ B) C = ι2 A (B ∐ C) ∘ ι2 B C.
 Proof.
     exact (product_assoc_f3 (C0 := dual_category C0) A B C).
 Qed.

@@ -1146,19 +1146,19 @@ corresponding theorems for products by duality.
     \amalg B) \amalg C$ and $g : (A \amalg B) \amalg C \to A \amalg (B \amalg
     C)$ such that
     \begin{align*}
-        \iota_{1(A \amalg B)C} \circ \iota_{1AB}
-            &= f \circ \iota_{1A(B \amalg C)}, \\
-        \iota_{1(A \amalg B)C} \circ \iota_{2AB}
-            &= f \circ \iota_{2A(B \amalg C)} \circ \iota_{1BC}, \\
-        \iota_{2(A \amalg B)C}
-            &= f \circ \iota_{2A(B \amalg C)} \circ \iota_{2BC}, \\
-        \iota_{1A(B \amalg C)}
-            &= g \circ \iota_{1(A \amalg B)C} \circ \iota_{1AB}, \\
-        \iota_{2A(B \amalg C)} \circ \iota_{1BC}
-            &= g \circ \iota_{1(A \amalg B)C} \circ \iota_{2AB}, \\
+        f \circ \iota_{1A(B \amalg C)}
+            &= \iota_{1(A \amalg B)C} \circ \iota_{1AB}, \\
+        f \circ \iota_{2A(B \amalg C)} \circ \iota_{1BC}
+            &= \iota_{1(A \amalg B)C} \circ \iota_{2AB}, \\
+        f \circ \iota_{2A(B \amalg C)} \circ \iota_{2BC}
+            &= \iota_{2(A \amalg B)C}, \\
+        g \circ \iota_{1(A \amalg B)C} \circ \iota_{1AB}
+            &= \iota_{1A(B \amalg C)}, \\
+        g \circ \iota_{1(A \amalg B)C} \circ \iota_{2AB}
+            &= \iota_{2A(B \amalg C)} \circ \iota_{1BC}, \\
     \intertext{and}
-        \iota_{2A(B \amalg C)} \circ \iota_{2BC}
-            &= g \circ \iota_{2(A \amalg B)C}.
+        g \circ \iota_{2(A \amalg B)C}
+            &= \iota_{2A(B \amalg C)} \circ \iota_{2BC}.
     \end{align*}
 \end{theorem}
 \begin{proof}
