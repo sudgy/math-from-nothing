@@ -117,6 +117,8 @@ Context (P : CoproductCat A B).
 
 Definition coproduct_f := [ex_singleton (coproduct_init A B P)|].
 
+Check coproduct_f.
+
 Theorem coproduct_f1 : coproduct_f ∘ ι1 A B = obj_ι1 P.
 Proof.
     apply [|ex_singleton (coproduct_init A B P)].
@@ -247,20 +249,6 @@ Proof.
     exact coproduct_assoc_iso.
 Qed.
 
-Theorem coproduct_assoc_g1 : ι1 A (B ∐ C) = g ∘ ι1 (A ∐ B) C ∘ ι1 A B.
-Proof.
-    rewrite <- cat_assoc.
-    exact (product_assoc_f1 (C0 := dual_category C0) A B C).
-Qed.
-Theorem coproduct_assoc_g2 : ι2 A (B ∐ C) ∘ ι1 B C = g ∘ ι1 (A ∐ B) C ∘ ι2 A B.
-Proof.
-    rewrite <- cat_assoc.
-    exact (product_assoc_f2 (C0 := dual_category C0) A B C).
-Qed.
-Theorem coproduct_assoc_g3 : ι2 A (B ∐ C) ∘ ι2 B C = g ∘ ι2 (A ∐ B) C.
-Proof.
-    exact (product_assoc_f3 (C0 := dual_category C0) A B C).
-Qed.
 Theorem coproduct_assoc_f1 : ι1 (A ∐ B) C ∘ ι1 A B = f ∘ ι1 A (B ∐ C).
 Proof.
     exact (product_assoc_g1 (C0 := dual_category C0) A B C).
@@ -274,6 +262,20 @@ Theorem coproduct_assoc_f3 : ι2 (A ∐ B) C = f ∘ ι2 A (B ∐ C) ∘ ι2 B C
 Proof.
     rewrite <- cat_assoc.
     exact (product_assoc_g3 (C0 := dual_category C0) A B C).
+Qed.
+Theorem coproduct_assoc_g1 : ι1 A (B ∐ C) = g ∘ ι1 (A ∐ B) C ∘ ι1 A B.
+Proof.
+    rewrite <- cat_assoc.
+    exact (product_assoc_f1 (C0 := dual_category C0) A B C).
+Qed.
+Theorem coproduct_assoc_g2 : ι2 A (B ∐ C) ∘ ι1 B C = g ∘ ι1 (A ∐ B) C ∘ ι2 A B.
+Proof.
+    rewrite <- cat_assoc.
+    exact (product_assoc_f2 (C0 := dual_category C0) A B C).
+Qed.
+Theorem coproduct_assoc_g3 : ι2 A (B ∐ C) ∘ ι2 B C = g ∘ ι2 (A ∐ B) C.
+Proof.
+    exact (product_assoc_f3 (C0 := dual_category C0) A B C).
 Qed.
 
 End CoproductAssoc.

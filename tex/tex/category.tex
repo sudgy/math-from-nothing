@@ -744,6 +744,8 @@ represent the vertical composition of two natural transformations.
 
 Throughout this section, let $C$ be a category and $A$ and $B$ be objects.
 
+\subsection{Products}
+
 \begin{definition}
     Define a category $C_{AB}$ where the objects are objects $P : C$ with
     morphisms $\pi_{P1} : P \to A$ and $\pi_{P2} : P \to B$.  The morphisms in
@@ -1055,6 +1057,112 @@ can be used, so here's a couple special cases:
         = p_3.
     \]
     Thus, by Theorem \ref{product_f_uni} in $(A \prod B) \prod C$, $a_1 = a_2$.
+\end{proof}
+
+\subsection{Coproducts}
+
+\begin{definition}
+    Define a category $C^{AB}$ where the objects are objects $P : C$ with
+    morphisms $\iota_{P1} : A \to P$ and $\iota_{P2} : B \to P$.  The morphisms
+    in $C^{AB}$ are morphisms $h : P_1 \to P_2$ such that
+    \[
+        h \circ \iota{P_1 1} = \iota{P_2 1}
+    \]
+    and
+    \[
+        h \circ \iota{P_1 2} = \iota{P_2 2}.
+    \]
+    The composition of these morphisms is the composition of the underlying
+    morphism, and the identity morphism is the identity morphism in $C$.
+\end{definition}
+
+This is precisely the definition of $C_{AB}$ in the dual category $\dual{C}$,
+showing that this is a category.
+
+\begin{class}
+    If, for every pair of objects $A$ and $B$ in $C$, there exists an object $A
+    \amalg B : C^{AB}$ that is an initial object in $C^{AB}$, we say that $C$
+    has coproducts.  That $A \amalg B$ is initial in $C^{AB}$ will be called the
+    universal property of $A \amalg B$.
+\end{class}
+
+By duality, if $C$ has products, then $\dual C$ has coproducts, and vice versa.
+Thus, all of the following theorems can be proven directly from the
+corresponding theorems for products by duality.
+
+\begin{theorem} \label{coproduct_f} \label{coproduct_f1} \label{coproduct_f2}
+    For any $P : C$ and morphisms $p_1 : A \to P$ and $p_2 : B \to P$, there
+    exists a morphism $f : A \amalg B \to P$ such that $f \circ \iota_1 = p_1$
+    and $f \circ \iota_2 = p_2$.
+\end{theorem}
+\begin{proof}
+    By duality from Theorem \ref{product_f}.
+\end{proof}
+
+\begin{theorem} \label{coproduct_f_uni} \label{coproduct_f_uni2}
+    For any $P$ with morphisms $p_1 : A \to P$ and $p_2 : B \to P$, for all
+    morphisms $f$ and $g$ in $A \amalg B \to P$, if $f \circ \iota_1 = p_1$, $f
+    \circ \iota_2 = p_2$, $g \circ \iota_1 = p_1$, and $g \circ \iota_2 = p_2$,
+    then $f = g$.
+\end{theorem}
+\begin{proof}
+    By duality from Theorem \ref{product_f_uni}.
+\end{proof}
+
+\begin{theorem} \label{coproduct_epi}
+    For all objects $Z : C$ and morphisms $f$ and $g$ in $A \amalg B \to Z$,
+    if
+    \[
+        f \circ \iota_1 = g \circ \iota_1
+    \]
+    and
+    \[
+        f \circ \iota_2 = g \circ \iota_2
+    \]
+    then $f = g$.
+\end{theorem}
+\begin{proof}
+    By duality from Theorem \ref{product_mono}.
+\end{proof}
+
+\begin{theorem} \label{coproduct_comm}
+    There exists an isomorphism pair $f : A \amalg B \to B \amalg A$ and $g : B
+    \amalg A \to A \amalg B$ such that
+    \begin{align*}
+        f \circ \iota_{2AB} &= \iota_{1BA}, \\
+        f \circ \iota_{1AB} &= \iota_{2BA}, \\
+        g \circ \iota_{2BA} &= \iota_{1AB}, \\
+    \intertext{and}
+        g \circ \iota_{1BA} &= \iota_{2AB}.
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    By duality from Theorem \ref{product_comm}.
+\end{proof}
+
+\begin{theorem} \label{coproduct_assoc}
+    Let $\mathcal C$ be a category and $A$, $B$, and $C$ be objects in $\mathcal
+    C$.  Then there exists an isomorphism pair $f : A \amalg (B \amalg C) \to (A
+    \amalg B) \amalg C$ and $g : (A \amalg B) \amalg C \to A \amalg (B \amalg
+    C)$ such that
+    \begin{align*}
+        \iota_{1(A \amalg B)C} \circ \iota_{1AB}
+            &= f \circ \iota_{1A(B \amalg C)}, \\
+        \iota_{1(A \amalg B)C} \circ \iota_{2AB}
+            &= f \circ \iota_{2A(B \amalg C)} \circ \iota_{1BC}, \\
+        \iota_{2(A \amalg B)C}
+            &= f \circ \iota_{2A(B \amalg C)} \circ \iota_{2BC}, \\
+        \iota_{1A(B \amalg C)}
+            &= g \circ \iota_{1(A \amalg B)C} \circ \iota_{1AB}, \\
+        \iota_{2A(B \amalg C)} \circ \iota_{1BC}
+            &= g \circ \iota_{1(A \amalg B)C} \circ \iota_{2AB}, \\
+    \intertext{and}
+        \iota_{2A(B \amalg C)} \circ \iota_{2BC}
+            &= g \circ \iota_{2(A \amalg B)C}.
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    By duality from Theorem \ref{product_assoc}.
 \end{proof}
 
 \section{Examples}
