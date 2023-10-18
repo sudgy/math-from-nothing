@@ -178,6 +178,15 @@ Proof.
             exact b_ge.
 Qed.
 
+Theorem from_nat_pos1 : ∀ a, 1 ≤ from_nat (nat_suc a).
+Proof.
+    intros a.
+    rewrite <- (homo_one (f := from_nat)).
+    rewrite <- homo_le2.
+    apply nat_neq0_leq1.
+    apply nat_zero_suc.
+Qed.
+
 Theorem from_nat_min : ∀ a b,
     from_nat (min a b) = min (from_nat a) (from_nat b).
 Proof.

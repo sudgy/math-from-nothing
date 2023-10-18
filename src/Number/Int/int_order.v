@@ -9,144 +9,137 @@ Require Import set.
 Require Export order_mult.
 Require Import nat_abstract.
 
-Definition int_suc a := a + 1.
-Definition int_pre a := a + -(1).
-
 Notation "a ≦ b" := (fst a + snd b ≤ snd a + fst b)
     (at level 70, no associativity) : int_scope.
 
-(* begin hide *)
 Open Scope int_scope.
 
 Lemma int_le_wd_1 : ∀ a b c d, a ~ b → c ~ d → a ≦ c → b ≦ d.
 Proof.
     intros [a1 a2] [b1 b2] [c1 c2] [d1 d2] ab cd le.
-    simpl in *.
+    cbn in *.
     symmetry in ab.
-    apply le_lplus with (a2 + b1) in le.
-    apply le_lplus with (c1 + d2) in le.
-    rewrite plus_comm in ab.
-    rewrite ab in le at 2; clear ab.
-    rewrite cd in le at 2; clear cd.
-    plus_bring_left a1 in le; apply le_plus_lcancel in le.
-    plus_bring_left a2 in le; apply le_plus_lcancel in le.
-    plus_bring_left c1 in le; apply le_plus_lcancel in le.
-    plus_bring_left c2 in le; apply le_plus_lcancel in le.
-    rewrite (plus_comm b1 d2).
-    rewrite (plus_comm b2 d1).
+    apply le_lplus with b2 in le.
+    rewrite plus_assoc, (plus_comm b2) in le.
+    rewrite <- ab in le.
+    rewrite <- plus_assoc in le.
+    do 2 rewrite (plus_3 _ a2) in le.
+    apply le_plus_lcancel in le.
+    apply le_rplus with d2 in le.
+    rewrite <- (plus_assoc b2) in le.
+    rewrite cd in le.
+    rewrite <- plus_assoc in le.
+    rewrite (plus_comm c2) in le.
+    do 2 rewrite plus_assoc in le.
+    apply le_plus_rcancel in le.
     exact le.
 Qed.
 Lemma int_le_wd : ∀ a b c d, a ~ b → c ~ d → (a ≦ c) = (b ≦ d).
 Proof.
     intros a b c d ab cd.
     apply propositional_ext.
-    split; apply int_le_wd_1; auto; try apply eq_symmetric; auto.
+    split; apply int_le_wd_1.
+    3, 4: apply eq_symmetric.
+    all: assumption.
 Qed.
 
 Global Instance int_order : Order int := {
     le := binary_op int_le_wd;
 }.
 
-Lemma int_le_connex : ∀ a b, {a ≤ b} + {b ≤ a}.
+Global Instance int_le_connex_class : Connex le.
 Proof.
+    split.
     intros a b.
     equiv_get_value a b.
-    unfold le; simpl; equiv_simpl.
-    destruct a as [a1 a2], b as [b1 b2]; simpl.
+    destruct a as [a1 a2], b as [b1 b2].
+    unfold le; equiv_simpl.
     rewrite (plus_comm b1 a2).
     rewrite (plus_comm b2 a1).
-    destruct (connex (a1 + b2) (a2 + b1)) as [eq|eq].
-        left; exact eq.
-        right; exact eq.
+    apply connex.
 Qed.
 
-Global Instance int_le_connex_class : Connex le := {
-    connex := int_le_connex
-}.
 
-Lemma int_le_antisymmetric : ∀ a b, a ≤ b → b ≤ a → a = b.
+Global Instance int_le_antisym_class : Antisymmetric le.
 Proof.
+    split.
     intros a b.
     equiv_get_value a b.
-    unfold le; simpl; equiv_simpl.
-    destruct a as [a1 a2], b as [b1 b2]; simpl.
+    destruct a as [a1 a2], b as [b1 b2].
+    unfold le; equiv_simpl.
     intros ab cd.
     rewrite (plus_comm a2 b1) in ab.
     rewrite (plus_comm b2 a1) in cd.
-    apply antisym; auto.
+    exact (antisym ab cd).
 Qed.
 
-Global Instance int_le_antisym_class : Antisymmetric le := {
-    antisym := int_le_antisymmetric
-}.
 
-Lemma int_le_transitive : ∀ a b c, a ≤ b → b ≤ c → a ≤ c.
+Global Instance int_le_trans_class : Transitive le.
 Proof.
+    split.
     intros a b c.
     equiv_get_value a b c.
-    unfold le; simpl; equiv_simpl.
-    destruct a as [a1 a2], b as [b1 b2], c as [c1 c2]; simpl.
+    destruct a as [a1 a2], b as [b1 b2], c as [c1 c2].
+    unfold le; equiv_simpl.
     intros ab bc.
     apply le_rplus with c2 in ab.
     apply le_lplus with a2 in bc.
-    do 2 rewrite plus_assoc in bc.
+    do 2 rewrite <- plus_assoc in ab.
     pose proof (trans ab bc) as eq; clear ab bc.
-    plus_bring_left b2 in eq; apply le_plus_lcancel in eq.
+    do 2 rewrite (plus_3 _ b2) in eq.
+    apply le_plus_lcancel in eq.
     exact eq.
 Qed.
 
-Global Instance int_le_trans_class : Transitive le := {
-    trans := int_le_transitive;
-}.
-
-Lemma int_le_lplus : ∀ a b c, a ≤ b → c + a ≤ c + b.
+Global Instance int_le_lplus_class : OrderLplus int.
 Proof.
+    split.
     intros a b c.
     equiv_get_value a b c.
-    unfold le, plus; simpl; equiv_simpl.
-    destruct a as [a1 a2], b as [b1 b2], c as [c1 c2]; simpl.
+    destruct a as [a1 a2], b as [b1 b2], c as [c1 c2].
+    unfold le, plus; equiv_simpl.
     intro eq.
-    plus_bring_left c1; apply le_lplus.
-    plus_bring_left c2; apply le_lplus.
+    rewrite plus_4, (plus_4 c2).
+    rewrite (plus_comm c1).
+    apply le_lplus.
     exact eq.
 Qed.
 
-Global Instance int_le_lplus_class : OrderLplus int := {
-    le_lplus := int_le_lplus;
-}.
-(* end hide *)
 Theorem int_pos_nat_ex : ∀ a, 0 ≤ a → ∃ n, a = from_nat n.
 Proof.
     intros a.
     equiv_get_value a.
+    destruct a as [a1 a2].
     unfold le, zero; equiv_simpl.
-    destruct a as [a1 a2]; simpl.
     intro eq.
     do 2 rewrite plus_lid in eq.
     pose proof (nat_le_ex eq) as [c c_eq].
     exists c.
     rewrite from_nat_int.
-    equiv_simpl; simpl.
+    equiv_simpl.
     rewrite plus_rid.
     rewrite plus_comm.
     symmetry; exact c_eq.
 Qed.
 
-Theorem int_neg_nat_ex : ∀ a, a ≤ 0 → ∃ n, -a = from_nat n.
+Theorem int_neg_nat_ex : ∀ a, a ≤ 0 → ∃ n, a = -from_nat n.
 Proof.
     intros a a_neg.
-    apply int_pos_nat_ex.
-    apply neg_pos.
-    exact a_neg.
+    apply neg_pos in a_neg.
+    apply int_pos_nat_ex in a_neg as [n n_eq].
+    exists n.
+    apply neg_eq.
+    rewrite neg_neg.
+    exact n_eq.
 Qed.
 
-(* begin hide *)
-Lemma int_le_mult : ∀ a b, 0 ≤ a → 0 ≤ b → 0 ≤ a * b.
+Global Instance int_le_mult_class : OrderMult int.
 Proof.
+    split.
     intros a b a_pos b_pos.
     pose proof (int_pos_nat_ex a a_pos) as [m m_eq].
     pose proof (int_pos_nat_ex b b_pos) as [n n_eq].
-    rewrite m_eq, n_eq.
+    subst a b.
     do 2 rewrite from_nat_int.
     unfold zero at 1, mult, le; equiv_simpl.
     rewrite mult_lanni, mult_ranni.
@@ -154,117 +147,65 @@ Proof.
     apply nat_pos.
 Qed.
 
-Global Instance int_le_mult_class : OrderMult int := {
-    le_mult := int_le_mult;
-}.
-
-Lemma int_le_mult_lcancel_pos : ∀ a b c, 0 < c → c * a ≤ c * b → a ≤ b.
+Global Instance int_le_mult_lcancel : OrderMultLcancel int.
 Proof.
+    split.
     intros a b c c_pos eq.
-    classic_case (a ≤ b) as [C|contr]; auto.
+    classic_contradiction contr.
     rewrite nle_lt in contr.
-    apply lt_lmult_pos with c in contr; auto.
-    destruct (le_lt_trans eq contr); contradiction.
+    apply lt_lmult_pos with c in contr; [>|exact c_pos].
+    contradiction (irrefl _ (le_lt_trans eq contr)).
 Qed.
 
-Global Instance int_le_mult_lcancel : OrderMultLcancel int := {
-    le_mult_lcancel_pos := int_le_mult_lcancel_pos;
-}.
-(* end hide *)
 Theorem nat_nz_int : ∀ n, (0 : int) ≠ from_nat (nat_suc n).
 Proof.
     intros n n_eq.
     rewrite <- homo_zero in n_eq.
     apply from_nat_inj in n_eq.
-    inversion n_eq.
+    exact (nat_zero_suc n_eq).
 Qed.
 
-Theorem int_lt_suc : ∀ a, a < int_suc a.
+Theorem int_lt_nat : ∀ a b,
+    to_equiv int_equiv a < to_equiv int_equiv b ↔ fst a + snd b < snd a + fst b.
 Proof.
-    intros a.
-    unfold int_suc.
-    rewrite <- (plus_rid a) at 1.
-    apply lt_lplus.
-    exact one_pos.
+    intros a b.
+    unfold strict, le at 1; equiv_simpl.
+    rewrite (plus_comm (fst b)).
+    reflexivity.
 Qed.
-Theorem int_le_suc : ∀ a, a ≤ int_suc a.
-Proof.
-    apply int_lt_suc.
-Qed.
-Theorem int_pre_lt : ∀ a, int_pre a < a.
-Proof.
-    intros a.
-    unfold int_pre.
-    rewrite <- (plus_rid a) at 2.
-    apply lt_lplus.
-    rewrite <- neg_zero.
-    rewrite <- lt_neg.
-    exact one_pos.
-Qed.
-Theorem int_pre_le : ∀ a, int_pre a ≤ a.
-Proof.
-    apply int_pre_lt.
-Qed.
-Theorem int_lt_suc_le : ∀ a b, a < int_suc b → a ≤ b.
+
+Theorem int_lt_suc_le : ∀ a b, a < b + 1 ↔ a ≤ b.
 Proof.
     intros a b.
     equiv_get_value a b.
     destruct a as [a1 a2], b as [b1 b2].
-    unfold strict, le, int_suc, plus, one; equiv_simpl.
-    intros eq.
-    rewrite plus_rid in eq.
-    destruct eq as [leq neq].
-    rewrite (plus_comm _ a2) in neq.
-    assert (a1 + b2 < a2 + (b1 + 1)) as eq by (split; auto).
-    change 1 with (nat_suc 0) in eq.
-    do 2 rewrite nat_plus_rsuc in eq.
-    rewrite nat_lt_suc_le in eq.
-    rewrite plus_rid in eq.
-    exact eq.
+    unfold plus, one, le at 2; equiv_simpl.
+    rewrite plus_rid.
+    rewrite int_lt_nat; cbn.
+    rewrite (plus_comm _ 1).
+    rewrite plus_3.
+    rewrite nat_lt_suc_le.
+    reflexivity.
 Qed.
-Theorem int_le_lt_suc : ∀ a b, a ≤ b → a < int_suc b.
+Theorem int_le_suc_lt : ∀ a b, a + 1 ≤ b ↔ a < b.
 Proof.
     intros a b.
-    equiv_get_value a b.
-    destruct a as [a1 a2], b as [b1 b2].
-    unfold strict, le, int_suc, plus, one; equiv_simpl.
-    intros eq.
-    rewrite <- nat_lt_suc_le in eq.
-    change 1 with (nat_suc 0).
-    repeat rewrite nat_plus_rsuc.
-    rewrite nat_plus_lsuc.
-    do 2 rewrite plus_rid.
-    rewrite (plus_comm b1).
-    apply eq.
+    rewrite <- int_lt_suc_le.
+    split; intro eq.
+    -   apply lt_plus_rcancel in eq; exact eq.
+    -   apply lt_rplus; exact eq.
 Qed.
-Theorem int_pre_lt_le : ∀ a b, int_pre a < b → a ≤ b.
+Theorem int_le_pre_lt : ∀ a b, a ≤ b ↔ a - 1 < b.
 Proof.
-    intros a b eq.
-    apply int_lt_suc_le.
-    unfold int_pre in eq.
-    apply lt_rplus with 1 in eq.
-    rewrite <- plus_assoc, plus_linv, plus_rid in eq.
-    exact eq.
+    intros a b.
+    rewrite <- lt_plus_rrmove.
+    symmetry; apply int_lt_suc_le.
 Qed.
-Theorem int_le_pre_lt : ∀ a b, a ≤ b → int_pre a < b.
+Theorem int_lt_pre_le : ∀ a b, a < b ↔ a ≤ b - 1.
 Proof.
-    intros a b eq.
-    apply int_le_lt_suc in eq.
-    unfold int_pre.
-    apply lt_plus_rrmove.
-    exact eq.
-Qed.
-
-(* begin hide *)
-Close Scope int_scope.
-(* end hide *)
-Theorem nat_to_int_pos : ∀ a, 0 ≤ from_nat a.
-Proof.
-    intros a.
-    rewrite from_nat_int.
-    unfold zero at 1, le; equiv_simpl.
-    do 2 rewrite plus_lid.
-    apply nat_pos.
+    intros a b.
+    rewrite <- le_plus_lrmove.
+    symmetry; apply int_le_suc_lt.
 Qed.
 
 Theorem int_pos_nat1_ex : ∀ n, 0 < n → ∃ n', n = from_nat (nat_suc n').
@@ -272,44 +213,22 @@ Proof.
     intros n' n_pos.
     pose proof (int_pos_nat_ex _ (land n_pos)) as [n n_eq].
     subst n'.
-    rewrite <- (homo_zero (f := from_nat)) in n_pos.
-    pose proof (homo_lt2 (f := from_nat) 0 n) as stupid.
-    apply stupid in n_pos.
-    destruct n_pos as [C0 n_nz]; clear C0.
-    nat_destruct n; try contradiction.
-    clear n_nz.
-    exists n.
-    reflexivity.
+    nat_destruct n.
+    -   setoid_rewrite homo_zero in n_pos.
+        contradiction (irrefl _ n_pos).
+    -   exists n.
+        reflexivity.
 Qed.
 
 Theorem int_neg_nat1_ex : ∀ n, n < 0 → ∃ n', n = -from_nat (nat_suc n').
 Proof.
     intros n n_lt.
-    apply lt_neg in n_lt.
-    rewrite neg_zero in n_lt.
+    apply neg_pos2 in n_lt.
     pose proof (int_pos_nat1_ex _ n_lt) as [n' n_eq].
     exists n'.
-    apply (f_equal neg) in n_eq.
-    rewrite neg_neg in n_eq.
+    apply neg_eq.
+    rewrite neg_neg.
     exact n_eq.
-Qed.
-
-Theorem nat1_to_int_pos : ∀ n, 0 < from_nat (nat_suc n).
-Proof.
-    intros n.
-    split.
-    -   apply nat_to_int_pos.
-    -   apply nat_nz_int.
-Qed.
-
-Theorem nat1_to_int_pos1 : ∀ n, 1 ≤ from_nat (nat_suc n).
-Proof.
-    intros n.
-    rewrite <- (homo_one (f := from_nat)).
-    apply (homo_le2 (f := from_nat)).
-    unfold one; cbn.
-    rewrite nat_sucs_le.
-    apply nat_pos.
 Qed.
 
 Global Program Instance int_archimedean : Archimedean int.
@@ -317,7 +236,7 @@ Next Obligation.
     rename H into x_pos, H0 into y_pos.
     pose proof (int_pos_nat1_ex _ x_pos) as [a x_eq].
     exists (nat_suc (nat_suc a)).
-    change (nat_suc (nat_suc a) × y) with (y + nat_suc a × y).
+    rewrite nat_mult_suc.
     rewrite nat_mult_from.
     rewrite <- x_eq.
     clear x_eq a.
@@ -326,8 +245,9 @@ Next Obligation.
     apply (le_lt_trans2 ltq).
     rewrite <- (mult_rid x) at 1.
     apply le_lmult_pos; [>apply x_pos|].
-    apply int_pre_lt_le.
-    applys_eq y_pos.
-    unfold int_pre.
-    apply plus_rinv.
+    rewrite int_le_pre_lt.
+    rewrite plus_rinv.
+    exact y_pos.
 Qed.
+
+Close Scope int_scope.
