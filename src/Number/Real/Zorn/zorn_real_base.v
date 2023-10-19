@@ -207,14 +207,14 @@ Proof.
 Qed.
 
 Theorem arch_ordered_homo_int : ∀ f, arch_ordered_homo f →
-    ∀ n, f (int_to_abstract n) = int_to_abstract n.
+    ∀ n, f (from_int n) = from_int n.
 Proof.
     intros f f_homo n.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
     equiv_get_value n.
     destruct n as [m n].
-    unfold int_to_abstract; equiv_simpl.
-    unfold int_to_abstract_base; cbn.
+    unfold from_int; equiv_simpl.
+    unfold from_int_base; cbn.
     rewrite f_plus.
     rewrite arch_ordered_homo_neg by exact f_homo.
     do 2 rewrite arch_ordered_homo_nat by exact f_homo.
@@ -232,7 +232,7 @@ Proof.
     rewrite f_mult.
     rewrite arch_ordered_homo_div.
     2: exact f_homo.
-    2: apply int_to_abstract_nz.
+    2: apply from_int_nz.
     do 2 rewrite arch_ordered_homo_int by exact f_homo.
     reflexivity.
 Qed.

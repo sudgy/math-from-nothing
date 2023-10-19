@@ -349,7 +349,7 @@ Proof.
                     rewrite Heqm.
                     change 0 with (nat_to_rat 0).
                     change 1 with (int_to_rat 1).
-                    rewrite <- (homo_one (V := int)).
+                    rewrite <- (homo_one (f := from_nat) (V := int)).
                     rewrite <- nat_to_rat_plus.
                     rewrite plus_comm.
                     rewrite nat_to_rat_lt.

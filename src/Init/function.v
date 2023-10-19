@@ -64,6 +64,8 @@ Proof.
         exists x.
         reflexivity.
 Qed.
+(** Keeping this seems to cause too many freezes *)
+Global Remove Hints identity_bijective : typeclass_instances.
 
 Global Instance inj_comp {U V W} (f : U → V) (g : V → W)
     `{@Injective U V f, @Injective V W g}
@@ -96,6 +98,8 @@ Proof.
     -   apply inj_comp; assumption.
     -   apply sur_comp; assumption.
 Qed.
+(** Keeping these seems to cause too many freezes *)
+Global Remove Hints inj_comp sur_comp bij_comp : typeclass_instances.
 
 Theorem empty_inj {A B H} : Injective (empty_function A B H).
 Proof.

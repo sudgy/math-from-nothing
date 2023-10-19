@@ -117,8 +117,6 @@ Context (P : CoproductCat A B).
 
 Definition coproduct_f := [ex_singleton (coproduct_init A B P)|].
 
-Check coproduct_f.
-
 Theorem coproduct_f1 : coproduct_f ∘ ι1 A B = obj_ι1 P.
 Proof.
     apply [|ex_singleton (coproduct_init A B P)].

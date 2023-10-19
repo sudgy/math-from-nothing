@@ -51,7 +51,7 @@ Proof.
         {
             intros n.
             apply div_pos.
-            rewrite <- homo_zero.
+            rewrite <- (homo_zero (f := from_nat)).
             rewrite <- homo_lt2.
             apply nat_pos2.
         }

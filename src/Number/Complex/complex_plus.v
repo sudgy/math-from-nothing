@@ -72,7 +72,7 @@ Theorem int_to_complex_plus : ∀ a b,
 Proof.
     intros a b.
     unfold int_to_complex.
-    rewrite int_to_abstract_plus.
+    setoid_rewrite homo_plus.
     apply real_to_complex_plus.
 Qed.
 

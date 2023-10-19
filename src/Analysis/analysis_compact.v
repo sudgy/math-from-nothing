@@ -287,7 +287,7 @@ Proof.
     Unshelve.
     unfold le; cbn.
     apply le_div_pos.
-    -   rewrite <- homo_zero.
+    -   rewrite <- (homo_zero (f := from_nat)).
         change (1 + from_nat N) with (from_nat (U := real) (nat_suc N)).
         rewrite <- homo_lt2.
         apply nat_pos2.

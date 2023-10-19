@@ -180,7 +180,7 @@ Theorem int_to_complex_mult : ∀ a b,
 Proof.
     intros a b.
     unfold int_to_complex.
-    rewrite int_to_abstract_mult.
+    setoid_rewrite homo_mult.
     apply real_to_complex_mult.
 Qed.
 

@@ -61,6 +61,7 @@ Proof.
     reflexivity.
 Qed.
 
+Local Existing Instance identity_bijective.
 Program Definition IntegralDomain : Category := {|
     cat_U := IntegralDomainObj;
     morphism M N := IntegralDomainHomomorphism M N;
@@ -77,6 +78,7 @@ Program Definition IntegralDomain : Category := {|
         {|homo_one := Logic.eq_refl : identity 1 = 1|}
         bij_inj;
 |}.
+Local Remove Hints identity_bijective : typeclass_instances.
 Next Obligation.
     apply domain_homo_eq; cbn.
     reflexivity.
