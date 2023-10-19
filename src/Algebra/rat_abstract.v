@@ -1,12 +1,12 @@
 Require Import init.
 
-Require Import int_abstract.
 Require Import fraction_base.
 
 Require Export rat.
 Require Import set.
 Require Import fraction_order.
 Require Import nat.
+Require Import int.
 Require Import order_minmax.
 
 Section RatAbstract.

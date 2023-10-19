@@ -3,10 +3,10 @@ Require Import init.
 Require Export complex_base.
 Require Export complex_plus.
 Require Import nat.
+Require Import int.
 Require Import rat.
 Require Import real.
 
-Require Import int_abstract.
 Require Import rat_abstract.
 
 Global Instance complex_mult : Mult complex := {

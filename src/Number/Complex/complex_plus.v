@@ -2,10 +2,10 @@ Require Import init.
 
 Require Export complex_base.
 Require Import nat.
+Require Import int.
 Require Import rat.
 Require Import real.
 
-Require Import int_abstract.
 Require Import rat_abstract.
 
 Global Instance complex_plus : Plus complex := {

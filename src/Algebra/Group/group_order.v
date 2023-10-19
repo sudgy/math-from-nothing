@@ -6,7 +6,7 @@ Require Export group_subgroup.
 Require Import set.
 Require Export card.
 Require Import card_types.
-Require Export int_abstract.
+Require Export int.
 
 Require Import mult_div.
 Require Import nat_domain.

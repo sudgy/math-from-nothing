@@ -94,8 +94,9 @@
 ./src/Number/Int/int_plus.v
 ./src/Number/Int/int_mult.v
 ./src/Number/Int/int_order.v
+./src/Number/Int/int_abstract.v
+./src/Number/Int/int_from.v
 ./src/Number/Int/int.v
-./src/Algebra/int_abstract.v
 
 ./src/Algebra/Ring/ring_ideal.v
 ./src/Algebra/Ring/Domain/mult_div.v

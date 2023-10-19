@@ -3,7 +3,6 @@ Require Import init.
 Require Export real_base.
 
 Require Export nat_abstract.
-Require Export int_abstract.
 Require Import rat_abstract.
 Require Import fraction_base.
 
