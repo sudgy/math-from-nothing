@@ -144,3 +144,38 @@ Qed.
 (* begin hide *)
 End MinMax.
 (* end hide *)
+
+Section MinMaxHomo.
+
+Context {U V} `{TotalOrder U, TotalOrder V}.
+Context (f : U → V) `{@HomomorphismLe2 U V UO UO0 f}.
+
+Theorem homo_min : ∀ a b, f (min a b) = min (f a) (f b).
+Proof.
+    intros a b.
+    destruct (connex a b) as [leq|leq].
+    -   rewrite (min_leq _ _ leq).
+        rewrite homo_le2 in leq.
+        rewrite (min_leq _ _ leq).
+        reflexivity.
+    -   rewrite (min_req _ _ leq).
+        rewrite homo_le2 in leq.
+        rewrite (min_req _ _ leq).
+        reflexivity.
+Qed.
+
+Theorem homo_max : ∀ a b, f (max a b) = max (f a) (f b).
+Proof.
+    intros a b.
+    destruct (connex a b) as [leq|leq].
+    -   rewrite (max_req _ _ leq).
+        rewrite homo_le2 in leq.
+        rewrite (max_req _ _ leq).
+        reflexivity.
+    -   rewrite (max_leq _ _ leq).
+        rewrite homo_le2 in leq.
+        rewrite (max_leq _ _ leq).
+        reflexivity.
+Qed.
+
+End MinMaxHomo.

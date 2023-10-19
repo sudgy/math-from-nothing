@@ -2072,6 +2072,34 @@ numbers with no ambiguity.
     $f(\min(a, b), \max(a, b)) = f(b, a) = f(a, b)$.
 \end{proof}
 
+\begin{theorem} \label{homo-min}
+    If $f$ is a function that preserves inequalities in both directions, then
+    for all $a$ and $b$,
+    \[
+        f(\min(a, b)) = \min(f(a), f(b)).
+    \]
+\end{theorem}
+\begin{proof}
+    Either $a \leq b$ or $b \leq a$.  If $a \leq b$, then $f(a) \leq f(b)$, so
+    $\min(a, b) = a$ and $\min(f(a), f(b)) = f(a)$, meaning that we just need to
+    prove $f(a) = f(a)$, which is trivial.  The case $b \leq a$ is the same in
+    form.
+\end{proof}
+
+\begin{theorem} \label{homo-max}
+    If $f$ is a function that preserves inequalities in both directions, then
+    for all $a$ and $b$,
+    \[
+        f(\max(a, b)) = \max(f(a), f(b)).
+    \]
+\end{theorem}
+\begin{proof}
+    Either $a \leq b$ or $b \leq a$.  If $a \leq b$, then $f(a) \leq f(b)$, so
+    $\max(a, b) = b$ and $\max(f(a), f(b)) = f(b)$, meaning that we just need to
+    prove $f(b) = f(b)$, which is trivial.  The case $b \leq a$ is the same in
+    form.
+\end{proof}
+
 \subsection{Dictionary Order}
 
 \begin{definition}

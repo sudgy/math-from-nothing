@@ -6,7 +6,6 @@ Require Export nat_mult.
 Require Export nat_order.
 Require Export nat_abstract.
 Require Import set_order.
-Require Import order_minmax.
 
 Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     match a with
@@ -185,36 +184,6 @@ Proof.
     rewrite <- homo_le2.
     apply nat_neq0_leq1.
     apply nat_zero_suc.
-Qed.
-
-Theorem from_nat_min : ∀ a b,
-    from_nat (min a b) = min (from_nat a) (from_nat b).
-Proof.
-    intros a b.
-    destruct (connex a b) as [leq|leq].
-    -   rewrite (min_leq _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (min_leq _ _ leq).
-        reflexivity.
-    -   rewrite (min_req _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (min_req _ _ leq).
-        reflexivity.
-Qed.
-
-Theorem from_nat_max : ∀ a b,
-    from_nat (max a b) = max (from_nat a) (from_nat b).
-Proof.
-    intros a b.
-    destruct (connex a b) as [leq|leq].
-    -   rewrite (max_req _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (max_req _ _ leq).
-        reflexivity.
-    -   rewrite (max_leq _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (max_leq _ _ leq).
-        reflexivity.
 Qed.
 
 (* begin hide *)

@@ -98,14 +98,6 @@
 ./src/Number/Int/int_from.v
 ./src/Number/Int/int.v
 
-./src/Algebra/Ring/ring_ideal.v
-./src/Algebra/Ring/Domain/mult_div.v
-./src/Algebra/Ring/Domain/euclidean_domain.v
-./src/Algebra/Ring/Domain/gcd.v
-./src/Algebra/Ring/Domain/principle_ideal.v
-./src/Algebra/Ring/Domain/factorization.v
-./src/Algebra/Ring/Domain/nat_domain.v
-
 ./src/Algebra/Ring/Fraction/fraction_base.v
 ./src/Algebra/Ring/Fraction/fraction_plus.v
 ./src/Algebra/Ring/Fraction/fraction_mult.v
@@ -152,6 +144,14 @@
 
 ./src/Algebra/Group/group_subgroup.v
 ./src/Algebra/Group/group_order.v
+
+./src/Algebra/Ring/ring_ideal.v
+./src/Algebra/Ring/Domain/mult_div.v
+./src/Algebra/Ring/Domain/euclidean_domain.v
+./src/Algebra/Ring/Domain/gcd.v
+./src/Algebra/Ring/Domain/principle_ideal.v
+./src/Algebra/Ring/Domain/factorization.v
+./src/Algebra/Ring/Domain/nat_domain.v
 
 ./src/Algebra/Linear/Base/linear_base.v
 ./src/Algebra/Linear/Base/module_category.v

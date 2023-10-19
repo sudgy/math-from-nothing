@@ -9,7 +9,6 @@ Require Export int_order.
 Require Export int_abstract.
 Require Import set.
 Require Import nat.
-Require Import order_minmax.
 Require Import category_initterm.
 
 Section IntAbstract.
@@ -156,36 +155,6 @@ Proof.
     rewrite homo_zero.
     rewrite neg_zero, plus_rid.
     reflexivity.
-Qed.
-
-Theorem from_int_min : ∀ a b,
-    from_int (min a b) = min (from_int a) (from_int b).
-Proof.
-    intros a b.
-    destruct (connex a b) as [leq|leq].
-    -   rewrite (min_leq _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (min_leq _ _ leq).
-        reflexivity.
-    -   rewrite (min_req _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (min_req _ _ leq).
-        reflexivity.
-Qed.
-
-Theorem from_int_max : ∀ a b,
-    from_int (max a b) = max (from_int a) (from_int b).
-Proof.
-    intros a b.
-    destruct (connex a b) as [leq|leq].
-    -   rewrite (max_req _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (max_req _ _ leq).
-        reflexivity.
-    -   rewrite (max_leq _ _ leq).
-        rewrite homo_le2 in leq.
-        rewrite (max_leq _ _ leq).
-        reflexivity.
 Qed.
 
 Theorem from_int_unique : ∀ f : int → U, HomomorphismPlus f → HomomorphismOne f
