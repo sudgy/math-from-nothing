@@ -8,7 +8,6 @@ Require Export int_mult.
 Require Export int_order.
 Require Import set.
 Require Import nat.
-Require Import order_minmax.
 
 Section IntAbstract.
 
@@ -37,14 +36,13 @@ Proof.
 Qed.
 
 Definition int_mult a b := unary_op (int_mult_wd b) a.
-Infix "×" := int_mult (at level 40, left associativity) : int_scope.
+Infix "×" := int_mult : int_scope.
 Arguments int_mult : simpl never.
 
 Theorem int_mult_lanni : ∀ a, 0 × a = 0.
 Proof.
     intros a.
-    unfold int_mult, zero at 1; cbn.
-    equiv_simpl.
+    unfold int_mult, zero at 1; equiv_simpl.
     unfold int_mult_base; cbn.
     rewrite nat_mult_lanni.
     rewrite neg_zero.
@@ -76,10 +74,9 @@ Theorem int_mult_ldist : ∀ a b c, a × (b + c) = a × b + a × c.
 Proof.
     intros a b c.
     equiv_get_value a.
-    unfold int_mult.
-    equiv_simpl.
-    unfold int_mult_base.
-    destruct a as [a1 a2]; cbn.
+    destruct a as [a1 a2].
+    unfold int_mult; equiv_simpl.
+    unfold int_mult_base; cbn.
     do 2 rewrite nat_mult_ldist.
     rewrite neg_plus.
     apply plus_4.
@@ -89,8 +86,8 @@ Theorem int_mult_rdist : ∀ a b c, (a + b) × c = a × c + b × c.
 Proof.
     intros a b c.
     equiv_get_value a b.
-    unfold plus at 1, int_mult; equiv_simpl.
     destruct a as [a1 a2], b as [b1 b2].
+    unfold plus at 1, int_mult; equiv_simpl.
     unfold int_mult_base; cbn.
     do 2 rewrite nat_mult_rdist.
     do 2 rewrite <- plus_assoc.
@@ -106,37 +103,21 @@ Theorem int_mult_mult : ∀ a b c, a × (b × c) = (a * b) × c.
 Proof.
     intros a b c.
     equiv_get_value a b.
-    unfold mult, int_mult; equiv_simpl.
     destruct a as [a1 a2], b as [b1 b2].
+    unfold mult, int_mult; equiv_simpl.
     unfold int_mult_base; cbn.
     do 2 rewrite nat_mult_rdist.
-    assert (∀ a, nat_mult a (nat_mult b1 c - nat_mult b2 c)
-        = nat_mult (a * b1) c - nat_mult (a * b2) c) as eq.
-    {
-        nat_induction a.
-        -   do 2 rewrite mult_lanni.
-            do 2 rewrite nat_mult_lanni.
-            rewrite neg_zero, plus_lid.
-            reflexivity.
-        -   rewrite nat_mult_suc.
-            rewrite IHa.
-            do 2 rewrite nat_mult_lsuc.
-            do 2 rewrite nat_mult_rdist.
-            do 2 rewrite <- plus_assoc.
-            apply lplus.
-            rewrite (nat_mult_commute b2).
-            rewrite neg_plus_group.
-            do 2 rewrite plus_assoc.
-            apply rplus.
-            symmetry; apply nat_mult_commute_neg.
-    }
-    do 2 rewrite eq.
-    do 2 rewrite <- plus_assoc.
-    apply lplus.
-    rewrite (nat_mult_commute (a1 * b2)).
+    rewrite nat_mult_ldist_comm by apply nat_mult_commute_neg.
+    rewrite nat_mult_ldist_comm by apply nat_mult_commute_neg.
+    rewrite nat_mult_rneg.
+    do 4 rewrite nat_mult_mult.
+    rewrite (nat_mult_commute (a1 * b2) (a2 * b1) c).
     do 2 rewrite neg_plus_group.
     do 2 rewrite plus_assoc.
     apply rplus.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    do 2 rewrite <- nat_mult_rneg.
     rewrite neg_neg.
     symmetry; apply nat_mult_commute_neg.
 Qed.
@@ -158,8 +139,8 @@ Theorem int_mult_lneg : ∀ a b, -(a × b) = (-a) × b.
 Proof.
     intros a b.
     equiv_get_value a.
-    unfold neg at 2, int_mult; equiv_simpl.
     destruct a as [a1 a2].
+    unfold neg at 2, int_mult; equiv_simpl.
     unfold int_mult_base; cbn.
     rewrite neg_plus_group.
     rewrite neg_neg.
@@ -170,13 +151,56 @@ Theorem int_mult_rneg : ∀ a b, -(a × b) = a × (-b).
 Proof.
     intros a b.
     equiv_get_value a.
-    unfold int_mult; equiv_simpl.
     destruct a as [a1 a2].
+    unfold int_mult; equiv_simpl.
     unfold int_mult_base; cbn.
     rewrite nat_mult_commute_neg.
     rewrite neg_plus_group.
     do 2 rewrite nat_mult_rneg.
     reflexivity.
+Qed.
+
+Theorem int_mult_commute_single :
+    ∀ a b c, b + c = c + b → a × b + c = c + a × b.
+Proof.
+    intros a b c comm.
+    equiv_get_value a.
+    destruct a as [a1 a2].
+    unfold int_mult; equiv_simpl.
+    unfold int_mult_base; cbn.
+    rewrite plus_assoc.
+    rewrite <- nat_mult_commute_single by exact comm.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    rewrite nat_mult_rneg.
+    apply nat_mult_commute_single.
+    rewrite <- plus_lrmove.
+    rewrite <- plus_assoc.
+    rewrite <- plus_rlmove.
+    symmetry; exact comm.
+Qed.
+
+Theorem int_mult_ldist_comm : ∀ a b c, b + c = c + b →
+    a × (b + c) = a × b + a × c.
+Proof.
+    intros a b c eq.
+    equiv_get_value a.
+    destruct a as [a1 a2].
+    unfold int_mult; equiv_simpl.
+    unfold int_mult_base; cbn.
+    do 2 rewrite nat_mult_ldist_comm by exact eq.
+    rewrite (nat_mult_commute_double a2) by exact eq.
+    rewrite neg_plus_group.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    rewrite nat_mult_rneg.
+    apply nat_mult_commute_double.
+    rewrite <- plus_llmove.
+    rewrite plus_assoc.
+    rewrite <- plus_rrmove.
+    exact eq.
 Qed.
 
 Theorem int_mult_commute : ∀ a b c, a × c + b × c = b × c + a × c.
@@ -196,4 +220,4 @@ Qed.
 
 End IntAbstract.
 
-Infix "×" := int_mult (at level 40, left associativity) : int_scope.
+Infix "×" := int_mult : int_scope.

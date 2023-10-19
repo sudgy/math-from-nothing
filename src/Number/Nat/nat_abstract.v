@@ -56,9 +56,26 @@ Proof.
     apply plus_rid.
 Qed.
 
-Theorem nat_mult_ldist : ∀ a b c, a × (b + c) = a × b + a × c.
+Theorem nat_mult_commute_single :
+    ∀ a b c, b + c = c + b → a × b + c = c + a × b.
 Proof.
-    intros a b c.
+    intros a b c comm.
+    nat_induction a.
+    -   rewrite nat_mult_lanni.
+        rewrite plus_lid, plus_rid.
+        reflexivity.
+    -   rewrite nat_mult_suc.
+        rewrite <- plus_assoc.
+        rewrite IHa.
+        do 2 rewrite plus_assoc.
+        rewrite comm.
+        reflexivity.
+Qed.
+
+Theorem nat_mult_ldist_comm : ∀ a b c, b + c = c + b →
+    a × (b + c) = a × b + a × c.
+Proof.
+    intros a b c comm.
     nat_induction a.
     -   do 3 rewrite nat_mult_lanni.
         rewrite plus_lid.
@@ -66,11 +83,17 @@ Proof.
     -   do 3 rewrite nat_mult_suc.
         do 2 rewrite <- plus_assoc.
         apply lplus.
-        rewrite plus_assoc.
-        rewrite (plus_comm (a × b) c).
-        rewrite <- plus_assoc.
-        apply lplus.
-        exact IHa.
+        rewrite IHa.
+        do 2 rewrite plus_assoc.
+        rewrite nat_mult_commute_single by exact comm.
+        reflexivity.
+Qed.
+
+Theorem nat_mult_ldist : ∀ a b c, a × (b + c) = a × b + a × c.
+Proof.
+    intros a b c.
+    apply nat_mult_ldist_comm.
+    apply plus_comm.
 Qed.
 
 Theorem nat_mult_rdist : ∀ a b c, (a + b) × c = a × c + b × c.
@@ -130,21 +153,37 @@ Proof.
         reflexivity.
 Qed.
 
+Theorem nat_mult_commute_double :
+    ∀ a b c d, c + d = d + c → a × c + b × d = b × d + a × c.
+Proof.
+    intros a b c d comm.
+    nat_induction a.
+    -   rewrite nat_mult_lanni.
+        rewrite plus_lid, plus_rid.
+        reflexivity.
+    -   rewrite nat_mult_suc.
+        rewrite <- plus_assoc.
+        rewrite IHa.
+        do 2 rewrite plus_assoc.
+        apply rplus.
+        rewrite nat_mult_commute_single by (symmetry; exact comm).
+        reflexivity.
+Qed.
+
 Theorem nat_mult_commute : ∀ a b c, a × c + b × c = b × c + a × c.
 Proof.
     intros a b c.
-    do 2 rewrite <- nat_mult_rdist.
-    rewrite plus_comm.
+    apply nat_mult_commute_double.
     reflexivity.
 Qed.
 
 Theorem nat_mult_commute_neg : ∀ a b c, a × c - b × c = -(b × c) + a × c.
 Proof.
     intros a b c.
-    rewrite <- plus_rrmove.
-    rewrite <- plus_assoc.
-    rewrite <-plus_llmove.
-    apply nat_mult_commute.
+    rewrite nat_mult_rneg.
+    apply nat_mult_commute_double.
+    rewrite plus_linv, plus_rinv.
+    reflexivity.
 Qed.
 
 Theorem nat_pow_zero : ∀ a, a ^ 0 = 1.
