@@ -3,6 +3,8 @@ Require Import init.
 Require Import nat.
 Require Export mult_ring.
 Require Import set.
+Require Export domain_category.
+Require Export ring_category.
 
 Require Import int_plus.
 
@@ -53,11 +55,11 @@ Proof.
     exact eq.
 Qed.
 
-Global Instance int_mult : Mult int := {
+Global Instance int_mult : Mult int_base := {
     mult := binary_op (binary_self_wd int_mult_wd);
 }.
 
-Global Instance int_mult_comm_class : MultComm int.
+Global Instance int_mult_comm : MultComm int_base.
 Proof.
     split.
     intros a b.
@@ -71,7 +73,7 @@ Proof.
 Qed.
 
 
-Global Instance int_mult_assoc_class : MultAssoc int.
+Global Instance int_mult_assoc : MultAssoc int_base.
 Proof.
     split.
     intros a b c.
@@ -88,7 +90,7 @@ Proof.
         reflexivity.
 Qed.
 
-Global Instance int_ldist_class : Ldist int.
+Global Instance int_ldist : Ldist int_base.
 Proof.
     split.
     intros a b c.
@@ -99,11 +101,11 @@ Proof.
     apply lrplus; apply plus_4.
 Qed.
 
-Global Instance int_one : One int := {
+Global Instance int_one : One int_base := {
     one := to_equiv int_equiv (1, 0);
 }.
 
-Global Instance int_mult_lid_class : MultLid int.
+Global Instance int_mult_lid : MultLid int_base.
 Proof.
     split.
     intros a.
@@ -146,7 +148,7 @@ Proof.
         right; exact eq.
 Qed.
 
-Global Instance int_mult_lcancel_class : MultLcancel int.
+Global Instance int_mult_lcancel : MultLcancel int_base.
 Proof.
     split.
     intros a b c c_neq_0 eq.
@@ -159,7 +161,7 @@ Proof.
 Qed.
 
 #[refine]
-Global Instance int_not_trivial_class : NotTrivial int := {
+Global Instance int_not_trivial : NotTrivial int_base := {
     not_trivial_a := 0;
     not_trivial_b := 1;
 }.
@@ -169,7 +171,28 @@ Proof.
     exact not_trivial_one.
 Qed.
 
-Theorem from_nat_int : ∀ n, from_nat n = to_equiv int_equiv (n, 0).
+Definition int : IntegralDomain := make_domain
+    int_base
+    int_not_trivial
+    int_plus
+    int_zero
+    int_neg
+    int_mult
+    int_one
+    int_plus_assoc
+    int_plus_comm
+    int_plus_lid
+    int_plus_linv
+    int_mult_assoc
+    int_mult_comm
+    int_ldist
+    int_mult_lid
+    int_mult_lcancel.
+
+Definition int_ring := domain_to_ring int.
+Definition int_cring := domain_to_cring int.
+
+Theorem from_nat_int : ∀ n, (from_nat n : int) = (to_equiv int_equiv (n, 0) : int).
 Proof.
     intros n.
     nat_induction n.

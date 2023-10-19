@@ -47,7 +47,7 @@ Global Instance int_order : Order int := {
     le := binary_op int_le_wd;
 }.
 
-Global Instance int_le_connex_class : Connex le.
+Global Instance int_le_connex : Connex le.
 Proof.
     split.
     intros a b.
@@ -60,7 +60,7 @@ Proof.
 Qed.
 
 
-Global Instance int_le_antisym_class : Antisymmetric le.
+Global Instance int_le_antisym : Antisymmetric le.
 Proof.
     split.
     intros a b.
@@ -74,7 +74,7 @@ Proof.
 Qed.
 
 
-Global Instance int_le_trans_class : Transitive le.
+Global Instance int_le_trans : Transitive le.
 Proof.
     split.
     intros a b c.
@@ -91,7 +91,7 @@ Proof.
     exact eq.
 Qed.
 
-Global Instance int_le_lplus_class : OrderLplus int.
+Global Instance int_le_lplus : OrderLplus int.
 Proof.
     split.
     intros a b c.
@@ -133,7 +133,7 @@ Proof.
     exact n_eq.
 Qed.
 
-Global Instance int_le_mult_class : OrderMult int.
+Global Instance int_le_mult : OrderMult int.
 Proof.
     split.
     intros a b a_pos b_pos.
@@ -160,7 +160,7 @@ Qed.
 Theorem nat_nz_int : ∀ n, (0 : int) ≠ from_nat (nat_suc n).
 Proof.
     intros n n_eq.
-    rewrite <- homo_zero in n_eq.
+    rewrite <- (homo_zero (f := from_nat)) in n_eq.
     apply from_nat_inj in n_eq.
     exact (nat_zero_suc n_eq).
 Qed.

@@ -11,7 +11,7 @@ Section IntEquiv.
 Let int_eq (a b : nat * nat) := fst a + snd b = fst b + snd a.
 Local Infix "~" := int_eq.
 
-Instance int_eq_reflexive_class : Reflexive int_eq.
+Instance int_eq_reflexive : Reflexive int_eq.
 Proof.
     split.
     intros [a1 a2].
@@ -19,7 +19,7 @@ Proof.
     reflexivity.
 Qed.
 
-Instance int_eq_symmetric_class : Symmetric int_eq.
+Instance int_eq_symmetric : Symmetric int_eq.
 Proof.
     split.
     intros [a1 a2] [b1 b2] ab.
@@ -28,7 +28,7 @@ Proof.
     exact ab.
 Qed.
 
-Instance int_eq_transitive_class : Transitive int_eq.
+Instance int_eq_transitive : Transitive int_eq.
 Proof.
     split.
     intros [a1 a2] [b1 b2] [c1 c2] ab bc.
@@ -48,7 +48,7 @@ Qed.
 End IntEquiv.
 
 Definition int_equiv := make_equiv _
-    int_eq_reflexive_class int_eq_symmetric_class int_eq_transitive_class.
+    int_eq_reflexive int_eq_symmetric int_eq_transitive.
 Notation "a ~ b" := (eq_equal int_equiv a b) : int_scope.
 
-Notation "'int'" := (equiv_type int_equiv).
+Notation "'int_base'" := (equiv_type int_equiv).

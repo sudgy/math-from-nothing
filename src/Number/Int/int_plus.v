@@ -19,11 +19,11 @@ Proof.
     apply plus_4.
 Qed.
 
-Global Instance int_plus : Plus int := {
+Global Instance int_plus : Plus int_base := {
     plus := binary_op (binary_self_wd int_plus_wd)
 }.
 
-Global Instance int_plus_comm_class : PlusComm int.
+Global Instance int_plus_comm : PlusComm int_base.
 Proof.
     split.
     intros a b.
@@ -35,7 +35,7 @@ Proof.
     reflexivity.
 Qed.
 
-Global Instance int_plus_assoc_class : PlusAssoc int.
+Global Instance int_plus_assoc : PlusAssoc int_base.
 Proof.
     split.
     intros a b c.
@@ -46,12 +46,12 @@ Proof.
     reflexivity.
 Qed.
 
-Global Instance int_zero : Zero int := {
+Global Instance int_zero : Zero int_base := {
     zero := to_equiv int_equiv (0, 0);
 }.
 
 
-Global Instance int_plus_lid_class : PlusLid int.
+Global Instance int_plus_lid : PlusLid int_base.
 Proof.
     split.
     intros a.
@@ -72,11 +72,11 @@ Proof.
     exact eq.
 Qed.
 
-Global Instance int_neg : Neg int := {
+Global Instance int_neg : Neg int_base := {
     neg := unary_op (unary_self_wd int_neg_wd);
 }.
 
-Global Instance int_plus_linv_class : PlusLinv int.
+Global Instance int_plus_linv : PlusLinv int_base.
 Proof.
     split.
     intros a.

@@ -10,6 +10,7 @@ Require Export int_abstract.
 Require Import set.
 Require Import nat.
 Require Import order_minmax.
+Require Import category_initterm.
 
 Section IntAbstract.
 
@@ -187,6 +188,33 @@ Proof.
         reflexivity.
 Qed.
 
+Theorem from_int_unique : ∀ f : int → U, HomomorphismPlus f → HomomorphismOne f
+    → f = from_int.
+Proof.
+    intros f f_plus f_one.
+    assert (∀ x, 0 ≤ x → f x = from_int x) as wlog.
+    {
+        intros x x_pos.
+        apply int_pos_nat_ex in x_pos as [n x_eq]; subst x.
+        nat_induction n.
+        -   rewrite homo_zero.
+            setoid_rewrite homo_zero.
+            reflexivity.
+        -   rewrite from_nat_suc.
+            setoid_rewrite homo_plus.
+            setoid_rewrite homo_one.
+            rewrite IHn.
+            reflexivity.
+    }
+    functional_intros x.
+    destruct (connex 0 x) as [x_pos|x_neg].
+    -   exact (wlog x x_pos).
+    -   apply neg_eq.
+        do 2 rewrite <- homo_neg.
+        apply neg_pos in x_neg.
+        exact (wlog _ x_neg).
+Qed.
+
 End IntAbstract.
 
 Theorem from_int_eq_int : ∀ a, from_int a = a.
@@ -200,4 +228,33 @@ Proof.
     unfold plus, neg; equiv_simpl.
     rewrite plus_lid, plus_rid.
     reflexivity.
+Qed.
+
+Definition int_to_ring (R : Ring) : morphism int_ring R
+    := make_ring_homomorphism
+        int_ring R from_int from_int_plus from_int_mult from_int_one.
+Definition int_to_cring (R : CRing) : morphism int_cring R
+    := make_cring_homomorphism
+        int_cring R from_int from_int_plus from_int_mult from_int_one.
+
+Theorem ring_initial : initial int_ring.
+Proof.
+    intros R.
+    split.
+    exists (int_to_ring R).
+    intros f.
+    apply ring_homo_eq.
+    apply func_eq.
+    apply from_int_unique; apply f.
+Qed.
+
+Theorem cring_initial : initial int_cring.
+Proof.
+    intros R.
+    split.
+    exists (int_to_cring R).
+    intros f.
+    apply cring_homo_eq.
+    apply func_eq.
+    apply from_int_unique; apply f.
 Qed.

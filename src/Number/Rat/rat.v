@@ -97,8 +97,8 @@ Qed.
 Theorem int_to_rat_le : ∀ a b, int_to_rat a ≤ int_to_rat b ↔ a ≤ b.
 Proof.
     apply to_frac_le.
-    exact int_le_antisym_class.
-    exact int_le_trans_class.
+    exact int_le_antisym.
+    exact int_le_trans.
 Qed.
 Theorem nat_to_rat_le : ∀ a b, nat_to_rat a ≤ nat_to_rat b ↔ a ≤ b.
 Proof.
@@ -110,8 +110,8 @@ Qed.
 Theorem int_to_rat_lt : ∀ a b, int_to_rat a < int_to_rat b ↔ a < b.
 Proof.
     apply to_frac_lt.
-    exact int_le_antisym_class.
-    exact int_le_trans_class.
+    exact int_le_antisym.
+    exact int_le_trans.
 Qed.
 Theorem nat_to_rat_lt : ∀ a b, nat_to_rat a < nat_to_rat b ↔ a < b.
 Proof.
