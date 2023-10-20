@@ -50,7 +50,6 @@ Global Instance int_zero : Zero int_base := {
     zero := to_equiv int_equiv (0, 0);
 }.
 
-
 Global Instance int_plus_lid : PlusLid int_base.
 Proof.
     split.

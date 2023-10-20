@@ -1,5 +1,6 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
+\externaldocument{../basics/set}
 
 \begin{document}
 
@@ -34,5 +35,135 @@
 \begin{definition}
     Define the type of integers $\Z$ to be the type $(\N \times \N)/\usim$.
 \end{definition}
+
+\section{Addition}
+
+\begin{definition}
+    Define an operation $\oplus : \N \times \N \to \N \times \N \to \N \times
+    \N$ given by
+    \[
+        (a_1, a_2) \oplus (b_1, b_2) = (a_1 + b_1, a_2 + b_2).
+    \]
+\end{definition}
+
+\begin{lemma}
+    The operation $\oplus$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that for all $a$, $b$, $c$, and $d$, if $a \sim b$ and $c \sim
+    d$, we have $a \oplus c \sim b \oplus d$.  Thus, we have
+    \[
+        a_1 + b_2 = b_1 + a_2
+    \]
+    and
+    \[
+        c_1 + d_2 = d_1 + c_2
+    \]
+    and must prove that
+    \[
+        a_1 + c_1 + b_2 + d_2 = b_1 + d_1 + a_2 + c_2.
+    \]
+    This follows directly by rearranging and applying the previous two
+    equalities.
+\end{proof}
+
+\begin{instance}
+    Definition addition in the integers as the binary operation given by Theorem
+    \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Addition of integers is commutative.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1, a_2) \oplus (b_1, b_2) \sim (b_1, b_2) \oplus (a_1, a_2).
+    \]
+    This reduces to
+    \[
+        a_1 + b_1 + b_2 + a_2 = b_1 + a_1 + a_2 + b_2,
+    \]
+    which follows by the commutativity of natural number addition.
+\end{proof}
+
+\begin{instance}
+    Addition of integers is associative.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1, a_2) \oplus ((b_1, b_2) \oplus (c_1, c_2)) \sim
+        ((a_1, a_2) \oplus (b_1, b_2) \oplus (c_1, c_2)).
+    \]
+    This reduces to
+    \[
+        (a_1 + (b_1 + c_1)) + ((a_2 + b_2) + c_2) =
+        ((a_1 + b_1) + c_1) + (a_2 + (b_2 + c_2)),
+    \]
+    which follows by the associativity of natural number addition.
+\end{proof}
+
+\begin{instance}
+    Define zero in the integers to be $[(0, 0)]$.
+\end{instance}
+
+\begin{instance}
+    Zero is an additive identity in the integers.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (0, 0) \oplus (a_1, a_2) \sim (a_1, a_2).
+    \]
+    This reduces to
+    \[
+        0 + a_1 + a_2 = a_1 + 0 + a_2,
+    \]
+    which follows by 0 being an identity in the natural numbers.
+\end{proof}
+
+\begin{definition}
+    Given $(a_1, a_2) : \N$, define
+    \[
+        \ominus (a_1, a_2) = (a_2, a_1).
+    \]
+\end{definition}
+
+\begin{lemma}
+    $\ominus$ is well-defined under $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that if $(a_1, a_2) \sim (b_1, b_2)$, then $\ominus (a_1, a_2)
+    \sim \ominus (b_1, b_2)$.  Simplified, we have $a_1 + b_2 = b_1 + a_2$ and
+    must prove that $a_2 + b_1 = b_2 + a_1$, which follows from commutativity.
+\end{proof}
+
+\begin{instance}
+    Definition additive inverses in the integers as the unary operation given by
+    Theorem \ref{unary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Negation is a left inverse in the integers.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        \ominus (a_1, a_2) \oplus (a_1, a_2) \sim (0, 0).
+    \]
+    This reduces to
+    \[
+        a_2 + a_1 + 0 = 0 + a_1 + a_2,
+    \]
+    which follows by the properties of natural number addition.
+\end{proof}
+
+\section{Multiplication}
+
+\section{Order}
+
+\section{The Relation Between Integers And Other Types}
 
 \end{document}
