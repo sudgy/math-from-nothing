@@ -1,0 +1,38 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+
+\begin{document}
+
+\setcounter{chapter}{6}
+
+\chapter{The Integers} \label{chap_integer}
+
+\begin{definition}
+    Define a relation $\sim$ on $\N \times \N$ where $(a_1, a_2) \sim (b_1,
+    b_2)$ is defined to mean $a_1 + b_2 = b_1 + a_2$.
+\end{definition}
+
+\begin{lemma}
+    The relation $\sim$ is an equivalence relation on $\N \times \N$.
+\end{lemma}
+\begin{proof}
+    \textit{Reflexivitity.}  We must check $a_1 + a_2 = a_1 + a_2$, which is a
+    reflexive equality.
+
+    \textit{Symmetry.}  We must prove that if $a_1 + b_2 = b_1 + a_2$, then $b_1
+    + a_2 = a_1 + b_2$.  This is true by the symmetry of equality.
+
+    \textit{Transitivity.}  We must prove that if $a_1 + b_2 = b_1 + a_2$ and
+    $b_1 + c_2 = c_1 + b_2$, then $a_1 + c_2 = c_1 + a_2$.  We can add the first
+    two equalities to get
+    \[
+        a_1 + b_2 + b_1 + c_2 = c_1 + b_2 + b_1 + a_2.
+    \]
+    We can cancel $b_2$ and $b_1$ to get the result.
+\end{proof}
+
+\begin{definition}
+    Define the type of integers $\Z$ to be the type $(\N \times \N)/\usim$.
+\end{definition}
+
+\end{document}
