@@ -1253,8 +1253,22 @@ forced to remember that the definition is not the traditional definition.
     \]
 \end{proof}
 
+\begin{theorem} \label{nat_mult_commute_single}
+    For all $a : \N$ and $b$ and $c$ in $\U$, if $b + c = c + b$, then $ab + c =
+    c + ab$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $0b + c = c = c + 0b$,
+    so the base case is true.  Now assume that $ab + c = c + ab$.  Then
+    \[
+        S(a)b + c = b + ab + c = b + c + ab = c + b + ab = c + S(a)b,
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
 \begin{theorem}
-    For all $a : \N$ and $b$ and $c$ in $\U$, $a(b + c) = ab + ac$.
+    For all $a : \N$ and $b$ and $c$ in $\U$, if $b + c = c + b$, then $a(b + c)
+    = ab + ac$.
 \end{theorem}
 \begin{proof}
     The proof will be by induction on $a$.  When $a = 0$, then $0(b + c) = 0 = 0
@@ -1317,14 +1331,25 @@ forced to remember that the definition is not the traditional definition.
     so the inductive case is true.  Thus, the theorem is true by induction.
 \end{proof}
 
+\begin{theorem} \label{nat_mult_commute_double}
+    For all $a$ and $b$ in $\N$ and $c$ and $d$ in $\U$, if $c + d = d + c$,
+    then $ac + bd = bd + ac$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = 0$, $0c + bd = bd = bd +
+    0c$, so the base case is true.  Now assume that $ac + bd = bd + ac$.  Then
+    \[
+        S(a)c + bd = c + ac + bd = c + bd + ac = bd + c + ac = bd + S(a)c,
+    \]
+    so the inductive case is true.  Thus, the theorem is true by induction.
+\end{proof}
+
 \begin{theorem} \label{nat_mult_commute}
     For all natural numbers $a$ and $b$ and $c : \U$, $ac + bc = bc + ac$ even
     when addition in $\U$ is not commutative.
 \end{theorem}
 \begin{proof}
-    \[
-        ac + bc = (a + b)c = (b + a)c = ba + ac.
-    \]
+    This follows directly from the previous theorem.
 \end{proof}
 
 \begin{theorem} \label{nat_mult_commute_neg}
@@ -1332,12 +1357,8 @@ forced to remember that the definition is not the traditional definition.
     when addition in $\U$ is not commutative.
 \end{theorem}
 \begin{proof}
-    \begin{align*}
-        ac - bc &= -bc + ac \\
-        ac &= -bc + ac + bc \\
-        bc + ac &= ac + bc,
-    \end{align*}
-    which follows from Theorem \ref{nat_mult_commute}.
+    Because $c$ commutes with $-c$, this follows directly from Theorem
+    \ref{nat_mult_commute_double}.
 \end{proof}
 
 \subsection{Exponentiating by Natural Numbers}
@@ -1748,6 +1769,14 @@ not have nullity $n$ for all $n \neq 0$.
 Notice that by Instances \ref{homo_le_lt}, \ref{homo_le_le2}, and
 \ref{homo_lt_lt2}, $\iN$ preserves both strict and non-strict inequalities in
 both directions.
+
+\begin{theorem} \label{from_nat_pos1}
+    For all $a$, $1 \leq \iN(S(a))$.
+\end{theorem}
+\begin{proof}
+    Because $0 \neq S(a)$, by Theorem \ref{nat_neq0_leq1} we have $1 \leq S(a)$.
+    Thus, we have $\iN(1) = 1 \leq \iN(S(a))$.
+\end{proof}
 
 \begin{instance}
     A ring of characteristic zero is not trivial.
