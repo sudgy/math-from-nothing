@@ -72,7 +72,6 @@ Proof.
     reflexivity.
 Qed.
 
-
 Global Instance int_mult_assoc : MultAssoc int_base.
 Proof.
     split.
@@ -128,24 +127,23 @@ Proof.
     equiv_simpl.
     do 2 rewrite plus_rid, plus_lid.
     rewrite plus_lid, plus_rid in eq.
+    assert (∀ a1 a2 b1 b2 : nat, a1 < a2 → a1*b2 + a2*b1 = a1*b1 + a2*b2 → b1 = b2) as wlog.
+    {
+        clear.
+        intros a1 a2 b1 b2 ltq eq.
+        apply nat_lt_ex in ltq as [c c_eq].
+        rewrite <- c_eq in eq.
+        do 2 rewrite rdist in eq.
+        rewrite plus_3 in eq.
+        do 2 apply plus_lcancel in eq.
+        apply mult_lcancel in eq; [>|apply nat_zero_suc].
+        exact eq.
+    }
     destruct (trichotomy a1 a2) as [[ltq|eq']|ltq].
-    -   apply nat_lt_ex in ltq as [c c_eq].
-        rewrite <- c_eq in eq.
-        do 2 rewrite rdist in eq.
-        rewrite plus_3 in eq.
-        do 2 apply plus_lcancel in eq.
-        apply mult_lcancel in eq; [>|apply nat_zero_suc].
-        right; symmetry; exact eq.
+    -   right; symmetry; exact (wlog _ _ _ _ ltq eq).
     -   left; symmetry; exact eq'.
-    -   apply nat_lt_ex in ltq as [c c_eq].
-        rewrite <- c_eq in eq.
-        do 2 rewrite rdist in eq.
-        rewrite plus_comm in eq.
-        rewrite (plus_comm _ (a2 * b2)) in eq.
-        rewrite plus_3 in eq.
-        do 2 apply plus_lcancel in eq.
-        apply mult_lcancel in eq; [>|apply nat_zero_suc].
-        right; exact eq.
+    -   rewrite (plus_comm (a1*b2)), (plus_comm (a1*b1)) in eq.
+        right; exact (wlog _ _ _ _ ltq eq).
 Qed.
 
 Global Instance int_mult_lcancel : MultLcancel int_base.

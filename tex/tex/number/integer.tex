@@ -95,7 +95,7 @@
     We must prove that
     \[
         (a_1, a_2) \oplus ((b_1, b_2) \oplus (c_1, c_2)) \sim
-        ((a_1, a_2) \oplus (b_1, b_2) \oplus (c_1, c_2)).
+        ((a_1, a_2) \oplus (b_1, b_2)) \oplus (c_1, c_2).
     \]
     This reduces to
     \[
@@ -161,6 +161,238 @@
 \end{proof}
 
 \section{Multiplication}
+
+\begin{definition}
+    Define an operation $\otimes : \N \times \N \to \N \times \N \to \N \times
+    \N$ given by
+    \[
+        (a_1, a_2) \otimes (b_1, b_2) = (a_1b_1 + a_2b_2, a_1b_2 + a_2b_1).
+    \]
+\end{definition}
+
+\begin{lemma}
+    The operation $\otimes$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that for all $a$, $b$, $c$, and $d$, if $a \sim b$ and $c \sim
+    d$, we have $a \otimes c \sim b \otimes d$.  Thus, we have
+    \begin{equation} \label{int_mult_wd_ab}
+        a_1 + b_2 = b_1 + a_2
+    \end{equation}
+    and
+    \begin{equation} \label{int_mult_wd_cd}
+        c_1 + d_2 = d_1 + c_2
+    \end{equation}
+    and must prove that
+    \[
+        a_1c_1 + a_2c_2 + b_1d_2 + b_2d_1 =
+        b_1d_1 + b_2d_2 + a_1c_2 + a_2c_1.
+    \]
+    We can multiply equation \ref{int_mult_wd_ab} by $c_1$ and $c_2$ to get
+    \begin{equation} \label{int_mult_wd_ab1}
+        a_1c_1 + b_1c_1 = b_1c_1 + a_2c_1
+    \end{equation}
+    and
+    \begin{equation} \label{int_mult_wd_ab2}
+        a_1c_2 + b_1c_2 = b_1c_2 + a_2c_2,
+    \end{equation}
+    and we can multiply equation \ref{int_mult_wd_cd} by $b_1$ and $b_2$ to get
+    \begin{equation} \label{int_mult_wd_cd1}
+        b_1c_1 + b_1d_2 = b_1d_1 + b_1c_2
+    \end{equation}
+    and
+    \begin{equation} \label{int_mult_wd_cd2}
+        b_2c_1 + b_2d_2 = b_2d_1 + b_2c_2.
+    \end{equation}
+    We can add equations \ref{int_mult_wd_ab1} and \ref{int_mult_wd_cd1} to get
+    \begin{align}
+        a_1c_1 + b_2c_1 + b_1c_1 + b_1d_2 &=
+        b_1c_1 + a_2c_1 + b_1d_1 + b_1c_2 \nonumber \\
+        a_1c_1 + b_2c_1 + b_1d_2 &= a_2c_1 + b_1d_1 + b_1c_2,
+        \label{int_mult_wd_eq5}
+    \end{align}
+    and we can add equations \ref{int_mult_wd_ab2} and \ref{int_mult_wd_cd2} to
+    get
+    \begin{align}
+        b_1c_2 + a_2c_2 + b_2d_1 + b_2c_2 &=
+        a_1c_2 + b_2c_2 + b_2c_1 + b_2d_2 \nonumber \\
+        b_1c_2 + a_2c_2 + b_2d_1 &= a_1c_2 + b_2c_1 + b_2d_2.
+        \label{int_mult_wd_eq6}
+    \end{align}
+    We can now add equations \ref{int_mult_wd_eq5} and \ref{int_mult_wd_eq6} to
+    get
+    \begin{align*}
+        a_1c_1 + b_2c_1 + b_1d_2 + b_1c_2 + a_2c_2 + b_2d_1 &=
+        a_2c_1 + b_1d_1 + b_1c_2 + a_1c_2 + b_2c_1 + b_2d_2 \\
+        a_1c_1 + b_1d_2 + a_2c_2 + b_2d_1 &=
+        a_2c_1 + b_1d_1 + a_1c_2 + b_2d_2 \\
+        a_1c_1 + a_2c_2 + b_1d_2 + b_2d_1 &=
+        b_1d_1 + b_2d_2 + a_1c_2 + a_2c_1.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Definition multiplication in the integers as the binary operation given by
+    Theorem \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Multiplication of integers is commutative.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1, a_2) \otimes (b_1, b_2) \sim (b_1, b_2) \otimes (a_1, a_2).
+    \]
+    This reduces to
+    \[
+        a_1b_1 + a_2b_2 + b_1a_2 + b_2a_1 =
+        b_1a_1 + b_2a_2 + a_1b_2 + a_2b_1
+    \]
+    which follows by the commutativity of natural number multiplication and
+    addition.
+\end{proof}
+
+\begin{instance}
+    Multiplication of integers is associative.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1, a_2) \otimes ((b_1, b_2) \otimes (c_1, c_2)) \sim
+        ((a_1, a_2) \otimes (b_1, b_2)) \otimes (c_1, c_2).
+    \]
+    This reduces to
+    \begin{align*}
+        &{}a_1(b_1c_1 + b_2c_2) + a_2(b_1c_2 + b_2c_1) +
+        (a_1b_1 + a_2b_2)c_2 + (a_1b_2 + a_2b_1)c_1 \\
+        {}={}&
+        (a_1b_1 + a_2b_2)c_1 + (a_1b_2 + a_2b_1)c_2 +
+        a_1(b_1c_2 + b_2c_1) + a_2(b_1c_1 + b_2c_2),
+    \end{align*}
+    which expands to
+    \begin{align*}
+        &{}a_1b_1c_1 + a_1b_2c_2 + a_2b_1c_2 + a_2b_2c_1 +
+        a_1b_1c_2 + a_2b_2c_2 + a_1b_2c_1 + a_2b_1c_1 \\
+        {}={}&
+        a_1b_1c_1 + a_2b_2c_1 + a_1b_2c_2 + a_2b_1c_2 +
+        a_1b_1c_2 + a_1b_2c_1 + a_2b_1c_1 + a_2b_2c_2,
+    \end{align*}
+    which has the same terms on both sides.
+\end{proof}
+
+\begin{instance}
+    Multiplication of integers distributes over addition.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1, a_2) \otimes ((b_1, b_2) \oplus (c_1, c_2)) \sim
+        (a_1, a_2) \otimes (b_1, b_2) \oplus (a_1, a_2) \otimes (c_1, c_2).
+    \]
+    This reduces to
+    \begin{align*}
+        &{}a_1(b_1 + c_1) + a_2(b_2 + c_2) + a_1b_2 + a_2b_1 + a_1c_2 + a_2c_1\\
+        {}={}&
+        a_1b_1 + a_2b_2 + a_1c_1 + a_2c_2 + a_1(b_2 + c_2) + a_2(b_1 + c_1),
+    \end{align*}
+    which expands to
+    \begin{align*}
+        &{}a_1b_1 + a_1c_1 + a_2b_2 + a_2c_2 + a_1b_2 + a_2b_1 + a_1c_2 + a_2c_1
+        \\ {}={}&
+        a_1b_1 + a_2b_2 + a_1c_1 + a_2c_2 + a_1b_2 + a_1c_2 + a_2b_1 + a_2c_1,
+    \end{align*}
+    which has the same terms on both sides.
+\end{proof}
+
+\begin{instance}
+    Define one in the integers to be $[(1, 0)]$.
+\end{instance}
+
+\begin{instance}
+    One is a multiplicative identity in the integers.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (1, 0) \otimes (a_1, a_2) \sim (a_1, a_2).
+    \]
+    This reduces to
+    \[
+        1a1 + 0a2 + a2 = a1 + 1a2 + 0a1,
+    \]
+    which simplifies to
+    \[
+        a_1 + a_2 = a_1 + a_2.
+    \]
+\end{proof}
+
+\begin{lemma}
+    For all $a$ and $b$ in $\Z$, if $0 = ab$, then either $0 = a$ or $0 = b$.
+\end{lemma}
+\begin{proof}
+    After a bit of simplification, the hypothesis $0 = ab$ becomes
+    \[
+        a_1b_2 + a_2b_1 = a_1b_1 + a_2b_2,
+    \]
+    and the conclusion becomes that either $a_1 = a_2$ or that $b_1 = b_2$.  If
+    $a_1 = a_2$, we're done, so assume that $a_1 \neq a_2$.  Without loss of
+    generality, assume that $a_1 < a_2$.  Then by Theorem \ref{nat_lt_ex}, there
+    exists a $c : \N$ such that $a_1 + S(c) = a_2$.  Then
+    \begin{align*}
+        a_1b_2 + (a_1 + S(c))b_1 &= a_1b_1 + (a_1 + S(c))b_2 \\
+        a_1b_2 + a_1b_1 + S(c)b_1 &= a_1b_1 + a_1b_2 + S(c)b_2 \\
+        S(c)b_1 &= S(c)b_2,
+    \end{align*}
+    and we can cancel $S(c)$ because $S(c) \neq 0$, giving $b_1 = b_2$ as
+    required.
+\end{proof}
+
+\begin{instance}
+    Multiplication of integers is cancellative.
+\end{instance}
+\begin{proof}
+    Let $a$, $b$, and $c$ be integers such that $0 \neq c$ and $ca = cb$.
+    Rearranging we get $0 = c(a - b)$, so by the previous lemma, either $c = 0$
+    and $a - b = 0$.  The first case is impossible becaues $0 \neq c$, and from
+    the second case we get $a = b$.
+\end{proof}
+
+\begin{instance}
+    The integers are not trivial.
+\end{instance}
+\begin{proof}
+    We will prove that $0 \neq 1$.  If $0 = 1$, then we would have $(0, 0) \sim
+    (1, 0)$, which means that $0 = 1$ in the natural numbers, which is
+    impossible because the natural numbers are not trivial.
+\end{proof}
+
+Thus, we have now seen that the integers are an integral domain, so they are
+also a commutative ring, a ring, etc.
+
+\begin{theorem}
+    For all natural numbers $n$, $\iota(n) = [(n, 0)]$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$,
+    \[
+        \iota(0) = 0 = [(0, 0)],
+    \]
+    so the base case is true.  Now assume that $\iota(n) = [(n, 0)]$.  Then
+    \[
+        \iota(S(n)) = 1 + \iota(n) = 1 + [(n, 0)].
+    \]
+    To check if this is equal to $[(S(n), 0)]$, we must check if
+    \[
+        (1, 0) \oplus [(n, 0)] \sim [(S(n), 0)],
+    \]
+    which simplifies to
+    \[
+        1 + n + 0 = S(n) + 0 + 0,
+    \]
+    which is true.
+\end{proof}
 
 \section{Order}
 
