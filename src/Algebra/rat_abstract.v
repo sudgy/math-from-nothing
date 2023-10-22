@@ -91,7 +91,6 @@ Proof.
     do 2 rewrite <- homo_mult.
     rewrite <- homo_le2.
     rewrite mult_comm.
-    rewrite (mult_comm b1).
     reflexivity.
 Qed.
 

@@ -35,7 +35,7 @@ Proof.
     reflexivity.
 Qed.
 
-Definition int_mult a b := unary_op (int_mult_wd b) a.
+Definition int_mult (a : int) b := unary_op (int_mult_wd b) a.
 Infix "×" := int_mult : int_scope.
 Arguments int_mult : simpl never.
 
@@ -70,16 +70,34 @@ Proof.
     apply plus_rid.
 Qed.
 
-Theorem int_mult_ldist : ∀ a b c, a × (b + c) = a × b + a × c.
+Theorem int_mult_ldist_comm : ∀ a b c, b + c = c + b →
+    a × (b + c) = a × b + a × c.
 Proof.
-    intros a b c.
+    intros a b c eq.
     equiv_get_value a.
     destruct a as [a1 a2].
     unfold int_mult; equiv_simpl.
     unfold int_mult_base; cbn.
-    do 2 rewrite nat_mult_ldist.
-    rewrite neg_plus.
-    apply plus_4.
+    do 2 rewrite nat_mult_ldist_comm by exact eq.
+    rewrite (nat_mult_commute_double a2) by exact eq.
+    rewrite neg_plus_group.
+    do 2 rewrite <- plus_assoc.
+    apply lplus.
+    do 2 rewrite plus_assoc.
+    apply rplus.
+    rewrite nat_mult_rneg.
+    apply nat_mult_commute_double.
+    rewrite <- plus_llmove.
+    rewrite plus_assoc.
+    rewrite <- plus_rrmove.
+    exact eq.
+Qed.
+
+Theorem int_mult_ldist : ∀ a b c, a × (b + c) = a × b + a × c.
+Proof.
+    intros a b c.
+    apply int_mult_ldist_comm.
+    apply plus_comm.
 Qed.
 
 Theorem int_mult_rdist : ∀ a b c, (a + b) × c = a × c + b × c.
@@ -178,29 +196,6 @@ Proof.
     rewrite <- plus_assoc.
     rewrite <- plus_rlmove.
     symmetry; exact comm.
-Qed.
-
-Theorem int_mult_ldist_comm : ∀ a b c, b + c = c + b →
-    a × (b + c) = a × b + a × c.
-Proof.
-    intros a b c eq.
-    equiv_get_value a.
-    destruct a as [a1 a2].
-    unfold int_mult; equiv_simpl.
-    unfold int_mult_base; cbn.
-    do 2 rewrite nat_mult_ldist_comm by exact eq.
-    rewrite (nat_mult_commute_double a2) by exact eq.
-    rewrite neg_plus_group.
-    do 2 rewrite <- plus_assoc.
-    apply lplus.
-    do 2 rewrite plus_assoc.
-    apply rplus.
-    rewrite nat_mult_rneg.
-    apply nat_mult_commute_double.
-    rewrite <- plus_llmove.
-    rewrite plus_assoc.
-    rewrite <- plus_rrmove.
-    exact eq.
 Qed.
 
 Theorem int_mult_commute : ∀ a b c, a × c + b × c = b × c + a × c.

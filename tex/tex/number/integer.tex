@@ -594,4 +594,184 @@ relating inequalities and strict inequalities with a $+ 1$ or $-1$ somewhere.
 
 \section{The Relation Between Integers And Other Types}
 
+In this whole section, let $\U$ be a type with whatever algebraic operations are
+needed.  We will be exploring several ways to connect $\U$ with $\Z$.
+
+\subsection{Multiplying by Integers}
+
+\begin{definition}
+    Given an $(n_1, n_2) : \N \times \N$ and an $a : \U$, define the product
+    \[
+        (n_1, n_2)a = n_1a - n_2a.
+    \]
+\end{definition}
+
+\begin{lemma}
+    The product in the preceding definition is well-defined under the
+    equivalence relation $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that if $a_1 + b_2 = b_1 + a_2$, then
+    \[
+        a_1c - a_2c = b_1c - b_2c.
+    \]
+    We can multiply $a_1 + b_2 = b_1 + a_2$ by $c$ to get
+    \[
+        a_1c + b_2c = b_1c + a_2c,
+    \]
+    and rearranging we get the desired result.
+\end{proof}
+
+\begin{definition}
+    Given a value $a : \U$, define the product of an integer $n$ with $a$ to be
+    the operation given by Theorem \ref{unary_op_ex} and the previous lemma.
+\end{definition}
+
+\begin{theorem}
+    For all $a : \U$, $0_\Z a = 0_\U$.
+\end{theorem}
+\begin{proof}
+    \[
+        0_\Z a = 0_\N a - 0_\N a = 0_\U - 0_\U = 0_\U.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$, $a0_\U = 0_\U$.
+\end{theorem}
+\begin{proof}
+    \[
+        a0_\U = a_10_\U - a_20_\U = 0_\U - 0_\U = 0_\U.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For al $a : \U$, $1_\Z a = a$.
+\end{theorem}
+\begin{proof}
+    \[
+        1_\Z a = 1_\N a - 0_\N a = a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$ and $b$ and $c$ in $\U$, if $b + c = c + b$, then
+    \[
+        a(b + c) = ab + ac.
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$ and $a_2$,
+    \[
+        a_1(b + c) - a_2(b + c) = a_1b - a_2b + a_1c - a_2c.
+    \]
+    Because $b$ and $c$ commute, we can expand and rearrange by the theorems for
+    the product of natural numbers with $\U$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\Z$ and $c : \U$,
+    \[
+        (a + b)c = ac + bc.
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$, $a_2$, $b_1$, and $b_2$,
+    \[
+        (a_1 + b_1)c - (a_2 + b_2)c = a_1c - a_2 c + b_1c - b_2c.
+    \]
+    Again, this follows directly by the theorems for the product of natural
+    numbers with $\U$.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\Z$ and $c : \U$
+    \[
+        a(bc) = (ab)c.
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$, $a_2$, $b_1$, and $b_2$,
+    \[
+        a_1(b_1c - b_2c) - a_2(b_1c - b_2c) =
+        (a_1b_1 + a_2b_2)c - (a_1b_2 + a_2b_1)c.
+    \]
+    Once again, this follows directly by the theorems for the product of natural
+    numbers with $\U$.
+\end{proof}
+
+\begin{theorem}
+    For all integers $a$ and $b$ and $c$ in $\U$,
+    \[
+        a(bc) = (ab)c.
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$ and $a_2$,
+    \[
+        a_1(bc) - a_2(bc) =
+        (a_1b - a_2b)c.
+    \]
+    After distributing, this follows directly by the theorems for the product of
+    natural numbers with $\U$.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$ and $b : \U$,
+    \[
+        -(ab) = (-a)b.
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$ and $a_2$,
+    \[
+        -(a_1b - a_2b) = a_2b - a_1b.
+    \]
+    This follows directly from the properties of addition.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$ and $b : \U$,
+    \[
+        -(ab) = a(-b).
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$ and $a_2$,
+    \[
+        -(a_1b - a_2b) = a_1(-b) - a_2(-b).
+    \]
+    After simplifying, this follows directly by the theorems for the product of
+    natural numbers with $\U$.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$ and $b$ and $c$ in $\U$, if $b + c = c + b$,
+    \[
+        ab + c = c + ab.
+    \]
+\end{theorem}
+\begin{proof}
+    We must prove that for all natural numbers $a_1$ and $a_2$,
+    \[
+        a_1b - a_2b + c = c + a_1b - a_2b.
+    \]
+    Because $b$ and $c$ commute, by the properties of multiplying natural
+    numbers with values in $\U$, all these terms commute.
+\end{proof}
+
+\begin{theorem}
+    For all $a$ and $b$ in $\Z$ and all $c : \U$,
+    \[
+        ac + bc = bc + ac.
+    \]
+\end{theorem}
+\begin{proof}
+    \[
+        ac + bc = (a + b)c = (b + a)c = bc + ac.
+    \]
+\end{proof}
+
+\subsection{The Integers in Other Types}
+
 \end{document}

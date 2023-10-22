@@ -39,7 +39,7 @@ Proof.
     reflexivity.
 Qed.
 
-Definition from_int := unary_op from_int_wd.
+Definition from_int := unary_op from_int_wd : int → U.
 
 Global Instance from_int_eq : Injective from_int.
 Proof.
