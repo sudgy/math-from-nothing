@@ -774,4 +774,172 @@ needed.  We will be exploring several ways to connect $\U$ with $\Z$.
 
 \subsection{The Integers in Other Types}
 
+\begin{lemma}
+    The function from $\N \times \N$ to $\U$ given by $(a_1, a_2) \to
+    \iN(a_1) - \iN(a_2)$ is well-defined under the equivalence relation $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that if $a_1 + b_2 = b_1 + a_2$, then
+    \[
+        \iN(a_1) - \iN(a_2) = \iN(b_1) - \iN(b_2).
+    \]
+    We can rearrange this to
+    \[
+        \iN(a_1) + \iN(b_2) = \iN(b_1) + \iN(a_2),
+    \]
+    and the result follows from $\iN$ being additive.
+\end{proof}
+
+\begin{definition}
+    We can define an inclusion $\iZ : \Z \rightarrow \U$ as the application of
+    Theorem \ref{unary_op_ex} to the previous lemma.  After this chapter, the
+    function $\iZ$ will be not be written and will be assumed to be used any
+    time an integer appears in an expression involving other types, unless the
+    notation is necessary to avoid ambiguity.
+\end{definition}
+
+\begin{instance}
+    If $\iN$ is injective in $\U$, then $\iZ$ is as well.
+\end{instance}
+\begin{proof}
+    We must prove that if
+    \[
+        \iN(a_1) - \iN(a_2) = \iN(b_1) - \iN(b_2),
+    \]
+    then
+    \[
+        a_1 + b_2 = b_1 + a_2.
+    \]
+    We can rearrange the first equation to get
+    \[
+        \iN(a_1) + \iN(b_2) = \iN(a_2) + \iN(b_1),
+    \]
+    and because $\iN$ is additive we get
+    \[
+        \iN(a_1 + b_2) = \iN(a_2 + b_1).
+    \]
+    Because $\iN$ is injective we get the desired result.
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$, $a1_\U = \iZ(a)$.
+\end{theorem}
+\begin{proof}
+    We must prove that
+    \[
+        a_1 1_\U - a_2 1_\U = \iN(a_1) - \iN(a_2),
+    \]
+    which follows directly from the corresponding theorem for the natural
+    numbers.
+\end{proof}
+
+\begin{instance} \label{from_int_one}
+    $\iZ$ preserves the multiplicative identity.
+\end{instance}
+\begin{proof}
+    \[
+        \iZ(1) = \iN(1) - \iN(0) = 1 - 0 = 1.
+    \]
+\end{proof}
+
+\begin{instance} \label{from_int_plus}
+    $\iZ$ is additive.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        \iZ(a + b) &= \iN(a_1 + b_1) - \iN(a_2 + b_2) \\ &=
+        \iN(a_1) + \iN(b_1) - \iN(a_2) - \iN(b_2) \\ &=
+        \iN(a_1) - \iN(a_2) + \iN(b_1) - \iN(b_2) \\ &=
+        \iZ(a) + \iZ(b).
+    \end{align*}
+\end{proof}
+
+\begin{instance} \label{from_int_mult}
+    $\iZ$ is multiplicative.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        \iZ(ab)
+        &= \iN(a_1b_1 + a_2b_2) - \iN(a_1b_2 + a_2b_1) \\
+        &= \iN(a_1)\iN(b_1) + \iN(a_2)\iN(b_2)
+            - \iN(a_1)\iN(b_2) - \iN(a_2)\iN(b_1) \\
+        &= \iN(a_1)(\iN(b_1) + \iN(b_2)) - \iN(a_2)(\iN(b_1) + \iN(b_2)) \\
+        &= (\iN(a_1) - \iN(a_2)) (\iN(b_1) - \iN(b_2)) \\
+        &= \iZ(a) \iZ(b).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all $a : \Z$ and $b : \U$, $ab = \iZ(a)b$.
+\end{theorem}
+\begin{proof}
+    \[
+        ab = a_1b - a_2b = \iN(a_1)b - \iN(a_2)b = (\iN(a_1) - \iN(a_2))b
+        = \iZ(a)b.
+    \]
+\end{proof}
+
+\begin{instance}
+    $\iZ$ preserves inequalities in one direction.
+\end{instance}
+\begin{proof}
+    We must prove that if $a_1 + b_2 \leq a_2 + b_1$, then $\iN(a_1) - \iN(a_2)
+    \leq \iN(b_1) - \iN(b_2)$.
+    \begin{align*}
+        a_1 + b_2 &\leq a_2 + b_1 \\
+        \iN(a_1 + b_2) &\leq \iN(a_2 + b_1) \\
+        \iN(a_1) + \iN(b_2) &\leq \iN(a_2) + \iN(b_1) \\
+        \iN(a_1) - \iN(a_2) &\leq \iN(b_1) - \iN(b_2).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all $n : \N$, $\iZ(\iN(n)) = \iN(n)$.
+\end{theorem}
+\begin{proof}
+    \[
+        \iZ(\iN(n)) = \iZ([(n, 0)]) = \iN(n) - \iN(0) = \iN(n).
+    \]
+\end{proof}
+
+\begin{theorem} \label{from_int_unique}
+    For all functions $f : \Z \to \U$, if $f$ is additive and preserves the
+    multiplicative identity, then $f = \iZ$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be any integer.  We must prove that $f(x) = \iZ(x)$.  If $x \leq 0$
+    and we could prove that $f(-x) = \iZ(-x)$ we could then prove that $-f(x) =
+    -\iZ(x)$, so $f(x) = \iZ(x)$.  Thus, we may assume without loss of
+    generality that $0 \leq x$.  Because $0 \leq x$, by Theorem
+    \ref{int_pos_nat_ex} there exists some natural number $n$ such that $x =
+    \iN(n)$.  The proof will be by induction on $n$.  When $n = 0$,
+    \[
+        f(\iN(0)) = f(0) = 0 = \iN(0),
+    \]
+    so the base case is true.  Now assume that $f(\iN(n)) = \iN(n)$.  Then
+    \[
+        f(\iN(S(n))) = f(1 + \iN(n)) = f(1) + f(\iN(n)) = 1 + \iN(n) =
+        \iN(S(n)),
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all integers $a$, $\iZ(a) = a$.
+\end{theorem}
+\begin{proof}
+    \[
+        \iZ(a) = \iN(a_1) - \iN(a_2) = [(a_1, 0)] - [(a_2, 0)] = [(a_1, a_2)] =
+        a.
+    \]
+\end{proof}
+
+\begin{theorem}
+    The integers are initial in \vtt{Ring} and \vtt{CRing}.
+\end{theorem}
+\begin{proof}
+    $\iZ$ is a morphism from $\Z$ to any ring, and by Theorem
+    \ref{from_int_unique}, they are the only morphism.
+\end{proof}
+
 \end{document}

@@ -23,8 +23,7 @@ Definition from_int_base (x : nat * nat) : U
 
 Local Open Scope int_scope.
 
-Theorem from_int_wd : ∀ a b, a ~ b →
-    from_int_base a = from_int_base b.
+Theorem from_int_wd : ∀ a b, a ~ b → from_int_base a = from_int_base b.
 Proof.
     intros [a1 a2] [b1 b2] eq.
     cbn in eq.
@@ -101,8 +100,8 @@ Proof.
     equiv_get_value a b.
     unfold mult at 1, from_int; equiv_simpl.
     unfold from_int_base; cbn.
-    setoid_rewrite homo_plus.
-    setoid_rewrite homo_mult.
+    do 2 rewrite (homo_plus (f := from_nat)).
+    do 4 rewrite (homo_mult (f := from_nat)).
     rewrite ldist.
     do 2 rewrite rdist.
     do 2 rewrite mult_lneg.
@@ -165,13 +164,13 @@ Proof.
     {
         intros x x_pos.
         apply int_pos_nat_ex in x_pos as [n x_eq]; subst x.
+        rewrite from_int_nat.
         nat_induction n.
-        -   rewrite homo_zero.
-            setoid_rewrite homo_zero.
-            reflexivity.
+        -   do 2 rewrite homo_zero.
+            symmetry; apply homo_zero.
         -   rewrite from_nat_suc.
-            setoid_rewrite homo_plus.
-            setoid_rewrite homo_one.
+            rewrite homo_plus.
+            rewrite homo_one.
             rewrite IHn.
             reflexivity.
     }
