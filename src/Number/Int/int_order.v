@@ -145,14 +145,6 @@ Proof.
     apply nat_pos.
 Qed.
 
-Theorem nat_nz_int : ∀ n, (0 : int) ≠ from_nat (nat_suc n).
-Proof.
-    intros n n_eq.
-    rewrite <- (homo_zero (f := from_nat)) in n_eq.
-    apply from_nat_inj in n_eq.
-    exact (nat_zero_suc n_eq).
-Qed.
-
 Theorem int_lt_nat : ∀ a b,
     to_equiv int_equiv a < to_equiv int_equiv b ↔ fst a + snd b < snd a + fst b.
 Proof.

@@ -1,6 +1,7 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
 \externaldocument{../basics/set}
+\externaldocument{../basics/natural}
 
 \begin{document}
 
@@ -395,6 +396,201 @@ also a commutative ring, a ring, etc.
 \end{proof}
 
 \section{Order}
+
+\begin{definition}
+    Given $(a_1, a_2)$ and $(b_1, b_2)$ in $\N \times \N$, define $a \leqq b$ to
+    mean $a_1 + b_2 \leq a_2 + b_1$.
+\end{definition}
+
+\begin{theorem}
+    The relation $\leqq$ is well-defined under the relation $\sim$.
+\end{theorem}
+\begin{proof}
+    By propositional extensionality and symmetry, it suffices to prove that for
+    all pairs $a$, $b$, $c$, and $d$, if $a \sim b$, $c \sim d$, and $a \leqq
+    c$, then $b \leqq d$.  Simplified, we have
+    \begin{align*}
+        b_1 + a_2 &= a_1 + b_2, \\
+        c_1 + d_2 &= d_1 + c_2, \\
+    \intertext{and}
+        a_1 + c_2 \leq a_2 + c_1.
+    \end{align*}
+    Adding the two equations to the inequality gives
+    \[
+       a_1 + c_2 + b_1 + a_2 + c_1 + d_2 \leq a_2 + c_1 + a_1 + b_2 + d_1 + c_2,
+    \]
+    and cancelling gives
+    \[
+        b_1 + d_2 \leq b_2 + d_1
+    \]
+    meaning that $(b_1, b_2) \leqq (d_1, d_2)$ as required.
+\end{proof}
+
+\begin{instance}
+    Define order in the integers as the operation obtained by applying Theorem
+    \ref{binary_op_ex} to the previous lemma.
+\end{instance}
+
+\begin{instance}
+    The order in $\Z$ is connex.
+\end{instance}
+\begin{proof}
+    We must prove that for all $a_1, a_2, b_1, b_2$, either $a_1 + b_2 \leq a_2
+    + b_1$ or $b_1 + a_2 \leq b_2 + a_1$.  This is true because the order on
+    $\N$ is connex.
+\end{proof}
+
+\begin{instance}
+    The order in $\Z$ is antisymmetric.
+\end{instance}
+\begin{proof}
+    We must prove that if
+    \[
+        a_1 + b_2 \leq a_2 + b_1
+    \]
+    and
+    \[
+        b_1 + a_2 \leq b_2 + a_1,
+    \]
+    then
+    \[
+        a_1 + b_2 = b_1 + a_2.
+    \]
+    This follows from the antisymmetry of the order in $\N$ after using
+    commutativity.
+\end{proof}
+
+\begin{instance}
+    The order in $\Z$ is transitive.
+\end{instance}
+\begin{proof}
+    We must prove that if
+    \[
+        a_1 + b_2 \leq a_2 + b_1
+    \]
+    and
+    \[
+        b_1 + c_2 \leq b_2 + c_1,
+    \]
+    then
+    \[
+        a_1 + c_2 \leq a_2 + c_1.
+    \]
+    We can add $c_2$ to the first inequality to get
+    \[
+        a_1 + b_2 + c_2 \leq a_2 + b_1 + c_2
+    \]
+    and we can add $a_2$ to the second inequality to get
+    \[
+        a_2 + b_1 + c_2 \leq a_2 + b_2 + c_1.
+    \]
+    By transitivity of the order in $\N$,
+    \[
+        a_1 + b_2 + c_2 \leq a_2 + b_2 + c_1,
+    \]
+    and by cancelling $b_2$ we get the desired result.
+\end{proof}
+
+\begin{instance}
+    The order in $\Z$ is left additive.
+\end{instance}
+\begin{proof}
+    We must prove that if $a_1 + b_2 \leq a_2 + b_1$, then
+    \[
+        c_1 + a_1 + c_2 + b_2 \leq c_2 + a_2 + c_1 + b_1,
+    \]
+    which follows directly from the additivity of the order in $\N$.
+\end{proof}
+
+\begin{theorem} \label{int_pos_nat_ex}
+    For all integers $a$, if $0 \leq a$, then there exists a natural number $n$
+    such that $a = n$.
+\end{theorem}
+\begin{proof}
+    Because $0 \leq a$, we have $a_2 \leq a_1$.  Then by Theorem
+    \ref{nat_le_ex}, there exists some $c$ such that $a_2 + c = a_1$.  This
+    equation is equivalent to the equation
+    \[
+        [(c, 0)] = [(a_1, a_2)],
+    \]
+    so $c$ is the required natural number.
+\end{proof}
+
+\begin{theorem} \label{int_neg_nat_ex}
+    For all integers $a$, if $a \leq 0$, then there exists a natural number $n$
+    such that $a = -n$.
+\end{theorem}
+\begin{proof}
+    Because $a \leq 0$, we have $0 \leq -a$, so by the previous theorem there
+    exists a natural number $n$ such that $-a = n$, so $a = -n$.
+\end{proof}
+
+\begin{instance}
+    The order in $\Z$ is multiplicative.
+\end{instance}
+\begin{proof}
+    Let $0 \leq a$ and $0 \leq b$.  Then by Theorem \ref{int_pos_nat_ex}, there
+    exist natural numbers $m$ and $n$ such that $a = m$ and $b = n$.  Then the
+    result simplifies to
+    \[
+        0 + m0 + 0n \leq 0 + mn + (0)(0).
+    \]
+    The left-hand side simplifies to zero, and because all natural numbers are
+    positive, the result is true.
+\end{proof}
+
+\begin{theorem}
+    For all $a_1$, $a_2$, $b_1$, and $b_2$, $[(a_1, a_2)] < [(b_1, b_2)]$ if and
+    only if $a_1 + b_2 < a_2 + b_1$.
+\end{theorem}
+\begin{proof}
+    Unfold the definitions of $<$ and $\leq$, after using commutativity the two
+    expressions are identical.
+\end{proof}
+
+\begin{theorem} \label{int_lt_suc_le} \label{int_le_suc_lt}
+        \label{int_le_pre_lt} \label{int_lt_pre_le}
+    For all $a$ and $b$, $a < b + 1$ if and only if $a \leq b$.
+\end{theorem}
+\begin{proof}
+    Simplified, we must prove that $a_1 + b_2 < a_2 + b_1 + 1$ if and only if
+    $a_1 + b_2 \leq a_2 + b_1$.  This follows directly from Theorem
+    \ref{nat_lt_suc_le}
+\end{proof}
+
+Note that the previous theorem also gives other similar results involving
+relating inequalities and strict inequalities with a $+ 1$ or $-1$ somewhere.
+
+\begin{theorem} \label{int_pos_nat1_ex}
+    For all $a : \Z$, if $0 < a$, then there exists an $n : \N$ such than $a =
+    S(n)$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{int_pos_nat_ex}, there exists an $n : \N$ such that $a = n$.
+    If $n = 0$, because $0 < a$, we would have $0 < 0$, which is a
+    contradiction.  Thus, $n \neq 0$, so it is the successor of another natural
+    number $m$, meaning that $a = S(m)$.
+\end{proof}
+
+\begin{theorem} \label{int_neg_nat1_ex}
+    For all $a : \Z$, if $0 < a$, then there exists an $n : \N$ such than $a =
+    -S(n)$.
+\end{theorem}
+\begin{proof}
+    The proof is similar in form to Theorem \ref{int_neg_nat_ex}.
+\end{proof}
+
+\begin{instance}
+    The integers are Archimedean.
+\end{instance}
+\begin{proof}
+    We must prove that if $0 < x$ and $0 < y$, then there exists an $n : \N$
+    such that $x < ny$.  Because $0 < y$, $1 \leq y$, and we can multiply by $x$
+    to get $x \leq xy$.  Because $0 < y$, we can add it to the right-hand side
+    to get $x < y + xy = (x + 1)y$.  By Theorem \ref{int_pos_nat1_ex}, there
+    exists some natural number $n$ such that $x = n + 1$, so $x < (n + 2)y$,
+    showing that $n + 2$ suffices.
+\end{proof}
 
 \section{The Relation Between Integers And Other Types}
 
