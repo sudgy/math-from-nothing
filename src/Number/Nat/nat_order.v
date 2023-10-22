@@ -238,18 +238,11 @@ Proof.
             exact eq.
 Qed.
 
-Global Instance nat_le_mult_lcancel_class : OrderMultLcancel nat.
-Proof.
-    split.
-    intros a b c [C c_pos].
-    apply nat_le_mult_lcancel.
-    exact c_pos.
-Qed.
-
 Theorem nat_le_mult_rcancel : ∀ {a b} c, 0 ≠ c → a * c ≤ b * c → a ≤ b.
 Proof.
     intros a b c c_pos.
-    apply le_mult_rcancel_pos.
+    do 2 rewrite (mult_comm _ c).
+    apply le_mult_lcancel_pos.
     split; [>apply nat_pos|exact c_pos].
 Qed.
 

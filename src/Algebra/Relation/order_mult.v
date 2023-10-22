@@ -35,10 +35,33 @@ Class OrderedFieldClass U `{
     UOMRC : @OrderMultRcancel U UZ UM UO
 }.
 
-(* begin hide *)
 Section OrderMultImply.
 
 Context {U} `{OrderedFieldClass U}.
+
+Theorem lt_lmult_pos : ∀ {a b} c, 0 < c → a < b → c * a < c * b.
+Proof.
+    intros a b c c_gt ab.
+    split.
+    -   apply le_lmult_pos.
+        +   apply c_gt.
+        +   apply ab.
+    -   intro contr.
+        apply mult_lcancel in contr.
+        +   destruct ab; contradiction.
+        +   apply c_gt.
+Qed.
+
+Theorem div_pos : ∀ {a}, 0 < a → 0 < /a.
+Proof.
+    intros a a_pos.
+    classic_contradiction contr.
+    rewrite nlt_le in contr.
+    do 2 (apply le_lmult_pos with a in contr; [>|apply a_pos]).
+    rewrite mult_rinv, mult_rid in contr by apply a_pos.
+    do 2 rewrite mult_ranni in contr.
+    destruct (lt_le_trans a_pos contr); contradiction.
+Qed.
 
 Global Instance le_lmult_rmult : OrderRmult U.
 Proof.
@@ -70,19 +93,17 @@ Proof.
     rewrite plus_rid in eq.
     exact eq.
 Qed.
-(* end hide *)
-Theorem div_pos : ∀ {a}, 0 < a → 0 < div a.
+
+Global Instance le_lmult_lcancel : OrderMultLcancel U.
 Proof.
-    intros a a_pos.
+    split.
+    intros a b c c_pos eq.
     classic_contradiction contr.
-    rewrite nlt_le in contr.
-    do 2 (apply le_lmult_pos with a in contr; [>|apply a_pos]).
-    rewrite mult_rinv, mult_rid in contr by apply a_pos.
-    do 2 rewrite mult_ranni in contr.
-    destruct (lt_le_trans a_pos contr); contradiction.
+    rewrite nle_lt in contr.
+    apply lt_lmult_pos with c in contr; [>|exact c_pos].
+    contradiction (irrefl _ (le_lt_trans eq contr)).
 Qed.
 
-(* begin hide *)
 Global Instance le_lmult_lcancel_class : OrderMultLcancel U.
 Proof.
     split.
@@ -97,20 +118,6 @@ End OrderMultImply.
 Section OrderMult.
 
 Context {U} `{OrderedFieldClass U}.
-
-(* end hide *)
-Theorem lt_lmult_pos : ∀ {a b} c, 0 < c → a < b → c * a < c * b.
-Proof.
-    intros a b c c_gt ab.
-    split.
-    -   apply le_lmult_pos.
-        +   apply c_gt.
-        +   apply ab.
-    -   intro contr.
-        apply mult_lcancel in contr.
-        +   destruct ab; contradiction.
-        +   apply c_gt.
-Qed.
 
 Theorem lt_rmult_pos : ∀ {a b} c, 0 < c → a < b → a * c < b * c.
 Proof.
@@ -1073,6 +1080,5 @@ Proof.
         apply lt_rplus.
         exact ab.
 Qed.
-(* begin hide *)
+
 End OrderMult.
-(* end hide *)

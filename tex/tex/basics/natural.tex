@@ -505,32 +505,6 @@ proof used additive inverses, which don't exist in the natural numbers.
     is true.  Thus, by induction, the order on $\N$ is left multiplicative.
 \end{proof}
 
-\begin{instance}
-    The order on $\N$ is left multiplication cancellative.
-\end{instance}
-\begin{proof}
-    Let $a$, $b$, and $c$ be such that $c \neq 0$ and $ca \leq cb$.  Because $c
-    \neq 0$, $c = S(c')$ for some $c'$, so $S(c')a \leq S(c')b$.  We will now do
-    induction on $a$ with the statement ``For all $b$, $S(c')a \leq S(c')b
-    \rightarrow a \leq b$.''  When $a = 0$, then $0 \leq S(c')b$, so the base
-    case is true.  Now assume that for all $b$, $S(c')a \leq S(c')b \rightarrow
-    a \leq b$, and assume that $S(c')S(a) \leq S(c')b$.  We must prove that
-    $S(a) \leq b$.  If $b = 0$, we would have $S(c')S(a) \leq 0$, so by Theorem
-    \ref{nat_neg_eq}, $S(c')S(a) = 0$.  But this is impossible due to Theorem
-    \ref{nat_neq_suc_mult}, so we must have $b \neq 0$.  Thus, there is some
-    $b'$ such that $b = S(b')$.  Then
-    \begin{align*}
-        S(c')S(a) &\leq S(c')b \\
-        S(c')S(a) &\leq S(c')S(b') \\
-        S(c') + S(c')a &\leq S(c') + S(c')b' \\
-        S(c')a &\leq S(c')b' \\
-        a &\leq b' \\
-        S(a) &\leq S(b') = b,
-    \end{align*}
-    so the inductive case is true.  Thus, by induction, the order on $\N$ is
-    left multiplication cancellative.
-\end{proof}
-
 \begin{theorem} \label{nat_lt_suc_le}
     For all $a$ and $b$ in $\N$, $a < S(b) \leftrightarrow a \leq b$.
 \end{theorem}

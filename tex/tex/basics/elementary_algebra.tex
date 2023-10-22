@@ -1362,6 +1362,16 @@ not equal, and the rest of the proofs will be skipped.
 
 We can now move on to slightly more interesting theorems.
 
+\begin{instance}
+    If multiplication is left cancellative and $\leq$ is left multiplicative,
+    then $\leq$ is left multiplication cancellative.
+\end{instance}
+\begin{proof}
+    Assume that $0 < c$ and $ca \leq cb$.  For a contradiction, assume that $b <
+    a$.  Because $0 < c$, we can multiply $b < a$ by $c$ to get $cb < ca$, which
+    contradicts $ca \leq cb$.
+\end{proof}
+
 \begin{theorem} \label{square_pos}
     For all $a$, $0 \leq aa$.
 \end{theorem}

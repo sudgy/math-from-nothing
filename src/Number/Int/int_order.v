@@ -59,7 +59,6 @@ Proof.
     apply connex.
 Qed.
 
-
 Global Instance int_le_antisym : Antisymmetric le.
 Proof.
     split.
@@ -72,7 +71,6 @@ Proof.
     rewrite (plus_comm b2 a1) in cd.
     exact (antisym ab cd).
 Qed.
-
 
 Global Instance int_le_trans : Transitive le.
 Proof.
@@ -145,16 +143,6 @@ Proof.
     rewrite mult_lanni, mult_ranni.
     do 2 rewrite plus_lid.
     apply nat_pos.
-Qed.
-
-Global Instance int_le_mult_lcancel : OrderMultLcancel int.
-Proof.
-    split.
-    intros a b c c_pos eq.
-    classic_contradiction contr.
-    rewrite nle_lt in contr.
-    apply lt_lmult_pos with c in contr; [>|exact c_pos].
-    contradiction (irrefl _ (le_lt_trans eq contr)).
 Qed.
 
 Theorem nat_nz_int : ∀ n, (0 : int) ≠ from_nat (nat_suc n).
