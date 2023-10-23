@@ -169,28 +169,7 @@ Proof.
     exact not_trivial_one.
 Qed.
 
-Definition int : IntegralDomain := make_domain
-    int_base
-    int_not_trivial
-    int_plus
-    int_zero
-    int_neg
-    int_mult
-    int_one
-    int_plus_assoc
-    int_plus_comm
-    int_plus_lid
-    int_plus_linv
-    int_mult_assoc
-    int_mult_comm
-    int_ldist
-    int_mult_lid
-    int_mult_lcancel.
-
-Definition int_ring := domain_to_ring int.
-Definition int_cring := domain_to_cring int.
-
-Theorem from_nat_int : ∀ n, (from_nat n : int) = (to_equiv int_equiv (n, 0) : int).
+Theorem from_nat_int : ∀ n, from_nat n = to_equiv int_equiv (n, 0).
 Proof.
     intros n.
     nat_induction n.

@@ -8,6 +8,7 @@ Require Import nat.
 Require Import set.
 Require Export order_mult.
 Require Import nat_abstract.
+Require Export ordered_domain_category.
 
 Notation "a ≦ b" := (fst a + snd b ≤ snd a + fst b)
     (at level 70, no associativity) : int_scope.
@@ -43,7 +44,7 @@ Proof.
     all: assumption.
 Qed.
 
-Global Instance int_order : Order int := {
+Global Instance int_order : Order int_base := {
     le := binary_op int_le_wd;
 }.
 
@@ -89,7 +90,7 @@ Proof.
     exact eq.
 Qed.
 
-Global Instance int_le_lplus : OrderLplus int.
+Global Instance int_le_lplus : OrderLplus int_base.
 Proof.
     split.
     intros a b c.
@@ -131,7 +132,7 @@ Proof.
     exact n_eq.
 Qed.
 
-Global Instance int_le_mult : OrderMult int.
+Global Instance int_le_mult : OrderMult int_base.
 Proof.
     split.
     intros a b a_pos b_pos.
@@ -144,6 +145,34 @@ Proof.
     do 2 rewrite plus_lid.
     apply nat_pos.
 Qed.
+
+Definition int : OrderedDomain := make_odomain
+    int_base
+    int_not_trivial
+    int_plus
+    int_zero
+    int_neg
+    int_plus_assoc
+    int_plus_comm
+    int_plus_lid
+    int_plus_linv
+    int_mult
+    int_one
+    int_mult_assoc
+    int_mult_comm
+    int_ldist
+    int_mult_lid
+    int_mult_lcancel
+    int_order
+    int_le_antisym
+    int_le_trans
+    int_le_connex
+    int_le_lplus
+    int_le_mult.
+
+Definition int_domain := odomain_to_domain int.
+Definition int_ring := domain_to_ring int_domain.
+Definition int_cring := domain_to_cring int_domain.
 
 Theorem int_lt_nat : ∀ a b,
     to_equiv int_equiv a < to_equiv int_equiv b ↔ fst a + snd b < snd a + fst b.
