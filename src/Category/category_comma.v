@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export category_def.
+Require Export basic_categories.
 Require Export set.
 
 Set Universe Polymorphism.
@@ -74,5 +75,13 @@ End CommaCategory.
 
 Definition make_comma {A B C : Category} (S : Functor A C) (T : Functor B C)
     (a : A) (b : B) f := make_comma_obj S T a b f : Comma S T.
+Definition make_comma_l1 {B C : Category} (a : C) (T : Functor B C) (b : B)
+    (f : morphism a (T b)) := make_comma (obj_to_functor a) T Single b f.
+Definition make_comma_l2 {A C : Category} (S : Functor A C) (a : C) (b : A)
+    (f : morphism (S b) a) := make_comma S (obj_to_functor a) b Single f.
+Definition make_slice {C : Category} (a : C) (b : C) (f : morphism b a)
+    := make_comma 𝟙 (obj_to_functor a) b Single f.
+Definition make_coslice {C : Category} (a : C) (b : C) (f : morphism a b)
+    := make_comma (obj_to_functor a) 𝟙 Single b f.
 
 Unset Universe Polymorphism.

@@ -218,8 +218,8 @@ Qed.
 
 End FreeBilinear.
 
-Definition to_free_from := make_comma
-    (obj_to_functor (V : TYPE)) (module_to_type U) Single free_linear to_free.
+Definition to_free_from := make_comma_l1 (V : TYPE) (module_to_type U)
+    free_linear to_free.
 
 Theorem free_module_universal : initial to_free_from.
 Proof.

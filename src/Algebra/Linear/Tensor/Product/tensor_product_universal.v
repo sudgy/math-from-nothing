@@ -205,8 +205,8 @@ Proof.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 x := bilinear_from_f g (fst x) (snd x)).
-        pose (h2 := make_comma (obj_to_functor (prod_type V1 V2 : TYPE))
-            (module_to_type F) Single (bilinear_from_module g) h1).
+        pose (h2 := make_comma_l1 (prod_type V1 V2 : TYPE) (module_to_type F)
+            (bilinear_from_module g) h1).
         pose proof (free_module_universal F (V1 * V2) h2) as uni.
         cbn in uni.
         apply ex_singleton in uni as [[s h3] h3_free_from'].
