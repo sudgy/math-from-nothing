@@ -72,8 +72,6 @@ Qed.
 
 End CommaCategory.
 
-Check make_comma_obj.
-
 Definition make_comma {A B C : Category} (S : Functor A C) (T : Functor B C)
     (a : A) (b : B) f := make_comma_obj S T a b f : Comma S T.
 
