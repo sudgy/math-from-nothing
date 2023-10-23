@@ -3,6 +3,7 @@ Require Import init.
 Require Export mult_field.
 Require Export category_def.
 Require Import field_category.
+Require Import ordered_domain_category.
 Require Import basic_categories.
 
 Require Import set.
@@ -101,8 +102,10 @@ Qed.
 Definition make_ofield a b c d e f g h i j k l m n o p q r s t u v w
     := make_ofield_base a b c d e f g h i j k l m n o p q r s t u v w
     : OrderedField.
-Definition make_ofield_homomorphism (M N : Field) f f_plus f_mult f_one
-    := make_field_homomorphism_base M N f f_plus f_mult f_one : morphism M N.
+Definition make_ofield_homomorphism (M N : OrderedField)
+    f f_plus f_mult f_one f_le
+    := make_ofield_homomorphism_base M N f f_plus f_mult f_one f_le
+    : morphism M N.
 
 Program Definition ofield_to_type := {|
     functor_f A := A;
@@ -122,3 +125,26 @@ Program Definition ofield_to_field := {|
         (ofield_homo_plus _ _ f) (ofield_homo_mult _ _ f)
         (ofield_homo_one _ _ f);
 |} : Functor OrderedField Field.
+
+Definition ofield_to_odomain_base (A : OrderedField) := make_odomain A
+    (ofield_not_trivial A) (ofield_plus A) (ofield_zero A) (ofield_neg A)
+    (ofield_plus_assoc A) (ofield_plus_comm A) (ofield_plus_lid A)
+    (ofield_plus_linv A) (ofield_mult A) (ofield_one A) (ofield_mult_assoc A)
+    (ofield_mult_comm A) (ofield_ldist A) (ofield_mult_lid A) mult_linv_lcancel
+    (ofield_le A) (ofield_le_antisym A) (ofield_le_trans A) (ofield_le_connex A)
+    (ofield_le_lplus A) (ofield_le_mult A) : OrderedDomain.
+Program Definition ofield_to_odomain := {|
+    functor_f := ofield_to_odomain_base;
+    functor_morphism A B f := make_odomain_homomorphism
+        (ofield_to_odomain_base A) (ofield_to_odomain_base B) f
+        (ofield_homo_plus _ _ f) (ofield_homo_mult _ _ f)
+        (ofield_homo_one _ _ f) (ofield_homo_le _ _ f) (field_inj f);
+|} : Functor OrderedField OrderedDomain.
+Next Obligation.
+    apply odomain_homo_eq; cbn.
+    reflexivity.
+Qed.
+Next Obligation.
+    apply odomain_homo_eq; cbn.
+    reflexivity.
+Qed.

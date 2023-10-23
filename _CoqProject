@@ -89,6 +89,7 @@
 ./src/Algebra/Mult/ring_category.v
 ./src/Algebra/Mult/domain_category.v
 ./src/Algebra/Mult/field_category.v
+./src/Algebra/Relation/ordered_domain_category.v
 ./src/Algebra/Relation/ordered_field_category.v
 
 ./src/Number/Int/int_base.v
