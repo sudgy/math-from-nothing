@@ -5,6 +5,8 @@ Require Import category_product.
 Require Import category_coproduct.
 Require Import set.
 
+Set Universe Polymorphism.
+
 Program Definition SINGLETON : Category := {|
     cat_U := singleton_type;
     morphism A B := singleton_type;
@@ -16,6 +18,16 @@ Next Obligation.
 Qed.
 Next Obligation.
     apply singleton_type_eq.
+Qed.
+
+Program Definition obj_to_functor {C : Category} (A : C) : Functor SINGLETON C
+:= {|
+    functor_f _ := A;
+    functor_morphism _ _ _ := 𝟙;
+|}.
+Next Obligation.
+    rewrite cat_lid.
+    reflexivity.
 Qed.
 
 Program Definition TYPE : Category := {|
@@ -133,3 +145,5 @@ Next Obligation.
         +   rewrite <- b_eq2 in a_eq2.
             exact (func_eq _ _ a_eq2 x).
 Qed.
+
+Unset Universe Polymorphism.

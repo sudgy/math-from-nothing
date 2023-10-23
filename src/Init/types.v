@@ -29,7 +29,7 @@ Tactic Notation "dand_split" := let H := fresh in dand_split H.
 
 Set Implicit Arguments.
 
-#[universes(template)]
+#[universes(polymorphic)]
 Inductive singleton_type : Type := Single.
 
 Theorem singleton_type_eq : ∀ a b : singleton_type, a = b.
