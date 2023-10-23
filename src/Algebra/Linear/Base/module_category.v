@@ -3,6 +3,7 @@ Require Import init.
 Require Export linear_base.
 Require Export category_base.
 Require Export ring_category.
+Require Export basic_categories.
 (** This requires a commutative ring, not just any old ring.  If I ever need
 one-sided modules, I'll just make a different category for those.
 *)
@@ -210,3 +211,8 @@ Definition cring_module (C : CRingObj) := make_module C (cring_U C) (cring_plus 
     (@scalar_scalar_rdist (cring_U C) (cring_plus C) (cring_mult C) (cring_mult_comm C) (cring_ldist C))
     (@scalar_scalar_comp (cring_U C) (cring_mult C) (cring_mult_assoc C))
 .
+
+Program Definition module_to_type (F : CRing) := {|
+    functor_f M := module_V M;
+    functor_morphism A B f := module_homo_f f;
+|} : Functor (Module F) TYPE.

@@ -12,6 +12,7 @@ Require Import unordered_list.
 
 Require Import module_category.
 Require Import category_initterm.
+Require Import category_comma.
 
 (* begin hide *)
 Section TensorProductCategory.
@@ -204,11 +205,16 @@ Proof.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
         pose (h1 x := bilinear_from_f g (fst x) (snd x)).
-        pose (h2 := make_free_from F (V1 * V2) (bilinear_from_module g) h1).
+        pose (h2 := make_comma (obj_to_functor (prod_type V1 V2 : TYPE))
+            (module_to_type F) Single (bilinear_from_module g) h1).
         pose proof (free_module_universal F (V1 * V2) h2) as uni.
         cbn in uni.
-        apply ex_singleton in uni as [h3 h3_free_from].
-        unfold free_from_set in h3_free_from.
+        apply ex_singleton in uni as [[s h3] h3_free_from'].
+        unfold comma_set in h3_free_from'.
+        cbn in h3_free_from'.
+        clear s.
+        pose proof (func_eq _ _ h3_free_from') as h3_free_from.
+        clear h3_free_from'.
         cbn in h3_free_from.
         pose (h4 := module_homo_f h3).
         cbn in h4.

@@ -5,6 +5,7 @@ Require Import linear_grade_sum.
 Require Import linear_extend.
 Require Import linear_transformation_space.
 Require Import module_category.
+Require Import category_comma.
 
 Require Import set.
 Require Import unordered_list.
@@ -217,93 +218,32 @@ Qed.
 
 End FreeBilinear.
 
-Record free_from := make_free_from {
-    free_from_module : Module U;
-    free_from_f : V → module_V free_from_module;
-}.
-
-Definition free_from_set (f g : free_from)
-    (h : morphism (free_from_module f)
-                      (free_from_module g))
-    := ∀ x, h (free_from_f f x) = free_from_f g x.
-
-Definition free_from_compose {F G H : free_from}
-    (f : set_type (free_from_set G H)) (g : set_type (free_from_set F G))
-    := [f|] ∘ [g|].
-
-Lemma free_from_set_compose_in
-    {F' G H : free_from} : ∀ (f : set_type (free_from_set G H)) g,
-    free_from_set F' H (free_from_compose f g).
-Proof.
-    intros [f f_eq] [g g_eq].
-    unfold free_from_set in *.
-    unfold free_from_compose; cbn.
-    intros x.
-    rewrite g_eq.
-    apply f_eq.
-Qed.
-
-Lemma free_from_set_id_in : ∀ f : free_from, free_from_set f f 𝟙.
-Proof.
-    intros f.
-    unfold free_from_set.
-    intros x.
-    cbn.
-    reflexivity.
-Qed.
-
-Program Definition FREE_FROM : Category := {|
-    cat_U := free_from;
-    morphism f g := set_type (free_from_set f g);
-    cat_compose F G H f g := [_|free_from_set_compose_in f g];
-    cat_id f := [_|free_from_set_id_in f];
-|}.
-Next Obligation.
-    apply set_type_eq; cbn.
-    apply (@cat_assoc (Module U)).
-Qed.
-Next Obligation.
-    apply set_type_eq; cbn.
-    apply (@cat_lid (Module U)).
-Qed.
-Next Obligation.
-    apply set_type_eq; cbn.
-    apply (@cat_rid (Module U)).
-Qed.
-
-Definition to_free_from := make_free_from free_linear to_free : FREE_FROM.
+Definition to_free_from := make_comma
+    (obj_to_functor (V : TYPE)) (module_to_type U) Single free_linear to_free.
 
 Theorem free_module_universal : initial to_free_from.
 Proof.
-    intros [gM g].
-    pose (gP := module_plus gM).
-    pose (gZ := module_zero gM).
-    pose (gN := module_neg gM).
-    pose (gPC := module_plus_comm gM).
-    pose (gPA := module_plus_assoc gM).
-    pose (gPZ := module_plus_lid gM).
-    pose (gPN := module_plus_linv gM).
-    pose (gSM := module_scalar gM).
-    pose (gSMO := module_scalar_id gM).
-    pose (gSML := module_scalar_ldist gM).
-    pose (gSMR := module_scalar_rdist gM).
-    pose (gSMC := module_scalar_comp gM).
-    cbn.
+    intros [s gM g].
+    cbn in *.
+    unfold comma_set; cbn.
+    clear s.
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
-        exists (free_extend g).
-        unfold free_from_set; cbn.
+        exists (Single, free_extend g).
+        cbn.
+        functional_intros x.
         apply free_extend_free.
-    -   intros [f1 f1_in] [f2 f2_in].
-        pose (f1_plus := @module_homo_plus _ _ _ f1).
-        pose (f1_scalar := @module_homo_scalar _ _ _ f1).
-        pose (f2_plus := @module_homo_plus _ _ _ f2).
-        pose (f2_scalar := @module_homo_scalar _ _ _ f2).
+    -   intros [[s1 f1] f1_in'] [[s2 f2] f2_in'].
+        cbn in *.
         apply set_type_eq; cbn.
+        apply prod_combine; [>apply singleton_type_eq|]; cbn.
+        clear s1 s2.
+        pose proof (func_eq _ _ f1_in') as f1_in.
+        pose proof (func_eq _ _ f2_in') as f2_in.
+        clear f1_in' f2_in'.
+        cbn in *.
         apply module_homomorphism_eq.
         intros v.
-        unfold free_from_set in f1_in; cbn in f1_in.
-        unfold free_from_set in f2_in; cbn in f2_in.
         induction v as [|a v IHv] using grade_induction.
         {
             do 2 rewrite module_homo_zero.
