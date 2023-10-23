@@ -1169,7 +1169,13 @@ corresponding theorems for products by duality.
 
 \begin{definition}
     The category with $\S$ (the singleton type) as its objects and with $\S$
-    being the one morphism in $\S \to \S$ is called the singleton category.
+    being the one morphism in $\S \to \S$ is called the singleton category,
+    denoted by $1$.
+\end{definition}
+
+\begin{definition}
+    Given any category $C$ and object $A : C$, we can define a functor in $1 \to
+    C$ that produces the value $A$ and its identity morphism.
 \end{definition}
 
 \begin{definition}
@@ -1309,6 +1315,70 @@ define with what we have right now as well.
 \begin{proof}
     The proof is identical in form to the previous theorem.
 \end{proof}
+
+\section{Comma Categories}
+
+\begin{theorem}
+    Let $A$, $B$, and $C$ be categories with functors $S : A \to C$ and $T : B
+    \to C$.  We define the comma category $(S \downarrow T)$ as follows: objects
+    are triples $(a, b, f)$ where $a : A$, $b : B$, and $f : S(a) \to T(b)$, and
+    the morphisms from $(a, b, f)$ to $(c, d, g)$ are pairs of morphisms $h_1 :
+    a \to c$ and $h_2 : b \to d$ such that
+    \[
+        T(h_2) \circ f = g \circ S(h_1).
+    \]
+    Identity morphisms are just the pairs $(\1, \1)$.
+\end{theorem}
+\begin{proof}
+    Most of the proofs that this does indeed describe a category are trivial,
+    but the one that's a bit more difficult is proving that the composition of
+    two of these morphisms is another one.  Let $(a_1, b_1, f_1)$, $(a_2, b_2,
+    f_2)$, and $(a_3, b_3, f_3)$ be objects in the comma category with morphisms
+    $g_1 : a_2 \to a_3$, $g_2 : b_2 \to b_3$, $h_1 : a_1 \to a_2$, and $h_2 :
+    b_1 \to b_2$ such that $T(g_2) \circ f_2 = f_3 \circ S(g_1)$ and $T(h_2)
+    \circ f_1 = f_2 \circ S(h_1)$.  Then
+    \[
+        T(g_2 \circ h_2) \circ f_1
+        = T(g_2) \circ T(h_2) \circ f_1
+        = T(g_2) \circ f_2 \circ S(h_1)
+        = f_3 \circ S(g_1) \circ S(h_1)
+        = f_3 \circ S(g_1 \circ h_1).
+    \]
+\end{proof}
+
+There are many special cases of comma categories that we often use:
+
+\begin{definition}
+    Given an object $a : C$, and a functor $T : B \to C$, we define $(a
+    \downarrow T)$ to be the comma category $(1_a \downarrow T)$, where $1_a$ is
+    the functor from the singleton category to $a$.
+\end{definition}
+
+\begin{definition}
+    Given a functor $S : A \to C$ and an object $a : C$, we define $(S
+    \downarrow a)$ to be the comma category $(S \downarrow 1_a)$, where $1_a$ is
+    the functor from the singleton category to $a$.
+\end{definition}
+
+\begin{definition}
+    Given an object $a : C$, we define the slice category $(C \downarrow a)$ as
+    the comma category $(\1 \downarrow 1_a)$, where $1_a$ is the functor from
+    the singleton category to $a$.
+\end{definition}
+
+\begin{definition}
+    Given an object $a : C$, we define the coslice category $(a \downarrow C)$
+    as the comma category $(1_a \downarrow \1)$, where $1_a$ is the functor from
+    the singleton category to $a$.
+\end{definition}
+
+When using each of these definitions, while the singleton type technically
+should be playing a role, it doesn't play any role so it wil be dropped in the
+future.  Which of these definitions is being used can be determined by the type
+of the things in the notation: in $(A \downarrow B)$, if $A$ and $B$ are both
+functors, it is the full comma category, if one is a functor and the other is an
+object, then it is one of the next two definitions, and if one is a category and
+the other is an object, then it is a slice or coslice category.
 
 \section{The Category of Types}
 
