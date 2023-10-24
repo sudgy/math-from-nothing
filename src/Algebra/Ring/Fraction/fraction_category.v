@@ -217,6 +217,32 @@ Proof.
         exact g_in.
 Qed.
 
+Definition frac := free_functor frac_universal.
+
+Arguments to_frac : simpl never.
+Arguments frac : simpl never.
+
+Theorem frac_commute : ∀ {A B : IntegralDomain} (h : morphism A B),
+    ∀ x, (⌈frac⌉ h) (to_frac A x) = to_frac B (h x).
+Proof.
+    intros A B h.
+    pose proof (free_commute frac_universal h) as eq.
+    apply (f_equal domain_homo_f) in eq.
+    pose proof (func_eq _ _ eq) as eq2.
+    exact eq2.
+Qed.
+
+Theorem to_frac_ex {U : IntegralDomain} :
+    ∀ x : frac U, ∃ p q, x = to_frac U p / to_frac U q.
+Proof.
+    intros x.
+    equiv_get_value x.
+    destruct x as [p [q q_nz]].
+    exists p, q.
+    apply (to_frac_div U).
+Qed.
+
+
 Definition ofrac_field (U : OrderedDomain) : OrderedField := make_ofield
     (frac_type U) (frac_not_trivial U) (frac_plus U) (frac_zero U) (frac_neg U)
     (frac_plus_assoc U) (frac_plus_comm U) (frac_plus_lid U) (frac_plus_linv U)
@@ -254,4 +280,25 @@ Proof.
         2, 3, 4: apply g.
         1: reflexivity.
         exact g_in.
+Qed.
+
+Definition ofrac := free_functor ofrac_universal.
+
+Arguments to_ofrac : simpl never.
+Arguments ofrac : simpl never.
+
+Theorem ofrac_commute : ∀ {A B : OrderedDomain} (h : morphism A B),
+    ∀ x, (⌈ofrac⌉ h) (to_ofrac A x) = to_ofrac B (h x).
+Proof.
+    intros A B h.
+    pose proof (free_commute ofrac_universal h) as eq.
+    apply (f_equal odomain_homo_f) in eq.
+    pose proof (func_eq _ _ eq) as eq2.
+    exact eq2.
+Qed.
+
+Theorem to_ofrac_ex {U : OrderedDomain} :
+    ∀ x : ofrac U, ∃ p q, 0 < q ∧ x = to_ofrac U p / to_ofrac U q.
+Proof.
+    exact (frac_pos_ex_div U).
 Qed.
