@@ -298,6 +298,22 @@ Proof.
     destruct contr; contradiction.
 Qed.
 
+Theorem mult_3 : ∀ a b c, a * (b * c) = b * (a * c).
+Proof.
+    intros a b c.
+    do 2 rewrite mult_assoc.
+    apply rmult.
+    apply mult_comm.
+Qed.
+
+Theorem mult_4 : ∀ a b c d, a * b * (c * d) = a * c * (b * d).
+Proof.
+    intros a b c d.
+    do 2 rewrite <- mult_assoc.
+    apply lmult.
+    apply mult_3.
+Qed.
+
 (* begin hide *)
 End MultRing.
 

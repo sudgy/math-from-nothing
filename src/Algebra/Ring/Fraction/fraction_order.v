@@ -4,58 +4,23 @@ Require Import set.
 Require Export order_mult.
 
 Require Export fraction_base.
-Require Import fraction_plus.
-Require Import fraction_mult.
+Require Export fraction_plus.
+Require Export fraction_mult.
 Require Import nat.
+Require Export ordered_domain_category.
 
 Section FractionOrder.
 
-Context (U : Type) `{
-    UP : Plus U,
-    UN : Neg U,
-    UZ : Zero U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    UM : Mult U,
-    UO : One U,
-    @Ldist U UP UM,
-    @MultAssoc U UM,
-    @MultComm U UM,
-    @MultLid U UM UO,
-    @MultLcancel U UZ UM,
-    NotTrivial U,
-    UL : Order U,
-    @Connex U le,
-    @Antisymmetric U le,
-    @Transitive U le,
-    @OrderLplus U UP UL,
-    @OrderMult U UZ UM UL,
-    @OrderMultLcancel U UZ UM UL,
-    @Archimedean U UP UZ UL
-}.
+Context U `{OrderedFieldClass U, @Archimedean U UP UZ UO}.
 
 Local Infix "~" := (eq_equal (frac_equiv U)).
 
-Existing Instance frac_plus.
-Existing Instance frac_zero.
-Existing Instance frac_neg.
-Existing Instance frac_plus_assoc.
-Existing Instance frac_plus_comm.
-Existing Instance frac_plus_lid.
-Existing Instance frac_plus_linv.
-Existing Instance frac_mult.
-Existing Instance frac_one.
-Existing Instance frac_div.
-Existing Instance frac_ldist.
-Existing Instance frac_mult_assoc.
-Existing Instance frac_mult_comm.
-Existing Instance frac_mult_lid.
-Existing Instance frac_mult_linv.
-Existing Instance frac_not_trivial.
+Local Existing Instances frac_plus frac_zero frac_neg frac_plus_assoc
+    frac_plus_comm frac_plus_lid frac_plus_linv frac_mult frac_one frac_div
+    frac_ldist frac_mult_assoc frac_mult_comm frac_mult_lid frac_mult_linv
+    frac_not_trivial to_frac_inj to_frac_plus.
 
-Theorem frac_pos_ex : ∀ (x : frac U), ∃ a b,
+Theorem frac_pos_ex : ∀ (x : frac_type U), ∃ a b,
     0 < [b|] ∧ x = to_equiv (frac_equiv U) (a, b).
 Proof.
     intros x.
@@ -66,13 +31,8 @@ Proof.
         split.
         +   split; assumption.
         +   reflexivity.
-    -   assert (0 ≠ -b) as b'_nz.
-        {
-            intros contr.
-            apply (f_equal neg) in contr.
-            rewrite neg_zero, neg_neg in contr.
-            contradiction.
-        }
+    -   pose proof b_nz as b'_nz.
+        rewrite neg_nz in b'_nz.
         exists (-a), [-b|b'_nz].
         split.
         +   rewrite nle_lt in b_neg.
@@ -84,20 +44,16 @@ Proof.
             reflexivity.
 Qed.
 
-Theorem frac_pos_ex_div : ∀ (x : frac U), ∃ (a b : U),
+Theorem frac_pos_ex_div : ∀ (x : frac_type U), ∃ (a b : U),
     0 < b ∧ x = to_frac U a / to_frac U b.
 Proof.
     intros x.
     pose proof (frac_pos_ex x) as [a [[b b_nz] [b_pos x_eq]]].
     exists a, b.
-    split.
-    -   exact b_pos.
-    -   rewrite x_eq.
-        unfold mult, div; equiv_simpl.
-        unfold frac_eq; cbn.
-        destruct (sem (0 = b)) as [b_z|b_nz']; [>contradiction|]; cbn.
-        rewrite mult_lid, mult_rid.
-        reflexivity.
+    split; [>exact b_pos|].
+    rewrite x_eq.
+    apply to_frac_div.
+    assumption.
 Qed.
 
 Let frac_pos_base (a : frac_base U) := 0 ≤ fst a * [snd a|].
@@ -108,12 +64,10 @@ Proof.
     unfold frac_pos_base; cbn in *.
     unfold frac_eq in eq; cbn in eq.
     intros a_pos.
-    apply (le_lmult_pos ([b2|] * [b2|])) in a_pos.
-    2: apply square_pos.
-    rewrite mult_ranni in a_pos.
+    apply (le_mult (square_pos [b2|])) in a_pos.
+    rewrite mult_4 in a_pos.
     rewrite mult_assoc in a_pos.
     rewrite <- (mult_assoc [b2|]) in a_pos.
-    rewrite (mult_comm _ a1) in a_pos.
     rewrite eq in a_pos.
     rewrite mult_assoc in a_pos.
     rewrite <- mult_assoc in a_pos.
@@ -122,7 +76,7 @@ Proof.
     -   rewrite mult_comm.
         exact a_pos.
     -   split; [>apply square_pos|].
-        apply mult_nz; apply [|a2].
+        apply mult_nz; exact [|a2].
 Qed.
 
 Lemma frac_pos_wd : ∀ a b, a ~ b → frac_pos_base a = frac_pos_base b.
@@ -137,7 +91,7 @@ Qed.
 
 Definition frac_pos := unary_op frac_pos_wd.
 
-Local Instance frac_order : Order (frac U) := {
+Local Instance frac_order : Order (frac_type U) := {
     le a b := frac_pos (b - a)
 }.
 
@@ -151,8 +105,7 @@ Proof.
 Qed.
 
 Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-    (to_equiv (frac_equiv U) (a1, a2) ≤
-     to_equiv (frac_equiv U) (b1, b2)) ↔
+    (to_equiv (frac_equiv U) (a1, a2) ≤ to_equiv (frac_equiv U) (b1, b2)) ↔
     (a1 * [b2|] ≤ b1 * [a2|]).
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
@@ -174,8 +127,7 @@ Proof.
         +   apply lt_mult; assumption.
 Qed.
 Theorem frac_lt : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
-    (to_equiv (frac_equiv U) (a1, a2) <
-     to_equiv (frac_equiv U) (b1, b2)) ↔
+    (to_equiv (frac_equiv U) (a1, a2) < to_equiv (frac_equiv U) (b1, b2)) ↔
     (a1 * [b2|] < b1 * [a2|]).
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
@@ -186,55 +138,59 @@ Proof.
     reflexivity.
 Qed.
 
-Local Program Instance frac_le_connex : Connex le.
-Next Obligation.
+Local Instance frac_le_connex : Connex le.
+Proof.
+    split.
+    intros a b.
     apply or_to_strong.
-    pose proof (frac_pos_ex x) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex y) as [b1 [b2 [b2_pos b_eq]]].
-    subst x y.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
+    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
+    subst a b.
     do 2 rewrite frac_le by assumption.
     destruct (connex (a1 * [b2|]) (b1 * [a2|])) as [leq|leq].
     -   left; exact leq.
     -   right; exact leq.
 Qed.
 
-Local Program Instance frac_le_antisym : Antisymmetric le.
-Next Obligation.
-    revert H16 H17.
-    pose proof (frac_pos_ex x) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex y) as [b1 [b2 [b2_pos b_eq]]].
-    subst x y.
+Local Instance frac_le_antisym : Antisymmetric le.
+Proof.
+    split.
+    intros a b.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
+    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
+    subst a b.
     do 2 rewrite frac_le by assumption.
     equiv_simpl.
+    unfold frac_eq; cbn.
     apply antisym.
 Qed.
 
-Local Program Instance frac_le_trans : Transitive le.
-Next Obligation.
-    revert H16 H17.
-    pose proof (frac_pos_ex x) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex y) as [b1 [b2 [b2_pos b_eq]]].
-    pose proof (frac_pos_ex z) as [c1 [c2 [c2_pos c_eq]]].
-    subst x y z.
+Local Instance frac_le_trans : Transitive le.
+Proof.
+    split.
+    intros a b c.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
+    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
+    pose proof (frac_pos_ex c) as [c1 [c2 [c2_pos c_eq]]].
+    subst a b c.
     do 3 rewrite frac_le by assumption.
     intros ab bc.
-    apply le_rmult_pos with [c2|] in ab.
-    2: apply c2_pos.
-    apply le_rmult_pos with [a2|] in bc.
-    2: apply a2_pos.
-    rewrite <- (mult_assoc b1) in ab.
-    rewrite (mult_comm [a2|]) in ab.
-    rewrite mult_assoc in ab.
+    apply le_lmult_pos with [c2|] in ab; [>|apply c2_pos].
+    apply le_rmult_pos with [a2|] in bc; [>|apply a2_pos].
+    rewrite (mult_3 _ b1) in ab.
+    do 2 rewrite <- mult_assoc in bc.
     pose proof (trans ab bc) as eq.
-    mult_bring_right [b2|] in eq.
-    apply le_mult_rcancel_pos in eq.
-    2: apply b2_pos.
+    rewrite (mult_comm [b2|]) in eq.
+    do 2 rewrite mult_assoc in eq.
+    apply le_mult_rcancel_pos in eq; [>|apply b2_pos].
+    rewrite mult_comm.
     exact eq.
 Qed.
 
-Local Program Instance frac_le_lplus : OrderLplus (frac U).
-Next Obligation.
-    revert H16.
+Local Instance frac_le_lplus : OrderLplus (frac_type U).
+Proof.
+    split.
+    intros a b c.
     pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
     pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
     pose proof (frac_pos_ex c) as [c1 [c2 [c2_pos c_eq]]].
@@ -245,68 +201,45 @@ Next Obligation.
     rewrite frac_le; cbn.
     2, 3: apply lt_mult; assumption.
     do 2 rewrite rdist.
-    do 4 rewrite <- mult_assoc.
-    rewrite (mult_comm [a2|]).
-    rewrite (mult_comm [c2|]).
-    rewrite <- (mult_assoc [b2|]).
+    do 2 rewrite (mult_comm [c2|]).
+    rewrite mult_4.
     apply le_lplus.
-    mult_bring_right [c2|].
-    do 2 rewrite <- (mult_assoc _ [c2|]).
-    apply le_rmult_pos.
-    -   apply lt_mult; exact c2_pos.
-    -   exact ab.
+    do 2 rewrite (mult_4 _ [c2|]).
+    apply le_rmult_pos; [>|exact ab].
+    apply lt_mult; exact c2_pos.
 Qed.
 
-Local Program Instance frac_le_mult : OrderMult (frac U).
-Next Obligation.
-    revert H16 H17.
+Local Instance frac_le_mult : OrderMult (frac_type U).
+Proof.
+    split.
+    intros a b.
     do 3 rewrite frac_pos_zero.
     equiv_get_value a b.
     destruct a as [a1 a2], b as [b1 b2].
     unfold frac_pos, mult; equiv_simpl.
     unfold frac_pos_base; cbn.
     intros leq1 leq2.
-    pose proof (le_mult leq1 leq2) as leq.
-    rewrite <- mult_assoc in leq.
-    rewrite (mult_assoc [a2|]) in leq.
-    rewrite (mult_comm _ b1) in leq.
-    do 2 rewrite mult_assoc in leq.
-    rewrite mult_assoc.
-    exact leq.
+    rewrite mult_4.
+    apply le_mult; assumption.
 Qed.
 
-Theorem to_frac_le : ∀ a b, to_frac U a ≤ to_frac U b ↔ a ≤ b.
+Local Instance to_frac_le : HomomorphismLe (to_frac U).
 Proof.
-    intros a b.
+    split.
+    intros a b ab.
     unfold to_frac.
     rewrite frac_le by apply one_pos; cbn.
     do 2 rewrite mult_rid.
-    reflexivity.
-Qed.
-Theorem to_frac_lt : ∀ a b, to_frac U a < to_frac U b ↔ a < b.
-Proof.
-    intros a b.
-    split.
-    -   intros [leq neq].
-        split.
-        +   rewrite to_frac_le in leq.
-            exact leq.
-        +   intro contr; subst; contradiction.
-    -   intros [leq neq].
-        split.
-        +   rewrite to_frac_le.
-            exact leq.
-        +   intro contr.
-            apply to_frac_eq in contr; contradiction.
+    exact ab.
 Qed.
 
-(* begin hide *)
-Theorem frac_archimedean : ∀ x : frac U, 0 < x → ∃ n, x < from_nat n.
+Local Instance frac_arch : Archimedean (frac_type U).
 Proof.
+    apply field_impl_arch1.
     intros x x_pos.
     pose proof (frac_pos_ex x) as [a [b [b_pos x_eq]]].
     destruct x_pos as [x_pos x_neq].
-    rewrite (frac_pos_zero x) in x_pos.
+    rewrite frac_pos_zero in x_pos.
     subst x.
     unfold frac_pos in x_pos; equiv_simpl in x_pos.
     unfold frac_pos_base in x_pos; cbn in x_pos.
@@ -316,44 +249,28 @@ Proof.
     unfold to_frac in x_neq; equiv_simpl in x_neq.
     unfold frac_eq in x_neq; cbn in x_neq.
     rewrite mult_lanni, mult_rid in x_neq.
-    pose proof (archimedean a [b|] (make_and x_pos x_neq) b_pos)
-        as [n n_ltq].
+    pose proof (archimedean a [b|] (make_and x_pos x_neq) b_pos) as [n n_ltq].
     exists n.
-    apply (lt_mult_rcancel_pos (to_frac U [b|])).
-    1: {
+    rewrite (to_frac_div U).
+    rewrite <- lt_mult_rrmove_pos.
+    2: {
         unfold zero; cbn.
-        rewrite to_frac_lt.
+        rewrite <- homo_lt2.
         exact b_pos.
     }
-    assert (to_equiv (frac_equiv U) (a, b) * to_frac U [b|] =
-        to_frac U a) as eq.
-    {
-        unfold to_frac, mult at 1; equiv_simpl.
-        unfold frac_eq; cbn.
-        do 2 rewrite mult_rid.
-        reflexivity.
-    }
-    rewrite eq; clear eq.
-    assert (from_nat n * to_frac U [b|] = to_frac U (n × [b|]))as eq.
-    {
+    replace (from_nat n * to_frac U [b|]) with (to_frac U (n × [b|])).
+    2: {
         clear n_ltq.
+        rewrite <- nat_mult_from.
         nat_induction n.
-        -   rewrite homo_zero.
-            unfold zero at 3; cbn.
-            rewrite mult_lanni.
+        -   do 2 rewrite nat_mult_lanni.
             reflexivity.
-        -   cbn.
-            rewrite rdist.
-            rewrite mult_lid.
-            rewrite to_frac_plus.
-            apply lplus.
-            exact IHn.
+        -   do 2 rewrite nat_mult_suc.
+            rewrite <- IHn.
+            apply homo_plus.
     }
-    rewrite eq; clear eq.
-    rewrite to_frac_lt.
+    rewrite <- homo_lt2.
     exact n_ltq.
 Qed.
-
-Definition frac_arch := field_impl_arch1 frac_archimedean.
 
 End FractionOrder.

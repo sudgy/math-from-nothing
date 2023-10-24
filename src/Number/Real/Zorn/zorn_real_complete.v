@@ -75,7 +75,7 @@ Next Obligation.
     pose (ZT := zorn_real_quotient_not_trivial cut cut_in cut_out cut_lt).
     pose (ZA := zorn_real_quotient_arch cut cut_in cut_out cut_lt).
     pose (zrq := zorn_real_quotient cut cut_in cut_out cut_lt).
-    pose (real_ext := frac zrq).
+    pose (real_ext := frac_type zrq).
     pose (real_ext_not_trivial := frac_not_trivial zrq).
     pose (real_ext_plus := frac_plus zrq).
     pose (real_ext_plus_comm := frac_plus_comm zrq).
@@ -100,6 +100,11 @@ Next Obligation.
     pose (real_ext_le_mult := frac_le_mult zrq).
     pose (real_ext_arch := frac_arch zrq).
     pose (real_ext_aof := aof_ex real_ext).
+    pose (to_real_ext_plus := to_frac_plus zrq).
+    pose (to_real_ext_mult := to_frac_mult zrq).
+    pose (to_real_ext_one := to_frac_one zrq).
+    pose (to_real_ext_le := to_frac_le zrq).
+    pose (to_real_ext_inj := to_frac_inj zrq).
     pose (PL := polynomial_ldist real_cring).
     pose proof (real_maximal real_ext_aof) as f_ex.
     cbn in f_ex.
@@ -108,7 +113,7 @@ Next Obligation.
     pose (f2 (x : polynomial real_cring) := to_qring
                     (zorn_real_ideal cut cut_in cut_out cut_lt) x : zrq).
     pose (f3 (x : zrq) := to_frac zrq x).
-    pose (f4 (x : frac zrq) := aof_ex_f x).
+    pose (f4 (x : frac_type zrq) := aof_ex_f x).
     pose (f x := f4 (f3 (f2 (f1 x)))).
     assert (arch_ordered_homo real_aof real_ext_aof f) as f_homo.
     {
@@ -116,32 +121,30 @@ Next Obligation.
         split; [>|split; [>|split; [>|split]]].
         -   rewrite to_polynomial_zero.
             rewrite to_qring_zero.
-            rewrite to_frac_zero.
+            rewrite (homo_zero (f := to_frac zrq)).
             reflexivity.
         -   rewrite to_polynomial_one.
             rewrite to_qring_one.
-            rewrite to_frac_one.
+            rewrite (homo_one (f := to_frac zrq)).
             reflexivity.
         -   intros x y.
             rewrite to_polynomial_plus.
             rewrite to_qring_plus.
-            rewrite to_frac_plus.
+            rewrite (homo_plus (f := to_frac zrq)).
             unfold plus at 2; cbn.
             do 2 rewrite aof_ex_f_eq1.
             reflexivity.
         -   intros x y.
             rewrite to_polynomial_mult.
             rewrite to_qring_mult.
-            rewrite to_frac_mult.
+            rewrite (homo_mult (f := to_frac zrq)).
             unfold mult at 2; cbn.
             do 2 rewrite aof_ex_f_eq1.
             reflexivity.
         -   intros x y xy.
             unfold le; cbn.
             do 2 rewrite aof_ex_f_eq1.
-            apply to_frac_le.
-            1: exact ZOA.
-            1: exact ZOT.
+            rewrite <- homo_le2.
             apply (land (zorn_real_quotient_le _ _ _ _ _ _)).
             apply zorn_real_q_le_to_poly.
             exact xy.
@@ -175,9 +178,8 @@ Next Obligation.
         rewrite <- (arch_ordered_homo_le _ _ _ f5_homo).
         unfold f4, le; cbn.
         do 2 rewrite aof_ex_f_eq1.
-        apply to_frac_le.
-        1: exact ZOA.
-        1: exact ZOT.
+        unfold f3.
+        rewrite <- homo_le2.
         apply (land (zorn_real_quotient_le _ _ _ _ _ _)).
         exact xy.
     }

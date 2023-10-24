@@ -11,7 +11,7 @@ Require Import fraction_order.
 
 Require Export nat_abstract.
 
-Definition rat := frac int.
+Definition rat := frac_type int.
 Definition int_to_rat (a : int) := to_frac int a : rat.
 Definition nat_to_rat (a : nat) := int_to_rat (from_nat a) : rat.
 
@@ -38,29 +38,23 @@ Definition rat_le_trans := frac_le_trans int.
 Definition rat_le_lplus := frac_le_lplus int.
 Definition rat_le_mult := frac_le_mult int.
 Definition rat_arch := frac_arch int.
+Definition int_to_rat_inj := to_frac_inj int.
+Definition int_to_rat_plus := to_frac_plus int.
+Definition int_to_rat_mult := to_frac_mult int.
+Definition int_to_rat_le := to_frac_le int.
 Global Existing Instances rat_not_trivial rat_plus rat_plus_comm rat_plus_assoc
     rat_zero rat_plus_lid rat_neg rat_plus_linv rat_mult rat_mult_comm
     rat_mult_assoc rat_ldist rat_one rat_mult_lid rat_div rat_mult_linv
     rat_order rat_le_connex rat_le_antisym rat_le_trans rat_le_lplus
-    rat_le_mult rat_arch.
-
-Theorem int_to_rat_eq : ∀ a b, int_to_rat a = int_to_rat b → a = b.
-Proof.
-    apply to_frac_eq.
-Qed.
+    rat_le_mult rat_arch int_to_rat_inj int_to_rat_plus int_to_rat_mult
+    int_to_rat_le.
 
 Theorem nat_to_rat_eq : ∀ a b, nat_to_rat a = nat_to_rat b → a = b.
 Proof.
     intros a b eq.
     apply (inj (f := (from_nat (U := int)))).
-    apply int_to_rat_eq.
+    apply inj.
     exact eq.
-Qed.
-
-Theorem int_to_rat_plus : ∀ a b,
-    int_to_rat (a + b) = int_to_rat a + int_to_rat b.
-Proof.
-    apply to_frac_plus.
 Qed.
 
 Theorem nat_to_rat_plus : ∀ a b,
@@ -69,19 +63,8 @@ Proof.
     intros a b.
     unfold nat_to_rat.
     setoid_rewrite homo_plus.
-    rewrite int_to_rat_plus.
+    setoid_rewrite homo_plus.
     reflexivity.
-Qed.
-
-Theorem int_to_rat_neg : ∀ a, int_to_rat (-a) = -int_to_rat a.
-Proof.
-    apply to_frac_neg.
-Qed.
-
-Theorem int_to_rat_mult : ∀ a b,
-    int_to_rat (a * b) = int_to_rat a * int_to_rat b.
-Proof.
-    apply to_frac_mult.
 Qed.
 
 Theorem nat_to_rat_mult : ∀ a b,
@@ -90,34 +73,22 @@ Proof.
     intros a b.
     unfold nat_to_rat.
     setoid_rewrite homo_mult.
-    rewrite int_to_rat_mult.
+    setoid_rewrite homo_mult.
     reflexivity.
 Qed.
 
-Theorem int_to_rat_le : ∀ a b, int_to_rat a ≤ int_to_rat b ↔ a ≤ b.
-Proof.
-    apply to_frac_le.
-    exact int_le_antisym.
-    exact int_le_trans.
-Qed.
 Theorem nat_to_rat_le : ∀ a b, nat_to_rat a ≤ nat_to_rat b ↔ a ≤ b.
 Proof.
     intros a b.
     unfold nat_to_rat.
-    rewrite int_to_rat_le.
+    rewrite <- homo_le2.
     symmetry; apply homo_le2.
-Qed.
-Theorem int_to_rat_lt : ∀ a b, int_to_rat a < int_to_rat b ↔ a < b.
-Proof.
-    apply to_frac_lt.
-    exact int_le_antisym.
-    exact int_le_trans.
 Qed.
 Theorem nat_to_rat_lt : ∀ a b, nat_to_rat a < nat_to_rat b ↔ a < b.
 Proof.
     intros a b.
     unfold nat_to_rat.
-    rewrite int_to_rat_lt.
+    rewrite <- homo_lt2.
     symmetry; apply homo_lt2.
 Qed.
 

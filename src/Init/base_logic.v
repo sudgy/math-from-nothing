@@ -233,3 +233,23 @@ Proof.
     -   contradiction.
     -   reflexivity.
 Qed.
+
+Theorem ifH_true {U} : ∀ {H : Prop} {v1 : H → U} {v2 : ¬H → U} (a : H),
+    (IfH H then v1 else v2) = v1 a.
+Proof.
+    intros H v1 v2 a.
+    destruct (sem H).
+    -   rewrite (proof_irrelevance _ a).
+        reflexivity.
+    -   contradiction.
+Qed.
+
+Theorem ifH_false {U} : ∀ {H : Prop} {v1 : H → U} {v2 : ¬H → U} (a : ¬H),
+    (IfH H then v1 else v2) = v2 a.
+Proof.
+    intros H v1 v2 a.
+    destruct (sem H).
+    -   contradiction.
+    -   rewrite (proof_irrelevance _ a).
+        reflexivity.
+Qed.
