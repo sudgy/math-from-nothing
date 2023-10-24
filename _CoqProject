@@ -104,6 +104,7 @@
 ./src/Algebra/Ring/Fraction/fraction_plus.v
 ./src/Algebra/Ring/Fraction/fraction_mult.v
 ./src/Algebra/Ring/Fraction/fraction_order.v
+./src/Algebra/Ring/Fraction/fraction_category.v
 ./src/Number/Rat/rat.v
 ./src/Algebra/rat_abstract.v
 

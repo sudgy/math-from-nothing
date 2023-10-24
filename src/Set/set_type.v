@@ -87,6 +87,18 @@ Proof.
     exact eq.
 Qed.
 
+Theorem singleton_set_type : ∀ {U} {S : U → Prop},
+    (∃ a, S a ∧ ∀ b, S b → b = a) → Singleton (set_type S).
+Proof.
+    intros U S [a [Sa eq]].
+    split.
+    exists [a|Sa].
+    intros [b Sb].
+    rewrite set_type_eq2.
+    apply eq.
+    exact Sb.
+Qed.
+
 Tactic Notation "st_proof_simpl" constr(a) simple_intropattern(H) :=
     let go H1 H2 :=
         pose proof (H1 H2) as H;
