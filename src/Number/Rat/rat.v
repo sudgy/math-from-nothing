@@ -29,21 +29,19 @@ Context {U} `{
 Local Existing Instance characteristic_zero_not_trivial.
 
 Let F : Field := make_field U _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _.
-Let from_int' : morphism int_domain (field_to_domain F)
-    := make_domain_homomorphism int_domain _ from_int _ _ _ _.
 
 Definition from_rat : morphism (ofield_to_field rat) F :=
-    ofrac_frac_extend from_int'.
+    ofrac_frac_extend (int_to_domain (field_to_domain F)).
 
 Global Instance from_rat_le : HomomorphismLe from_rat.
 Proof.
     unfold from_rat.
     pose (F' := make_ofield U _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _).
-    pose (fi := make_odomain_homomorphism int (ofield_to_odomain F') from_int
-        _ _ _ _ _).
-    rewrite (ofrac_frac_eq fi).
-    cbn.
-    apply (ofrac_extend fi).
+    pose proof (ofrac_frac_eq (int_to_odomain (ofield_to_odomain F'))) as eq.
+    cbn in eq.
+    rewrite (proof_irrelevance _ H1) in eq.
+    rewrite eq; cbn.
+    apply (ofrac_extend (int_to_odomain (ofield_to_odomain_base F'))).
 Qed.
 
 Theorem from_rat_nat : ∀ n, from_rat (from_nat n) = from_nat n.

@@ -204,6 +204,16 @@ Definition int_to_ring (R : Ring) : morphism int_ring R
 Definition int_to_cring (R : CRing) : morphism int_cring R
     := make_cring_homomorphism
         int_cring R from_int from_int_plus from_int_mult from_int_one.
+Definition int_to_domain (R : IntegralDomain) `{C0 :@CharacteristicZero R _ _ _}
+    : morphism int_domain R
+    := make_domain_homomorphism
+        int_domain R from_int from_int_plus from_int_mult from_int_one
+        from_int_eq.
+Definition int_to_odomain (R : OrderedDomain)
+    : morphism int R
+    := make_odomain_homomorphism
+        int R from_int from_int_plus from_int_mult from_int_one from_int_le
+        from_int_eq.
 
 Theorem ring_initial : initial int_ring.
 Proof.
