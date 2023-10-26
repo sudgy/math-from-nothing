@@ -1,0 +1,82 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+
+\begin{document}
+
+\setcounter{chapter}{7}
+
+\chapter{The Rationals}
+
+The rationals can be constructed from the integers by considering pairs of
+integers $(a, b)$, thought of as the fraction $\frac{a}{b}$.  However, this
+construction is more general than just for constructing the rationals from the
+integers and applies to any integral domain.  Thus, in this chapter, most of the
+construction will be using an arbitrary integral domain, and the rationals and
+their unique properties won't be explored until the end.
+
+\section{Basic Construction}
+
+Let $\U$ be an integral domain, and let $\U^*$ be the type of all nonzero values
+in $\U$.
+
+\begin{definition}
+    Define a relation $\sim$ on $\U \times \U^*$ where $(a_1, a_2) \sim (b_1,
+    b_2)$ is defined to mean $a_1b_2 = b_1a_2$.
+\end{definition}
+
+\begin{lemma}
+    The relation $\sim$ is an equivalence relation.
+\end{lemma}
+\begin{proof}
+    \textit{Reflexivitity.}  We must check $a_1a_2 = a_1a_2$, which is a
+    reflexive equality.
+
+    \textit{Symmetry.}  We must prove that if $a_1b_2 = b_1a_2$, then $b_1a_2 =
+    a_1b_2$.  This is true by the symmetry of equality.
+
+    \textit{Transitivity.}  We must prove that if $a_1b_2 = b_1a_2$ and
+    $b_1c_2 = c_1b_2$, then $a_1c_2 = c_1a_2$.
+    \begin{align*}
+        b_1a_2c_2 &= b_1c_2a_2 \\
+        a_1b_2c_2 &= c_1b_2a_2 \\
+        a_1c_2 &= c_1a_2,
+    \end{align*}
+    where the cancelling is valid because $b_2 \neq 0$ by definition.
+\end{proof}
+
+\begin{definition}
+    Define the type $\Frac(\U)$ to be the type $(\U \times \U^*)/\sim$.
+\end{definition}
+
+\begin{definition}
+    Define the inclusion $\iota_\U : \U \to \frac(\U)$ that takes an $x : \U$
+    and bring it to $[(x, 1)]$.
+\end{definition}
+
+\begin{instance}
+    $\iota_\U$ is injective.
+\end{instance}
+\begin{proof}
+    If $\iota_\U(a) = \iota_\U(b)$, this means that $a1 = b1$, meaning that $a =
+    b$.
+\end{proof}
+
+\begin{instance}
+    $\Frac(\U)$ is not trivial.
+\end{instance}
+\begin{proof}
+    Because $0 \neq 1$ in $\U$, by $\iota_\U$ being injective we have
+    $\iota_\U(0) \neq \iota_\U(1)$.
+\end{proof}
+
+\section{Addition}
+
+\section{Multiplication}
+
+\section{Order}
+
+\section{The Frac functor}
+
+\section{The rationals}
+
+\end{document}

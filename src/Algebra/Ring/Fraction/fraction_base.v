@@ -69,9 +69,7 @@ Local Instance frac_not_trivial : NotTrivial (equiv_type frac_equiv) :={
     not_trivial_b := to_frac 1;
 }.
 Proof.
-    unfold to_frac; equiv_simpl.
-    unfold frac_eq; cbn.
-    do 2 rewrite mult_rid.
+    apply (inj_neq to_frac).
     exact not_trivial_one.
 Qed.
 
