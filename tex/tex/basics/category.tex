@@ -1380,6 +1380,66 @@ functors, it is the full comma category, if one is a functor and the other is an
 object, then it is one of the next two definitions, and if one is a category and
 the other is an object, then it is a slice or coslice category.
 
+\subsection{Free Objects}
+
+Many free objects can be described using a comma category.  In this section we
+will develop a small amount of the general theory of free objects.  Let $B$ and
+$C$ be categories, and $T$ a functor from $B$ to $C$ (which we can think of in
+this case as being a forgetful functor).  Let $f$ be a function (not a functor)
+from $C$ to $B$, and let $g$ be a function from $a : C$ to $a \to T(f(a))$.
+Most importantly, assume that for all $a : C$, the pair $(f(a), g(a))$ is
+initial in $(a \downarrow T)$.  This property is the universal property of $f$,
+and the rest of this section will rely on it.
+
+\begin{definition}
+    Given any $a : C$, $b : B$, and $h : a \to T(b)$, by the universal property
+    there exists a unique morphism $h' : f(a) \to b$ such that $T(h') \circ g(a)
+    = h$, called the extension of $h$.
+\end{definition}
+
+\begin{theorem}
+    We can extend $f$ to a functor $F : C \to B$ called the free functor by
+    bringing morphisms $h : a \to b$ to the extension of $g(b) \circ h$.
+\end{theorem}
+\begin{proof}
+    We must prove that this functor respects composition and the identity.  For
+    composition, let $a$, $b$, and $c$ be objects in $C$ with morphisms $h_1 : b
+    \to c$ and $h_2 : a \to b$.  Then we have
+    \begin{align*}
+        &T((g(c) \circ h_1)' \circ (g(b) \circ h_2)') \circ g(a) \\
+        ={}& T((g(c) \circ h_1)') \circ T((g(b) \circ h_2)') \circ g(a) \\
+        ={}& T((g(c) \circ h_1)') \circ g(b) \circ h_2 \\
+        ={}& g(c) \circ h_1 \circ h_2,
+    \end{align*}
+    showing that $F(h_1) \circ F(h_2)$ satisfies the equation in $F(h_1 \circ
+    h_2)$'s universal property, showing that they are equal.
+
+    For uniqueness, let $a : C$.  Then
+    \[
+        T(\1) \circ g(a) = \1 \circ g(a) = g(a) \circ \1,
+    \]
+    showing that $\1$ satisfies the equation in $F(\1)$'s universal property,
+    showing that they are equal.
+\end{proof}
+
+\begin{theorem} \label{free_commute}
+    For all objects $a$ and $b$ in $C$ and $h : a \to b$,
+    \[
+        (T \circ F)(h) \circ g(a) = g(b) \circ h.
+    \]
+\end{theorem}
+\begin{proof}
+    Unfolding the definition of $F$ on the left-hand side we get
+    \[
+        T((g(b) \circ h)') \circ g(a),
+    \]
+    and the result directly follows from the defining equation of extensions.
+\end{proof}
+
+While the free monoid and free commutative monoid functors could be described
+using this machinery, I've found that lists are so simple that this is not
+necessary.
+
 \section{The Category of Types}
 
 While particular categories will be explored more in the future, because types
