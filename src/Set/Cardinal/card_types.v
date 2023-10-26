@@ -5,7 +5,6 @@ Require Import card.
 Require Import nat.
 Require Import int.
 Require Import rat.
-Require Import rat_abstract.
 
 (* begin hide *)
 Open Scope card_scope.
@@ -206,9 +205,9 @@ Proof.
     rewrite <- rat_size.
     rewrite <- power_set_size.
     unfold le; equiv_simpl.
-    exists (λ x, (λ q, rat_to_abstract q < x)).
+    exists (λ x, (λ q, from_rat q < x)).
     cut (∀ a b, a ≤ b →
-        ((λ q : rat, rat_to_abstract q < a) = (λ q : rat, rat_to_abstract q < b)
+        ((λ q : rat, from_rat q < a) = (λ q : rat, from_rat q < b)
         → a = b)).
     {
         intros wlog.

@@ -7,8 +7,6 @@ Require Import int.
 Require Import rat.
 Require Import real.
 
-Require Import rat_abstract.
-
 Global Instance complex_mult : Mult complex := {
     mult a b := (fst a * fst b - snd a * snd b, fst a * snd b + snd a * fst b)
 }.

@@ -6,8 +6,6 @@ Require Import int.
 Require Import rat.
 Require Import real.
 
-Require Import rat_abstract.
-
 Global Instance complex_plus : Plus complex := {
     plus a b := (fst a + fst b, snd a + snd b)
 }.

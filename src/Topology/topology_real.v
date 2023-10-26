@@ -6,7 +6,6 @@ Require Export topology_order2.
 Require Export topology_connected.
 Require Export real.
 Require Import rat.
-Require Import rat_abstract.
 Require Import order_minmax.
 Require Import card_types.
 
@@ -89,7 +88,7 @@ Proof.
 Qed.
 
 Definition real_rat_basis (S : real → Prop) := ∃ a b : rat,
-    a < b ∧ S = open_interval (rat_to_abstract a) (rat_to_abstract b).
+    a < b ∧ S = open_interval (from_rat a) (from_rat b).
 
 Theorem real_rat_basis_countable : countable (|set_type real_rat_basis|)%card.
 Proof.
@@ -130,11 +129,11 @@ Proof.
     destruct Bx as [ax xb].
     pose proof (rat_dense_in_arch a x ax) as [a' [a'_gt a'_lt]].
     pose proof (rat_dense_in_arch x b xb) as [b' [b'_gt b'_lt]].
-    exists (open_interval (rat_to_abstract a') (rat_to_abstract b')).
+    exists (open_interval (from_rat a') (from_rat b')).
     split; [>|split].
     -   exists a', b'.
         split; [>|reflexivity].
-        rewrite (homo_lt2 (f := rat_to_abstract)).
+        rewrite (homo_lt2 (f := from_rat)).
         exact (trans a'_lt b'_gt).
     -   intros y [y_gt y_lt].
         apply B_sub.

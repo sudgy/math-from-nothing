@@ -5,15 +5,13 @@ Require Import int.
 Require Import rat.
 Require Import real.
 
-Require Import rat_abstract.
-
 Declare Scope complex_scope.
 Delimit Scope complex_scope with complex.
 
 Definition complex := (real * real)%type.
 
 Definition real_to_complex a := (a, 0) : complex.
-Definition rat_to_complex a := real_to_complex (rat_to_abstract a).
+Definition rat_to_complex a := real_to_complex (from_rat a).
 Definition int_to_complex a := real_to_complex (from_int a).
 Definition nat_to_complex a := real_to_complex (from_nat a).
 
@@ -28,7 +26,7 @@ Qed.
 Theorem rat_to_complex_eq : ∀ a b, rat_to_complex a = rat_to_complex b → a = b.
 Proof.
     intros a b eq.
-    apply (inj (f := rat_to_abstract)).
+    apply (inj (f := from_rat)).
     apply real_to_complex_eq.
     exact eq.
 Qed.
