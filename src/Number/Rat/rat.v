@@ -76,6 +76,45 @@ Qed.
 
 End RatAbstract.
 
+Definition rat_to_ofield (O : OrderedField) : morphism rat O
+    := make_ofield_homomorphism rat O from_rat
+        (field_homo_plus _ _ from_rat)
+        (field_homo_mult _ _ from_rat)
+        (field_homo_one _ _ from_rat)
+        from_rat_le.
+
+Theorem rat_initial : initial rat.
+Proof.
+    intros O.
+    split.
+    exists (rat_to_ofield O).
+    intros f.
+    assert (∀ n, f (from_int n) = from_int n) as f_eq.
+    {
+        apply func_eq.
+        apply from_int_unique.
+        1: apply homo_plus_compose.
+        3: apply homo_one_compose.
+        1: exact from_int_plus.
+        2: exact from_int_one.
+        all: apply f.
+    }
+    apply ofield_homo_eq.
+    intros x.
+    pose proof (to_ofrac_ex x) as [p [q [q_pos x_eq]]]; subst x.
+    do 2 rewrite <- from_int_rat.
+    cbn.
+    rewrite homo_mult.
+    rewrite (homo_mult (f := from_rat)).
+    rewrite homo_div.
+    2: apply (inj_zero from_int); apply q_pos.
+    rewrite (homo_div (f := from_rat)).
+    2: apply (inj_zero from_int); apply q_pos.
+    do 2 rewrite f_eq.
+    do 2 rewrite from_rat_int.
+    reflexivity.
+Qed.
+
 Section RatAbstractArch.
 
 Context {U} `{OrderedFieldClass U, @Archimedean U _ _ _}.
