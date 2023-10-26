@@ -134,6 +134,14 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem inj_neq {A B} (f : A → B) `{@Injective A B f} :
+    ∀ a b, a ≠ b → f a ≠ f b.
+Proof.
+    intros a b neq contr.
+    apply inj in contr.
+    contradiction.
+Qed.
+
 Definition is_inverse {U V} (f : U → V) (g : V → U)
     := (∀ x, f (g x) = x) ∧ (∀ x, g (f x) = x).
 

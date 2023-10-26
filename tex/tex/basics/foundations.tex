@@ -714,6 +714,15 @@ The previous theorem implicitly used indefinite description (in particular,
 Theorem \ref{ex_to_type}) in its definition of $g$.  These uses of indefinite
 description will no longer be pointed out in the future.
 
+\begin{theorem}
+    If $f$ is injective, then for all $a$ and $b$ with $a \neq b$, we have $f(a)
+    \neq f(b)$.
+\end{theorem}
+\begin{proof}
+    Assume for a contradiction that $f(a) = f(b)$.  Then by the injectivity of
+    $f$ we have $a = b$, contradicting $a \neq b$.
+\end{proof}
+
 \begin{definition}
     Given types $\A$ and $\B$ and functions $f : \A \rightarrow \B$ and $g : \B
     \rightarrow \A$, $g$ is said to be the inverse of $f$ if
