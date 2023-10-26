@@ -99,6 +99,15 @@ Proof.
     exact Sb.
 Qed.
 
+Theorem set_type_singleton : ∀ {U} {S : U → Prop},
+    Singleton (set_type S) → ∀ a b, S a → S b → a = b.
+Proof.
+    intros U S S_single a b Sa Sb.
+    pose proof (singleton_unique2 [a|Sa] [b|Sb]) as eq.
+    rewrite set_type_eq2 in eq.
+    exact eq.
+Qed.
+
 Tactic Notation "st_proof_simpl" constr(a) simple_intropattern(H) :=
     let go H1 H2 :=
         pose proof (H1 H2) as H;

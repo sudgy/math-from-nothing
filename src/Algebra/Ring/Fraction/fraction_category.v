@@ -12,6 +12,8 @@ Require Export ordered_field_category.
 Require Export category_initterm.
 Require Export category_comma.
 
+Require Import nat.
+
 Module FracUniversal.
 Section FracUniversal.
 
@@ -242,6 +244,30 @@ Proof.
     apply (to_frac_div U).
 Qed.
 
+Definition frac_extend {U : IntegralDomain} {F : Field}
+    (f : morphism U (field_to_domain F)) := extend frac_universal f.
+
+Lemma frac_extend_eq {U : IntegralDomain} :
+    ∀ {F : Field} (f : morphism U (field_to_domain F)),
+    ∀ x, frac_extend f (to_frac U x) = f x.
+Proof.
+    intros F f.
+    apply func_eq.
+    pose proof (extend_eq frac_universal f) as eq.
+    apply (f_equal domain_homo_f) in eq.
+    exact eq.
+Qed.
+
+Theorem frac_extend_uni {U : IntegralDomain} : ∀ {F : Field}
+    (f : morphism U (field_to_domain F)) (g : morphism (frac U) F),
+    (∀ x, g (to_frac U x) = f x) → frac_extend f = g.
+Proof.
+    intros F f g g_in.
+    apply (extend_uni frac_universal f).
+    apply domain_homo_eq.
+    exact g_in.
+Qed.
+
 
 Definition ofrac_field (U : OrderedDomain) : OrderedField := make_ofield
     (frac_type U) (frac_not_trivial U) (frac_plus U) (frac_zero U) (frac_neg U)
@@ -301,4 +327,49 @@ Theorem to_ofrac_ex {U : OrderedDomain} :
     ∀ x : ofrac U, ∃ p q, 0 < q ∧ x = to_ofrac U p / to_ofrac U q.
 Proof.
     exact (frac_pos_ex_div U).
+Qed.
+
+Definition ofrac_extend {U : OrderedDomain} {F : OrderedField}
+    (f : morphism U (ofield_to_odomain F)) := extend ofrac_universal f.
+
+Lemma ofrac_extend_eq {U : OrderedDomain} :
+    ∀ {F : OrderedField} (f : morphism U (ofield_to_odomain F)),
+    ∀ x, ofrac_extend f (to_ofrac U x) = f x.
+Proof.
+    intros F f.
+    apply func_eq.
+    pose proof (extend_eq ofrac_universal f) as eq.
+    apply (f_equal odomain_homo_f) in eq.
+    exact eq.
+Qed.
+
+Theorem ofrac_extend_uni {U : OrderedDomain} : ∀ {F : OrderedField}
+    (f : morphism U (ofield_to_odomain F)) (g : morphism (ofrac U) F),
+    (∀ x, g (to_ofrac U x) = f x) → ofrac_extend f = g.
+Proof.
+    intros F f g g_in.
+    apply (extend_uni ofrac_universal f).
+    apply odomain_homo_eq.
+    exact g_in.
+Qed.
+
+Theorem ofrac_arch (U : OrderedDomain) `{@Archimedean U _ _ _}
+    : Archimedean (ofrac U).
+Proof.
+    exact (frac_arch U).
+Qed.
+
+Definition ofrac_frac_extend {U : OrderedDomain} {F : Field}
+    (f : morphism (odomain_to_domain U) (field_to_domain F)) := frac_extend f.
+
+Theorem ofrac_frac_eq {U : OrderedDomain} {F : OrderedField} :
+    ∀ f : morphism U (ofield_to_odomain F),
+    ofrac_frac_extend (F := ofield_to_field F) (⌈odomain_to_domain⌉ f) =
+    ⌈ofield_to_field⌉ (ofrac_extend f).
+Proof.
+    intros f.
+    apply (frac_extend_uni).
+    intros x.
+    cbn.
+    exact (ofrac_extend_eq f x).
 Qed.

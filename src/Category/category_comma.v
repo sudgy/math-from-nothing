@@ -92,61 +92,57 @@ Context {B C : Category} {T : Functor B C}
 
 Hypothesis i : ∀ a : C, initial (make_comma_l1 a T (f a) (g a)).
 
+Definition extend {a : C} {b : B} (h : morphism a (T b))
+    := snd [ex_singleton (i a (make_comma_l1 a T b h))|] : morphism (f a) b.
+
+Theorem extend_eq : ∀ {a : C} {b : B} (h : morphism a (T b)),
+    ⌈T⌉ (extend h) ∘ g a = h.
+Proof.
+    intros a b h.
+    unfold extend.
+    destruct (ex_singleton _) as [[s h'] h'_in]; cbn in *.
+    unfold comma_set in h'_in; cbn in h'_in.
+    clear s.
+    rewrite cat_rid in h'_in.
+    exact h'_in.
+Qed.
+
+Theorem extend_uni : ∀ {a : C} {b : B} (h : morphism a (T b)),
+    ∀ h' : morphism (f a) b, ⌈T⌉ h' ∘ g a = h → extend h = h'.
+Proof.
+    intros a b h h' h'_eq.
+    unfold extend.
+    pose (S := i a (make_comma_l1 a T b h)).
+    pose proof (singleton_unique2 (ex_singleton S)) as uni.
+    cbn in uni.
+    unfold comma_set in uni; cbn in uni.
+    rewrite <- (cat_rid h) in h'_eq.
+    specialize (uni [(Single, _) | h'_eq]).
+    rewrite uni.
+    reflexivity.
+Qed.
+
 Program Definition free_functor : Functor C B := {|
     functor_f := f;
-    functor_morphism a b h
-        := snd [ex_singleton (i a (make_comma_l1 a T (f b) ((g b) ∘ h)))|]
+    functor_morphism a b h := extend ((g b) ∘ h);
 |}.
 Next Obligation.
     rename A into a, B0 into b, C0 into c.
     rename f0 into h1, g0 into h2.
-    pose (mi x y h := i x (make_comma_l1 x T (f y) (g y ∘ h))).
-    fold (mi a c (h1 ∘ h2)).
-    fold (mi b c h1).
-    fold (mi a b h2).
-    pose proof (singleton_unique2 (ex_singleton (mi a c (h1 ∘ h2)))) as eq.
-    cbn in eq.
-    unfold comma_set in eq; cbn in eq.
-    pose (h := snd [ex_singleton(mi b c h1)|] ∘ snd [ex_singleton(mi a b h2)|]).
-    assert (⌈T⌉ h ∘ g a = g c ∘ (h1 ∘ h2) ∘ 𝟙) as h_in.
-    {
-        unfold h.
-        clear eq h.
-        destruct (ex_singleton _) as [[s1 fh1] fh1_in].
-        destruct (ex_singleton _) as [[s2 fh2] fh2_in].
-        unfold comma_set in fh1_in, fh2_in.
-        cbn in *.
-        clear s1 s2.
-        rewrite functor_compose.
-        rewrite <- cat_assoc.
-        rewrite fh2_in.
-        do 2 rewrite cat_rid.
-        rewrite cat_assoc.
-        rewrite fh1_in.
-        rewrite cat_rid.
-        symmetry; apply cat_assoc.
-    }
-    rewrite (eq [(Single, h)|h_in]).
-    cbn.
-    unfold h.
-    reflexivity.
+    apply extend_uni.
+    rewrite functor_compose.
+    rewrite <- cat_assoc.
+    rewrite extend_eq.
+    rewrite cat_assoc.
+    rewrite extend_eq.
+    symmetry; apply cat_assoc.
 Qed.
 Next Obligation.
     rename A into a.
-    pose (mi x h := i x (make_comma_l1 x T (f x) (g x ∘ h))).
-    fold (mi a 𝟙).
-    pose proof (singleton_unique2 (ex_singleton (mi a 𝟙))) as eq.
-    cbn in eq.
-    unfold comma_set in eq; cbn in eq.
-    assert (⌈T⌉ 𝟙 ∘ g a = g a ∘ 𝟙 ∘ 𝟙) as i_in.
-    {
-        rewrite functor_id.
-        do 2 rewrite cat_rid.
-        apply cat_lid.
-    }
-    rewrite (eq [(Single, 𝟙)|i_in]).
-    cbn.
-    reflexivity.
+    apply extend_uni.
+    rewrite functor_id.
+    rewrite cat_rid.
+    apply cat_lid.
 Qed.
 
 Local Notation "'F'" := free_functor.
@@ -156,12 +152,10 @@ Theorem free_commute : ∀ {a b : C} (h : morphism a b),
 Proof.
     intros a b h.
     cbn.
-    destruct (ex_singleton _) as [[s fh] fh_in]; cbn.
-    unfold comma_set in fh_in; cbn in fh_in.
-    rewrite cat_rid in fh_in.
-    exact fh_in.
+    apply extend_eq.
 Qed.
 
+Arguments extend : simpl never.
 Arguments free_functor : simpl never.
 
 End FreeFunctor.
