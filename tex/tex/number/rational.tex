@@ -1,5 +1,7 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
+\externaldocument{../basics/elementary_algebra}
+\externaldocument{../basics/set}
 
 \begin{document}
 
@@ -70,6 +72,142 @@ in $\U$.
 \end{proof}
 
 \section{Addition}
+
+\begin{definition}
+    Define an operation $\oplus : \U \times \U^* \to \U \times \U^* \to \U
+    \times \U^*$ given by
+    \[
+        (a_1, a_2) \oplus (b_1, b_2) = (a_1b_2 + b_1a_2, a_2b_2).
+    \]
+    $a_2b_2$ is nonzero by Theorem \ref{mult_nz}.
+\end{definition}
+
+\begin{lemma}
+    The operation $\oplus$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that for all $a$, $b$, $c$, and $d$, if $a \sim b$ and $c \sim
+    d$, we have $a \oplus c \sim b \oplus d$.  Thus, we have
+    \[
+        a_1b_2 = b_1a_2
+    \]
+    and
+    \[
+        c_1d_2 = d_1c_2
+    \]
+    and must prove that
+    \[
+        (a_1c_2 + c_1a_2)b_2d_2 = (b_1d_2 + d_1b_2)a_2c_2.
+    \]
+    Multiplying the first equation by $c_2d_2$ we get
+    \[
+        a_1c_2b_2d_2 = b_1d_2a_2c_2,
+    \]
+    and multiplying the second equation by $a_2b_2$ we get
+    \[
+        c_1a_2b_2d_2 = d_1b_2a_2c_2.
+    \]
+    Adding these two equations gives us
+    \begin{align*}
+        a_1c_2b_2d_2 + c_1a_2b_2d_2 &= b_1d_2a_2c_2 + d_1b_2a_2c_2 \\
+        (a_1c_2 + c_1a_2)b_2d_2 &= (b_1d_2 + d_1b_2)a_2c_2
+    \end{align*}
+    as required.
+\end{proof}
+
+\begin{instance}
+    Define addition in $\Frac(\U)$ as the binary operation given by Theorem
+    \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Addition in $\Frac(\U)$ is commutative.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1b_2 + b_1a_2)b_1a_2 = (b_1a_2 + a_1b_2)a_2b_2,
+    \]
+    which follows by the commutativity of the operations in $\U$.
+\end{proof}
+
+\begin{instance}
+    Addition in $\Frac(\U)$ is associative.
+\end{instance}
+\begin{proof}
+    We must prove that
+    \[
+        (a_1b_2c_2 + (b_1c_2 + c_1b_2)a_2)a_2b_2c_2 =
+        ((a_1b_2 + b_1a_2)c_2 + c_1a_2b_2)a_2b_2c_2.
+    \]
+    This follows directly by expanding and rearranging slightly.
+\end{proof}
+
+\begin{instance}
+    Define zero in $\Frac(\U)$ as $\iota_\U(0)$.
+\end{instance}
+
+\begin{instance}
+    Zero is an additive identity in $\Frac(\U)$.
+\end{instance}
+\begin{proof}
+    \[
+        0 + a =
+        [(0, 1)] + [(a_1, a_2)] =
+        [(0a_2 + a_11, 1a_2)] =
+        [(a_1, a_2)]
+        = a.
+    \]
+\end{proof}
+
+\begin{definition}
+    Define an operation $\ominus : \U \times \U^* \to \U \times \U^*$ given by
+    \[
+        \ominus (a_1, a_2) = (-a_1, a_2).
+    \]
+\end{definition}
+
+\begin{lemma}
+    The operation $\ominus$ is well-defined.
+\end{lemma}
+\begin{proof}
+    We must prove that $a_1b_2 = b_1a_2$ implies $-a_1b_2 = -b_1a_2$, which can
+    be done just by finding the negative of both sides.
+\end{proof}
+
+\begin{instance}
+    Define additive inverses in $\Frac(\U)$ as the operation given by Theorem
+    \ref{unary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Negation is a left inverse in $\Frac(\U)$.
+\end{instance}
+\begin{proof}
+    For all $a$,
+    \[
+        a - a =
+        [(a_1, a_2)] + [(-a_1, a_2)] =
+        [(a_1a_2 - a_1a_2, a_2a_2)] =
+        [(0, a_2a_2)] =
+        [(0, 1)] =
+        0.
+    \]
+\end{proof}
+
+\begin{instance}
+    $\iota_\U$ is additive.
+\end{instance}
+\begin{proof}
+    \[
+        \iota_\U(a + b) =
+        [(a + b, 1)] =
+        [(a1 + b1, (1)(1))] =
+        [(a, 1)] + [(b, 1)] =
+        \iota_\U(a) + \iota_\U(b).
+    \]
+\end{proof}
 
 \section{Multiplication}
 
