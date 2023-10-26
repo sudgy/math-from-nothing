@@ -63,7 +63,7 @@ Theorem rat_to_complex_plus : ∀ a b,
 Proof.
     intros a b.
     unfold rat_to_complex.
-    rewrite rat_to_abstract_plus.
+    setoid_rewrite homo_plus.
     apply real_to_complex_plus.
 Qed.
 

@@ -171,7 +171,7 @@ Theorem rat_to_complex_mult : ∀ a b,
 Proof.
     intros a b.
     unfold rat_to_complex.
-    rewrite rat_to_abstract_mult.
+    setoid_rewrite homo_mult.
     apply real_to_complex_mult.
 Qed.
 

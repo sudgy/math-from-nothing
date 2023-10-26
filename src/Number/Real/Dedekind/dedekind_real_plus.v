@@ -11,7 +11,7 @@ Require Import dedekind_real_order.
 (* begin hide *)
 Open Scope real_scope.
 (* end hide *)
-Definition real_plus_base a b := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
+Definition real_plus_base (a b : rat → Prop) := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
 Infix "⊕" := real_plus_base : real_scope.
 
 Theorem real_plus_dedekind : ∀ (a b : real), dedekind_cut ([a|] ⊕ [b|]).
@@ -159,7 +159,7 @@ Global Instance real_plus_lid : PlusLid real := {
     plus_lid := real_plus_lid_;
 }.
 
-Definition real_neg_base a := λ p, ∃ r, 0 < r ∧ ¬(a (-p + -r)).
+Definition real_neg_base (a : rat → Prop) := λ p, ∃ r, 0 < r ∧ ¬(a (-p + -r)).
 Notation "⊖ a" := (real_neg_base a) : real_scope.
 
 Lemma real_neg_dedekind : ∀ a : real, dedekind_cut (⊖ [a|]).

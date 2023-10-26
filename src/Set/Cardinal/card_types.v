@@ -151,11 +151,8 @@ Proof.
         rewrite nat_mult_nat in leq.
         exact leq.
     -   unfold le; equiv_simpl.
-        exists nat_to_rat.
-        split.
-        intros a b eq.
-        apply nat_to_rat_eq.
-        exact eq.
+        exists from_nat.
+        apply from_nat_inj.
 Qed.
 
 (* begin hide *)

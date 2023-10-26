@@ -28,7 +28,7 @@ Qed.
 Theorem rat_to_complex_eq : ∀ a b, rat_to_complex a = rat_to_complex b → a = b.
 Proof.
     intros a b eq.
-    apply rat_to_abstract_eq.
+    apply (inj (f := rat_to_abstract)).
     apply real_to_complex_eq.
     exact eq.
 Qed.

@@ -101,7 +101,7 @@ Proof.
     split.
     intros A B.
     unfold ex_val at 1 3, ex_proof.
-    destruct (ex_to_type [|A]) as [a C0]; cbn.
+    destruct (ex_to_type [|A]) as [a C0].
     destruct (ex_to_type [|B]) as [a2 C1]; cbn.
     rewrite_ex_val b [ab A_eq].
     rewrite_ex_val b2 [ab2 B_eq].
@@ -134,7 +134,7 @@ Proof.
     split; [>|split].
     -   exists a', b'.
         split; [>|reflexivity].
-        rewrite <- rat_to_abstract_lt.
+        rewrite (homo_lt2 (f := rat_to_abstract)).
         exact (trans a'_lt b'_gt).
     -   intros y [y_gt y_lt].
         apply B_sub.

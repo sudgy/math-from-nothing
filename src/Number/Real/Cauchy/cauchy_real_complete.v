@@ -268,8 +268,7 @@ Proof.
             pose proof (le_lt_lrplus a_gap' IHc) as ltq.
             applys_eq ltq.
             rewrite <- ldist.
-            cbn.
-            rewrite div_mult; [>|apply nat_pow_pos2; exact two_pos|apply two_pos].
+            rewrite nat_pow_suc.
             rewrite div_mult; [>|apply nat_pow_pos2; exact two_pos|apply two_pos].
             rewrite plus_half.
             reflexivity.
@@ -350,8 +349,7 @@ Proof.
             pose proof (le_lt_lrplus b_gap' IHc) as ltq.
             applys_eq ltq.
             rewrite <- ldist.
-            cbn.
-            rewrite div_mult; [>|apply nat_pow_pos2; exact two_pos|apply two_pos].
+            rewrite nat_pow_suc.
             rewrite div_mult; [>|apply nat_pow_pos2; exact two_pos|apply two_pos].
             rewrite plus_half.
             reflexivity.

@@ -4,7 +4,6 @@ Require Import fraction_base.
 
 Require Export rat.
 Require Import set.
-Require Import fraction_order.
 Require Import nat.
 Require Import int.
 Require Import order_minmax.
@@ -17,229 +16,52 @@ Context {U} `{
 }.
 Local Existing Instance characteristic_zero_not_trivial.
 
-Definition rat_to_abstract_base (x : frac_base int)
-    := from_int (fst x) / from_int [snd x|] : U.
+Let F : Field := make_field U _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _.
+Let from_int' : morphism int_domain (field_to_domain F)
+    := make_domain_homomorphism int_domain _ from_int _ _ _ _.
 
-Local Infix "~" := (eq_equal (frac_equiv int)).
+Definition rat_to_abstract : morphism (ofield_to_field rat) F :=
+    ofrac_frac_extend from_int'.
 
-Theorem from_int_nz : ∀ a : frac_base int, 0 ≠ from_int [snd a|].
+Global Instance nat_to_rat_le : HomomorphismLe rat_to_abstract.
 Proof.
-    intros a.
-    intros contr.
-    apply [|snd a].
-    rewrite <- (homo_zero (f := from_int)) in contr.
-    apply from_int_eq in contr.
-    exact contr.
-Qed.
-
-Theorem rat_to_abstract_wd : ∀ a b, a ~ b →
-    rat_to_abstract_base a = rat_to_abstract_base b.
-Proof.
-    intros a b eq.
-    cbn in eq.
-    unfold frac_eq in eq; cbn in eq.
-    unfold rat_to_abstract_base; cbn.
-    rewrite <- mult_rrmove by apply from_int_nz.
-    rewrite (mult_comm (_ (fst b))).
-    rewrite <- mult_assoc.
-    rewrite <- mult_llmove by apply from_int_nz.
-    do 2 rewrite <- homo_mult.
-    rewrite mult_comm.
-    rewrite eq.
-    reflexivity.
-Qed.
-
-Definition rat_to_abstract (a : rat) := unary_op rat_to_abstract_wd a.
-
-Theorem rat_to_abstract_eq : ∀ a b,
-    rat_to_abstract a = rat_to_abstract b → a = b.
-Proof.
-    intros a b eq.
-    equiv_get_value a b.
-    unfold rat_to_abstract in eq.
-    equiv_simpl in eq.
-    unfold rat; equiv_simpl.
-    unfold frac_eq.
-    unfold rat_to_abstract_base in eq.
-    rewrite <- mult_rrmove in eq by apply from_int_nz.
-    rewrite (mult_comm (_ (fst b))) in eq.
-    rewrite <- mult_assoc in eq.
-    rewrite <- mult_llmove in eq by apply from_int_nz.
-    do 2 rewrite <- homo_mult in eq.
-    apply from_int_eq in eq.
-    rewrite <- eq.
-    apply mult_comm.
-Qed.
-
-Theorem rat_to_abstract_le : ∀ a b,
-    rat_to_abstract a ≤ rat_to_abstract b ↔ a ≤ b.
-Proof.
-    intros a b.
-    pose proof (frac_pos_ex int a) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex int b) as [b1 [b2 [b2_pos b_eq]]].
-    subst a b.
-    unfold rat_to_abstract; equiv_simpl.
-    pose proof (frac_le int a1 a2 b1 b2 a2_pos b2_pos) as stupid.
-    rewrite stupid; clear stupid.
-    unfold rat_to_abstract_base; cbn.
-    pose proof (homo_lt2 (f := from_int)).
-    rewrite homo_lt2 in a2_pos, b2_pos.
-    rewrite homo_zero in a2_pos, b2_pos.
-    rewrite <- le_mult_lrmove_pos by exact b2_pos.
-    rewrite mult_comm, mult_assoc.
-    rewrite <- le_mult_rrmove_pos by exact a2_pos.
-    do 2 rewrite <- homo_mult.
-    rewrite <- homo_le2.
-    rewrite mult_comm.
-    reflexivity.
-Qed.
-
-Theorem rat_to_abstract_lt : ∀ a b,
-    rat_to_abstract a < rat_to_abstract b ↔ a < b.
-Proof.
-    intros a b.
-    unfold strict.
-    rewrite rat_to_abstract_le.
-    rewrite (f_eq_iff rat_to_abstract_eq).
-    reflexivity.
-Qed.
-
-Theorem rat_to_abstract_zero : rat_to_abstract 0 = 0.
-Proof.
-    unfold zero at 1, rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base; cbn.
-    setoid_rewrite homo_zero.
-    apply mult_lanni.
-Qed.
-
-Theorem rat_to_abstract_one : rat_to_abstract 1 = 1.
-Proof.
-    unfold one at 1, rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base; cbn.
-    setoid_rewrite homo_one.
-    rewrite div_one.
-    apply mult_lid.
-Qed.
-
-Theorem rat_to_abstract_plus : ∀ a b,
-    rat_to_abstract (a + b) = rat_to_abstract a + rat_to_abstract b.
-Proof.
-    intros a b.
-    equiv_get_value a b.
-    unfold plus at 1, rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base; cbn.
-    setoid_rewrite homo_plus.
-    setoid_rewrite homo_mult.
-    rewrite div_mult by apply from_int_nz.
-    rewrite mult_assoc.
-    do 2 rewrite rdist.
-    rewrite mult_rrinv by apply from_int_nz.
-    apply rplus.
-    rewrite <- mult_assoc.
-    rewrite (mult_comm (/ _ [snd a|])).
-    rewrite mult_assoc.
-    rewrite mult_rrinv by apply from_int_nz.
-    reflexivity.
-Qed.
-
-Theorem rat_to_abstract_neg : ∀ a, rat_to_abstract (-a) = -rat_to_abstract a.
-Proof.
-    intros a.
-    equiv_get_value a.
-    unfold neg at 1, rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base; cbn.
-    setoid_rewrite homo_neg.
-    apply mult_lneg.
-Qed.
-
-Theorem rat_to_abstract_mult : ∀ a b,
-    rat_to_abstract (a * b) = rat_to_abstract a * rat_to_abstract b.
-Proof.
-    intros a b.
-    equiv_get_value a b.
-    unfold mult at 1, rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base; cbn.
-    setoid_rewrite homo_mult.
-    do 2 rewrite <- mult_assoc.
-    apply lmult.
-    rewrite div_mult by apply from_int_nz.
-    do 2 rewrite mult_assoc.
-    apply rmult.
-    apply mult_comm.
-Qed.
-
-Theorem rat_to_abstract_div : ∀ a, 0 ≠ a →
-    rat_to_abstract (/a) = /rat_to_abstract a.
-Proof.
-    intros a a_nz.
-    equiv_get_value a.
-    unfold div at 1, rat_to_abstract; equiv_simpl.
-    unfold zero in a_nz; cbn in a_nz.
-    unfold to_frac, rat in a_nz; equiv_simpl in a_nz.
-    unfold frac_eq in a_nz; cbn in a_nz.
-    rewrite mult_rid, mult_lanni in a_nz.
-    destruct (sem _) as [contr|a_nz']; [>contradiction|].
-    unfold rat_to_abstract_base; cbn.
-    rewrite div_mult.
-    -   rewrite div_div by apply from_int_nz.
-        apply mult_comm.
-    -   intros contr.
-        rewrite <- (homo_zero (f := from_int)) in contr.
-        apply from_int_eq in contr.
-        contradiction.
-    -   apply div_nz.
-        apply from_int_nz.
-Qed.
-
-Theorem int_to_rat_to_abstract : ∀ n,
-    rat_to_abstract (int_to_rat n) = from_int n.
-Proof.
-    intros n.
-    equiv_get_value n.
-    unfold int_to_rat, rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base, from_int_base; cbn.
-    rewrite homo_one.
-    rewrite div_one, mult_rid.
-    reflexivity.
+    unfold rat_to_abstract.
+    pose (F' := make_ofield U _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _).
+    pose (fi := make_odomain_homomorphism int (ofield_to_odomain F') from_int
+        _ _ _ _ _).
+    rewrite (ofrac_frac_eq fi).
+    cbn.
+    apply (ofrac_extend fi).
 Qed.
 
 Theorem nat_to_rat_to_abstract : ∀ n,
-    rat_to_abstract (nat_to_rat n) = from_nat n.
+    rat_to_abstract (from_nat n) = from_nat n.
 Proof.
     intros n.
-    unfold nat_to_rat.
-    rewrite int_to_rat_to_abstract.
-    apply from_int_nat.
-Qed.
-
-Theorem rat_to_abstract_min : ∀ a b,
-    rat_to_abstract (min a b) = min (rat_to_abstract a) (rat_to_abstract b).
-Proof.
-    intros a b.
-    destruct (connex a b) as [leq|leq].
-    -   rewrite (min_leq _ _ leq).
-        rewrite <- rat_to_abstract_le in leq.
-        rewrite (min_leq _ _ leq).
-        reflexivity.
-    -   rewrite (min_req _ _ leq).
-        rewrite <- rat_to_abstract_le in leq.
-        rewrite (min_req _ _ leq).
+    nat_induction n.
+    -   do 2 rewrite homo_zero.
+        symmetry; apply homo_zero.
+    -   do 2 rewrite from_nat_suc.
+        rewrite (homo_plus (f := rat_to_abstract)).
+        rewrite IHn.
+        rewrite homo_one.
         reflexivity.
 Qed.
 
-Theorem rat_to_abstract_max : ∀ a b,
-    rat_to_abstract (max a b) = max (rat_to_abstract a) (rat_to_abstract b).
+Theorem int_to_rat_to_abstract : ∀ n,
+    rat_to_abstract (from_int n) = from_int n.
 Proof.
-    intros a b.
-    destruct (connex a b) as [leq|leq].
-    -   rewrite (max_req _ _ leq).
-        rewrite <- rat_to_abstract_le in leq.
-        rewrite (max_req _ _ leq).
-        reflexivity.
-    -   rewrite (max_leq _ _ leq).
-        rewrite <- rat_to_abstract_le in leq.
-        rewrite (max_leq _ _ leq).
-        reflexivity.
+    intros a.
+    destruct (connex 0 a) as [a_pos|a_neg].
+    -   apply int_pos_nat_ex in a_pos as [n a_eq]; subst a.
+        do 2 rewrite from_int_nat.
+        apply nat_to_rat_to_abstract.
+    -   apply int_neg_nat_ex in a_neg as [n a_eq]; subst a.
+        do 2 rewrite homo_neg.
+        rewrite (homo_neg (f := from_int)).
+        apply f_equal.
+        do 2 rewrite from_int_nat.
+        apply nat_to_rat_to_abstract.
 Qed.
 
 End RatAbstract.
@@ -304,13 +126,13 @@ Proof.
     pose proof (well_ordered _ S_ex) as [m [m_ltq m_least]].
     clear m' m'_ltq S_ex.
     remember (from_nat m) as m'.
-    exists (nat_to_rat m / nat_to_rat (nat_suc n)).
-    rewrite rat_to_abstract_mult.
-    rewrite rat_to_abstract_div.
+    exists (from_nat m / from_nat (nat_suc n)).
+    rewrite homo_mult.
+    rewrite homo_div.
     2: {
-        change 0 with (nat_to_rat 0).
+        rewrite <- (homo_zero (f := from_nat)).
         intros contr.
-        apply nat_to_rat_eq in contr.
+        apply inj in contr.
         inversion contr.
     }
     do 2 rewrite nat_to_rat_to_abstract.
@@ -359,7 +181,7 @@ Proof.
     classic_case (0 < b) as [b_pos|b_neg].
     {
         exists 0.
-        rewrite rat_to_abstract_zero.
+        rewrite homo_zero.
         split; assumption.
     }
     rewrite nlt_le in b_neg.
@@ -367,7 +189,7 @@ Proof.
     apply lt_neg in ab.
     pose proof (rat_dense_in_arch_pos (-b) (-a) b_neg ab) as [r [r_gt r_lt]].
     exists (-r).
-    rewrite rat_to_abstract_neg.
+    rewrite homo_neg.
     apply lt_neg in r_gt, r_lt.
     rewrite neg_neg in r_gt, r_lt.
     split; assumption.

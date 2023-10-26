@@ -226,13 +226,18 @@ Theorem arch_ordered_homo_rat : ∀ f, arch_ordered_homo f →
 Proof.
     intros f f_homo q.
     pose proof f_homo as [f_zero [f_one [f_plus [f_mult f_le]]]].
-    equiv_get_value q.
-    unfold rat_to_abstract; equiv_simpl.
-    unfold rat_to_abstract_base; cbn.
+    pose proof (to_ofrac_ex q) as [q1 [q2 [q2_pos q_eq]]]; subst q.
+    do 2 rewrite (homo_mult (f := rat_to_abstract)).
+    rewrite homo_div.
+    2: apply (inj_zero (to_ofrac int) (rand q2_pos)).
+    rewrite (homo_div (f := rat_to_abstract)).
+    2: apply (inj_zero (to_ofrac int) (rand q2_pos)).
+    do 2 rewrite <- from_int_rat.
+    do 4 rewrite int_to_rat_to_abstract.
     rewrite f_mult.
     rewrite arch_ordered_homo_div.
     2: exact f_homo.
-    2: apply from_int_nz.
+    2: apply (inj_zero from_int); apply q2_pos.
     do 2 rewrite arch_ordered_homo_int by exact f_homo.
     reflexivity.
 Qed.

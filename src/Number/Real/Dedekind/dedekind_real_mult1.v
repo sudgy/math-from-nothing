@@ -13,7 +13,7 @@ used to make the ridiculous number of cases involved more manageable
 (* begin hide *)
 Open Scope real_scope.
 (* end hide *)
-Definition real_mult_base a b :=
+Definition real_mult_base (a b : rat → Prop) :=
     λ x, x < 0 ∨ ∃ r s, a r ∧ b s ∧ 0 ≤ r ∧ 0 ≤ s ∧ x = r * s.
 Infix "⊗":= real_mult_base : real_scope.
 
@@ -281,7 +281,6 @@ Proof.
         reflexivity.
     }
     unfold mult; cbn.
-    unfold rat, rat_le_connex.
     destruct (connex 0 a) as [a_pos'|a_neg]; try contradiction;
     destruct (connex 0 b) as [b_pos'|b_neg]; try contradiction.
     reflexivity.

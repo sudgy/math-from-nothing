@@ -15,7 +15,7 @@ Require Import dedekind_real_mult2.
 
 Open Scope real_scope.
 
-Definition real_div_base a := λ p, p ≤ 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
+Definition real_div_base (a : rat → Prop) := λ p, p ≤ 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
 Notation "⊘ a" := (real_div_base a) : real_scope.
 
 Lemma real_div_dedekind : ∀ a : real, 0 < a → dedekind_cut (⊘ [a|]).
@@ -246,7 +246,7 @@ Proof.
                 -   rewrite mult_ranni.
                     reflexivity.
             }
-            assert (∃ n, 0 ≠ n ∧ x < nat_to_rat n * div (nat_to_rat n + 1)) as
+            assert (∃ n, 0 ≠ n ∧ x < from_nat n * div (from_nat n + 1)) as
                 [n [n_nz n_eq]].
             {
                 unfold one in x_lt; cbn in x_lt.
@@ -254,14 +254,12 @@ Proof.
                 pose proof x_lt as ε_pos.
                 apply lt_plus_0_anb_b_a in ε_pos.
                 pose proof (archimedean2 _ ε_pos) as [m eq].
-                rewrite from_nat_rat in eq.
-                assert (0 < nat_to_rat (nat_suc m)) as n_pos.
+                (*rewrite from_nat_rat in eq.*)
+                assert ((0 : rat) < from_nat (nat_suc m)) as n_pos.
                 {
-                    change 0 with (nat_to_rat 0).
-                    rewrite nat_to_rat_lt.
-                    apply nat_pos2.
+                    apply from_nat_pos.
                 }
-                remember (nat_to_rat (nat_suc m)) as n.
+                remember (from_nat (nat_suc m) : rat) as n.
                 apply lt_lmult_pos with n in eq.
                 2: exact n_pos.
                 rewrite mult_rinv in eq by apply n_pos.
@@ -294,7 +292,7 @@ Proof.
                 -   intros contr; inversion contr.
                 -   exact eq.
             }
-            rename n into n'; remember (nat_to_rat n') as n.
+            rename n into n'; remember (from_nat n') as n.
             pose proof (gt_rat_to_real_in _ _ a_pos) as a0; cbn in a0.
             apply (rand (rand (rand a_cut))) in a0 as [u [au u_pos]].
             assert (∃ q, 0 < q ∧ q < u / n) as [q [q_pos q_lt]].
@@ -303,11 +301,10 @@ Proof.
                 apply lt_mult; try assumption.
                 apply div_pos.
                 rewrite Heqn.
-                change 0 with (nat_to_rat 0).
-                rewrite nat_to_rat_lt.
                 split.
-                -   apply nat_pos.
-                -   exact n_nz.
+                -   apply from_nat_pos2.
+                -   apply (inj_zero from_nat).
+                    exact n_nz.
             }
             pose (S m := ¬a (m × q)).
             assert (∃ m, S m) as S_ex.
@@ -340,26 +337,24 @@ Proof.
             }
             clear m_least.
             rewrite nat_mult_from in am.
-            rewrite from_nat_rat in am.
-            rename m into m'; remember (nat_to_rat m') as m.
+            rename m into m'; remember (from_nat m') as m.
             assert (x < m / (m + 1)) as m_eq.
             {
                 assert (0 < m + 1) as m1_pos.
                 {
                     rewrite Heqm.
-                    change 0 with (nat_to_rat 0).
-                    change 1 with (int_to_rat 1).
-                    rewrite <- (homo_one (f := from_nat) (V := int)).
-                    rewrite <- nat_to_rat_plus.
+                    rewrite <- (homo_zero (f := from_nat)).
+                    rewrite <- (homo_one (f := from_nat)).
+                    rewrite <- homo_plus.
+                    rewrite <- homo_lt2.
                     rewrite plus_comm.
-                    rewrite nat_to_rat_lt.
                     apply nat_pos2.
                 }
                 assert (0 < n) as n_pos.
                 {
                     rewrite Heqn.
-                    change 0 with (nat_to_rat 0).
-                    rewrite nat_to_rat_lt.
+                    rewrite <- (homo_zero (f := from_nat)).
+                    rewrite <- homo_lt2.
                     split; try exact n_nz.
                     apply nat_pos.
                 }
@@ -376,16 +371,14 @@ Proof.
                     apply lt_rmult_pos with (m + 1) in q_lt.
                     2: exact m1_pos.
                     rewrite Heqm, Heqn in contr.
-                    rewrite nat_to_rat_lt in contr.
+                    rewrite <- homo_lt2 in contr.
                     rewrite <- nat_sucs_lt in contr.
                     rewrite nat_lt_suc_le in contr.
-                    rewrite <- nat_to_rat_le in contr.
-                    change (nat_suc m') with (1 + m') in contr.
+                    rewrite homo_le2 in contr.
+                    replace (nat_suc m') with (1 + m') in contr by reflexivity.
                     rewrite plus_comm in contr.
-                    rewrite nat_to_rat_plus in contr.
-                    unfold nat_to_rat at 2 in contr.
-                    rewrite homo_one in contr.
-                    change (int_to_rat 1) with (one (U := rat)) in contr.
+                    rewrite (homo_plus (f := from_nat)) in contr.
+                    rewrite (homo_one (f := from_nat)) in contr.
                     rewrite <- Heqm, <- Heqn in contr.
                     apply le_mult_adb_1_a_b_pos in contr.
                     2: exact n_pos.
@@ -396,14 +389,11 @@ Proof.
                     pose proof (lt_le_trans q_lt contr) as ltq.
                     pose proof (land (rand (rand a_cut)) _ _ au ltq).
                     rewrite nat_mult_from in nam.
-                    rewrite from_nat_rat in nam.
                     change (nat_suc m') with (1 + m') in nam.
                     rewrite plus_comm in nam.
-                    rewrite nat_to_rat_plus in nam.
+                    rewrite homo_plus in nam.
                     rewrite <- Heqm in nam.
-                    unfold nat_to_rat in nam.
                     rewrite homo_one in nam.
-                    change (int_to_rat 1) with (one (U := rat)) in nam.
                     rewrite mult_comm in nam.
                     contradiction.
                 }
@@ -440,14 +430,12 @@ Proof.
                 rewrite div_div in ltq.
                 2: {
                     intro contr.
-                    change 0 with (nat_to_rat 0) in contr.
-                    apply nat_to_rat_eq in contr.
+                    rewrite <- (homo_zero (f := from_nat)) in contr.
+                    apply inj in contr.
                     contradiction.
                 }
-                change 1 with (int_to_rat 1) in ltq.
-                rewrite <- (homo_one (f := from_nat) (V := int)) in ltq.
-                change (int_to_rat (from_nat 1)) with (nat_to_rat 1) in ltq.
-                rewrite nat_to_rat_lt in ltq.
+                rewrite <- (homo_one (f := from_nat)) in ltq.
+                rewrite <- homo_lt2 in ltq.
                 apply n_nz.
                 apply antisym.
                 -   apply nat_pos.
@@ -457,8 +445,8 @@ Proof.
             assert (0 < m) as m_pos.
             {
                 rewrite Heqm.
-                change 0 with (nat_to_rat 0).
-                rewrite nat_to_rat_lt.
+                rewrite <- (homo_zero (f := from_nat)).
+                rewrite <- homo_lt2.
                 apply nat_pos2.
             }
             pose proof (lt_lrplus m_pos one_pos) as m1_pos.
@@ -469,13 +457,10 @@ Proof.
             repeat split.
             *   right.
                 rewrite nat_mult_from in nam.
-                rewrite from_nat_rat in nam.
                 change (nat_suc (nat_suc m')) with (1 + nat_suc m') in nam.
-                rewrite nat_to_rat_plus in nam.
+                rewrite homo_plus in nam.
                 rewrite <- Heqm in nam.
-                unfold nat_to_rat in nam.
                 rewrite homo_one in nam.
-                change (int_to_rat 1) with (one (U := rat)) in nam.
                 rewrite plus_comm in nam.
                 apply lt_rmult_pos with (m + 1) in m_eq.
                 2: exact m1_pos.
