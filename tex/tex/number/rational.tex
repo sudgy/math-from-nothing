@@ -50,9 +50,12 @@ in $\U$.
     Define the type $\Frac(\U)$ to be the type $(\U \times \U^*)/\sim$.
 \end{definition}
 
+We will use the notation $\frac{a}{b}$ to refer to $[(a, b)]$.  Once division is
+defined we will see that this doesn't conflict with the usual fraction notation.
+
 \begin{definition}
     Define the inclusion $\iota_\U : \U \to \frac(\U)$ that takes an $x : \U$
-    and bring it to $[(x, 1)]$.
+    and bring it to $\frac{x}{1}$.
 \end{definition}
 
 \begin{instance}
@@ -125,23 +128,31 @@ in $\U$.
     Addition in $\Frac(\U)$ is commutative.
 \end{instance}
 \begin{proof}
-    We must prove that
     \[
-        (a_1b_2 + b_1a_2)b_1a_2 = (b_1a_2 + a_1b_2)a_2b_2,
+        a + b
+        = \frac{a_1}{a_2} + \frac{b_1}{b_2}
+        = \frac{a_1b_2 + b_1a_2}{a_2b_2}
+        = \frac{b_1a_2 + a_1b_2}{b_2a_2}
+        = \frac{b_1}{b_2} + \frac{a_1}{a_2}
+        = b + a.
     \]
-    which follows by the commutativity of the operations in $\U$.
 \end{proof}
 
 \begin{instance}
     Addition in $\Frac(\U)$ is associative.
 \end{instance}
 \begin{proof}
-    We must prove that
-    \[
-        (a_1b_2c_2 + (b_1c_2 + c_1b_2)a_2)a_2b_2c_2 =
-        ((a_1b_2 + b_1a_2)c_2 + c_1a_2b_2)a_2b_2c_2.
-    \]
-    This follows directly by expanding and rearranging slightly.
+    \begin{align*}
+        a + (b + c)
+        &= \frac{a_1}{a_2} + \left( \frac{b_1}{b_2} + \frac{c_1}{c_2} \right) \\
+        &= \frac{a_1}{a_2} + \frac{b_1c_2 + c_1b_2}{b_2c_2} \\
+        &= \frac{a_1(b_2c_2) + (b_1c_2 + c_1b_2)a_2}{a_2b_2c_2} \\
+        &= \frac{a_1b_2c_2 + a_2b_1c_2 + a_2b_2c_1}{a_2b_2c_2} \\
+        &= \frac{(a_1b_2 + b_1a_2)c_2 + c_1(a_2b_2)}{a_2b_2c_2} \\
+        &= \frac{a_1b_2 + b_1a_2}{a_2b_2} + \frac{c_1}{c_2} \\
+        &= \left( \frac{a_1}{a_2} + \frac{b_1}{b_2} \right) \frac{c_1}{c_2} \\
+        &= (a + b) + c.
+    \end{align*}
 \end{proof}
 
 \begin{instance}
@@ -154,9 +165,9 @@ in $\U$.
 \begin{proof}
     \[
         0 + a =
-        [(0, 1)] + [(a_1, a_2)] =
-        [(0a_2 + a_11, 1a_2)] =
-        [(a_1, a_2)]
+        \frac{0}{1} + \frac{a_1}{a_2} =
+        \frac{0a_2 + a_11}{1a_2} =
+        \frac{a_1}{a_2} =
         = a.
     \]
 \end{proof}
@@ -188,10 +199,10 @@ in $\U$.
     For all $a$,
     \[
         a - a =
-        [(a_1, a_2)] + [(-a_1, a_2)] =
-        [(a_1a_2 - a_1a_2, a_2a_2)] =
-        [(0, a_2a_2)] =
-        [(0, 1)] =
+        \frac{a_1}{a_2} + \frac{-a_1}{a_2} =
+        \frac{a_1a_2 - a_1a_2}{a_2a_2} =
+        \frac{0}{a_2a_2} =
+        \frac{0}{1} =
         0.
     \]
 \end{proof}
@@ -202,19 +213,209 @@ in $\U$.
 \begin{proof}
     \[
         \iota_\U(a + b) =
-        [(a + b, 1)] =
-        [(a1 + b1, (1)(1))] =
-        [(a, 1)] + [(b, 1)] =
+        \frac{a + b}{1} =
+        \frac{a1 + b1}{(1)(1)} =
+        \frac{a}{1} + \frac{b}{1} =
         \iota_\U(a) + \iota_\U(b).
     \]
 \end{proof}
 
 \section{Multiplication}
 
+\begin{definition}
+    Define an operation $\otimes : \U \times \U^* \to \U \times \U^* \to \U
+    \times \U^*$ given by
+    \[
+        (a_1, a_2) \otimes (b_1, b_2) = (a_1b_1, a_2b_2).
+    \]
+    $a_2b_2$ is nonzero by Theorem \ref{mult_nz}.
+\end{definition}
+
+\begin{lemma}
+    The operation $\otimes$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    We must prove that for all $a$, $b$, $c$, and $d$, if $a \sim b$ and $c \sim
+    d$, we have $a \otimes c \sim b \otimes d$.  Thus, we have
+    \[
+        a_1b_2 = b_1a_2
+    \]
+    and
+    \[
+        c_1d_2 = d_1c_2
+    \]
+    and must prove that
+    \[
+        a_1c_1b_2d_2 = b_1d_1a_2c_2.
+    \]
+    This follows directly by multiplying the previous two equations.
+\end{proof}
+
+\begin{instance}
+    Define multiplication in $\Frac(\U)$ as the binary operation given by
+    Theorem \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Multiplication in $\Frac(\U)$ is commutative.
+\end{instance}
+\begin{proof}
+    \[
+        ab
+        = \frac{a_1}{a_2} \, \frac{b_1}{b_2}
+        = \frac{a_1b_1}{a_2b_2}
+        = \frac{b_1a_1}{b_2a_2}
+        = \frac{b_1}{b_2} \, \frac{a_1}{a_2}
+        = ba.
+    \]
+\end{proof}
+
+\begin{instance}
+    Multiplication in $\Frac(\U)$ is associative.
+\end{instance}
+\begin{proof}
+    \[
+        a(bc)
+        = \frac{a_1}{a_2} \left( \frac{b_1}{b_2} \, \frac{c_1}{c_2} \right)
+        = \frac{a_1}{a_2} \, \frac{b_1c_1}{b_2c_2}
+        = \frac{a_1b_1c_1}{a_2b_2c_2}
+        = \frac{a_1b_1}{a_2b_2} \, \frac{c_1}{c_2}
+        = \left( \frac{a_1}{a_2} \, \frac{b_1}{b_2} \right) \frac{c_1}{c_2}
+        = (ab)c.
+    \]
+\end{proof}
+
+\begin{instance}
+    Multiplication in $\Frac(\U)$ distributes over addition.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        a(b + c)
+        &= \frac{a_1}{a_2} \left( \frac{b_1}{b_2} + \frac{c_1}{c_2} \right) \\
+        &= \frac{a_1}{a_2} \, \frac{b_1c_2 + c_1b_2}{b_2c_2} \\
+        &= \frac{a_1(b_1c_2 + c_1b_2)}{a_2b_2c_2} \\
+        &= \frac{a_1b_1c_2 + a_1c_1b_2}{a_2b_2c_2} \\
+        &= \frac{a_2(a_1b_1c_2 + a_1c_1b_2)}{a_2(a_2b_2c_2)} \\
+        &= \frac{a_1b_1a_2c_2 + a_1c_1a_2b_2}{a_2b_2a_2c_2} \\
+        &= \frac{a_1b_1}{a_2b_2} + \frac{a_1c_1}{a_2c_2} \\
+        &= \frac{a_1}{a_2} \, \frac{b_1}{b_2}
+            + \frac{a_1}{a_2} \, \frac{c_1}{c_2} \\
+        &= ab + ac
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Define one in $\Frac(\U)$ as $\iota_\U(1)$.
+\end{instance}
+
+\begin{instance}
+    One is a multiplicative identity in $\Frac(\U)$.
+\end{instance}
+\begin{proof}
+    \[
+        1a
+        = \frac{1}{1} \, \frac{a_1}{a_2}
+        = \frac{1a_1}{1a_2}
+        = \frac{a_1}{a_2}
+        = a.
+    \]
+\end{proof}
+
+\begin{definition}
+    Define an operation $\oslash : \U \times \U^* \to \U \times \U^*$ given by
+    \[
+        \oslash(a_1, a_2) = \begin{cases}
+            (a_1, a_2) \text{ if $a_1 = 0$} \\
+            (a_2, a_1) \text{ if $a_1 \neq 0$}.
+        \end{cases}
+    \]
+\end{definition}
+
+\begin{lemma}
+    The operation $\oslash$ is well-defined.
+\end{lemma}
+\begin{proof}
+    We must prove that if $a \sim b$, then $\oslash a \sim \oslash b$.  There
+    will be four cases, depending on if $a_1 = 0$ and $b_1 = 0$.  By symmetry
+    the cases $a_1 = 0$, $b_1 \neq 0$ and $a_1 \neq 0$, $b_1 = 0$ are the same,
+    so there are three cases.  In each case we have $a_1b_2 = b_1a_2$.
+    \begin{case} $a_1 = 0$, $b_1 = 0$.
+        In this case we just need to prove that $a \sim b$, which is what we
+        started with.
+    \end{case}
+    \begin{case} $a_1 = 0$, $b_1 \neq 0$.
+        From $a_1 = 0$ and $a_1b_2 = b_1a_2$, we see that $0 = b_1a_2$.
+        However, this case has $b_1 \neq 0$, and $a_2 \neq 0$ by definition, so
+        this is a contradiction.  Thus, this case is impossible.
+    \end{case}
+    \begin{case} $a_1 \neq 0$, $b_1 \neq 0$.
+        We must prove that $a_2b_1 = b_2a_1$.  This is essentially the same as
+        what we started with, $a_1b_2 = b_1a_2$.
+    \end{case}
+\end{proof}
+
+\begin{definition}
+    Define multiplicative inverses as the operation produced by Theorem
+    \ref{unary_op_ex} and the previous lemma.
+\end{definition}
+
+\begin{instance}
+    The reciprocal in $\Frac(\U)$ is a multiplicative inverse.
+\end{instance}
+\begin{proof}
+    Let $a \neq 0$.  This means that $a_1 \neq 0$.  Then
+    \[
+        a a^{-1} = \frac{a_1}{a_2} \, \frac{a_2}{a_1}
+        = \frac{a_1a_2}{a_2a_1}
+        = \frac{1}{1}
+        = 1.
+    \]
+\end{proof}
+
+\begin{instance}
+    $\iota_\U$ is multiplicative.
+\end{instance}
+\begin{proof}
+    \[
+        \iota_\U(ab)
+        = \frac{ab}{1}
+        = \frac{ab}{(1)(1)}
+        = \frac{a}{1} \, \frac{b}{1}
+        = \iota_\U(a) \iota_\U(b).
+    \]
+\end{proof}
+
+\begin{instance}
+    $\iota_\U$ preserves the multiplicative identity.
+\end{instance}
+\begin{proof}
+    This was simply the definition of $1$ in $\Frac(\U)$.
+\end{proof}
+
+We can now show that the notation $\frac{a}{b}$ is consistent with our usual use
+of division:
+
+\begin{theorem}
+    For all $a$ and $b$, $[(a, b)] = \iota_\U(a) \iota_\U(b)^{-1}$
+\end{theorem}
+\begin{proof}
+    By assumption we have $b \neq 0$.  Thus,
+    \[
+        \iota_\U(a) \iota_\U(b)^{-1}
+        = [(a, 1)] [(b, 1)]^{-1}
+        = [(a, 1)] [(1, b)]
+        = [(a, b)].
+    \]
+\end{proof}
+
+Note that this theorem also implies that for all $x : \Frac(\U)$, there exist
+values $a$ and $b$ in $\U$ such that $x = \frac{a}{b}$.
+
 \section{Order}
 
 \section{The Frac functor}
 
-\section{The rationals}
+\section{The Rationals}
 
 \end{document}
