@@ -17,16 +17,11 @@ Class MultRinv U `{Zero U, Mult U, One U, Div U} := {
     mult_rinv : ∀ a, 0 ≠ a → a / a = 1
 }.
 
-Class FieldBase U `{
+Class FieldClass U `{
     FM : AllMultClass U,
     UD : Div U,
     UMD : @MultLinv U UZ UM UE UD,
     UMDR : @MultRinv U UZ UM UE UD
-}.
-
-Class FieldClass U `{
-    FF : FieldBase U,
-    NotTrivial U
 }.
 
 Class HomomorphismDiv {U V} `{Zero U, Div U, Div V} (f : U → V) := {

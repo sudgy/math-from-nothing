@@ -72,7 +72,8 @@ Class CRingClass U `{
 Class IntegralDomainClass U `{
     IDR : CRingClass U,
     UML : @MultLcancel U UZ UM,
-    UMR : @MultRcancel U UZ UM
+    UMR : @MultRcancel U UZ UM,
+    NotTrivial U
 }.
 
 Class AllMultClass U `{
