@@ -8,10 +8,11 @@ Require Export fraction_plus.
 Require Export fraction_mult.
 Require Import nat.
 Require Export ordered_domain_category.
+Require Import order_cone.
 
 Section FractionOrder.
 
-Context U `{OrderedFieldClass U, @Archimedean U UP UZ UO}.
+Context U `{OrderedDomainClass U, @Archimedean U UP UZ UO}.
 
 Local Infix "~" := (eq_equal (frac_equiv U)).
 
@@ -89,13 +90,108 @@ Proof.
         exact eq.
 Qed.
 
-Definition frac_pos := unary_op frac_pos_wd.
+Let p := unary_op frac_pos_wd.
 
-Local Instance frac_order : Order (frac_type U) := {
-    le a b := frac_pos (b - a)
+Lemma frac_pos_simpl : ∀ a b, 0 < [b|] →
+    p (to_equiv (frac_equiv U) (a, b)) ↔ 0 ≤ a.
+Proof.
+    intros a b b_pos.
+    unfold p; equiv_simpl.
+    unfold frac_pos_base; cbn.
+    split.
+    -   intros leq.
+        rewrite <- (mult_lanni [b|]) in leq at 1.
+        apply le_mult_rcancel_pos in leq; [>|exact b_pos].
+        exact leq.
+    -   intros leq.
+        rewrite <- (mult_lanni [b|]) at 1.
+        apply le_rmult_pos; [>apply b_pos|].
+        exact leq.
+Qed.
+
+(* These are done as lemmas because #[refine] won't allow the proof terms to be
+opaque, and using Program is really slow for some reason. *)
+Lemma frac_cone_plus : ∀ a b, p a → p b → p (a + b).
+Proof.
+    intros a b.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]]; subst a.
+    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]]; subst b.
+    unfold plus; cbn.
+    rewrite binary_op_eq; cbn.
+    rewrite frac_pos_simpl by exact a2_pos.
+    rewrite frac_pos_simpl by exact b2_pos.
+    rewrite frac_pos_simpl by exact (lt_mult a2_pos b2_pos).
+    intros a1_pos b1_pos.
+    destruct a2_pos, b2_pos.
+    apply le_pos_plus; apply le_mult; assumption.
+Qed.
+
+Lemma frac_cone_mult : ∀ a b, p a → p b → p (a * b).
+Proof.
+    intros a b.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]]; subst a.
+    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]]; subst b.
+    unfold mult; cbn.
+    rewrite binary_op_eq; cbn.
+    rewrite frac_pos_simpl by exact a2_pos.
+    rewrite frac_pos_simpl by exact b2_pos.
+    rewrite frac_pos_simpl by exact (lt_mult a2_pos b2_pos).
+    apply le_mult.
+Qed.
+
+Lemma frac_cone_square : ∀ a, p (a * a).
+Proof.
+    intros a.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]]; subst a.
+    unfold mult; cbn.
+    rewrite binary_op_eq; cbn.
+    rewrite frac_pos_simpl by exact (lt_mult a2_pos a2_pos).
+    apply square_pos.
+Qed.
+
+Lemma frac_cone_neg : ¬p (-1).
+Proof.
+    unfold neg, one; cbn.
+    rewrite unary_op_eq; cbn.
+    rewrite frac_pos_simpl by exact one_pos.
+    rewrite nle_lt.
+    apply pos_neg2.
+    exact one_pos.
+Qed.
+
+Lemma frac_cone_all : ∀ a, {p a} + {p (-a)}.
+Proof.
+    intros a.
+    apply or_to_strong.
+    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]]; subst a.
+    rewrite frac_pos_simpl by exact a2_pos.
+    unfold neg; cbn.
+    rewrite unary_op_eq; cbn.
+    rewrite frac_pos_simpl by exact a2_pos.
+    rewrite <- neg_pos.
+    destruct (connex 0 a1) as [leq|leq].
+    -   left; exact leq.
+    -   right; exact leq.
+Qed.
+
+Local Instance frac_cone : OrderCone (frac_type U) := {
+    cone := unary_op frac_pos_wd;
+    cone_plus := frac_cone_plus;
+    cone_mult := frac_cone_mult;
+    cone_square := frac_cone_square;
+    cone_neg := frac_cone_neg;
+    cone_all := frac_cone_all;
 }.
+Definition frac_order := cone_order : Order (frac_type U).
+Definition frac_le_antisym := cone_le_antisym
+    : Antisymmetric (le (U := frac_type U)).
+Definition frac_le_trans := cone_le_transitive
+    : Transitive (le (U := frac_type U)).
+Definition frac_le_connex := cone_le_connex : Connex (le (U := frac_type U)).
+Definition frac_le_lplus := cone_le_lplus : OrderLplus (frac_type U).
+Definition frac_le_mult := cone_le_mult : OrderMult (frac_type U).
 
-Theorem frac_pos_zero : ∀ a, 0 ≤ a ↔ frac_pos a.
+Theorem frac_pos_zero : ∀ a : frac_type U, 0 ≤ a ↔ cone a.
 Proof.
     intros a.
     equiv_get_value a.
@@ -110,22 +206,14 @@ Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
 Proof.
     intros a1 a2 b1 b2 a2_pos b2_pos.
     unfold le at 1; cbn.
-    unfold frac_pos, plus, neg; equiv_simpl.
-    unfold frac_pos_base; cbn.
-    rewrite <- (le_plus_0_anb_b_a (b1 * [a2|])).
+    fold p.
+    unfold plus, neg; equiv_simpl.
+    rewrite frac_pos_simpl by (exact (lt_mult b2_pos a2_pos)).
     rewrite mult_lneg.
-    split.
-    -   intros leq.
-        apply (le_mult_rcancel_pos ([b2|] * [a2|])).
-        +   apply lt_mult; assumption.
-        +   rewrite mult_lanni.
-            exact leq.
-    -   intros leq.
-        apply (le_rmult_pos ([b2|] * [a2|])) in leq.
-        +   rewrite mult_lanni in leq.
-            exact leq.
-        +   apply lt_mult; assumption.
+    rewrite le_plus_0_anb_b_a.
+    reflexivity.
 Qed.
+
 Theorem frac_lt : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
     (to_equiv (frac_equiv U) (a1, a2) < to_equiv (frac_equiv U) (b1, b2)) ↔
     (a1 * [b2|] < b1 * [a2|]).
@@ -138,97 +226,12 @@ Proof.
     reflexivity.
 Qed.
 
-Local Instance frac_le_connex : Connex le.
-Proof.
-    split.
-    intros a b.
-    apply or_to_strong.
-    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
-    subst a b.
-    do 2 rewrite frac_le by assumption.
-    destruct (connex (a1 * [b2|]) (b1 * [a2|])) as [leq|leq].
-    -   left; exact leq.
-    -   right; exact leq.
-Qed.
-
-Local Instance frac_le_antisym : Antisymmetric le.
-Proof.
-    split.
-    intros a b.
-    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
-    subst a b.
-    do 2 rewrite frac_le by assumption.
-    equiv_simpl.
-    unfold frac_eq; cbn.
-    apply antisym.
-Qed.
-
-Local Instance frac_le_trans : Transitive le.
-Proof.
-    split.
-    intros a b c.
-    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
-    pose proof (frac_pos_ex c) as [c1 [c2 [c2_pos c_eq]]].
-    subst a b c.
-    do 3 rewrite frac_le by assumption.
-    intros ab bc.
-    apply le_lmult_pos with [c2|] in ab; [>|apply c2_pos].
-    apply le_rmult_pos with [a2|] in bc; [>|apply a2_pos].
-    rewrite (mult_3 _ b1) in ab.
-    do 2 rewrite <- mult_assoc in bc.
-    pose proof (trans ab bc) as eq.
-    rewrite (mult_comm [b2|]) in eq.
-    do 2 rewrite mult_assoc in eq.
-    apply le_mult_rcancel_pos in eq; [>|apply b2_pos].
-    rewrite mult_comm.
-    exact eq.
-Qed.
-
-Local Instance frac_le_lplus : OrderLplus (frac_type U).
-Proof.
-    split.
-    intros a b c.
-    pose proof (frac_pos_ex a) as [a1 [a2 [a2_pos a_eq]]].
-    pose proof (frac_pos_ex b) as [b1 [b2 [b2_pos b_eq]]].
-    pose proof (frac_pos_ex c) as [c1 [c2 [c2_pos c_eq]]].
-    subst a b c.
-    unfold plus; equiv_simpl.
-    rewrite frac_le by assumption.
-    intros ab.
-    rewrite frac_le; cbn.
-    2, 3: apply lt_mult; assumption.
-    do 2 rewrite rdist.
-    do 2 rewrite (mult_comm [c2|]).
-    rewrite mult_4.
-    apply le_lplus.
-    do 2 rewrite (mult_4 _ [c2|]).
-    apply le_rmult_pos; [>|exact ab].
-    apply lt_mult; exact c2_pos.
-Qed.
-
-Local Instance frac_le_mult : OrderMult (frac_type U).
-Proof.
-    split.
-    intros a b.
-    do 3 rewrite frac_pos_zero.
-    equiv_get_value a b.
-    destruct a as [a1 a2], b as [b1 b2].
-    unfold frac_pos, mult; equiv_simpl.
-    unfold frac_pos_base; cbn.
-    intros leq1 leq2.
-    rewrite mult_4.
-    apply le_mult; assumption.
-Qed.
-
 Local Instance to_frac_le : HomomorphismLe (to_frac U).
 Proof.
     split.
     intros a b ab.
     unfold to_frac.
-    rewrite frac_le by apply one_pos; cbn.
+    rewrite frac_le by exact one_pos; cbn.
     do 2 rewrite mult_rid.
     exact ab.
 Qed.
@@ -241,7 +244,7 @@ Proof.
     destruct x_pos as [x_pos x_neq].
     rewrite frac_pos_zero in x_pos.
     subst x.
-    unfold frac_pos in x_pos; equiv_simpl in x_pos.
+    unfold cone in x_pos; equiv_simpl in x_pos.
     unfold frac_pos_base in x_pos; cbn in x_pos.
     rewrite <- (mult_lanni [b|]) in x_pos at 1.
     apply le_mult_rcancel_pos in x_pos; [>|exact b_pos].

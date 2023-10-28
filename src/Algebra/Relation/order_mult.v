@@ -21,6 +21,20 @@ Class OrderMultRcancel U `{Zero U, Mult U, Order U} := {
     le_mult_rcancel_pos : ∀ {a b} c, 0 < c → a * c ≤ b * c → a ≤ b
 }.
 
+Class OrderedDomainClass U `{
+    OFF : IntegralDomainClass U,
+    OFO : TotalOrder U,
+    UOP : @OrderLplus U UP UO,
+    UOPR : @OrderRplus U UP UO,
+    UOPC : @OrderPlusLcancel U UP UO,
+    UOPCR : @OrderPlusRcancel U UP UO,
+    UOM : @OrderMult U UZ UM UO,
+    UOML : @OrderLmult U UZ UM UO,
+    UOMR : @OrderRmult U UZ UM UO,
+    UOMLC : @OrderMultLcancel U UZ UM UO,
+    UOMRC : @OrderMultRcancel U UZ UM UO
+}.
+
 Class OrderedFieldClass U `{
     OFF : FieldClass U,
     OFO : TotalOrder U,

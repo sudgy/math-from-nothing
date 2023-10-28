@@ -7,7 +7,7 @@ Require Export plus_group.
 
 Section FractionPlus.
 
-Context U `{OrderedFieldClass U}.
+Context U `{OrderedDomainClass U}.
 
 Local Infix "~" := (eq_equal (frac_equiv U)).
 

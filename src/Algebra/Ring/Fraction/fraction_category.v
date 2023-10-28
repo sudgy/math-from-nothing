@@ -18,7 +18,7 @@ Module FracUniversal.
 Section FracUniversal.
 
 Context {U F} (f : U → F) `{
-    OrderedFieldClass U,
+    OrderedDomainClass U,
     OrderedFieldClass F,
     @HomomorphismPlus U F UP UP0 f,
     @HomomorphismMult U F UM UM0 f,
@@ -32,7 +32,7 @@ Local Existing Instances frac_zero.
 Local Existing Instances frac_mult.
 Local Existing Instances frac_one.
 Local Existing Instances frac_div.
-Local Existing Instances frac_order.
+Local Existing Instances frac_cone.
 Local Existing Instances frac_plus_assoc.
 Local Existing Instances frac_plus_comm.
 Local Existing Instances frac_plus_lid.
@@ -117,7 +117,6 @@ Qed.
 
 Local Instance h_le : HomomorphismLe h.
 Proof.
-    clear UD UMD UMDR FF OFF H0.
     split.
     intros a b.
     pose proof (frac_pos_ex U a) as [a1 [a2 [a2_pos a_eq]]].
@@ -137,7 +136,7 @@ Proof.
     rewrite (ifH_false (rand b2_pos)).
     cbn.
     unfold le at 1; equiv_simpl.
-    unfold plus, neg, frac_pos; equiv_simpl.
+    unfold plus, neg; equiv_simpl.
     do 2 rewrite mult_rid.
     do 2 rewrite mult_lid.
     rewrite rdist.
@@ -269,6 +268,7 @@ Proof.
 Qed.
 
 
+Local Existing Instance frac_cone.
 Definition ofrac_field (U : OrderedDomain) : OrderedField := make_ofield
     (frac_type U) (frac_not_trivial U) (frac_plus U) (frac_zero U) (frac_neg U)
     (frac_plus_assoc U) (frac_plus_comm U) (frac_plus_lid U) (frac_plus_linv U)

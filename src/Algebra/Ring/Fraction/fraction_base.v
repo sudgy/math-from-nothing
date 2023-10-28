@@ -5,7 +5,7 @@ Require Export domain_category.
 
 Section FractionEquiv.
 
-Context U `{OrderedFieldClass U}.
+Context U `{OrderedDomainClass U}.
 
 Definition frac_base := (U * set_type (λ x : U, 0 ≠ x))%type.
 

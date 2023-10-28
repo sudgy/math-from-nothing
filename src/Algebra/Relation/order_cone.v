@@ -45,8 +45,7 @@ Proof.
     intros a b ab ba.
     rewrite <- plus_0_anb_b_a.
     rewrite <- (neg_neg a) in ba.
-    rewrite <- neg_plus in ba.
-    rewrite plus_comm in ba.
+    rewrite <- neg_plus_group in ba.
     remember (b - a) as c; clear b a Heqc.
     classic_contradiction c_nz.
     pose proof (cone_div _ c_nz ab) as c_pos.
@@ -74,10 +73,9 @@ Proof.
     intros a b.
     (* Doing this at 2 makes it really slow for some reason *)
     rewrite <- (neg_neg a).
-    rewrite <- neg_plus.
-    rewrite plus_comm.
+    rewrite <- neg_plus_group.
     rewrite neg_neg.
-    remember (-a + b) as c; clear a b Heqc.
+    remember (b - a) as c; clear a b Heqc.
     apply cone_all.
 Qed.
 
@@ -86,9 +84,9 @@ Proof.
     split.
     unfold le; cbn.
     intros a b c pos.
-    rewrite neg_plus, plus_assoc.
-    rewrite (plus_comm c b).
-    rewrite plus_rrinv.
+    rewrite neg_plus.
+    rewrite plus_4.
+    rewrite plus_rinv, plus_lid.
     exact pos.
 Qed.
 
