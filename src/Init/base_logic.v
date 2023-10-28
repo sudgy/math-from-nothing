@@ -162,6 +162,41 @@ Tactic Notation "rewrite_ex_val" simple_intropattern(a) simple_intropattern(c)
     rewrite b in *;
     clear b.
 
+Definition ex_val1 {A B : Type} {P : A → B → Prop} (e : ∃ a b, P a b) : A
+    := ex_val e.
+Definition ex_val2 {A B : Type} {P : A → B → Prop} (e : ∃ a b, P a b) : B
+    := ex_val (ex_proof e).
+Definition ex_proof2 {A B : Type} {P : A → B → Prop} (e : ∃ a b, P a b)
+    : P (ex_val1 e) (ex_val2 e) := ex_proof (ex_proof e).
+
+Theorem unpack_ex_val2 {A B : Type} {P : A → B → Prop} (e : ∃ a b, P a b) :
+    ∃ a b, ex_val1 e = a ∧ ex_val2 e = b ∧ P a b.
+Proof.
+    exists (ex_val1 e), (ex_val2 e).
+    split; [>|split]; [>reflexivity|reflexivity|].
+    unfold ex_val1, ex_val2.
+    unfold ex_val, ex_proof.
+    destruct (ex_to_type e) as [a e']; cbn.
+    destruct (ex_to_type e') as [b Pab]; cbn.
+    exact Pab.
+Qed.
+
+Tactic Notation "rewrite_ex_val2" simple_intropattern(a) simple_intropattern(b)
+    simple_intropattern(H)
+    := let eq1 := fresh in let eq2 := fresh in
+    let go P :=
+        pose proof (unpack_ex_val2 P) as [a [b [eq1 [eq2 H]]]];
+        rewrite eq1 in *;
+        rewrite eq2 in *;
+        clear eq1 eq2
+    in
+    match goal with
+    | |- context [ex_val1 ?P] => go P
+    | |- context [ex_val2 ?P] => go P
+    | K: context [ex_val1 ?P] |- _ => go P
+    | K: context [ex_val2 ?P] |- _ => go P
+    end.
+
 (* begin hide *)
 (* This proof is not my own *)
 Module ExcludedMiddle.
