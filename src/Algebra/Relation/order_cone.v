@@ -38,6 +38,14 @@ Global Instance cone_order : Order U := {
     le a b := cone (b - a)
 }.
 
+Theorem cone_pos : ∀ a, cone a ↔ 0 ≤ a.
+Proof.
+    intros a.
+    unfold le; cbn.
+    rewrite neg_zero, plus_rid.
+    reflexivity.
+Qed.
+
 Global Instance cone_le_antisym : Antisymmetric le.
 Proof.
     split.
@@ -75,7 +83,6 @@ Proof.
     rewrite <- (neg_neg a).
     rewrite <- neg_plus_group.
     rewrite neg_neg.
-    remember (b - a) as c; clear a b Heqc.
     apply cone_all.
 Qed.
 
@@ -93,10 +100,8 @@ Qed.
 Global Instance cone_le_mult : OrderMult U.
 Proof.
     split.
-    unfold le; cbn.
     intros a b.
-    rewrite neg_zero.
-    do 3 rewrite plus_rid.
+    do 3 rewrite <- cone_pos.
     apply cone_mult.
 Qed.
 

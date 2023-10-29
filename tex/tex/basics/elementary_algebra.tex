@@ -1586,6 +1586,98 @@ Several simple statements follow from some of the previous theorems, such as $0
     by the previous two theorems.
 \end{proof}
 
+\subsection{Cones}
+
+An alternative characterization of ordered fields is using cones, where instead
+of specifying an order on a field $\U$, we instead identify a certain subset
+that we consider to be the positive numbers.  In this context we will call this
+subset a cone.
+
+\begin{class}
+    Given a field $\U$, a cone is a subset $C$ such that:
+    \begin{itemize}
+        \item For all $a \in C$ and $b \in C$, $a + b \in C$.
+        \item For all $a \in C$ and $b \in C$, $ab \in C$.
+        \item For all $a : \U$, $aa \in C$.
+        \item $-1 \notin C$.
+        \item For all $a : \U$, either $a \in C$ or $-A \in C$.
+    \end{itemize}
+\end{class}
+
+In the rest of this section, we will prove that using a cone on a field $\U$,
+$\U$ is an ordered field.  Thus, for the rest of this section, assume that $\U$
+is a field with a cone $C$.
+
+\begin{theorem} \label{cone_one}
+    $1 \in C$.
+\end{theorem}
+\begin{proof}
+    Because $1 = (-1)(-1)$ and because all squares are in $C$, $1 \in C$.
+\end{proof}
+
+\begin{theorem} \label{cone_div}
+    If $a \neq 0$ and $a \in C$, then $a^{-1} \in C$.
+\end{theorem}
+\begin{proof}
+    Because all squares are in $C$, $a^{-1}a^{-1} \in C$.  Then because all
+    products are in $C$, $a^{-1}a^{-1}a = a^{-1} \in C$.
+\end{proof}
+
+\begin{instance}
+    Define an order on $\U$ by defining $a \leq b$ to mean that $b - a \in S$.
+\end{instance}
+
+\begin{theorem} \label{cone_pos}
+    For all $a : \U$, $a \in S$ if and only if $0 \leq a$.
+\end{theorem}
+\begin{proof}
+    The condition $0 \leq a$ is equivalent to $a = a - 0 \in S$.
+\end{proof}
+
+\begin{instance}
+    The order in $\U$ is antisymmetric.
+\end{instance}
+\begin{proof}
+    We have $a - b \in C$ and $b - a \in C$, and we must prove that $a = b$.  We
+    can define $c = a - b$ to simplify this to proving that if $c \in C$ and $-c
+    \in C$, then $c = 0$.  Assume that $c \neq 0$.  Then by Theorem
+    \ref{cone_div}, $c^{-1} \in C$, so $(-c)c^{-1} = -1 \in C$, which is a
+    contradiction.  Thus, $c = 0$.
+\end{proof}
+
+\begin{instance}
+    The order in $\U$ is transitive.
+\end{instance}
+\begin{proof}
+    We must prove that if $b - a \in C$ and $c - b \in C$, then $c - a \in C$.
+    By adding we get $b - a + c - b = c - a \in C$.
+\end{proof}
+
+\begin{instance}
+    The order in $\U$ is connex.
+\end{instance}
+\begin{proof}
+    We must prove that for all $a$ and $b$, either $a - b \in C$ or $b - a \in
+    C$.  The second one can be rewritten as $-(a - b) \in C$, so by the last
+    condition for being a cone the result is true.
+\end{proof}
+
+\begin{instance}
+    The order in $\U$ is left additive.
+\end{instance}
+\begin{proof}
+    We must prove that if $b - a \in C$, then $(c + b) - (c + a) \in C$.  This
+    follows directly by $c - c = 0$.
+\end{proof}
+
+\begin{instance}
+    The order in $\U$ is multiplicative.
+\end{instance}
+\begin{proof}
+    By Theorem \ref{cone_pos}, this follows directly from the multiplication
+    requirement for cones.
+\end{proof}
+
 \subsection{Bounds}
 
 In all of the following definitions, let $\leq$ be an arbitrary relation and let

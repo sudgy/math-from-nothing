@@ -191,15 +191,6 @@ Definition frac_le_connex := cone_le_connex : Connex (le (U := frac_type U)).
 Definition frac_le_lplus := cone_le_lplus : OrderLplus (frac_type U).
 Definition frac_le_mult := cone_le_mult : OrderMult (frac_type U).
 
-Theorem frac_pos_zero : ∀ a : frac_type U, 0 ≤ a ↔ cone a.
-Proof.
-    intros a.
-    equiv_get_value a.
-    unfold le; cbn.
-    rewrite neg_zero, plus_rid.
-    reflexivity.
-Qed.
-
 Theorem frac_le : ∀ a1 a2 b1 b2, 0 < [a2|] → 0 < [b2|] →
     (to_equiv (frac_equiv U) (a1, a2) ≤ to_equiv (frac_equiv U) (b1, b2)) ↔
     (a1 * [b2|] ≤ b1 * [a2|]).
@@ -242,7 +233,7 @@ Proof.
     intros x x_pos.
     pose proof (frac_pos_ex x) as [a [b [b_pos x_eq]]].
     destruct x_pos as [x_pos x_neq].
-    rewrite frac_pos_zero in x_pos.
+    rewrite <- cone_pos in x_pos.
     subst x.
     unfold cone in x_pos; equiv_simpl in x_pos.
     unfold frac_pos_base in x_pos; cbn in x_pos.
