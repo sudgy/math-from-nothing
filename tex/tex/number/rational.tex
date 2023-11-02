@@ -414,6 +414,153 @@ values $a$ and $b$ in $\U$ such that $x = \frac{a}{b}$.
 
 \section{Order}
 
+In this section, assume that $\U$ is an ordered integral domain, not just an
+integral domain.
+
+\begin{theorem} \label{frac_pos_ex} \label{frac_pos_ex_div}
+    For all $x : \Frac(\U)$, there exist $a$ and $b$ in $\U$ such that $0 < b$
+    and $x = \frac{a}{b}$.
+\end{theorem}
+\begin{proof}
+    If $0 < x_2$, then we simply have $x = \frac{x_1}{x_2}$.  If $x_2 < 0$, then
+    $x = \frac{-x_1}{-x_2}$.
+\end{proof}
+
+To define an order on $\U$, we will use a cone.
+
+\begin{definition}
+    Say that a pair $(a, b) : \U \times \U^*$ is positive if $0 \leq ab$.
+\end{definition}
+
+\begin{lemma}
+    Being positive is well-defined.
+\end{lemma}
+\begin{proof}
+    By propositional extensionality, it suffices to prove that if $a_1b_2 =
+    b_1a_2$ and $0 \leq a_1a_2$, then $0 \leq b_1b_2$.  Because all squares are
+    positive, we have $0 \leq b_2^2$, and by multiplicativity we have $0 \leq
+    b_2^2 a_1a_2 = b_2b_1a_2^2$, and cancelling $a_2^2$ (which is nonzero by
+    Theorem \ref{mult_nz}) we get $0 \leq b_1b_2$.
+\end{proof}
+
+\begin{definition}
+    Define a set $C : \set{\Frac(\U)}$ given by the result of Theorem
+    \ref{unary_op_ex} with the previous lemma.
+\end{definition}
+
+\begin{lemma} \label{frac_pos_simpl}
+    For all $a$ and $b$ with $b > 0$, $\frac{a}{b} \in C$ if and only if $0 \leq
+    a$.
+\end{lemma}
+\begin{proof}
+    $\frac{a}{b} \in C$ means that $0 \leq ab$.  Because $b > 0$, we can either
+    multiply or cancel it to get to and from $0 \leq a$.
+\end{proof}
+
+\begin{instance}
+    The set $C$ is a cone.
+\end{instance}
+\begin{proof}
+    \textit{Addition.} Let $a \in C$ and $b \in C$.  By Theorem
+    \ref{frac_pos_ex}, we can assume that $a_2$ and $b_2$ are greater than zero.
+    Then $a \in C$ is equivalent to $0 \leq a_1$ and $b \in C$ is equivalent to
+    $0 \leq b_1$, and $a + b \in C$ is equivalent to $0 \leq a_1b_2 + b_1a_2$.
+    Every quantity in this is positive, so $a + b \in C$.
+
+    \textit{Multiplication.} Let $a \in C$ and $b \in C$.  By Theorem
+    \ref{frac_pos_ex}, we can assume that $a_2$ and $b_2$ are greater than zero.
+    Then $a \in C$ is equivalent to $0 \leq a_1$ and $b \in C$ is equivalent to
+    $0 \leq b_1$, and $ab \in C$ is equivalent to $0 \leq a_1b_1$.  This follows
+    directly by multiplicativity of $\leq$.
+
+    \textit{Squares.} Given an $a : \Frac(\U)$, by Theorem \ref{frac_pos_ex}, we
+    can assume that $a_2 > 0$.  Then $a^2 \in C$ is equivalent to $0 \leq
+    a_1^2$, which is true because all squares are positive.
+
+    \textit{Negative One.} That $-1 \in p$ is equivalent to saying that $0 \leq
+    -1$.  To say that that's not true is to say that $-1 < 0$.  This follows
+    from one being positive.
+
+    \textit{Totality.} Given an $a : \Frac(\U)$, by Theorem \ref{frac_pos_ex} we
+    can assume that $a_2 > 0$.  Then $a \in C$ is equivalent to $0 \leq a_1$,
+    and $-a \in C$ is equivalent to $0 \leq -a_1$.  This is true by the
+    connexivity of $\leq$ in $\U$.
+\end{proof}
+
+\begin{theorem} \label{frac_le}
+    If $0 < a_2$ and $0 < b_2$, then
+    \[
+        \frac{a_1}{a_2} \leq \frac{b_1}{b_2}
+    \]
+    if and only if
+    \[
+        a_1b_2 \leq b_1a_2.
+    \]
+\end{theorem}
+\begin{proof}
+    The first inequality is equivalent to checking if
+    \[
+        \frac{b_1}{b_2} - \frac{a_1a_2}
+        = \frac{b_1a_2 - a_1b_2}{b_2a_2}
+    \]
+    is in $C$.  By Lemma \ref{frac_pos_simpl}, this is equivalent to
+    \[
+        0 \leq b_1a_2 - a_1b_2,
+    \]
+    and rearranging we get
+    \[
+        a_1b_2 \leq b_1a_2.
+    \]
+\end{proof}
+
+\begin{theorem} \label{frac_lt}
+    If $0 < a_2$ and $0 < b_2$, then
+    \[
+        \frac{a_1}{a_2} < \frac{b_1}{b_2}
+    \]
+    if and only if
+    \[
+        a_1b_2 < b_1a_2.
+    \]
+\end{theorem}
+\begin{proof}
+    The $\leq$ part is the previous theorem, and the $\neq$ part is identical
+    after unfolding the definition of equality in $\Frac(\U)$.
+\end{proof}
+
+\begin{instance}
+    $\iota_\U$ preserves inequalities in one direction.
+\end{instance}
+\begin{proof}
+    Assume that $a \leq b$.  Then $a1 \leq b1$, and by Theorem \ref{frac_le},
+    this is the same as $\frac{a}{1} \leq \frac{b}{1}$.
+\end{proof}
+
+\begin{lemma} \label{to_frac_nat}
+    For all $n : \N$, $n = \iota_\U(n)$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $0 = \iota_\U(0)$, so
+    the base case is true.  Now assume that $n = \iota_\U(n)$.  Then
+    \[
+        S(n) = 1 + n = 1 + \iota_\U(n) = \iota_\U(1 + n) = \iota_\U(S(n)),
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{instance}
+    If $\U$ is Archimedean, then $\Frac(\U)$ is as well.
+\end{instance}
+\begin{proof}
+    We will prove that for all $x : \Frac(\U)$ such that $x > 0$, there exists
+    an $n : \N$ such that $x < n$.  Let $x = \frac{a}{b}$ with $b > 0$.  Then by
+    Lemma \ref{frac_pos_simpl}, from $x > 0$, we have $a > 0$.  Because $\U$ is
+    archimedean and $a$ and $b$ are both positive, there exists an $n : \N$ such
+    that $a < nb$.  This means that $a1 < nb$, so by Theorem \ref{frac_lt}, we
+    have $\frac{a}{b} < \frac{n}{1}$, and $\frac{n}{1} = n$ by Lemma
+    \ref{to_frac_nat}.  Thus, we have an $n > \frac{a}{b}$ as required.
+\end{proof}
+
 \section{The Frac functor}
 
 \section{The Rationals}

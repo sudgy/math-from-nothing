@@ -19,7 +19,7 @@ Local Infix "~" := (eq_equal (frac_equiv U)).
 Local Existing Instances frac_plus frac_zero frac_neg frac_plus_assoc
     frac_plus_comm frac_plus_lid frac_plus_linv frac_mult frac_one frac_div
     frac_ldist frac_mult_assoc frac_mult_comm frac_mult_lid frac_mult_linv
-    frac_not_trivial to_frac_inj to_frac_plus.
+    frac_not_trivial to_frac_inj to_frac_plus to_frac_one.
 
 Theorem frac_pos_ex : ∀ (x : frac_type U), ∃ a b,
     0 < [b|] ∧ x = to_equiv (frac_equiv U) (a, b).
@@ -227,6 +227,18 @@ Proof.
     exact ab.
 Qed.
 
+Lemma to_frac_nat : ∀ n, from_nat n = to_frac U (from_nat n).
+Proof.
+    nat_induction n.
+    -   setoid_rewrite homo_zero.
+        reflexivity.
+    -   do 2 rewrite from_nat_suc.
+        rewrite (homo_plus (f := to_frac U)).
+        rewrite (homo_one (f := to_frac U)).
+        rewrite IHn.
+        reflexivity.
+Qed.
+
 Local Instance frac_arch : Archimedean (frac_type U).
 Proof.
     apply field_impl_arch1.
@@ -235,35 +247,19 @@ Proof.
     destruct x_pos as [x_pos x_neq].
     rewrite <- cone_pos in x_pos.
     subst x.
-    unfold cone in x_pos; equiv_simpl in x_pos.
-    unfold frac_pos_base in x_pos; cbn in x_pos.
-    rewrite <- (mult_lanni [b|]) in x_pos at 1.
-    apply le_mult_rcancel_pos in x_pos; [>|exact b_pos].
+    change cone with p in x_pos.
+    rewrite (frac_pos_simpl a b) in x_pos by exact b_pos.
     unfold zero in x_neq; cbn in x_neq.
     unfold to_frac in x_neq; equiv_simpl in x_neq.
     unfold frac_eq in x_neq; cbn in x_neq.
     rewrite mult_lanni, mult_rid in x_neq.
     pose proof (archimedean a [b|] (make_and x_pos x_neq) b_pos) as [n n_ltq].
     exists n.
-    rewrite (to_frac_div U).
-    rewrite <- lt_mult_rrmove_pos.
-    2: {
-        unfold zero; cbn.
-        rewrite <- homo_lt2.
-        exact b_pos.
-    }
-    replace (from_nat n * to_frac U [b|]) with (to_frac U (n × [b|])).
-    2: {
-        clear n_ltq.
-        rewrite <- nat_mult_from.
-        nat_induction n.
-        -   do 2 rewrite nat_mult_lanni.
-            reflexivity.
-        -   do 2 rewrite nat_mult_suc.
-            rewrite <- IHn.
-            apply homo_plus.
-    }
-    rewrite <- homo_lt2.
+    rewrite to_frac_nat.
+    unfold to_frac.
+    rewrite frac_lt by (exact b_pos + exact one_pos); cbn.
+    rewrite mult_rid.
+    rewrite <- nat_mult_from.
     exact n_ltq.
 Qed.
 
