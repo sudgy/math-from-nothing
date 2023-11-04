@@ -135,16 +135,9 @@ Proof.
     rewrite (ifH_false (rand a2_pos)).
     rewrite (ifH_false (rand b2_pos)).
     cbn.
-    unfold le at 1; equiv_simpl.
-    unfold plus, neg; equiv_simpl.
-    do 2 rewrite mult_rid.
-    do 2 rewrite mult_lid.
-    rewrite rdist.
-    do 2 rewrite mult_lneg.
-    rewrite le_plus_0_anb_b_a.
+    rewrite frac_le by (cbn; rewrite mult_lid; assumption); cbn.
+    do 2 rewrite mult_lid, mult_rid.
     intros leq.
-    apply le_mult_rcancel_pos in leq.
-    2: apply lt_mult; assumption.
     rewrite (homo_lt2 (f := f)) in a2_pos.
     rewrite (homo_lt2 (f := f)) in b2_pos.
     rewrite (homo_zero (f := f)) in a2_pos, b2_pos.

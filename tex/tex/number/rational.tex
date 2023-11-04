@@ -2,6 +2,7 @@
 \externaldocument{../../math.tex}
 \externaldocument{../basics/elementary_algebra}
 \externaldocument{../basics/set}
+\externaldocument{../basics/category}
 
 \begin{document}
 
@@ -561,7 +562,108 @@ To define an order on $\U$, we will use a cone.
     \ref{to_frac_nat}.  Thus, we have an $n > \frac{a}{b}$ as required.
 \end{proof}
 
-\section{The Frac functor}
+\section{Universal Property}
+
+\begin{theorem}
+    Let $F$ be the forgetful functor from fields to integral domains.  Then for
+    any given integral domain $\U$, the pair $(\Frac(\U), \iota_\U)$ is initial
+    in the comma category $(\U \downarrow F)$
+\end{theorem}
+\begin{proof}
+    Simplified, we must prove that for any field $\F$ and domain homomorphism $f
+    : \U \to F(\F)$, there exists a unique field homomorphism $g : \Frac(\U) \to
+    \F$ such that for all $x : \U$, $g(\iota_\U(x)) = f(x)$.
+
+    For existence, first define the function $g' : \U \times \U^* \to \F$ given
+    by
+    \[
+        g'(a, b) = \frac{f(a)}{f(b)}.
+    \]
+    The denominator is nonzero because $f$ is injective.  We will now prove that
+    $g'$ is well-defined.  Let $a$ and $b$ be in $\U \times \U^*$ such that $a
+    \sim b$.  Then $a_1b_2 = b_1a_2$.  Then
+    \begin{align*}
+        a_1b_2 &= b_1a_2 \\
+        f(a_1b_2) &= f(b_1a_2) \\
+        f(a_1)f(b_2) &= f(b_1)f(a_2) \\
+        \frac{f(a_1)}{f(a_2)} &= \frac{f(b_1)}{f(b_2)} \\
+        g'(a) &= g'(b),
+    \end{align*}
+    showing that $g'$ is well-defined.  Let $g$ be the function given by Theorem
+    \ref{unary_op_ex}.  We will prove that this function is the required
+    homomorphism.  We need to prove that it is in fact a homomorphism, and that
+    it satisfies $g(\iota_\U(x)) = f(x)$.
+
+    \textit{Additivity.}
+    \begin{align*}
+        g(a + b)
+        &= \frac{f(a_1b_2 + b_1a_2)}{f(a_2b_2)} \\
+        &= \frac{f(a_1)f(b_2) + f(b_1)f(a_2)}{f(a_2)f(b_2)} \\
+        &= \frac{f(a_1)f(b_2)}{f(a_2)f(b_2)}
+            + \frac{f(b_1)f(a_2)}{f(a_2)f(b_2)} \\
+        &= \frac{f(a_1)}{f(a_2)} + \frac{f(b_1)}{f(b_2)} \\
+        &= g(a) + g(b).
+    \end{align*}
+
+    \textit{Multiplicativity.}
+    \begin{align*}
+        g(ab)
+        &= \frac{f(a_1b_1)}{f(a_2b_2)} \\
+        &= \frac{f(a_1)f(b_1)}{f(a_2)f(b_2)} \\
+        &= \frac{f(a_1)}{f(a_2)} \, \frac{f(b_1)}{f(b_2)} \\
+        &= g(a) g(b).
+    \end{align*}
+
+    \textit{Multiplicative Identity.}
+    \begin{align*}
+        g(1) = \frac{f(1)}{f(1)} = \frac{1}{1} = 1.
+    \end{align*}
+
+    \textit{Extension of $f$.}
+    \begin{align*}
+        g(\iota_\U(a)) = \frac{f(a)}{f(1)} = \frac{f(a)}{1} = f(a).
+    \end{align*}
+
+    Now for uniqueness, let $h$ be another homomorphism with $h(\iota_\U(x)) =
+    f(x)$.  Then for all $a : \Frac(\U)$,
+    \begin{align*}
+        \frac{f(a_1)}{f(a_2)} &= \frac{f(a_1)}{f(a_2)} \\
+        \frac{g(\iota_\U(a_1))}{g(\iota_\U(a_2))} &=
+            \frac{h(\iota_\U(a_1))}{h(\iota_\U(a_2))} \\
+        g \left( \frac{\iota_\U(a_1)}{\iota_\U(a_2)} \right) &=
+            h \left( \frac{\iota_\U(a_1)}{\iota_\U(a_2)} \right) \\
+        g(a) = h(a),
+    \end{align*}
+    showing that $g = h$, so $g$ is unique.
+\end{proof}
+
+By the results of section \ref{cat_comma_free}, we see that $\Frac$ is a
+functor, and we can now do extensions.
+
+A similar universal property holds for ordered integral domains:
+
+\begin{theorem}
+    Let $F$ be the forgetful functor from ordered fields to ordered domains.
+    Then for any given ordered domain $\U$, the pair $(\Frac(\U), \iota_\U)$ is
+    initial in the comma category $(\U \downarrow F)$
+\end{theorem}
+\begin{proof}
+    All of the parts of the previous proof works exactly the same here, so all
+    we need to prove is that $g$ preserves inequalities in one direction.  Let
+    $a$ and $b$ be values in $\Frac(\U)$.  Then by Theorem \ref{frac_pos_ex}, we
+    can assume that $a_2 > 0$ and $b_2 > 0$.  Then
+    \begin{align*}
+        a &\leq b \\
+        a_1b_2 &\leq b_1a_2 \\
+        f(a_1b_2) &\leq f(b_1a_2) \\
+        f(a_1)f(b_2) &\leq f(b_1)f(a_2) \\
+        \frac{f(a_1)}{f(a_2)} &\leq \frac{f(b_1)}{f(b_2)} \\
+        g(a) \leq g(b).
+    \end{align*}
+\end{proof}
+
+We will call the functor from ordered domains to ordered fields $\OFrac$ rather
+than $\Frac$.
 
 \section{The Rationals}
 
