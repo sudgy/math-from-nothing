@@ -59,17 +59,9 @@ Qed.
 
 Theorem from_rat_int : ∀ n, from_rat (from_int n) = from_int n.
 Proof.
-    intros a.
-    destruct (connex 0 a) as [a_pos|a_neg].
-    -   apply int_pos_nat_ex in a_pos as [n a_eq]; subst a.
-        do 2 rewrite from_int_nat.
-        apply from_rat_nat.
-    -   apply int_neg_nat_ex in a_neg as [n a_eq]; subst a.
-        do 2 rewrite homo_neg.
-        rewrite (homo_neg (f := from_int)).
-        apply f_equal.
-        do 2 rewrite from_int_nat.
-        apply from_rat_nat.
+    apply func_eq.
+    apply from_int_unique;
+        apply ((⌈field_to_domain⌉ from_rat) ∘ (int_to_domain _)).
 Qed.
 
 End RatAbstract.

@@ -3,6 +3,7 @@
 \externaldocument{../basics/elementary_algebra}
 \externaldocument{../basics/set}
 \externaldocument{../basics/category}
+\externaldocument{integer}
 
 \begin{document}
 
@@ -666,5 +667,88 @@ We will call the functor from ordered domains to ordered fields $\OFrac$ rather
 than $\Frac$.
 
 \section{The Rationals}
+
+We will define the rationals $\Q$ as the ordered field $\OFrac(\Z)$.
+
+\begin{theorem}
+    For all $n : \Z$, $\iota_\Z$ is equal to the injection $\iota$ defined
+    above.
+\end{theorem}
+\begin{proof}
+    The result immediately follows by Theorem \ref{from_int_unique}.
+\end{proof}
+
+\begin{definition}
+    For any field $\F$ of characteristic zero, we define an inclusion $\iQ : \Q
+    \to \F$ as the extension of $\iZ$.  If the field is ordered we use the
+    extension given by $\OFrac$.  After this chapter, the function $\iQ$ will
+    not be written and will be assumed to be used any time a rational appears in
+    an expression involving other types, unless the notation is necessary to
+    avoid ambiguity.
+\end{definition}
+
+\begin{theorem}
+    For all $n : \N$, $\iQ(n) = n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $\iQ(0) = 0$, so the
+    base case is true.  Now assume that $\iQ(n) = n$.  Then
+    \[
+        \iQ(S(n)) = \iQ(1 + n) = 1 + \iQ(n) = 1 + n = S(n),
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem}
+    For all $n : \Z$, $\iQ(n) = n$.
+\end{theorem}
+\begin{proof}
+    This is a direct consequence of Theorem \ref{from_int_unique}.
+\end{proof}
+
+\begin{theorem} \label{rat_initial}
+    The rationals are initial in \vtt{OField}.
+\end{theorem}
+\begin{proof}
+    $\iQ$ is a morphism from the rationals to every ordered field, so all we
+    need to prove is that $\iQ$ is unique.  Let $f$ be any morphism from $\Q$ to
+    an ordered field $\F$.  Then $f(n) = n$ for all $n : \Z$ by Theorem
+    \ref{from_int_unique}.  Now for any $x : \Q$,
+    \begin{align*}
+        f(x)
+        &= f \left( \frac{x_1}{x_2} \right) \\
+        &= \frac{f(x_1)}{f(x_2)} \\
+        &= \frac{x_1}{x_2} \\
+        &= \frac{\iQ(x_1)}{\iQ(x_2)} \\
+        &= \iQ \left( \frac{x_1}{x_2} \right) \\
+        &= \iQ(x),
+    \end{align*}
+    showing that $f = \iQ$, so $\iQ$ is unique.
+\end{proof}
+
+\begin{theorem}
+    The rationals are dense in every Archimedean ordered field.  To be precise,
+    in any Archimedean ordered field $\U$ and values $a$ and $b$ in $\U$ such
+    that $a < b$, there exists an $r : \Q$ such that $a < r < b$.
+\end{theorem}
+\begin{proof}
+    We will first prove the result in the case that $0 \leq a$.  Because $\U$ is
+    Archimedean and $b - a > 0$, there exists an $n$ such that $\frac{1}{n} <
+    b - a$, so $1 + an < bn$.  Again, because $\U$ is Archimedean, there exists
+    a natural number $m$ such that $an < m$.  Let $m$ be the least such number.
+    We will prove that $\frac{m}{n}$ is the required rational number.  First, by
+    $an < m$, we already have $a < \frac{m}{n}$.  To prove that $\frac{m}{n} <
+    b$, it suffices to prove that $m < bn$.  If $m = 0$, the result follows from
+    $n \neq 0$ and $0 < b$.  For the case $m \neq 0$, because $1 + an < bn$, by
+    transitivity it suffices to prove that $m \leq 1 + an$.  If this was false,
+    we would have $an < m - 1$, contradicting the minimality of $m$.  Thus,
+    $a < \frac{m}{n} < b$.
+
+    Now for the general case, we have three cases: When $a > 0$, the previous
+    paragraph works.  When $a < 0$ and $b > 0$, $0$ itself works.  When $a < 0$
+    and $b \leq 0$, then $0 \leq -b$ and $-b < -a$, by the previous paragraph
+    there is an $r : \Q$ such that $-b < r < -a$.  Then $a < -r < b$.  Thus, the
+    rationals are dense in $\U$.
+\end{proof}
 
 \end{document}
