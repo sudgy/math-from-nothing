@@ -218,3 +218,18 @@ Proof.
         exists (f x).
         apply g_inv.
 Qed.
+
+Theorem bij_inv_eq1 {U V} : ∀ (f : U → V) `{Bijective U V f},
+    ∀ x, bij_inv f (f x) = x.
+Proof.
+    intros f f_bij x.
+    apply inverse_eq1.
+    apply bij_inv_inv.
+Qed.
+Theorem bij_inv_eq2 {U V} : ∀ (f : U → V) `{Bijective U V f},
+    ∀ x, f (bij_inv f x) = x.
+Proof.
+    intros f f_bij x.
+    apply inverse_eq2.
+    apply bij_inv_inv.
+Qed.
