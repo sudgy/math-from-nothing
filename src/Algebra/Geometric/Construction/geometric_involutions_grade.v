@@ -345,6 +345,7 @@ Proof.
     rewrite list_prod_add.
     nat_destruct n; [>inversion ln|].
     remember (list_prod (list_image (vector_to_ext V) l)) as X.
+    rewrite <- HeqX.
     assert (of_grade n X) as Xn.
     {
         inversion ln.
@@ -359,7 +360,7 @@ Proof.
     }
     rewrite (ext_reverse_grade _ _ _ aXn).
     rewrite ext_to_geo_scalar.
-    rewrite ext_to_geo_add.
+    do 2 rewrite ext_to_geo_add.
     rewrite geo_reverse_plus.
     rewrite geo_reverse_neg.
     rewrite geo_reverse_mult.

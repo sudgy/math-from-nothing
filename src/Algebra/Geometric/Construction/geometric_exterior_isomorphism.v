@@ -27,7 +27,7 @@ Proof.
     induction l as [|[α x] l] using ulist_induction.
     {
         rewrite ulist_image_end, ulist_sum_end.
-        do 3 rewrite ext_inner_rzero.
+        do 4 rewrite ext_inner_rzero.
         symmetry; apply neg_zero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.
@@ -171,7 +171,7 @@ Proof.
     {
         rewrite ulist_image_end, ulist_sum_end.
         rewrite ext_inner_rzero.
-        rewrite ext_to_geo_zero.
+        do 2 rewrite ext_to_geo_zero.
         symmetry; apply geo_mult_inner_rzero.
     }
     rewrite ulist_image_add, ulist_sum_add; cbn.

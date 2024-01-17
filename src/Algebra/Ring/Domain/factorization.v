@@ -20,7 +20,6 @@ Context U `{
 }.
 
 (* end hide *)
-#[universes(template)]
 Class UniqueFactorizationDomain := {
     factorization_base : ∀ x : U, 0 ≠ x →
         ∃ a l, unit a ∧ ulist_prop (λ x, prime x) l ∧ x = a * ulist_prod l

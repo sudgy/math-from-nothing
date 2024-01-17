@@ -4,14 +4,14 @@ Require Export logic.
 
 (** Can be used to simplify expressions of the type [If H then a else b] *)
 Ltac case_if :=
-    let go P := destruct P; try solve [elimtype False] in
+    let go P := destruct P; try solve [exfalso] in
     match goal with
     | |- context [if ?P then _ else _] => go P
     | K: context [if ?P then _ else _] |- _ => go P
     end.
 Tactic Notation "case_if"
     "[" simple_intropattern(A) "|" simple_intropattern(B) "]" :=
-    let go P := destruct P as [A|B]; try solve [elimtype False] in
+    let go P := destruct P as [A|B]; try solve [exfalso] in
     match goal with
     | |- context [if ?P then _ else _] => go P
     | K: context [if ?P then _ else _] |- _ => go P

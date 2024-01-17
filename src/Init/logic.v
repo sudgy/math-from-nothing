@@ -3,8 +3,6 @@
 
 Require Export base_logic.
 
-Ltac exfalso := elimtype False.
-
 Theorem contrapositive : ∀ {A B : Prop}, (A → B) → (¬B → ¬A).
 Proof.
     intros A B H b a.

@@ -174,6 +174,8 @@ Proof.
     do 2 rewrite list_image_add; cbn.
     do 2 rewrite list_prod_add.
     remember (list_prod (list_image (vector_to_ext V) al)) as a.
+    do 2 rewrite <- Heqa.
+    rewrite <- Heqa in IHal.
     rewrite list_size_add.
     remember (list_size al) as m.
     assert (of_grade m a) as a_grade.
