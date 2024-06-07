@@ -1,0 +1,27 @@
+{
+  "image": "bcpierce00/cis5000:8.17.1",
+  "customizations": {
+    "vscode": {
+      "extensions": ["maximedenes.vscoq"],
+      "settings": {
+        "coqtop.binPath" : "/home/coq/.opam/default/bin",
+        "files.exclude": {
+          "**/*.aux": true,
+          "**/*.glob": true,
+          "**/*.vo": true,
+          "**/*.vos": true,
+          "**/*.vok": true,
+          "**/*.html": true,
+          "**/.*.report": true,
+          "**/.*.cache": true
+        },
+        "coq.loadCoqProject": true,
+        "coq.coqProjectRoot": ".",
+        "[coq]": {
+          "editor.tabSize": 2,
+          "editor.insertSpaces": true
+        }
+      }
+    }
+  }
+}
