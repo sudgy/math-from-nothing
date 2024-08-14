@@ -1781,55 +1781,63 @@ $x$ such that for all $a \in S$, $a < x$.
     that this case is true as well.
 \end{proof}
 
-\begin{lemma} \label{zorn_initial1}
-    For all conforming sets $A$ and $B$ and values $a$ and $b$, if $b \in A$, $a
-    \in B$, and $b \notin B$, then $a < b$.
+\begin{definition}
+    Given two conforming sets $A$ and $B$, define the set $Q(A, B)$ as the set
+    $\{a \mid a \in A \wedge \exists b, b \leq a \wedge \neg(b \in A
+    \leftrightarrow b \in B)\}$.
+\end{definition}
+
+\begin{lemma} \label{zorn_least_sub}
+    For all conforming sets $A$ and $B$, if $m$ is the least element of $Q(A,
+    B)$ and $n$ is the least element of $Q(B, A)$, then $P(A, m) \subseteq P(B,
+    n)$.
 \end{lemma}
 \begin{proof}
-    Because $b \in A - B$ and $A$ well-orders $\U$, there exists a least element
-    $x \in A - B$.  By transitivity we only need to prove that $a < x$.  For the
-    sake of a contradiction, assume that $a \nless x$.  Then $a \in B - P(A,
-    x)$, so there exists a least element $y \in B - P(A, x)$.  We know that $x
-    \in A - P(B, y)$, so there exists a least element $z \in A - P(B, y)$.  By
-    definition we have $z \leq x$.
-
-    We will now prove that $P(A, z) = P(B, y)$.  To prove that $P(A, z)
-    \subseteq P(B, y)$, let $c \in P(A, z)$.  If $c \notin P(B, y)$, then we
-    would have both $c \in A - P(B, y)$ and $c < z$, contradicting the
-    minimality of $z$, so $c \in P(B, y)$.  Thus, $P(A, z) \subseteq P(B, y)$.
-
-    To prove that $P(B, y) \subseteq P(A, z)$, let $u \in P(B, y)$.  Now $u$
-    must be in $P(A, x)$, because if it was not, we would have $u \in B - P(A,
-    x)$ and $u < y$, contradicting the minimality of $y$.  Thus, we also have $u
-    \in A$, so to prove that $u \in P(A, z)$ all we must prove is that $u < z$.
-    Now $u = z$ is impossible because $u \in P(B, y)$ and $z \notin P(B, y)$.
-    Because $u \in A$ and $z \in A$, they are comparable.  If $u \leq z$,
-    because $u \neq z$, we have $u < z$ as required.  We will show that the $z
-    \leq u$ case is impossible by showing that it implies $z \in P(B, y)$,
-    contradicting $z \notin P(B, y)$.  If $z \leq u$, then because $u < y$, we
-    have $z < y$, so all that remains is showing that $z \in B$.  If $z \notin
-    B$, then $z \in A - B$.  Because $u < x$ (because $u \in P(A, x)$), we also
-    have $z < x$.  This contradicts the minimality of $x$, showing that the case
-    $z \leq u$ is impossible.  Thus, $u \in A$ and $u < z$, showing that $u \in
-    P(A, z)$.  This shows that $P(B, y) \subseteq P(A, z)$, so $P(A, z) = P(B,
-    y)$.
-
-    Because $P(B, y) = P(A, z)$, we have $f(P(B, y)) = f(P(A, z))$.  Because $A$
-    and $B$ are conforming, this implies $y = z$.  Because $z \in A$, we now
-    have $y \in A$.  Because $z \leq x$, we also have $y \leq x$.  Furthermore,
-    $y \neq x$ because $y \in B$ and $x \notin B$, so $y < x$.  Thus, because $y
-    \in A$ and $y < x$, we have $y \in P(A, x)$, contradicting the definition of
-    $y$.  This shows that our (much) earlier assumption that $a \nless x$ is
-    false, proving the lemma.
+    Let $a \in P(A, m)$, so that $a \in A$ and $a < m$.  Then for any $b \leq
+    a$, we must have $b \in A \leftrightarrow b \in B$ because $m$ is the least
+    element where that is false.  And because $a \leq a$, this means that $a \in
+    B$.  Because $n \in Q(B, A)$, there exists a $b \leq n$ such that $\neg(b
+    \in B \leftrightarrow b \in A)$.  $a$ and $n$ are both in $B$, so they are
+    comparable.  If $n \leq a$, then $b \leq a$, so we must have $b \in A
+    \leftrightarrow b \in B$, contradicting the definition of $b$, showing that
+    $a < n$.  Thus, $a \in B$ and $a < n$, so $a \in P(B, n)$.
 \end{proof}
 
-\begin{lemma} \label{zorn_initial2}
+\begin{lemma} \label{zorn_neq_set_nex}
+    For all conforming sets $A$ and $B$, at least one of $Q(A, B)$ and $Q(B, A)$
+    must be empty.
+\end{lemma}
+\begin{proof}
+    Assume that they are both nonempty.  Then they have least elements $m$ and
+    $n$, respectively.  By the previous lemma, the sets $P(A, m)$ and $P(B, n)$
+    are equal.  Thus, $m = f(P(A, m)) = f(P(B, n)) = n$.  Because $m \in Q(A,
+    B)$, we have some $a \leq m$ such that $\neg(a \in A \leftrightarrow a \in
+    B)$.  However, if $a \in A$, then $a \in Q(A, B)$, meaning that $a = m = n$,
+    so $a \in B$.  And if $a \in B$, then $a \in Q(B, A)$, meaning that $a = n =
+    m$, so $a \in A$.  Thus, $a \in A \leftrightarrow a \in B$, contradicting
+    the definition of $a$.  Thus, the original assumption was false.
+\end{proof}
+
+\begin{lemma} \label{zorn_initial1}
     For all conforming sets $A$ and $B$ and values $a$ and $b$, if $a \leq b$,
     $a \in A$, and $b \in B$, then $a \in B$.
 \end{lemma}
 \begin{proof}
-    Assume that $a \notin B$.  Then by the previous lemma we would have $b < a$,
-    contradicting $a \leq b$.
+    Assume that $a \notin B$.  Then $a \in Q(A, B)$ and $b \in Q(B, A)$, which
+    is impossible by Lemma \ref{zorn_neq_set_nex}.
+\end{proof}
+
+\begin{lemma} \label{zorn_initial2}
+    For all conforming sets $A$ and $B$ and values $a$ and $b$, if $b \in A$, $a
+    \in B$, and $b \notin B$, then $a \leq b$.
+\end{lemma}
+\begin{proof}
+    If $a \in A$, $a$ and $b$ are comparable, so either $a \leq b$ or $b \leq
+    a$.  If $a \leq b$, we're done, and if $b \leq a$, by Lemma
+    \ref{zorn_initial1} we have $b \in B$, which is a contradiction.
+
+    If $a \notin A$, we have $b \in Q(A, B)$ and $a \in Q(B, A)$, which is
+    impossible by Lemma \ref{zorn_neq_set_nex}.
 \end{proof}
 
 \begin{lemma}
@@ -1846,7 +1854,7 @@ $x$ such that for all $a \in S$, $a < x$.
     that for all $y \in S$, we have $a \leq y$.  Because $y \in S \subseteq
     \bigcup \mathcal C$, there exists a conforming set $B$ such that $y \in B$.
     Now if $y \in A$, then $a \leq y$ because $a$ is the minimum element of $A
-    \cap S$.  If $y \notin A$, then $a < y$ by Lemma \ref{zorn_initial1}.
+    \cap S$.  If $y \notin A$, then $a < y$ by Lemma \ref{zorn_initial2}.
     Either way, $a \leq y$, so $a$ is the minimum element of $S$, showing that
     $\bigcup \mathcal C$ well-orders $\U$.
 
@@ -1860,7 +1868,7 @@ $x$ such that for all $a \in S$, $a < x$.
     \bigcup \mathcal C$, and because $c < x$, we have $c \in P(\bigcup \mathcal
     C, x)$.  Thus, $P(A, x) \subseteq P(\bigcup \mathcal C, x)$.  Now let $c \in
     P(\bigcup \mathcal C, x)$.  Because $c \in \bigcup \mathcal C$, there exists
-    a conforming set $B$ with $c \in B$.  By Lemma \ref{zorn_initial2} we know
+    a conforming set $B$ with $c \in B$.  By Lemma \ref{zorn_initial1} we know
     that $c \in A$, and because $c < x$, we have $c \in P(A, x)$.  Thus,
     $P(\bigcup \mathcal C, x) \subseteq P(A, x)$, so by antisymmetry we have
     $P(A, x) = P(\bigcup \mathcal C, x)$.

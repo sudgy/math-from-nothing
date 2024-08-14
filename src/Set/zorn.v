@@ -111,78 +111,136 @@ Proof.
             contradiction (irrefl _ a_lt).
 Qed.
 
-Lemma initial1 : ∀ A B, conforming A → conforming B →
-    ∀ x y, A y → B x → ¬B y → x < y.
+Definition neq_set A B a := A a ∧ ∃ b, b ≤ a ∧ ¬(A b ↔ B b).
+
+Lemma least_sub : ∀ A B, conforming A → conforming B →
+    ∀ m n, is_least le (neq_set A B) m → is_least le (neq_set B A) n →
+    P A m ⊆ P B n.
 Proof.
-    intros A B [A_wo A_conf] [B_wo B_conf] a b Ab Ba Bb.
-    pose proof (A_wo (A - B)) as AB_ex.
-    prove_parts AB_ex; [>apply inter_lsub|exists b; split; assumption|].
-    destruct AB_ex as [x [[Ax Bx] x_least]].
-    apply (lt_le_trans2 (x_least b (make_and Ab Bb))).
-    clear b Ab Bb.
+    intros A B [A_wo A_conf] [B_wo B_conf].
+    intros m n [[Am m_neq] m_least] [[Bn n_neq] n_least].
+    intros a [Aa am].
+    assert (∀ b, b ≤ a → A b ↔ B b) as a_eq.
+    {
+        intros b leq.
+        classic_contradiction contr.
+        specialize (m_least a (make_and Aa (ex_intro _ _ (make_and leq contr)))).
+        contradiction (irrefl _ (lt_le_trans am m_least)).
+    }
+    assert (B a) as Ba by (apply a_eq; [>apply refl|exact Aa]).
+    split; [>exact Ba|].
+    destruct n_neq as [b [bn n_neq]].
     classic_contradiction contr.
-    pose proof (B_wo (B - P A x) (inter_lsub _ _)) as BA_ex.
-    prove_parts BA_ex;
-        [>exists a; split; [>exact Ba|intros [C0 C1]; contradiction]|].
-    destruct BA_ex as [y [[By PAy] y_least]].
-    clear a Ba contr.
-    pose proof (A_wo (A - P B y) (inter_lsub _ _)) as z_ex.
-    prove_parts z_ex;
-        [>exists x; split; [>exact Ax|intros [C0 C1]; contradiction]|].
-    destruct z_ex as [z [[Az PBz] z_least]].
-    assert (z ≤ x) as zx.
+    assert (n ≤ a) as leq.
     {
-        apply z_least.
-        split.
-        -   exact Ax.
-        -   intros [C0 C1]; contradiction.
+        pose proof (well_orders_chain _ B_wo a n Ba Bn) as [leq|leq].
+        2: exact leq.
+        classic_case (a = n) as [eq|neq].
+        -   subst.
+            apply refl.
+        -   contradiction (contr (make_and leq neq)).
     }
-    assert (P A z = P B y) as eq.
-    {
-        apply antisym.
-        -   intros c [Ac c_lt].
-            classic_contradiction PBc.
-            specialize (z_least c (make_and Ac PBc)).
-            contradiction (irrefl _ (le_lt_trans z_least c_lt)).
-        -   intros u PBu.
-            pose proof PBu as [Bu u_lt].
-            assert (P A x u) as [Au u_lt2].
-            {
-                classic_contradiction Au.
-                specialize (y_least u (make_and Bu Au)).
-                contradiction (irrefl _ (lt_le_trans u_lt y_least)).
-            }
-            split; [>apply Au|].
-            destruct (well_orders_chain A A_wo u z Au Az) as [uz|uz].
-            +   split; [>exact uz|].
-                intros contr; subst u.
-                contradiction.
-            +   exfalso; apply PBz.
-                split; [>|exact (le_lt_trans uz u_lt)].
-                classic_contradiction contr.
-                specialize (x_least z (make_and Az contr)).
-                pose proof (lt_le_trans (le_lt_trans uz u_lt2) x_least) as ltq.
-                contradiction (irrefl _ ltq).
-    }
-    apply (set_type_eq (a := [_|P_wo_domain A z A_wo])
-        (b := [_|P_wo_domain B y B_wo])) in eq.
-    apply (f_equal f) in eq.
-    rewrite <- (A_conf z Az), <- (B_conf y By) in eq.
-    subst z.
-    apply PAy.
-    split; [>exact Az|].
-    split; [>exact zx|].
-    intro; subst y.
+    specialize (a_eq b (trans bn leq)).
+    symmetry in a_eq.
     contradiction.
 Qed.
 
-Lemma initial2 : ∀ A B, conforming A → conforming B →
+Lemma neq_set_nex : ∀ A B, conforming A → conforming B →
+    ¬((∃ m, neq_set A B m) ∧ (∃ n, neq_set B A n)).
+Proof.
+    intros A B A_conf B_conf.
+    intros [m_ex n_ex].
+    pose proof (ldand A_conf _ (inter_lsub _ _) m_ex) as [m m_least].
+    pose proof (ldand B_conf _ (inter_lsub _ _) n_ex) as [n n_least].
+    assert (P A m = P B n) as eq by(apply antisym; apply least_sub; assumption).
+    destruct m_least as [[Am [a [am a_nin]]] m_least].
+    destruct n_least as [[Bn [b [bn b_nin]]] n_least].
+    assert (m = n) as eq2.
+    {
+        rewrite (rdand A_conf m Am).
+        rewrite (rdand B_conf n Bn).
+        apply f_equal.
+        rewrite set_type_eq2.
+        exact eq.
+    }
+    subst n.
+    apply a_nin.
+    split.
+    -   intros Aa.
+        specialize (m_least a).
+        prove_parts m_least.
+        {
+            split; [>exact Aa|].
+            exists a.
+            split; [>apply refl|].
+            exact a_nin.
+        }
+        pose proof (antisym am m_least); subst a.
+        exact Bn.
+    -   intros Ba.
+        specialize (n_least a).
+        prove_parts n_least.
+        {
+            split; [>exact Ba|].
+            exists a.
+            split; [>apply refl|].
+            intros contr.
+            symmetry in contr.
+            contradiction.
+        }
+        pose proof (antisym am n_least); subst a.
+        exact Am.
+Qed.
+
+Lemma initial1 : ∀ A B, conforming A → conforming B →
     ∀ x y, x ≤ y → A x → B y → B x.
 Proof.
     intros A B A_conf B_conf x y xy Ax By.
     classic_contradiction Bx.
-    pose proof (initial1 A B A_conf B_conf y x Ax By Bx) as ltq.
-    contradiction (irrefl _ (le_lt_trans xy ltq)).
+    apply (neq_set_nex A B A_conf B_conf).
+    split.
+    -   exists x.
+        split; [>exact Ax|].
+        exists x.
+        split; [>apply refl|].
+        intros contr.
+        apply contr in Ax.
+        contradiction.
+    -   exists y.
+        split; [>exact By|].
+        exists x.
+        split; [>exact xy|].
+        intros contr.
+        apply contr in Ax.
+        contradiction.
+Qed.
+
+Lemma initial2 : ∀ A B, conforming A → conforming B →
+    ∀ x y, A y → B x → ¬B y → x ≤ y.
+Proof.
+    intros A B A_conf B_conf x y Ay Bx By.
+    classic_case (A x) as [Ax|Ax].
+    -   pose proof (well_orders_chain A (ldand A_conf) x y Ax Ay) as [leq|leq].
+        1: exact leq.
+        pose proof (initial1 A B A_conf B_conf y x leq Ay Bx).
+        contradiction.
+    -   exfalso.
+        apply (neq_set_nex A B A_conf B_conf).
+        split.
+        +   exists y.
+            split; [>exact Ay|].
+            exists y.
+            split; [>apply refl|].
+            intros contr.
+            apply contr in Ay.
+            contradiction.
+        +   exists x.
+            split; [>exact Bx|].
+            exists x.
+            split; [>apply refl|].
+            intros contr.
+            apply contr in Bx.
+            contradiction.
 Qed.
 
 Lemma union_conf : conforming (⋃ conforming).
@@ -201,7 +259,7 @@ Proof.
         classic_case (A y) as [Ay|nAy].
         -   apply a_le.
             split; assumption.
-        -   apply (initial1 B A B_conf A_conf _ _ By Aa nAy).
+        -   apply (initial2 B A B_conf A_conf _ _ By Aa nAy).
     }
     split with conf_wo.
     intros x [A [A_conf Ax]].
@@ -215,7 +273,7 @@ Proof.
         split; assumption.
     -   intros c [[B [B_conf Bc]] c_lt].
         split; [>|exact c_lt].
-        exact (initial2 B A B_conf A_conf _ _ (land c_lt) Bc Ax).
+        exact (initial1 B A B_conf A_conf _ _ (land c_lt) Bc Ax).
 Qed.
 
 Lemma union_no_sub : ∀ x, ¬(∀ a, (⋃ conforming) a → a < x).
