@@ -194,22 +194,22 @@ Qed.
 Theorem product_comm_f1 : π2 B A ∘ f = π1 A B.
 Proof.
     unfold f, product_comm_f.
-    apply [|iso_f (terminal_unique _ BA _ _)].
+    apply [|iso_f (terminal_unique (product A B) BA _ _)].
 Qed.
 Theorem product_comm_f2 : π1 B A ∘ f = π2 A B.
 Proof.
     unfold f, product_comm_f.
-    apply [|iso_f (terminal_unique _ BA _ _)].
+    apply [|iso_f (terminal_unique (product A B) BA _ _)].
 Qed.
 Theorem product_comm_g1 : π2 A B ∘ g = π1 B A.
 Proof.
     unfold g, product_comm_g.
-    apply [|iso_g (terminal_unique _ BA _ _)].
+    apply [|iso_g (terminal_unique (product A B) BA _ _)].
 Qed.
 Theorem product_comm_g2 : π1 A B ∘ g = π2 B A.
 Proof.
     unfold g, product_comm_g.
-    apply [|iso_g (terminal_unique _ BA _ _)].
+    apply [|iso_g (terminal_unique (product A B) BA _ _)].
 Qed.
 
 End ProductComm.
@@ -327,7 +327,7 @@ Qed.
 Theorem product_assoc_f1 : π1 A B ∘ π1 (A ∏ B) C ∘ f = π1 A (B ∏ C).
 Proof.
     unfold f, product_assoc_f.
-    apply [|iso_f (terminal_unique _ ABC _ _)].
+    apply [|iso_f (terminal_unique (product A (B ∏ C)) ABC _ _)].
 Qed.
 Theorem product_assoc_f2 : π2 A B ∘ π1 (A ∏ B) C ∘ f = π1 B C ∘ π2 A (B ∏ C).
 Proof.
