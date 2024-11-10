@@ -73,7 +73,6 @@ Notation "A ⊗ B" :=
     (ord_mult_antisym A B) (ord_mult_wo A B))
     : ord_scope.
 
-(* begin hide *)
 Section OrdMult.
 
 Local Open Scope ord_scope.
@@ -380,7 +379,6 @@ Qed.
 Global Instance ord_le_mult_class : OrderMult ord := {
     le_mult := ord_le_mult
 }.
-(* end hide *)
 
 Theorem ord_lt_lmult : ∀ {α β} γ, zero ≠ γ → α < β → γ * α < γ * β.
 Proof.
@@ -502,11 +500,9 @@ Proof.
     apply ord_le_lmult.
     exact leq.
 Qed.
-(* begin hide *)
 Global Instance ord_le_lmult_class : OrderLmult ord := {
     le_lmult_pos := ord_le_lmult_pos
 }.
-(* end hide *)
 
 Theorem ord_lt_rmult : ∀ {α β} γ, α < β → α * γ ≤ β * γ.
 Proof.
@@ -589,11 +585,9 @@ Proof.
     apply ord_le_rmult.
     exact leq.
 Qed.
-(* begin hide *)
 Global Instance ord_le_rmult_class : OrderRmult ord := {
     le_rmult_pos := ord_le_rmult_pos
 }.
-(* end hide *)
 
 Lemma ord_mult_lcancel : ∀ α β γ, 0 ≠ γ → γ * α = γ * β → α = β.
 Proof.
@@ -605,11 +599,9 @@ Proof.
         apply ord_lt_lmult with γ in leq; try exact γ_nz.
         destruct leq; contradiction.
 Qed.
-(* begin hide *)
 Global Instance ord_mult_lcancel_class : MultLcancel ord := {
     mult_lcancel := ord_mult_lcancel
 }.
-(* end hide *)
 
 Theorem ord_lt_mult_lcancel : ∀ {α β} γ, γ * α < γ * β → α < β.
 Proof.
@@ -638,11 +630,9 @@ Proof.
     intros α β γ [γ_leq γ_nz] leq.
     apply ord_le_mult_lcancel with γ; assumption.
 Qed.
-(* begin hide *)
 Global Instance ord_le_mult_lcancel_pos_class : OrderMultLcancel ord := {
     le_mult_lcancel_pos := ord_le_mult_lcancel_pos
 }.
-(* end hide *)
 
 Theorem ord_lt_mult_rcancel : ∀ {α β} γ, α * γ < β * γ → α < β.
 Proof.
@@ -882,6 +872,4 @@ Proof.
     -   intros a.
         contradiction (nat_lt_0_false a).
 Qed.
-(* begin hide *)
 Close Scope ord_scope.
-(* end hide *)

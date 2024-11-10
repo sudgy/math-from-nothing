@@ -66,7 +66,6 @@ Notation "A ⊕ B" :=
     (ord_plus_antisym A B) (ord_plus_wo A B))
     : ord_scope.
 
-(* begin hide *)
 Section OrdPlus.
 
 Local Open Scope ord_scope.
@@ -196,7 +195,6 @@ Qed.
 Global Instance ord_plus_rid_class : PlusRid ord := {
     plus_rid := ord_plus_rid
 }.
-(* end hide *)
 
 Theorem ord_lt_lplus : ∀ {α β} γ, α < β → γ + α < γ + β.
 Proof.
@@ -262,11 +260,9 @@ Proof.
     apply ord_lt_lplus with γ in leq.
     destruct leq; contradiction.
 Qed.
-(* begin hide *)
 Global Instance ord_plus_lcancel_class : PlusLcancel ord := {
     plus_lcancel := ord_plus_lcancel
 }.
-(* end hide *)
 
 Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
 Proof.
@@ -479,11 +475,9 @@ Proof.
         apply ord_lt_lplus with γ in ltq.
         apply ltq.
 Qed.
-(* begin hide *)
 Global Instance ord_le_lplus_class : OrderLplus ord := {
     le_lplus := ord_le_lplus
 }.
-(* end hide *)
 Lemma ord_le_plus_lcancel : ∀ α β γ, γ + α ≤ γ + β → α ≤ β.
 Proof.
     intros α β γ leq.
@@ -495,11 +489,9 @@ Proof.
         apply ord_lt_plus_lcancel in ltq.
         apply ltq.
 Qed.
-(* begin hide *)
 Global Instance ord_le_plus_lcancel_class : OrderPlusLcancel ord := {
     le_plus_lcancel := ord_le_plus_lcancel
 }.
-(* end hide *)
 
 Theorem ord_le_self_rplus : ∀ α β, α ≤ α + β.
 Proof.
@@ -576,11 +568,9 @@ Proof.
     -   apply ord_lt_rplus.
         split; assumption.
 Qed.
-(* begin hide *)
 Global Instance ord_le_rplus_class : OrderRplus ord := {
     le_rplus := ord_le_rplus
 }.
-(* end hide *)
 
 Theorem nat_to_ord_plus : ∀ a b,
     nat_to_ord a + nat_to_ord b = nat_to_ord (a + b).
@@ -732,6 +722,4 @@ Proof.
     -   intros a.
         contradiction (A_false a).
 Qed.
-(* begin hide *)
 Close Scope ord_scope.
-(* end hide *)

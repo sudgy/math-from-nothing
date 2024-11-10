@@ -11,10 +11,8 @@ Require Import ord_induction.
 Require Import ord_pow_def.
 Require Import card.
 
-(* begin hide *)
 Open Scope card_scope.
 Open Scope ord_scope.
-(* end hide *)
 Theorem ord_pow_0 : ∀ α, α ^ 0 = 1.
 Proof.
     intros A.
@@ -362,6 +360,4 @@ Proof.
             rewrite <- fz, <- gz.
             reflexivity.
 Qed.
-(* begin hide *)
 Close Scope ord_scope.
-(* end hide *)

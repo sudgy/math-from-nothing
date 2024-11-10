@@ -7,7 +7,6 @@ Require Import zorn.
 Require Import zorn_unary_function.
 Require Import nat.
 
-(* begin hide *)
 Section OrdOrder.
 
 Local Open Scope ord_scope.
@@ -95,7 +94,6 @@ Global Instance ord_order : Order ord := {
 }.
 
 Open Scope ord_scope.
-(* end hide *)
 Theorem ord_le_lt : ∀ α β, (α ≤ β) = (α = β ∨ α < β).
 Proof.
     intros α β.
@@ -164,7 +162,6 @@ Proof.
                 reflexivity.
 Qed.
 
-(* begin hide *)
 Module OrdConnex.
 Section OrdConnex.
 
@@ -958,7 +955,6 @@ Qed.
 Global Instance ord_le_trans_class : Transitive le := {
     trans := ord_le_transitive
 }.
-(* end hide *)
 Local Notation "'to_ord' A" := (to_equiv ord_equiv A) (at level 10).
 Theorem ord_lt_init : ∀ A x, to_ord (ord_initial_segment A x) < to_ord A.
 Proof.
@@ -971,7 +967,6 @@ Qed.
 Definition ords_lt_set α := λ β, β < α.
 Definition ords_lt_le α (β γ : set_type (ords_lt_set α)) := [β|] ≤ [γ|].
 
-(* begin hide *)
 Module OrdsLtWo.
 Section OrdsLtWo.
 
@@ -1282,7 +1277,6 @@ Proof.
         unfold le; cbn.
         reflexivity.
 Qed.
-(* end hide *)
 Theorem nat_to_ord_lt : ∀ a b, (nat_to_ord a < nat_to_ord b) = (a < b).
 Proof.
     intros a b.
@@ -1333,7 +1327,5 @@ Proof.
         rewrite <- nat_to_ord_lt in eq.
         apply eq.
 Qed.
-(* begin hide *)
 Close Scope ord_scope.
 Close Scope set_scope.
-(* end hide *)

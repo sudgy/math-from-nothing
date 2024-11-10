@@ -121,7 +121,6 @@ Proof.
     exact Sb.
 Qed.
 
-(* begin hide *)
 Section OrdEquiv.
 
 Let ord_eq A B := ∃ f, Bijective f ∧
@@ -180,16 +179,13 @@ Instance ord_eq_transitive_class : Transitive _ := {
 }.
 
 End OrdEquiv.
-(* end hide *)
 Definition ord_equiv := make_equiv _
     ord_eq_reflexive_class ord_eq_symmetric_class ord_eq_transitive_class.
 Notation "a ~ b" := (eq_equal ord_equiv a b) : ord_scope.
 
 Notation "'ord'" := (equiv_type ord_equiv).
 
-(* begin hide *)
 Open Scope ord_scope.
-(* end hide *)
 Theorem ord_niso_init : ∀ A x, ¬(A ~ ord_initial_segment A x).
 Proof.
     intros A x [f [f_bij f_iso]].
@@ -229,7 +225,6 @@ Proof.
         reflexivity.
 Qed.
 
-(* begin hide *)
 Lemma ord_init_iso_eq1 : ∀ A x y,
     ord_initial_segment A x ~ ord_initial_segment A y → ord_le A y x.
 Proof.
@@ -304,7 +299,6 @@ Proof.
     apply ord_niso_init in contr.
     exact contr.
 Qed.
-(* end hide *)
 Theorem ord_init_iso_eq : ∀ A x y,
     ord_initial_segment A x ~ ord_initial_segment A y → x = y.
 Proof.
@@ -318,7 +312,6 @@ Proof.
         exact eq.
 Qed.
 
-(* begin hide *)
 Lemma ord_iso_unique_le : ∀ (A B : ord_type) f g, Bijective f → Bijective g →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
@@ -347,7 +340,6 @@ Proof.
     rewrite (inverse_eq2 _ _ (bij_inv_inv f)) in leq.
     exact leq.
 Qed.
-(* end hide *)
 Theorem ord_iso_unique : ∀ (A B : ord_type) f g, Bijective f → Bijective g →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (f a) (f b)) →
     (∀ a b, (ord_le A) a b ↔ (ord_le B) (g a) (g b)) →
@@ -393,9 +385,7 @@ Proof.
             destruct ab; contradiction.
 Qed.
 
-(* begin hide *)
 Close Scope ord_scope.
-(* end hide *)
 Definition nat_to_ord_type (n : nat) :=
     make_ord_type (set_type (λ m, m < n)) le
     set_type_le_antisym_class set_type_le_wo_class.

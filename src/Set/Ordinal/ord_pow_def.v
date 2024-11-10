@@ -12,10 +12,8 @@ Require Import ord_induction.
 
 Unset Keyed Unification.
 
-(* begin hide *)
 Open Scope card_scope.
 Open Scope ord_scope.
-(* end hide *)
 Definition ord_fin_support {A B} (f : ord_U B → ord_U A) :=
     finite (|set_type (λ x, f x ≠ ord_zero (f x))|).
 
@@ -145,7 +143,6 @@ Definition ord_pow_le (A B : ord_type) (C D : ord_pow_type A B) :=
     (∃ x, strict (ord_le A) (ord_pow_f C x) (ord_pow_f D x) ∧
      ∀ y, strict (ord_le B) x y → ord_pow_f C y = ord_pow_f D y).
 
-(* begin hide *)
 Lemma ord_pow_wo_wo : ∀ A B,
     ∀ S : (ord_pow_type A B → Prop), (∃ C, S C) →
     ∃ M, is_least (ord_pow_le A B) S M.
@@ -398,7 +395,6 @@ Proof.
             rewrite b_gt in a_lt.
             destruct a_lt; contradiction.
 Qed.
-(* end hide *)
 Lemma ord_pow_antisym : ∀ A B, Antisymmetric (ord_pow_le A B).
 Proof.
     intros A B.
@@ -426,7 +422,6 @@ Qed.
 Notation "A ⊙ B" := (make_ord_type _ (ord_pow_le A B)
     (ord_pow_antisym A B) (ord_pow_wo A B)).
 
-(* begin hide *)
 Lemma ord_pow_wd_fin : ∀ {A B C D} (F : ord_pow_type A C)
     (f : ord_U A → ord_U B) (g : ord_U D → ord_U C),
     Bijective f → Bijective g →
@@ -590,10 +585,7 @@ Proof.
                     rewrite (inverse_eq1 _ _ (bij_inv_inv _)) in x_gt.
                     exact x_gt.
 Qed.
-(* end hide *)
 Definition ord_pow := binary_op (binary_self_wd ord_pow_wd).
 Infix "^" := ord_pow : ord_scope.
-(* begin hide *)
 Close Scope ord_scope.
 Close Scope card_scope.
-(* end hide *)
