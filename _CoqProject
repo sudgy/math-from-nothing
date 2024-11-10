@@ -107,6 +107,7 @@
 ./src/Algebra/Ring/Fraction/fraction_category.v
 ./src/Number/Rat/rat.v
 
+./src/Set/Ordinal/New/ord2_base.v
 ./src/Set/Ordinal/ord_base.v
 ./src/Set/Ordinal/ord_order.v
 ./src/Set/Ordinal/ord_plus.v
