@@ -301,6 +301,26 @@ Proof.
     apply inter_lsub.
 Qed.
 
+Theorem lsub_union_equal : ∀ S T : U → Prop, S ⊆ T → S ∪ T = T.
+Proof.
+    intros S T sub.
+    apply antisym.
+    -   intros x [Sx|Tx].
+        +   exact (sub x Sx).
+        +   exact Tx.
+    -   intros x Tx.
+        right.
+        exact Tx.
+Qed.
+
+Theorem rsub_union_equal : ∀ S T : U → Prop, T ⊆ S → S ∪ T = S.
+Proof.
+    intros S T sub.
+    rewrite union_comm.
+    apply lsub_union_equal.
+    exact sub.
+Qed.
+
 Theorem lsub_inter_equal : ∀ S T : U → Prop, S ⊆ T → S ∩ T = S.
 Proof.
     intros S T sub.

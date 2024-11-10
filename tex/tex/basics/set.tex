@@ -305,6 +305,15 @@ This shows us that $\subseteq$ partially orders sets on a type.
     Trivial.
 \end{proof}
 
+\begin{theorem} \label{lsub_union_equal}
+    For all sets $S$ and $T$, if $S \subseteq T$, $S \cup T = T$.
+\end{theorem}
+\begin{proof}
+    $T \subseteq S \cup T$ is trivial.  To prove that $S \cup T \subseteq T$,
+    let $x \in S \cup T$.  Then if $x \in S$, because $S \subseteq T$, we have
+    $x \in T$, and if $x \in T$, then $x \in T$.  Thus, $S \cup T \subseteq T$.
+\end{proof}
+
 \begin{theorem} \label{lsub_inter_equal}
     For all sets $S$ and $T$, if $S \subseteq T$, $S \cap T = S$.
 \end{theorem}
