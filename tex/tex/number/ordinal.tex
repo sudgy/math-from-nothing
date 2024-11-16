@@ -1,0 +1,59 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+
+\begin{document}
+
+\setcounter{chapter}{8}
+
+\chapter{The Ordinals}
+
+The ordinals are a way of studying well-ordered sets, by basically considering
+all of them at once.  They were initially described as equivalence classes of
+well-ordered sets, but there were issues with this initial conception and modern
+set theories tend to use other constructions.  However, in the foundations used
+here, we won't have those issues, so we can describe ordinals using their
+traditional interpretation as equivalence classes of well-ordered sets.
+
+\section{Basic Construction}
+
+\begin{definition}
+    We will say that an order type is a type $\U$ that has a well order.
+\end{definition}
+
+In general, people often use ``order type'' to refer to more than just well
+orders, but the concept is mainly useful for well orders, so for the sake of
+simplicity we will consider order types to only be well orders.  Remember that
+to prove that a type is well-ordered, it suffices to prove that the relation is
+antisymmetric and that every nonempty subset has a least element.
+
+\begin{definition}
+    Define a relation $\sim$ on order types where $\A \sim \B$ is defined to
+    mean that there exists an order isomorphism between $\A$ and $\B$, that is,
+    a function $f$ that is bijective and preserves inequalities in one
+    direction.  Note that these conditions also imply that $f$ preserves both
+    inequalities and strict inequalities in both directions.
+\end{definition}
+
+\begin{lemma}
+    The relation $\sim$ is an equivalence relation.
+\end{lemma}
+\begin{proof}
+    \textit{Reflexivitity.}  The identity function is an order isomorphism.
+
+    \textit{Symmetry.}  Assume that there is an order isomorphism $f$ from $\A$
+    to $\B$.  Then its inverse $f^{-1}$ is bijective, and when $a \leq b$, we
+    have $f(f^{-1}(a)) = f(f^{-1}(b))$, and because $f$ is an order isomorphism,
+    $f^{-1}(a) = f^{-1}(b)$, so $f^{-1}$ is an order isomorphism from $\B$ to
+    $\A$.
+
+    \textit{Transitivity.}  Given three order types $\A$, $\B$, and $\C$ with
+    order isomorphisms $f : \A \to \B$ and $g : \B \to \C$, $g \circ f$ is an
+    order isomorphism from $\A$ to $\C$.
+\end{proof}
+
+\begin{definition}
+    Define the type $\Ord$ to be the quotient of all order types by $\sim$.
+\end{definition}
+
+
+\end{document}
