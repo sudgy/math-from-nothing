@@ -406,3 +406,39 @@ Ltac make_dual_op op' :=
     try pose proof (ge_trans (op := op'));
     try pose proof (ge_connex (op := op')).
 (* end show *)
+
+Global Instance empty_le : Order empty_type := {
+    le a b := True
+}.
+Global Instance empty_le_antisym : Antisymmetric le.
+Proof.
+    split.
+    intros a.
+    destruct a.
+Qed.
+Global Instance empty_le_wo : WellOrdered le.
+Proof.
+    split.
+    intros S [a Sa].
+    destruct a.
+Qed.
+
+Global Instance singleton_le : Order singleton_type := {
+    le a b := True
+}.
+Global Instance singleton_le_antisym : Antisymmetric le.
+Proof.
+    split.
+    intros a b ab ba.
+    apply singleton_type_eq.
+Qed.
+Global Instance singleton_le_wo : WellOrdered le.
+Proof.
+    split.
+    intros S [a Sa].
+    exists a.
+    split.
+    -   exact Sa.
+    -   intros y Sy.
+        exact true.
+Qed.
