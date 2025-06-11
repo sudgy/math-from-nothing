@@ -1007,6 +1007,23 @@ that it is antisymmetric and that every set has a minimum.
     \]
 \end{proof}
 
+\begin{instance}
+    The empty type is well-ordered by the relation that ``takes'' $a$ and $b$ in
+    $\E$ to \verb|True|.
+\end{instance}
+\begin{proof}
+    All of the required properties are vacuously true.
+\end{proof}
+
+\begin{instance}
+    The singleton type is well-ordered by the relation that takes $a$ and $b$ in
+    $\S$ to \verb|True|.
+\end{instance}
+\begin{proof}
+    Antisymmetry follows from all values in the singleton type being equal, and
+    $I$ is the minimal element of the one nonempty set.
+\end{proof}
+
 \subsection{Order and Addition}
 
 Addition and order often interact in a consistent way, as formalized in the

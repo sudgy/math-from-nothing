@@ -3,14 +3,6 @@ standard library, I prefer defining as much as I can on my own. *)
 
 Require Import base_logic.
 
-Inductive empty_type := .
-
-Theorem empty_false : empty_type → False.
-Proof.
-    intros x.
-    destruct x.
-Qed.
-
 Inductive dand (A : Prop) (B : A → Prop) : Prop :=
     make_dand : ∀ a : A, B a → dand A B.
 Arguments make_dand {A B}.
@@ -36,6 +28,14 @@ Tactic Notation "dand_split" simple_intropattern(H) :=
 Tactic Notation "dand_split" := let H := fresh in dand_split H.
 
 Set Implicit Arguments.
+
+Inductive empty_type := .
+
+Theorem empty_false : empty_type → False.
+Proof.
+    intros x.
+    destruct x.
+Qed.
 
 #[universes(polymorphic)]
 Inductive singleton_type : Type := Single.
