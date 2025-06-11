@@ -25,6 +25,13 @@
 \newtheorem{case}{Case}[theorem]
 \renewcommand{\thecase}{\arabic{case}}
 
+\newenvironment{subproof}[1][\proofname]{%
+  \renewcommand{\qedsymbol}{$\blacksquare$}%
+  \begin{proof}[#1]%
+}{%
+  \end{proof}%
+}
+
 \def\bvec#1{\def\useanchorwidth{T}\stackon[1.2pt]{#1}{\text{\scriptsize$\,\Rightarrow$}}}
 \def\tvec#1{\def\useanchorwidth{T}\stackon[1.2pt]{#1}{\text{\scriptsize$\,\Rrightarrow$}}}
 \newcommand{\lcontr}{\,\rfloor\,}
@@ -62,6 +69,8 @@
 \newcommand{\T}{\mathbb{T}}
 \newcommand{\U}{\mathbb{U}}
 \newcommand{\V}{\mathbb{V}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\Y}{\mathbb{Y}}
 \newcommand{\Z}{\mathbb{Z}}
 
 \newcommand{\iN}{\iota_\N}

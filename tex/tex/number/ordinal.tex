@@ -1,5 +1,8 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
+\externaldocument{../basics/foundations}
+\externaldocument{../basics/set}
+\externaldocument{../basics/elementary_algebra}
 
 \begin{document}
 
@@ -42,9 +45,9 @@ antisymmetric and that every nonempty subset has a least element.
 
     \textit{Symmetry.}  Assume that there is an order isomorphism $f$ from $\A$
     to $\B$.  Then its inverse $f^{-1}$ is bijective, and when $a \leq b$, we
-    have $f(f^{-1}(a)) = f(f^{-1}(b))$, and because $f$ is an order isomorphism,
-    $f^{-1}(a) = f^{-1}(b)$, so $f^{-1}$ is an order isomorphism from $\B$ to
-    $\A$.
+    have $f(f^{-1}(a)) \leq f(f^{-1}(b))$, and because $f$ is an order
+    isomorphism, $f^{-1}(a) \leq f^{-1}(b)$, so $f^{-1}$ is an order isomorphism
+    from $\B$ to $\A$.
 
     \textit{Transitivity.}  Given three order types $\A$, $\B$, and $\C$ with
     order isomorphisms $f : \A \to \B$ and $g : \B \to \C$, $g \circ f$ is an
@@ -55,5 +58,340 @@ antisymmetric and that every nonempty subset has a least element.
     Define the type $\Ord$ to be the quotient of all order types by $\sim$.
 \end{definition}
 
+\section{Order}
+
+It turns out that the ordinals themselves are well ordered.  This ordering is so
+important that unlike the previous types that have been developed, this ordering
+will be developed before the other operations.  Most sources describe the order
+on ordinals using strict inequalities, but describing them using non-strict
+inequalities can be useful at times too and is the default way to describe
+orderings in the Coq code, so I will first describe the order on ordinals using
+non-strict inequalities.
+
+\begin{definition}
+    Let $\A$ and $\B$ be order types.  Then we say that $f : \A \to \B$ is an
+    ordinal inequality function if it is injective, preserves inequalities, and
+    if for all $b : \B$ with $f(a) \neq b$ for all $a : \A$, we have $f(a) < b$
+    for all $a : \A$.
+\end{definition}
+
+\begin{definition}
+    Given two order types $\A$ and $\B$, we will say that $\A \leqq \B$ if there
+    exists an ordinal inequality function from $\A$ to $\B$.
+\end{definition}
+
+\begin{lemma}
+    The relation $\leqq$ is well-defined under the relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $A$, $B$, $C$, and $D$ be order types with order isomorphisms $f : A \to
+    B$ and $g : C \to D$, and let $h$ be an ordinal inequality function from $A$
+    to $C$.  We must prove that there exists an ordinal inequality function from
+    $B$ to $D$.  We will prove that $g \circ h \circ f^{-1}$ is such a function.
+
+    \noindent \textit{Injectivity.}
+    $g$, $h$, and $f^{-1}$ are all injective, so by Instance \ref{inj_comp}, $g
+    \circ h \circ f^{-1}$ is as well.
+
+    \noindent \textit{Preserving inequalities.}
+    Let $a \leq b$.  Then $f(f^{-1}(a)) \leq f(f^{-1}(b))$, and because $f$
+    preserves inequalities, $f^{-1}(a) \leq f^{-1}(b)$.  Then because $g$ and
+    $h$ preserve inequalities, $g(h(f^{-1}(a))) \leq g(h(f^{-1}(b)))$, showing
+    that $g \circ h \circ f^{-1}$ preserves inequalities.
+
+    \noindent \textit{Ordinal inequality condition.}
+    Let $b : D$ be such that there is no $a : B$ such that $g(h(f^{-1}(a))) =
+    b$.  This means that there is no $x : A$ such that $g(h(f^{-1}(f(x)))) =
+    g(h(x)) = b = g(g^{-1}(b))$, so by the injectivity of $g$ there is no $x :
+    A$ such that $h(x) = g^{-1}(b)$.  Because $h$ is an ordinal inequality
+    function, this means that for all $x : A$, $h(x) < g^{-1}(b)$.  Thus, for
+    any $a : B$, we have $h(f^{-1}(a)) < g^{-1}(b)$, and applying $g$ to both
+    sides gives $g(h(f^{-1}(a))) < b$.
+\end{proof}
+
+\begin{instance}
+    Define order in the ordinals as the operation obtained by applying Theorem
+    \ref{binary_op_ex} to the previous lemma.
+\end{instance}
+
+As the following theorem shows, this order is equivalent to the usual definition
+of the order on ordinals.
+
+\begin{theorem} \label{ord_lt_simpl}
+    For two order types $\A$ and $\B$, $[\A] < [\B]$ iff there exists a $x : \B$
+    such that $\A \sim \B_x$, the initial segment of $x$ in $\B$.
+\end{theorem}
+\begin{proof}
+    First assume that $[\A] < [\B]$.  This means that there exists an ordinal
+    inequality function $f : \A \to \B$, but no order isomorphism from $\A$ to
+    $\B$.  First, there exists an $x' : \B$ such that $f(a) \neq x'$ for all $a
+    : \A$.  For if there wasn't such an $x'$, $f$ would be surjective, meaning
+    that it is an order isomorphism from $\A$ to $\B$, which is impossible.  Now
+    define $x$ to be the least value in $B$ such that $f(a) \neq x$ for all $a :
+    \A$.  Because $f$ is an ordinal inequality function, this means that $f(a) <
+    x$ for all $a : \A$.  Thus, $f$ can be considered to be a function from $\A$
+    to $\B_x$.  $f$ is surjective, because for any $y < x$, by the minimality of
+    $x$, there must be an $a : \A$ such that $f(y) = a$.  Thus, $f$ is an order
+    isomorphism from $\A$ to $\B_x$.
+
+    Now assume that there exists an $x : \B$ and an order isomorphism $f : \A
+    \to \B_x$.  We must prove that $[\A] \leq [\B]$, and that $[\A] \neq [\B]$.
+
+    For $[\A] \leq [\B]$, $f$ itself is already injective and preserves
+    inequalities, so all that's left to prove is that for all $b : \B$, if $f(a)
+    \neq b$ for all $a$, then $f(a) < b$ for all $a$.  So let $b$ be such that
+    $f(a) \neq b$ for all $a$, and let $a : \A$.  If $b \leq f(a)$, because
+    $f(a) < x$ by definition of $f$, we have $b < x$.  Thus, $b$ is in $\B_x$,
+    so by surjectivity of $f$ there is some $z$ such that $f(z) = b$.  This
+    however contradicts the definition of $b$.  Thus, we must have $f(a) < b$,
+    showing that $f$ is an ordinal inequality function.
+
+    For $[\A] \neq [\B]$, assume for a contradiction that $\B \sim \A$.  Then
+    there is an order isomorphism $g : B \to A$.  Then we can prove by
+    transfinite induction that for all $a : \B$, $a \leq f(g(a))$.  The
+    inductive hypothesis states that for all $b < a$, $b \leq f(g(b))$.  Now if
+    $f(g(a)) < a$, we would have $f(g(a)) < f(g(f(g(a))))$, and because $f$ and
+    $g$ preserve inequalities, we have $a < f(g(a))$.  This contradicts $f(g(a))
+    < a$, so we must have $a \leq f(g(a))$ for all $a : \B$.  This implies that
+    $x \leq f(g(x))$, but by the definition of $f$ we must also have $f(g(x)) <
+    x$, which is a contradiction.  Thus, we must have $[\A] \neq [\B]$.
+\end{proof}
+
+Even though we can normally get away with only proving antisymmetry and the
+well-ordering property to prove that a type is well ordered, the proof that the
+ordinals are well-ordered here uses the fact that the order is transitive and
+connex, so those will have to be proven on their own anyway.
+
+\begin{instance}
+    The order on ordinals is connex.
+\end{instance}
+
+\begin{proof}
+    The proof of this instance is rather involved and will be split up into
+    several sub-definitions and lemmas.
+
+    It suffices to prove that for all ordinals $\alpha$ and $\beta$, if $\alpha
+    \nless \beta$, then $\beta \leq \alpha$.  Let $\A$ be an order type of
+    $\alpha$ and $\B$ be an order type of $\beta$.  Then we know that $\A$ is
+    not order isomorphic to an initial segment of $\B$.
+    \begin{definition}
+        Define a function $f : (p : \B) \to (\B_p \to \A) \to \A$ with $f(p,
+        g)$ given by:
+        \begin{itemize}
+            \item If there exists an $a$ such that $g(x) < a$ for all $x < p$,
+                define $f(p, g)$ to be the least such $a$.
+            \item Otherwise, $f(p, g)$ will be a random throwaway value in $\A$.
+                Such a value is guaranteed to exist since in this context, $p$ is a
+                value in $\B$, so if $\A$ was empty, we would have $[\A] < [\B]$,
+                which is impossible by assumption.
+        \end{itemize}
+        By transfinite recursion, there exists a function $g : \B \to \A$ such
+        that for all $n : \B$, we have $g(n) = f(n, g \uparrow n)$.
+    \end{definition}
+    We will prove that $g$ is an ordinal inequality function, proving that
+    $\beta \leq \alpha$.
+
+    \begin{definition}
+        Given an $n : \B$, define $G_n$ to be the set $\{z : \A \mid \forall x <
+        n, g(x) < z\}$.
+    \end{definition}
+
+    \begin{definition}
+        Say that a value $n : \B$ is \textit{good} if $G_n$ is nonempty.
+    \end{definition}
+    We will now prove several properties of $g$ and good values:
+
+    \begin{lemma} \label{ord_connex_least}
+        For all good $n$, $g(n)$ is the least element of $G_n$.
+    \end{lemma}
+    \begin{subproof}
+        Because $n$ is good, $g(n) = f(n, g \uparrow n)$ takes the first branch
+        in the definition of $f$, which produces exactly the least element of
+        $G_n$.
+    \end{subproof}
+
+    \begin{lemma} \label{ord_connex_preserve}
+        $g$ preserves strict inequalities for good values.
+    \end{lemma}
+    \begin{subproof}
+        This follows directly from the previous lemma.
+    \end{subproof}
+
+    \begin{lemma} \label{ord_connex_inj}
+        $g$ is injective for good values.
+    \end{lemma}
+    \begin{subproof}
+        Let $a$ and $b$ be good values such that $g(a) = g(b)$.  For a
+        contradiction, assume that $a \neq b$, and without loss of generality,
+        assume that $a < b$.  Because $g$ preserves strict inequalities for good
+        values, we have $g(a) < g(b)$, contradicting $g(a) = g(b)$.  Thus, $a =
+        b$.
+    \end{subproof}
+
+    \begin{lemma} \label{ord_connex_all_good}
+        All $n : \B$ are good.
+    \end{lemma}
+    \begin{subproof}
+        The proof will be by transfinite induction on $n$.  The inductive
+        hypothesis states that for all $b < n$, $b$ is good, and we must prove
+        that $n$ is good.  For a contradiction, assume that $n$ is not good.  We
+        will prove that $\A$ is isomorphic to $\B_n$, contradicting the
+        hypothesis that $[\A] \nless [\B]$.  The isomorphism from $\B_n$ to $\A$
+        will be $g$ itself.
+
+        $g$ is injective for all $x < n$ because by the inductive hypothesis,
+        all such $x$ are good, and $g$ is injective on good values by Lemma
+        \ref{ord_connex_inj}.
+
+        For surjectivity, let $x : \A$.  For a contradiction, assume that there
+        does not exist any $y : \B_n$ such that $g(y) = x$.  We will prove that
+        under this assumption, $n$ is in fact good, contradicting our previous
+        assumption.  To prove that $n$ is good, we will prove that for all $a <
+        n$, we have $g(a) < x$.  This will be proven using a second transfinite
+        induction, this time on $a$: the second inductive hypothesis states that
+        for all $b < a$ such that $b < n$ (note that this second condition is
+        redundant since $a < n$), we have $g(b) < x$.  This is equivalent to
+        saying that $x \in G_a$.  We assumed earlier that $g(y) \neq x$ for all
+        $y$, so we only need to prove that $g(a) \leq x$.  By the first
+        inductive hypothesis, $a$ is good, so by Lemma \ref{ord_connex_least},
+        $g(a)$ is the least element of $G_a$.  Since $x \in G_a$, we have $g(a)
+        \leq x$, as required.
+
+        $g$ preserves inequalities for all $x < n$ because by the inductive
+        hypothesis, all such $x$ are good, and $g$ preserves inequalities on
+        good values by Lemma \ref{ord_connex_preserve}.
+
+        Thus, under the assumption that $n$ is not good, $g$ is an order
+        isomorphism from $\B_n$ to $\A$, which is impossible, so all $n : \B$
+        are good.
+    \end{subproof}
+    At this point, most parts of the proof are complete.  Because all values are
+    good, $g$ is an injective order-preserving function from $\B$ to $\A$.  We
+    only need to prove the final condition to show that $g$ is an ordinal
+    inequality function.  Let $b : \A$ with $g(a) \neq b$ for all $a : \B$, and
+    let $a : \B$.  We must prove that $g(a) < b$.  The proof will be by
+    transfinite induction on $a$.  The inductive hypothesis states that for all
+    $c < a$, we have $g(c) < b$.  This means that $b \in G_a$.  Now since $g(a)
+    \neq b$, we only need to prove that $g(a) \leq b$.  By Lemma
+    \ref{ord_connex_least}, $g(a)$ is the least element of $G_a$, and since $b
+    \in G_a$, $g(a) \leq b$ as required.
+\end{proof}
+
+\begin{lemma} \label{ord_le_part}
+    Let $f$ be an ordinal inequality functions from $\A$ to $\B$.  For all $x$
+    and $y$ such that all $a < x$ implies $f(a) \neq y$, we have $f(x) \leq y$.
+\end{lemma}
+\begin{proof}
+    Assume for a contradiction that $y < f(x)$.  For an $a : \A$, if $a < x$, we
+    have $f(a) \neq y$ by assumption, and if $x \leq a$, we have $y < f(x) \leq
+    f(a)$, so $y \neq f(a)$.  Thus, for all $a : \A$, we have $f(a) \neq y$, so
+    because $f$ is an ordinal inequality function, we have $f(x) < y$.  This
+    contradicts $y < f(x)$, so it must be the case that $f(x) \leq y$ as
+    required.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is antisymmetric.
+\end{instance}
+\begin{proof}
+    Let $\A$ and $\B$ be order types with ordinal inequality functions $f : \A
+    \to \B$ and $g : \B \to \A$.  We will prove that $f$ itself is an order
+    isomorphism.  It already preserves inequalities and is injective, so we only
+    need to prove that it is surjective.  Let $x : \B$.  We will prove that
+    $f(g(x)) = x$.  The proof will be by transfinite induction on $x$.  The
+    inductive hypothesis states that for all $b < x$, $f(g(b)) = b$.
+
+    We will now use Lemma \ref{ord_le_part} to prove that $f(g(x)) \leq x$.  So
+    let $a < g(x)$.  We must prove that $f(a) \neq x$.  For a contradiction,
+    assume that $f(a) = x$.  If $g(x) \leq a$, we would have a contradiction, so
+    let's again use Lemma \ref{ord_le_part} to prove this.  So let $b < x$, and
+    again for a contradiction assume that $g(b) = a$.  Then from $f(a) = x$ and
+    $g(b) = a$, we have $f(g(b)) = x$.  $f(g(b)) = b$ by the inductive
+    hypothesis, so $b = x$, contradicting $b < x$.
+
+    All of these contradictions end up showing that, in fact, $f(g(x)) \leq x$.
+    Again, we need to prove that $f(g(x)) = x$.  If $f(g(x)) \neq x$, we would
+    have $f(g(x)) < x$, so by the inductive hypothesis we would have
+    $f(g(f(g(x)))) = f(g(x))$, and since $f$ and $g$ are injective we have
+    $f(g(x)) = x$ as required.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is transitive.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be order types with ordinal inequality functions $f
+    : \A \to \B$ and $g : \B \to \C$.  We need to find an ordinal inequality
+    function from $\A$ to $\C$.  We will prove that $g \circ f$ is such a
+    function.  Injectivity and preserving inequalities are already satisfied by
+    instances \ref{inj_comp} and \ref{homo_le_compose}, so we only need to prove
+    the final condition.
+
+    Let $c : \C$ be such that for all $x : \A$, we have $g(f(x) \neq c$, and let
+    $a : \A$ be an arbitrary value.  We must prove that $g(f(a)) < c$.  If $g(b)
+    \neq c$ for all $b : \B$, we would have $g(f(a)) < c$ directly by $g$ being
+    an ordinal inequality function, so now consider the case when there is a $b
+    : \B$ such that $g(b) = c$.  Then what we need to prove is $g(f(a)) < g(b)$,
+    which reduces to $f(a) < c$.  Because $g(f(x)) \neq c = g(b)$ for all $x$,
+    there must be no $x$ such that $f(x) = b$.  From this and $f$ being an
+    ordinal inequality function, we have $f(a) < c$ as required.
+\end{proof}
+
+\begin{lemma} \label{ords_lt_wo}
+    For all ordinals $\alpha$, the initial segment of $\alpha$ is well-ordered.
+\end{lemma}
+\begin{proof}
+    Let $\A$ be an order type, let $\beta < [\A]$, and let $S$ be a set on
+    $\Ord_{[\A]}$, the initial segment of $[\A]$, with $\beta \in S$.  Now for
+    all $a : \A$, the initial segment $\A_a$ is itself well-ordered.
+    Furthermore, for all $a$, we have $[\A_a] < [\A]$ since $\A_a$ is itself an
+    initial segment of $\A$.  Thus, we can define a function $f : \A \to
+    \Ord_{[\A]}$ given by $f(a) = [\A_a]$.
+
+    We will now prove that $f$ is surjective.  Let $[\Y]$ be an ordinal less
+    than $[\A]$.  This means that there exists some $x : \A$ such that $\Y$ is
+    order isomorphic to $\A_x$.  Then $f(x) = [\A_x] = [\Y]$ as required.
+
+    We will now prove that $f$ preserves inequalities in one direction.  Let $a$
+    and $b$ be values in $\A$ such that $a \leq b$.  Then we must prove that
+    $f(a) \leq f(b)$.  Because $a \leq b$, everything in $\A_a$ is in $\A_b$, so
+    we will prove that the identity function is an ordinal inequality function.
+    Injectivity and preserving equalities is trivial.  For the final condition,
+    we must prove that if $y \in \A_b$ is such that for all $m \in \A_a$, $m
+    \neq y$, we have $x < y$ for all $x \in \A_a$.  For a contradiction, assume
+    that $y \leq x$.  Then $y \leq x < a$, so $y \in \A_a$, meaning that $y \neq
+    y$, which is a contradiction.  Thus, $x < y$, and the identity function is
+    an ordinal inequality function.
+
+    Now that we have a well-behaved function $f : \A \to \Ord_{[\A]}$, define a
+    new set $S' = \{a \A \mid f(a) \in S\}$.  Because $f$ is surjective, there
+    exists some $x : \A$ such that $f(a) = \beta$.  Since $\beta \in S$, we have
+    $x \in S'$.  Thus, because $\A$ is well-ordered, $S'$ has a least element
+    $m$.  We will prove that $f(m)$ is the least element of $S$.  $f(m) \in S$
+    since $m \in S'$.  To prove that it's the least element in $S$, let $\gamma$
+    be an ordinal less than $[\A]$ that is in $S$.  Since $f$ is surjective,
+    there exists some $z$ such that $f(z) = \gamma$.  Then $z \in S'$, so $m
+    \leq z$ because $m$ is the least element of $S'$.  Because $f$ preserves
+    inequalities, $f(m) \leq f(z) = \gamma$, showing that $f(m)$ is the least
+    element of $S$.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is a well order.
+\end{instance}
+\begin{proof}
+    Let $S$ be a set of ordinals, and let $\alpha \in S$.  If $\alpha$ is the
+    least element of $S$ then we're done, so assume that $\alpha$ is not the
+    least element of $S$.  Then this means that there exists some ordinal $\beta
+    < \alpha$ such that $\beta \in S$.  Now define a set $S' = \{\gamma \in
+    \Ord_\alpha \mid \gamma \in S\}$.  Since $\beta \in S'$, by Lemma
+    \ref{ords_lt_wo} $S'$ has a least element $\mu < \alpha$.  We will prove
+    that $\mu$ is the least element of $S$ as well.  $\mu$ is already an element
+    of $S$ by virtue of being in $S'$, so we just need to prove that it's the
+    least element of $S$.  So let $y \in S$.  If $y < \alpha$, Then $y \in S'$,
+    and since $\mu$ is the least element of $S'$, $\mu \leq S'$.  If $y \geq
+    \alpha$, then since $\mu < \alpha$, we have $\mu < y$.  Either way, $\mu
+    \leq y$, showing that $\mu$ is the least element of $S$.
+\end{proof}
 
 \end{document}
