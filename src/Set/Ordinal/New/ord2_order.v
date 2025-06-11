@@ -56,13 +56,6 @@ Global Instance ord_order : Order ord := {
     le := binary_op ord_le_wd;
 }.
 
-Theorem ord_le_simpl : ∀ A B, to_ord A ≤ to_ord B ↔ ord_leq A B.
-Proof.
-    intros A B.
-    unfold le; equiv_simpl.
-    reflexivity.
-Qed.
-
 Theorem ord_lt_simpl : ∀ A B, to_ord A < to_ord B ↔ ord_ltq A B.
 Proof.
     intros A B.
@@ -152,7 +145,7 @@ Lemma ord_nlt_le : ∀ α β : ord, ¬(α < β) → β ≤ α.
 Proof.
     intros A B AB.
     equiv_get_value A B.
-    rewrite ord_le_simpl.
+    unfold le; equiv_simpl.
     rewrite ord_lt_simpl in AB.
     assert (B → A) as throwaway.
     {
@@ -342,31 +335,60 @@ Proof.
     contradiction.
 Qed.
 
+Lemma ord_le_simpl : ∀ (A B : ord_type),
+    (∃ f : A → B, Injective f ∧ HomomorphismLe f) → to_ord A ≤ to_ord B.
+Proof.
+    intros A B [f [f_inj f_homo]].
+    classic_contradiction ltq.
+    rewrite nle_lt in ltq.
+    rewrite ord_lt_simpl in ltq.
+    destruct ltq as [x [g]].
+    pose (h (a : A) := g (f a)).
+    assert (Injective h) as h_inj.
+    {
+        unfold h.
+        apply inj_comp.
+        -   exact f_inj.
+        -   apply g.
+    }
+    assert (HomomorphismLe h) as h_le.
+    {
+        unfold h.
+        apply homo_le_compose.
+        -   exact f_homo.
+        -   apply g.
+    }
+    clearbody h.
+    clear f g f_inj f_homo.
+    assert (∀ a, a ≤ [h a|]) as h_ge.
+    {
+        intros a.
+        induction a as [a IHa] using transfinite_induction.
+        classic_contradiction contr.
+        rewrite nle_lt in contr.
+        specialize (IHa _ contr).
+        assert (h a ≤ h [h a|]) as leq by exact IHa.
+        rewrite <- homo_le2 in leq.
+        contradiction (irrefl _ (le_lt_trans leq contr)).
+    }
+    pose proof [|h x] as x_lt.
+    unfold initial_segment in x_lt.
+    contradiction (irrefl _ (le_lt_trans (h_ge x) x_lt)).
+Qed.
+
 Global Instance ord_le_trans : Transitive le.
 Proof.
     split.
     intros A B C AB BC.
     equiv_get_value A B C.
-    rewrite ord_le_simpl in *.
+    apply ord_le_simpl.
+    unfold le in *; equiv_simpl in BC; equiv_simpl in AB.
     destruct AB as [f [f_inj [f_le f_gt]]].
     destruct BC as [g [g_inj [g_le g_gt]]].
     exists (λ x, g (f x)).
-    split; [>|split].
+    split.
     -   apply inj_comp; assumption.
     -   apply homo_le_compose; assumption.
-    -   intros c c_neq a.
-        classic_case (∀ b, g b ≠ c) as [g_gt2|g_gt2].
-        +   apply (g_gt _ g_gt2).
-        +   rewrite not_all in g_gt2.
-            destruct g_gt2 as [b gbc].
-            rewrite not_not in gbc.
-            subst c.
-            rewrite <- homo_lt2.
-            apply f_gt.
-            intros x eq.
-            subst b.
-            apply (c_neq x).
-            reflexivity.
 Qed.
 
 Lemma ords_lt_wo :
@@ -408,28 +430,17 @@ Proof.
         intros a b leq.
         unfold f, f'.
         unfold le; cbn.
-        rewrite ord_le_simpl.
-        unfold ord_leq.
+        apply ord_le_simpl.
         exists (λ x : sub_ord_type (initial_segment a),
             [[x|] | lt_le_trans [|x] leq] : sub_ord_type (initial_segment b)).
-        split; [>|split].
-        -   split.
-            intros x y eq.
+        split; split.
+        -   intros x y eq.
             apply (set_type_eq2 (a := [x|])) in eq.
             rewrite set_type_eq in eq.
             exact eq.
-        -   split.
-            intros x y xy.
+        -   intros x y xy.
             unfold le; cbn.
             exact xy.
-        -   intros [y yb] neq [x xa]; cbn.
-            rewrite <- set_type_lt; cbn.
-            unfold initial_segment in yb, xa.
-            classic_contradiction leq2.
-            rewrite nlt_le in leq2.
-            specialize (neq ([y|le_lt_trans leq2 xa])); cbn in neq.
-            rewrite set_type_eq2 in neq.
-            contradiction.
     }
     pose (S' (a : A) := S (f a)).
     pose proof (sur f β) as [x x_eq].
