@@ -407,4 +407,367 @@ another.
     \leq y$, showing that $\mu$ is the least element of $S$.
 \end{proof}
 
+\section{Addition}
+
+\begin{definition}
+    Given two order types $\A$ and $\B$, define an order on $\A + \B$ given by
+    \[
+        x \leq y =
+        \begin{cases}
+            x \leq_\A y  &\text{ if $x : \A$ and $y : \A$} \\
+            \verb|True|  &\text{ if $x : \A$ and $y : \B$} \\
+            \verb|False| &\text{ if $x : \B$ and $y : \A$} \\
+            x \leq_\B y  &\text{ if $x : \B$ and $y : \B$.}
+        \end{cases}
+    \]
+\end{definition}
+
+\begin{lemma}
+    Given two order types $\A$ and $\B$, the order on $\A + \B$ is well-order.
+\end{lemma}
+\begin{proof}
+    For antisymmetry, let $x$ and $y$ be in $\A + \B$ with $x \leq y$ and $y
+    \leq x$.  If $x$ and $y$ are not in the same of $\A$ and $\B$, then one of
+    $x \leq y$ and $y \leq x$ will be \verb|False|, which is impossible.  So the
+    only cases left is when $x$ and $y$ are both of the same type.  In that
+    case, $x = y$ follows from the antisymmetry of that type.
+
+    For well ordering, let $S$ be a nonempty set in $\A + \B$.  There will be
+    two cases: when there exists an $a : \A$ with $a| \in S$, and when no $a :
+    \A$ with $a| \in S$ exists.  When such an $a$ exists, define a set $S' : \A
+    \to \Prop$, which is just the restriction of $S$ to $\A$.  Then $S'$ is
+    nonempty, so it has a least element $m$.  Then for every $y \in S$, if $y :
+    \A$, then $m| \leq y|$ by $m$ being the least element of $S'$.  If $y : \B$,
+    then $m| \leq |y$ by the definition of $\leq$ in $\A + \B$.  Either way,
+    $m|$ is the least element of $S$.
+
+    Now consider the case where there is no $a : \A$ with $a| \in S$.  Because
+    $S$ is nonempty, there is some $b : \B$ with $|b \in S$.  Now define a set
+    $S' : \B \to \Prop$, which is just the restriction of $S$ to $\B$.  $S'$ is
+    nonempty, so it has a least element $m$.  Then $|m \in S$, and it must be
+    the least element of $S$ as well because it's the least element of $S'$, and
+    nothing in $\A$ can be in $S$.
+\end{proof}
+
+\begin{definition}
+    Define a binary operation $\oplus$ on order types that takes in two order
+    types $\A$ and $\B$ and produces the order type $\A + \B$.
+\end{definition}
+
+\begin{lemma}
+    The operation $\oplus$ is well-defined under the relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $\A$, $\B$, $\C$, and $\D$ be order types with order isomorphisms $f :
+    \A \to \B$ and $g : \C \to \D$.  Then define a new function $h : \A \oplus
+    \C \to \B \oplus \D$ defined by
+    \[
+        h(x) =
+        \begin{cases}
+            f(x)| &\text{if $x : \A$} \\
+            |g(x) &\text{if $x : \C$.}
+        \end{cases}
+    \]
+    We will prove that $h$ is an order isomorphism.
+
+    For injectivity, let $x$ and $y$ be in $\A \oplus \C$ with $h(x) = h(y)$.
+    If $x : \A$ and $y : \A$, then $x = y$ follows from the injectivity of $f$.
+    If $x : \A$ and $y : \B$, then $h(x) = h(y)$ would imply $f(x)| = |g(y)$, so
+    this case is impossible.  The case $x : \B$ and $y : \A$ is similar.  And if
+    $x : \B$ and $y : \B$, then $x = y$ follows from the injectivity of $g$.
+
+    For surjectivity, let $y$ be a value in $\B \oplus \D$.  If $y : \B$, then
+    by the surjectivity of $f$, there is an $x$ such that $f(x)| = h(x) = y|$.
+    If $y : \D$, then by the surjectivity of $g$, there is an $x$ such that
+    $|g(x) = h(x) = |y$.  Either way, $h$ is surjective.
+
+    For preserving inequalities, let $x$ and $y$ be values in $\A \oplus \C$
+    such that $x \leq y$.  If $x : \A$ and $y : \A$, then since $f$ preserves
+    inequalities, we have $f(x)| \leq f(y)|$, showing that $h(x) \leq h(y)$.  If
+    $x : \A$ and $y : \C$, then $f(x)| \leq |g(y)$ by definition, showing that
+    $h(x) \leq h(y)$.  If $x : \C$ and $y : \A$, then $|x \leq y|$ is
+    impossible, so this case is impossible.  If $x : \C$ and $y : \C$, then
+    since $g$ preserves inequalities, we have $|g(x) \leq |g(y)$, showing that
+    $h(x) \leq h(y)$.
+\end{proof}
+
+\begin{instance}
+    Define addition in the ordinals as the binary operation given by Theorem
+    \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+Addition of ordinals is notably more ill-behaved than in other types.  In
+particular, ordinal addition is not commutative, and there are many properties
+that hold for addition on one side, but not the other side.  Some of the
+algebraic facts about ordinals can use the implications developed in Chapter
+\ref{chap_ealgebra}, but not all of them.  Just looking at what is listed in
+this document, it can be a bit difficult to figure out which of those
+implications are valid and which aren't.  Again, Coq figures that stuff out
+automatically, so I just let it tell me when I'm doing something wrong.
+
+\begin{instance}
+    Addition of ordinals is associative.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be order types.  Then define a function $f : \A +
+    (\B + \C) \to (\A + \B) + \C$ given by
+    \[
+        f(x) =
+        \begin{cases}
+            x|| &\text{if $x : \A$} \\
+            (|x)| &\text{if $x : \B$} \\
+            |x &\text{if $x : \C$.}
+        \end{cases}
+    \]
+    We will prove that $f$ is an order isomorphism.
+
+    For injectivity, let $x$ and $y$ be values in $\A + (\B + \C)$ with $f(x) =
+    f(y)$.  There are nine cases, depending on which types $x$ and $y$ are in.
+    Whenever they are not of the same type, $f(x) = f(y)$ becomes an impossible
+    equation, making those cases impossible.  In the other cases, $f(x) = f(y)$
+    reduces to $x = y$.
+
+    For surjectivity, let $y$ be in $(\A + \B) + \C$.  Whatever type it is in,
+    you can construct the corresponding value $x$ in $\A + (\B + \C)$, where
+    $f(x) = y$ by definition.
+
+    For preserving inequalities, let $x$ and $y$ be values in $\A + (\B + \C)$
+    such that $x \leq y$.  There are nine cases, depending on which types $x$
+    and $y$ are in.  When $x : \A$ and $y : \B$ or $y : \C$, or when $x : \B$
+    and $y : \C$, $x \leq y$ in $(\A + \B) + \C$ by definition.  In the opposite
+    cases where the types of $x$ and $y$ are swapped from the previous cases, $x
+    \leq y$ in $\A + (\B + \C)$ is impossible, so these cases are impossible.
+    In the final cases, where $x$ and $y$ have the same type, $x \leq y$ in $(\A
+    + \B) + \C$ follows directly from $x \leq y$ in $\A + (\B + \C)$.
+\end{proof}
+
+\begin{instance}
+    Define zero in the ordinals to be the $[\E]$, where $\E$ is the empty type.
+\end{instance}
+
+\begin{instance}
+    Zero is a left additive identity in the ordinals.
+\end{instance}
+\begin{proof}
+    For all order types $\A$, the function taking $x : \A$ to $|x$ is an order
+    isomorphism from $\A$ to $\E + \A$.
+\end{proof}
+
+\begin{instance}
+    Zero is a right additive identity in the ordinals.
+\end{instance}
+\begin{proof}
+    For all order types $\A$, the function taking $x : \A$ to $x|$ is an order
+    isomorphism from $\A$ to $\A + \E$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_lplus}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha < \beta$, then
+    $\gamma + \alpha < \gamma + \beta$.
+\end{theorem}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be order types with $x : \B$ and an order
+    isomorphism $f : \A \to \B_x$.  We will prove that $\C \oplus \A$ is
+    isomorphic to the initial segment $(\C \oplus \B)_{|x}$.  Define a function
+    $g : \C \oplus \A \to (\C \oplus \B)_{|x}$ given by
+    \[
+        g(a) =
+        \begin{cases}
+            |a    &\text{if $a : \C$} \\
+            f(a)| &\text{if $a : \A$.}
+        \end{cases}
+    \]
+    $g$ is well-defined because when $a : \C$, we have $a| < |x$ by
+    definition, and when $a : \A$, we have $f(a) < x$ by the definition of
+    $f$.  We will now prove that $g$ is an order isomorphism.
+
+    For injectivity, let $c$ and $a$ be values in $\C \oplus \A$ with $g(c) =
+    g(a)$.  When $c : \C$ and $a : \C$, $g(c) = g(a)$ means that $c = a$.  The
+    case $c : \C$ and $a : \A$ is impossible because it implies that $|c =
+    f(a)|$.  The case $c : \A$ and $a : \C$ is similar.  When $c : \A$ and $a :
+    \A$, $g(c) = g(a)$ means that $f(c) = f(a)$, and by the injectivity of $f$
+    we have $c = a$.
+
+    For surjectivity, let $y$ be a value in $(\C \oplus \B)_{|x}$.  If $y : \C$,
+    then we have $g(y|) = y|$ as required.  If $y : \B$, we have $y < x$ since
+    $y : (\C \oplus \B)_{|x}$.  Then because $f$ is surjective, we have an $a$
+    with $f(a) = y$.  Then $g(|a) = |f(a) = |y$ as required.
+
+    For preserving inequalities, let $a$ and $b$ be values in $C \oplus A$ with
+    $a \leq b$.  If $a : \C$ and $b : \C$, $a \leq b$ is equivalent to $g(a)
+    \leq g(b)$.  If $a : \C$ and $b : \A$, we have $g(a|) = a| \leq |f(b) =
+    g(|b)$.  If $a : \A$ and $b : \C$, $a \leq b$ is impossible.  If $a : \A$
+    and $b : \A$, then because $f$ preserves inequalities, we have $f(a) \leq
+    f(b)$, so $g(|a) \leq g(|b)$ as required.
+\end{proof}
+
+\begin{instance}
+    Addition is left cancellative in the ordinals.
+\end{instance}
+\begin{proof}
+    Let $\gamma + \alpha = \gamma + \beta$.  Assume for a contradiction that
+    $\alpha \neq \beta$, and without loss of generality assume that $\alpha <
+    \beta$.  Then by Theorem \ref{ord_lt_lplus}, we have $\gamma + \alpha <
+    \gamma + \beta$.  This contradicts $\gamma + \alpha = \gamma + \beta$, so we
+    must have $\alpha = \beta$.
+\end{proof}
+
+\begin{instance}
+    The order in the ordinals is left additive.
+\end{instance}
+\begin{proof}
+    Let $\alpha \leq \beta$.  We must prove that $\gamma + \alpha \leq \gamma +
+    \beta$.  If $\alpha = \beta$, the result follows from reflexivity.  If
+    $\alpha \neq \beta$, we have $\alpha < \beta$, so the result follows from
+    Theorem \ref{ord_lt_lplus}.
+\end{proof}
+
+\begin{theorem} \label{ord_pos}
+    For all ordinals $\alpha$, $0 \leq \alpha$.
+\end{theorem}
+\begin{proof}
+    The empty function is vacuously an ordinal inequality function.
+\end{proof}
+
+\begin{theorem} \label{ord_pos2}
+    For all ordinals $\alpha$ with $0 \neq \alpha$, we have $0 < \alpha$.
+\end{theorem}
+\begin{proof}
+    This follows from the previous theorem and the definition of $<$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_ex}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha \leq \beta$, there exists
+    an ordinal $\gamma$ such that $\alpha + \gamma = \beta$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ and $\B$ be order types with an ordinal inequality function $f : \A
+    \to \B$.  Then the set $C = \{b : \B \mid \forall a : \A, f(a) \neq b\}$
+    describes a sub order type of $\B$.  We will prove that $[\A] + [\T(C)] =
+    [\B]$.  Define a function $g : \A + \T(C) \to \B$ given by
+    \[
+        g(x) =
+        \begin{cases}
+            f(x) &\text{if $x : \A$} \\
+            x    &\text{if $x : \T(C)$.}
+        \end{cases}
+    \]
+    We will prove that $g$ is an order isomorphism.
+
+    For injectivity, let $x$ and $y$ be values in $\A + \T(C)$ such that $g(x) =
+    g(y)$.  If $x : \A$ and $y : \A$, we have $f(x) = f(y)$, so $x = y$ by the
+    injectivity of $f$.  If $x : \A$ and $y : \T(C)$, we would have $f(a) = b$,
+    but $b$ by definition is not equal to any $f(a)$, so this case is
+    impossible.  The case $x : \T(C)$ and $y : \A$ is similar.  If $x : \T(C)$
+    and $y : \T(C)$, $g(x) = g(y)$ directly means that $x = y$.
+
+    For surjectivity, let $y : \B$.  There will be two cases: if $f(a) \neq y$
+    for all $a$, or if there is an $a$ with $f(a) = y$.  When $f(a) \neq y$ for
+    all $a$, then $y \in C$, so $g(|y) = y$ as required.  If there is an $a$ with
+    $f(a) = y$, when $g(|a) = f(a) = y$ as required.
+
+    For preserving inequalities, let $x$ and $y$ be values in $\A + \T(C)$ with
+    $x \leq y$.  If $x : \A$ and $y : \A$, $g(x) \leq g(y)$ is equivalent to
+    $f(x) \leq f(y)$, which follows from $f$ preserving inequalities.  If $x :
+    \A$ and $y : \T(C)$, $y$ being in $c$ is precisely the condition in $f$
+    being an ordinal inequality function, so $f(x) \leq y$.  When $x : \T(C)$
+    and $y : \A$, $|x < y|$ is already impossible, so this case is impossible.
+    When $x : \T(C)$ and $y : \T(C)$, $g(x) \leq g(y)$ is precisely $x \leq y$,
+    which we already have.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_ex}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$, there exists
+    an ordinal $\gamma \neq 0$ such that $\alpha + \gamma = \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_le_ex}, we can already get such a $\gamma$, except that
+    we don't know if $\gamma \neq 0$.  If $\gamma = 0$, we would have $\alpha +
+    0 = \alpha = \beta$, which contradicts $\alpha < \beta$.  Thus, we must have
+    $\gamma \neq 0$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_plus_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\gamma + \alpha <
+    \gamma + \beta$, then $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lt_ex}, there exists a $\delta \neq 0$ such that $\gamma
+    + \alpha + \delta = \gamma + \beta$.  Cancelling $\gamma$, we get $\alpha +
+    \delta = \beta$.  Then what we need to prove reduces to $\alpha < \alpha +
+    \delta$.  By Theorem \ref{ord_lt_lplus}, it suffices to prove that $0 <
+    \delta$, which follows from Theorem \ref{ord_pos2}.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is left addition cancellative.
+\end{instance}
+\begin{proof}
+    Let $\gamma + \alpha \leq \gamma + \beta$.  We need to prove that $\alpha
+    \leq \beta$.  If we had $\gamma + \alpha = \gamma + \beta$, we could cancel
+    $\gamma$ to get $\alpha = \beta$ and the result would follow from flexivity.
+    If $\gamma + \alpha \neq \gamma + \beta$, we have $\gamma + \alpha < \gamma
+    + \beta$, so we can now cancel by using Theorem \ref{ord_lt_plus_lcancel} to
+    get the desired result.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_rplus}
+    For all ordinals $\alpha$ and $\beta$, $\alpha \leq \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    We can just cancel $\alpha$ to get $0 \leq \beta$, which is just Theorem
+    \ref{ord_pos}.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_lplus}
+    For all ordinals $\alpha$ and $\beta$, $\alpha \leq \beta + \alpha$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ and $\B$ be order types.  Then the function $f : \B \to \A + \B$
+    given by $f(x) = |x$ is injective and preserves inequalities, so by Theorem
+    \ref{ord_le_simpl} we have $[\A] \leq [\B] + [\A]$.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is right additive.
+\end{instance}
+\begin{proof}
+    Let $\alpha \leq \beta$.  By Theorem \ref{ord_le_ex}, there exists a
+    $\delta$ such that $\alpha + \delta = \beta$.  For any $\gamma$, by Theorem
+    \ref{ord_le_self_lplus}, we have
+    \begin{align*}
+        \gamma &\leq \delta + \gamma \\
+        \alpha + \gamma &\leq \alpha + \delta + \gamma \\
+        \alpha + \gamma &\leq \beta + \gamma.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_lt_plus_rcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha + \gamma <
+    \beta + \gamma$, $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    Assume that $\beta \leq \alpha$.  Then we can add $\gamma$ on the right to
+    get $\beta + \gamma \leq \alpha + \gamma$.  This contradicts $\alpha +
+    \gamma < \beta + \gamma$, so we must have $\alpha < \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_self_rplus}
+    For all ordinals $\alpha$ and $\beta$ with $0 \neq \beta$, we have $\alpha <
+    \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    That $\alpha \leq \alpha + \beta$ is just Theorem \ref{ord_le_self_rplus}.
+    To prove that $\alpha \neq \alpha + \beta$, just cancel $\alpha$ to get $0
+    \neq \beta$, which we already know.
+\end{proof}
+
+\begin{theorem} \label{ord_false_0}
+    For all order types $\A$, if $\A \to \verb|False|$, then $0 = [\A]$.
+\end{theorem}
+\begin{proof}
+    The empty function from $\E$ to $\A$ is vacuously injective and preserves
+    inequalities.  It vacuously surjective because $\A \to \verb|False|$.
+\end{proof}
+
 \end{document}
