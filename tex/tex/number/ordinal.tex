@@ -316,25 +316,42 @@ connex, so those will have to be proven on their own anyway.
     $f(g(x)) = x$ as required.
 \end{proof}
 
+We can now prove a simpler form of ordinal inequalities.
+
+\begin{lemma} \label{ord_le_simpl}
+    For all order types $\A$ and $\B$, if there exists an injective
+    order-preserving function from $\A$ to $\B$, then $[\A] \leq [\B]$.
+\end{lemma}
+\begin{proof}
+    Let $f$ be an injective order-preserving function from $\A$ to $\B$, and
+    assume for a contradiction that $[\B] < [\A]$.  This means that there exists
+    $x : \A$ and an order isomorphism $g : \B \to \A_x$.  Defining $h = g \circ
+    f$, we have an injective order-preserving function from $\A$ to $\A_x$.
+
+    Let $a$ be an arbitrary value in $\A$.  We will prove by transfinite
+    induction that $a \leq h(a)$.  The inductive hypothesis states that for all
+    $b < a$, we have $b \leq h(b)$.  Now if $h(a) < a$, we would have $h(a) \leq
+    h(h(a))$ by the inductive hypothesis, so $a \leq h(a)$ by $h$ preserving
+    inequalities.  $h(a) < a$ contradicts $a \leq h(a)$, proving that $a \leq
+    h(a)$ for all $a$.
+
+    By the previous paragraph, we have $x \leq h(x)$.  But by definition, $h(x)
+    < x$.  This is a contradiction, showing that our original assumption that
+    $[\B] < [\A]$ is wrong.  Thus, $[\A] \leq [\B]$.
+\end{proof}
+
+With this lemma, we no longer need to prove that the ordinal inequality
+condition holds when trying to prove that one ordinal is less than or equal to
+another.
+
 \begin{instance}
     The order on ordinals is transitive.
 \end{instance}
 \begin{proof}
     Let $\A$, $\B$, and $\C$ be order types with ordinal inequality functions $f
-    : \A \to \B$ and $g : \B \to \C$.  We need to find an ordinal inequality
-    function from $\A$ to $\C$.  We will prove that $g \circ f$ is such a
-    function.  Injectivity and preserving inequalities are already satisfied by
-    instances \ref{inj_comp} and \ref{homo_le_compose}, so we only need to prove
-    the final condition.
-
-    Let $c : \C$ be such that for all $x : \A$, we have $g(f(x) \neq c$, and let
-    $a : \A$ be an arbitrary value.  We must prove that $g(f(a)) < c$.  If $g(b)
-    \neq c$ for all $b : \B$, we would have $g(f(a)) < c$ directly by $g$ being
-    an ordinal inequality function, so now consider the case when there is a $b
-    : \B$ such that $g(b) = c$.  Then what we need to prove is $g(f(a)) < g(b)$,
-    which reduces to $f(a) < c$.  Because $g(f(x)) \neq c = g(b)$ for all $x$,
-    there must be no $x$ such that $f(x) = b$.  From this and $f$ being an
-    ordinal inequality function, we have $f(a) < c$ as required.
+    : \A \to \B$ and $g : \B \to \C$.  By Lemma \ref{ord_le_simpl}, We need to
+    find an injective order-preserving function from $\A$ to $\C$.  By instances
+    \ref{inj_comp} and \ref{homo_le_compose}, $g \circ f$ is such a function.
 \end{proof}
 
 \begin{lemma} \label{ords_lt_wo}
@@ -354,14 +371,10 @@ connex, so those will have to be proven on their own anyway.
 
     We will now prove that $f$ preserves inequalities in one direction.  Let $a$
     and $b$ be values in $\A$ such that $a \leq b$.  Then we must prove that
-    $f(a) \leq f(b)$.  Because $a \leq b$, everything in $\A_a$ is in $\A_b$, so
-    we will prove that the identity function is an ordinal inequality function.
-    Injectivity and preserving equalities is trivial.  For the final condition,
-    we must prove that if $y \in \A_b$ is such that for all $m \in \A_a$, $m
-    \neq y$, we have $x < y$ for all $x \in \A_a$.  For a contradiction, assume
-    that $y \leq x$.  Then $y \leq x < a$, so $y \in \A_a$, meaning that $y \neq
-    y$, which is a contradiction.  Thus, $x < y$, and the identity function is
-    an ordinal inequality function.
+    $f(a) \leq f(b)$.  By Lemma \ref{ord_le_simpl}, we need to find an injective
+    order-preserving function from $\A_a$ to $\A_b$.  Because $a \leq b$,
+    everything in $\A_a$ is in $\A_b$, so we the identity function is such a
+    function.
 
     Now that we have a well-behaved function $f : \A \to \Ord_{[\A]}$, define a
     new set $S' = \{a \A \mid f(a) \in S\}$.  Because $f$ is surjective, there
