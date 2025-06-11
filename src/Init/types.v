@@ -3,6 +3,14 @@ standard library, I prefer defining as much as I can on my own. *)
 
 Require Import base_logic.
 
+Inductive empty_type := .
+
+Theorem empty_false : empty_type → False.
+Proof.
+    intros x.
+    destruct x.
+Qed.
+
 Inductive dand (A : Prop) (B : A → Prop) : Prop :=
     make_dand : ∀ a : A, B a → dand A B.
 Arguments make_dand {A B}.
@@ -125,6 +133,18 @@ Proof.
     -   inversion eq.
         rewrite H0 in neq.
         contradiction.
+Qed.
+
+Theorem inlr_neq : ∀ (a : A) (b : B), inl (B := B) a ≠ inr (A := A) b.
+Proof.
+    intros a b eq.
+    inversion eq.
+Qed.
+
+Theorem inrl_neq : ∀ (a : A) (b : B), inr (A := A) b ≠ inl (B := B) a.
+Proof.
+    intros a b eq.
+    inversion eq.
 Qed.
 (* begin hide *)
 End Sum.
