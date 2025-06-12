@@ -76,6 +76,14 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem prod_split : ∀ (a1 a2 : A) (b1 b2 : B), (a1, b1) = (a2, b2) →
+    a1 = a2 ∧ b1 = b2.
+Proof.
+    intros a1 a2 b1 b2 eq.
+    inversion eq.
+    split; reflexivity.
+Qed.
+
 (* begin hide *)
 End Prod.
 (* end hide *)

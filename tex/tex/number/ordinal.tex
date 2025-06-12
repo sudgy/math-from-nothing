@@ -770,4 +770,313 @@ automatically, so I just let it tell me when I'm doing something wrong.
     inequalities.  It vacuously surjective because $\A \to \verb|False|$.
 \end{proof}
 
+\section{Multiplication}
+
+\begin{definition}
+    Define a binary operation $\otimes$ on order types that takes in two order
+    types $\A$ and $\B$ and produces the order type $\A \times \B$ with the
+    dictionary order.
+\end{definition}
+
+\begin{lemma}
+    The operation $\otimes$ is well-defined under the relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $\A$, $\B$, $\C$, and $\D$ be order types with order isomorphisms $f :
+    \A \to \B$ and $g : \C \to \D$.  Then define a new function $h : \A \otimes
+    \C \to \B \otimes \D$ defined by $h(a, c) = (f(a), g(c))$.  We will prove
+    that $h$ is an order isomorphism.
+
+    For injectivity, Let $(a_1, c_1)$ and $(a_2, c_2)$ be such that $h(a_1, c_1)
+    = h(a_2, c_2)$.  This means that $f(a_1) = f(a_2)$ and $g(c_1) = g(c_2)$.
+    By the injective of $f$ and $g$, we get $a_1 = a_2$ and $c_1 = c_2$, showing
+    that $(a_1, c_1) = (a_2, c_2)$.
+
+    For surjectivity, let $(b, d)$ be in $\B \otimes \D$.  Then because $f$ and
+    $g$ are surjective, we have an $a$ and $c$ such that $f(a) = b$ and $g(c) =
+    d$.  Then $h(a, c) = (f(a), g(c)) = (b, d)$ as required.
+
+    For preserving inequalities, let $(a_1, c_1)$ and $(a_2, c_2)$ be such that
+    $(a_1, c_1) \leq (a_2, c_2)$.  By the definition of the dictionary order,
+    $(a_1, c_1) \leq (a_2, c_2)$ means that either $c_1 < c_2$, or $a_1 \leq a_2$
+    and $c_1 = c_2$.  When $c_1 < c_2$, we have $g(c_1) < g(c_2)$, meaning that
+    $(f(a_1), g(c_1)) \leq (f(a_2), g(c_2))$.  When $a_1 \leq a_2$ and $c_1 =
+    c_2$, we have $f(a_1) \leq f(a_2)$ and $g(c_1) = g(c_2)$, meaning that
+    $(f(a_1), g(c_1)) \leq (f(a_2), g(c_2))$.  Either way, we have $(f(a_1),
+    g(c_1)) \leq (f(a_2), g(c_2))$ as required.
+\end{proof}
+
+\begin{instance}
+    Define multiplication in the ordinals as the binary operation given by
+    Theorem \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+Like with addition, ordinal multiplication is not commutative, making proving
+things about it quite cumbersome.
+
+\begin{instance}
+    Ordinal multiplication is left distributive over addition.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be order types, and define a function $f : \A
+    \times (\B + \C) \to \A \times \B + \A \times \C$ given by
+    \begin{align*}
+        f(a, b|) &= (a, b)| \\
+        f(a, |c) &= |(a, c).
+    \end{align*}
+    We will prove that $f$ is an order isomorphism.
+
+    For injectivity, let $(a_1, x_1)$ and $(a_2, x_2)$ be such that $f(a_1, x_1)
+    = f(a_2, x_2)$.  When $x_1 : \B$ and $x_2 : \B$, we have $a_1 = a_2$ and
+    $x_1 = x_2$ as required.  The case $x_1 : \C$ and $x_2 : \C$ is similar.
+    When $x_1 : \B$ and $x_2 : \C$, we have $(a_1, x_1)| = |(a_2, x_2)$, which
+    is impossible.  The case $x_1 : \C$ and $x_2 : \B$ is impossible for a
+    similar reason.
+
+    For surjectivity, let $(a, x)$ be a value in $\A \times \B + \A \times \C$.
+    If $x : \B$, then $f(a, x|) = (a, x)$, and if $x : \C$, then $f(a, |x) = (a,
+    x)$.
+
+    For preserving inequalities, let $(a_1, x_1)$ and $(a_2, x_2)$ be such that
+    $(a_1, x_1) \leq (a_2, x_2)$.  We have four cases for when $x_1$ and $x_2$
+    are values in $\B$ and $\C$, but then each case has two more cases for
+    whether $(a_1, x_2) \leq (a_2, x_2)$ means that $x_1 < x_2$ or that $a_1
+    \leq a_2$ and $x_1 = x_2$.  However, some of the cases end up being the same
+    still.
+    \begin{case} $x_1 : \B$ and $x_2 : \B$.
+        In this case, $f(a_1, x_1) \leq f(a_2, x_2)$ is precisely the statement
+        that $(a_1, b_1) \leq (a_2, b_2)$, which we already have.
+    \end{case}
+    \begin{case} $x_1 : \B$ and $x_2 : \C$.
+        In this case, $f(a_1, x_1) \leq f(a_2, x_2)$ becomes the statement
+        $(a_1, x_1)| \leq |(a_2, x_2)$, which is true by definition.
+    \end{case}
+    \begin{case} $x_1 : \C$, $x_2 : \B$, and $x_1 < x_2$.
+        $x_1 < x_2$ is actually the statement $|x_1 < x_2|$, which is
+        impossible.
+    \end{case}
+    \begin{case} $x_1 : \C$, $x_2 : \B$, and $a_1 \leq a_2$ and $x_1 = x_2$.
+        Since $x_1$ and $x_2$ are of different types, this case is also
+        impossible.
+    \end{case}
+    \begin{case} $x_1 : \C$ and $x_2 : \C$.
+        This case is similar to the first case.
+    \end{case}
+\end{proof}
+
+\begin{instance}
+    Multiplication of ordinals is associative.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be order types.  Define $f : \A \times (\B \times
+    \C) \to (\A \times \B) \times \C$ by $f(a, (b, c)) = ((a, b), c)$.  This
+    function is easily shown to be bijective.  To show that it preserves
+    inequalities, let $(a_1, (b_1, c_1))$ and $(a_2, (b_2, c_2))$ be such that
+    $(a_1, (b_1, c_1)) \leq (a_2, (b_2, c_2))$.  We have two cases: when $(b_1,
+    c_1) < (b_2, c_2)$, and when $a_1 \leq a_2$ and $(b_1, c_1) = (b_2, c_2)$.
+    The first case can be split into two further cases: when $c_1 < c_2$, and
+    when $b_1 < b_2$ and $c_1 = c_2$.  Thus there are three cases.
+    \setcounter{case}{0}
+    \begin{case} $c_1 < c_2$.
+        This directly proves $((a_1, b_1), c_1) \leq ((a_2, b_2), c_2)$.
+    \end{case}
+    \begin{case} $b_1 < b_2$ and $c_1 = c_2$.
+        By $b_1 < b_2$, we have $(a_1, b_1) \leq (a_2, b_2)$, and that along
+        with $c_1 = c_2$ proves that $((a_1, b_1), c_1) \leq ((a_2, b_2), c_2)$.
+    \end{case}
+    \begin{case} $a_1 \leq a_2$ and $(b_1, c_1) = (b_2, c_2)$.
+        Since $a_1 \leq a_2$ and $b_1 = b_2$, we have $(a_1, b_1) \leq (a_2,
+        b_2)$.  Then, that along with $c_1 = c_2$ proves that $((a_1, b_1), c_1)
+        \leq ((a_2, b_2), c_2)$.
+    \end{case}
+\end{proof}
+
+\begin{instance}
+    Zero is a left annihilator in the ordinals.
+\end{instance}
+\begin{proof}
+    For an arbitrary order type $\A$, we can use the left projection $P_1$ as a
+    function from $\E \times \A$ to $\E$.  Then, all the conditions for $P_1$ to
+    be an order isomorphism hold vacuously.
+\end{proof}
+
+\begin{instance}
+    Define one in the ordinals to be the $[\S]$, where $\S$ is the singleton
+    type.
+\end{instance}
+
+\begin{instance}
+    One is a left identity in the ordinals.
+\end{instance}
+\begin{proof}
+    For an arbitrary order type $\A$, we will prove that the right projection
+    $P_2$ is an order isomorphism from $\S \times \A$ to $\A$.  For injectivity,
+    if $P_2(a) = P_2(b)$, we have the second coordinate being equal, and the
+    first coordinate is equal because all values of the singleton type are
+    equal.  For surjectivity, given a $y : \A$, we have $P_2(I, y) = y$.  For
+    preseving inequalities,  let $(a_1, a_2) \leq (b_1, b_2)$.  If $a_2 < b_2$,
+    we have $a_2 \leq b_2$ as required.  If $a_1 \leq b_1$ and $a_2 = b_2$, we
+    have $a_2 \leq b_2$ from $a_2 = b_2$.
+\end{proof}
+
+\begin{instance}
+    One is a right identity in the ordinals.
+\end{instance}
+\begin{proof}
+    The proof mostly goes the same as the last proof but with $P_1$ instead of
+    $P_2$, except that proving that that $P_1$ preserves inequalities is a
+    little different.  Let $(a_1, a_2) \leq (b_1, b_2)$.  It's impossible for
+    $a_2 < b_2$ because they are both elements of the singleton type.  Thus, we
+    must have $a_1 \leq b_1$ and $a_2 = b_2$, from which we already have $a_1
+    \leq b_1$ as required.
+\end{proof}
+
+\begin{theorem} \label{ord_mult_zero}
+    For all ordinals $\alpha$ and $\beta$, if $0 = \alpha \beta$, then either $0
+    = \alpha$ or $0 = \beta$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be an order type for $\alpha$ and $\B$ be an order type for
+    $\beta$.  If both $0 \neq \alpha$ and $0 \neq \beta$, by the contrapositive
+    of Theorem \ref{ord_false_0}, there exists some $a : \A$ and $b : \B$.  Then
+    since $\alpha\beta = 0$, there exists a function $f : \A \times \B \to \E$.
+    Then $f(a, b)$ would be a value in the empty type, which is impossible.
+    Thus, at least one of $\alpha$ and $\beta$ must be zero.
+\end{proof}
+
+\begin{theorem} \label{ord_le_lmult}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
+    then $\gamma \alpha \leq \gamma \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_le_ex}, we have a $\delta$ such that $\alpha + \delta =
+    \beta$.  Then
+    \begin{align*}
+        0 &\leq \gamma \delta \\
+        \gamma \alpha &\leq \gamma \alpha + \gamma \delta \\
+        \gamma \alpha &\leq \gamma (\alpha + \delta) \\
+        \gamma \alpha &\leq \gamma \beta.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_lt_lmult}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$ with $\gamma \neq *$, if
+    $\alpha < \beta$, then $\gamma \alpha < \gamma \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lt_ex}, there exists a $\delta \neq 0$ such that $\alpha
+    + \delta = \beta$.  By Theorem \ref{ord_mult_zero}, $\gamma \delta \neq 0$,
+    so by Theorem \ref{ord_pos2},
+    \begin{align*}
+        0 &< \gamma \delta \\
+        \gamma \alpha &< \gamma \alpha + \gamma \delta \\
+        \gamma \alpha &< \gamma (\alpha + \delta) \\
+        \gamma \alpha &< \gamma \beta.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Multiplication of ordinals is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $\alpha$, $\beta$, and $\gamma$ be ordinals with $0 \neq \gamma$ and
+    $\gamma \alpha = \gamma \beta$.  Assume for a contradiction that $\alpha
+    \neq \beta$, and without loss of generality assume that $\alpha < \beta$.
+    Then by Theorem \ref{ord_lt_lmult} we have $\gamma \alpha < \gamma \beta$,
+    which is impossible because $\gamma \alpha = \gamma \beta$.  Thus, we must
+    have $\alpha = \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_mult_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\gamma \alpha < \gamma
+    \beta$, then $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    Assume for a contradiction that $\beta \leq \alpha$.  Then by Theorem
+    \ref{ord_le_lmult}, we have $\gamma \beta \leq \gamma \alpha$.  This
+    contradicts $\gamma \alpha < \gamma \beta$, so we must have $\alpha <
+    \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_mult_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$ with $0 \neq \gamma$, if
+    $\gamma \alpha \leq \gamma \beta$, then $\alpha \leq \beta$.
+\end{theorem}
+\begin{proof}
+    If $\gamma \alpha = \gamma \beta$, we can cancel $\gamma$ to get $\alpha =
+    \beta$, so $\alpha \leq \beta$ in that case.  If $\gamma \alpha \neq \gamma
+    \beta$, we have $\gamma \alpha < \gamma \beta$, where the result follows
+    from Theorem \ref{ord_lt_mult_lcancel}.
+\end{proof}
+
+\begin{theorem} \label{ord_le_rmult}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
+    then $\alpha \gamma \leq \beta \gamma$.
+\end{theorem}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be order types with an ordinal inequality function
+    $f : \A \to \B$.  By Theorem \ref{ord_le_simpl}, we need to find an
+    injective order-preserving function from $\A \times \C$ to $\B \times \C$.
+    We will prove that the function $g(a, c) = (f(a), c)$ works.
+
+    For injectivity, let $(a_1, c_1)$ and $(a_2, c_2)$ be such that $g(a_1, c_1)
+    = g(a_2, c_2)$.  This means that $f(a_1) = f(a_2)$ and that $c_1 = c_2$.  By
+    the injectivity of $f$, we have $a_1 = a_2$, so $(a_1, c_1) = (a_2, c_2)$.
+
+    For preserving inequalities, let $(a_1, c_1) \leq (a_2, c_2)$.  We must
+    prove that $(f(a_1), c_1) \leq (f(a_2), c_2)$.  If $c_1 < c_2$, we directly
+    have $(f(a_1), c_1) \leq (f(a_2), c_2)$.  If $a_1 \leq a_2$ and $c_1 = c_2$,
+    then $f(a_1) \leq f(a_2)$ by $f$ preserving inequalities, so $(f(a_1), c_1)
+    \leq (f(a_2), c_2)$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_mult_rcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \gamma < \beta
+    \gamma$, then $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    Assume for a contradiction that $\beta \leq \alpha$.  Then by Theorem
+    \ref{ord_le_rmult}, we have $\beta \gamma \leq \alpha \gamma$, contradicting
+    $\alpha \gamma < \beta \gamma$.  Thus, $\alpha < \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_one}
+    For all ordinals $\alpha$, if $\alpha < 1$, then $0 = \alpha$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be an order type for $\alpha$.  Then because $\alpha < 1$, there
+    exists an order isomorphism $f$ from $\A$ to the initial segment of $I$ in
+    the singleton type.  Notably, the initial segment of $I$ must be empty.
+    This means that if there was an $a : \A$, $f(a)$ would produce an impossible
+    value.  Thus, by Theorem \ref{ord_false_0}, $0 = \alpha$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_lmult}
+    For all ordinals $\alpha$ and $\beta$ with $0 \neq \beta$, we have $\alpha
+    \leq \beta \alpha$.
+\end{theorem}
+\begin{proof}
+    Since $0 \neq \beta$, by the contrapositive of Theorem \ref{ord_lt_one}, we
+    have $1 \leq \beta$.  Then by Theorem \ref{ord_le_rmult}, we have $\alpha
+    \leq \beta \alpha$ as required.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_rmult}
+    For all ordinals $\alpha$ and $\beta$ with $0 \neq \beta$, we have $\alpha
+    \leq \alpha \beta$.
+\end{theorem}
+\begin{proof}
+    Since $0 \neq \beta$, by the contrapositive of Theorem \ref{ord_lt_one}, we
+    have $1 \leq \beta$.  Then by Theorem \ref{ord_le_lmult}, we have $\alpha
+    \leq \alpha \beta$ as required.
+\end{proof}
+
+\begin{instance}
+    The ordinals are not trivial.
+\end{instance}
+\begin{proof}
+    Assume that $1 = 0$.  Then there would exist a function $f : \S \to \E$.
+    It's impossible for $f(I)$ to exist, so we must have $1 \neq 0$.
+\end{proof}
+
 \end{document}

@@ -145,7 +145,7 @@ Proof.
             exact leq.
 Qed.
 
-Global Instance ord_plus_class : Plus ord := {
+Global Instance ord_plus : Plus ord := {
     plus := binary_op (binary_self_wd ord_plus_wd)
 }.
 
@@ -210,7 +210,7 @@ Global Instance ord_zero : Zero ord := {
     zero := to_ord (make_ord_type empty_type _ _ _)
 }.
 
-Global Instance ord_plus_lid_class : PlusLid ord.
+Global Instance ord_plus_lid : PlusLid ord.
 Proof.
     split.
     intros A.
@@ -232,7 +232,7 @@ Proof.
         exact leq.
 Qed.
 
-Global Instance ord_plus_rid_class : PlusRid ord.
+Global Instance ord_plus_rid : PlusRid ord.
 Proof.
     split.
     intros A.
@@ -322,7 +322,7 @@ Proof.
             exact leq.
 Qed.
 
-Global Instance ord_plus_lcancel_class : PlusLcancel ord.
+Global Instance ord_plus_lcancel : PlusLcancel ord.
 Proof.
     split.
     intros α β γ eq.
@@ -336,7 +336,7 @@ Proof.
         contradiction (irrefl _ ltq).
 Qed.
 
-Global Instance ord_le_lplus_class : OrderLplus ord.
+Global Instance ord_le_lplus : OrderLplus ord.
 Proof.
     split.
     intros α β γ leq.
@@ -437,7 +437,7 @@ Proof.
     exact δ_nz.
 Qed.
 
-Global Instance ord_le_plus_lcancel_class : OrderPlusLcancel ord.
+Global Instance ord_le_plus_lcancel : OrderPlusLcancel ord.
 Proof.
     split.
     intros α β γ leq.
@@ -472,7 +472,7 @@ Proof.
         exact leq.
 Qed.
 
-Global Instance ord_le_rplus_class : OrderRplus ord.
+Global Instance ord_le_rplus : OrderRplus ord.
 Proof.
     split.
     intros α β γ leq.
