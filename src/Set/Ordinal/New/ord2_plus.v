@@ -115,7 +115,7 @@ Proof.
     1: split.
     all: split.
     -   intros [x|x] [y|y] eq.
-        +   apply (inl_eq (f x) (f y)) in eq.
+        +   apply inl_eq in eq.
             apply inj in eq.
             rewrite eq.
             reflexivity.
@@ -123,7 +123,7 @@ Proof.
             contradiction.
         +   apply inrl_neq in eq.
             contradiction.
-        +   apply (inr_eq (g x) (g y)) in eq.
+        +   apply inr_eq in eq.
             apply inj in eq.
             rewrite eq.
             reflexivity.
@@ -167,20 +167,20 @@ Proof.
     1: split.
     all: split; cbn.
     -   intros [a|[a|a]] [b|[b|b]] eq.
-        +   apply (inl_eq (inl a) (inl b)) in eq.
-            apply (inl_eq a b) in eq.
+        +   apply inl_eq in eq.
+            apply inl_eq in eq.
             rewrite eq.
             reflexivity.
-        +   apply (inl_eq (inl a) (inr b)) in eq.
+        +   apply inl_eq in eq.
             apply inlr_neq in eq.
             contradiction.
         +   apply inlr_neq in eq.
             contradiction.
-        +   apply (inl_eq (inr a) (inl b)) in eq.
+        +   apply inl_eq in eq.
             apply inrl_neq in eq.
             contradiction.
-        +   apply (inl_eq (inr a) (inr b)) in eq.
-            apply (inr_eq a b) in eq.
+        +   apply inl_eq in eq.
+            apply inr_eq in eq.
             rewrite eq.
             reflexivity.
         +   apply inlr_neq in eq.
@@ -189,7 +189,7 @@ Proof.
             contradiction.
         +   apply inrl_neq in eq.
             contradiction.
-        +   apply (inr_eq a b) in eq.
+        +   apply inr_eq in eq.
             rewrite eq.
             reflexivity.
     -   intros [[x|x]|x].
@@ -222,7 +222,7 @@ Proof.
     1: split.
     all: split; cbn.
     -   intros a b eq.
-        apply (inr_eq a) in eq.
+        apply inr_eq in eq.
         exact eq.
     -   intros [y|y].
         +   contradiction (empty_false y).
@@ -244,7 +244,7 @@ Proof.
     1: split.
     all: split; cbn.
     -   intros a b eq.
-        apply (inl_eq a) in eq.
+        apply inl_eq in eq.
         exact eq.
     -   intros [y|y].
         +   exists y.
@@ -281,14 +281,14 @@ Proof.
         apply set_type_eq in eq; cbn in eq.
         unfold g in eq.
         destruct c as [c|c], a as [a|a].
-        +   apply (inl_eq c) in eq.
+        +   apply inl_eq in eq.
             rewrite eq.
             reflexivity.
         +   apply inlr_neq in eq.
             contradiction.
         +   apply inrl_neq in eq.
             contradiction.
-        +   apply (inr_eq [f c|]) in eq.
+        +   apply inr_eq in eq.
             apply set_type_eq in eq.
             destruct f.
             apply inj in eq.
@@ -466,7 +466,7 @@ Proof.
     exists (λ x, inr x).
     split; split.
     -   intros a b eq.
-        apply (inr_eq a) in eq.
+        apply inr_eq in eq.
         exact eq.
     -   intros a b leq.
         exact leq.

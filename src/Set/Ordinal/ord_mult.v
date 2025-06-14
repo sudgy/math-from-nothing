@@ -151,7 +151,7 @@ Proof.
             reflexivity.
     -   intros [a1 [b1|c1]] [a2 [b2|c2]]; cbn.
         +   rewrite inl_neq.
-            rewrite inl_eq.
+            rewrite inl_eq2.
             reflexivity.
         +   split; try trivial.
             intros C0; clear C0.
@@ -162,7 +162,7 @@ Proof.
             intros [[a b]|[c d]]; try contradiction.
             inversion d.
         +   rewrite inr_neq.
-            rewrite inr_eq.
+            rewrite inr_eq2.
             reflexivity.
 Qed.
 Global Instance ord_ldist_class : Ldist ord := {

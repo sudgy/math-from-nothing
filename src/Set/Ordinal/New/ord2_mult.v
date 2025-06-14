@@ -59,13 +59,13 @@ Proof.
     1: split.
     all: split; cbn.
     -   intros [a1 [b1|c1]] [a2 [b2|c2]] eq.
-        +   apply (inl_eq (a1, b1)) in eq.
+        +   apply inl_eq in eq.
             apply prod_split in eq as [eq1 eq2].
             subst.
             reflexivity.
         +   contradiction (inlr_neq eq).
         +   contradiction (inrl_neq eq).
-        +   apply (inr_eq (a1, c1)) in eq.
+        +   apply inr_eq in eq.
             apply prod_split in eq as [eq1 eq2].
             subst.
             reflexivity.
@@ -80,7 +80,7 @@ Proof.
         +   apply inl_lt in ltq.
             left.
             exact ltq.
-        +   apply (inl_eq b1) in eq.
+        +   apply inl_eq in eq.
             right.
             split; [>exact leq|exact eq].
         +   exact true.
@@ -91,7 +91,7 @@ Proof.
         +   apply inr_lt in ltq.
             left.
             exact ltq.
-        +   apply (inr_eq c1) in eq.
+        +   apply inr_eq in eq.
             subst c2.
             right.
             split; [>exact leq|reflexivity].

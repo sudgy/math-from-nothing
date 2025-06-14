@@ -101,7 +101,21 @@ Section Sum.
 
 Context {A B : Type}.
 (* end hide *)
-Theorem inl_eq : ∀ a b : A, (inl (B := B) a = inl b) ↔ (a = b).
+Theorem inl_eq : ∀ a b : A, (inl (B := B) a = inl b) → (a = b).
+Proof.
+    intros a b eq.
+    inversion eq.
+    reflexivity.
+Qed.
+
+Theorem inr_eq : ∀ a b : B, (inr (A := A) a = inr b) → (a = b).
+Proof.
+    intros a b eq.
+    inversion eq.
+    reflexivity.
+Qed.
+
+Theorem inl_eq2 : ∀ a b : A, (inl (B := B) a = inl b) ↔ (a = b).
 Proof.
     intros a b.
     split; intro eq.
@@ -111,7 +125,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem inr_eq : ∀ a b : B, (inr (A := A) a = inr b) ↔ (a = b).
+Theorem inr_eq2 : ∀ a b : B, (inr (A := A) a = inr b) ↔ (a = b).
 Proof.
     intros a b.
     split; intro eq.
