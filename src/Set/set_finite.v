@@ -365,6 +365,24 @@ Proof.
         exact eq.
 Qed.
 
+Theorem empty_simple_finite : simple_finite empty_type.
+Proof.
+    exists 0.
+    exists (λ x, False_rect _ (empty_false x)).
+    split.
+    intros a.
+    contradiction (empty_false a).
+Qed.
+
+Theorem singleton_simple_finite : simple_finite singleton_type.
+Proof.
+    exists 1.
+    exists (λ _, [0|nat_one_pos]).
+    split.
+    intros a b eq.
+    apply singleton_type_eq.
+Qed.
+
 Section MinMax.
 
 Context {U : Type}.
