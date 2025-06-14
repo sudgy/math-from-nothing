@@ -122,6 +122,7 @@
 
 ./src/Set/Cardinal/New/card2_base.v
 ./src/Set/Cardinal/New/card2_order.v
+./src/Set/Cardinal/New/card2_plus.v
 ./src/Set/Cardinal/card_base.v
 ./src/Set/Cardinal/card_order.v
 ./src/Set/Cardinal/card_plus.v
