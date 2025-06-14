@@ -28,7 +28,7 @@ Section OrdEquiv.
 Let ord_eq A B := inhabited (ord_iso A B).
 Local Notation "A ~ B" := (ord_eq A B).
 
-Local Instance ord_eq_reflexive_class : Reflexive ord_eq.
+Global Instance ord_eq_reflexive_class : Reflexive ord_eq.
 Proof.
     split.
     intros A.
@@ -40,7 +40,7 @@ Proof.
         exact ab.
 Qed.
 
-Instance ord_eq_symmetric_class : Symmetric ord_eq.
+Global Instance ord_eq_symmetric_class : Symmetric ord_eq.
 Proof.
     split.
     intros A B [f].
@@ -54,7 +54,7 @@ Proof.
         exact ab.
 Qed.
 
-Instance ord_eq_transitive_class : Transitive ord_eq.
+Global Instance ord_eq_transitive_class : Transitive ord_eq.
 Proof.
     split.
     intros A B C [f] [g].

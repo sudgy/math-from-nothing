@@ -396,6 +396,15 @@ Proof.
     apply homo_lt2.
 Qed.
 
+Local Instance homo_le_inv `{@Bijective U V f} : HomomorphismLe (bij_inv f).
+Proof.
+    split.
+    intros a b leq.
+    apply (homo_le2 (f := f)).
+    do 2 rewrite bij_inv_eq2.
+    exact leq.
+Qed.
+
 (* begin hide *)
 End HomoLe.
 (* end hide *)
