@@ -120,6 +120,7 @@
 ./src/Set/Ordinal/ord_pow_def.v
 ./src/Set/Ordinal/ord_pow.v
 
+./src/Set/Cardinal/New/card2_base.v
 ./src/Set/Cardinal/card_base.v
 ./src/Set/Cardinal/card_order.v
 ./src/Set/Cardinal/card_plus.v
