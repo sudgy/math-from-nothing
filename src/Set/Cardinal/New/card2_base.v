@@ -91,9 +91,9 @@ Proof.
     exact eq.
 Qed.
 
-Theorem card_to_initial_ord_eq :
-    ∀ κ μ, card_to_initial_ord κ = card_to_initial_ord μ → κ = μ.
+Global Instance card_to_initial_ord_inj : Injective card_to_initial_ord.
 Proof.
+    split.
     intros κ μ eq.
     apply (f_equal ord_to_card) in eq.
     do 2 rewrite card_to_initial_ord_to_card_eq in eq.
