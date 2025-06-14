@@ -101,13 +101,13 @@ parameterized by this type.
 \end{class}
 
 \begin{class}
-    If $f : \U \to \V$ is a function such that $f(0) = 0$, we say that $f$
-    preserves the additive identity.
+    If $f : \U \to \V$ is a function such that $f(0) = 0$, we say that $f$ is
+    nullitive.
 \end{class}
 
 \begin{class}
     If $f : \U \to \V$ is a function such that $f(-a) = -f(a)$ for all $a$ in
-    $\U$, then we say that $f$ preserves additive inverses.
+    $\U$, then we say that $f$ is negatory.
 \end{class}
 
 Several of these classes together provide instances of some of the others.
@@ -137,8 +137,7 @@ Several of these classes together provide instances of some of the others.
 \end{proof}
 
 \begin{instance}
-    If addition is cancellative and $f$ is additive, then $f$ preserves the
-    additive identity.
+    If addition is cancellative and $f$ is additive, then $f$ is nullitive.
 \end{instance}
 \begin{proof}
     Because $0 + 0 = 0$, we also have $f(0 + 0) = f(0)$.  Using additivity,
@@ -146,7 +145,7 @@ Several of these classes together provide instances of some of the others.
 \end{proof}
 
 \begin{instance}
-    If $f$ is additive, then $f$ preserves additive inverses.
+    If $f$ is additive, then $f$ is negatory.
 \end{instance}
 \begin{proof}
     We know that $f(a - a) = f(0) = 0$, and using additivity we have $f(a) +
@@ -190,23 +189,20 @@ addition is commutative.
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve the additive identity
-    preserves the additive identity.
+    The composition of two nullitive functions is nullitive.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve the additive identity.  Then
+    Let $f$ and $g$ be two nullitive functions.  Then
     \[
         f(g(0)) = f(0) = 0.
     \]
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve additive inverses preserves
-    additive inverses.
+    The composition of two negatory functions is negatory.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve additive inverses.  Then for
-    all $x$,
+    Let $f$ and $g$ be two negatory functions.  Then for all $x$,
     \[
         f(g(-x)) = f(-g(x)) = -f(g(x)).
     \]
@@ -256,8 +252,8 @@ Coq does this automatically.
 \end{proof}
 
 \begin{theorem} \label{homo_zero_inj}
-    If $f$ is additive and preserves additive inverses, if $0 = f(a)$ implies
-    that $0 = a$ for all $a$ in $\U$, then $f$ is injective.
+    If $f$ is additive and negatory, if $0 = f(a)$ implies that $0 = a$ for all
+    $a$ in $\U$, then $f$ is injective.
 \end{theorem}
 \begin{proof}
     Let $b$ and $c$ be values in $\U$ such that $f(b) = f(c)$.  We must prove
@@ -267,8 +263,8 @@ Coq does this automatically.
 \end{proof}
 
 \begin{theorem} \label{homo_inj_zero}
-    If $f$ preserves the additive identity and is injective, then $0 \neq a$
-    implies that $0 \neq f(a)$ for all $a : \U$.
+    If $f$ is nullitive and injective, then $0 \neq a$ implies that $0 \neq
+    f(a)$ for all $a : \U$.
 \end{theorem}
 \begin{proof}
     Assume that $0 = f(a)$.  Then $f(0) = f(a)$, and because $f$ is injective,
@@ -363,8 +359,8 @@ Coq does this automatically.
 \end{class}
 
 \begin{class}
-    If $f : \U \to \V$ is a function such that $f(1) = 1$, we say that $f$
-    preserves the multiplicative identity.
+    If $f : \U \to \V$ is a function such that $f(1) = 1$, we say that $f$ is
+    unital.
 \end{class}
 Notice that from this and additivity we get $f(2) = 2$, $f(3) = 3$, etc.
 
@@ -440,11 +436,10 @@ multiplication laws when multiplication is commutative.
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve the multiplicative identity
-    preserves the multiplicative identity.
+    The composition of two unital functions is unital.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve the additive identity.  Then
+    Let $f$ and $g$ be two unital functions.  Then
     \[
         f(g(1)) = f(1) = 1.
     \]
@@ -594,7 +589,7 @@ reciprocal of zero, but do not put any constraints on what its value is.
 
 \begin{class}
     If $f : \U \to \V$ is a function such that $f(a^{-1}) = f(a)^{-1}$ for all
-    $a \neq 0$ in $\U$, then we say that $f$ preserves multiplicative inverses.
+    $a \neq 0$ in $\U$, then we say that $f$ is reciprocative.
 \end{class}
 
 \begin{instance}
@@ -655,8 +650,8 @@ reciprocal of zero, but do not put any constraints on what its value is.
 \end{proof}
 
 \begin{instance}
-    If $\U$ is a field and $f$ is multiplicative and preserves the
-    multiplicative identity, then $f$ is injective.
+    If $\U$ is a field and $f$ is multiplicative and unital, then $f$ is
+    injective.
 \end{instance}
 \begin{proof}
     We will use Theorem \ref{homo_zero_inj}.  Let $a$ be such that $0 = f(a)$
@@ -669,8 +664,7 @@ reciprocal of zero, but do not put any constraints on what its value is.
 \end{proof}
 
 \begin{instance}
-    If $f$ is multiplicative and preserves the multiplicative identity, then $f$
-    preserves multiplicative inverses.
+    If $f$ is multiplicative and unital, then $f$ is reciprocative.
 \end{instance}
 \begin{proof}
     Let $a \neq 0$.  Then by Theorem \ref{homo_inj_zero}, $f(a) \neq 0$ as well.
@@ -681,12 +675,12 @@ reciprocal of zero, but do not put any constraints on what its value is.
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve multiplicative inverses
-    preserves multiplicative inverses, if the first function is injective.
+    The composition of two reciprocative functions is reciprocative, if the
+    first function is injective.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve multiplicative inverses and
-    assume that $g$ is injective.  Then for all $x \neq 0$,
+    Let $f$ and $g$ be two reciprocative functions and assume that $g$ is
+    injective.  Then for all $x \neq 0$,
     \[
         f(g(x^{-1})) = f(g(x)^{-1}).
     \]
@@ -875,26 +869,24 @@ number of theorems that need to be proved.
 
 \begin{class}
     If $f : \U \to \V$ is a function such that $a \leq b$ implies that $f(a)
-    \leq f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves
-    inequalities in one direction.
+    \leq f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ is orderly.
 \end{class}
 
 \begin{class}
     If $f : \U \to \V$ is a function such that $a < b$ implies that $f(a) <
-    f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves strict
-    inequalities in one direction.
+    f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ is strictly orderly.
 \end{class}
 
 \begin{class}
     If $f : \U \to \V$ is a function such that $a \leq b \leftrightarrow f(a)
-    \leq f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves
-    inequalities in both directions.
+    \leq f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ is equivalently
+    orderly.
 \end{class}
 
 \begin{class}
     If $f : \U \to \V$ is a function such that $a < b \leftrightarrow f(a) <
-    f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ preserves strict
-    inequalities in both directions.
+    f(b)$ for all $a$ and $b$ in $\U$, then we say that $f$ is strictly
+    equivalently orderly.
 \end{class}
 
 \begin{instance} \label{wo_connex}
@@ -924,8 +916,7 @@ Notice now that to prove that a set is well-ordered, all we need to do is prove
 that it is antisymmetric and that every set has a minimum.
 
 \begin{instance} \label{homo_le_lt}
-    If $f$ is injective and preserves inequalities in one direction, then it
-    preserves strict inequalities in one direction.
+    If $f$ is injective and orderly, then it is strictly orderly.
 \end{instance}
 \begin{proof}
     Since we already know that $a \leq b \rightarrow f(a) \leq f(b)$, we only
@@ -934,61 +925,55 @@ that it is antisymmetric and that every set has a minimum.
 \end{proof}
 
 \begin{instance} \label{homo_le_le2}
-    If $f$ is injective and preserves inequalities in one direction, then it
-    preserves inequalities in both directions.
+    If $f$ is injective and orderly, then it is equivalently orderly.
 \end{instance}
 \begin{proof}
-    Because $f$ preserves inequalities in one direction already, we only need to
-    prove that $f(a) \leq f(b) \implies a \leq b$.  For a contradiction, assume
-    that $b < a$.  Then because $b \leq a$, we have $f(b) \leq f(a)$.  Because
-    $f(a) \leq f(b)$ and $f(b) \leq f(a)$, by antisymmetry we have $f(a) =
-    f(b)$.  By injectivity we have $a = b$, contradicting $b < a$.
+    Because $f$ is orderly already, we only need to prove that $f(a) \leq f(b)
+    \implies a \leq b$.  For a contradiction, assume that $b < a$.  Then because
+    $b \leq a$, we have $f(b) \leq f(a)$.  Because $f(a) \leq f(b)$ and $f(b)
+    \leq f(a)$, by antisymmetry we have $f(a) = f(b)$.  By injectivity we have
+    $a = b$, contradicting $b < a$.
 \end{proof}
 
 \begin{instance} \label{homo_lt_lt2}
-    If $f$ preserves strict inequalities in one direction, then it preserves
-    strict inequalities in both directions.
+    If $f$ is strictly orderly, then it is strictly equivalently orderly.
 \end{instance}
 \begin{proof}
-    Because $f$ preserves inequalities in one direction already, we only need to
-    prove that $f(a) < f(b) \implies a < b$.  For a contradiction, assume that
-    $b \leq a$.  Because $f(a) < f(b)$, we can't have $b = a$, so $b < a$.  Then
-    because $f$ preserves strict inequalities in one direction we have $f(b) <
-    f(a)$.  We can't have both $f(a) < f(b)$ and $f(b) < f(a)$, so it must be
-    the case that $a < b$.
+    Because $f$ is strictly orderly already, we only need to prove that $f(a) <
+    f(b) \implies a < b$.  For a contradiction, assume that $b \leq a$.  Because
+    $f(a) < f(b)$, we can't have $b = a$, so $b < a$.  Then because $f$ is
+    strictly orderly we have $f(b) < f(a)$.  We can't have both $f(a) < f(b)$
+    and $f(b) < f(a)$, so it must be the case that $a < b$.
 \end{proof}
 
 \begin{instance} \label{homo_le_compose}
-    The composition of two functions that preserve inequalities in one direction
-    preserves inequalities in one direction.
+    The composition of two orderly functions is orderly.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve inequalities in one
-    direction.  Then for all $a$ and $b$,
+    Let $f$ and $g$ be two orderly functions.  Then for all $a$ and $b$,
     \[
         a \leq b \to g(a) \leq g(b) \to f(g(a)) \leq f(g(b)).
     \]
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve strict inequalities in one
-    direction preserves strict inequalities in one direction.
+    The composition of two strictly orderly functions is strictly orderly.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve strict inequalities in one
-    direction.  Then for all $a$ and $b$,
+    Let $f$ and $g$ be two strictly orderly functions.  Then for all $a$ and
+    $b$,
     \[
         a < b \to g(a) < g(b) \to f(g(a)) < f(g(b)).
     \]
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve inequalities in one both
-    directions preserves inequalities in both directions.
+    The composition of two equivalently orderly functions is equivalently
+    orderly.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve inequalities in both
-    directions.  Then for all $a$ and $b$,
+    Let $f$ and $g$ be two equivalently orderly functions.  Then for all $a$ and
+    $b$,
     \[
         a \leq b \leftrightarrow g(a) \leq g(b) \leftrightarrow f(g(a)) \leq
         f(g(b)).
@@ -996,12 +981,12 @@ that it is antisymmetric and that every set has a minimum.
 \end{proof}
 
 \begin{instance}
-    The composition of two functions that preserve strict inequalities in both
-    directions preserves strict inequalities in both directions.
+    The composition of two strictly equivalently orderly functions is strictly
+    equivalently orderly.
 \end{instance}
 \begin{proof}
-    Let $f$ and $g$ be two functions that preserve strict inequalities in both
-    directions.  Then for all $a$ and $b$,
+    Let $f$ and $g$ be two strictly equivalently orderly functions.  Then for
+    all $a$ and $b$,
     \[
         a < b \leftrightarrow g(a) < g(b) \leftrightarrow f(g(a)) < f(g(b)).
     \]
@@ -2192,8 +2177,7 @@ numbers with no ambiguity.
 \end{proof}
 
 \begin{theorem} \label{homo-min}
-    If $f$ is a function that preserves inequalities in both directions, then
-    for all $a$ and $b$,
+    If $f$ is a function that is equivalently orderly, then for all $a$ and $b$,
     \[
         f(\min(a, b)) = \min(f(a), f(b)).
     \]
@@ -2206,8 +2190,7 @@ numbers with no ambiguity.
 \end{proof}
 
 \begin{theorem} \label{homo-max}
-    If $f$ is a function that preserves inequalities in both directions, then
-    for all $a$ and $b$,
+    If $f$ is a function that is equivalently orderly, then for all $a$ and $b$,
     \[
         f(\max(a, b)) = \max(f(a), f(b)).
     \]

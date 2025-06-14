@@ -32,9 +32,9 @@ antisymmetric and that every nonempty subset has a least element.
 \begin{definition}
     Define a relation $\sim$ on order types where $\A \sim \B$ is defined to
     mean that there exists an order isomorphism between $\A$ and $\B$, that is,
-    a function $f$ that is bijective and preserves inequalities in one
-    direction.  Note that these conditions also imply that $f$ preserves both
-    inequalities and strict inequalities in both directions.
+    a function $f$ that is bijective and orderly.  Note that these conditions
+    also imply that $f$ is equivalently orderly and strictly equivalently
+    orderly.
 \end{definition}
 
 \begin{lemma}
@@ -70,9 +70,9 @@ non-strict inequalities.
 
 \begin{definition}
     Let $\A$ and $\B$ be order types.  Then we say that $f : \A \to \B$ is an
-    ordinal inequality function if it is injective, preserves inequalities, and
-    if for all $b : \B$ with $f(a) \neq b$ for all $a : \A$, we have $f(a) < b$
-    for all $a : \A$.
+    ordinal inequality function if it is injective, orderly, and if for all $b :
+    \B$ with $f(a) \neq b$ for all $a : \A$, we have $f(a) < b$ for all $a :
+    \A$.
 \end{definition}
 
 \begin{definition}
@@ -93,11 +93,11 @@ non-strict inequalities.
     $g$, $h$, and $f^{-1}$ are all injective, so by Instance \ref{inj_comp}, $g
     \circ h \circ f^{-1}$ is as well.
 
-    \noindent \textit{Preserving inequalities.}
-    Let $a \leq b$.  Then $f(f^{-1}(a)) \leq f(f^{-1}(b))$, and because $f$
-    preserves inequalities, $f^{-1}(a) \leq f^{-1}(b)$.  Then because $g$ and
-    $h$ preserve inequalities, $g(h(f^{-1}(a))) \leq g(h(f^{-1}(b)))$, showing
-    that $g \circ h \circ f^{-1}$ preserves inequalities.
+    \noindent \textit{Orderly.}
+    Let $a \leq b$.  Then $f(f^{-1}(a)) \leq f(f^{-1}(b))$, and because $f$ is
+    orderly, $f^{-1}(a) \leq f^{-1}(b)$.  Then because $g$ and $h$ are orderly,
+    $g(h(f^{-1}(a))) \leq g(h(f^{-1}(b)))$, showing that $g \circ h \circ
+    f^{-1}$ is orderly.
 
     \noindent \textit{Ordinal inequality condition.}
     Let $b : D$ be such that there is no $a : B$ such that $g(h(f^{-1}(a))) =
@@ -137,24 +137,24 @@ of the order on ordinals.
     Now assume that there exists an $x : \B$ and an order isomorphism $f : \A
     \to \B_x$.  We must prove that $[\A] \leq [\B]$, and that $[\A] \neq [\B]$.
 
-    For $[\A] \leq [\B]$, $f$ itself is already injective and preserves
-    inequalities, so all that's left to prove is that for all $b : \B$, if $f(a)
-    \neq b$ for all $a$, then $f(a) < b$ for all $a$.  So let $b$ be such that
-    $f(a) \neq b$ for all $a$, and let $a : \A$.  If $b \leq f(a)$, because
-    $f(a) < x$ by definition of $f$, we have $b < x$.  Thus, $b$ is in $\B_x$,
-    so by surjectivity of $f$ there is some $z$ such that $f(z) = b$.  This
-    however contradicts the definition of $b$.  Thus, we must have $f(a) < b$,
-    showing that $f$ is an ordinal inequality function.
+    For $[\A] \leq [\B]$, $f$ itself is already injective and orderly, so all
+    that's left to prove is that for all $b : \B$, if $f(a) \neq b$ for all $a$,
+    then $f(a) < b$ for all $a$.  So let $b$ be such that $f(a) \neq b$ for all
+    $a$, and let $a : \A$.  If $b \leq f(a)$, because $f(a) < x$ by definition
+    of $f$, we have $b < x$.  Thus, $b$ is in $\B_x$, so by surjectivity of $f$
+    there is some $z$ such that $f(z) = b$.  This however contradicts the
+    definition of $b$.  Thus, we must have $f(a) < b$, showing that $f$ is an
+    ordinal inequality function.
 
     For $[\A] \neq [\B]$, assume for a contradiction that $\B \sim \A$.  Then
     there is an order isomorphism $g : B \to A$.  Then we can prove by
     transfinite induction that for all $a : \B$, $a \leq f(g(a))$.  The
     inductive hypothesis states that for all $b < a$, $b \leq f(g(b))$.  Now if
     $f(g(a)) < a$, we would have $f(g(a)) < f(g(f(g(a))))$, and because $f$ and
-    $g$ preserve inequalities, we have $a < f(g(a))$.  This contradicts $f(g(a))
-    < a$, so we must have $a \leq f(g(a))$ for all $a : \B$.  This implies that
-    $x \leq f(g(x))$, but by the definition of $f$ we must also have $f(g(x)) <
-    x$, which is a contradiction.  Thus, we must have $[\A] \neq [\B]$.
+    $g$ are orderly, we have $a < f(g(a))$.  This contradicts $f(g(a)) < a$, so
+    we must have $a \leq f(g(a))$ for all $a : \B$.  This implies that $x \leq
+    f(g(x))$, but by the definition of $f$ we must also have $f(g(x)) < x$,
+    which is a contradiction.  Thus, we must have $[\A] \neq [\B]$.
 \end{proof}
 
 Even though we can normally get away with only proving antisymmetry and the
@@ -211,7 +211,7 @@ connex, so those will have to be proven on their own anyway.
     \end{subproof}
 
     \begin{lemma} \label{ord_connex_preserve}
-        $g$ preserves strict inequalities for good values.
+        $g$ is strictly orderly for good values.
     \end{lemma}
     \begin{subproof}
         This follows directly from the previous lemma.
@@ -223,9 +223,8 @@ connex, so those will have to be proven on their own anyway.
     \begin{subproof}
         Let $a$ and $b$ be good values such that $g(a) = g(b)$.  For a
         contradiction, assume that $a \neq b$, and without loss of generality,
-        assume that $a < b$.  Because $g$ preserves strict inequalities for good
-        values, we have $g(a) < g(b)$, contradicting $g(a) = g(b)$.  Thus, $a =
-        b$.
+        assume that $a < b$.  Because $g$ is stirctly orderly for good values,
+        we have $g(a) < g(b)$, contradicting $g(a) = g(b)$.  Thus, $a = b$.
     \end{subproof}
 
     \begin{lemma} \label{ord_connex_all_good}
@@ -257,24 +256,24 @@ connex, so those will have to be proven on their own anyway.
         $g(a)$ is the least element of $G_a$.  Since $x \in G_a$, we have $g(a)
         \leq x$, as required.
 
-        $g$ preserves inequalities for all $x < n$ because by the inductive
-        hypothesis, all such $x$ are good, and $g$ preserves inequalities on
-        good values by Lemma \ref{ord_connex_preserve}.
+        $g$ is orderly for all $x < n$ because by the inductive hypothesis, all
+        such $x$ are good, and $g$ is orderly on good values by Lemma
+        \ref{ord_connex_preserve}.
 
         Thus, under the assumption that $n$ is not good, $g$ is an order
         isomorphism from $\B_n$ to $\A$, which is impossible, so all $n : \B$
         are good.
     \end{subproof}
     At this point, most parts of the proof are complete.  Because all values are
-    good, $g$ is an injective order-preserving function from $\B$ to $\A$.  We
-    only need to prove the final condition to show that $g$ is an ordinal
-    inequality function.  Let $b : \A$ with $g(a) \neq b$ for all $a : \B$, and
-    let $a : \B$.  We must prove that $g(a) < b$.  The proof will be by
-    transfinite induction on $a$.  The inductive hypothesis states that for all
-    $c < a$, we have $g(c) < b$.  This means that $b \in G_a$.  Now since $g(a)
-    \neq b$, we only need to prove that $g(a) \leq b$.  By Lemma
-    \ref{ord_connex_least}, $g(a)$ is the least element of $G_a$, and since $b
-    \in G_a$, $g(a) \leq b$ as required.
+    good, $g$ is an injective orderly function from $\B$ to $\A$.  We only need
+    to prove the final condition to show that $g$ is an ordinal inequality
+    function.  Let $b : \A$ with $g(a) \neq b$ for all $a : \B$, and let $a :
+    \B$.  We must prove that $g(a) < b$.  The proof will be by transfinite
+    induction on $a$.  The inductive hypothesis states that for all $c < a$, we
+    have $g(c) < b$.  This means that $b \in G_a$.  Now since $g(a) \neq b$, we
+    only need to prove that $g(a) \leq b$.  By Lemma \ref{ord_connex_least},
+    $g(a)$ is the least element of $G_a$, and since $b \in G_a$, $g(a) \leq b$
+    as required.
 \end{proof}
 
 \begin{lemma} \label{ord_le_part}
@@ -296,7 +295,7 @@ connex, so those will have to be proven on their own anyway.
 \begin{proof}
     Let $\A$ and $\B$ be order types with ordinal inequality functions $f : \A
     \to \B$ and $g : \B \to \A$.  We will prove that $f$ itself is an order
-    isomorphism.  It already preserves inequalities and is injective, so we only
+    isomorphism.  It is already orderly and injective, so we only
     need to prove that it is surjective.  Let $x : \B$.  We will prove that
     $f(g(x)) = x$.  The proof will be by transfinite induction on $x$.  The
     inductive hypothesis states that for all $b < x$, $f(g(b)) = b$.
@@ -319,21 +318,21 @@ connex, so those will have to be proven on their own anyway.
 We can now prove a simpler form of ordinal inequalities.
 
 \begin{lemma} \label{ord_le_simpl}
-    For all order types $\A$ and $\B$, if there exists an injective
-    order-preserving function from $\A$ to $\B$, then $[\A] \leq [\B]$.
+    For all order types $\A$ and $\B$, if there exists an injective orderly
+    function from $\A$ to $\B$, then $[\A] \leq [\B]$.
 \end{lemma}
 \begin{proof}
-    Let $f$ be an injective order-preserving function from $\A$ to $\B$, and
-    assume for a contradiction that $[\B] < [\A]$.  This means that there exists
-    $x : \A$ and an order isomorphism $g : \B \to \A_x$.  Defining $h = g \circ
-    f$, we have an injective order-preserving function from $\A$ to $\A_x$.
+    Let $f$ be an injective orderly function from $\A$ to $\B$, and assume for a
+    contradiction that $[\B] < [\A]$.  This means that there exists $x : \A$ and
+    an order isomorphism $g : \B \to \A_x$.  Defining $h = g \circ f$, we have
+    an injective orderly function from $\A$ to $\A_x$.
 
     Let $a$ be an arbitrary value in $\A$.  We will prove by transfinite
     induction that $a \leq h(a)$.  The inductive hypothesis states that for all
     $b < a$, we have $b \leq h(b)$.  Now if $h(a) < a$, we would have $h(a) \leq
-    h(h(a))$ by the inductive hypothesis, so $a \leq h(a)$ by $h$ preserving
-    inequalities.  $h(a) < a$ contradicts $a \leq h(a)$, proving that $a \leq
-    h(a)$ for all $a$.
+    h(h(a))$ by the inductive hypothesis, so $a \leq h(a)$ by $h$ being
+    equivalently orderly.  $h(a) < a$ contradicts $a \leq h(a)$, proving that $a
+    \leq h(a)$ for all $a$.
 
     By the previous paragraph, we have $x \leq h(x)$.  But by definition, $h(x)
     < x$.  This is a contradiction, showing that our original assumption that
@@ -350,7 +349,7 @@ another.
 \begin{proof}
     Let $\A$, $\B$, and $\C$ be order types with ordinal inequality functions $f
     : \A \to \B$ and $g : \B \to \C$.  By Lemma \ref{ord_le_simpl}, We need to
-    find an injective order-preserving function from $\A$ to $\C$.  By instances
+    find an injective orderly function from $\A$ to $\C$.  By instances
     \ref{inj_comp} and \ref{homo_le_compose}, $g \circ f$ is such a function.
 \end{proof}
 
@@ -369,12 +368,11 @@ another.
     than $[\A]$.  This means that there exists some $x : \A$ such that $\Y$ is
     order isomorphic to $\A_x$.  Then $f(x) = [\A_x] = [\Y]$ as required.
 
-    We will now prove that $f$ preserves inequalities in one direction.  Let $a$
-    and $b$ be values in $\A$ such that $a \leq b$.  Then we must prove that
-    $f(a) \leq f(b)$.  By Lemma \ref{ord_le_simpl}, we need to find an injective
-    order-preserving function from $\A_a$ to $\A_b$.  Because $a \leq b$,
-    everything in $\A_a$ is in $\A_b$, so we the identity function is such a
-    function.
+    We will now prove that $f$ is orderly.  Let $a$ and $b$ be values in $\A$
+    such that $a \leq b$.  Then we must prove that $f(a) \leq f(b)$.  By Lemma
+    \ref{ord_le_simpl}, we need to find an injective orderly function from
+    $\A_a$ to $\A_b$.  Because $a \leq b$, everything in $\A_a$ is in $\A_b$, so
+    we the identity function is such a function.
 
     Now that we have a well-behaved function $f : \A \to \Ord_{[\A]}$, define a
     new set $S' = \{a \A \mid f(a) \in S\}$.  Because $f$ is surjective, there
@@ -384,9 +382,8 @@ another.
     since $m \in S'$.  To prove that it's the least element in $S$, let $\gamma$
     be an ordinal less than $[\A]$ that is in $S$.  Since $f$ is surjective,
     there exists some $z$ such that $f(z) = \gamma$.  Then $z \in S'$, so $m
-    \leq z$ because $m$ is the least element of $S'$.  Because $f$ preserves
-    inequalities, $f(m) \leq f(z) = \gamma$, showing that $f(m)$ is the least
-    element of $S$.
+    \leq z$ because $m$ is the least element of $S'$.  Because $f$ is orderly,
+    $f(m) \leq f(z) = \gamma$, showing that $f(m)$ is the least element of $S$.
 \end{proof}
 
 \begin{instance}
@@ -481,14 +478,13 @@ another.
     If $y : \D$, then by the surjectivity of $g$, there is an $x$ such that
     $|g(x) = h(x) = |y$.  Either way, $h$ is surjective.
 
-    For preserving inequalities, let $x$ and $y$ be values in $\A \oplus \C$
-    such that $x \leq y$.  If $x : \A$ and $y : \A$, then since $f$ preserves
-    inequalities, we have $f(x)| \leq f(y)|$, showing that $h(x) \leq h(y)$.  If
-    $x : \A$ and $y : \C$, then $f(x)| \leq |g(y)$ by definition, showing that
-    $h(x) \leq h(y)$.  If $x : \C$ and $y : \A$, then $|x \leq y|$ is
-    impossible, so this case is impossible.  If $x : \C$ and $y : \C$, then
-    since $g$ preserves inequalities, we have $|g(x) \leq |g(y)$, showing that
-    $h(x) \leq h(y)$.
+    For being orderly, let $x$ and $y$ be values in $\A \oplus \C$ such that $x
+    \leq y$.  If $x : \A$ and $y : \A$, then since $f$ is orderly, we have
+    $f(x)| \leq f(y)|$, showing that $h(x) \leq h(y)$.  If $x : \A$ and $y :
+    \C$, then $f(x)| \leq |g(y)$ by definition, showing that $h(x) \leq h(y)$.
+    If $x : \C$ and $y : \A$, then $|x \leq y|$ is impossible, so this case is
+    impossible.  If $x : \C$ and $y : \C$, then since $g$ is orderly, we have
+    $|g(x) \leq |g(y)$, showing that $h(x) \leq h(y)$.
 \end{proof}
 
 \begin{instance}
@@ -531,14 +527,14 @@ automatically, so I just let it tell me when I'm doing something wrong.
     you can construct the corresponding value $x$ in $\A + (\B + \C)$, where
     $f(x) = y$ by definition.
 
-    For preserving inequalities, let $x$ and $y$ be values in $\A + (\B + \C)$
-    such that $x \leq y$.  There are nine cases, depending on which types $x$
-    and $y$ are in.  When $x : \A$ and $y : \B$ or $y : \C$, or when $x : \B$
-    and $y : \C$, $x \leq y$ in $(\A + \B) + \C$ by definition.  In the opposite
-    cases where the types of $x$ and $y$ are swapped from the previous cases, $x
-    \leq y$ in $\A + (\B + \C)$ is impossible, so these cases are impossible.
-    In the final cases, where $x$ and $y$ have the same type, $x \leq y$ in $(\A
-    + \B) + \C$ follows directly from $x \leq y$ in $\A + (\B + \C)$.
+    For being orderly, let $x$ and $y$ be values in $\A + (\B + \C)$ such that
+    $x \leq y$.  There are nine cases, depending on which types $x$ and $y$ are
+    in.  When $x : \A$ and $y : \B$ or $y : \C$, or when $x : \B$ and $y : \C$,
+    $x \leq y$ in $(\A + \B) + \C$ by definition.  In the opposite cases where
+    the types of $x$ and $y$ are swapped from the previous cases, $x \leq y$ in
+    $\A + (\B + \C)$ is impossible, so these cases are impossible.  In the final
+    cases, where $x$ and $y$ have the same type, $x \leq y$ in $(\A + \B) + \C$
+    follows directly from $x \leq y$ in $\A + (\B + \C)$.
 \end{proof}
 
 \begin{instance}
@@ -593,12 +589,12 @@ automatically, so I just let it tell me when I'm doing something wrong.
     $y : (\C \oplus \B)_{|x}$.  Then because $f$ is surjective, we have an $a$
     with $f(a) = y$.  Then $g(|a) = |f(a) = |y$ as required.
 
-    For preserving inequalities, let $a$ and $b$ be values in $C \oplus A$ with
-    $a \leq b$.  If $a : \C$ and $b : \C$, $a \leq b$ is equivalent to $g(a)
-    \leq g(b)$.  If $a : \C$ and $b : \A$, we have $g(a|) = a| \leq |f(b) =
-    g(|b)$.  If $a : \A$ and $b : \C$, $a \leq b$ is impossible.  If $a : \A$
-    and $b : \A$, then because $f$ preserves inequalities, we have $f(a) \leq
-    f(b)$, so $g(|a) \leq g(|b)$ as required.
+    For being orderly, let $a$ and $b$ be values in $C \oplus A$ with $a \leq
+    b$.  If $a : \C$ and $b : \C$, $a \leq b$ is equivalent to $g(a) \leq g(b)$.
+    If $a : \C$ and $b : \A$, we have $g(a|) = a| \leq |f(b) = g(|b)$.  If $a :
+    \A$ and $b : \C$, $a \leq b$ is impossible.  If $a : \A$ and $b : \A$, then
+    because $f$ is orderly, we have $f(a) \leq f(b)$, so $g(|a) \leq g(|b)$ as
+    required.
 \end{proof}
 
 \begin{instance}
@@ -666,14 +662,14 @@ automatically, so I just let it tell me when I'm doing something wrong.
     all $a$, then $y \in C$, so $g(|y) = y$ as required.  If there is an $a$ with
     $f(a) = y$, when $g(|a) = f(a) = y$ as required.
 
-    For preserving inequalities, let $x$ and $y$ be values in $\A + \T(C)$ with
-    $x \leq y$.  If $x : \A$ and $y : \A$, $g(x) \leq g(y)$ is equivalent to
-    $f(x) \leq f(y)$, which follows from $f$ preserving inequalities.  If $x :
-    \A$ and $y : \T(C)$, $y$ being in $c$ is precisely the condition in $f$
-    being an ordinal inequality function, so $f(x) \leq y$.  When $x : \T(C)$
-    and $y : \A$, $|x < y|$ is already impossible, so this case is impossible.
-    When $x : \T(C)$ and $y : \T(C)$, $g(x) \leq g(y)$ is precisely $x \leq y$,
-    which we already have.
+    For being orderly, let $x$ and $y$ be values in $\A + \T(C)$ with $x \leq
+    y$.  If $x : \A$ and $y : \A$, $g(x) \leq g(y)$ is equivalent to $f(x) \leq
+    f(y)$, which follows from $f$ being orderly.  If $x : \A$ and $y : \T(C)$,
+    $y$ being in $c$ is precisely the condition in $f$ being an ordinal
+    inequality function, so $f(x) \leq y$.  When $x : \T(C)$ and $y : \A$, $|x <
+    y|$ is already impossible, so this case is impossible.  When $x : \T(C)$ and
+    $y : \T(C)$, $g(x) \leq g(y)$ is precisely $x \leq y$, which we already
+    have.
 \end{proof}
 
 \begin{theorem} \label{ord_lt_ex}
@@ -724,7 +720,7 @@ automatically, so I just let it tell me when I'm doing something wrong.
 \end{theorem}
 \begin{proof}
     Let $\A$ and $\B$ be order types.  Then the function $f : \B \to \A + \B$
-    given by $f(x) = |x$ is injective and preserves inequalities, so by Theorem
+    given by $f(x) = |x$ is injective and orderly, so by Theorem
     \ref{ord_le_simpl} we have $[\A] \leq [\B] + [\A]$.
 \end{proof}
 
@@ -766,8 +762,8 @@ automatically, so I just let it tell me when I'm doing something wrong.
     For all order types $\A$, if $\A \to \verb|False|$, then $0 = [\A]$.
 \end{theorem}
 \begin{proof}
-    The empty function from $\E$ to $\A$ is vacuously injective and preserves
-    inequalities.  It vacuously surjective because $\A \to \verb|False|$.
+    The empty function from $\E$ to $\A$ is vacuously injective and orderly.  It
+    vacuously surjective because $\A \to \verb|False|$.
 \end{proof}
 
 \section{Multiplication}
@@ -796,10 +792,10 @@ automatically, so I just let it tell me when I'm doing something wrong.
     $g$ are surjective, we have an $a$ and $c$ such that $f(a) = b$ and $g(c) =
     d$.  Then $h(a, c) = (f(a), g(c)) = (b, d)$ as required.
 
-    For preserving inequalities, let $(a_1, c_1)$ and $(a_2, c_2)$ be such that
-    $(a_1, c_1) \leq (a_2, c_2)$.  By the definition of the dictionary order,
-    $(a_1, c_1) \leq (a_2, c_2)$ means that either $c_1 < c_2$, or $a_1 \leq a_2$
-    and $c_1 = c_2$.  When $c_1 < c_2$, we have $g(c_1) < g(c_2)$, meaning that
+    For being orderly, let $(a_1, c_1)$ and $(a_2, c_2)$ be such that $(a_1,
+    c_1) \leq (a_2, c_2)$.  By the definition of the dictionary order, $(a_1,
+    c_1) \leq (a_2, c_2)$ means that either $c_1 < c_2$, or $a_1 \leq a_2$ and
+    $c_1 = c_2$.  When $c_1 < c_2$, we have $g(c_1) < g(c_2)$, meaning that
     $(f(a_1), g(c_1)) \leq (f(a_2), g(c_2))$.  When $a_1 \leq a_2$ and $c_1 =
     c_2$, we have $f(a_1) \leq f(a_2)$ and $g(c_1) = g(c_2)$, meaning that
     $(f(a_1), g(c_1)) \leq (f(a_2), g(c_2))$.  Either way, we have $(f(a_1),
@@ -837,12 +833,11 @@ things about it quite cumbersome.
     If $x : \B$, then $f(a, x|) = (a, x)$, and if $x : \C$, then $f(a, |x) = (a,
     x)$.
 
-    For preserving inequalities, let $(a_1, x_1)$ and $(a_2, x_2)$ be such that
-    $(a_1, x_1) \leq (a_2, x_2)$.  We have four cases for when $x_1$ and $x_2$
-    are values in $\B$ and $\C$, but then each case has two more cases for
-    whether $(a_1, x_2) \leq (a_2, x_2)$ means that $x_1 < x_2$ or that $a_1
-    \leq a_2$ and $x_1 = x_2$.  However, some of the cases end up being the same
-    still.
+    For being orderly, let $(a_1, x_1)$ and $(a_2, x_2)$ be such that $(a_1,
+    x_1) \leq (a_2, x_2)$.  We have four cases for when $x_1$ and $x_2$ are
+    values in $\B$ and $\C$, but then each case has two more cases for whether
+    $(a_1, x_2) \leq (a_2, x_2)$ means that $x_1 < x_2$ or that $a_1 \leq a_2$
+    and $x_1 = x_2$.  However, some of the cases end up being the same still.
     \begin{case} $x_1 : \B$ and $x_2 : \B$.
         In this case, $f(a_1, x_1) \leq f(a_2, x_2)$ is precisely the statement
         that $(a_1, b_1) \leq (a_2, b_2)$, which we already have.
@@ -870,12 +865,12 @@ things about it quite cumbersome.
 \begin{proof}
     Let $\A$, $\B$, and $\C$ be order types.  Define $f : \A \times (\B \times
     \C) \to (\A \times \B) \times \C$ by $f(a, (b, c)) = ((a, b), c)$.  This
-    function is easily shown to be bijective.  To show that it preserves
-    inequalities, let $(a_1, (b_1, c_1))$ and $(a_2, (b_2, c_2))$ be such that
-    $(a_1, (b_1, c_1)) \leq (a_2, (b_2, c_2))$.  We have two cases: when $(b_1,
-    c_1) < (b_2, c_2)$, and when $a_1 \leq a_2$ and $(b_1, c_1) = (b_2, c_2)$.
-    The first case can be split into two further cases: when $c_1 < c_2$, and
-    when $b_1 < b_2$ and $c_1 = c_2$.  Thus there are three cases.
+    function is easily shown to be bijective.  To show that it is orderly, let
+    $(a_1, (b_1, c_1))$ and $(a_2, (b_2, c_2))$ be such that $(a_1, (b_1, c_1))
+    \leq (a_2, (b_2, c_2))$.  We have two cases: when $(b_1, c_1) < (b_2, c_2)$,
+    and when $a_1 \leq a_2$ and $(b_1, c_1) = (b_2, c_2)$.  The first case can
+    be split into two further cases: when $c_1 < c_2$, and when $b_1 < b_2$ and
+    $c_1 = c_2$.  Thus there are three cases.
     \setcounter{case}{0}
     \begin{case} $c_1 < c_2$.
         This directly proves $((a_1, b_1), c_1) \leq ((a_2, b_2), c_2)$.
@@ -924,11 +919,10 @@ things about it quite cumbersome.
 \end{instance}
 \begin{proof}
     The proof mostly goes the same as the last proof but with $P_1$ instead of
-    $P_2$, except that proving that that $P_1$ preserves inequalities is a
-    little different.  Let $(a_1, a_2) \leq (b_1, b_2)$.  It's impossible for
-    $a_2 < b_2$ because they are both elements of the singleton type.  Thus, we
-    must have $a_1 \leq b_1$ and $a_2 = b_2$, from which we already have $a_1
-    \leq b_1$ as required.
+    $P_2$, except that proving that that $P_1$ is orderly is a little different.
+    Let $(a_1, a_2) \leq (b_1, b_2)$.  It's impossible for $a_2 < b_2$ because
+    they are both elements of the singleton type.  Thus, we must have $a_1 \leq
+    b_1$ and $a_2 = b_2$, from which we already have $a_1 \leq b_1$ as required.
 \end{proof}
 
 \begin{theorem} \label{ord_mult_zero}
@@ -1016,18 +1010,18 @@ things about it quite cumbersome.
 \begin{proof}
     Let $\A$, $\B$, and $\C$ be order types with an ordinal inequality function
     $f : \A \to \B$.  By Theorem \ref{ord_le_simpl}, we need to find an
-    injective order-preserving function from $\A \times \C$ to $\B \times \C$.
+    injective orderly function from $\A \times \C$ to $\B \times \C$.
     We will prove that the function $g(a, c) = (f(a), c)$ works.
 
     For injectivity, let $(a_1, c_1)$ and $(a_2, c_2)$ be such that $g(a_1, c_1)
     = g(a_2, c_2)$.  This means that $f(a_1) = f(a_2)$ and that $c_1 = c_2$.  By
     the injectivity of $f$, we have $a_1 = a_2$, so $(a_1, c_1) = (a_2, c_2)$.
 
-    For preserving inequalities, let $(a_1, c_1) \leq (a_2, c_2)$.  We must
-    prove that $(f(a_1), c_1) \leq (f(a_2), c_2)$.  If $c_1 < c_2$, we directly
-    have $(f(a_1), c_1) \leq (f(a_2), c_2)$.  If $a_1 \leq a_2$ and $c_1 = c_2$,
-    then $f(a_1) \leq f(a_2)$ by $f$ preserving inequalities, so $(f(a_1), c_1)
-    \leq (f(a_2), c_2)$.
+    For being orderly, let $(a_1, c_1) \leq (a_2, c_2)$.  We must prove that
+    $(f(a_1), c_1) \leq (f(a_2), c_2)$.  If $c_1 < c_2$, we directly have
+    $(f(a_1), c_1) \leq (f(a_2), c_2)$.  If $a_1 \leq a_2$ and $c_1 = c_2$, then
+    $f(a_1) \leq f(a_2)$ by $f$ being orderly, so $(f(a_1), c_1) \leq (f(a_2),
+    c_2)$.
 \end{proof}
 
 \begin{theorem} \label{ord_lt_mult_rcancel}
