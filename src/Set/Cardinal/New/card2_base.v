@@ -1,7 +1,6 @@
 Require Import init.
 
-Require Import set.
-Require Import basic_categories.
+Require Export set.
 Require Import well_order.
 
 Require Import ord2_order.

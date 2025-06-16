@@ -35,7 +35,7 @@ really feasible.  Instead, the basics of ordinals will be developed, then the
 basics of cardinals, which will allow for the rest of the theory of each type to
 be developed separately.
 
-\section{Basic Construction of the Ordinals}
+\section{Construction of the Ordinals}
 
 \begin{definition}
     We will say that an order type is a type $\U$ that has a well order.
@@ -454,5 +454,96 @@ transfinite recursion seems to be severely limited.  However, if we first
 develop some of the theory of cardinals, we will find a way around this issue,
 making transfinite recursion of ordinals as powerful as it is in other
 foundations.
+
+\section{Construction of the Cardinals}
+
+The construction of the cardinals is similar to the construction of the
+ordinals.
+
+\begin{definition}
+    Define a relation $\sim$ on types where $\A \sim \B$ is defined to mean that
+    there exists a bijective function from $\A$ to $\B$.
+\end{definition}
+
+\begin{lemma}
+    The relation $\sim$ is an equivalence relation.
+\end{lemma}
+\begin{proof}
+    For reflexivity, the identity function is bijective, for symmetry, the
+    inverse of a bijective function is bijective, and for transitivity, the
+    composition of two bijective functions is bijective.
+\end{proof}
+
+\begin{definition}
+    Define the type $\Card$ to be the quotient of all types by $\sim$.
+\end{definition}
+
+Like the ordinals, the cardinals are a type that contains other types, so if the
+types used to build the cardinals are of type $\Type_n$, the cardinals are of
+type $\Type_{n+1}$.  This solves the naive set theory paradoxes in the same way
+as with the ordinals, and also introduces the same issues as before.  Again, we
+will solve these issues a little later.
+
+\begin{definition}
+    Given a type $\A$, we will use the notation $|\A|$ to mean the cardinality
+    of $\A$, that is, the equivalence class of $\A$.
+\end{definition}
+
+We can also relate the cardinals to the ordinals in a few ways.
+
+\begin{lemma}
+    For all order types $\A$ and $\B$, if $\A \sim \B$ in the ordinal sense,
+    then $|\A| = |\B|$.
+\end{lemma}
+\begin{proof}
+    Because $\A \sim \B$, we have an order isomorphism between $\A$ and $\B$.
+    Order isomorphisms are bijective, meaning that $|\A| = |\B|$.
+\end{proof}
+
+\begin{definition}
+    Define a function from the ordinals to the cardinals given by Theorem
+    \ref{unary_op_ex} and the previous lemma.  At the possible risk of abusing
+    notation, denote this function with $|\alpha|$ for a given ordinal $\alpha$.
+\end{definition}
+
+\begin{lemma}
+    For all cardinals $\kappa$, there exists an ordinal $\alpha$ such that
+    $|\alpha| = \kappa$.
+\end{lemma}
+\begin{proof}
+    Let $\A$ be a type.  By the well-ordering theorem, $\A$ can be well-ordered.
+    Then the ordinal $[\A]$ is such that $|[\A]| = |\A|$ as required.
+\end{proof}
+
+\begin{definition}
+    Define a function from the cardinals to the ordinals given by the least
+    ordinal satisfying the result of the previous theorem.  Denote this function
+    $\lfloor \kappa \rfloor$ for a given cardinal $\kappa$.
+\end{definition}
+
+\begin{theorem} \label{card_to_initial_ord_to_card_eq}
+    For all cardinals $\kappa$, we have $|\lfloor \kappa \rfloor| = \kappa$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{instance}
+    The function $\lfloor \kappa \rfloor$ is injective.
+\end{instance}
+\begin{proof}
+    Let $\kappa$ and $\mu$ be cardinals such that $\lfloor \kappa \rfloor =
+    \lfloor \mu \rfloor$.  Then we can take the cardinality of both sides to get
+    $|\lfloor \kappa \rfloor| = |\lfloor \mu \rfloor|$.  By Theorem
+    \ref{card_to_initial_ord_to_card_eq}, we have $\kappa = \mu$.
+\end{proof}
+
+\begin{theorem} \label{ord_to_card_to_initial_ord_le}
+    For all ordinals $\alpha$, we have $\lfloor|\alpha|\rfloor \leq \alpha$.
+\end{theorem}
+\begin{proof}
+    This follows directly from $\lfloor|\alpha|\rfloor$ being the smallest
+    ordinal equivalent to $|\alpha|$.
+\end{proof}
 
 \end{document}
