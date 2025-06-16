@@ -9,7 +9,7 @@ While you are free to do whatever you wish with the code (as long as it is permi
 Some of the interesting things developed in this project are:
 - Construction of various number systems, including the natural numbers, integers, rationals, real numbers, cardinals, and ordinals.
 - An extensive system of typeclasses for basic algebraic manipulations
-- Set theory is developed as a part of a nonconstructive type theory.  This enables the definition of cardinals and ordinals as equivalence classes on types rather than their traditional definition in ZFC.  While I have suspicions that this isn't quite as powerful as ZFC (I haven't found a way to define aleph-omega, for example), it is more than sufficient for the rest of the mathematics in the project.
+- Set theory is developed as a part of a nonconstructive type theory.  This enables the definition of cardinals and ordinals as equivalence classes on types rather than their traditional definition in ZFC.
 - Several basic theorems about topology
 - Several basic theorems about analysis
 - A construction of the geometric algebra of a module over a commutive ring
