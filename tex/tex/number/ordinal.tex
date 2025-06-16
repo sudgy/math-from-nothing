@@ -8,16 +8,34 @@
 
 \setcounter{chapter}{8}
 
-\chapter{The Ordinals}
+\chapter{Cardinals and Ordinals}
 
-The ordinals are a way of studying well-ordered sets, by basically considering
-all of them at once.  They were initially described as equivalence classes of
-well-ordered sets, but there were issues with this initial conception and modern
-set theories tend to use other constructions.  However, in the foundations used
-here, we won't have those issues, so we can describe ordinals using their
-traditional interpretation as equivalence classes of well-ordered sets.
+The cardinals and ordinals are concepts that extend the natural numbers to
+infinite values in two different ways.  Traditionally, the cardinals were
+conceived of as equivalence classes of types under the existence of bijections,
+and the ordinals as equivalence classes of well-ordered types under the
+existence of order isomorphisms.  However, under naive set theory, these
+definitions are inconsistent due to problems with things like the set of all
+ordinals or the set of all cardinals.
 
-\section{Basic Construction}
+In modern set theories such as ZFC, ordinals are instead taken to be particular
+sets, with cardinals being defined as particular ordinals.  In ZFC, there is no
+``set of all ordinals'' or ``set of all cardinals'', which removes the
+inconsistencies of the original definition.
+
+However, in the foundations used here, there is another way around the
+inconsistencies which allows us to define cardinals and ordinals using the
+original definitions.  The exact way around the inconsistencies involves the
+universe hierarchy, and some of the theorems here will need to be explicit about
+what universe certain types are in.
+
+While I wanted to separate the cardinals and ordinals into their own chapters,
+the development of the theory of each one is reliant on the other, so this isn't
+really feasible.  Instead, the basics of ordinals will be developed, then the
+basics of cardinals, which will allow for the rest of the theory of each type to
+be developed separately.
+
+\section{Basic Construction of the Ordinals}
 
 \begin{definition}
     We will say that an order type is a type $\U$ that has a well order.
@@ -58,7 +76,18 @@ antisymmetric and that every nonempty subset has a least element.
     Define the type $\Ord$ to be the quotient of all order types by $\sim$.
 \end{definition}
 
-\section{Order}
+Note that because $\Ord$ is a type that contains order types, $\Ord$ must be
+higher on the universe hierarchy than order types are.  In particular, if order
+types live in $\Type_n$, then $\Ord$ lives in $\Type_{n+1}$.  This means that it
+is impossible to build an order type out of ordinals, so it is also impossible
+to build an ordinal out of a set of ordinals.  So while there is a type of all
+ordinals, it lives in a different universe than order types themselves, removing
+the inconsistencies of naive set theory.  However, being unable to create
+ordinals out of sets of ordinals entirely seems to be a major restriction on the
+theory.  We will find a way around this restriction in a few sections after
+developing the theory of cardinals for a bit.
+
+\section{Ordering Ordinals}
 
 It turns out that the ordinals themselves are well ordered.  This ordering is so
 important that unlike the previous types that have been developed, this ordering
@@ -418,5 +447,12 @@ ordinal out of ordinals, using the following function works well enough.
     \alpha$, then since $\mu < \alpha$, we have $\mu < y$.  Either way, $\mu
     \leq y$, showing that $\mu$ is the least element of $S$.
 \end{proof}
+
+Thus, we can now perform transfinite induction and recursion on the ordinals.
+However, given that not all sets of ordinals have a supremum, the use of
+transfinite recursion seems to be severely limited.  However, if we first
+develop some of the theory of cardinals, we will find a way around this issue,
+making transfinite recursion of ordinals as powerful as it is in other
+foundations.
 
 \end{document}
