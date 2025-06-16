@@ -12,24 +12,21 @@ Constructions (CIC) used by Coq.  I actually don't know how to describe CIC
 rigorously, so in this section I will only describe things in non-precise terms.
 
 The fundamental entity is types.  Types have values, and a value $a$ having a
-type $\mathbb U$ is written as $a : \mathbb U$.  There are two main categories
-of types: \verb|Prop| and \verb|Set|.  \verb|Prop| is impredicative, while I
-don't actually know what's special about \verb|Set|.  Case analysis (described
-below) on values of type \verb|Prop| is not allowed when constructing values of
-a type other than \verb|Prop|.  Other than types explicitly in \verb|Prop|, most
-types will be written in blackboard bold: $\mathbb A$, $\mathbb B$, etc.
+type $\mathbb U$ is written as $a : \mathbb U$.  Each type itself has a type,
+and there exists a hierarchy of these ``types of types'' \verb|Type|$_0$,
+\verb|Type|$_1$, \ldots such that $\verb|Type|_n : \verb|Type|_{n + 1}$.  For
+utility, Coq further adds the rule that $\verb|Type|_i : \verb|Type|_j$ for all
+$i < j$.  $\verb|Type|_n : \verb|Type|_n$ is inconsistent.
 
-Types form a hierarchy: there exist types \verb|Type|$_0$, \verb|Type|$_1$,
-\ldots such that $\verb|Type|_n : \verb|Type|_{n + 1}$.  \verb|Prop| and
-\verb|Set| are both values in some \verb|Type|$_n$.  While you do not need to
-worry about this hierarchy most of the time, every once in a while certain
-constructions are prohibited by the hierarchy, because $\verb|Type| :
-\verb|Type|$ is inconsistent.
+There are two special types at the bottom of the hierarchy: \verb|Prop| and
+\verb|Set|.  \verb|Prop| is designed to be used for propositions as described
+below, and \verb|Set| is similar to \verb|Type|.  We have $\verb|Prop| :
+\verb|Type|_0$ and $\verb|Set| : \verb|Type|_0$, so they are both at the bottom
+of the hierarchy.  Other than types explicitly in \verb|Prop|, most types will
+be written in blackboard bold: $\mathbb A$, $\mathbb B$, etc.
 
-Functions are also first-class objects, and are values in \verb|Type|.  A
-function $f : \mathbb A \rightarrow \mathbb B$ produces a unique value $f(a) :
-\mathbb B$ for all $a : \mathbb A$.  I think the exact type of $f$ is related to
-the types of $A$ and $B$.
+Functions are also first-class objects.  A function $f : \mathbb A \rightarrow
+\mathbb B$ produces a unique value $f(a) : \mathbb B$ for all $a : \mathbb A$.
 
 The main way of constructing new types is through inductive definitions.  These
 produce values/functions called constructors that create values of the new type.
@@ -44,15 +41,40 @@ things from an inductive type, one can do case analysis while further assuming
 that the property holds for all inputs to the constructors, which corresponds to
 a proof by induction.
 
-Propositions are types.  Values of that type correspond to proofs of that
-proposition.  So given a function like $A \rightarrow B$ where $A$ and $B$ are
-propositions, it can be thought of as saying that given a proof of $A$, we can
-get a proof of $B$, aka $A$ implies $B$.  Predicates $P$ on a type $\mathbb A$
-are thought of as functions $\mathbb A \rightarrow \vtt{Prop}$.
+Propositions are types in \verb|Prop|.  Values of that type correspond to proofs
+of that proposition.  So given a function like $A \rightarrow B$ where $A$ and
+$B$ are propositions, it can be thought of as saying that given a proof of $A$,
+we can get a proof of $B$, aka $A$ implies $B$.  Predicates $P$ on a type
+$\mathbb A$ are thought of as functions $\mathbb A \rightarrow \vtt{Prop}$.
 
 Sets are thought of as predicates.  As such, we often use the notation $a \in P$
 to mean $P(a)$.  We can also use the usual set builder notation $\{x : \U \mid
 S(x)\}$ to describe a set $S$ built from values in $\U$.
+
+Each type $\verb|Type|_n$ is called a universe.  Whenever constructing new
+types, particular rules are followed to ensure that $\verb|Type|_n :
+\verb|Type|_n$ never happens.  Given types $\A : \verb|Type|_{i}$ and $\B :
+\verb|Type|_{j}$, the type of functions $\A \to \B$ is $\verb|Type|_{\max(i,
+j)}$.  When constructing an inductive definition, the new inductive type will be
+in the same universe as the maximum of all of the types in the definition.  In
+particular, if an inductive definition takes in a value of type $\verb|Type|_n$,
+that inductive type will have the type (at least) $\verb|Type|_{n + 1}$, since
+$\verb|Type|_n : \verb|Type|_{n + 1}$.
+
+Propositions are an exception to this rule: You can create new types in
+\verb|Prop| that contain values of \verb|Prop|.  This makes them impredicative.
+To keep them consistent, it is not allowed to do case analysis on a \verb|Prop|
+to produce a value in any \verb|Type|, including \verb|Prop| itself.  However,
+there is an axiom that can partially get around this issue described below.
+
+While the universe hierarchy might seem complicated, it is thankfully rarely an
+issue.  Coq automatically assigns arbitrary universes to all definitions, and
+internally ensures that all the universes work out.  If you ever do something
+that implies $\verb|Type|_n : \verb|Type|_n$, it will give you an error called a
+universe inconsistency.  Thus, I hardly ever think about universes, and I won't
+mention them in most of this document.  However, there are a couple areas where
+they are important, most notably in some of the facts involving cardinals and
+ordinals.  I'll bring up universes again there.
 
 Basic logical propositions are defined in Coq and will not be defined in detail
 here.  Here is a list of the ones used here:
