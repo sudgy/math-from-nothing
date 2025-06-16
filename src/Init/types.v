@@ -29,6 +29,7 @@ Tactic Notation "dand_split" := let H := fresh in dand_split H.
 
 Set Implicit Arguments.
 
+#[universes(polymorphic)]
 Inductive empty_type := .
 
 Theorem empty_false : empty_type → False.
