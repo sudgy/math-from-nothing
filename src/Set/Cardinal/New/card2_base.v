@@ -82,7 +82,7 @@ Proof.
     apply (ex_proof (card_to_initial_ord_ex κ)).
 Qed.
 
-Theorem card_to_initial_ord_le :
+Theorem card_to_initial_ord_least :
     ∀ κ α, ord_to_card α = κ → card_to_initial_ord κ ≤ α.
 Proof.
     intros κ α eq.
@@ -103,7 +103,7 @@ Theorem ord_to_card_to_initial_ord_le :
     ∀ α, card_to_initial_ord (ord_to_card α) ≤ α.
 Proof.
     intros α.
-    apply card_to_initial_ord_le.
+    apply card_to_initial_ord_least.
     reflexivity.
 Qed.
 

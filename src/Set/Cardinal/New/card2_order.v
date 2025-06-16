@@ -41,43 +41,6 @@ Global Instance card_order : Order card := {
     le := binary_op card_le_wd;
 }.
 
-Theorem card_to_initial_ord_le :
-    ∀ κ μ, card_to_initial_ord κ ≤ card_to_initial_ord μ → κ ≤ μ.
-Proof.
-    intros κ μ leq.
-    remember (card_to_initial_ord κ) as α.
-    apply (f_equal ord_to_card) in Heqα.
-    rewrite card_to_initial_ord_to_card_eq in Heqα.
-    remember (card_to_initial_ord μ) as β.
-    apply (f_equal ord_to_card) in Heqβ.
-    rewrite card_to_initial_ord_to_card_eq in Heqβ.
-    unfold ord_to_card in *.
-    equiv_get_value α β.
-    equiv_simpl in Heqα.
-    equiv_simpl in Heqβ.
-    unfold le in leq; equiv_simpl in leq.
-    destruct leq as [f [f_inj [f_le f_lt]]].
-    equiv_get_value κ μ.
-    unfold le; equiv_simpl.
-    exists f.
-    exact f_inj.
-Qed.
-
-Global Instance card_le_trans : Transitive le.
-Proof.
-    split.
-    intros A B C AB BC.
-    equiv_get_value A B C.
-    unfold le in *.
-    equiv_simpl.
-    equiv_simpl in AB.
-    equiv_simpl in BC.
-    destruct AB as [f f_bij].
-    destruct BC as [g g_bij].
-    exists (λ x, g (f x)).
-    apply inj_comp; assumption.
-Qed.
-
 Global Instance card_le_antisym : Antisymmetric le.
 Proof.
     split.
@@ -118,14 +81,14 @@ Proof.
             intro a_eq.
             apply (f_equal g) in a_eq.
             rewrite parent_eq in a_eq.
-            destruct a1_eq as [lb1 [lb1_lonely lb1_descendent]].
+            destruct a1_eq as [b [b_lonely b_descendent]].
             subst.
             exfalso; apply a2_eq.
-            destruct lb1_descendent as [n eq].
-            exists lb1.
-            split; [>exact lb1_lonely|].
+            destruct b_descendent as [n eq].
+            exists b.
+            split; [>exact b_lonely|].
             destruct n; cbn in eq.
-            -   specialize (lb1_lonely (g (f a2))).
+            -   specialize (b_lonely (g (f a2))).
                 contradiction.
             -   do 2 apply inj in eq.
                 exists n.
@@ -141,49 +104,52 @@ Proof.
         +   symmetry; symmetry in a_eq; exact (wlog a2 a1 a2_eq a1_eq a_eq).
         +   apply f_inj.
             exact a_eq.
-    -   intros b.
-        classic_case (∃ bl, lonely bl ∧ descendent_of b bl) as [b_eq|b_eq].
-        +   destruct b_eq as [bl [bl_lonely [n bl_descendent]]].
-            exists (g b).
-            classic_case (has_ancestor (g b)) as [b_eq|b_eq].
+    -   intros y.
+        classic_case (∃ b, lonely b ∧ descendent_of y b) as [y_eq|y_eq].
+        +   destruct y_eq as [b [b_lonely [n b_descendent]]].
+            exists (g y).
+            classic_case (has_ancestor (g y)) as [y_eq|y_eq].
             *   apply g_inj.
                 apply parent_eq.
-            *   exfalso; apply b_eq.
-                rewrite bl_descendent.
-                exists bl.
-                split; [>exact bl_lonely|].
+            *   exfalso; apply y_eq.
+                rewrite b_descendent.
+                exists b.
+                split; [>exact b_lonely|].
                 exists (nat_suc n).
                 reflexivity.
-        +   pose proof b_eq as b_eq2.
-            rewrite not_ex in b_eq2.
-            specialize (b_eq2 b).
-            rewrite and_comm in b_eq2.
-            rewrite not_and_impl in b_eq2.
-            prove_parts b_eq2; [>exists 0; reflexivity|].
-            unfold lonely in b_eq2.
-            rewrite not_all in b_eq2.
-            destruct b_eq2 as [a b_eq2].
-            rewrite not_not in b_eq2.
+        +   pose proof y_eq as y_eq2.
+            rewrite not_ex in y_eq2.
+            specialize (y_eq2 y).
+            rewrite and_comm in y_eq2.
+            rewrite not_and_impl in y_eq2.
+            prove_parts y_eq2; [>exists 0; reflexivity|].
+            unfold lonely in y_eq2.
+            rewrite not_all in y_eq2.
+            destruct y_eq2 as [a y_eq2].
+            rewrite not_not in y_eq2.
             exists a.
-            rewrite <- b_eq2 in b_eq.
-            classic_case (has_ancestor a); [>contradiction|exact b_eq2].
+            rewrite <- y_eq2 in y_eq.
+            classic_case (has_ancestor a); [>contradiction|exact y_eq2].
 Qed.
 
-Theorem ord_to_card_lt : ∀ α β, ord_to_card α < ord_to_card β → α < β.
+Theorem ord_to_card_le : ∀ α β, α ≤ β → ord_to_card α ≤ ord_to_card β.
 Proof.
-    intros A B ltq.
-    classic_contradiction contr.
-    rewrite nlt_le in contr.
-    assert (ord_to_card B ≤ ord_to_card A) as leq.
-    {
-        equiv_get_value A B.
-        unfold ord_to_card, le; equiv_simpl.
-        unfold le in contr; equiv_simpl in contr.
-        destruct contr as [f [f_inj]].
-        exists f.
-        exact f_inj.
-    }
-    contradiction (irrefl _ (le_lt_trans leq ltq)).
+    intros A B leq.
+    equiv_get_value A B.
+    unfold le in leq; equiv_simpl in leq.
+    unfold le, ord_to_card; equiv_simpl.
+    destruct leq as [f [f_inj]].
+    exists f.
+    exact f_inj.
+Qed.
+
+Theorem card_to_initial_ord_le :
+    ∀ κ μ, card_to_initial_ord κ ≤ card_to_initial_ord μ → κ ≤ μ.
+Proof.
+    intros κ μ leq.
+    apply ord_to_card_le in leq.
+    do 2 rewrite card_to_initial_ord_to_card_eq in leq.
+    exact leq.
 Qed.
 
 Global Instance card_le_wo : WellOrdered le.
@@ -217,6 +183,27 @@ Proof.
     exact α_min.
 Qed.
 
+Global Instance card_to_initial_ord_le2 : HomomorphismLe card_to_initial_ord.
+Proof.
+    split.
+    intros a b leq.
+    classic_contradiction ltq.
+    rewrite nle_lt in ltq.
+    destruct ltq as [leq2 neq].
+    apply card_to_initial_ord_le in leq2.
+    pose proof (antisym leq leq2) as eq.
+    subst; contradiction.
+Qed.
+
+Theorem ord_to_card_lt : ∀ α β, ord_to_card α < ord_to_card β → α < β.
+Proof.
+    intros α β ltq.
+    classic_contradiction leq.
+    rewrite nlt_le in leq.
+    apply ord_to_card_le in leq.
+    contradiction (irrefl _ (lt_le_trans ltq leq)).
+Qed.
+
 Theorem card_lt_ex : ∀ U V, |U| < |V| → ∀ f : U → V, ∃ y, ∀ x, f x ≠ y.
 Proof.
     intros U V ltq f.
@@ -234,6 +221,39 @@ Proof.
     rewrite not_not in eq.
     exists x.
     exact eq.
+Qed.
+
+Theorem power_set_bigger : ∀ A, |A| < |A → Prop|.
+Proof.
+    intros A.
+    split.
+    -   unfold le; equiv_simpl.
+        exists (λ a, ❴a❵).
+        split.
+        intros a b eq.
+        unfold list_to_set in eq.
+        pose proof (func_eq _ _ eq) as eq2.
+        specialize (eq2 b).
+        cbn in eq2.
+        rewrite eq2.
+        reflexivity.
+    -   intros eq.
+        equiv_simpl in eq.
+        destruct eq as [f f_bij].
+        pose (B x := ¬f x x).
+        pose proof (sur f B) as [x x_eq].
+        unfold B in x_eq.
+        pose proof (func_eq _ _ x_eq x) as eq; cbn in eq.
+        apply any_prop_neq in eq.
+        exact eq.
+Qed.
+
+Theorem card_unbounded : ∀ κ, ∃ μ, κ < μ.
+Proof.
+    intros A.
+    equiv_get_value A.
+    exists (|A → Prop|).
+    apply power_set_bigger.
 Qed.
 
 Close Scope card_scope.

@@ -190,31 +190,6 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem power_set_bigger : ∀ A, |A| < |A → Prop|.
-Proof.
-    intros A.
-    split.
-    -   unfold le; equiv_simpl.
-        exists (λ a, ❴a❵).
-        split.
-        intros a b eq.
-        unfold list_to_set in eq.
-        pose proof (func_eq _ _ eq) as eq2.
-        specialize (eq2 b).
-        cbn in eq2.
-        rewrite eq2.
-        reflexivity.
-    -   intros eq.
-        equiv_simpl in eq.
-        destruct eq as [f f_bij].
-        pose (B x := ¬f x x).
-        pose proof (sur f B) as [x x_eq].
-        unfold B in x_eq.
-        pose proof (func_eq _ _ x_eq x) as eq; cbn in eq.
-        apply any_prop_neq in eq.
-        exact eq.
-Qed.
-
 Theorem card_lt_pow2 : ∀ κ, κ < 2^κ.
 Proof.
     intros A.

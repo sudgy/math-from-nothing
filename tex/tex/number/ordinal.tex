@@ -546,4 +546,210 @@ We can also relate the cardinals to the ordinals in a few ways.
     ordinal equivalent to $|\alpha|$.
 \end{proof}
 
+\section{Ordering Cardinals}
+
+\begin{definition}
+    Let $\A$ and $\B$ be types.  Then we say that $\A \leqq \B$ if there exists
+    an injective function from $\A$ to $\B$.
+\end{definition}
+
+\begin{lemma}
+    The relation $\leqq$ is well-defined.
+\end{lemma}
+\begin{proof}
+    Let $\A$, $\B$, $\C$, and $\D$ be types with bijective functions $f : \A \to
+    \B$ and $g : \C \to \D$, and an injective function $h : \A \to \C$.  Then
+    because the composition of injective functions is injective, the function $g
+    \circ h \circ f^{-1}$ is an injective function from $\B$ to $\D$.
+\end{proof}
+
+\begin{instance}
+    Define order in the cardinals as the operation obtained by applying Theorem
+    \ref{binary_op_ex} to the previous lemma.
+\end{instance}
+
+\begin{instance}[Schr\"oder-Bernstein]
+    The order on the cardinals is antisymmetric.
+\end{instance}
+\begin{proof}
+    Let $\A$ and $\B$ be types with injective functions $f : \A \to \B$ and $g :
+    \B \to \A$.  We will now make several definitions.  First, we will say that
+    a $b : \B$ is \textit{lonely} if $f(a) \neq b$ for all $a$.  We say that a
+    value $b_0 : \B$ is a descendant of a value $b_1 : \B$ if there exists an
+    $n$ such that $b_1 = (f \circ g)^n(b_0)$.  We will say that a value $a : \A$
+    has an ancestor if there exists a lonely $b$ such that $b$ is a descendant
+    of $f(a)$.
+
+    First, we will prove that for every $a$ that has an ancestor, there exists
+    some $c : \B$ such that $g(c) = a$.  Because $a$ has an ancestor, there
+    exsits some lonely $b : \B$ and natural number $n$ with $f(a) = (f \circ
+    g)^n(b)$.  If $n = 0$, we would have $f(a) = b$, contradicting $b$ being
+    lonely, so this case is impossible.  If $n \neq 0$, we have $f(a) = f(g((f
+    \circ g)^{n-1}(b)))$, and by injectivity of $f$ we have $a = g((f \circ
+    g)^{n-1}(b))$, showing that $(f \circ g)^{n-1}(b)$ is the value we are
+    looking for.  Either way, we have proven that for every $a$ that has an
+    ancestor, there exists some $c : \B$ such that $g(c) = a$.
+
+    Define a new function $p$ that takes in an $a : \A$ that has an ancestor and
+    produces the parent of $a$ as guaranteed by the previous paragraph.  Now
+    define a function $h : \A \to \B$ given by
+    \[
+        h(a) = \begin{cases}
+            p(a) &\text{if $a$ has an ancestor} \\
+            f(a) &\text{otherwise.}
+        \end{cases}
+    \]
+    We will now prove that $h$ is bijective, proving the theorem.
+
+    For injectivity, let $a_1$ and $a_2$ be such that $h(a_1) = h(a_2)$.  We
+    need to prove that $a_1 = a_2$.  We have three cases: when $a_1$ and $a_2$
+    both have ancestors, when neither have an ancestor, and when one has an
+    ancestor and the other doesn't.
+    \begin{case} \textit{$a_1$ and $a_2$ both have ancestors.}
+        We now have $p(a_1) = p(a_2)$.  Applying $g$ to both sides, we get
+        $g(p(a_1)) = g(p(a_2))$.  By the definition of $p$, we get $a_1 = a_2$
+        as required.
+    \end{case}
+    \begin{case} \textit{One of $a_1$ and $a_2$ have an ancestor, and the other
+        doesn't.}
+        Without loss of generality, assume that $a_1$ has an ancester and $a_2$
+        does not.  Then we have $p(a_1) = f(a_2)$.  Applying $g$ to both sides
+        and using the definition of $p$, we get $a_1 = g(f(a_2))$.  Because
+        $a_1$ has an ancestor and $a_1 = g(f(a_2))$, there exists a lonely $b$
+        and a natural number $n$ such that $f(g(f(a_2))) = (f \circ g)^n(b)$.
+        Now if $n = 0$, we would have $f(g(f(a_2))) = b$, contradicting $b$
+        being lonely.  If $n \neq 0$, then we would have $f(g(f(a_2))) = f(g((f
+        \circ g)^{n-1}(b)))$, which by injectivity means that $f(a_2) = (f \circ
+        g)^{n-1}(b)$.  This means that $a_2$ has an ancestor, showing that this
+        case is actually impossible.
+    \end{case}
+    \begin{case} \textit{Neither $a_1$ or $a_2$ have an ancestor.}
+        We now have $f(a_1) = f(a_2)$, so by injectivity we have $a_1 = a_2$ as
+        required.
+    \end{case}
+
+    For surjectivity, let $y : \B$.  There will be two cases: when there exists
+    a lonely $b$ such that $y$ is a descendant of $b$, or when no such $b$
+    exists.
+    \setcounter{case}{0}
+    \begin{case} \textit{There exists a lonely $b$ such that $y$ is a descendant
+        of $b$.}
+        Because $y$ is a descendant of $b$, there exists an $n$ such that $y =
+        (f \circ g)^n(b)$.  Then $f(g(y)) = (f \circ g)^{n+1}(b)$, showing that
+        $g(y)$ has an ancestor.  Thus, $h(g(y)) = p(g(y)) = y$ as required.
+    \end{case}
+    \begin{case} \text{There does not exist a lonely $b$ such that $y$ is a
+        descendent of $b$.}
+        In particular, since $y$ is trivially a descendent of itself, $y$ must
+        be not lonely.  This implies that there exists an $a$ with $f(a) = y$.
+        Then by the assumption of this case we know that there does not exist a
+        lonely $b$ such that $f(a)$ is a descendent of $b$, which is precisely
+        the statement that $a$ has no ancestor.  Thus $h(a) = f(a) = y$ as
+        required.
+    \end{case}
+\end{proof}
+
+The order of the cardinals and the order of the ordinals are related in many
+ways.
+
+\begin{theorem} \label{ord_to_card_le}
+    For all ordinals $\alpha$ and $\beta$, if $\alpha \leq \beta$, then
+    $|\alpha| \leq |\beta|$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ and $\B$ be order types representing $\alpha$ and $\beta$
+    respectively.  By $\alpha \leq \beta$, we have an ordinal inequality
+    function from $\A$ to $\B$.  Ordinal inequality functions are injective,
+    proving that $|\alpha| \leq |\beta|$ as well.
+\end{proof}
+
+\begin{theorem} \label{card_to_initial_ord_le}
+    For all cardinals $\kappa$ and $\mu$, if $\lfloor \kappa \rfloor \leq
+    \lfloor \mu \rfloor$, then $\kappa \leq \mu$.
+\end{theorem}
+\begin{proof}
+    From the previous theorem, we have $|\lfloor \kappa \rfloor| \leq |\lfloor
+    \mu \rfloor|$, and the result follows directly from Theorem
+    \ref{card_to_initial_ord_to_card_eq}.
+\end{proof}
+
+We can now prove the last of the fundamental properties of the order on
+cardinals.
+
+\begin{instance}
+    The order on the cardinals is a well order.
+\end{instance}
+\begin{proof}
+    Let $S$ be a nonempty set of cardinals.  Define a set $S'$ on the ordinals
+    given by $\{\alpha : \Ord \mid \exists \kappa \in S, \lfloor \kappa \rfloor
+    = \alpha\}$.  Then $S'$ is nonempty because $S$ in nonempty.  Thus, by the
+    well-ordering of the ordinals, $S'$ has a least element $\alpha$, so there
+    is some $\kappa \in S$ with $\lfloor \kappa \rfloor = \alpha$.  We will
+    prove that $\kappa$ is the least element of $S$.  Let $\mu \in S$.  Then
+    $\lfloor \mu \rfloor \in S'$, so by $\alpha$ being the least element of
+    $S'$, we have $\lfloor \kappa \rfloor \leq \lfloor \mu \rfloor$.  Then by
+    Theorem \ref{card_to_initial_ord_le}, we get $\kappa \leq \mu$, proving that
+    $\kappa$ is the least element of $S$.
+\end{proof}
+
+Recall that antisymmetry and the well ordering property imply connexivity and
+transitivity.  Thus, the cardinals are a well-ordered type.
+
+\begin{instance}
+    The function $\lfloor \kappa \rfloor$ is orderly.
+\end{instance}
+\begin{proof}
+    Assume that we have cardinals $\kappa$ and $\mu$ such that $\kappa \leq
+    \mu$.  For a contradiction, assume that $\lfloor \mu \rfloor < \lfloor
+    \kappa \rfloor$.  Then by Theorem \ref{card_to_initial_ord_le}, we have $\mu
+    \leq \kappa$, and by antisymmetry we have $\kappa = \mu$.  However, this
+    contradicts $\lfloor \mu \rfloor < \lfloor \kappa \rfloor$, so we must have
+    $\lfloor \kappa \rfloor \leq \lfloor \mu \rfloor$ as required.
+\end{proof}
+
+Because $\lfloor \kappa \rfloor$ is injective, this means that it also is
+equivalently orderly and strictly orderly.
+
+\begin{theorem} \label{ord_to_card_lt}
+    For all ordinals $\alpha$ and $\beta$, if $|\alpha| < |\beta|$, then $\alpha
+    < \beta$.
+\end{theorem}
+\begin{proof}
+    This is just the contrapositive of Theorem \ref{ord_to_card_le}.
+\end{proof}
+
+\begin{theorem} \label{card_lt_ex}
+    For all types $\U$ and $\V$, if $|\U| < |\V|$, then for all functions $f :
+    \U \to \V$, there exists a $y$ such that for all $x$, $f(x) \neq y$.
+\end{theorem}
+\begin{proof}
+    Assume the opposite, which is precisely the statement that an surjective
+    function $f : \U \to \V$ exists.  Then by the partition principle (Theorem
+    \ref{partition_principle}), we have an injective function from $\V$ to $\U$,
+    contradicting $|\U| < |\V|$.
+\end{proof}
+
+\begin{theorem}[Cantor's Theorem] \label{power_set_bigger}
+    For all types $\A$, we have $|\A| < |\A \to \Prop|$.
+\end{theorem}
+\begin{proof}
+    First, to prove that $|\A| \leq |\A \to \Prop|$, let $f : \A \to (\A \to
+    \Prop)$ be defined by $f(a) = \{a\}$.  This function is injective because
+    $\{a\} = \{b\}$ implies that $a = b$.  To prove that $|\A| \neq |\A \to
+    \Prop|$, assume for a contradiction that some bijective function $f : \A \to
+    (\A \to \Prop)$ exists.  Define a set $B : \A \to \Prop$ given by $\{x : \A,
+    x \notin f(x)\}$.  Because $f$ is surjective, there exists some $x$ such
+    that $f(x) = B$.  This means that $f(x)(x) = B(x)$, or more simply, that $x
+    \in f(x)$ if and only if $x \notin f(x)$.  This is a contradiction, showing
+    that no such bijection can exist.
+\end{proof}
+
+\begin{theorem} \label{card_unbounded}
+    The cardinals are unbounded, that is, for any cardinal $\kappa$, there
+    exists a cardinal $\mu$ such that $\kappa < \mu$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the previous theorem.
+\end{proof}
+
 \end{document}
