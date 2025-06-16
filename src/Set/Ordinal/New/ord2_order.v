@@ -391,6 +391,57 @@ Proof.
     -   apply homo_le_compose; assumption.
 Qed.
 
+Definition ord_type_init_ord_base {A : ord_type} (a : A)
+    := to_ord (sub_ord_type (initial_segment a)).
+Lemma ord_type_init_ord_in {A : ord_type} :
+    ∀ a : A, initial_segment (to_ord A) (ord_type_init_ord_base a).
+Proof.
+    intros a.
+    unfold ord_type_init_ord_base, initial_segment.
+    rewrite ord_lt_simpl.
+    exists a.
+    apply refl.
+Qed.
+Definition ord_type_init_ord (A : ord_type) (a : A)
+    := [ord_type_init_ord_base a | ord_type_init_ord_in a].
+
+Theorem ord_type_init_ord_sur A : Surjective (ord_type_init_ord A).
+Proof.
+    split.
+    intros [y y_lt].
+    unfold initial_segment in y_lt.
+    equiv_get_value y.
+    pose proof y_lt as y_lt2.
+    rewrite ord_lt_simpl in y_lt2.
+    destruct y_lt2 as [x x_eq].
+    exists x.
+    unfold ord_type_init_ord.
+    rewrite set_type_eq2.
+    unfold ord_type_init_ord_base.
+    symmetry.
+    equiv_simpl.
+    exact x_eq.
+Qed.
+
+Theorem ord_type_init_ord_le A : HomomorphismLe (ord_type_init_ord A).
+Proof.
+    split.
+    intros a b leq.
+    unfold ord_type_init_ord, ord_type_init_ord_base.
+    unfold le; cbn.
+    apply ord_le_simpl.
+    exists (λ x : sub_ord_type (initial_segment a),
+        [[x|] | lt_le_trans [|x] leq] : sub_ord_type (initial_segment b)).
+    split; split.
+    -   intros x y eq.
+        apply (set_type_eq2 (a := [x|])) in eq.
+        rewrite set_type_eq in eq.
+        exact eq.
+    -   intros x y xy.
+        unfold le; cbn.
+        exact xy.
+Qed.
+
 Lemma ords_lt_wo :
     ∀ α : ord, WellOrdered (λ a b : set_type (initial_segment α), [a|] ≤ [b|]).
 Proof.
@@ -398,52 +449,10 @@ Proof.
     split.
     intros S [β Sβ].
     equiv_get_value A.
-    pose (f' (a : A) := to_ord (sub_ord_type (initial_segment a))).
-    assert (∀ a, initial_segment (to_ord A) (f' a)) as f'_in.
-    {
-        intros a.
-        unfold initial_segment, f'.
-        rewrite ord_lt_simpl.
-        exists a.
-        apply eq_reflexive.
-    }
-    pose (f (a : A) := [f' a | f'_in a]).
-    assert (Surjective f) as f_sur.
-    {
-        split.
-        intros [y y_lt].
-        unfold initial_segment in y_lt.
-        equiv_get_value y.
-        pose proof y_lt as y_lt2.
-        rewrite ord_lt_simpl in y_lt2.
-        destruct y_lt2 as [x x_eq].
-        exists x.
-        unfold f.
-        rewrite set_type_eq2.
-        unfold f'.
-        symmetry.
-        equiv_simpl.
-        exact x_eq.
-    }
-    assert (∀ a b, a ≤ b → f a ≤ f b) as f_le.
-    {
-        intros a b leq.
-        unfold f, f'.
-        unfold le; cbn.
-        apply ord_le_simpl.
-        exists (λ x : sub_ord_type (initial_segment a),
-            [[x|] | lt_le_trans [|x] leq] : sub_ord_type (initial_segment b)).
-        split; split.
-        -   intros x y eq.
-            apply (set_type_eq2 (a := [x|])) in eq.
-            rewrite set_type_eq in eq.
-            exact eq.
-        -   intros x y xy.
-            unfold le; cbn.
-            exact xy.
-    }
-    pose (S' (a : A) := S (f a)).
-    pose proof (sur f β) as [x x_eq].
+    pose proof (ord_type_init_ord_sur A).
+    pose proof (ord_type_init_ord_le A).
+    pose (S' (a : A) := S (ord_type_init_ord A a)).
+    pose proof (sur (ord_type_init_ord A) β) as [x x_eq].
     assert (S' x) as Sx.
     {
         unfold S'.
@@ -452,12 +461,13 @@ Proof.
     }
     pose proof (well_ordered S' (ex_intro _ _ Sx)) as [m [S'm m_least]].
     clear x x_eq Sx.
-    exists (f m).
+    exists (ord_type_init_ord A m).
     split; [>exact S'm|].
     intros γ Sγ.
-    pose proof (sur f γ) as [z z_eq].
+    pose proof (sur (ord_type_init_ord A) γ) as [z z_eq].
     subst γ.
-    apply f_le.
+    pose proof (homo_le (f := ord_type_init_ord A)) as stupid.
+    apply stupid.
     exact (m_least z Sγ).
 Qed.
 

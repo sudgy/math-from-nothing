@@ -353,37 +353,52 @@ another.
     \ref{inj_comp} and \ref{homo_le_compose}, $g \circ f$ is such a function.
 \end{proof}
 
+Because we can't have $\Type_n : \Type_n$, it is impossible to make an ordinal
+out of ordinals.  However, in many of the cases where we would want to make an
+ordinal out of ordinals, using the following function works well enough.
+
+\begin{definition} \label{ord_type_init_ord}
+    Given an order type $\A$, define a function $f_\A : \A \to \Ord_{[\A]}$ that
+    takes $a : \A$ to $[\A_a]$.  This is well-defined by Theorem
+    \ref{ord_lt_simpl}.
+\end{definition}
+
+\begin{theorem}
+    For all order types $\A$, $f_\A$ is surjective.
+\end{theorem}
+\begin{proof}
+    Let $[\Y]$ be an ordinal less than $[\A]$.  This means that there exists
+    some $x : \A$ such that $\Y$ is order isomorphic to $\A_x$.  Then $f_\A(x) =
+    [\A_x] = [\Y]$ as required.
+\end{proof}
+
+\begin{theorem}
+    For all order types $\A$, $f_\A$ is orderly.
+\end{theorem}
+\begin{proof}
+    Let $a$ and $b$ be values in $\A$ such that $a \leq b$.  Then we must prove
+    that $f_\A(a) \leq f_\A(b)$.  By Lemma \ref{ord_le_simpl}, we need to find
+    an injective orderly function from $\A_a$ to $\A_b$.  Because $a \leq b$,
+    everything in $\A_a$ is in $\A_b$, so the identity function is such a
+    function.
+\end{proof}
+
 \begin{lemma} \label{ords_lt_wo}
     For all ordinals $\alpha$, the initial segment of $\alpha$ is well-ordered.
 \end{lemma}
 \begin{proof}
     Let $\A$ be an order type, let $\beta < [\A]$, and let $S$ be a set on
-    $\Ord_{[\A]}$, the initial segment of $[\A]$, with $\beta \in S$.  Now for
-    all $a : \A$, the initial segment $\A_a$ is itself well-ordered.
-    Furthermore, for all $a$, we have $[\A_a] < [\A]$ since $\A_a$ is itself an
-    initial segment of $\A$.  Thus, we can define a function $f : \A \to
-    \Ord_{[\A]}$ given by $f(a) = [\A_a]$.
-
-    We will now prove that $f$ is surjective.  Let $[\Y]$ be an ordinal less
-    than $[\A]$.  This means that there exists some $x : \A$ such that $\Y$ is
-    order isomorphic to $\A_x$.  Then $f(x) = [\A_x] = [\Y]$ as required.
-
-    We will now prove that $f$ is orderly.  Let $a$ and $b$ be values in $\A$
-    such that $a \leq b$.  Then we must prove that $f(a) \leq f(b)$.  By Lemma
-    \ref{ord_le_simpl}, we need to find an injective orderly function from
-    $\A_a$ to $\A_b$.  Because $a \leq b$, everything in $\A_a$ is in $\A_b$, so
-    we the identity function is such a function.
-
-    Now that we have a well-behaved function $f : \A \to \Ord_{[\A]}$, define a
-    new set $S' = \{a \A \mid f(a) \in S\}$.  Because $f$ is surjective, there
-    exists some $x : \A$ such that $f(a) = \beta$.  Since $\beta \in S$, we have
-    $x \in S'$.  Thus, because $\A$ is well-ordered, $S'$ has a least element
-    $m$.  We will prove that $f(m)$ is the least element of $S$.  $f(m) \in S$
-    since $m \in S'$.  To prove that it's the least element in $S$, let $\gamma$
-    be an ordinal less than $[\A]$ that is in $S$.  Since $f$ is surjective,
-    there exists some $z$ such that $f(z) = \gamma$.  Then $z \in S'$, so $m
-    \leq z$ because $m$ is the least element of $S'$.  Because $f$ is orderly,
-    $f(m) \leq f(z) = \gamma$, showing that $f(m)$ is the least element of $S$.
+    $\Ord_{[\A]}$, the initial segment of $[\A]$, with $\beta \in S$.  Define a
+    new set $S' = \{a \A \mid f_\A(a) \in S\}$.  Because $f_\A$ is surjective,
+    there exists some $x : \A$ such that $f_\A(a) = \beta$.  Since $\beta \in
+    S$, we have $x \in S'$.  Thus, because $\A$ is well-ordered, $S'$ has a
+    least element $m$.  We will prove that $f_\A(m)$ is the least element of
+    $S$.  $f_\A(m) \in S$ since $m \in S'$.  To prove that it's the least
+    element in $S$, let $\gamma$ be an ordinal less than $[\A]$ that is in $S$.
+    Since $f_\A$ is surjective, there exists some $z$ such that $f_\A(z) =
+    \gamma$.  Then $z \in S'$, so $m \leq z$ because $m$ is the least element of
+    $S'$.  Because $f_\A$ is orderly, $f_\A(m) \leq f_\A(z) = \gamma$, showing
+    that $f_\A(m)$ is the least element of $S$.
 \end{proof}
 
 \begin{instance}
