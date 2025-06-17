@@ -941,4 +941,297 @@ Thus, $\aleph'$ is a bijective order-preserving function, so the cardinals and
 ordinals are order-isomorphic to each other!  However, it is still helpful to
 distinguish between the two because they are used in very different ways.
 
+The next several sections of this chapter will be looking at the arithmetic
+properties of the cardinals and ordinals.  For the cardinals, the definitions
+are relatively straightforward.  For the ordinals, there are two options.
+First, there are constructive definitions that are similar to the definitions
+for the cardinals.  The other definitions involve transfinite recursion.  The
+constructive definitions can be quite cumbersome, especially for exponentiation.
+Thus, the recursive definitions will be used here.
+
+\section{Addition of Ordinals}
+
+The definition of addition will use $0$, so we will define the ordinal $0$
+first.
+
+\begin{instance}
+    Define the ordinal $0$ to be the ordinal corresponding to the empty type.
+\end{instance}
+
+\begin{theorem} \label{ord_false_0}
+    For all order types $\A$, if $\A \to \False$, we have $0 = [\A]$.
+\end{theorem}
+\begin{proof}
+    The empty function is vacuously injective and orderly, and it is vacuously
+    surjective because $\A \to \False$.
+\end{proof}
+
+\begin{theorem} \label{ord_pos} \label{ord_pos2}
+    For all ordinals $\alpha$, $0 \leq \alpha$.
+\end{theorem}
+\begin{proof}
+    The empty function is trivially an injective orderly function.
+\end{proof}
+
+\begin{instance}
+    Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
+    (g : \Ord_\beta) \to \Ord$ that is equal to $\alpha$ if $\beta = 0$, or is
+    equal to the smallest ordinal greater than all values of $g$.  Let $g$ be
+    the function given by transfinite recursion on $f$.  Then define the sum
+    $\alpha + \beta$ to be equal to $g(\beta)$.
+\end{instance}
+
+Addition of ordinals is quite strange in that it is noncommutative, and some
+standard identities only hold on one side.  Care must be taken to know exactly
+which identities hold and which do not.
+
+\begin{theorem} \label{ord_plus_ind}
+    For all $\alpha$ and $\beta$ with $\beta \neq 0$, then $\alpha + \beta$ is
+    the least element of the set $\{\gamma : \Ord \mid \forall \delta < \beta,
+    \alpha + \delta < \gamma\}$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem} \label{ord_plus_eq}
+    For all $\alpha$, $\beta$, and $\varepsilon$ with $\beta \neq 0$, then if
+    $\varepsilon$ is the least element of the set $\{\gamma : \Ord \mid \forall
+    \delta < \beta, \alpha + \delta < \gamma\}$, we have $\varepsilon = \alpha +
+    \beta$.
+\end{theorem}
+\begin{proof}
+    This follows from the uniqueness of least elements.
+\end{proof}
+
+\begin{instance}
+    $0$ is a right additive identity in $\Ord$.
+\end{instance}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{instance}
+    $0$ is a left additive identity in $\Ord$.
+\end{instance}
+\begin{proof}
+    Let $\alpha$ be an ordinal.  We will prove that $0 + \alpha = \alpha$ by
+    transfinite induction.  The inductive hypothesis states that for all $\beta
+    < \alpha$, we have $0 + \beta = \beta$.  When $\alpha = 0$, we have $0 + 0 =
+    0$.  When $\alpha \neq 0$, we will use Theorem \ref{ord_plus_eq} to prove
+    that $0 + \alpha = \alpha$.  To prove that $0 + \delta < \alpha$ for all
+    $\delta < \alpha$, we can use $0 + \delta = \delta$ from the inductive
+    hypothesis.  Now let $\gamma$ be some other ordinal such that for all
+    $\delta < \gamma$, we have $0 + \delta < \gamma$.  If we had $\gamma <
+    \alpha$, we would have $0 + \gamma < \gamma$ by the definition of $\gamma$,
+    and by the inductive hypothesis we have $\gamma < \gamma$, which is
+    impossible.  Thus, we must have $\alpha \leq \gamma$, showing that the
+    conditions of Theorem \ref{ord_plus_eq} are satisfied.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_lplus}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha < \beta$, we
+    have $\gamma + \alpha < \gamma + \beta$.
+\end{theorem}
+\begin{proof}
+    Because $\alpha < \beta$, we have $\beta \neq 0$ by Theorem \ref{ord_pos2}.
+    Then the result follows directly from Theorem \ref{ord_plus_ind}.
+\end{proof}
+
+\begin{instance} \label{ord_plus_lcancel}
+    Addition of ordinals is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $\gamma + \alpha = \gamma + \beta$.  For a contradiction assume that
+    $\alpha \neq \beta$, and without loss of generality assume that $\alpha <
+    \beta$.  Then by Theorem \ref{ord_lt_lplus} we have $\gamma + \alpha <
+    \gamma + \beta$, contradicting $\gamma + \alpha = \gamma + \beta$.  Thus,
+    $\alpha = \beta$.
+\end{proof}
+
+\begin{instance}
+    The order of ordinals is left additive.
+\end{instance}
+\begin{proof}
+    Let $\alpha \leq \beta$.  We must prove that $\gamma + \alpha \leq \gamma +
+    \beta$.  If $\alpha = \beta$, the result follows by reflexivity, and if
+    $\alpha \neq \beta$, the result follows by Theorem \ref{ord_lt_lplus}.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_rplus}
+    For all ordinals $\alpha$ and $\beta$, we have $\alpha \leq \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        0 & \leq \beta \\
+        \alpha + 0 &\leq \alpha + \beta \\
+        \alpha &\leq \alpha + \beta.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_lplus}
+    For all ordinals $\alpha$ and $\beta$, we have $\alpha \leq \beta + \alpha$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction on $\alpha$.  The inductive
+    hypothesis says that for all $\gamma < \alpha$, we have $\gamma \leq \beta +
+    \gamma$.  If $\beta + \alpha < \alpha$, this would mean that $\beta + \alpha
+    \leq \beta + (\beta \alpha)$.  By Theorem \ref{ord_lt_lplus} we would also
+    have $\beta + (\beta + \alpha) < \beta + \alpha$.  The last two inequalities
+    are incompatible, so we must have $\alpha \leq \beta + \alpha$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_ex}
+    For all ordinals $\alpha$ and $\beta$, if $\alpha \leq \beta$, then there
+    exists an ordinal $\gamma$ such that $\alpha + \gamma = \beta$.  If $\alpha
+    = \beta$, then $\gamma = 0$ suffices, so now consider the case $\alpha \neq
+    \beta$.  Let $S$ be the set $\{\varepsilon : \Ord \mid \beta \leq \alpha +
+    \varepsilon\}$.  By Theorem \ref{ord_le_self_lplus}, this set is nonempty,
+    so it has a least element $\gamma$.  If $\gamma = 0$, we would have $0 \in
+    S$, so $\beta \leq \alpha$, contradicting $\alpha \leq \beta$ and $\alpha
+    \neq \beta$.  So we must have $\gamma \neq 0$.  We will prove by Theorem
+    \ref{ord_plus_eq} that $\alpha + \gamma = \beta$.
+
+    First, let $\delta < \gamma$.  We must prove that $\alpha + \delta < \beta$.
+    If $\beta \leq \alpha + \delta$, we would have $\delta \in S$, so $\gamma
+    \leq \delta$, contradicting $\delta < \gamma$.  Thus, we must have $\alpha +
+    \delta < \beta$ as required.
+
+    Now let $\zeta$ be another ordinal such that for all $\delta < \gamma$, we
+    have $\alpha + \delta < \zeta$.  We must prove that $\beta \leq \zeta$.
+    Because $\gamma \in S$, we have $\beta \leq \alpha + \gamma$, so by
+    transitivity it suffices to prove $\alpha + \gamma \leq \zeta$.  The result
+    follows directly $\alpha + \gamma$ being the least element that satisfies
+    the conditions that $\zeta$ does.
+\end{theorem}
+
+\begin{theorem} \label{ord_lt_ex}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$, there exists a
+    $\gamma \neq 0$ such that $\alpha + \gamma = \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_le_ex}, we already have a $\gamma$ with $\alpha + \gamma
+    = \beta$, so we just need to prove that $\gamma \neq 0$.  If $\gamma = 0$,
+    we would gave $\alpha = \beta$, contradicting $\alpha < \beta$, so we must
+    have $\gamma \neq 0$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_plus_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\gamma + \alpha <
+    \gamma + \beta$, we have $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    If $\beta \leq \alpha$, we would have $\gamma + \beta \leq \gamma + \alpha$,
+    contradicting $\gamma + \alpha < \gamma + \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_nz_rplus}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $0 \neq
+    \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    If $0 = \alpha + \beta$, then by Theorem \ref{ord_plus_ind}, we have $\alpha
+    + \delta < 0$ for all $\delta < \beta$.  Since $\beta \neq 0$, we have $0 <
+    \beta$, so $\alpha + 0 < 0$, contradicting Theorem \ref{ord_pos}.
+\end{proof}
+
+\begin{theorem} \label{ord_nz_lplus}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \alpha$, then $0 \neq
+    \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    If $\beta = 0$, the result follows directly, and if $\beta \neq 0$, the
+    result follows from the previous theorem.
+\end{proof}
+
+\begin{instance}
+    Addition of ordinals is associative.
+\end{instance}
+\begin{proof}
+    Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that $\alpha
+    + (\beta + \gamma) = (\alpha + \beta) + \gamma$ by transfinite induction on
+    $\gamma$.  The inductive hypothesis states that for all $\delta < \gamma$,
+    we have $\alpha + (\beta + \delta) = (\alpha + \beta) + \delta$.  If $\gamma
+    = 0$, the result follows instantly, so now consider the case $\gamma \neq
+    0$.  By Theorem \ref{ord_nz_rplus}, we have $0 \neq \beta + \gamma$.  We
+    will prove the result using Theorem \ref{ord_plus_eq} with $\alpha + \beta$
+    and $\gamma$.
+
+    First, let $\delta < \gamma$.  Then
+    \begin{align*}
+        \delta &< \gamma \\
+        \beta + \delta &< \beta + \gamma \\
+        \alpha + (\beta + \delta) &< \alpha + (\beta + \gamma) \\
+        (\alpha + \beta) + \delta &< \alpha + (\beta + \gamma),
+    \end{align*}
+    which is the first thing we need to prove.
+
+    Now let $\varepsilon$ be an ordinal such that  such that for all $\delta <
+    \gamma$, we have $(\alpha + \beta) + \delta < \varepsilon$.  We must prove
+    that $\alpha + (\beta + \gamma) \leq \varepsilon$.  By Theorem
+    \ref{ord_plus_ind}, it suffices to prove that for all $\delta < \beta +
+    \gamma$, we have $\alpha + \delta < \varepsilon$.  There will be two cases:
+    when $\beta \leq \delta$, and when $\delta < \beta$.
+
+    When $\beta \leq \delta$, by Theorem \ref{ord_le_ex} we have an ordinal
+    $\zeta$ with $\beta + \zeta = \delta$.  Because $\delta < \beta + \gamma$,
+    we have $\beta + \zeta < \beta + \gamma$, and cancelling we get $\zeta <
+    \gamma$.  Because $\zeta < \gamma$, by the definition of $\varepsilon$, we
+    have $(\alpha + \beta) + \zeta < \varepsilon$, and by the inductive
+    hypothesis we have $\alpha + (\beta + \zeta) < \varepsilon$.  Because $\beta
+    + \zeta = \delta$, we have $\alpha + \delta < \varepsilon$ as required.
+
+    When $\delta < \beta$, we have $\alpha + \delta < \alpha + \beta$.  By
+    transitivity, it suffices to prove that $\alpha + \beta < \varepsilon$.  By
+    the definition of $\varepsilon$, since $0 < \gamma$, we have $(\alpha +
+    \beta) + 0 < \varepsilon$, so $\alpha + \beta < \varepsilon$ as required.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is left additive cancellative.
+\end{instance}
+\begin{proof}
+    Let $\gamma + \alpha \leq \gamma + \beta$.  We must prove that $\alpha \leq
+    \beta$.  If $\gamma + \alpha = \gamma + \beta$, by cancelling we get $\alpha
+    = \beta$, and the result follow by reflexivity.  If $\gamma + \alpha \neq
+    \gamma + \beta$, we have $\gamma + \alpha < \gamma + \beta$, so the result
+    follows from Theorem \ref{ord_lt_plus_lcancel}.
+\end{proof}
+
+\begin{instance}
+    The order on ordinals is right additive.
+\end{instance}
+\begin{proof}
+    Let $\alpha \leq \beta$.  We must prove that for all ordinals $\gamma$, we
+    have $\alpha + \gamma \leq \beta + \gamma$.  By Theorem \ref{ord_le_ex}, we
+    have a $\delta$ such that $\alpha + \delta = \beta$.  Then by Theorem
+    \ref{ord_le_self_lplus},
+    \begin{align*}
+        \gamma &\leq \delta + \gamma \\
+        \alpha + \gamma &\leq \alpha + \delta + \gamma \\
+        \alpha + \gamma &\leq \beta + \gamma
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_lt_plus_rcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha + \gamma <
+    \beta + \gamma$, then $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    If we had $\beta \leq \alpha$, we could add $\gamma$ on the right to get
+    $\beta + \gamma \leq \alpha + \gamma$, contradicting $\alpha + \gamma <
+    \beta + \gamma$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_self_rplus}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, we have $\alpha <
+    \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    We already know that $\alpha \leq \alpha + \beta$ by Theorem
+    \ref{ord_le_self_rplus}, so it remains to prove that $\alpha \neq \alpha +
+    \beta$.  If $\alpha = \alpha + \beta$, by cancelling $\alpha$ we would get
+    $0 = \beta$, contradicting $0 \neq \beta$.
+\end{proof}
+
 \end{document}
