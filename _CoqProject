@@ -120,6 +120,7 @@
 
 ./src/Set/Cardinal/New/card2_base.v
 ./src/Set/Cardinal/New/card2_order.v
+./src/Set/Cardinal/New/card2_large.v
 ./src/Set/Cardinal/New/card2_plus.v
 ./src/Set/Cardinal/New/card2_mult.v
 ./src/Set/Cardinal/New/card2_pow.v

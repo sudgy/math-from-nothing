@@ -752,4 +752,193 @@ equivalently orderly and strictly orderly.
     This follows directly from the previous theorem.
 \end{proof}
 
+\section{The Largeness of the Cardinals and Ordinals}
+
+As mentioned above, it is impossible to make cardinals out of other cardinals or
+ordinals out of other ordinals.  However, there are many situations where doing
+this is desirable.  In this section, we will find ways to work around this
+issue.  Care needs to be taken when talking about types in this section, since
+the problem we are trying to work around involves universes.  Thus, in this
+section, universes will be explicitly given for types.
+
+Let $\Type_n$ be the universe that the types and order types that we use to
+build ordinals and cardinals are in.  Then, ordinals and cardinals are in
+$\Type_{n + 1}$.
+
+\begin{theorem} \label{card_large_set}
+    Let $S$ be a set of cardinals, $\X$ a type in $\Type_n$, and $f$ a
+    surjective function from $\X$ to $\T(S)$.  Then there exists a cardinal
+    $\kappa$ that is gerater than all cardinals in $S$.
+\end{theorem}
+\begin{proof}
+    Define a new dependent type $\C$ that has a single constructor that takes in
+    a value in $x : \X$ and a value in some type that has cardinality equal to
+    $f(x)$.  $\C : \Type_n$, because $\X : \Type_n$ and the other value is in a
+    type that we make cardinals from, which is also $\Type_n$.  Thus, $|\C|$ is
+    a well-formed cardinal.  Let $\A$ be a type such that $|\A| \in S$.  We will
+    prove that $|\A| \leq |\C|$, which by Theorem \ref{power_set_bigger} implies
+    that $|\A| < |\C \to \Prop|$, which will show that $|\C \to \Prop|$ is the
+    cardinal we are looking for.
+
+    To prove that $|\A| \leq |\C|$, we must find an injective function from
+    $\A$ to $\C$.  Because $f$ is surjective, we have some $x : \X$ such that
+    $f(x) = |\A|$.  Let $\B$ be a type that has cardinality $f(x)$.  Then $|\A|
+    = |\B|$ so there exists a bijective function $g : \A \to \B$.  Define the
+    function $h : \A \to \C$ that takes $a : \A$ to the dependent pair $(x,
+    g(a)) : \C$.  We will prove that $h$ is injective.  Let $a$ and $b$ be such
+    that $h(a) = h(b)$.  Then $(x, g(a)) = (x, g(b))$, so $g(a) = g(b)$.  By the
+    injectivity of $g$, we have $a = b$ as required.
+\end{proof}
+
+While this theorem is useful, the conditions are a little annoying to satisfy.
+However, there are a few variations that are more easily used.
+
+\begin{theorem} \label{card_large}
+    For all types $\X$ in $\Type_n$ and functions $f : \X \to \Card$, there
+    exists a cardinal $\kappa$ that is greater than the image of $f$.
+\end{theorem}
+\begin{proof}
+    Let $S$ be the image of $f$.  $f$ is trivially surjective when restricted to
+    its image, so the result follows from the previous theorem.
+\end{proof}
+
+There is also a corresponding theorem for ordinals.
+
+\begin{theorem} \label{ord_large}
+    For all types $\X$ in $\Type_n$ and functions $f : \X \to \Ord$, there
+    exists an ordinal $\alpha$ that is greater than the image of $f$.
+\end{theorem}
+\begin{proof}
+    Define a new function $g : \X \to \Card$ given by $g(x) = |f(x)|$.  Then
+    there exists a cardinal $\mu$ such that $g(x) < \mu$ for all $x : \X$.  By
+    Theorem \ref{ord_to_card_lt}, we have $\lfloor | f(x) | \rfloor < \lfloor
+    \mu \rfloor$ and by Theorem \ref{card_to_initial_ord_to_card_eq} we have
+    $f(x) < \lfloor \mu \rfloor$, showing that $\lfloor \mu \rfloor$ is greater
+    than everything in the image of $f$.
+\end{proof}
+
+These theorems are still a little annoying in that you need to explicitly find a
+type $X : \Type_n$ to use.  However, there is a very important special case of
+these theorems that is incredibly useful.
+
+\begin{theorem} \label{ord_initial_small}
+    For all ordinals $\beta$ and functions $f : \Ord_\beta \to \Ord$, there
+    exists an ordinal $\gamma$ such that $f(\alpha) < \gamma$ for all $\alpha$.
+\end{theorem}
+\begin{proof}
+    Let $\B$ be an order type for $\beta$.  $\B$ has type $\Type_n$.  Using $g :
+    \B \to \Ord_\beta$ to denote the function given by Definition
+    \ref{ord_type_init_ord}, $f \circ g$ is a surjective function from $\B$ to
+    $\Ord$, so the result follows from the previous theorem.
+\end{proof}
+
+This theorem means that when doing transfinite recursion on the ordinals, one
+can always use suprema (or strict suprema).  As such, it is basically required
+for doing much more with the ordinals.  There is a corresponding theorem for
+cardinals that can be used for recursively defining functions from the ordinals
+to the cardinals.
+
+\begin{theorem} \label{ord_card_large}
+    For all ordinals $\beta$ and functions $f : \Ord_\beta \to \Card$, there
+    exists a cardinal $\mu$ such that $f(\alpha) < \mu$ for all $\alpha$.
+\end{theorem}
+\begin{proof}
+    Define $g : \Ord_\beta \to \Ord$ by $g(\alpha) = \lfloor f(\alpha) \rfloor$.
+    By the previous theorem, this function has a bound $\gamma$.  By Theorem
+    \ref{card_unbounded}, we have a cardinal $\mu$ with $|\gamma| < \mu$.  By
+    Theorems \ref{card_to_initial_ord_to_card_eq} and \ref{ord_to_card_lt}, we
+    have $\gamma < \lfloor \mu \rfloor$.  Then for all $\alpha$, we have
+    $\lfloor f(\alpha) \rfloor < \gamma$, so by transitivity $\lfloor f(\alpha)
+    \rfloor < \lfloor \mu \rfloor$.  Because $\lfloor x \rfloor$ is strictly
+    equivalently orderly, we have $f(\alpha) < \mu$, showing that $\mu$ is a
+    strict upper bound of the image of $f$.
+\end{proof}
+
+As an example of the application of this theorem, we will define something
+related to the $\aleph$ function.  Note that this isn't quite $\aleph$ itself,
+so we will call it $\aleph'$.  The definition of $\aleph$ itself will be given
+later.
+
+\begin{definition}
+    Consider a function $a : (\beta : \Ord) \to (g : \Ord_\beta \to \Card) \to
+    \Card$ that takes in such a $\beta$ and $g$ and produces the least cardinal
+    greater than the image of $g$.  Then define $\aleph'$ to be the function
+    given by transfinite recursion using $a$.  Instead of writing the
+    application of this function as $\aleph'(\alpha)$, we will write
+    $\aleph'_\alpha$.
+\end{definition}
+
+\begin{theorem} \label{aleph'_gt}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$, we have
+    $\aleph'_\alpha < \aleph'_\beta$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition of $\aleph'$.
+\end{proof}
+
+\begin{theorem} \label{aleph'_least}
+    For all ordinals $\alpha$ and cardinals $\mu$, if $\aleph'_\beta < \mu$ for
+    all $\beta < \alpha$, then $\aleph'_\alpha \leq \mu$.
+\end{theorem}
+\begin{proof}
+    This follows directly from the definition of $\aleph'$.
+\end{proof}
+
+\begin{instance}
+    $\aleph'$ is injective.
+\end{instance}
+\begin{proof}
+    Let $\aleph'_\alpha = \aleph'_\beta$ and assume for a contradiction that
+    $\alpha \neq \beta$.  Without loss of generality, assume that $\alpha <
+    \beta$.  Then by Theorem \ref{aleph'_gt}, we have $\aleph'_\alpha <
+    \aleph'_\beta$, which is impossible.  Thus, we must have $\alpha = \beta$.
+\end{proof}
+
+\begin{instance}
+    $\aleph'$ is orderly.
+\end{instance}
+\begin{proof}
+    Let $\alpha \leq \beta$.  If $\alpha = \beta$, we would immediately have
+    $\aleph'_\alpha \leq \aleph'_\beta$, and if $\alpha \neq \beta$, we would
+    have $\alpha < \beta$, so by Theorem \ref{aleph'_gt} we would have
+    $\aleph'_\alpha < \aleph'_\beta$.  Either way, $\aleph'_\alpha \leq
+    \aleph'_\beta$.
+\end{proof}
+
+\begin{lemma}
+    For all cardinals $\mu$, there exists an ordinal $\alpha$ with $\mu \leq
+    \aleph'_\alpha$.
+\end{lemma}
+\begin{proof}
+    We will prove that $\mu \leq \aleph'_{\lfloor \mu \rfloor}$ by transfinite
+    induction.  The inductive hypothesis states that for all cardinals $\kappa <
+    \mu$, we have $\kappa \leq \aleph'_{\lfloor \mu \rfloor}$.  Then if we had
+    $\aleph'_{\lfloor \mu \rfloor} < \mu$, by the inductive hypothesis we would
+    have $\aleph'_{\lfloor \mu \rfloor} \leq \aleph'_{\lfloor \aleph_{\lfloor
+    \mu \rfloor} \rfloor}$.  Because $\aleph'$ and $\lfloor x \rfloor$ are
+    equivalently orderly, this reduces to $\mu \leq \aleph'_{\lfloor \mu
+    \rfloor}$.  But we assumed that $\aleph'_{\lfloor \mu \rfloor} < \mu$, so
+    this is a contradiction.  Thus, we must have $\mu \leq \aleph'_{\lfloor \mu
+    \rfloor}$.
+\end{proof}
+
+\begin{instance}
+    $\aleph'$ is surjective.
+\end{instance}
+\begin{proof}
+    Let $\kappa$ be a cardinal.  Let $\alpha$ be the least ordinal such that
+    $\kappa \leq \aleph'_\alpha$.  We will prove that $\kappa =
+    \aleph'_\alpha$.  This will be done by antisymmetry.  We already have
+    $\kappa \leq \aleph'_\alpha$, so we only need to prove that $\aleph'_\alpha
+    \leq \kappa$.  To do so, we will use Theorem \ref{aleph'_least}.  So let
+    $\beta < \alpha$.  We must prove that $\aleph'_\beta < \kappa$.  If $\kappa
+    \leq \aleph'_\beta$, we would have $\alpha \leq \beta$ by the minimality of
+    $\alpha$.  This contradicts $\beta < \alpha$, so we must have $\aleph'_\beta
+    < \kappa$, showing that $\aleph'_\alpha \leq \kappa$.
+\end{proof}
+
+Thus, $\aleph'$ is a bijective order-preserving function, so the cardinals and
+ordinals are order-isomorphic to each other!  However, it is still helpful to
+distinguish between the two because they are used in very different ways.
+
 \end{document}
