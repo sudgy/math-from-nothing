@@ -941,6 +941,112 @@ Thus, $\aleph'$ is a bijective order-preserving function, so the cardinals and
 ordinals are order-isomorphic to each other!  However, it is still helpful to
 distinguish between the two because they are used in very different ways.
 
+Given that every ordinal function with a bounded input has a bounded output,
+there are a few helpful definitions we can make:
+
+\begin{definition}
+    Given an ordinal function $f$, let $\lub(f(\alpha), \alpha < \beta)$ be the
+    least upper bound of the restriction of $f$ to the initial segment of
+    $\beta$.
+\end{definition}
+
+\begin{definition}
+    Given an ordinal function $f$, let $\lsub(f(\alpha), \alpha < \beta)$ be the
+    least strict upper bound of the restriction of $f$ to the initial segment of
+    $\beta$.
+\end{definition}
+
+Least upper bounds and least strict upper bounds have many properties, and for
+convenience, these will be stated below.  No proofs will be given because they
+follow directly from the definitions.
+
+\begin{theorem} \label{ord_lub_ge}
+    For all $\alpha$, $\beta$, and $f$ with $\alpha < \beta$, we have $f(\alpha)
+    \leq \lub(f(\delta), \delta < \beta)$.
+\end{theorem}
+
+\begin{theorem} \label{ord_lub_least}
+    For all $\beta$, $\gamma$, and $f$, if for all $\alpha < \beta$ we have
+    $f(\alpha) \leq \gamma$, we have $\lub(f(\delta), \delta < \beta) \leq
+    \gamma$.
+\end{theorem}
+
+\begin{theorem} \label{ord_lub_other_leq}
+    For all $\beta$, $\gamma$, and $f$, if $\gamma$ has the same property as
+    $\lub(f(\delta), \delta < \alpha)$ in the previous theorem, then $\gamma
+    \leq \lub(f(\delta), \delta < \beta)$.
+\end{theorem}
+
+\begin{theorem} \label{ord_lub_eq}
+    $\lub(f(\delta), \delta < \beta)$ is uniquely described by the previous two
+    theorems.
+\end{theorem}
+
+\begin{theorem} \label{ord_lsub_gt}
+    For all $\alpha$, $\beta$, and $f$ with $\alpha < \beta$, we have $f(\alpha)
+    < \lsub(f(\delta), \delta < \beta)$.
+\end{theorem}
+
+\begin{theorem} \label{ord_lsub_least}
+    For all $\beta$, $\gamma$, and $f$, if for all $\alpha < \beta$ we have
+    $f(\alpha) < \gamma$, we have $\lsub(f(\delta), \delta < \beta) \leq
+    \gamma$.
+\end{theorem}
+
+\begin{theorem} \label{ord_lsub_other_leq}
+    For all $\beta$, $\gamma$, and $f$, if $\gamma$ has the same property as
+    $\lsub(f(\delta), \delta < \alpha)$ in the previous theorem, then $\gamma
+    \leq \lsub(f(\delta), \delta < \beta)$.
+\end{theorem}
+
+\begin{theorem} \label{ord_lsub_eq}
+    $\lsub(f(\delta), \delta < \beta)$ is uniquely described by the previous two
+    theorems.
+\end{theorem}
+
+There are also a few not quite trivial facts about these functions:
+
+\begin{theorem} \label{ord_lsub_self_eq}
+    For all ordinals $\beta$, we have $\lsub(\alpha, \alpha < \beta) = \beta$.
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{ord_lsub_eq}.  $\beta$ is a strict upper
+    bound of $\alpha$ for all $\alpha < \beta$ by definition.  Now let
+    $\varepsilon$ be another strict upper bound of $\alpha$ for all $\alpha <
+    \beta$.  If $\varepsilon < \beta$, we would have $\varepsilon < \varepsilon$
+    by $\varepsilon$ being a strict upper bound, which is impossible, so we must
+    have $\beta \leq \varepsilon$.  Thus, $\beta$ is the least strict upper
+    bound.
+\end{proof}
+
+\begin{theorem} \label{ord_lsub_in}
+    For all $\alpha$, $\beta$, and $f$, if $\alpha < \lsub(f(\delta), \delta <
+    \beta)$, then there exists a $\gamma < \beta$ such that $\alpha \leq
+    f(\gamma)$.
+\end{theorem}
+\begin{proof}
+    Assume the opposite, that is, that for all $\gamma < \beta$, we have
+    $f(\gamma) < \alpha$.  This means that $\alpha$ is an upper bound of $f$, so
+    by Theorem \ref{ord_lsub_least}, we have $\lsub(f(\delta), \delta < \beta)
+    \leq \alpha$, contradicting the hypothesis that $\alpha < \lsub(f(\delta),
+    \delta < \beta)$.  Thus, we must have some $\gamma < \beta$ with $\alpha
+    \leq f(\gamma)$.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_in}
+    For all $\alpha$, $\beta$, and $f$, if $\alpha < \lub(f(\delta), \delta <
+    \beta)$, then there exists a $\gamma < \beta$ such that $\alpha <
+    f(\gamma)$.
+\end{theorem}
+\begin{proof}
+    The proof is the same in form as the previous proof, although a couple
+    strict/nonstrict inequalities get converted to nonstrict/strict
+    inequalities.
+\end{proof}
+
+There will be more to prove about these functions, but those will have to wait
+until we have developed a small amount of ordinal orithmetic.
+
 The next several sections of this chapter will be looking at the arithmetic
 properties of the cardinals and ordinals.  For the cardinals, the definitions
 are relatively straightforward.  For the ordinals, there are two options.
@@ -973,36 +1079,61 @@ first.
     The empty function is trivially an injective orderly function.
 \end{proof}
 
+\begin{theorem} \label{ord_neg_eq}
+    For all ordinals $\alpha$, if $\alpha \leq 0$, then $0 = \alpha$.
+\end{theorem}
+\begin{proof}
+    The result follows directly from antisymmetry and from the previous theorem.
+\end{proof}
+
+\begin{theorem} \label{ord_lsub_f_zero}
+    For all ordinals $\beta$ and ordinal functions $f$, if $0 = \lsub(f(\delta),
+    \delta < \beta)$, then $0 = \beta$.
+\end{theorem}
+\begin{proof}
+    If we instead had $0 \neq \beta$, we would have $f(0) < 0$ by Theorem
+    \ref{ord_lsub_gt}, which is impossible.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_f_zero}
+    For all ordinals $\beta$ and ordinal functions $f$, if $0 = \lub(f(\delta),
+    \delta < \beta)$, then $f(\delta) = 0$ for all $\delta < \beta$.
+\end{theorem}
+\begin{proof}
+    The result follows directly from Theorems \ref{ord_neg_eq} and
+    \ref{ord_lub_ge}.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_constant}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $\lub(\alpha,
+    \delta < \beta) = \alpha$.  (Notice that $\delta$, despite being the input
+    in the function, isn't used in the actual value of the function.)
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{ord_lub_eq}.  $\alpha$ is an upper bound
+    of the constant function $\alpha$ by reflexivity.  Let $\varepsilon$ be
+    another upper bound of the constant function $\alpha$.  $0$ is a valid input
+    to this function because $0 \neq \beta$, so looking at $\varepsilon$ being
+    an upper bound at this input, we get $\alpha \leq \varepsilon$, showing
+    thath $\alpha$ is the least upper bound.
+\end{proof}
+
 \begin{instance}
     Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
-    (g : \Ord_\beta) \to \Ord$ that is equal to $\alpha$ if $\beta = 0$, or is
-    equal to the smallest ordinal greater than all values of $g$.  Let $g$ be
-    the function given by transfinite recursion on $f$.  Then define the sum
-    $\alpha + \beta$ to be equal to $g(\beta)$.
+    (g : \Ord_\beta) \to \Ord$ that is given by
+    \[
+        f(\beta)(g) = \begin{cases}
+            \alpha &\text{if $0 = \beta$} \\
+            \lsub(g(\delta), \delta < \beta) &\text{otherwise.}
+        \end{cases}
+    \]
+    Let $g$ be the function given by transfinite recursion on $f$.  Then define
+    the sum $\alpha + \beta$ to be equal to $g(\beta)$.
 \end{instance}
 
 Addition of ordinals is quite strange in that it is noncommutative, and some
 standard identities only hold on one side.  Care must be taken to know exactly
 which identities hold and which do not.
-
-\begin{theorem} \label{ord_plus_ind}
-    For all $\alpha$ and $\beta$ with $\beta \neq 0$, then $\alpha + \beta$ is
-    the least element of the set $\{\gamma : \Ord \mid \forall \delta < \beta,
-    \alpha + \delta < \gamma\}$.
-\end{theorem}
-\begin{proof}
-    This follows directly from the definition.
-\end{proof}
-
-\begin{theorem} \label{ord_plus_eq}
-    For all $\alpha$, $\beta$, and $\varepsilon$ with $\beta \neq 0$, then if
-    $\varepsilon$ is the least element of the set $\{\gamma : \Ord \mid \forall
-    \delta < \beta, \alpha + \delta < \gamma\}$, we have $\varepsilon = \alpha +
-    \beta$.
-\end{theorem}
-\begin{proof}
-    This follows from the uniqueness of least elements.
-\end{proof}
 
 \begin{instance}
     $0$ is a right additive identity in $\Ord$.
@@ -1016,17 +1147,18 @@ which identities hold and which do not.
 \end{instance}
 \begin{proof}
     Let $\alpha$ be an ordinal.  We will prove that $0 + \alpha = \alpha$ by
-    transfinite induction.  The inductive hypothesis states that for all $\beta
-    < \alpha$, we have $0 + \beta = \beta$.  When $\alpha = 0$, we have $0 + 0 =
-    0$.  When $\alpha \neq 0$, we will use Theorem \ref{ord_plus_eq} to prove
-    that $0 + \alpha = \alpha$.  To prove that $0 + \delta < \alpha$ for all
-    $\delta < \alpha$, we can use $0 + \delta = \delta$ from the inductive
-    hypothesis.  Now let $\gamma$ be some other ordinal such that for all
-    $\delta < \gamma$, we have $0 + \delta < \gamma$.  If we had $\gamma <
-    \alpha$, we would have $0 + \gamma < \gamma$ by the definition of $\gamma$,
-    and by the inductive hypothesis we have $\gamma < \gamma$, which is
-    impossible.  Thus, we must have $\alpha \leq \gamma$, showing that the
-    conditions of Theorem \ref{ord_plus_eq} are satisfied.
+    transfinite induction.  The inductive hypothesis states that for all $\delta
+    < \alpha$, we have $0 + \delta = \beta$.  When $\alpha = 0$, we have $0 + 0 =
+    0$.  When $\alpha \neq 0$,
+    \begin{align*}
+        0 + \alpha
+        &= \lsub(0 + \delta, \delta < \alpha)
+            && \text{by the definition of addition} \\
+        &= \lsub(\delta, \delta < \alpha)
+            && \text{by the inductive hypothesis} \\
+        &= \alpha
+            && \text{by Theorem \ref{ord_lsub_self_eq}.} \\
+    \end{align*}
 \end{proof}
 
 \begin{theorem} \label{ord_lt_lplus}
@@ -1034,8 +1166,8 @@ which identities hold and which do not.
     have $\gamma + \alpha < \gamma + \beta$.
 \end{theorem}
 \begin{proof}
-    Because $\alpha < \beta$, we have $\beta \neq 0$ by Theorem \ref{ord_pos2}.
-    Then the result follows directly from Theorem \ref{ord_plus_ind}.
+    First, because $\alpha < \beta$, we have $0 \neq \beta$.  Then the result
+    follows directly from Theorem \ref{ord_lsub_gt}.
 \end{proof}
 
 \begin{instance} \label{ord_plus_lcancel}
@@ -1083,14 +1215,16 @@ which identities hold and which do not.
 
 \begin{theorem} \label{ord_le_ex}
     For all ordinals $\alpha$ and $\beta$, if $\alpha \leq \beta$, then there
-    exists an ordinal $\gamma$ such that $\alpha + \gamma = \beta$.  If $\alpha
-    = \beta$, then $\gamma = 0$ suffices, so now consider the case $\alpha \neq
-    \beta$.  Let $S$ be the set $\{\varepsilon : \Ord \mid \beta \leq \alpha +
-    \varepsilon\}$.  By Theorem \ref{ord_le_self_lplus}, this set is nonempty,
-    so it has a least element $\gamma$.  If $\gamma = 0$, we would have $0 \in
-    S$, so $\beta \leq \alpha$, contradicting $\alpha \leq \beta$ and $\alpha
-    \neq \beta$.  So we must have $\gamma \neq 0$.  We will prove by Theorem
-    \ref{ord_plus_eq} that $\alpha + \gamma = \beta$.
+    exists an ordinal $\gamma$ such that $\alpha + \gamma = \beta$.
+\end{theorem}
+\begin{proof}
+    If $\alpha = \beta$, then $\gamma = 0$ suffices, so now consider the case
+    $\alpha \neq \beta$.  Let $S$ be the set $\{\varepsilon : \Ord \mid \beta
+    \leq \alpha + \varepsilon\}$.  By Theorem \ref{ord_le_self_lplus}, this set
+    is nonempty, so it has a least element $\gamma$.  If $\gamma = 0$, we would
+    have $0 \in S$, so $\beta \leq \alpha$, contradicting $\alpha \leq \beta$
+    and $\alpha \neq \beta$.  So we must have $\gamma \neq 0$.  We will prove by
+    Theorem \ref{ord_lsub_eq} that $\alpha + \gamma = \beta$.
 
     First, let $\delta < \gamma$.  We must prove that $\alpha + \delta < \beta$.
     If $\beta \leq \alpha + \delta$, we would have $\delta \in S$, so $\gamma
@@ -1103,7 +1237,7 @@ which identities hold and which do not.
     transitivity it suffices to prove $\alpha + \gamma \leq \zeta$.  The result
     follows directly $\alpha + \gamma$ being the least element that satisfies
     the conditions that $\zeta$ does.
-\end{theorem}
+\end{proof}
 
 \begin{theorem} \label{ord_lt_ex}
     For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$, there exists a
@@ -1130,9 +1264,9 @@ which identities hold and which do not.
     \alpha + \beta$.
 \end{theorem}
 \begin{proof}
-    If $0 = \alpha + \beta$, then by Theorem \ref{ord_plus_ind}, we have $\alpha
-    + \delta < 0$ for all $\delta < \beta$.  Since $\beta \neq 0$, we have $0 <
-    \beta$, so $\alpha + 0 < 0$, contradicting Theorem \ref{ord_pos}.
+    If $0 = \alpha + \beta$, then by Theorem \ref{ord_lsub_gt}, we have $\alpha
+    + \delta < 0$ for all $\delta < \beta$.  Since $\beta \neq 0$, such a
+    $\delta$ exists, which is impossible.
 \end{proof}
 
 \begin{theorem} \label{ord_nz_lplus}
@@ -1145,49 +1279,6 @@ which identities hold and which do not.
 \end{proof}
 
 \begin{instance}
-    Addition of ordinals is associative.
-\end{instance}
-\begin{proof}
-    Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that $\alpha
-    + (\beta + \gamma) = (\alpha + \beta) + \gamma$ by transfinite induction on
-    $\gamma$.  The inductive hypothesis states that for all $\delta < \gamma$,
-    we have $\alpha + (\beta + \delta) = (\alpha + \beta) + \delta$.  If $\gamma
-    = 0$, the result follows instantly, so now consider the case $\gamma \neq
-    0$.  By Theorem \ref{ord_nz_rplus}, we have $0 \neq \beta + \gamma$.  We
-    will prove the result using Theorem \ref{ord_plus_eq} with $\alpha + \beta$
-    and $\gamma$.
-
-    First, let $\delta < \gamma$.  Then
-    \begin{align*}
-        \delta &< \gamma \\
-        \beta + \delta &< \beta + \gamma \\
-        \alpha + (\beta + \delta) &< \alpha + (\beta + \gamma) \\
-        (\alpha + \beta) + \delta &< \alpha + (\beta + \gamma),
-    \end{align*}
-    which is the first thing we need to prove.
-
-    Now let $\varepsilon$ be an ordinal such that  such that for all $\delta <
-    \gamma$, we have $(\alpha + \beta) + \delta < \varepsilon$.  We must prove
-    that $\alpha + (\beta + \gamma) \leq \varepsilon$.  By Theorem
-    \ref{ord_plus_ind}, it suffices to prove that for all $\delta < \beta +
-    \gamma$, we have $\alpha + \delta < \varepsilon$.  There will be two cases:
-    when $\beta \leq \delta$, and when $\delta < \beta$.
-
-    When $\beta \leq \delta$, by Theorem \ref{ord_le_ex} we have an ordinal
-    $\zeta$ with $\beta + \zeta = \delta$.  Because $\delta < \beta + \gamma$,
-    we have $\beta + \zeta < \beta + \gamma$, and cancelling we get $\zeta <
-    \gamma$.  Because $\zeta < \gamma$, by the definition of $\varepsilon$, we
-    have $(\alpha + \beta) + \zeta < \varepsilon$, and by the inductive
-    hypothesis we have $\alpha + (\beta + \zeta) < \varepsilon$.  Because $\beta
-    + \zeta = \delta$, we have $\alpha + \delta < \varepsilon$ as required.
-
-    When $\delta < \beta$, we have $\alpha + \delta < \alpha + \beta$.  By
-    transitivity, it suffices to prove that $\alpha + \beta < \varepsilon$.  By
-    the definition of $\varepsilon$, since $0 < \gamma$, we have $(\alpha +
-    \beta) + 0 < \varepsilon$, so $\alpha + \beta < \varepsilon$ as required.
-\end{proof}
-
-\begin{instance}
     The order on ordinals is left additive cancellative.
 \end{instance}
 \begin{proof}
@@ -1196,6 +1287,136 @@ which identities hold and which do not.
     = \beta$, and the result follow by reflexivity.  If $\gamma + \alpha \neq
     \gamma + \beta$, we have $\gamma + \alpha < \gamma + \beta$, so the result
     follows from Theorem \ref{ord_lt_plus_lcancel}.
+\end{proof}
+
+\begin{theorem} \label{ord_lsub_plus}
+    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$, if $0 \neq
+    \beta$, then
+    \[
+        \alpha + \lsub(f(\delta), \delta < \beta)
+        = \lsub(\alpha + f(\delta), \delta < \beta).
+    \]
+\end{theorem}
+\begin{proof}
+    Because $0 \neq \beta$, we also have $0 \neq \lsub(f(\delta), \delta <
+    \beta)$ by Theorem \ref{ord_lsub_f_zero}.  We will prove the result by
+    antisymmetry.
+
+    To prove that
+    \[
+        \alpha + \lsub(f(\delta), \delta < \beta)
+        \leq \lsub(\alpha + f(\delta), \delta < \beta),
+    \]
+    first notice that by the definition of addition this is equivalent to
+    \[
+        \lsub(\alpha + \delta_1, \delta_1 < \lsub(f(\delta_2), \delta_2 <
+        \beta)) \leq \lsub(\alpha + f(\delta), \delta < \beta).
+    \]
+    Then by Theorem \ref{ord_lsub_least}, it suffices to prove that for all
+    $\zeta < \lsub(f(\delta), \delta < \beta)$, we have
+    \[
+        \alpha + \zeta < \lsub(\alpha + f(\delta), \delta < \beta).
+    \]
+    By Theorem \ref{ord_lsub_in}, we have some $\gamma < \beta$ with $\zeta
+    \leq f(\gamma)$.  Adding $\alpha$ on both sides, we get
+    \[
+        \alpha + \zeta \leq \alpha + f(\gamma).
+    \]
+    By Theorem \ref{ord_lsub_gt}, we have
+    \[
+        \alpha + f(\gamma) < \lsub(\alpha + f(\delta), \delta < \beta),
+    \]
+    and the result follows from transitivity with the last two inequalities.
+
+    To prove that
+    \[
+        \lsub(\alpha + f(\delta), \delta < \beta)
+        \leq \alpha + \lsub(f(\delta), \delta < \beta),
+    \]
+    we will use Theorem \ref{ord_lsub_least}.  Let $\zeta < \beta$.  Then by
+    Theorem \ref{ord_lsub_gt}, we have
+    \[
+        f(\zeta) < \lsub(f(\delta), \delta < \beta),
+    \]
+    and adding $\alpha$ on the left shows that $\alpha + \lsub(f(\delta), \delta
+    < \beta)$ is an upper bound as required.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_plus}
+    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$, if $0 \neq
+    \beta$, then
+    \[
+        \alpha + \lub(f(\delta), \delta < \beta)
+        = \lub(\alpha + f(\delta), \delta < \beta).
+    \]
+\end{theorem}
+\begin{proof}
+    If $0 = \lub(f(\delta), \delta < \beta)$, we would have $f(\delta) = 0$ for
+    all $\delta$ by Theorem \ref{ord_lub_f_zero}.  Then the result would follow
+    from Theorem \ref{ord_lub_constant}.  So now consider the case $0 \neq
+    \lub(f(\delta), \delta < \beta)$.  We will prove the result by antisymmetry.
+
+    To prove that
+    \[
+        \alpha + \lub(f(\delta), \delta < \beta)
+        \leq \lub(\alpha + f(\delta), \delta < \beta),
+    \]
+    first notice that by the definition of addition this is equivalent to
+    \[
+        \lsub(\alpha + \delta_1, \delta_1 < \lub(f(\delta_2), \delta_2 < \beta))
+        \leq \lub(\alpha + f(\delta), \delta < \beta).
+    \]
+    Then by Theorem \ref{ord_lsub_least}, it suffices to prove that for all
+    $\zeta < \lsub(f(\delta), \delta < \beta)$, we have
+    \[
+        \alpha + \zeta < \lub(\alpha + f(\delta), \delta < \beta).
+    \]
+    By Theorem \ref{ord_lsub_in}, we have some $\gamma < \beta$ with $\zeta
+    < f(\gamma)$.  Adding $\alpha$ on both sides, we get
+    \[
+        \alpha + \zeta < \alpha + f(\gamma).
+    \]
+    By Theorem \ref{ord_lub_ge}, we have
+    \[
+        \alpha + f(\gamma) \leq \lub(\alpha + f(\delta), \delta < \beta),
+    \]
+    and the result follows from transitivity with the last two inequalities.
+
+    To prove that
+    \[
+        \lub(\alpha + f(\delta), \delta < \beta)
+        \leq \alpha + \lub(f(\delta), \delta < \beta),
+    \]
+    we will use Theorem \ref{ord_lub_least}.  Let $\zeta < \beta$.  Then by
+    Theorem \ref{ord_lub_ge}, we have
+    \[
+        f(\zeta) \leq \lub(f(\delta), \delta < \beta),
+    \]
+    and adding $\alpha$ on the left shows that $\alpha + \lub(f(\delta), \delta
+    < \beta)$ is an upper bound as required.
+\end{proof}
+
+\begin{instance}
+    Addition of ordinals is associative.
+\end{instance}
+\begin{proof}
+    Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that $\alpha
+    + (\beta + \gamma) = (\alpha + \beta) + \gamma$ by transfinite induction on
+    $\gamma$.  The inductive hypothesis states that for all $\delta < \gamma$,
+    we have $\alpha + (\beta + \delta) = (\alpha + \beta) + \delta$.  If $\gamma
+    = 0$, the result follows instantly, so now consider the case $\gamma \neq
+    0$.  Then
+    \begin{align*}
+        \alpha + (\beta + \gamma)
+        &= \alpha + \lsub(\beta + \delta, \delta < \gamma)
+            &&\text{by the definition of addition} \\
+        &= \lsub(\alpha + (\beta + \delta), \delta < \gamma)
+            &&\text{by Theorem \ref{ord_lsub_plus}} \\
+        &= \lsub((\alpha + \beta) + \delta, \delta < \gamma)
+            &&\text{by the inductive hypothesis} \\
+        &= (\alpha + \beta) + \gamma
+            &&\text{by the definition of addition.} \\
+    \end{align*}
 \end{proof}
 
 \begin{instance}

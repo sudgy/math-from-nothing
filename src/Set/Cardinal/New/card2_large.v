@@ -124,6 +124,16 @@ Proof.
     apply β_gt.
 Qed.
 
+Theorem ord_initial_small_le :
+    ∀ (β : ord) (f : set_type (initial_segment β) → ord), ∃ γ, ∀ α, f α ≤ γ.
+Proof.
+    intros β f.
+    destruct (ord_initial_small β f) as [γ γ_ltq].
+    exists γ.
+    intros α.
+    apply γ_ltq.
+Qed.
+
 Theorem ord_card_large : ∀ (β : ord) (f : set_type (initial_segment β) → card),
     ∃ μ, ∀ α, f α < μ.
 Proof.

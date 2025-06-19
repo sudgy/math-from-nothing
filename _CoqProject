@@ -109,6 +109,7 @@
 
 ./src/Set/Ordinal/New/ord2_base.v
 ./src/Set/Ordinal/New/ord2_order.v
+./src/Set/Ordinal/New/ord2_bounds.v
 ./src/Set/Ordinal/New/ord2_plus.v
 ./src/Set/Ordinal/ord_base.v
 ./src/Set/Ordinal/ord_order.v
