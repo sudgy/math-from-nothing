@@ -116,8 +116,7 @@ Proof.
             *   split.
                 apply f.
             *   intros b b_nin a.
-                classic_contradiction leq.
-                rewrite nlt_le in leq.
+                order_contradiction leq.
                 pose proof (le_lt_trans leq [|f a]) as b_lt.
                 pose proof (sur f [b|b_lt]) as [z eq].
                 apply (b_nin z).
@@ -130,8 +129,7 @@ Proof.
             {
                 intros a.
                 induction a as [a IHa] using transfinite_induction.
-                classic_contradiction contr.
-                rewrite nle_lt in contr.
+                order_contradiction contr.
                 specialize (IHa _ contr).
                 assert (f (g a) ≤ f (g [f (g a)|])) as leq by exact IHa.
                 do 2 rewrite <- homo_le2 in leq.
@@ -280,8 +278,7 @@ Lemma ord_le_part : ∀ {A B : ord_type} {f : A → B},
     ord_leq_func f → ∀ x y, (∀ a, a < x → f a ≠ y) → f x ≤ y.
 Proof.
     intros A B f [f_inj [f_le f_lt]] x y y_neq.
-    classic_contradiction ltq.
-    rewrite nle_lt in ltq.
+    order_contradiction ltq.
     assert (f x < y) as ltq'.
     {
         apply f_lt.
@@ -339,8 +336,7 @@ Lemma ord_le_simpl : ∀ (A B : ord_type),
     (∃ f : A → B, Injective f ∧ HomomorphismLe f) → to_ord A ≤ to_ord B.
 Proof.
     intros A B [f [f_inj f_homo]].
-    classic_contradiction ltq.
-    rewrite nle_lt in ltq.
+    order_contradiction ltq.
     rewrite ord_lt_simpl in ltq.
     destruct ltq as [x [g]].
     pose (h (a : A) := g (f a)).
@@ -364,8 +360,7 @@ Proof.
     {
         intros a.
         induction a as [a IHa] using transfinite_induction.
-        classic_contradiction contr.
-        rewrite nle_lt in contr.
+        order_contradiction contr.
         specialize (IHa _ contr).
         assert (h a ≤ h [h a|]) as leq by exact IHa.
         rewrite <- homo_le2 in leq.

@@ -257,6 +257,14 @@ Proof.
 Qed.
 
 End TotalOrder.
+
+Tactic Notation "order_contradiction" simple_intropattern(a) :=
+    let b := fresh in
+    classic_contradiction b;
+    apply nle_lt in b + apply nlt_le in b;
+    revert b;
+    intros a.
+
 Section WellOrder.
 
 Context {U} {op : U → U → Prop} `{
@@ -338,9 +346,7 @@ Proof.
     intros a b.
     split; [>apply homo_le|].
     intros leq.
-    classic_contradiction ltq.
-    rewrite nle_lt in ltq.
-    destruct ltq as [leq2 neq].
+    order_contradiction [leq2 neq].
     apply homo_le in leq2.
     pose proof (antisym leq2 leq) as eq.
     apply inj in eq.
@@ -354,8 +360,7 @@ Proof.
     intros a b.
     split; [>apply homo_lt|].
     intros ltq.
-    classic_contradiction leq.
-    rewrite nlt_le in leq.
+    order_contradiction leq.
     classic_case (b = a) as [eq|neq].
     -   subst b.
         contradiction (irrefl _ ltq).
