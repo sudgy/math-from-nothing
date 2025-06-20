@@ -118,15 +118,6 @@ Proof.
     contradiction (irrefl _ (le_lt_trans eq contr)).
 Qed.
 
-Global Instance le_lmult_lcancel_class : OrderMultLcancel U.
-Proof.
-    split.
-    intros a b c c_pos eq.
-    apply le_lmult_pos with (div c) in eq; [>|apply div_pos; apply c_pos].
-    do 2 rewrite mult_llinv in eq by apply c_pos.
-    exact eq.
-Qed.
-
 End OrderMultImply.
 
 Section OrderMult.

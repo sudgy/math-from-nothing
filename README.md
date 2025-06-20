@@ -15,7 +15,6 @@ Some of the interesting things developed in this project are:
 - A construction of the geometric algebra of a module over a commutive ring
 
 There are still things that are incomplete.  Some of the larger ones are:
-- Ordinal exponentiation.  Given my foundation, ordinal exponention is much harder to use than it normally is.  I did manage to define it, but I didn't go much further.  I could pull this off if I wanted to, but I got tired after everything else that I had done.
 - Linear Algebra has only been used for developing other parts of the project, so it is currently just a collection of several unrelated pieces.  Some of what it was developed for led to a dead end, so there are several unused things in this folder as well.
 - I am still wanting to add more to the analysis and topology folders.
 - Some of the code is messy and there are a few things that are proven several times because I was too lazy to isolate a theorem and prove it.

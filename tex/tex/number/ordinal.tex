@@ -1983,4 +1983,333 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     required.
 \end{proof}
 
+\section{Ordinal Exponentiation}
+
+\begin{definition}
+    Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
+    (g : \Ord_\beta \to \Ord) \to \Ord$ that is given by
+    \[
+        f(\beta, g) = \begin{cases}
+            \alpha & \text{if $0 = \beta$} \\
+            \lub(g(\delta)\alpha, \delta < \beta) & \text{otherwise.}
+        \end{cases}
+    \]
+    Let $g$ be the function given by transfinite recursion on $f$.  Then define
+    the power $\alpha^\beta$ to be equal to $g(\beta)$.
+\end{definition}
+
+\begin{theorem} \label{ord_pow_zero}
+    For all ordinals $\alpha$, we have $\alpha^0 = 1$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{zero_ord_pow}
+    For all ordinals $\alpha$, if $0 \neq \alpha$, we have $0 ^ \alpha = 0$.
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{ord_lub_eq}.  First, let $\delta <
+    \alpha$.  Then $0^\delta 0 = 0 \leq 0$, so $0$ is an upper bound.  $0$ is
+    the least ordinal, so it is also the least upper bound.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_one}
+    For all ordinals $\alpha$, $\alpha^1 = \alpha$.
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{ord_lub_eq}.  Let $\delta < 1$.  Then
+    $\delta = 0$, so $\alpha^\delta \alpha = \alpha^0 \alpha = \alpha \leq
+    \alpha$, so $\alpha$ is an upper bound.  Now let $\varepsilon$ be another
+    upper bound of $\alpha^\delta \alpha$ for all $\delta < 1$.  $\delta = 0$
+    works to show that $\alpha \leq \varepsilon$, showing that $\alpha$ is the
+    least upper bound.
+\end{proof}
+
+\begin{theorem} \label{one_ord_pow}
+    For all ordinals $\alpha$, $1^\alpha = 1$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction.  The inductive hypothesis states
+    that for all $\delta < \alpha$, we have $1^\delta = 1$.  If $\alpha = 0$,
+    the theorem follows directly from Theorem \ref{ord_pow_zero}.  For $\alpha
+    \neq 0$, the proof will be by Theorem \ref{ord_lub_eq}.  When $\delta <
+    \alpha$, we have $1^\delta = 1$ by the inductive hypothesis, so
+    \[
+        1^\delta 1 = 1^\delta = 1 \leq 1,
+    \]
+    showing that $1$ is an upper bound.  Now let $\varepsilon$ be another upper
+    bound of $1^\delta 1$ for all $\delta < \alpha$.  Because $\alpha \neq 0$,
+    $\delta = 0$ works, showing that
+    \[
+        1^0 1 = 1 \leq \varepsilon,
+    \]
+    showing that $1$ is the least upper bound.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_nz}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \alpha$, then $0 \neq
+    \alpha^\beta$.
+\end{theorem}
+\begin{proof}
+    If $\beta = 0$, then $\alpha ^ \beta = 1$, so the theorem follows in this
+    case because $0 \neq 1$.  So consider the case $0 \neq \beta$.  Assume for a
+    contradiction that $0 = \alpha ^ \beta$.  Then by Theorem \ref{ord_lub_ge},
+    for all $\delta < \beta$, we have $\alpha^\delta \alpha \leq 0$.  Because
+    $\beta \neq 0$, $\delta = 0$ works, so we have $\alpha^0 \alpha = \alpha
+    \leq 0$.  This implies $\alpha = 0$, contradicting $\alpha \neq 0$.  Thus,
+    we must have $0 \neq \alpha ^ \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_le}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $0 \neq \alpha$ and
+    $\beta \leq \gamma$, then $\alpha ^ \beta \leq \alpha ^ \gamma$.
+\end{theorem}
+\begin{proof}
+    First, if $\gamma = 0$, then from $\beta \leq \gamma$ we get $\beta = 0$ as
+    well.  Then both sides are equal to one, and the theorem follows by
+    reflexivity.  Also, if $\beta = 0$, then $\alpha ^ \beta = 1$.  By Theorem
+    \ref{ord_pow_nz}, we have $\alpha ^ \gamma \neq 0$, so by Theorem
+    \ref{ord_pos_one}, we have $1 \leq \alpha ^ \gamma$, proving the theorem in
+    this case.
+
+    Now consider the case when both $\beta$ and $\gamma$ are not zero.  By
+    Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta <
+    \beta$, we have $\alpha^\delta \alpha \leq \alpha ^ \gamma$.  Then the
+    result follow directly from Theorem \ref{ord_lub_other_leq}.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_plus_one}
+    For all ordinals $\alpha$ and $\beta$, $\alpha ^ {\beta + 1} = \alpha ^
+    \beta \alpha$.
+\end{theorem}
+\begin{proof}
+    First, by Theorem \ref{ord_nz_rplus}, $0 \neq \beta + 1$.  Now if $\alpha =
+    0$, the theorem follows by Theorem \ref{zero_ord_pow}.  In the case $\alpha
+    \neq 0$, the proof will be by Theorem \ref{ord_lub_eq}.  Let $\delta < \beta
+    + 1$.  Then $\delta \leq \beta$, and by Theorem \ref{ord_pow_le} we have
+    $\alpha ^ \delta \leq \alpha ^ \beta$.  Then multiplying by $\alpha$ on the
+    right we see that $\alpha ^ \beta \alpha$ is an upper bound.  Now let
+    $\varepsilon$ be an ordinal such that for all $\delta < \beta + 1$, we have
+    $\alpha ^ \delta \alpha \leq \varepsilon$.  Choosing $\delta = \beta$, we
+    get $\alpha ^ \beta \alpha \leq \varepsilon$, showing that $\alpha ^ \beta
+    \alpha$ is the least upper bound.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_pow}
+    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$ with $0 \neq
+    \alpha$ and $0 \neq \beta$, we have
+    \[
+        \alpha^{\lub(f(\delta), \delta < \beta)}
+        = \lub(\alpha^{f(\delta)}, \delta < \beta).
+    \]
+\end{theorem}
+\begin{proof}
+    First, consider the case $0 = \lub(f(\delta), \delta < \beta)$.  Then
+    \begin{align*}
+        \alpha^{\lub(f(\delta), \delta < \beta)}
+        &= \alpha^0
+            && \\
+        &= 1
+            && \\
+        &= \lub(1, \delta < \beta)
+            && \text{by Theorem \ref{ord_lub_constant}} \\
+        &= \lub(\alpha^0, \delta < \beta)
+            && \\
+        &= \lub(\alpha^{f(\delta)}, \delta < \beta)
+            && \text{by Theorem \ref{ord_lub_f_zero}.}
+    \end{align*}
+    Now consider the case $0 \neq \lub(f(\delta), \delta < \beta)$.  The proof
+    will be by antisymmetry.
+
+    To prove that
+    \[
+        \alpha^{\lub(f(\delta), \delta < \beta)}
+        \leq \lub(\alpha^{f(\delta)}, \delta < \beta),
+    \]
+    first notice that by the definition of ordinal exponentiation, we have
+    \[
+        \alpha^{\lub(f(\delta), \delta < \beta)}
+        = \lub(\alpha^{\delta_1} \alpha, \delta_1 < \lub(f(\delta_2), \delta_2 <
+        \beta)).
+    \]
+    So by Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta
+    < \lub(f(\delta), \delta < \beta)$, we have
+    \[
+        \alpha ^ \delta \alpha \leq \lub(\alpha^{f(\delta)}, \delta < \beta).
+    \]
+    By Theorem \ref{ord_lub_in}, there exists some $\gamma < \beta$ such that
+    $\delta < f(\gamma)$.  Then $\delta + 1 \leq f(\gamma)$, so
+    \[
+        \alpha^{\delta + 1} = \alpha\delta + \alpha \leq \alpha^{f(\gamma)}
+    \]
+    by Theorem \ref{ord_pow_le}.  By transitivity, it suffices to prove that
+    \[
+        \alpha^{f(\gamma)}
+        \leq \lub(\alpha^{f(\delta)}, \delta < \beta),
+    \]
+    which follows directly by Theorem \ref{ord_lub_ge}.
+
+    To prove that
+    \[
+        \lub(\alpha^{f(\delta)}, \delta < \beta)
+        \leq \alpha^{\lub(f(\delta), \delta < \beta)},
+    \]
+    we will use Theorem \ref{ord_lub_least}.  Let $\delta < \beta$.  Then by
+    Theorem \ref{ord_lub_ge}, we have
+    \[
+        f(\delta) \leq \lub(f(\delta), \delta < \beta),
+    \]
+    and the result follows from Theorem \ref{ord_pow_le}.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_plus}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, we have $\alpha^{\beta +
+    \gamma} = \alpha ^ \beta \alpha ^ \gamma$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction on $\gamma$.  The inductive
+    hypothesis states that for all $\delta < \gamma$, we have $\alpha^{\beta +
+    \delta} = \alpha ^ \beta \alpha ^ \delta$.  When $\gamma = 0$, we have
+    \[
+        \alpha^{\beta + 0} = \alpha^\beta = \alpha^\beta 1 = \alpha^\beta
+        \alpha^0.
+    \]
+    When $\alpha = 0$ and $\gamma \neq 0$, we have $0 \neq \beta + \gamma$, so
+    \[
+        0^{\beta + \gamma} = 0 = 0^\beta 0^\gamma.
+    \]
+    Now when $\alpha \neq 0$ and $\gamma \neq 0$,
+    \begin{align*}
+        \alpha^{\beta + \gamma}
+        &= \alpha^{\lsub(\beta + \delta, \delta < \gamma)}
+            && \text{by the definition of addition} \\
+        &= \alpha^{\lub(\beta + \delta + 1, \delta < \gamma)}
+            && \text{by Theorem \ref{ord_lsub_lub}} \\
+        &= \lub(\alpha^{\beta + \delta + 1}, \delta < \gamma)
+            && \text{by Theorem \ref{ord_lub_pow}} \\
+        &= \lub(\alpha^{\beta + \delta} \alpha, \delta < \gamma)
+            && \text{by Theorem \ref{ord_pow_plus_one}} \\
+        &= \lub(\alpha^\beta \alpha^\delta \alpha, \delta < \gamma)
+            && \text{by the inductive hypothesis} \\
+        &= \alpha^\beta \lub(\alpha^\delta \alpha, \delta < \gamma)
+            && \text{by Theorem \ref{ord_lub_mult}} \\
+        &= \alpha^\beta \alpha^\gamma
+            && \text{by the definition of exponentiation.}
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_pow_pow}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, we have $(\alpha ^ \beta)
+    ^ \gamma = \alpha ^ {\beta \gamma}$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction on $\gamma$.  The inductive
+    hypothesis states that for all $\delta < \gamma$, we have $(\alpha ^ \beta)
+    ^ \delta = \alpha ^ {\beta \delta}$.  If $\gamma = 0$, we have
+    \[
+        (\alpha ^ \beta) ^ 0 = 1 = \alpha^0 = \alpha^{\beta 0}.
+    \]
+    If $\beta = 0$, we have
+    \[
+        (\alpha ^ 0) ^ \gamma = 1 ^ \gamma = 1 = \alpha ^ 0 = \alpha^{0 \gamma}.
+    \]
+    If $\alpha = 0$, we have
+    \[
+        (0 ^ \beta) ^ \gamma = 0 ^ \gamma = 0 = 0 ^ {\beta \gamma}.
+    \]
+    So now consider the case where $\alpha$, $\beta$, and $\gamma$ are all not
+    equal to zero.  Then
+    \begin{align*}
+        (\alpha ^ \beta) ^ \gamma
+        &= \lub((\alpha ^ \beta) ^ \delta \alpha^\beta, \delta < \gamma)
+            && \text{by the definition of exponentiation} \\
+        &= \lub(\alpha ^ {\beta \delta} \alpha^\beta, \delta < \gamma)
+            && \text{by the inductive hypothesis} \\
+        &= \lub(\alpha ^ {\beta \delta + \beta}, \delta < \gamma)
+            && \text{by Theorem \ref{ord_pow_plus}} \\
+        &= \alpha ^ {\lub(\beta \delta + \beta, \delta < \gamma)}
+            && \text{by Theorem \ref{ord_lub_pow}} \\
+        &= \alpha ^ {\beta\gamma}
+            && \text{by the definition of multiplication.}
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_pow_gt_one}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$ and $1 < \alpha$,
+    we have $1 < \alpha ^ \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lub_ge}, because $0 < \beta$, we have
+    \[
+        \alpha = \alpha^0 \alpha \leq \alpha ^ \beta.
+    \]
+    Then the result from transitivity with $1 < \alpha$.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_lt}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $1 < \alpha$ and $\beta
+    < \gamma$, we have $\alpha ^ \beta < \alpha ^ \gamma$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lt_ex}, there exists a nonzero $\delta$ with $\gamma =
+    \beta + \delta$.  Then by Theorem \ref{ord_pow_gt_one} we have $1 < \alpha ^
+    \delta$, and since $0 \neq \alpha ^ \beta$ by Theorem \ref{ord_pow_nz}, we
+    can multiply by it on the left to get
+    \[
+        \alpha^\beta < \alpha^\beta \alpha^\delta = \alpha^{\beta + \delta}
+        = \alpha^\gamma.
+    \]
+\end{proof}
+
+\begin{theorem} \label{ord_pow_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $1 < \alpha$ and
+    $\alpha ^ \beta = \alpha ^ \gamma$, then $\beta = \gamma$.
+\end{theorem}
+\begin{proof}
+    For a contradiction, assume that $\beta \neq \gamma$, and without loss of
+    generality, assume that $\beta < \gamma$.  Then by Theorem \ref{ord_pow_lt},
+    we have $\alpha ^ \beta < \alpha ^ \gamma$, which is impossible.
+\end{proof}
+
+\begin{theorem} \label{ord_le_rpow}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
+    then $\alpha ^ \gamma \leq \beta ^ \gamma$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction on $\gamma$.  The inductive
+    hypothesis states that for all $\delta < \gamma$, we have $\alpha ^ \delta
+    \leq \beta ^ \delta$.  When $\gamma = 0$, the theorem is trivial by
+    reflexivity.  When $\beta = 0$, we have $\alpha = 0$ as well because $\alpha
+    \leq \beta$, and then the theorem is again trivial by reflexivity.  So now
+    consider the case $0 \neq \beta$ and $0 \neq \gamma$.
+
+    To prove that $\alpha^\gamma \leq \beta^\gamma$, by Theorem
+    \ref{ord_lub_least} it suffices to prove that for all $\delta < \gamma$, we
+    have
+    \[
+        \alpha ^ \delta \alpha \leq \beta ^ \gamma.
+    \]
+    Then, by Theorem \ref{ord_lub_other_leq}, it suffices to prove that for all
+    $\varepsilon$ such that $\beta^\zeta \beta \leq \varepsilon$ for all $\zeta
+    < \gamma$, we have
+    \[
+        \alpha ^ \zeta \alpha \leq \varepsilon.
+    \]
+    We can use $\zeta = \delta$ to get that
+    \begin{equation} \label{ord_le_rpow_1}
+        \beta ^ \delta \beta \leq \varepsilon.
+    \end{equation}
+    By the inductive hypothesis, we have
+    \begin{equation} \label{ord_le_rpow_2}
+        \alpha ^ \delta \leq \beta ^ \delta.
+    \end{equation}
+    Then from this and $\alpha \leq \beta$, we have
+    \begin{equation} \label{ord_le_rpow_3}
+        \alpha^\delta \alpha \leq \beta^\delta \beta.
+    \end{equation}
+    By transitivity with (\ref{ord_le_rpow_3}) and (\ref{ord_le_rpow_1}) we get
+    the desired result.
+\end{proof}
+
 \end{document}
