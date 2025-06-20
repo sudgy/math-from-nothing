@@ -189,6 +189,7 @@ Proof.
     do 2 rewrite plus_llinv in eq.
     exact eq.
 Qed.
+
 Global Instance plus_rinv_rcancel : PlusRcancel U.
 Proof.
     split.
@@ -305,30 +306,42 @@ Qed.
 Theorem plus_0_a_ab_b : ∀ a b, 0 = a ↔ a + b = b.
 Proof.
     intros a b.
-    rewrite plus_lrmove.
-    rewrite plus_rinv.
-    split; intro; symmetry; assumption.
+    split; intros eq.
+    -   rewrite <- eq.
+        apply plus_lid.
+    -   rewrite <- (plus_lid b) in eq at 2.
+        apply plus_rcancel in eq.
+        symmetry; exact eq.
 Qed.
 Theorem plus_0_a_ba_b : ∀ a b, 0 = a ↔ b + a = b.
 Proof.
     intros a b.
-    rewrite plus_0_a_ab_b.
-    rewrite plus_comm.
-    reflexivity.
+    split; intros eq.
+    -   rewrite <- eq.
+        apply plus_rid.
+    -   rewrite <- (plus_rid b) in eq at 2.
+        apply plus_lcancel in eq.
+        symmetry; exact eq.
 Qed.
 Theorem plus_0_a_b_ab : ∀ a b, 0 = a ↔ b = a + b.
 Proof.
     intros a b.
-    rewrite plus_rrmove.
-    rewrite plus_rinv.
-    reflexivity.
+    split; intros eq.
+    -   rewrite <- eq.
+        symmetry; apply plus_lid.
+    -   rewrite <- (plus_lid b) in eq at 1.
+        apply plus_rcancel in eq.
+        exact eq.
 Qed.
 Theorem plus_0_a_b_ba : ∀ a b, 0 = a ↔ b = b + a.
 Proof.
     intros a b.
-    rewrite plus_rlmove.
-    rewrite plus_linv.
-    reflexivity.
+    split; intros eq.
+    -   rewrite <- eq.
+        symmetry; apply plus_rid.
+    -   rewrite <- (plus_rid b) in eq at 1.
+        apply plus_lcancel in eq.
+        exact eq.
 Qed.
 
 Theorem plus_0_nab_a_b : ∀ a b, 0 = -a + b ↔ a = b.
