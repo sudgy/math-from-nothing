@@ -1120,9 +1120,9 @@ first.
 
 \begin{instance}
     Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
-    (g : \Ord_\beta) \to \Ord$ that is given by
+    (g : \Ord_\beta \to \Ord) \to \Ord$ that is given by
     \[
-        f(\beta)(g) = \begin{cases}
+        f(\beta, g) = \begin{cases}
             \alpha &\text{if $0 = \beta$} \\
             \lsub(g(\delta), \delta < \beta) &\text{otherwise.}
         \end{cases}
@@ -1453,6 +1453,534 @@ which identities hold and which do not.
     \ref{ord_le_self_rplus}, so it remains to prove that $\alpha \neq \alpha +
     \beta$.  If $\alpha = \alpha + \beta$, by cancelling $\alpha$ we would get
     $0 = \beta$, contradicting $0 \neq \beta$.
+\end{proof}
+
+\section{Multiplication of Ordinals}
+
+\begin{instance}
+    Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
+    (g : \Ord_\beta \to \Ord) \to \Ord$ given by
+    \[
+        f(\beta, g) = \lub(g(\delta) + \alpha, \delta < \beta).
+    \]
+    Let $g$ be the function given by transfinite recursion on $f$.  Then define
+    the product $\alpha \beta$ to be equal to $g(\beta)$.
+\end{instance}
+
+Note that this definition uses $\lub$, not $\lsub$ like with addition.
+
+\begin{instance}
+    Zero is a left annihilator in the ordinals.
+\end{instance}
+\begin{proof}
+    Let $\alpha$ be an ordinal.  We will prove that $0\alpha = 0$ by transfinite
+    induction.  The inductive hypothesis states that for all $\delta < \alpha$,
+    we have $0\delta = 0$.  We will prove the result using Theorem
+    \ref{ord_lub_eq}.  For every $\delta < \alpha$, we have $0\delta + 0 = 0
+    \leq 0$ by the inductive hypothesis, so $0$ is an upper bound.  And by
+    Theorem \ref{ord_pos}, $0$ is the least upper bound.
+\end{proof}
+
+\begin{instance}
+    Zero is a right annihilator in the ordinals.
+\end{instance}
+\begin{proof}
+    Let $\alpha$ be an ordinal.  We will prove that $\alpha 0 = 0$ using Theorem
+    \ref{ord_lub_eq}.  It's impossible for there to be any $\delta < 0$, so $0$
+    is vacuously an upper bound. And by Theorem \ref{ord_pos}, $0$ is the least
+    upper bound.
+\end{proof}
+
+\begin{instance}
+    Define the ordinal 1 to be the ordinal corresponding to the singleton type.
+\end{instance}
+
+\begin{instance} \label{ord_not_trivial}
+    The ordinals are not trivial.
+\end{instance}
+\begin{proof}
+    If $0 = 1$, we would have an order isomorphism $f$ from the singleton type
+    to the empty type.  Then $f(I)$ is a value of the singleton type, which is
+    impossible.  Thus, we must have $0 \neq 1$.
+\end{proof}
+
+\begin{theorem} \label{ord_one_pos}
+    In the ordinals, $0 < 1$.
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{ord_pos2} and the previous proof.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_one_eq}
+    For all ordinals $\alpha$, if $\alpha < 1$, then $0 = \alpha$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be an order type with $[\A] = \alpha$.  Then by $\alpha < 1$ and
+    Theorem \ref{ord_lt_simpl}, we know that there is an order isomorphism $f$
+    from $\A$ to $\S_x$, an initial segment of the singleton type.  If we had a
+    value in $a : \A$, we would have $f(a) < x$, but all values of the singleton
+    type are equal, so this is impossible.  Thus, by Theorem \ref{ord_false_0},
+    we have $0 = \alpha$.
+\end{proof}
+
+\begin{theorem} \label{ord_pos_one}
+    For all ordinals $\alpha$, $0 \neq \alpha$ if and only if $1 \leq \alpha$.
+\end{theorem}
+\begin{proof}
+    First assume that $0 \neq \alpha$.  If $\alpha < 1$, by the last theorem we
+    have $0 = \alpha$, a contradiction.
+
+    Now assume that $1 \leq \alpha$.  If $0 = \alpha$, we would have $1 \leq 0$,
+    a contradiction.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_suc_le}
+    For all ordinals $\alpha$ and $\beta$, $\alpha < \beta + 1$ if and only if
+    $\alpha \leq \beta$.
+\end{theorem}
+\begin{proof}
+    First assume that $\alpha < \beta + 1$.  By the definition of addition, we
+    have $\alpha < \lsub(\beta + \delta, \delta < 1)$.  Since $\delta < 1$
+    implies $\delta = 0$, this means that $\beta + 1$ is the smallest ordinal
+    greater than $\beta$.  Because of this, if $\beta < \alpha$, we would have
+    $\beta + 1 \leq \alpha$, contradicting $\alpha < \beta + 1$.  Thus, we must
+    have $\alpha \leq \beta$.
+
+    Now assume that $\alpha \leq \beta$.  By Theorem \ref{ord_le_ex}, there
+    exsits a $\gamma$ such that $\alpha + \gamma = \beta$.  Then we have
+    \begin{align*}
+        0 &\neq 1 && \text{by Instance \ref{ord_not_trivial}} \\
+        0 &\neq \gamma + 1 && \text{by Theorem \ref{ord_nz_rplus}} \\
+        0 &< \gamma + 1 && \text{by Theorem \ref{ord_pos2}} \\
+        \alpha &< \alpha + \gamma + 1 && \text{by Theorem \ref{ord_lt_lplus}} \\
+        \alpha &< \beta + 1 &&
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_le_suc_lt}
+    For all ordinals $\alpha$ and $\beta$, $\alpha + 1 \leq \beta$ if and only
+    if $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    First assume that $\alpha + 1 \leq \beta$.  Then by the previous theorem,
+    $\alpha + 1 < \beta + 1$, so $\alpha < \beta$ by Theorem
+    \ref{ord_lt_plus_rcancel}.
+
+    Now assume that $\alpha < \beta$.  Then by Theorem \ref{ord_lt_ex}, we have
+    some $\gamma \neq 0$ such that $\alpha + \gamma = \beta$.  Then since
+    $\gamma \neq 0$, we have $1 \leq \gamma$ by Theorem \ref{ord_pos_one}, and
+    adding $\alpha$ to both sides on the left, we get $\alpha + 1 \leq \alpha +
+    \gamma = \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_suc}
+    For all ordinals $\alpha$, we have $\alpha \leq \alpha + 1$.
+\end{theorem}
+\begin{proof}
+    Special case of Theorem \ref{ord_le_self_rplus}.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_suc}
+    For all ordinals $\alpha$, we have $\alpha < \alpha + 1$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lt_suc_le}, this is equivalent to $\alpha \leq \alpha$,
+    which is true by reflexivity.
+\end{proof}
+
+\begin{theorem} \label{ord_lsub_lub}
+    For all ordinals $\beta$ and ordinal functions $f$,
+    \[
+        \lsub(f(\delta), \delta < \beta) = \lub(f(\delta) + 1, \delta < \beta).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{ord_lub_eq}.  First, let $\alpha < \beta$.
+    Then for any $\varepsilon$ with $f(\delta) < \varepsilon$ with $\delta <
+    \beta$, we have $f(\alpha) + 1 \leq \varepsilon$ by Theorem
+    \ref{ord_le_suc_lt}.  Thus, by Theorem \ref{ord_lsub_other_leq}, we have
+    $f(\alpha) + 1 \leq \lsub(f(\delta), \delta < \beta)$, so $\lsub(f(\delta),
+    \delta < \beta)$ is an upper bound of $f(\delta) + 1$.
+
+    To prove that it's the least upper bound, let $\varepsilon$ be another upper
+    bound.  Then for all $\alpha < \beta$ we have $f(\alpha) + 1 \leq
+    \varepsilon$, so by Theorem \ref{ord_le_suc_lt}, we have $f(\alpha) <
+    \varepsilon$.  Thus, by Theorem \ref{ord_lsub_least}, we have
+    $\lsub(f(\delta), \delta < \beta) \leq \varepsilon$, showing that
+    $\lsub(f(\delta), \delta < \beta)$ is the least upper bound.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_one}
+    For all ordinals $\alpha$, $\lub(\alpha, \delta < 1) = \alpha$.
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{ord_lub_eq}.  $\alpha \leq \alpha$, so
+    $\alpha$ is an upper bound.  Then for any $\varepsilon$ with $\alpha \leq
+    \varepsilon$ for any $\delta < 1$, $\delta = 0$ works, so $\alpha$ is the
+    least upper bound.
+\end{proof}
+
+\begin{instance}
+    One in the ordinals is a left multiplicative identity.
+\end{instance}
+\begin{proof}
+    Let $\alpha$ be an ordinal.  We will prove that $1\alpha = \alpha$ by
+    transfinite induction.  The inductive hypothesis states that for all $\delta
+    < \alpha$, we have $1\delta = \delta$.  Then
+    \begin{align*}
+        1\alpha
+        &= \lub(1\delta + 1, \delta < \alpha)
+            && \text{by the definition of multiplication} \\
+        &= \lub(\delta + 1, \delta < \alpha)
+            && \text{by the inductive hypothesis} \\
+        &= \lsub(\delta, \delta < \alpha)
+            && \text{by Theorem \ref{ord_lsub_lub}} \\
+        &= \delta
+            && \text{by Theorem \ref{ord_lsub_self_eq}.} \\
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    One in the ordinals is a right multiplicative identity.
+\end{instance}
+\begin{proof}
+    Let $\alpha$ be an ordinal.  Then
+    \begin{align*}
+        \alpha1
+        &= \lub(\alpha \delta + \alpha, \delta < 1)
+            && \text{by the definition of multiplication} \\
+        &= \lub(\alpha 0 + \alpha, \delta < 1)
+            && \text{by Theorem \ref{ord_lt_one_eq}} \\
+        &= \lub(\alpha, \delta < 1) && \\
+        &= \alpha
+            && \text{by Theorem \ref{ord_lub_one}.} \\
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    The order in the ordinals is multiplicative.
+\end{instance}
+\begin{proof}
+    This is instant from Theorem \ref{ord_pos}.
+\end{proof}
+
+\begin{theorem} \label{ord_mult_zero} \label{ord_mult_nz}
+    For all ordinals $\alpha$ and $\beta$, if $0 = \alpha \beta$, then either $0
+    = \alpha$ and $0 = \beta$.
+\end{theorem}
+\begin{proof}
+    For a contradiction, assume that both $0 \neq \alpha$ and $0 \neq \beta$.
+    Then because $0 = \alpha \beta$, we know that $\alpha \delta + \alpha \leq
+    0$ for all $\delta < \beta$.  Because $0 \neq \beta$, we have $0 < \beta$,
+    so $\alpha 0 + \alpha = \alpha \leq 0$.  By Theorem \ref{ord_neg_eq}, we
+    have $\alpha = 0$, a contradiction.
+\end{proof}
+
+\begin{theorem} \label{ord_le_lmult}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
+    then $\gamma\alpha \leq \gamma\beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta <
+    \alpha$, we have
+    \[
+        \gamma \delta + \gamma \leq \gamma \beta.
+    \]
+    Then by Theorem \ref{ord_lub_other_leq}, it suffices to prove that for all
+    $\varepsilon$ such that $\gamma \zeta + \gamma \leq \varepsilon$ for all
+    $\zeta < \beta$, we have
+    \[
+        \gamma\delta + \gamma \leq \varepsilon.
+    \]
+    Since $\delta < \beta$, the result is immediate from the definition of
+    $\varepsilon$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_mult_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\gamma \alpha < \gamma
+    \beta$, then $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    If $\beta \leq \alpha$, we could apply the previous theorem to get $\gamma
+    \beta \leq \gamma \alpha$, a contradiction.
+\end{proof}
+
+\begin{theorem} \label{ord_ldist_one}
+    For all ordinals $\alpha$ and $\beta$, we have $\alpha(\beta + 1) =
+    \alpha\beta + \alpha$.
+\end{theorem}
+\begin{proof}
+    By the definition of multiplication, we know that
+    \[
+        \alpha(\beta + 1) = \lub(\alpha\delta + \alpha, \delta < \beta + 1).
+    \]
+    We will use Theorem \ref{ord_lub_eq} to show that this is equal to $\alpha
+    \beta + \alpha$.
+
+    First, let $\delta < \beta + 1$.  By Theorem \ref{ord_lt_suc_le}, we have
+    $\alpha \leq \beta$.  Then multiplying by $\alpha$ on the left and adding
+    $\alpha$ on the right, we get $\alpha\delta + \alpha \leq \alpha \beta +
+    \alpha$, showing that $\alpha\beta + \alpha$ is an upper bound.
+
+    Now let $\varepsilon$ be any other upper bound of $\alpha \delta + \alpha$
+    for all $\delta < \beta + 1$.  Since $\beta < \beta + 1$, we have $\alpha
+    \beta + \alpha \leq \varepsilon$, showing that $\alpha \beta + \alpha$ is
+    the least upper bound.
+\end{proof}
+
+\begin{theorem} \label{ord_lub_mult}
+    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$,
+    \[
+        \alpha \lub(f(\delta), \delta < \beta) = \lub(\alpha f(\delta),
+        \delta < \beta).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  To prove that
+    \[
+        \alpha \lub(f(\delta), \delta < \beta)
+        \leq \lub(\alpha f(\delta), \delta < \beta),
+    \]
+    first notice that
+    \[
+        \alpha \lub(f(\delta), \delta < \beta)
+        = \lub(\alpha \delta_1 + \alpha,
+            \delta_1 < \lub(f(\delta_2), \delta_\beta)).
+    \]
+    Then by Theorem \ref{ord_lub_least}, it suffices to prove that for all
+    $\zeta < \lub(f(\delta), \delta < \beta)$, we have
+    \[
+        \alpha \zeta + \alpha \leq \lub(\alpha f(\delta), \delta < \beta).
+    \]
+    Because $\zeta < \lub(f(\delta), \delta < \beta)$, by Theorem
+    \ref{ord_lub_in} we have some $\gamma < \beta$ such that $\zeta <
+    f(\gamma)$.  Then by Theorem \ref{ord_le_suc_lt}, we have $\zeta + 1 \leq
+    f(\gamma)$, and multiplying by $\alpha$ and applying Theorem
+    \ref{ord_ldist_one} we get
+    \[
+        \alpha \zeta + \alpha \leq \alpha f(\gamma).
+    \]
+    Furthermore, by Theorem \ref{ord_lub_ge}, we have
+    \[
+        \alpha f(\gamma) \leq \lub(\alpha f(\delta), \delta < \beta).
+    \]
+    Applying transitivity to the previous two inequalities we get the desired
+    result.
+
+    To prove that
+    \[
+        \lub(\alpha f(\delta), \delta < \beta)
+        \leq \alpha \lub(f(\delta), \delta < \beta),
+    \]
+    we will use Theorem \ref{ord_lub_least}.  Let $\delta < \beta$.  We must
+    prove that
+    \[
+        \alpha f(\delta) \leq \alpha \lub(f(\delta), \delta < \beta).
+    \]
+    This follows directly from Theorem \ref{ord_le_lmult} and \ref{ord_lub_ge}.
+\end{proof}
+
+\begin{instance}
+    Multiplication of ordinals is left distributive.
+\end{instance}
+\begin{proof}
+    Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that
+    $\alpha(\beta + \gamma) = \alpha \beta + \alpha \gamma$ by transfinite
+    induction on $\gamma$.  The inductive hypothesis states that for all $\delta
+    < \gamma$, we have $\alpha(\beta + \delta) = \alpha \beta + \alpha \delta$.
+    If $\gamma = 0$, the result is trivial.  If $\gamma \neq 0$, then
+    \begin{align*}
+        \alpha(\beta + \gamma)
+        &= \alpha \lsub(\beta + \delta, \delta < \gamma)
+            && \text{by the definition of addition} \\
+        &= \alpha \lub(\beta + \delta + 1, \delta < \gamma)
+            && \text{by Theorem \ref{ord_lsub_lub}} \\
+        &= \lub(\alpha(\beta + \delta + 1), \delta < \gamma)
+            && \text{by Theorem \ref{ord_lub_mult}} \\
+        &= \lub(\alpha(\beta + \delta) + \alpha, \delta < \gamma)
+            && \text{by Theorem \ref{ord_ldist_one}} \\
+        &= \lub(\alpha\beta + \alpha\delta + \alpha, \delta < \gamma)
+            && \text{by the inductive hypothesis} \\
+        &= \alpha\beta + \lub(\alpha\delta + \alpha, \delta < \gamma)
+            && \text{by Theorem \ref{ord_lub_plus}} \\
+        &= \alpha\beta + \alpha\gamma
+            && \text{by the definition of multiplication.}
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Multiplication of ordinals is associative.
+\end{instance}
+\begin{proof}
+    Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that
+    $\alpha(\beta\gamma) = (\alpha \beta) \gamma$ by transfinite
+    induction on $\gamma$.  The inductive hypothesis states that for all $\delta
+    < \gamma$, we have $\alpha(\beta\delta) = (\alpha \beta) \delta$.  Then
+    \begin{align*}
+        \alpha(\beta\gamma)
+        &= \alpha \lub(\beta \delta + \beta, \delta < \gamma)
+            && \text{by the definition of multiplication} \\
+        &= \lub(\alpha(\beta \delta + \beta), \delta < \gamma)
+            && \text{by Theorem \ref{ord_lub_mult}} \\
+        &= \lub(\alpha(\beta \delta) + \alpha \beta, \delta < \gamma)
+            && \\
+        &= \lub((\alpha\beta) \delta + \alpha \beta, \delta < \gamma)
+            && \text{by the inductive hypothesis} \\
+        &= (\alpha\beta) \gamma
+            && \text{by the definition of multiplication.}
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_lt_lmult}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $0 \neq \gamma$ and
+    $\alpha < \beta$, then $\gamma\alpha < \gamma\beta$.
+\end{theorem}
+\begin{proof}
+    Because $\alpha < \beta$, there exists a $\delta \neq 0$ such that $\alpha +
+    \delta = \beta$.  Then by Theorem \ref{ord_mult_nz}, we have
+    \begin{align*}
+        0 &< \gamma\delta \\
+        \gamma\alpha &< \gamma\alpha + \gamma\delta \\
+        \gamma\alpha &< \gamma(\alpha + \delta) \\
+        \gamma\alpha &< \gamma\beta.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Multiplication of ordinals is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $\alpha$, $\beta$, and $\gamma$ be ordinals such that $0 \neq \gamma$
+    and $\gamma \alpha = \gamma \beta$.  If $\alpha \neq \beta$, we can assume
+    without loss of generality that $\alpha < \beta$.  Then multiplying this
+    inequality by $\gamma$ on the left produces $\gamma \alpha < \gamma \beta$,
+    contradicting the equality we started with.  Thus, we must have $\alpha =
+    \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_mult_lcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $0 \neq \gamma$ an
+    d$\gamma \alpha \leq \gamma \beta$, then $\alpha \leq \beta$.
+\end{theorem}
+\begin{proof}
+    If $\gamma\alpha = \gamma\beta$, we could cancel $\gamma$ to get $\alpha =
+    \beta$, so $\alpha \leq \beta$.  If $\gamma\alpha \neq \gamma\beta$, we
+    could use Theorem \ref{ord_lt_mult_lcancel} to get $\alpha < \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_rmult}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
+    then $\alpha\gamma \leq \beta\gamma$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction on $\gamma$.  The inductive
+    hypothesis states that for all $\delta < \gamma$, we have $\alpha \delta
+    \leq \beta \delta$.  To prove that
+    \[
+        \alpha \gamma \leq \beta\gamma
+        = \lub(\beta\delta + \beta, \delta < \gamma),
+    \]
+    we will use Theorem \ref{ord_lub_other_leq}.  So let $\varepsilon$ be an
+    ordinal such that for all $\delta < \gamma$, we have $\beta \delta + \beta
+    \leq \varepsilon$.  We must prove that
+    \[
+        \alpha\gamma = \lub(\alpha \delta + \alpha, \delta < \gamma)
+        \leq \varepsilon.
+    \]
+    To do this, we will use Theorem \ref{ord_lub_least}.  So let $\delta <
+    \gamma$.  We must prove that $\alpha\delta + \alpha \leq \varepsilon$.
+    Because $\delta < \gamma$, we have
+    \begin{equation} \label{ord_le_rmult_1}
+        \beta\delta + \beta \leq \varepsilon
+    \end{equation}
+    by the definition of $\varepsilon$.  By the inductive hypothesis, we also
+    have
+    \begin{equation} \label{ord_le_rmult_2}
+        \alpha\delta \leq \beta\delta.
+    \end{equation}
+    We can add the inequalites $\alpha \leq \beta$ and (\ref{ord_le_rmult_2}) to
+    get
+    \begin{equation} \label{ord_le_rmult_3}
+        \alpha\delta + \alpha \leq \beta\delta + \beta.
+    \end{equation}
+    Then, by transitivity with (\ref{ord_le_rmult_3}) and
+    (\ref{ord_le_rmult_1}), we get
+    \[
+        \alpha\delta + \alpha \leq \varepsilon
+    \]
+    as required.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_mult_rcancel}
+    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \gamma < \beta
+    \gamma$, then $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    If $\beta \leq \alpha$, then by Theorem \ref{ord_le_rmult} we would have
+    $\beta \gamma \leq \alpha \gamma$, a contradiction.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_lmult}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $\alpha \leq
+    \beta \alpha$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_pos_one}, we have $1 \leq \beta$.  Then multiplying by
+    $\alpha$ we get $\alpha \leq \beta \alpha$.
+\end{proof}
+
+\begin{theorem} \label{ord_le_self_rmult}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $\alpha \leq
+    \alpha \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_pos_one}, we have $1 \leq \beta$.  Then multiplying by
+    $\alpha$ we get $\alpha \leq \alpha \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_div}
+    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then there exist
+    ordinals $\gamma$ and $\delta$ such that $\alpha = \beta \gamma + \delta$
+    and $\delta < \beta$.
+\end{theorem}
+\begin{proof}
+    Let $S$ be the set $\{\eta : \Ord \mid \alpha < \beta \eta\}$.  Because $0
+    \neq \beta$, by Theorem \ref{ord_le_self_lmult} we have
+    \begin{align*}
+        \alpha + 1 &\leq \beta(\alpha + 1) \\
+        \alpha &< \beta(\alpha + 1),
+    \end{align*}
+    so $S$ is nonempty.  Let $\varepsilon$ be the least element of $S$.
+    $\varepsilon \neq 0$, because if it was, we would have $\alpha < \beta 0 =
+    0$.
+
+    We will now prove that there exists an ordinal $\gamma$ such that $\gamma +
+    1 = \varepsilon$.  To do so, assume that there is no such $\gamma$.  We will
+    prove that $\beta \varepsilon \leq \alpha$, which will be a contradiction
+    since $\varepsilon \in S$.  By Theorem \ref{ord_lub_least}, it suffices to
+    prove that for all $\zeta < \varepsilon$, we have $\beta\zeta + \beta \leq
+    \alpha$.  By Theorem \ref{ord_le_suc_lt}, we have $\zeta + 1 \leq
+    \varepsilon$.  If we had $\alpha < \beta\zeta + \beta = \beta(\zeta + 1)$,
+    this would mean that $\zeta + 1$ is an upper bound of $S$, so $\varepsilon
+    \leq \zeta + 1$.  Since $\zeta + 1 \leq \varepsilon$ too, by antisymmetry we
+    have $\zeta + 1 = \varepsilon$.  This contradicts our original assumption
+    that no such $\zeta$ exists, so we must have $\beta \varepsilon \leq
+    \alpha$, contradicting $\varepsilon \in S$, so we must have some $\gamma$
+    such that $\gamma + 1 = \varepsilon$.
+
+    Now we must have $\beta \gamma \leq \alpha$, because if $\alpha < \beta
+    \gamma$, we would have $\gamma \in S$, implying that $\varepsilon = \gamma +
+    1 \leq \gamma$, which is impossible.  Thus, by Theorem \ref{ord_le_ex}, we
+    have an ordinal $\delta$ such that $\beta \gamma + \delta = \alpha$.  This
+    shows that $\gamma$ and $\delta$ already satisfy one of the conditions
+    required.  To prove that $\delta < \beta$, assume that $\beta \leq \delta$.
+    Since $\varepsilon \in \delta$, $\beta \gamma + \delta = \alpha$, and
+    $\varepsilon = \gamma + 1$, we have
+    \[
+        \beta \gamma + \delta < \beta (\gamma + 1).
+    \]
+    Distributing and cancelling $\beta \gamma$, we get $\delta < \beta$ as
+    required.
 \end{proof}
 
 \end{document}
