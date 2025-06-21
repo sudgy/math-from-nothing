@@ -3,6 +3,7 @@
 \externaldocument{../basics/foundations}
 \externaldocument{../basics/set}
 \externaldocument{../basics/elementary_algebra}
+\externaldocument{../basics/natural}
 
 \begin{document}
 
@@ -2310,6 +2311,312 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     \end{equation}
     By transitivity with (\ref{ord_le_rpow_3}) and (\ref{ord_le_rpow_1}) we get
     the desired result.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_le_pow}
+    For all ordinals $\alpha$ and $\beta$ with $1 < \beta$, we have $\alpha
+    \leq \beta ^ \alpha$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction on $\alpha$.  The inductive
+    hypothesis states that for all $\delta < \alpha$, we have $\delta \leq \beta
+    ^ \delta$.  If $0 = \alpha$, the result follows from Theorem \ref{ord_pos}.
+    When $0 \neq \alpha$, we will use Theorem \ref{ord_lub_other_leq}.  So let
+    $\varepsilon$ be an upper bound of $\beta ^ \delta \beta$ for $\delta <
+    \alpha$.  We must have $\varepsilon \neq 0$, because if it is equal to zero,
+    we would have $\beta^0 \beta = \beta \leq 0$, contradicting $1 < \beta$.  We
+    must prove that $\alpha \leq \varepsilon$.
+
+    To do so, assume that $\varepsilon < \alpha$.  Then by the definition of
+    $\varepsilon$, we have
+    \begin{equation} \label{ord_pow_le_pow_1}
+        \beta ^ \varepsilon \beta \leq \varepsilon.
+    \end{equation}
+    Furthermore, by the inductive hypothesis, we have
+    \begin{equation} \label{ord_pow_le_pow_2}
+        \varepsilon \leq \beta ^ \varepsilon.
+    \end{equation}
+    Multiplying by $\beta$, we get
+    \begin{equation} \label{ord_pow_le_pow_3}
+        \varepsilon \beta \leq \beta ^ \varepsilon \beta.
+    \end{equation}
+    Now by transitivity with (\ref{ord_pow_le_pow_3}) and
+    (\ref{ord_pow_le_pow_1}), we get
+    \begin{equation} \label{ord_pow_le_pow_4}
+        \varepsilon \beta \leq \beta.
+    \end{equation}
+    By Theorem \ref{ord_le_self_rmult}, we have
+    \begin{equation} \label{ord_pow_le_pow_5}
+        \varepsilon \leq \varepsilon \beta.
+    \end{equation}
+    By antisymmetry with (\ref{ord_pow_le_pow_4}) and (\ref{ord_pow_le_pow_5}),
+    we get
+    \[
+        \varepsilon \beta = \varepsilon.
+    \]
+    Cancelling $\varepsilon$, we get $\beta = 1$, contradicting $1 < \beta$.
+    Thus, our original assumption that $\varepsilon < \alpha$ must be false, so
+    we have $\alpha \leq \varepsilon$.
+\end{proof}
+
+\section{Relationship Between the Ordinals and Natural Numbers}
+
+The natural number inclusion function $\iN$ given by Definition \ref{from_nat}
+can be applied to the ordinals too.  This section will be looking at some of the
+consequences of thinking of natural numbers as ordinals.  However, the
+definition of $\iN$ is not too useful here, so we will come up with an
+alternative way of thinking of natural numbers in the ordinals.
+
+\begin{lemma} \label{nat_to_ord_lt}
+    For all natural numbers $a$ and $b$, if $a < b$, then $[\N_a] < [\N_b]$.
+\end{lemma}
+\begin{proof}
+    When actually getting down to the nitty gritty details of the types, this
+    lemma is actually really annoying to prove.  However, it's actually quite
+    simple: $\N_a$ is isomorphic to $(\N_b)_a$.  Since the details of the proof
+    in the code are just type theory nonsense for making this trivial fact work,
+    I'm just going to call this proof done.
+\end{proof}
+
+\begin{theorem} \label{from_nat_ord}
+    For all natural numbers $n$, $\iN(n) = [\N_n]$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  First, when $n = 0$, we must prove
+    $0 = \N_0$.  There can't be any elements in $\N_0$, so by Theorem
+    \ref{ord_false_0} the base case is true.  For the inductive case, the
+    inductive hypothesis says that $\iN(n) = [\N_n]$, and we must prove that
+    $\iN(n + 1) = [\N_{n + 1}]$.  By the properties of $\iN$ and the inductive
+    hypothesis, we have
+    \[
+        \iN(n + 1) = \iN(n) + 1 = [\N_n] + 1.
+    \]
+    We will prove that $[\N_n] + 1 = [\N_{n + 1}]$ by Theorem \ref{ord_lsub_eq}.
+    First, for any $\delta < 1$, we must have $\delta = 0$, so $[\N_n] + 0 <
+    [\N_{n + 1}]$ by Lemma \ref{nat_to_ord_lt}.  So $[\N_{n + 1}]$ is an upper
+    bound.  To prove that it is a least upper bound, let $\varepsilon$ be such
+    that for all $\delta < 1$, we have $[\N_n] + \delta < \varepsilon$.  $\delta
+    = 0$ is the only one that works, so we have $[\N_n] < \varepsilon$.  From
+    this, we must prove that $[\N_{n + 1}] \leq \varepsilon$.
+
+    Let $\A$ be an order type for $\varepsilon$.  Then because $[\N_n] <
+    \varepsilon$, we have some $x : \A$ and an order isomorphism $f : \N_n \to
+    \A$.  Now define a new function $g : \N_{n+1} \to \A$ given by
+    \[
+        g(m) = \begin{cases}
+            f(m) & \text{if $m < n$} \\
+            x & \text{otherwise.}
+        \end{cases}
+    \]
+    We will prove that $g$ is injective and orderly.
+
+    To prove that $g$ is injective, let $a$ and $b$ be values in $\N_{n + 1}$
+    such that $g(a) = g(b)$.  We have three cases for if both are less than $n$,
+    one is less than $n$, and neither are less than $n$.
+    \setcounter{case}{0}
+    \begin{case} $a < n$, $b < n$.
+        In this case, we have $f(a) = f(b)$, and by injectivity of $f$ we get $a
+        = b$.
+    \end{case}
+    \begin{case} $a < n$, $b = n$.
+        In this case, we have $f(a) = x$, but this is impossible since $f(a) <
+        x$ by definition.
+    \end{case}
+    \begin{case} $a = n$, $b = n$.
+        Since $a = n$ and $b = n$, we have $a = b$.
+    \end{case}
+
+    To prove that $g$ is injective, let $a$ and $b$ be values in $\N_{n + 1}$
+    such that $a \leq g$.  We must prove that $g(a) \leq g(b)$.  We have four
+    cases for if both are less than $n$, one is less than $n$, and neither are
+    less than $n$.
+    \setcounter{case}{0}
+    \begin{case} $a < n$, $b < n$.
+        In this case, what we need to prove is $f(a) \leq f(b)$, which follows
+        from $f$ being orderly.
+    \end{case}
+    \begin{case} $a < n$, $b = n$.
+        In this case, we need to prove $f(a) \leq x$, which follows from the
+        definition of $f$.
+    \end{case}
+    \begin{case} $a = n$, $b < n$.
+        In this case, we have $n \leq b$ and $b < n$, so this case is
+        impossible.
+    \end{case}
+    \begin{case} $a = n$, $b = n$.
+        In this case, we need to prove $x \leq x$, which is trivial.
+    \end{case}
+
+    Because we have an injective orderly function from $\N_{n+1}$ to $\A$, by
+    Theorem \ref{ord_le_simpl} $[\N_{n+1}] \leq [\A]$.
+\end{proof}
+
+\begin{instance}
+    The ordinals are characteristic zero.
+\end{instance}
+\begin{proof}
+    If $0 = S(n)$ for some $n$, we would have an order isomorphism $f :
+    \N_{S(n)} \to \E$.  Then $f(n)$ would be a value in the empty type, which is
+    impossible.
+\end{proof}
+
+Most proofs of the properties of $\iN$ work just fine for the ordinals, with the
+exception of it being orderly.  It is still orderly for the ordinals however.
+
+\begin{instance}
+    $\iN$ is orderly in the ordinals.
+\end{instance}
+\begin{proof}
+    Let $a \leq b$ in the natural numbers.  We must prove that $\iN(a) \leq
+    \iN(b)$.  If $a = b$, then we're done.  If $a \neq b$, then we have $a < b$,
+    so we can use Lemma \ref{nat_to_ord_lt} to get the desired result.
+\end{proof}
+
+\begin{theorem} \label{from_nat_ord_pow}
+    For all natural numbers $a$ and $b$, we have $\iN(a^b) = \iN(a)^{\iN(b)}$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $b$.  When $b = 0$,
+    \[
+        \iN(a^0) = \iN(1) = 1 = \iN(a)^0 = \iN(a)^{\iN(0)},
+    \]
+    so the base case is true.  Now assume that $\iN(a^b) = \iN(a)^{\iN(b)}$.
+    Then
+    \[
+        \iN(a^{S(b)})
+        = \iN(a^ba)
+        = \iN(a^b)\iN(a)
+        = \iN(a)^{\iN(b)} \iN(a)
+        = \iN(a)^{\iN(b) + 1}
+        = \iN(a)^{\iN(S(b))}.
+    \]
+    Thus, the theorem is true by induction.
+\end{proof}
+
+\begin{definition}
+    Define the ordinal $\omega$ to be the ordinal corresponding to the natural
+    numbers.
+\end{definition}
+
+\begin{theorem} \label{nat_lt_omega}
+    For all natural numbers $n$, $n < \omega$.
+\end{theorem}
+\begin{proof}
+    Since $n = [\N_n]$ and $\omega = [\N]$, we have $[\N_n] < [\N]$ by a direct
+    application of Theorem \ref{ord_lt_simpl}.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_omega}
+    For all ordinals $\alpha$, if $\alpha < \omega$, then there exists a natural
+    number $n$ with $n = \alpha$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lt_simpl}, we know that any order type of $\alpha$ is
+    isomorphic to an initial segment of the natural numbers, which is precisely
+    what it means for there to be a natural number $n$ with $n = \alpha$.
+\end{proof}
+
+\begin{theorem} \label{omega_nz}
+    $0 \neq \omega$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{nat_lt_omega}, we know that $0 < \omega$, which implies that
+    $0 \neq \omega$.
+\end{proof}
+
+\begin{theorem} \label{nat_plus_omega}
+    For all natural numbers $n$, $n + \omega = \omega$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  $\omega \leq n + \omega$ follows
+    directly from Theorem \ref{ord_le_self_lplus}.  To prove that $n + \omega
+    \leq \omega$, by Theorem \ref{ord_lsub_least} it suffices to prove that $n +
+    \delta < \omega$ for all $\delta < \omega$.  By Theorem \ref{ord_lt_omega},
+    there is some natural number $m = \delta$.  Then $n + m$ is a natural
+    number, which is less than $\omega$ by Theorem \ref{nat_lt_omega}.
+\end{proof}
+
+\begin{theorem} \label{nat_mult_omega}
+    For all natural numbers $n \neq 0$, $n\omega = \omega$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  $\omega \leq n \omega$ follows directly
+    from Theorem \ref{ord_le_self_lmult}.  To prove that $n\omega \leq \omega$,
+    by Theorem \ref{ord_lub_least} it suffices to prove that $n \delta + n \leq
+    \omega$ for all $\delta < \omega$.  By Theorem \ref{ord_lt_omega}, there is
+    some natural number $m = \delta$.  Then $nm + n$ is a natural number, which
+    is less than $\omega$ by Theorem \ref{nat_lt_omega}.
+\end{proof}
+
+\begin{theorem} \label{nat_pow_omega}
+    For all natural numbers $n > 1$, $n^\omega = \omega$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  $\omega \leq n^\omega$ follows directly
+    from Theorem \ref{ord_pow_le_pow}.  To prove that $n^\omega \leq \omega$,
+    by Theorem \ref{ord_lub_least} it suffices to prove that $n^\delta n \leq
+    \omega$ for all $\delta < \omega$.  By Theorem \ref{ord_lt_omega}, there is
+    some natural number $m = \delta$.  Then $n^m n$ is a natural number, which
+    is less than $\omega$ by Theorem \ref{nat_lt_omega}.
+\end{proof}
+
+Now that we have gotten some of the basic properties of $\omega$, we can finally
+define the true $\aleph$ function.
+
+\begin{definition}
+    Define $\aleph : \Ord \to \Card$ by $\aleph_\alpha = \aleph'_{\omega +
+    \alpha}$.
+\end{definition}
+
+\begin{theorem}
+    For all ordinals $\alpha \geq \omega^2$, $\aleph_\alpha = \aleph'_\alpha$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_le_ex}, there exists an ordinal $\gamma$ such that
+    $\omega^2 + \gamma = \alpha$.  Then
+    \[
+        \aleph_\alpha
+        = \aleph'_{\omega + \alpha}
+        = \aleph'_{\omega + \omega^2 + \gamma}
+        = \aleph'_{\omega(1 + \omega) + \gamma}
+        = \aleph'_{\omega(\omega) + \gamma}
+        = \aleph'_{\omega^2 + \gamma}
+        = \aleph'_{\alpha}.
+    \]
+\end{proof}
+
+\begin{instance}
+    $\aleph$ is injective.
+\end{instance}
+\begin{proof}
+    Let $\aleph_\alpha = \aleph_\beta$.  This means that $\aleph'_{\omega +
+    \alpha} = \aleph'_{\omega + \beta}$  Then by the injectivity of $\aleph'$,
+    we get $\omega + \alpha = \omega + \beta$, and cancelling $\omega$ we get
+    $\alpha = \beta$.
+\end{proof}
+
+\begin{instance}
+    $\aleph$ is orderly.
+\end{instance}
+\begin{proof}
+    Let $\alpha \leq \beta$.  Then $\omega + \alpha \leq \omega + \beta$, and
+    because $\aleph'$ is orderly, we have $\aleph'_{\omega + \alpha} \leq
+    \aleph_{\omega + \beta}$, so $\aleph_\alpha \leq \aleph_\beta$.
+\end{proof}
+
+\begin{theorem} \label{aleph_sur}
+    For all cardinals $\mu \geq \aleph_0$, there exists an ordinal $\alpha$ with
+    $\aleph_\alpha = \mu$.
+\end{theorem}
+\begin{proof}
+    By the surjectivity of $\aleph'$, there exists some ordinal $\beta$ with
+    with $\aleph'_\beta = \mu$.  Then by assumption we have $\aleph'_\beta \geq
+    \aleph'_\omega$, and since $\aleph'$ is equivalently orderly we have $\beta
+    \geq \omega$.  Then by Theorem \ref{ord_le_ex} we have an ordinal $\alpha$
+    such that $\beta = \omega + \alpha$.  Then
+    \[
+        \mu = \aleph'_\beta = \aleph'_{\omega + \alpha} = \aleph_\alpha.
+    \]
 \end{proof}
 
 \end{document}

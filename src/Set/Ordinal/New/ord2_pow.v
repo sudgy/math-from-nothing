@@ -327,4 +327,38 @@ Proof.
     exact ε_ge.
 Qed.
 
+Theorem ord_pow_le_pow : ∀ α β, 1 < β → α ≤ β ^ α.
+Proof.
+    intros α β β_gt.
+    induction α as [α IHα] using transfinite_induction.
+    classic_case (0 = α) as [α_z | α_nz].
+    {
+        subst.
+        apply ord_pos.
+    }
+    rewrite ord_pow_lub by exact α_nz.
+    apply ord_lub_other_leq.
+    intros ε ε_ge.
+    assert (0 ≠ ε) as ε_nz.
+    {
+        intro; subst.
+        specialize (ε_ge [0|ord_pos2 α_nz]); cbn in ε_ge.
+        rewrite ord_pow_zero, mult_lid in ε_ge.
+        apply ord_neg_eq in ε_ge; subst.
+        contradiction (ord_neg β_gt).
+    }
+    order_contradiction ltq.
+    specialize (ε_ge [ε|ltq]); cbn in ε_ge.
+    specialize (IHα ε ltq).
+    apply (ord_le_rmult β) in IHα.
+    pose proof (trans IHα ε_ge) as leq.
+    assert (0 ≠ β) as β_nz by (apply ord_pos_one; apply β_gt).
+    pose proof (ord_le_self_rmult ε β β_nz) as leq2.
+    pose proof (antisym leq leq2) as eq; clear - eq β_gt ε_nz.
+    rewrite <- (mult_rid ε) in eq at 2.
+    apply (mult_lcancel _ ε_nz) in eq.
+    subst.
+    contradiction (irrefl _ β_gt).
+Qed.
+
 Close Scope ord_scope.

@@ -113,17 +113,17 @@ Global Instance from_nat_mult : HomomorphismMult (from_nat (U := U)).
 Proof.
     split.
     intros a b.
-    nat_induction a.
-    -   rewrite mult_lanni.
+    nat_induction b.
+    -   rewrite mult_ranni.
         rewrite homo_zero.
-        rewrite mult_lanni.
+        rewrite mult_ranni.
         reflexivity.
-    -   rewrite nat_mult_lsuc.
+    -   rewrite nat_mult_rsuc.
         rewrite from_nat_suc.
-        rewrite rdist.
-        rewrite mult_lid.
+        rewrite ldist.
+        rewrite mult_rid.
         setoid_rewrite homo_plus.
-        rewrite IHa.
+        rewrite IHb.
         reflexivity.
 Qed.
 
