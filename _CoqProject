@@ -24,6 +24,7 @@
 
 ./src/Algebra/Relation/relation.v
 ./src/Algebra/Relation/order_bounds.v
+./src/Algebra/Relation/order_plus_base.v
 ./src/Algebra/Relation/order_plus.v
 ./src/Algebra/Relation/order_mult.v
 ./src/Algebra/Relation/order_minmax.v

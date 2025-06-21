@@ -153,7 +153,7 @@ Proof.
     split.
     -   intros leq.
         rewrite <- ord_lt_suc_le in leq.
-        apply ord_lt_plus_rcancel in leq.
+        apply lt_plus_rcancel in leq.
         exact leq.
     -   intros ltq.
         apply ord_lt_ex in ltq as [γ [γ_nz γ_eq]].
@@ -505,7 +505,7 @@ Proof.
     split; [>subst; reflexivity|].
     subst.
     rewrite ord_ldist_one in ε_ltq.
-    apply ord_lt_plus_lcancel in ε_ltq.
+    apply lt_plus_lcancel in ε_ltq.
     exact ε_ltq.
 Qed.
 

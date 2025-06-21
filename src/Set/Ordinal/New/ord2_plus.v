@@ -148,8 +148,9 @@ Proof.
     exact δ_lt.
 Qed.
 
-Theorem ord_lt_lplus : ∀ {α β} γ, α < β → γ + α < γ + β.
+Global Instance ord_lt_lplus : OrderLplus2 ord.
 Proof.
+    split.
     intros α β γ ltq.
     rewrite (ord_plus_lsub γ β).
     -   exact (ord_lsub_gt β (λ δ, γ + [δ|]) [α|ltq]).
@@ -158,30 +159,9 @@ Proof.
         contradiction (ord_neg ltq).
 Qed.
 
-Global Instance ord_plus_lcancel : PlusLcancel ord.
-Proof.
-    split.
-    intros α β γ eq.
-    destruct (trichotomy α β) as [[ltq|eq']|ltq].
-    -   apply (ord_lt_lplus γ) in ltq.
-        rewrite eq in ltq.
-        contradiction (irrefl _ ltq).
-    -   exact eq'.
-    -   apply (ord_lt_lplus γ) in ltq.
-        rewrite eq in ltq.
-        contradiction (irrefl _ ltq).
-Qed.
-
-Global Instance ord_le_lplus : OrderLplus ord.
-Proof.
-    split.
-    intros α β γ leq.
-    classic_case (α = β) as [eq|neq].
-    -   subst.
-        apply refl.
-    -   apply ord_lt_lplus.
-        split; assumption.
-Qed.
+Definition ord_plus_lcancel := plus_lcancel1 : PlusLcancel ord.
+Definition ord_le_lplus := le_lplus2 : OrderLplus ord.
+Global Existing Instances ord_plus_lcancel ord_le_lplus.
 
 Theorem ord_le_self_rplus : ∀ α β, α ≤ α + β.
 Proof.
@@ -197,7 +177,7 @@ Proof.
     induction α as [α IHα] using transfinite_induction.
     order_contradiction ltq.
     specialize (IHα _ ltq).
-    apply (ord_lt_lplus β) in ltq.
+    apply (lt_lplus β) in ltq.
     pose proof (le_lt_trans IHα ltq) as contr.
     contradiction (irrefl _ contr).
 Qed.
@@ -251,14 +231,6 @@ Proof.
     contradiction (irrefl _ ltq).
 Qed.
 
-Theorem ord_lt_plus_lcancel : ∀ {α β} γ, γ + α < γ + β → α < β.
-Proof.
-    intros α β γ ltq.
-    order_contradiction leq.
-    apply (le_lplus γ) in leq.
-    contradiction (irrefl _ (le_lt_trans leq ltq)).
-Qed.
-
 Theorem ord_nz_rplus : ∀ α β, 0 ≠ β → 0 ≠ α + β.
 Proof.
     intros α β β_nz contr.
@@ -278,18 +250,6 @@ Proof.
         exact α_nz.
     -   apply ord_nz_rplus.
         exact neq.
-Qed.
-
-Global Instance ord_le_plus_lcancel : OrderPlusLcancel ord.
-Proof.
-    split.
-    intros α β γ leq.
-    classic_case (γ + α = γ + β) as [eq|neq].
-    -   apply plus_lcancel in eq.
-        rewrite eq.
-        apply refl.
-    -   apply (ord_lt_plus_lcancel γ).
-        split; assumption.
 Qed.
 
 Theorem ord_lsub_plus : ∀ α β f, 0 ≠ β →
@@ -368,14 +328,6 @@ Proof.
     rewrite <- plus_assoc.
     apply le_lplus.
     apply ord_le_self_lplus.
-Qed.
-
-Theorem ord_lt_plus_rcancel : ∀ {α β} γ, α + γ < β + γ → α < β.
-Proof.
-    intros α β γ eq.
-    order_contradiction contr.
-    apply le_rplus with γ in contr.
-    contradiction (irrefl _ (le_lt_trans contr eq)).
 Qed.
 
 Theorem ord_lt_self_rplus : ∀ α β, 0 ≠ β → α < α + β.

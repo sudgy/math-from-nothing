@@ -1,106 +1,17 @@
 Require Import init.
 
-Require Export relation.
-Require Export plus_group.
-
-Class OrderLplus U `{Plus U, Order U} := {
-    le_lplus : ∀ {a b} c, a ≤ b → c + a ≤ c + b
-}.
-Class OrderRplus U `{Plus U, Order U} := {
-    le_rplus : ∀ {a b} c, a ≤ b → a + c ≤ b + c
-}.
-Class OrderPlusLcancel U `{Plus U, Order U} := {
-    le_plus_lcancel : ∀ {a b} c, c + a ≤ c + b → a ≤ b
-}.
-Class OrderPlusRcancel U `{Plus U, Order U} := {
-    le_plus_rcancel : ∀ {a b} c, a + c ≤ b + c → a ≤ b
-}.
-
-Class OrderPlusClass U `{
-    OPP : AllPlusClass U,
-    OPO : TotalOrder U,
-    UOP : @OrderLplus U UP UO,
-    UOPR : @OrderRplus U UP UO,
-    UOPC : @OrderPlusLcancel U UP UO,
-    UOPCR : @OrderPlusRcancel U UP UO
-}.
-
-(* begin hide *)
-Section OrderPlusImply.
-
-Context {U} `{OrderPlusClass U}.
-
-Global Instance le_lplus_rplus : OrderRplus U.
-Proof.
-    split.
-    intros a b c leq.
-    do 2 rewrite (plus_comm _ c).
-    apply le_lplus.
-    exact leq.
-Qed.
-
-Global Instance le_lcancel_rcancel : OrderPlusRcancel U.
-Proof.
-    split.
-    intros a b c leq.
-    do 2 rewrite (plus_comm _ c) in leq.
-    apply le_plus_lcancel in leq.
-    exact leq.
-Qed.
-
-Global Instance le_plus_linv_lcancel : OrderPlusLcancel U.
-Proof.
-    split.
-    intros a b c leq.
-    apply le_lplus with (-c) in leq.
-    do 2 rewrite plus_llinv in leq.
-    exact leq.
-Qed.
-Global Instance le_plus_rinv_rcancel : OrderPlusRcancel U.
-Proof.
-    split.
-    intros a b c leq.
-    apply le_rplus with (-c) in leq.
-    do 2 rewrite plus_rrinv in leq.
-    exact leq.
-Qed.
-
-End OrderPlusImply.
-
+Require Export order_plus_base.
 
 Section OrderPlus.
 
 Context {U} `{OrderPlusClass U}.
 
-(* end hide *)
 Theorem le_lrplus : ∀ {a b c d}, a ≤ b → c ≤ d → a + c ≤ b + d.
 Proof.
     intros a b c d ab cd.
     apply le_rplus with c in ab.
     apply le_lplus with b in cd.
     exact (trans ab cd).
-Qed.
-
-Theorem lt_lplus : ∀ {a b} c, a < b → c + a < c + b.
-Proof.
-    intros a b c [leq neq].
-    split.
-    -   apply le_lplus.
-        exact leq.
-    -   intro contr.
-        apply plus_lcancel in contr.
-        contradiction.
-Qed.
-
-Theorem lt_rplus : ∀ {a b} c, a < b → a + c < b + c.
-Proof.
-    intros a b c [leq neq].
-    split.
-    -   apply le_rplus.
-        exact leq.
-    -   intro contr.
-        apply plus_rcancel in contr.
-        contradiction.
 Qed.
 
 Theorem lt_lrplus : ∀ {a b c d}, a < b → c < d → a + c < b + d.
@@ -125,28 +36,6 @@ Proof.
     apply lt_rplus with c in ab.
     apply le_lplus with b in cd.
     exact (lt_le_trans ab cd).
-Qed.
-
-Theorem lt_plus_lcancel : ∀ {a b} c, c + a < c + b → a < b.
-Proof.
-    intros a b c [leq neq].
-    split.
-    -   apply le_plus_lcancel in leq.
-        exact leq.
-    -   intro contr.
-        rewrite contr in neq.
-        contradiction.
-Qed.
-
-Theorem lt_plus_rcancel : ∀ {a b} c, a + c < b + c → a < b.
-Proof.
-    intros a b c [leq neq].
-    split.
-    -   apply le_plus_rcancel in leq.
-        exact leq.
-    -   intro contr.
-        rewrite contr in neq.
-        contradiction.
 Qed.
 
 Theorem le_plus_llmove : ∀ a b c, a + b ≤ c ↔ b ≤ -a + c.
