@@ -297,4 +297,89 @@ Proof.
     reflexivity.
 Qed.
 
+
+Theorem ord_plus_rcancel_false : ¬PlusRcancel ord.
+Proof.
+    intros contr.
+    pose proof (plus_rcancel (a := from_nat 0) (b := from_nat 1) ω) as eq.
+    prove_parts eq.
+    {
+        do 2 rewrite nat_plus_omega.
+        reflexivity.
+    }
+    apply inj in eq.
+    contradiction (nat_zero_suc eq).
+Qed.
+
+Theorem ord_mult_rcancel_false : ¬MultRcancel ord.
+Proof.
+    intros contr.
+    pose proof (mult_rcancel (a := from_nat 1) (b := from_nat 2) ω ω_nz) as eq.
+    prove_parts eq.
+    {
+        do 2 rewrite nat_mult_omega by apply nat_zero_suc.
+        reflexivity.
+    }
+    apply inj in eq.
+    inversion eq.
+Qed.
+
+Theorem ord_le_rplus2_false : ¬OrderRplus2 ord.
+Proof.
+    intros contr.
+    pose proof (lt_rplus (a := from_nat 0) (b := from_nat 1) ω) as ltq.
+    prove_parts ltq.
+    {
+        apply homo_lt.
+        apply nat_one_pos.
+    }
+    do 2 rewrite nat_plus_omega in ltq.
+    contradiction (irrefl _ ltq).
+Qed.
+
+Theorem ord_le_plus_rcancel_false : ¬OrderPlusRcancel ord.
+Proof.
+    intros contr.
+    pose proof (le_plus_rcancel (a := from_nat 1) (b := from_nat 0) ω) as leq.
+    prove_parts leq.
+    {
+        do 2 rewrite nat_plus_omega.
+        apply refl.
+    }
+    apply homo_le2 in leq.
+    rewrite <- nlt_le in leq.
+    apply leq.
+    exact nat_one_pos.
+Qed.
+
+Theorem ord_le_rmult2_false : ¬OrderRmult2 ord.
+Proof.
+    intros contr.
+    pose proof (lt_rmult (a := from_nat 1) (b := from_nat 2) ω ω_nz) as ltq.
+    prove_parts ltq.
+    {
+        apply homo_lt.
+        apply lt_plus_0_a_b_ab.
+        apply nat_one_pos.
+    }
+    do 2 rewrite nat_mult_omega in ltq by apply nat_zero_suc.
+    contradiction (irrefl _ ltq).
+Qed.
+
+Theorem ord_le_mult_rcancel_false : ¬OrderMultRcancel ord.
+Proof.
+    intros contr.
+    pose proof (le_mult_rcancel (a:=from_nat 2) (b:=from_nat 1) ω ω_nz) as leq.
+    prove_parts leq.
+    {
+        do 2 rewrite nat_mult_omega by apply nat_zero_suc.
+        apply refl.
+    }
+    apply homo_le2 in leq.
+    rewrite <- nlt_le in leq.
+    apply leq.
+    apply nat_sucs_lt.
+    exact nat_one_pos.
+Qed.
+
 Close Scope ord_scope.
