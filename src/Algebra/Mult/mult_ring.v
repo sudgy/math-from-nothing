@@ -49,6 +49,10 @@ Class MultRcancel U `{Zero U, Mult U} := {
     mult_rcancel : ∀ {a b} c, 0 ≠ c → a * c = b * c → a = b;
 }.
 
+Class MultZero U `{Zero U, Mult U} := {
+    mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b
+}.
+
 Class RngClass U `{
     RP : AllPlusClass U,
     UM : Mult U,
@@ -73,6 +77,7 @@ Class IntegralDomainClass U `{
     IDR : CRingClass U,
     UML : @MultLcancel U UZ UM,
     UMR : @MultRcancel U UZ UM,
+    UMZ : @MultZero U UZ UM,
     NotTrivial U
 }.
 
@@ -148,14 +153,32 @@ Proof.
     apply ldist.
 Qed.
 
+Global Instance mult_lcancel_zero : MultZero U.
+Proof.
+    split.
+    intros a b eq.
+    apply or_right.
+    intros a_nz.
+    apply mult_lcancel with a; [>exact a_nz|].
+    rewrite mult_ranni.
+    exact eq.
+Qed.
+
 End MultRingImply.
 
 
 Section MultRing.
 
 Context {U} `{AllMultClass U, NotTrivial U}.
-
 (* end hide *)
+
+Theorem mult_nz : ∀ a b, 0 ≠ a → 0 ≠ b → 0 ≠ a * b.
+Proof.
+    intros a b neq1 neq2 contr.
+    apply mult_zero in contr.
+    destruct contr; contradiction.
+Qed.
+
 Theorem lmult : ∀ {a b} c, a = b → c * a = c * b.
 Proof.
     intros a b c ab.
@@ -278,25 +301,6 @@ Proof.
     rewrite <- plus_assoc.
     rewrite plus_llinv.
     reflexivity.
-Qed.
-
-Theorem mult_zero : ∀ a b, 0 = a * b → 0 = a ∨ 0 = b.
-Proof.
-    intros a b eq.
-    classic_case (0 = a) as [a_z|a_nz].
-    -   left.
-        exact a_z.
-    -   right.
-        apply mult_lcancel with a; [>exact a_nz|].
-        rewrite mult_ranni.
-        exact eq.
-Qed.
-
-Theorem mult_nz : ∀ a b, 0 ≠ a → 0 ≠ b → 0 ≠ a * b.
-Proof.
-    intros a b neq1 neq2 contr.
-    apply mult_zero in contr.
-    destruct contr; contradiction.
 Qed.
 
 Theorem mult_3 : ∀ a b c, a * (b * c) = b * (a * c).
