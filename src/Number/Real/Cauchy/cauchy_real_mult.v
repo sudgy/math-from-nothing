@@ -13,7 +13,7 @@ Proof.
         {
             exists 0.
             intros x [n [n_lt n_eq]].
-            contradiction (nat_neg2 n_lt).
+            contradiction (not_neg n_lt).
         }
         assert (simple_finite (set_type S)) as S_fin.
         {

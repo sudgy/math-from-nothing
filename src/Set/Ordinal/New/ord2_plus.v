@@ -27,8 +27,9 @@ Proof.
         contradiction (empty_false a).
 Qed.
 
-Theorem ord_pos : ∀ α, 0 ≤ α.
+Global Instance ord_pos : OrderPositive ord.
 Proof.
+    split.
     intros A.
     equiv_get_value A.
     unfold zero; equiv_simpl.
@@ -41,42 +42,19 @@ Proof.
         contradiction (empty_false a).
 Qed.
 
-Theorem ord_pos2 : ∀ {α}, 0 ≠ α → 0 < α.
-Proof.
-    intros α neq.
-    split.
-    -   apply ord_pos.
-    -   exact neq.
-Qed.
-
-Theorem ord_neg_eq : ∀ {α}, α ≤ 0 → 0 = α.
-Proof.
-    intros α leq.
-    apply antisym.
-    -   apply ord_pos.
-    -   exact leq.
-Qed.
-
-Theorem ord_neg : ∀ {α}, ¬(α < 0).
-Proof.
-    intros α.
-    rewrite nlt_le.
-    apply ord_pos.
-Qed.
-
 Theorem ord_lsub_f_zero : ∀ β f, 0 = ord_lsub β f → 0 = β.
 Proof.
     intros β f f_z.
     classic_contradiction neq.
-    pose proof (ord_lsub_gt β f [0|ord_pos2 neq]) as ltq.
+    pose proof (ord_lsub_gt β f [0|all_pos2 neq]) as ltq.
     rewrite <- f_z in ltq.
-    contradiction (ord_neg ltq).
+    contradiction (not_neg ltq).
 Qed.
 
 Theorem ord_lub_f_zero : ∀ β f, 0 = ord_lub β f → ∀ α, 0 = f α.
 Proof.
     intros β f f_z α.
-    apply ord_neg_eq.
+    apply all_neg_eq.
     rewrite f_z.
     apply ord_lub_ge.
 Qed.
@@ -88,7 +66,7 @@ Proof.
     -   intros γ.
         apply refl.
     -   intros ε ε_ge.
-        exact (ε_ge [0|ord_pos2 β_nz]).
+        exact (ε_ge [0|all_pos2 β_nz]).
 Qed.
 
 Module OrdPlusDef.
@@ -156,7 +134,7 @@ Proof.
     -   exact (ord_lsub_gt β (λ δ, γ + [δ|]) [α|ltq]).
     -   intros contr.
         subst β.
-        contradiction (ord_neg ltq).
+        contradiction (not_neg ltq).
 Qed.
 
 Definition ord_plus_lcancel := plus_lcancel1 : PlusLcancel ord.
@@ -237,8 +215,8 @@ Proof.
     rewrite ord_plus_lsub in contr by exact β_nz.
     pose proof (ord_lsub_gt β (λ δ, α + [δ|])) as ltq.
     rewrite <- contr in ltq.
-    specialize (ltq [0|ord_pos2 β_nz]).
-    contradiction (ord_neg ltq).
+    specialize (ltq [0|all_pos2 β_nz]).
+    contradiction (not_neg ltq).
 Qed.
 
 Theorem ord_nz_lplus : ∀ α β, 0 ≠ α → 0 ≠ α + β.

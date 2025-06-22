@@ -27,7 +27,7 @@ Proof.
     {
         unfold S in Sq.
         rewrite mult_ranni in Sq.
-        contradiction (nat_neg2 Sq).
+        contradiction (not_neg Sq).
     }
     assert (b * q ≤ a) as leq.
     {
@@ -112,7 +112,7 @@ Proof.
                     exact true.
                 -   intro contr; inversion contr.
             }
-            pose proof (nat_pos (c * 2)) as leq2.
+            pose proof (all_pos (c * 2)) as leq2.
             apply le_lplus with 2 in leq2.
             rewrite plus_rid in leq2.
             pose proof (lt_le_trans leq leq2) as [C0 C1].
@@ -152,8 +152,7 @@ Proof.
         rewrite nle_lt in contr.
         unfold one in contr; cbn in contr.
         rewrite nat_lt_suc_le in contr.
-        apply nat_neg_eq in contr.
-        contradiction.
+        contradiction (all_neg_eq contr).
 Qed.
 
 Theorem nat_div_le : ∀ a b, 0 ≠ b → a ∣ b → a ≤ b.
@@ -169,7 +168,7 @@ Proof.
         rewrite nle_lt in contr.
         change 1 with (nat_suc 0) in contr.
         rewrite nat_lt_suc_le in contr.
-        apply nat_neg_eq in contr.
+        apply all_neg_eq in contr.
         subst c.
         rewrite mult_lanni in c_eq.
         contradiction.

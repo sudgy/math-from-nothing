@@ -6,6 +6,7 @@ Require Import nat_mult.
 
 Require Export order_plus.
 Require Export order_mult.
+Require Export order_pos.
 Require Export order_bounds.
 Require Export set_order.
 
@@ -23,38 +24,24 @@ Global Instance nat_order : Order nat := {
 
 Definition nat_to_set_type n := set_type (initial_segment n).
 
-Theorem nat_neg_eq : ∀ {a}, a ≤ 0 → 0 = a.
+Global Instance nat_pos : OrderPositive nat.
 Proof.
-    intros a eq.
-    nat_destruct a; [>reflexivity|].
-    contradiction eq.
-Qed.
-Lemma nat_pos : ∀ a, 0 ≤ a.
-Proof.
-    intros a.
+    split.
+    intros x.
     exact true.
 Qed.
+
 Theorem nat_pos2 : ∀ n, 0 < nat_suc n.
 Proof.
     intros n.
-    split; [>apply nat_pos|].
-    intro contr.
-    exact (nat_zero_suc contr).
+    split; [>apply all_pos|].
+    apply nat_zero_suc.
 Qed.
 Lemma nat_neg : ∀ {n}, ¬(nat_suc n ≤ 0).
 Proof.
     intros n contr.
-    apply nat_neg_eq in contr.
-    contradiction (nat_zero_suc contr).
+    contradiction (contr).
 Qed.
-Lemma nat_neg2 : ∀ {a}, ¬(a < 0).
-Proof.
-    intros a [leq neq].
-    apply nat_neg_eq in leq.
-    symmetry in leq; contradiction.
-Qed.
-
-Definition nat_lt_0_false (a : nat_to_set_type 0) := nat_neg2 [|a].
 
 Theorem nat_one_pos : 0 < 1.
 Proof.
@@ -96,7 +83,8 @@ Proof.
     split.
     intros a.
     nat_induction a; intros b eq1 eq2.
-    -   exact (nat_neg_eq eq2).
+    -   nat_destruct b; [>reflexivity|].
+        contradiction eq2.
     -   nat_destruct b.
         +   contradiction eq1.
         +   apply f_equal.
@@ -109,18 +97,20 @@ Proof.
     split.
     intros a b c; revert a b.
     nat_induction c; intros a b eq1 eq2.
-    -   apply nat_neg_eq in eq2.
+    -   apply all_neg_eq in eq2.
         rewrite <- eq2 in eq1.
         exact eq1.
     -   nat_destruct b.
-        +   apply nat_neg_eq in eq1.
+        +   apply all_neg_eq in eq1.
             rewrite <- eq1.
-            apply nat_pos.
+            apply all_pos.
         +   nat_destruct a.
-            *   apply nat_pos.
+            *   apply all_pos.
             *   rewrite nat_sucs_le in *.
                 apply IHc with b; assumption.
 Qed.
+
+Definition nat_lt_0_false (a : nat_to_set_type 0) := not_neg [|a].
 
 Theorem nat_le_suc : ∀ a, a ≤ nat_suc a.
 Proof.
@@ -229,7 +219,7 @@ Proof.
     -   nat_destruct b.
         +   exfalso.
             rewrite mult_ranni in eq.
-            apply nat_neg_eq in eq.
+            apply all_neg_eq in eq.
             exact (nat_neq_suc_mult _ _ eq).
         +   rewrite nat_sucs_le.
             apply IHa; clear IHa.
@@ -255,8 +245,7 @@ Proof.
         +   apply nat_pos.
         +   rewrite nat_sucs_lt in eq.
             nat_destruct b.
-            *   exfalso.
-                exact (nat_neg2 eq).
+            *   contradiction (not_neg eq).
             *   apply IHa.
                 exact eq.
     -   intro eq.
@@ -268,7 +257,7 @@ Proof.
     nat_destruct b.
     -   split; intros contr.
         +   contradiction (nat_neg contr).
-        +   contradiction (nat_neg2 contr).
+        +   contradiction (not_neg contr).
     -   rewrite nat_sucs_le.
         symmetry.
         apply nat_lt_suc_le.
@@ -292,7 +281,8 @@ Proof.
     intros n n_lt.
     unfold one in n_lt; cbn in n_lt.
     rewrite nat_lt_suc_le in n_lt.
-    apply nat_neg_eq in n_lt.
+    change nat_zero with (0 : nat) in n_lt.
+    apply all_neg_eq in n_lt.
     exact n_lt.
 Qed.
 
@@ -339,7 +329,7 @@ Proof.
         nat_induction n'.
         -   unfold T.
             intros m m_lt.
-            contradiction (nat_neg2 m_lt).
+            contradiction (not_neg m_lt).
         -   unfold T in *.
             intros m m_lt.
             apply ind.

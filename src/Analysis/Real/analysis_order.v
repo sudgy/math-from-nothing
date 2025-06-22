@@ -284,7 +284,7 @@ Proof.
             destruct contr as [contr|contr].
             -   rewrite <- (plus_rid N) in contr at 2.
                 apply lt_plus_lcancel in contr.
-                contradiction (nat_neg2 contr).
+                contradiction (not_neg contr).
             -   specialize (A_upper m).
                 unfold fn in A_upper.
                 apply le_plus_0_anb_b_a in A_upper.

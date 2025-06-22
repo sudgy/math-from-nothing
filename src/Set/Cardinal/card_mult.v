@@ -92,7 +92,7 @@ Proof.
     assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        exact (nat_neg2 x_lt).
+        exact (not_neg x_lt).
     }
     exists (λ x, False_rect _ (xf (fst x))).
     split; split.
@@ -125,8 +125,10 @@ Proof.
         unfold one in x_lt, y_lt; cbn in x_lt, y_lt.
         rewrite nat_lt_suc_le in x_lt.
         rewrite nat_lt_suc_le in y_lt.
-        apply nat_neg_eq in x_lt.
-        apply nat_neg_eq in y_lt.
+        change nat_zero with (0 : nat) in x_lt.
+        change nat_zero with (0 : nat) in y_lt.
+        apply all_neg_eq in x_lt.
+        apply all_neg_eq in y_lt.
         subst.
         reflexivity.
     -   intros a.
@@ -176,12 +178,12 @@ Proof.
     apply propositional_ext; split.
     -   intros [f f_bij] a.
         destruct (f a) as [x x_lt].
-        exact (nat_neg2 x_lt).
+        exact (not_neg x_lt).
     -   intros af.
         exists (empty_function _ _ af).
         apply empty_bij.
         intros [x x_lt].
-        exact (nat_neg2 x_lt).
+        exact (not_neg x_lt).
 Qed.
 
 Theorem card_mult_zero : ∀ κ μ, κ * μ = 0 → {κ = 0} + {μ = 0}.

@@ -56,7 +56,7 @@ Proof.
     assert (set_type (λ x : nat, x < 0) → False) as xf.
     {
         intros [x x_lt].
-        contradiction (nat_neg2 x_lt).
+        contradiction (not_neg x_lt).
     }
     split; split.
     -   intros f g eq; clear eq.

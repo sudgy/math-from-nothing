@@ -24,7 +24,7 @@ Proof.
     assert (∀ x, f x < a + b) as f_in.
     {
         intros [[x x_lt]|[x x_lt]]; cbn.
-        -   pose proof (nat_pos b) as leq.
+        -   pose proof (all_pos b) as leq.
             apply le_lplus with a in leq.
             rewrite plus_rid in leq.
             exact (lt_le_trans x_lt leq).
@@ -41,11 +41,11 @@ Proof.
         +   exfalso.
             rewrite <- (plus_rid a) in m_lt at 2.
             apply lt_plus_lcancel in m_lt.
-            exact (nat_neg2 m_lt).
+            exact (not_neg m_lt).
         +   exfalso.
             rewrite <- (plus_rid a) in n_lt at 2.
             apply lt_plus_lcancel in n_lt.
-            exact (nat_neg2 n_lt).
+            exact (not_neg n_lt).
         +   apply plus_lcancel in eq.
             subst.
             apply f_equal.
@@ -229,7 +229,7 @@ Proof.
         +   intros; apply card_le_zero.
         +   nat_destruct b.
             *   intros contr.
-                pose proof (antisym contr (nat_pos _)) as eq.
+                pose proof (antisym contr (all_pos _)) as eq.
                 inversion eq.
             *   intros leq.
                 do 2 rewrite nat_suc_to_card.
@@ -238,7 +238,7 @@ Proof.
                 rewrite nat_sucs_le in leq.
                 exact leq.
     -   revert b; nat_induction a.
-        +   intros; apply nat_pos.
+        +   intros; apply all_pos.
         +   nat_destruct b.
             *   intros contr.
                 pose proof (antisym contr (card_le_zero _)) as eq.
@@ -298,8 +298,7 @@ Proof.
         unfold f; cbn.
         clear dom f.
         destruct a.
-        -   apply nat_neg2 in m_lt.
-            contradiction.
+        -   contradiction (not_neg m_lt).
         -   rewrite nat_mult_lsuc.
             rewrite nat_lt_suc_le in m_lt.
             apply nat_le_rmult with b in m_lt.
@@ -325,7 +324,7 @@ Proof.
             rewrite <- plus_assoc in n1_lt.
             rewrite <- (plus_rid b) in n1_lt at 3.
             apply lt_plus_lcancel in n1_lt.
-            contradiction (nat_neg2 n1_lt).
+            contradiction (not_neg n1_lt).
         +   subst.
             apply plus_lcancel in eq2.
             subst.
@@ -341,13 +340,13 @@ Proof.
             rewrite <- plus_assoc in n2_lt.
             rewrite <- (plus_rid b) in n2_lt at 3.
             apply lt_plus_lcancel in n2_lt.
-            contradiction (nat_neg2 n2_lt).
+            contradiction (not_neg n2_lt).
     -   intros [n n_lt].
         nat_destruct b.
         {
             exfalso.
             rewrite mult_ranni in n_lt.
-            contradiction (nat_neg2 n_lt).
+            contradiction (not_neg n_lt).
         }
         assert (0 ≠ nat_suc b) as b_nz by (intro contr; inversion contr).
         pose proof (euclidean_division n (nat_suc b) b_nz)
@@ -362,7 +361,7 @@ Proof.
             rewrite mult_comm in ltq.
             rewrite <- (plus_rid (q * nat_suc b)) in ltq at 2.
             apply lt_plus_lcancel in ltq.
-            contradiction (nat_neg2 ltq).
+            contradiction (not_neg ltq).
         }
         rename r_lt into r_lt'.
         assert (r < nat_suc b) as r_lt.

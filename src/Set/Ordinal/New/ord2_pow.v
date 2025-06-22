@@ -87,7 +87,7 @@ Proof.
         rewrite mult_lid.
         apply refl.
     -   intros ε ε_ge.
-        specialize (ε_ge [0|ord_pos2 α_nz]); cbn in ε_ge.
+        specialize (ε_ge [0|all_pos2 α_nz]); cbn in ε_ge.
         rewrite ord_pow_zero, mult_lid  in ε_ge.
         exact ε_ge.
 Qed.
@@ -105,9 +105,9 @@ Proof.
     rewrite ord_pow_lub in eq by exact β_nz.
     pose proof (ord_lub_ge β (λ δ, α ^ [δ|] * α)) as leq.
     rewrite <- eq in leq.
-    specialize (leq [0|ord_pos2 β_nz]); cbn in leq.
+    specialize (leq [0|all_pos2 β_nz]); cbn in leq.
     rewrite ord_pow_zero, mult_lid in leq.
-    apply ord_neg_eq in leq.
+    apply all_neg_eq in leq.
     contradiction.
 Qed.
 
@@ -117,7 +117,7 @@ Proof.
     classic_case (0 = γ) as [γ_z|γ_nz].
     {
         subst.
-        rewrite (ord_neg_eq leq).
+        rewrite (all_neg_eq leq).
         apply refl.
     }
     classic_case (0 = β) as [β_z|β_nz].
@@ -152,7 +152,7 @@ Proof.
     apply ord_lub_eq.
     -   intros [δ δ_lt]; cbn.
         rewrite ord_lt_suc_le in δ_lt.
-        apply ord_le_rmult.
+        apply le_rmult.
         apply ord_pow_le; assumption.
     -   intros ε ε_ge.
         exact (ε_ge [β|ord_lt_suc _]).
@@ -246,7 +246,7 @@ Proof.
         rewrite zero_ord_pow by exact β_nz.
         rewrite zero_ord_pow by exact γ_nz.
         symmetry; apply zero_ord_pow.
-        apply ord_mult_nz; assumption.
+        apply mult_nz; assumption.
     }
     rewrite (ord_pow_lub (α ^ β) γ) by exact γ_nz.
     rewrite ord_mult_lub.
@@ -261,7 +261,7 @@ Qed.
 Theorem ord_pow_gt_one : ∀ α β, 0 ≠ β → 1 < α → 1 < α ^ β.
 Proof.
     intros α β β_nz α_gt.
-    pose proof (ord_lub_ge β (λ δ, α ^ [δ|] * α) [0|ord_pos2 β_nz]) as leq.
+    pose proof (ord_lub_ge β (λ δ, α ^ [δ|] * α) [0|all_pos2 β_nz]) as leq.
     cbn in leq.
     rewrite <- ord_pow_lub in leq by exact β_nz.
     rewrite ord_pow_zero, mult_lid in leq.
@@ -274,7 +274,7 @@ Proof.
     apply ord_lt_ex in ltq as [δ [δ_nz δ_lt]]; subst γ.
     rewrite ord_pow_plus.
     rewrite <- (mult_rid (α ^ β)) at 1.
-    apply ord_lt_lmult.
+    apply lt_lmult.
     1: {
         apply ord_pow_nz.
         apply ord_pos_one.
@@ -309,7 +309,7 @@ Proof.
     classic_case (0 = β) as [β_z|β_nz].
     {
         subst.
-        apply ord_neg_eq in leq; subst.
+        apply all_neg_eq in leq; subst.
         apply refl.
     }
     rewrite (ord_pow_lub α γ) by exact γ_nz.
@@ -320,9 +320,9 @@ Proof.
     intros ε ε_ge.
     specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
     specialize (IHγ δ δ_lt).
-    apply (ord_le_rmult α) in IHγ.
+    apply (le_rmult α) in IHγ.
     apply (trans IHγ).
-    apply (ord_le_lmult (β ^ δ)) in leq.
+    apply (le_lmult (β ^ δ)) in leq.
     apply (trans leq).
     exact ε_ge.
 Qed.
@@ -342,15 +342,15 @@ Proof.
     assert (0 ≠ ε) as ε_nz.
     {
         intro; subst.
-        specialize (ε_ge [0|ord_pos2 α_nz]); cbn in ε_ge.
+        specialize (ε_ge [0|all_pos2 α_nz]); cbn in ε_ge.
         rewrite ord_pow_zero, mult_lid in ε_ge.
-        apply ord_neg_eq in ε_ge; subst.
-        contradiction (ord_neg β_gt).
+        apply all_neg_eq in ε_ge; subst.
+        contradiction (not_neg β_gt).
     }
     order_contradiction ltq.
     specialize (ε_ge [ε|ltq]); cbn in ε_ge.
     specialize (IHα ε ltq).
-    apply (ord_le_rmult β) in IHα.
+    apply (le_rmult β) in IHα.
     pose proof (trans IHα ε_ge) as leq.
     assert (0 ≠ β) as β_nz by (apply ord_pos_one; apply β_gt).
     pose proof (ord_le_self_rmult ε β β_nz) as leq2.

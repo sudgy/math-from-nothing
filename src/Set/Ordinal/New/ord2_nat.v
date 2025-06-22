@@ -56,7 +56,7 @@ Proof.
         rewrite homo_zero.
         apply ord_false_0.
         intros [a a_z].
-        contradiction (nat_neg2 a_z).
+        contradiction (not_neg a_z).
     }
     change (nat_suc n) with (1 + n) at 1.
     rewrite plus_comm.

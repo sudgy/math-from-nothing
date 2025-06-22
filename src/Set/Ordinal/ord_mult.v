@@ -225,7 +225,7 @@ Proof.
     assert (∀ m : set_type (λ m : nat, m < 0), False) as none.
     {
         intros [m m_lt].
-        exact (nat_neg2 m_lt).
+        exact (not_neg m_lt).
     }
     exists (λ x, False_rect _ (none x)).
     split.
@@ -256,7 +256,7 @@ Proof.
     assert (∀ m : set_type (λ m : nat, m < 0), False) as none.
     {
         intros [m m_lt].
-        exact (nat_neg2 m_lt).
+        exact (not_neg m_lt).
     }
     exists (λ x, False_rect _ (none x)).
     split.
@@ -306,7 +306,7 @@ Proof.
         apply set_type_eq; cbn.
         unfold one in a_lt; cbn in a_lt.
         rewrite nat_lt_suc_le in a_lt.
-        apply nat_neg_eq.
+        apply all_neg_eq.
         exact a_lt.
     -   intros a b.
         cbn.
@@ -352,7 +352,7 @@ Proof.
         apply set_type_eq; cbn.
         unfold one in b_lt; cbn in b_lt.
         rewrite nat_lt_suc_le in b_lt.
-        apply nat_neg_eq.
+        apply all_neg_eq.
         exact b_lt.
     -   intros a b.
         cbn.
@@ -404,7 +404,7 @@ Proof.
         -   intros a.
             contradiction (contr a).
         -   intros [b b_eq].
-            contradiction (nat_neg2 b_eq).
+            contradiction (not_neg b_eq).
         -   intros a.
             contradiction (contr a).
     }
@@ -663,7 +663,7 @@ Proof.
         assert (∀ m : set_type (λ n : nat, n < 0), False) as m_empty.
         {
             intros [m m_lt].
-            apply nat_neg2 in m_lt.
+            apply not_neg in m_lt.
             contradiction.
         }
         assert (ord_U A) as a.
@@ -723,10 +723,12 @@ Proof.
         unfold one in x_lt; cbn in x_lt.
         pose proof x_lt as x_lt2.
         rewrite nat_lt_suc_le in x_lt2.
-        apply nat_neg_eq in x_lt2.
+        change nat_zero with (0 : nat) in x_lt2.
+        apply all_neg_eq in x_lt2.
         subst x.
         unfold le in b_leq; cbn in b_leq.
-        apply nat_neg_eq in b_leq.
+        change nat_zero with (0 : nat) in b_leq.
+        apply all_neg_eq in b_leq.
         subst.
         contradiction b_neq.
         apply set_type_eq; reflexivity.
@@ -734,7 +736,7 @@ Proof.
     assert (∀ m : set_type (λ n : nat, n < 0), False) as m_empty.
     {
         intros [m m_lt].
-        apply nat_neg2 in m_lt.
+        apply not_neg in m_lt.
         contradiction.
     }
     exists (λ m, False_rect _ (m_empty m)).
@@ -785,8 +787,7 @@ Proof.
         unfold f; cbn.
         clear dom f.
         destruct a.
-        -   apply nat_neg2 in m_lt.
-            contradiction.
+        -   contradiction (not_neg m_lt).
         -   rewrite nat_mult_lsuc.
             rewrite nat_lt_suc_le in m_lt.
             apply nat_le_rmult with b in m_lt.
@@ -813,7 +814,7 @@ Proof.
             rewrite <- plus_assoc in n1_lt.
             rewrite <- (plus_rid b) in n1_lt at 3.
             apply lt_plus_lcancel in n1_lt.
-            contradiction (nat_neg2 n1_lt).
+            contradiction (not_neg n1_lt).
         +   subst.
             apply plus_lcancel in eq2.
             subst.
@@ -829,7 +830,7 @@ Proof.
             rewrite <- plus_assoc in n2_lt.
             rewrite <- (plus_rid b) in n2_lt at 3.
             apply lt_plus_lcancel in n2_lt.
-            contradiction (nat_neg2 n2_lt).
+            contradiction (not_neg n2_lt).
     -   intros [n n_lt].
         (* TODO: Finish this proof once you have Euclidean division *)
 Abort.

@@ -242,7 +242,7 @@ Proof.
         rewrite nle_lt in n0.
         change 1 with (nat_suc 0) in n0.
         rewrite nat_sucs_lt in n0.
-        apply (nat_neg2 n0).
+        apply (not_neg n0).
     }
     clear l.
     change (nat_suc 1) with (nat_suc (nat_suc nat_zero)); cbn.

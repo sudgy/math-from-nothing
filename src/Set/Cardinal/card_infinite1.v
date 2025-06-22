@@ -366,7 +366,7 @@ Proof.
                 rewrite <- eq in b_lt.
                 rewrite <- (plus_lid n) in b_lt at 2.
                 apply lt_plus_rcancel in b_lt.
-                contradiction (nat_neg2 b_lt).
+                contradiction (not_neg b_lt).
             *   cbn in eq.
                 rewrite not_ex in n0.
                 specialize (n0 b).
@@ -378,7 +378,7 @@ Proof.
                 rewrite eq in a_lt.
                 rewrite <- (plus_lid n) in a_lt at 2.
                 apply lt_plus_rcancel in a_lt.
-                contradiction (nat_neg2 a_lt).
+                contradiction (not_neg a_lt).
             *   rewrite not_ex in n0.
                 specialize (n0 a).
                 contradiction.
@@ -517,15 +517,15 @@ Proof.
                         rewrite mult_rid.
                         rewrite <- plus_lid at 1.
                         apply lt_rplus.
-                        split; try apply nat_pos.
+                        split; try apply all_pos.
                         intro contr.
                         rewrite <- contr in IHn.
-                        pose proof (lt_le_trans IHn (nat_pos 1))
+                        pose proof (lt_le_trans IHn (all_pos 1))
                             as [C0 C1]; contradiction.
             }
             nat_destruct y.
             -   rewrite nat_pow_zero in div.
-                pose proof (le_lt_trans div (make_and (nat_pos 1) not_trivial_one))
+                pose proof (le_lt_trans div (make_and (all_pos 1) not_trivial_one))
                     as [C0 C1]; contradiction.
             -   specialize (ltq y).
                 pose proof (lt_le_trans ltq div) as [C0 C1]; contradiction.

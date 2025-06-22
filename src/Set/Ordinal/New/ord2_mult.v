@@ -58,7 +58,7 @@ Proof.
     rewrite ord_mult_lub.
     apply ord_lub_eq.
     -   intros [δ δ_lt]; cbn.
-        contradiction (ord_neg δ_lt).
+        contradiction (not_neg δ_lt).
     -   intros ε ε_ge.
         apply ord_pos.
 Qed.
@@ -84,7 +84,7 @@ Global Instance ord_not_trivial_class : NotTrivial ord := {
 
 Theorem ord_one_pos : 0 < 1.
 Proof.
-    apply ord_pos2.
+    apply all_pos2.
     exact ord_not_trivial.
 Qed.
 
@@ -142,7 +142,7 @@ Proof.
         rewrite <- (plus_rid α) at 1.
         rewrite <- plus_assoc.
         apply lt_lplus.
-        apply ord_pos2.
+        apply all_pos2.
         apply ord_nz_rplus.
         exact ord_not_trivial.
 Qed.
@@ -229,38 +229,25 @@ Proof.
     reflexivity.
 Qed.
 
-Global Instance ord_le_mult : OrderMult ord.
+Global Instance ord_mult_zero : MultZero ord.
 Proof.
     split.
-    intros α β a b.
-    apply ord_pos.
-Qed.
-
-Theorem ord_mult_zero : ∀ α β, 0 = α * β → {0 = α} + {0 = β}.
-Proof.
     intros α β eq.
-    apply or_to_strong.
     rewrite <- not_not, not_or.
     intros [α_nz β_nz].
     rewrite ord_mult_lub in eq.
     pose proof (ord_lub_ge β (λ δ, α * [δ|] + α)) as leq.
     rewrite <- eq in leq.
-    specialize (leq [0|ord_pos2 β_nz]); cbn in leq.
+    specialize (leq [0|all_pos2 β_nz]); cbn in leq.
     rewrite mult_ranni, plus_lid in leq.
-    apply ord_neg_eq in leq.
+    apply all_neg_eq in leq.
     contradiction.
 Qed.
 
-Theorem ord_mult_nz : ∀ α β, 0 ≠ α → 0 ≠ β → 0 ≠ α * β.
+Global Instance ord_le_lmult : OrderLmult ord.
 Proof.
-    intros α β α_nz β_nz αβ.
-    apply ord_mult_zero in αβ.
-    destruct αβ; contradiction.
-Qed.
-
-Theorem ord_le_lmult : ∀ {α β} γ, α ≤ β → γ * α ≤ γ * β.
-Proof.
-    intros α β γ leq.
+    split.
+    intros α β γ γ_pos leq.
     rewrite (ord_mult_lub γ α).
     apply ord_lub_least.
     intros [δ δ_lt]; cbn.
@@ -268,22 +255,6 @@ Proof.
     apply ord_lub_other_leq.
     intros ε ε_ge.
     exact (ε_ge [δ|lt_le_trans δ_lt leq]).
-Qed.
-
-Global Instance ord_le_lmult_class : OrderLmult ord.
-Proof.
-    split.
-    intros α β γ z leq.
-    apply ord_le_lmult.
-    exact leq.
-Qed.
-
-Theorem ord_lt_mult_lcancel : ∀ {α β} γ, γ * α < γ * β → α < β.
-Proof.
-    intros α β γ eq.
-    order_contradiction contr.
-    apply ord_le_lmult with γ in contr.
-    contradiction (irrefl _ (le_lt_trans contr eq)).
 Qed.
 
 Theorem ord_ldist_one : ∀ α β, α * (β + 1) = α * β + α.
@@ -294,7 +265,7 @@ Proof.
     -   intros [δ δ_lt]; cbn.
         rewrite ord_lt_suc_le in δ_lt.
         apply ord_le_rplus.
-        apply ord_le_lmult.
+        apply le_lmult.
         exact δ_lt.
     -   intros ε ε_ge.
         exact (ε_ge [β|ord_lt_suc β]).
@@ -311,12 +282,12 @@ Proof.
         pose proof (ord_lub_in _ _ _ δ_lt) as [γ γ_ge].
         rewrite <- ord_le_suc_lt in γ_ge.
         rewrite <- ord_ldist_one.
-        apply (ord_le_lmult α) in γ_ge.
+        apply (le_lmult α) in γ_ge.
         apply (trans γ_ge).
         apply (ord_lub_ge β (λ x, α * f x)).
     -   apply ord_lub_least.
         intros δ.
-        apply ord_le_lmult.
+        apply le_lmult.
         apply ord_lub_ge.
 Qed.
 
@@ -360,52 +331,27 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem ord_lt_lmult : ∀ {α β} γ, 0 ≠ γ → α < β → γ * α < γ * β.
+Global Instance ord_lt_lmult : OrderLmult2 ord.
 Proof.
-    intros α β γ γ_nz ltq.
+    split.
+    intros α β γ [γ_pos γ_nz] ltq.
     apply ord_lt_ex in ltq as [δ [δ_nz δ_eq]].
     subst β.
     rewrite ldist.
     rewrite <- (plus_rid (γ * α)) at 1.
     apply lt_lplus.
-    apply ord_pos2.
-    apply ord_mult_nz; assumption.
+    apply all_pos2.
+    apply mult_nz; assumption.
 Qed.
 
-Global Instance ord_mult_lcancel : MultLcancel ord.
+Definition ord_mult_lcancel := mult_lcancel1 : MultLcancel ord.
+Global Existing Instances ord_mult_lcancel.
+
+Global Instance ord_le_rmult : OrderRmult ord.
 Proof.
     split.
-    intros α β γ γ_nz eq.
-    destruct (trichotomy α β) as [[ltq|eq']|ltq].
-    -   apply ord_lt_lmult with γ in ltq; [>|exact γ_nz].
-        destruct ltq; contradiction.
-    -   exact eq'.
-    -   symmetry in eq.
-        apply ord_lt_lmult with γ in ltq; [>|exact γ_nz].
-        destruct ltq; contradiction.
-Qed.
-
-Theorem ord_le_mult_lcancel : ∀ {α β} γ, 0 ≠ γ → γ * α ≤ γ * β → α ≤ β.
-Proof.
-    intros α β γ γ_nz leq.
-    classic_case (γ * α = γ * β) as [eq|neq].
-    -   apply mult_lcancel in eq; [>|exact γ_nz].
-        rewrite eq.
-        apply refl.
-    -   apply (ord_lt_mult_lcancel γ).
-        split; assumption.
-Qed.
-
-Global Instance ord_le_mult_lcancel_pos : OrderMultLcancel ord.
-Proof.
-    split.
-    intros α β γ [γ_leq γ_nz] leq.
-    apply ord_le_mult_lcancel with γ; assumption.
-Qed.
-
-Theorem ord_le_rmult : ∀ {α β} γ, α ≤ β → α * γ ≤ β * γ.
-Proof.
-    intros α β γ leq.
+    intros α β γ γ_pos leq.
+    clear γ_pos.
     induction γ as [γ IHγ] using transfinite_induction.
     rewrite (ord_mult_lub β γ).
     apply ord_lub_other_leq.
@@ -419,27 +365,11 @@ Proof.
     exact (trans leq2 ε_ge).
 Qed.
 
-Global Instance ord_le_rmult_class : OrderRmult ord.
-Proof.
-    split.
-    intros α β γ z leq.
-    apply ord_le_rmult.
-    exact leq.
-Qed.
-
-Theorem ord_lt_mult_rcancel : ∀ {α β} γ, α * γ < β * γ → α < β.
-Proof.
-    intros α β γ ltq.
-    order_contradiction contr.
-    apply ord_le_rmult with γ in contr.
-    contradiction (irrefl _ (le_lt_trans contr ltq)).
-Qed.
-
 Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α ≤ β * α.
 Proof.
     intros α β β_nz.
     apply ord_pos_one in β_nz.
-    apply (ord_le_rmult α) in β_nz.
+    apply (le_rmult α) in β_nz.
     rewrite mult_lid in β_nz.
     exact β_nz.
 Qed.
@@ -448,7 +378,7 @@ Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α ≤ α * β.
 Proof.
     intros α β β_nz.
     apply ord_pos_one in β_nz.
-    apply (ord_le_lmult α) in β_nz.
+    apply (le_lmult α) in β_nz.
     rewrite mult_rid in β_nz.
     exact β_nz.
 Qed.
@@ -472,7 +402,7 @@ Proof.
     {
         subst.
         rewrite mult_ranni in ε_ltq.
-        contradiction (ord_neg ε_ltq).
+        contradiction (not_neg ε_ltq).
     }
     assert (∃ γ, γ + 1 = ε) as [γ γ_eq].
     {

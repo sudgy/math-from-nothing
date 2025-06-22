@@ -250,7 +250,7 @@ Proof.
     {
         intros m m_gt.
         nat_destruct m.
-        -   apply nat_neg2 in m_gt.
+        -   apply not_neg in m_gt.
             contradiction m_gt.
         -   rewrite nat_lt_suc_le in m_gt.
             classic_case (n = m) as [eq|neq].
@@ -373,7 +373,7 @@ Proof.
         pose proof polynomial_degree_zero as g0.
         rewrite contr in g0.
         rewrite g0 in fg.
-        apply nat_neg2 in fg.
+        apply not_neg in fg.
         exact fg.
     }
     apply antisym.
@@ -647,7 +647,7 @@ Next Obligation.
     classic_case (0 = n) as [n_z|n_nz].
     {
         rewrite <- n_z in mn.
-        apply nat_neg_eq in mn.
+        apply all_neg_eq in mn.
         unfold m in mn.
         rewrite Heqn in n_z.
         symmetry in mn, n_z.

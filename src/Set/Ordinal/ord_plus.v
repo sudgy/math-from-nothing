@@ -318,7 +318,7 @@ Proof.
             destruct (connex x x); assumption.
         }
         pose proof (sur f [_|Cx]) as [[y y_lt] C0]; clear C0.
-        apply nat_neg2 in y_lt.
+        apply not_neg in y_lt.
         exact y_lt.
     -   unfold plus; equiv_simpl.
         destruct ABx as [f [f_bij f_iso]].
@@ -586,7 +586,7 @@ Proof.
     assert (∀ x, f x < a + b) as f_in.
     {
         intros [[x x_lt]|[x x_lt]]; unfold f; cbn.
-        -   pose proof (nat_pos b) as eq.
+        -   pose proof (all_pos b) as eq.
             apply le_lplus with a in eq.
             rewrite plus_rid in eq.
             exact (lt_le_trans x_lt eq).
@@ -606,14 +606,14 @@ Proof.
             rewrite eq2 in m_eq.
             rewrite <- (plus_rid a) in m_eq at 2.
             apply lt_plus_lcancel in m_eq.
-            exact (nat_neg2 m_eq).
+            exact (not_neg m_eq).
         +   exfalso.
             destruct n as [n n_eq].
             cbn in eq2.
             rewrite <- eq2 in n_eq.
             rewrite <- (plus_rid a) in n_eq at 2.
             apply lt_plus_lcancel in n_eq.
-            exact (nat_neg2 n_eq).
+            exact (not_neg n_eq).
         +   apply plus_lcancel in eq2.
             apply set_type_eq in eq2.
             rewrite eq2; reflexivity.
@@ -636,7 +636,7 @@ Proof.
         +   reflexivity.
         +   split; try trivial.
             intros C0; clear C0.
-            pose proof (nat_pos y) as eq.
+            pose proof (all_pos y) as eq.
             apply le_lplus with a in eq.
             rewrite plus_rid in eq.
             apply (lt_le_trans x_lt eq).
@@ -645,7 +645,7 @@ Proof.
             pose proof (le_lt_trans eq y_lt) as contr.
             rewrite <- (plus_rid a) in contr at 2.
             apply lt_plus_lcancel in contr.
-            exact (nat_neg2 contr).
+            exact (not_neg contr).
         +   split.
             *   apply le_lplus.
             *   apply le_plus_lcancel.
@@ -668,7 +668,7 @@ Proof.
         -   intros a; contradiction (contr a).
         -   intros [a a_lt].
             exfalso.
-            apply nat_neg2 in a_lt.
+            apply not_neg in a_lt.
             exact a_lt.
         -   intros a; contradiction (contr a).
     }

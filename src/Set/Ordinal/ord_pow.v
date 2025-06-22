@@ -322,7 +322,7 @@ Proof.
                     cbn in z_eq.
                     apply set_type_eq; cbn.
                     unfold le in z_eq; cbn in z_eq.
-                    apply nat_neg_eq in z_eq.
+                    apply all_neg_eq in z_eq.
                     exact z_eq.
                 }
                 assert (set_type (λ x, f x ≠ ord_zero (f x)) → False) as fa.

@@ -49,7 +49,7 @@ Proof.
         +   unfold zero at 1; cbn.
             reflexivity.
     -   nat_destruct k.
-        +   contradiction (nat_neg2 ltq).
+        +   contradiction (not_neg ltq).
         +   cbn.
             rewrite nat_sucs_lt in ltq.
             rewrite IHn by exact ltq.
