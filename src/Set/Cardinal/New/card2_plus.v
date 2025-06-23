@@ -12,25 +12,17 @@ Proof.
                  | inl a => inl (f a)
                  | inr c => inr (g c)
                  end).
-    split; split.
-    -   intros [a1|c1] [a2|c2] eq.
-        +   apply inl_eq in eq.
-            apply inj in eq.
-            subst; reflexivity.
-        +   contradiction (inlr_neq eq).
-        +   contradiction (inrl_neq eq).
-        +   apply inr_eq in eq.
-            apply inj in eq.
-            subst; reflexivity.
-    -   intros [b|d].
-        +   pose proof (sur f b) as [a eq].
-            exists (inl a).
-            rewrite eq.
-            reflexivity.
-        +   pose proof (sur g d) as [c eq].
-            exists (inr c).
-            rewrite eq.
-            reflexivity.
+    apply (inverse_ex_bijective _ (λ x, match x with
+        | inl b => inl (bij_inv f b)
+        | inr d => inr (bij_inv g d)
+        end)).
+    split.
+    -   intros [x|x].
+        +   rewrite bij_inv_eq2; reflexivity.
+        +   rewrite bij_inv_eq2; reflexivity.
+    -   intros [x|x].
+        +   rewrite bij_inv_eq1; reflexivity.
+        +   rewrite bij_inv_eq1; reflexivity.
 Qed.
 
 Global Instance card_plus_class : Plus card := {
@@ -51,30 +43,17 @@ Proof.
                     | inr c => inr c
                     end
         end).
-    split; split.
-    -   intros [a1|[b1|c1]] [a2|[b2|c2]] eq.
-        +   do 2 apply inl_eq in eq.
-            subst; reflexivity.
-        +   apply inl_eq in eq.
-            contradiction (inlr_neq eq).
-        +   contradiction (inlr_neq eq).
-        +   apply inl_eq in eq.
-            contradiction (inrl_neq eq).
-        +   apply inl_eq in eq.
-            apply inr_eq in eq.
-            subst; reflexivity.
-        +   contradiction (inlr_neq eq).
-        +   contradiction (inrl_neq eq).
-        +   contradiction (inrl_neq eq).
-        +   apply inr_eq in eq.
-            subst; reflexivity.
-    -   intros [[a|b]|c].
-        +   exists (inl a).
-            reflexivity.
-        +   exists (inr (inl b)).
-            reflexivity.
-        +   exists (inr (inr c)).
-            reflexivity.
+    apply (inverse_ex_bijective _ (λ x,
+        match x with
+        | inl x' => match x' with
+                    | inl a => inl a
+                    | inr b => inr (inl b)
+                    end
+        | inr c => inr (inr c)
+        end)).
+    split.
+    -   intros [[a|b]|c]; reflexivity.
+    -   intros [a|[b|c]]; reflexivity.
 Qed.
 
 Global Instance card_plus_comm_class : PlusComm card.
@@ -87,19 +66,12 @@ Proof.
                  | inl a => inr a
                  | inr b => inl b
                  end).
-    split; split.
-    -   intros [a1|b1] [a2|b2] eq.
-        +   apply inr_eq in eq.
-            subst; reflexivity.
-        +   contradiction (inrl_neq eq).
-        +   contradiction (inlr_neq eq).
-        +   apply inl_eq in eq.
-            subst; reflexivity.
-    -   intros [b|a].
-        +   exists (inr b).
-            reflexivity.
-        +   exists (inl a).
-            reflexivity.
+    apply (inverse_ex_bijective _ (λ x,
+        match x with
+        | inl b => inr b
+        | inr a => inl a
+        end)).
+    split; intros [x|x]; reflexivity.
 Qed.
 
 Global Instance card_zero : Zero card := {
@@ -116,14 +88,12 @@ Proof.
                  | inl y => False_rect _ (empty_false y)
                  | inr a => a
                  end).
-    split; split.
-    -   intros [x|a1]; [>contradiction (empty_false x)|].
-        intros [x|a2]; [>contradiction (empty_false x)|].
-        intro eq.
-        subst; reflexivity.
-    -   intros a.
-        exists (inr a).
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ x, inr x)).
+    split.
+    -   reflexivity.
+    -   intros [x|x].
+        +   contradiction (empty_false x).
+        +   reflexivity.
 Qed.
 
 Global Instance card_le_lplus_class : OrderLplus card.
@@ -148,8 +118,9 @@ Proof.
         subst; reflexivity.
 Qed.
 
-Theorem card_pos : ∀ κ, 0 ≤ κ.
+Global Instance card_pos : OrderPositive card.
 Proof.
+    split.
     intros A.
     equiv_get_value A.
     unfold zero, le; equiv_simpl.
