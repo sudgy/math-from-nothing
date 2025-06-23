@@ -1073,18 +1073,11 @@ first.
     surjective because $\A \to \False$.
 \end{proof}
 
-\begin{theorem} \label{ord_pos} \label{ord_pos2}
-    For all ordinals $\alpha$, $0 \leq \alpha$.
-\end{theorem}
+\begin{instance}
+    All ordinals are positive.
+\end{instance}
 \begin{proof}
     The empty function is trivially an injective orderly function.
-\end{proof}
-
-\begin{theorem} \label{ord_neg_eq}
-    For all ordinals $\alpha$, if $\alpha \leq 0$, then $0 = \alpha$.
-\end{theorem}
-\begin{proof}
-    The result follows directly from antisymmetry and from the previous theorem.
 \end{proof}
 
 \begin{theorem} \label{ord_lsub_f_zero}
@@ -1101,7 +1094,7 @@ first.
     \delta < \beta)$, then $f(\delta) = 0$ for all $\delta < \beta$.
 \end{theorem}
 \begin{proof}
-    The result follows directly from Theorems \ref{ord_neg_eq} and
+    The result follows directly from Theorems \ref{all_neg_eq} and
     \ref{ord_lub_ge}.
 \end{proof}
 
@@ -1162,34 +1155,18 @@ which identities hold and which do not.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{ord_lt_lplus}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha < \beta$, we
-    have $\gamma + \alpha < \gamma + \beta$.
-\end{theorem}
+\begin{instance}
+    The order of ordinals is strictly left additive.
+\end{instance}
 \begin{proof}
     First, because $\alpha < \beta$, we have $0 \neq \beta$.  Then the result
     follows directly from Theorem \ref{ord_lsub_gt}.
 \end{proof}
 
-\begin{instance} \label{ord_plus_lcancel}
-    Addition of ordinals is left cancellative.
-\end{instance}
-\begin{proof}
-    Let $\gamma + \alpha = \gamma + \beta$.  For a contradiction assume that
-    $\alpha \neq \beta$, and without loss of generality assume that $\alpha <
-    \beta$.  Then by Theorem \ref{ord_lt_lplus} we have $\gamma + \alpha <
-    \gamma + \beta$, contradicting $\gamma + \alpha = \gamma + \beta$.  Thus,
-    $\alpha = \beta$.
-\end{proof}
-
-\begin{instance}
-    The order of ordinals is left additive.
-\end{instance}
-\begin{proof}
-    Let $\alpha \leq \beta$.  We must prove that $\gamma + \alpha \leq \gamma +
-    \beta$.  If $\alpha = \beta$, the result follows by reflexivity, and if
-    $\alpha \neq \beta$, the result follows by Theorem \ref{ord_lt_lplus}.
-\end{proof}
+By Instances \ref{plus_lcancel1} and \ref{le_lplus2}, addition is left
+cancellative and the order is left additive.  Then by Instances
+\ref{le_plus_lcancel2} and \ref{lt_plus_lcancel2}, the order is also left
+addition cancellative and strictly left addition cancellative.
 
 \begin{theorem} \label{ord_le_self_rplus}
     For all ordinals $\alpha$ and $\beta$, we have $\alpha \leq \alpha + \beta$.
@@ -1209,9 +1186,9 @@ which identities hold and which do not.
     The proof will be by transfinite induction on $\alpha$.  The inductive
     hypothesis says that for all $\gamma < \alpha$, we have $\gamma \leq \beta +
     \gamma$.  If $\beta + \alpha < \alpha$, this would mean that $\beta + \alpha
-    \leq \beta + (\beta \alpha)$.  By Theorem \ref{ord_lt_lplus} we would also
-    have $\beta + (\beta + \alpha) < \beta + \alpha$.  The last two inequalities
-    are incompatible, so we must have $\alpha \leq \beta + \alpha$.
+    \leq \beta + (\beta \alpha)$.  By adding $\beta$ on the left we have $\beta
+    + (\beta + \alpha) < \beta + \alpha$.  The last two inequalities are
+    incompatible, so we must have $\alpha \leq \beta + \alpha$.
 \end{proof}
 
 \begin{theorem} \label{ord_le_ex}
@@ -1251,15 +1228,6 @@ which identities hold and which do not.
     have $\gamma \neq 0$.
 \end{proof}
 
-\begin{theorem} \label{ord_lt_plus_lcancel}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\gamma + \alpha <
-    \gamma + \beta$, we have $\alpha < \beta$.
-\end{theorem}
-\begin{proof}
-    If $\beta \leq \alpha$, we would have $\gamma + \beta \leq \gamma + \alpha$,
-    contradicting $\gamma + \alpha < \gamma + \beta$.
-\end{proof}
-
 \begin{theorem} \label{ord_nz_rplus}
     For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $0 \neq
     \alpha + \beta$.
@@ -1277,17 +1245,6 @@ which identities hold and which do not.
 \begin{proof}
     If $\beta = 0$, the result follows directly, and if $\beta \neq 0$, the
     result follows from the previous theorem.
-\end{proof}
-
-\begin{instance}
-    The order on ordinals is left additive cancellative.
-\end{instance}
-\begin{proof}
-    Let $\gamma + \alpha \leq \gamma + \beta$.  We must prove that $\alpha \leq
-    \beta$.  If $\gamma + \alpha = \gamma + \beta$, by cancelling we get $\alpha
-    = \beta$, and the result follow by reflexivity.  If $\gamma + \alpha \neq
-    \gamma + \beta$, we have $\gamma + \alpha < \gamma + \beta$, so the result
-    follows from Theorem \ref{ord_lt_plus_lcancel}.
 \end{proof}
 
 \begin{theorem} \label{ord_lsub_plus}
@@ -1435,15 +1392,8 @@ which identities hold and which do not.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{ord_lt_plus_rcancel}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha + \gamma <
-    \beta + \gamma$, then $\alpha < \beta$.
-\end{theorem}
-\begin{proof}
-    If we had $\beta \leq \alpha$, we could add $\gamma$ on the right to get
-    $\beta + \gamma \leq \alpha + \gamma$, contradicting $\alpha + \gamma <
-    \beta + \gamma$.
-\end{proof}
+By Instance \ref{lt_plus_lcancel2}, the order is also strictly right addition
+cancellative.
 
 \begin{theorem} \label{ord_lt_self_rplus}
     For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, we have $\alpha <
@@ -1478,8 +1428,8 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     induction.  The inductive hypothesis states that for all $\delta < \alpha$,
     we have $0\delta = 0$.  We will prove the result using Theorem
     \ref{ord_lub_eq}.  For every $\delta < \alpha$, we have $0\delta + 0 = 0
-    \leq 0$ by the inductive hypothesis, so $0$ is an upper bound.  And by
-    Theorem \ref{ord_pos}, $0$ is the least upper bound.
+    \leq 0$ by the inductive hypothesis, so $0$ is an upper bound.  And because
+    all ordinals are positive, $0$ is the least upper bound.
 \end{proof}
 
 \begin{instance}
@@ -1488,8 +1438,8 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \begin{proof}
     Let $\alpha$ be an ordinal.  We will prove that $\alpha 0 = 0$ using Theorem
     \ref{ord_lub_eq}.  It's impossible for there to be any $\delta < 0$, so $0$
-    is vacuously an upper bound. And by Theorem \ref{ord_pos}, $0$ is the least
-    upper bound.
+    is vacuously an upper bound. And because all ordinals are positive, $0$ is
+    the least upper bound.
 \end{proof}
 
 \begin{instance}
@@ -1509,7 +1459,7 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     In the ordinals, $0 < 1$.
 \end{theorem}
 \begin{proof}
-    This follows directly from Theorem \ref{ord_pos2} and the previous proof.
+    This follows directly from Theorem \ref{all_pos2} and the previous proof.
 \end{proof}
 
 \begin{theorem} \label{ord_lt_one_eq}
@@ -1552,8 +1502,8 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     \begin{align*}
         0 &\neq 1 && \text{by Instance \ref{ord_not_trivial}} \\
         0 &\neq \gamma + 1 && \text{by Theorem \ref{ord_nz_rplus}} \\
-        0 &< \gamma + 1 && \text{by Theorem \ref{ord_pos2}} \\
-        \alpha &< \alpha + \gamma + 1 && \text{by Theorem \ref{ord_lt_lplus}} \\
+        0 &< \gamma + 1 && \text{by Theorem \ref{all_pos2}} \\
+        \alpha &< \alpha + \gamma + 1 && \\
         \alpha &< \beta + 1 &&
     \end{align*}
 \end{proof}
@@ -1564,8 +1514,7 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \end{theorem}
 \begin{proof}
     First assume that $\alpha + 1 \leq \beta$.  Then by the previous theorem,
-    $\alpha + 1 < \beta + 1$, so $\alpha < \beta$ by Theorem
-    \ref{ord_lt_plus_rcancel}.
+    $\alpha + 1 < \beta + 1$, so $\alpha < \beta$.
 
     Now assume that $\alpha < \beta$.  Then by Theorem \ref{ord_lt_ex}, we have
     some $\gamma \neq 0$ such that $\alpha + \gamma = \beta$.  Then since
@@ -1659,30 +1608,23 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \end{proof}
 
 \begin{instance}
-    The order in the ordinals is multiplicative.
+    Multiplication in the ordinals has the zero property.
 \end{instance}
 \begin{proof}
-    This is instant from Theorem \ref{ord_pos}.
+    Let $\alpha$ and $\beta$ be ordinals such that $0 = \alpha \beta$.  For a
+    contradiction, assume that both $0 \neq \alpha$ and $0 \neq \beta$.  Then
+    because $0 = \alpha \beta$, we know that $\alpha \delta + \alpha \leq 0$ for
+    all $\delta < \beta$.  Because $0 \neq \beta$, we have $0 < \beta$, so
+    $\alpha 0 + \alpha = \alpha \leq 0$.  By Theorem \ref{all_neg_eq}, we have
+    $\alpha = 0$, a contradiction.
 \end{proof}
 
-\begin{theorem} \label{ord_mult_zero} \label{ord_mult_nz}
-    For all ordinals $\alpha$ and $\beta$, if $0 = \alpha \beta$, then either $0
-    = \alpha$ and $0 = \beta$.
-\end{theorem}
+\begin{instance}
+    The order of the ordinals is left multiplicative.
+\end{instance}
 \begin{proof}
-    For a contradiction, assume that both $0 \neq \alpha$ and $0 \neq \beta$.
-    Then because $0 = \alpha \beta$, we know that $\alpha \delta + \alpha \leq
-    0$ for all $\delta < \beta$.  Because $0 \neq \beta$, we have $0 < \beta$,
-    so $\alpha 0 + \alpha = \alpha \leq 0$.  By Theorem \ref{ord_neg_eq}, we
-    have $\alpha = 0$, a contradiction.
-\end{proof}
-
-\begin{theorem} \label{ord_le_lmult}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
-    then $\gamma\alpha \leq \gamma\beta$.
-\end{theorem}
-\begin{proof}
-    By Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta <
+    Let $\alpha$, $\beta$, and $\gamma$ be such that $\alpha \leq \beta$.  By
+    Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta <
     \alpha$, we have
     \[
         \gamma \delta + \gamma \leq \gamma \beta.
@@ -1697,14 +1639,8 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     $\varepsilon$.
 \end{proof}
 
-\begin{theorem} \label{ord_lt_mult_lcancel}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\gamma \alpha < \gamma
-    \beta$, then $\alpha < \beta$.
-\end{theorem}
-\begin{proof}
-    If $\beta \leq \alpha$, we could apply the previous theorem to get $\gamma
-    \beta \leq \gamma \alpha$, a contradiction.
-\end{proof}
+By Instance \ref{lt_mult_lcancel2}, the order is also strictly left
+multiplication cancellative.
 
 \begin{theorem} \label{ord_ldist_one}
     For all ordinals $\alpha$ and $\beta$, we have $\alpha(\beta + 1) =
@@ -1778,7 +1714,8 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     \[
         \alpha f(\delta) \leq \alpha \lub(f(\delta), \delta < \beta).
     \]
-    This follows directly from Theorem \ref{ord_le_lmult} and \ref{ord_lub_ge}.
+    This follows directly from Theorem \ref{ord_lub_ge} and then multiplying on
+    the left by $\alpha$.
 \end{proof}
 
 \begin{instance}
@@ -1832,13 +1769,13 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     \end{align*}
 \end{proof}
 
-\begin{theorem} \label{ord_lt_lmult}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $0 \neq \gamma$ and
-    $\alpha < \beta$, then $\gamma\alpha < \gamma\beta$.
-\end{theorem}
+\begin{instance}
+    The order of ordinals is strictly left multiplicative.
+\end{instance}
 \begin{proof}
-    Because $\alpha < \beta$, there exists a $\delta \neq 0$ such that $\alpha +
-    \delta = \beta$.  Then by Theorem \ref{ord_mult_nz}, we have
+    Assume that $\alpha < \beta$ and $0 \neq \gamma$.  Because $\alpha < \beta$,
+    there exists a $\delta \neq 0$ such that $\alpha + \delta = \beta$.  Then
+    because multiplication of ordinals has the zero property, we have
     \begin{align*}
         0 &< \gamma\delta \\
         \gamma\alpha &< \gamma\alpha + \gamma\delta \\
@@ -1847,34 +1784,15 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     \end{align*}
 \end{proof}
 
+By Instances \ref{le_mult_lcancel2} and \ref{mult_lcancel1}, the order is left
+multiplication cancellative and multiplication of ordinals is left cancellative.
+
 \begin{instance}
-    Multiplication of ordinals is left cancellative.
+    The order of the ordinals is right multiplicative.
 \end{instance}
 \begin{proof}
-    Let $\alpha$, $\beta$, and $\gamma$ be ordinals such that $0 \neq \gamma$
-    and $\gamma \alpha = \gamma \beta$.  If $\alpha \neq \beta$, we can assume
-    without loss of generality that $\alpha < \beta$.  Then multiplying this
-    inequality by $\gamma$ on the left produces $\gamma \alpha < \gamma \beta$,
-    contradicting the equality we started with.  Thus, we must have $\alpha =
-    \beta$.
-\end{proof}
-
-\begin{theorem} \label{ord_le_mult_lcancel}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $0 \neq \gamma$ an
-    d$\gamma \alpha \leq \gamma \beta$, then $\alpha \leq \beta$.
-\end{theorem}
-\begin{proof}
-    If $\gamma\alpha = \gamma\beta$, we could cancel $\gamma$ to get $\alpha =
-    \beta$, so $\alpha \leq \beta$.  If $\gamma\alpha \neq \gamma\beta$, we
-    could use Theorem \ref{ord_lt_mult_lcancel} to get $\alpha < \beta$.
-\end{proof}
-
-\begin{theorem} \label{ord_le_rmult}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \leq \beta$,
-    then $\alpha\gamma \leq \beta\gamma$.
-\end{theorem}
-\begin{proof}
-    The proof will be by transfinite induction on $\gamma$.  The inductive
+    Let $\alpha$, $\beta$, and $\gamma$ be such that $\alpha \leq \beta$.  The
+    proof will be by transfinite induction on $\gamma$.  The inductive
     hypothesis states that for all $\delta < \gamma$, we have $\alpha \delta
     \leq \beta \delta$.  To prove that
     \[
@@ -1912,14 +1830,8 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     as required.
 \end{proof}
 
-\begin{theorem} \label{ord_lt_mult_rcancel}
-    For all ordinals $\alpha$, $\beta$, and $\gamma$, if $\alpha \gamma < \beta
-    \gamma$, then $\alpha < \beta$.
-\end{theorem}
-\begin{proof}
-    If $\beta \leq \alpha$, then by Theorem \ref{ord_le_rmult} we would have
-    $\beta \gamma \leq \alpha \gamma$, a contradiction.
-\end{proof}
+By Instance \ref{lt_mult_lcancel2}, the order is also strictly right
+multiplication cancellative.
 
 \begin{theorem} \label{ord_le_self_lmult}
     For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $\alpha \leq
@@ -2320,12 +2232,13 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \begin{proof}
     The proof will be by transfinite induction on $\alpha$.  The inductive
     hypothesis states that for all $\delta < \alpha$, we have $\delta \leq \beta
-    ^ \delta$.  If $0 = \alpha$, the result follows from Theorem \ref{ord_pos}.
-    When $0 \neq \alpha$, we will use Theorem \ref{ord_lub_other_leq}.  So let
-    $\varepsilon$ be an upper bound of $\beta ^ \delta \beta$ for $\delta <
-    \alpha$.  We must have $\varepsilon \neq 0$, because if it is equal to zero,
-    we would have $\beta^0 \beta = \beta \leq 0$, contradicting $1 < \beta$.  We
-    must prove that $\alpha \leq \varepsilon$.
+    ^ \delta$.  If $0 = \alpha$, the result follows from all ordinals being
+    positive.  When $0 \neq \alpha$, we will use Theorem
+    \ref{ord_lub_other_leq}.  So let $\varepsilon$ be an upper bound of $\beta ^
+    \delta \beta$ for $\delta < \alpha$.  We must have $\varepsilon \neq 0$,
+    because if it is equal to zero, we would have $\beta^0 \beta = \beta \leq
+    0$, contradicting $1 < \beta$.  We must prove that $\alpha \leq
+    \varepsilon$.
 
     To do so, assume that $\varepsilon < \alpha$.  Then by the definition of
     $\varepsilon$, we have
@@ -2617,6 +2530,70 @@ define the true $\aleph$ function.
     \[
         \mu = \aleph'_\beta = \aleph'_{\omega + \alpha} = \aleph_\alpha.
     \]
+\end{proof}
+
+Arithmetic of ordinals can often be confusing because it is necessary to
+remember which of the basic algebraic properties we are used to are true in the
+ordinals.  The basic properties that are true were listed in the previous
+sections.  We will now prove that the ordinals do not have any of the other
+basic algebraic properties that we like types to have.
+
+\begin{theorem}
+    Addition of ordinals is not commutative.
+\end{theorem}
+\begin{proof}
+    If $1 + \omega = \omega + 1$, we would have $\omega = \omega + 1$, and
+    cancelling $\omega$ we get $0 = 1$, which is false.
+\end{proof}
+
+\begin{theorem}
+    Multiplication of ordinals is not commutative.
+\end{theorem}
+\begin{proof}
+    If $2 \omega = \omega 2$, we would have $\omega = \omega 2$, and
+    cancelling $\omega$ we get $1 = 2$, which is false.
+\end{proof}
+
+\begin{theorem}
+    Addition of ordinals is not right cancellative.
+\end{theorem}
+\begin{proof}
+    We have $0 + \omega = 1 + \omega$, but not $0 = 1$.
+\end{proof}
+
+\begin{theorem}
+    Multiplication of ordinals is not right cancellative.
+\end{theorem}
+\begin{proof}
+    We have $1\omega = 2\omega$ but not $1 = 2$.
+\end{proof}
+
+\begin{theorem}
+    The order of ordinals is not strictly right additive.
+\end{theorem}
+\begin{proof}
+    We have $0 < 1$ but not $0 + \omega < 1 + \omega$.
+\end{proof}
+
+\begin{theorem}
+    The order of ordinals is not right addition cancellative.
+\end{theorem}
+\begin{proof}
+    We have $1 + \omega \leq 0 + \omega$ but not $1 \leq 0$.
+\end{proof}
+
+\begin{theorem}
+    The order of ordinals is not strictly right multiplicative.
+\end{theorem}
+\begin{proof}
+    We have $1 < 2$ but not $1 \omega < 2 \omega$.
+\end{proof}
+
+\begin{theorem}
+    The order of ordinals is not right multiplication cancellative.
+\end{theorem}
+\begin{proof}
+    We have $2 \omega \leq 1 \omega$ but not $2 \leq 1$.
 \end{proof}
 
 \end{document}

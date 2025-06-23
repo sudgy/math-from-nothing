@@ -327,6 +327,11 @@ Coq does this automatically.
     with $c \neq 0$, $ac = bc \rightarrow a = b$.
 \end{class}
 
+\begin{class}
+    Multiplication has the zero property if for all $a$ and $b$, if $0 = ab$,
+    then $0 = a$ or $0 = b$.
+\end{class}
+
 \begin{class}[Rng]
     A type $\U$ is a Rng if addition forms an Abelian Group and if there is an
     instance of multiplication such that multiplication is left distributive,
@@ -423,6 +428,19 @@ multiplication laws when multiplication is commutative.
 \begin{proof}
     The proof is the same in form to the proof of Instance
     \ref{ring_mult_lanni}.
+\end{proof}
+
+\begin{instance}
+    If multiplication is cancellative, then it has the zero property.
+\end{instance}
+\begin{proof}
+    Assume that $0 \neq a$.  Then
+    \begin{align*}
+        0 &= ab \\
+        a0 &= ab \\
+        0 &= b,
+    \end{align*}
+    so we have either $0 = a$ or $0 = b$.
 \end{proof}
 
 \begin{instance}
@@ -524,24 +542,12 @@ axioms.
     \]
 \end{proof}
 
-\begin{theorem}
-    For all $a$ and $b$ with $0 = ab$, either $0 = a$ or $0 = b$.
-\end{theorem}
-\begin{proof}
-    Assume that $0 \neq a$.  Then
-    \begin{align*}
-        0 &= ab \\
-        a0 &= ab \\
-        0 &= b,
-    \end{align*}
-    so we have either $0 = a$ or $0 = b$.
-\end{proof}
-
 \begin{theorem} \label{mult_nz}
-    For all $a \neq 0$ and $b \neq 0$, $ab \neq 0$.
+    If multiplication has the zero property, then for all $a \neq 0$ and $b \neq
+    0$, $ab \neq 0$.
 \end{theorem}
 \begin{proof}
-    This is the contrapositive of the previous theorem.
+    This is the contrapositive of the zero property.
 \end{proof}
 
 \begin{theorem}
@@ -1034,78 +1040,150 @@ following classes and theorems.
     $c$, if $a + c \leq b + c$, then $a \leq b$.
 \end{class}
 
+\begin{class}
+    An order is said to be strictly left additive if for all $a$, $b$, and $c$,
+    if $a < b$, then $c + a < c + b$.
+\end{class}
+
+\begin{class}
+    An order is said to be strictly right additive if for all $a$, $b$, and $c$,
+    if $a < b$, then $a + c < b + c$.
+\end{class}
+
+\begin{class}
+    An order is said to be strictly left addition cancellative if for all $a$,
+    $b$, and $c$, if $c + a < c + b$, then $a < b$.
+\end{class}
+
+\begin{class}
+    An order is said to be strictly right addition cancellative if for all $a$,
+    $b$, and $c$, if $a + c < b + c$, then $a < b$.
+\end{class}
+
 \begin{class}[Ordered Group]
     A type $\U$ is an Ordered Group if it is a Group and has an order that is
     left and right additive.
 \end{class}
 
-\begin{instance}
-    If addition is commutative and $\leq$ is left additive, then $\leq$ is right
-    additive.
-\end{instance}
-\begin{proof}
-    Trivial.
-\end{proof}
-
-\begin{instance}
-    If addition is commutative and $\leq$ is left addition cancellative, then
-    $\leq$ is right addition cancellative.
-\end{instance}
-\begin{proof}
-    Trivial.
-\end{proof}
+When addition is commutative, each left class implies the right version.  To
+save on writing, all theorems and instances of this subsection will only be
+stated for addition on the left.  All theorems work with addition on the right
+too.
 
 \begin{instance}
     Under the conditions of Instance \ref{plus_linv_lcancel}, if $\leq$ is left
     additive, then $\leq$ is left addition cancellative.
 \end{instance}
 \begin{proof}
-    The proof is identical in the form to the proof of Instance
+    The proof is identical in form to the proof of Instance
     \ref{plus_linv_lcancel}.
 \end{proof}
 
-\begin{instance}
-    Under the conditions of Instance \ref{plus_rinv_rcancel}, if $\leq$ is right
-    additive, then $\leq$ is right addition cancellative.
+Of course, in types where additive inverses don't exist, the previous instance
+can't be used.  In general, there are a surprising number of ways to prove some
+of these properties from the others.  Here is a full list of the ones I could
+figure out:
+
+\begin{instance} \label{le_lplus1}
+    If an order is strictly left addition cancellative, then it is left
+    additive.
 \end{instance}
 \begin{proof}
-    The proof is identical in the form to the proof of Instance
-    \ref{plus_rinv_rcancel}.
+    Let $a \leq b$.  If we had $c + b < c + a$, we could cancel $c$ to get $b <
+    a$, contradicting $a \leq b$.  Thus, $c + a \leq c + b$.
 \end{proof}
 
-\begin{theorem}
-    For all $a$, $b$, and $c$, if $a < b$, then $c + a < c + b$.
-\end{theorem}
+\begin{instance} \label{le_lplus2}
+    If an order is strictly left additive, it is left additive.
+\end{instance}
 \begin{proof}
-    We already have $a \leq b \rightarrow c + a \leq c + b$, so we only need to
-    prove that $c + a \neq c + b$.  If $c + a = c + b$, we could cancel $c$ to
-    get $a + b$ which contradicts $a < b$.
+    Let $a \leq b$.  Then if $a = b$, we would have $c + a \leq c + b$ by
+    reflexivity.  If $a \neq b$, we would have $a < b$, so we could add $c$ on
+    the left to get $c + a < c + b$, which implies that $c + a \leq c + b$.
 \end{proof}
 
-\begin{theorem}
-    For all $a$, $b$, and $c$, if $a < b$, then $a + c < b + c$.
-\end{theorem}
+\begin{instance} \label{lt_lplus1}
+    If an order is left additive and addition is left cancellative, then it is
+    strictly left additive.
+\end{instance}
 \begin{proof}
-    This proof is identical in form to the previous proof.
+    Let $a < b$.  Because the order is left additive, we can get that $c + a
+    \leq c + b$.  So it only remains to prove that $c + a \neq c + b$.  To do
+    so, assume that $c + a = c + b$.  Then cancelling $c$, we get $a = b$,
+    contradicting $a < b$.  Thus, $c + a \neq c + b$, so $c + a < c + b$.
 \end{proof}
 
-\begin{theorem}
-    For all $a$, $b$, and $c$, if $c + a < c + b$, then $a < b$.
-\end{theorem}
+\begin{instance} \label{lt_lplus2}
+    If an order is left addition cancellative, then it is strictly left
+    additive.
+\end{instance}
 \begin{proof}
-    Again, proving that $a \leq b$ is straightforward, so we only need to prove
-    that $a \neq b$.  If $a = b$, we would have $c + a < c + a$, which is
-    impossible.
+    Let $a < b$.  If $c + b \leq c + a$, we could cancel to get $b \leq a$,
+    contradicting $a < b$.  Thus, $c + a < c + b$.
 \end{proof}
-\noindent Note that the proof did not use additive inverses, which will allow us
-to utilize this theorem in types like the natural numbers.
 
-\begin{theorem}
-    For all $a$, $b$, and $c$, if $a + c < b + c$, then $a < b$.
-\end{theorem}
+\begin{instance} \label{le_plus_lcancel1}
+    If an order is strictly left addition cancellative and addition is left
+    cancellative, then the order is left cancellative.
+\end{instance}
 \begin{proof}
-    This proof is identical in form to the previous proof.
+    Let $c + a \leq c + b$.  If $c + a = c + b$, we could cancel $c$ to get $a =
+    b$, showing that $a \leq b$.  If $c + a \neq c + b$, we have $c + a < c +
+    b$, so we could cancel $c$ to get $a < b$, showing that $a \leq b$.
 \end{proof}
+
+\begin{instance} \label{le_plus_lcancel2}
+    If an order is strictly left additive, then it is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $c + a \leq c + b$.  If $b < a$, we could add $c$ on the left to get $c
+    + b < c + a$, contradicting $c + a \leq c + b$.  Thus, $a \leq b$.
+\end{proof}
+
+\begin{instance} \label{lt_plus_lcancel1}
+    If an order is left addition cancellative, then it is strictly left addition
+    cancellative.
+\end{instance}
+\begin{proof}
+    Let $c + a < c + b$.  By assumption, we can get $a \leq b$, so it only
+    remains to prove that $a \neq b$.  If $a = b$, we would have $c + a = c +
+    b$, contradicting $c + a < c + b$.  Thus, we must have $a \neq b$, so $a <
+    b$.
+\end{proof}
+
+\begin{instance} \label{lt_plus_lcancel2}
+    If an order is left additive, then it is strictly left addition
+    cancellative.
+\end{instance}
+\begin{proof}
+    Let $c + a < c + b$.  Then if $b \leq a$, we can add $c$ to get $c + b \leq
+    c + a$, contradicting $c + a < c + b$.  Thus, $a < b$.
+\end{proof}
+
+\begin{instance} \label{plus_lcancel1}
+    If an order is strictly left additive, then addition is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $c + a = c + b$.  If $a < b$, we would have $c + a < c + b$,
+    contradicting $c + a = c + b$.  By symmetry, $b < a$ is impossible too.  The
+    only case left is $a = b$, which is what we need.
+\end{proof}
+
+\begin{instance} \label{plus_lcancel2}
+    If an order is left cancellative, then addition is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $c + a = c + b$.  Then we have $c + a \leq c + b$ and $c + b \leq c +
+    a$.  Cancelling $c$ in each equation, we get $a \leq b$ and $b \leq a$.
+    Then $a = b$ follows by antisymmetry.
+\end{proof}
+
+Given all of these implications, which should be used?  The standard route for
+most types is to prove that addition is left cancellative and that the order is
+left additive.  Along with commutativity, this will provide all of the
+properties.  However, in cases where this is not possible, much more care needs
+to be taken.  Currently, the only type this is needed in in this document is the
+ordinals, so I will just explicitly say which instances I am using then.
 
 \begin{theorem} \label{le_lrplus}
     If $a \leq b$ and $c \leq d$, then $a + c \leq b + d$.
@@ -1147,6 +1225,11 @@ formalized in the following classes and theorems.
 \end{class}
 
 \begin{class}
+    An order is said to be strictly multiplicative if $0 < a$ and $0 < b$
+    implies $0 < ab$.
+\end{class}
+
+\begin{class}
     An order is said to be left multiplicative if for all $a$, $b$, and $c$ with
     $0 \leq c$, if $a \leq b$, then $ca \leq cb$.
 \end{class}
@@ -1166,6 +1249,26 @@ formalized in the following classes and theorems.
     $b$, and $c$ with $0 < c$, if $ac \leq bc$, then $a \leq b$.
 \end{class}
 
+\begin{class}
+    An order is said to be strictly left multiplicative if for all $a$, $b$, and
+    $c$ with $0 < c$, if $a < b$, then $ca < cb$.
+\end{class}
+
+\begin{class}
+    An order is said to be strictly right multiplicative if for all $a$, $b$,
+    and $c$ with $0 < c$, if $a < b$, then $ac < bc$.
+\end{class}
+
+\begin{class}
+    An order is said to be strictly left multiplication cancellative if for all
+    $a$, $b$, and $c$ with $0 < c$, if $ca < cb$, then $a < b$.
+\end{class}
+
+\begin{class}
+    An order is said to be strictly right multiplication cancellative if for all
+    $a$, $b$, and $c$ with $0 < c$, if $ac < bc$, then $a < b$.
+\end{class}
+
 \begin{class}[Ordered Ring]
     An Ordered Ring is a Ring that is also an Ordered Group and where the order
     is multiplicative.
@@ -1180,21 +1283,10 @@ formalized in the following classes and theorems.
     An Ordered Field is an Ordered Ring that is also a field.
 \end{class}
 
-\begin{instance}
-    If multiplication is commutative and $\leq$ is left multiplicative, then
-    $\leq$ is right multiplicative.
-\end{instance}
-\begin{proof}
-    Trivial.
-\end{proof}
-
-\begin{instance}
-    If multiplication is commutative and $\leq$ is left multiplication
-    cancellative, then $\leq$ is right multiplication cancellative.
-\end{instance}
-\begin{proof}
-    Trivial.
-\end{proof}
+When multiplication is commutative, each left class implies the right version.
+To save on writing, all theorems and instances of this subsection will only be
+stated for multiplication on the left.  All theorems work with multiplication on
+the right too.
 
 \begin{instance}
     In an Ordered Ring, $\leq$ is left multiplicative.
@@ -1203,13 +1295,6 @@ formalized in the following classes and theorems.
     Assume that $a \leq b$ and $0 \leq c$.  Then $0 \lq b - a$, and because
     $\leq$ is multiplicative, we have $0 \leq c(b - a)$.  Then $0 \leq cb - ca$,
     so $ca \leq cb$.
-\end{proof}
-
-\begin{instance}
-    In an Ordered Ring, $\leq$ is right multiplicative.
-\end{instance}
-\begin{proof}
-    This proof is identical in form to the previous one.
 \end{proof}
 
 \begin{theorem}
@@ -1238,6 +1323,163 @@ formalized in the following classes and theorems.
     $c^{-1}ca \leq c^{-1}cb$, so $a \leq b$.
 \end{proof}
 
+Of course, in types where neither addition or multiplication are invertible, the
+previous two instances can't be used.  Like with addition, there are a
+surprising number of ways to prove some of these properties from the others.  In
+fact, most of the implications in the last section work here too, although the
+proofs often need a couple more details, so all the proofs will be stated again
+here.
+
+\begin{instance} \label{le_lt_mult}
+    If an order is multiplicative and multiplication has the zero property, then
+    the order is strictly multiplicative.
+\end{instance}
+\begin{proof}
+    Let $0 < a$ and $0 < b$.  We have $0 \leq ab$ already, and $0 \neq ab$
+    follows from Theorem \ref{mult_nz}.
+\end{proof}
+
+\begin{instance} \label{le_lmult1}
+    If an order is strictly left multiplication cancellative, then it is left
+    multiplicative.
+\end{instance}
+\begin{proof}
+    Let $a \leq b$ and $0 \leq c$.  If $c = 0$, then $0 + a \leq 0 + b$.  If $c
+    \neq 0$, we have $0 < c$.  If $cb < ca$, we could cancel $c$ to get $b < a$,
+    contradicting $a \leq b$.  Thus, $ca \leq cb$.
+\end{proof}
+
+\begin{instance} \label{le_lmult2}
+    If an order is strictly left multiplicative, then it is left multiplicative.
+\end{instance}
+\begin{proof}
+    Let $a \leq b$ and $0 \leq c$.  If $c = 0$, then $0 + a \leq 0 + b$.  If $c
+    \neq 0$, we have $0 < c$.  If $a = b$, then we're done.  If $a \neq b$, we
+    have $a < b$, so we can multiply by $c > 0$ to get $ca < cb$, so $ca \leq
+    cb$.
+\end{proof}
+
+\begin{instance} \label{lt_lmult1}
+    If an order is left multiplicative and multiplication is left cancellative,
+    then the order is strictly left multiplicative.
+\end{instance}
+\begin{proof}
+    Let $a < b$ and $0 < c$.  Then we already have $ca \leq cb$ by assumption.
+    If $ca = cb$, we could cancel $c$ to get $a = b$, contradicting $a < b$.
+    Thus, $ca \neq cb$, so $ca < cb$.
+\end{proof}
+
+\begin{instance} \label{lt_lmult2}
+    If an order is left multiplication cancellative, it is strictly left
+    multiplicative.
+\end{instance}
+\begin{proof}
+    Let $a < b$ and $0 < c$.  If $cb \leq ca$, we could cancel $c$ to get $b
+    \leq a$, contradicting $a < b$.  Thus, $ca < cb$.
+\end{proof}
+
+\begin{instance} \label{le_mult_lcancel1}
+    If an order is strictly left multiplication cancellative and multiplication
+    is left cancellative, then the order is left multiplication cancellative.
+\end{instance}
+\begin{proof}
+    Let $ca \leq cb$ and $0 < c$.  If $ca = cb$, we can cancel $c$ to get $a =
+    b$, so $a \leq b$.  If $ca \neq cb$, we have $ca < cb$, and by cancelling
+    $c$ we get $a < b$, so $a \leq b$.
+\end{proof}
+
+\begin{instance} \label{le_mult_lcancel2}
+    If an order is strictly left multiplicative, it is left multiplication
+    cancellative.
+\end{instance}
+\begin{proof}
+    Let $ca \leq cb$ and $0 < c$.  If $b < a$, we could multiply by $c$ to get
+    $cb < ca$, contradicting $ca \leq cb$.  Thus, $a \leq b$.
+\end{proof}
+
+\begin{instance} \label{lt_mult_lcancel1}
+    If an order is left multiplication cancellative, it is strictly left
+    multiplication cancellative.
+\end{instance}
+\begin{proof}
+    Let $ca < cb$ and $0 < c$.  We already have $a \leq b$ by assumption.  If
+    $a = b$, $ca < cb$ would be impossible, so $a \neq b$, meaning that $a < b$.
+\end{proof}
+
+\begin{instance} \label{lt_mult_lcancel2}
+    If an order is left multiplicative, it is strictly left multiplication
+    cancellative.
+\end{instance}
+\begin{proof}
+    Let $ca < cb$ and $0 < c$.  If $b \leq a$, we could multiply by $c$ to get
+    $cb \leq ca$, contradicting $ca < cb$.  Thus, $a < b$.
+\end{proof}
+
+Given all of these implications, which should be used?  The standard route for
+most types is to prove that the order is multiplicative and left multiplication
+cancellative.  Along with commutativity, this will provide all of the
+properties.  However, in cases where this is not possible, much more care needs
+to be taken.  Currently, the only type this is needed in in this document is the
+ordinals, so I will just explicitly say which instances I am using then.
+
+In some types, the conditions $0 \leq a$ in the previous classes is unnecessary
+because in those types, all values are positive.  This leads to a new class:
+
+\begin{class}
+    An order is said to be positive if for all $x$, $0 \leq x$.
+\end{class}
+
+A few simple theorems follow from this.
+
+\begin{theorem} \label{all_neg_eq}
+    In a positive order, if $x \leq 0$, then $0 = x$.
+\end{theorem}
+\begin{proof}
+    This follows directly by antisymmetry.
+\end{proof}
+
+\begin{theorem} \label{all_pos2}
+    In a positive order, for all $x \neq 0$, $0 < x$.
+\end{theorem}
+\begin{proof}
+    We have $0 \leq x$ by the order being positive and $0 \neq x$ by assumption.
+\end{proof}
+
+\begin{theorem} \label{not_neg}
+    In a positive order, for all $x$, $\neg(x < 0)$.
+\end{theorem}
+\begin{proof}
+    This is just the negation of $0 \leq x$.
+\end{proof}
+
+In a positive order, all left/right multiplications and cancellations can be
+done without checking for positivity, although $0 \neq c$ still needs to be
+checked in many cases.
+
+There are two more implications that positive orders satisfy:
+
+\begin{instance} \label{mult_lcancel1}
+    If an order is positive and strictly left multiplicative, multiplication is
+    left cancellative.
+\end{instance}
+\begin{proof}
+    Let $ca = cb$ and $c \neq 0$.  Assume for a contradiction that $a \neq b$,
+    and without loss of generality assume that $a < b$.  Then we can multiply by
+    $c$ to get $ca < cb$, contradicting $ca = cb$.  Thus, $a = b$.
+\end{proof}
+
+\begin{instance} \label{mult_lcancel2}
+    If an order is positive and left multiplication cancellative, multiplication
+    is left cancellative.
+\end{instance}
+\begin{proof}
+    Let $ca = cb$ and $c \neq 0$.  Then by reflexivity we have $ca \leq cb$ and
+    $cb \leq ca$.  Cancelling $c$, we get $a \leq b$ and $b \leq a$, and by
+    antisymmetry we get $a = b$.
+\end{proof}
+
+We will now consider orders that can have negative values again.
+
 \begin{theorem} \label{le_lmult_neg}
     If $a \leq b$ and $c \leq 0$, then $cb \leq ca$.
 \end{theorem}
@@ -1246,26 +1488,12 @@ formalized in the following classes and theorems.
     get $-ca \leq -cb$, so $cb \leq ca$.
 \end{proof}
 
-\begin{theorem} \label{le_rmult_neg}
-    If $a \leq b$ and $c \leq 0$, then $bc \leq ac$.
-\end{theorem}
-\begin{proof}
-    This proof is identical in form to the previous one.
-\end{proof}
-
 \begin{theorem} \label{le_mult_lcancel_neg}
     If $ca \leq cb$ and $c < 0$, then $b \leq a$.
 \end{theorem}
 \begin{proof}
     From $ca \leq cb$, we have $(-c)(-a) \leq (-c)(-b)$.  Because $c < 0$, $0 <
     -c$, so we can cancel $-c$ to get $-a \leq -b$, so $b \leq a$.
-\end{proof}
-
-\begin{theorem} \label{le_mult_rcancel_neg}
-    If $ac \leq bc$ and $c < 0$, then $b \leq a$.
-\end{theorem}
-\begin{proof}
-    This proof is identical in form to the previous one.
 \end{proof}
 
 \begin{theorem} \label{le_lrmult_pos}
@@ -1283,42 +1511,6 @@ known, the only interesting part of the proofs are proving that two values are
 not equal, and the rest of the proofs will be skipped.
 
 \begin{theorem}
-    If $0 < a$ and $0 < b$, then $0 < ab$.
-\end{theorem}
-\begin{proof}
-    We must prove that $0 \neq ab$.  This follows from Theorem \ref{mult_nz}.
-\end{proof}
-
-\begin{theorem}
-    If $a < b$ and $0 < c$, then $ca < cb$.
-\end{theorem}
-\begin{proof}
-    Assume that $ca = cb$.  Then because $0 < c$, we can cancel $c$ to get $a =
-    b$.  This contradicts $a < b$, so $ca \neq cb$.
-\end{proof}
-
-\begin{theorem}
-    If $a < b$ and $0 < c$, then $ac < bc$.
-\end{theorem}
-\begin{proof}
-    This proof is identical in form to the previous one.
-\end{proof}
-
-\begin{theorem}
-    If $ca < cb$ and $0 < c$, then $a < b$.
-\end{theorem}
-\begin{proof}
-    Assume that $a = b$.  Then we would have $ca < ca$, which is impossible.
-\end{proof}
-
-\begin{theorem}
-    If $ac < bc$ and $0 < c$, then $a < b$.
-\end{theorem}
-\begin{proof}
-    This proof is identical in form to the previous one.
-\end{proof}
-
-\begin{theorem}
     If $a < b$ and $c < 0$, then $cb < ca$.
 \end{theorem}
 \begin{proof}
@@ -1326,24 +1518,10 @@ not equal, and the rest of the proofs will be skipped.
 \end{proof}
 
 \begin{theorem}
-    If $a < b$ and $c < 0$, then $bc < ac$.
-\end{theorem}
-\begin{proof}
-    This proof is identical in form to Theorem \ref{le_rmult_neg}.
-\end{proof}
-
-\begin{theorem}
     If $ca < cb$ and $c < 0$, then $b < a$.
 \end{theorem}
 \begin{proof}
     This proof is identical in form to Theorem \ref{le_mult_lcancel_neg}.
-\end{proof}
-
-\begin{theorem}
-    If $ac < bc$ and $c < 0$, then $b < a$.
-\end{theorem}
-\begin{proof}
-    This proof is identical in form to Theorem \ref{le_mult_rcancel_neg}.
 \end{proof}
 
 \begin{theorem}
@@ -1363,16 +1541,6 @@ not equal, and the rest of the proofs will be skipped.
 \end{proof}
 
 We can now move on to slightly more interesting theorems.
-
-\begin{instance}
-    If multiplication is left cancellative and $\leq$ is left multiplicative,
-    then $\leq$ is left multiplication cancellative.
-\end{instance}
-\begin{proof}
-    Assume that $0 < c$ and $ca \leq cb$.  For a contradiction, assume that $b <
-    a$.  Because $0 < c$, we can multiply $b < a$ by $c$ to get $cb < ca$, which
-    contradicts $ca \leq cb$.
-\end{proof}
 
 \begin{theorem} \label{square_pos}
     For all $a$, $0 \leq aa$.

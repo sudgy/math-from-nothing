@@ -298,6 +298,30 @@ Proof.
 Qed.
 
 
+Theorem ord_plus_comm_false : ¬PlusComm ord.
+Proof.
+    intros contr.
+    pose proof (plus_comm (from_nat 1) ω) as eq.
+    rewrite nat_plus_omega in eq.
+    rewrite <- (plus_rid ω) in eq at 1.
+    apply plus_lcancel in eq.
+    rewrite <- (homo_zero (f := from_nat)) in eq.
+    apply inj in eq.
+    contradiction (nat_zero_suc eq).
+Qed.
+
+Theorem ord_mult_comm_false : ¬MultComm ord.
+Proof.
+    intros contr.
+    pose proof (mult_comm (from_nat 2) ω) as eq.
+    rewrite nat_mult_omega in eq by apply nat_zero_suc.
+    rewrite <- (mult_rid ω) in eq at 1.
+    apply (mult_lcancel _ ω_nz) in eq.
+    rewrite <- (homo_one (f := from_nat)) in eq.
+    apply inj in eq.
+    contradiction (nat_neq_suc _ eq).
+Qed.
+
 Theorem ord_plus_rcancel_false : ¬PlusRcancel ord.
 Proof.
     intros contr.

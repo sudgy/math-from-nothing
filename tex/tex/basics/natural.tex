@@ -321,12 +321,11 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring_mult_ranni} and
     \end{itemize}
 \end{instance}
 
-\begin{theorem} \label{nat_neg_eq}
-    For all $a$, if $a \leq 0$, then $a = 0$.
-\end{theorem}
+\begin{instance}
+    All natural numbers are positive.
+\end{instance}
 \begin{proof}
-    If $a \neq 0$, we would have $a = S(a')$, so $S(a') \leq 0$, which is
-    \vtt{False} by definition.
+    This follow directly from the definition.
 \end{proof}
 
 \begin{theorem} \label{nat_pos2}
@@ -335,14 +334,6 @@ Thus, $0 = b0$ is a valid step here through Instances \ref{ring_mult_ranni} and
 \begin{proof}
     By the definition of $\leq$ we have $0 \leq S(n)$, and by the definition of
     $\N$ we have $0 \neq S(n)$.
-\end{proof}
-
-\begin{theorem} \label{nat_neg2}
-    For all $n : \N$, $n \nless 0$.
-\end{theorem}
-\begin{proof}
-    If $n < 0$, we would have $n \leq 0$, so by Theorem \ref{nat_neg_eq} we
-    would have $n = 0$, which contradicts $n < 0$.
 \end{proof}
 
 \begin{theorem}
