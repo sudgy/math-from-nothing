@@ -7,19 +7,14 @@ Open Scope card_scope.
 Lemma card_pow_wd : ∀ A B C D, A ~ B → C ~ D → (C → A) ~ (D → B).
 Proof.
     intros A B C D [f f_bij] [g g_bij].
-    exists (λ h, (λ x, f (h (bij_inv g x)))).
-    split; split.
-    -   intros h1 h2 eq.
-        functional_intros c.
-        pose proof (func_eq _ _ eq) as eq2; cbn in eq2.
-        specialize (eq2 (g c)).
-        rewrite bij_inv_eq1 in eq2.
-        apply inj in eq2.
-        exact eq2.
-    -   intros h.
-        exists (λ c, bij_inv f (h (g c))).
-        functional_intros d.
+    exists (λ h d, f (h (bij_inv g d))).
+    apply (inverse_ex_bijective _ (λ h c, bij_inv f (h (g c)))).
+    split.
+    -   functional_intros h x.
         do 2 rewrite bij_inv_eq2.
+        reflexivity.
+    -   functional_intros h x.
+        do 2 rewrite bij_inv_eq1.
         reflexivity.
 Qed.
 
@@ -40,13 +35,12 @@ Proof.
     equiv_get_value A.
     unfold zero, one, card_pow; equiv_simpl.
     exists (λ _, Single).
-    split; split.
-    -   intros f g eq.
+    apply (inverse_ex_bijective _ (λ _, empty_function _ _ empty_false)).
+    split.
+    -   apply singleton_type_eq.
+    -   intros f.
         functional_intros x.
         contradiction (empty_false x).
-    -   intros y.
-        exists (empty_function _ _ empty_false).
-        apply singleton_type_eq.
 Qed.
 
 Theorem card_zero_pow : ∀ κ, 0 ≠ κ → 0 ^ κ = 0.
@@ -57,9 +51,7 @@ Proof.
     unfold zero at 2, card_pow; equiv_simpl.
     apply card_false_0.
     intros f.
-    apply neq.
-    apply card_false_0.
-    intros a.
+    pose proof (card_nz_ex neq) as a.
     contradiction (empty_false (f a)).
 Qed.
 
@@ -69,12 +61,10 @@ Proof.
     equiv_get_value A.
     unfold one, card_pow; equiv_simpl.
     exists (λ _, Single).
-    split; split.
-    -   intros f g eq.
-        functional_intros a.
-        apply singleton_type_eq.
-    -   intros y.
-        exists (λ _, Single).
+    apply (inverse_ex_bijective _ (λ _ _, Single)).
+    split.
+    -   apply singleton_type_eq.
+    -   functional_intros f x.
         apply singleton_type_eq.
 Qed.
 
@@ -84,14 +74,12 @@ Proof.
     equiv_get_value A.
     unfold one, card_pow; equiv_simpl.
     exists (λ f, f Single).
-    split; split.
-    -   intros f g eq.
-        functional_intros x.
-        rewrite (singleton_type_eq x Single).
-        exact eq.
-    -   intros y.
-        exists (λ _, y).
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ a _, a)).
+    split.
+    -   reflexivity.
+    -   functional_intros f x.
+        apply f_equal.
+        apply singleton_type_eq.
 Qed.
 
 Theorem card_pow_plus : ∀ κ μ ν, κ ^ (μ + ν) = κ ^ μ * κ ^ ν.
@@ -100,22 +88,13 @@ Proof.
     equiv_get_value A B C.
     unfold plus, mult, card_pow; equiv_simpl.
     exists (λ f, ((λ b, f (inl b)), (λ c, f (inr c)))).
-    split; split.
-    -   intros f g eq.
-        apply prod_split in eq as [eq1' eq2'].
-        pose proof (func_eq _ _ eq1') as eq1.
-        pose proof (func_eq _ _ eq2') as eq2.
-        clear eq1' eq2'; cbn in eq1, eq2.
-        functional_intros [b|c].
-        +   apply eq1.
-        +   apply eq2.
-    -   intros [f g].
-        exists (λ x, match x with
-                     | inl b => f b
-                     | inr c => g c
-                     end).
-        apply f_equal2.
-        all: reflexivity.
+    apply (inverse_ex_bijective _ (λ f x, match x with
+                                          | inl b => fst f b
+                                          | inr c => snd f c
+                                          end)).
+    split.
+    -   intros [f1 f2]; reflexivity.
+    -   functional_intros f [x|x]; reflexivity.
 Qed.
 
 Theorem card_pow_pow : ∀ κ μ ν, (κ ^ μ) ^ ν = κ ^ (μ * ν).
@@ -124,16 +103,10 @@ Proof.
     equiv_get_value A B C.
     unfold mult, card_pow; equiv_simpl.
     exists (λ f, λ x, f (snd x) (fst x)).
-    split; split.
-    -   intros f g eq.
-        pose proof (func_eq _ _ eq) as eq2; cbn in eq2.
-        functional_intros c.
-        functional_intros b.
-        exact (eq2 (b, c)).
-    -   intros f.
-        exists (λ c, λ b, f (b, c)).
-        functional_intros [b c].
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ f c b, f (b, c))).
+    split.
+    -   functional_intros f [b c]; reflexivity.
+    -   functional_intros f c b; reflexivity.
 Qed.
 
 Theorem card_pow_mult : ∀ κ μ ν, (κ * μ) ^ ν = κ ^ ν * μ ^ ν.
@@ -142,44 +115,32 @@ Proof.
     equiv_get_value A B C.
     unfold mult, card_pow; equiv_simpl.
     exists (λ f, ((λ c, fst (f c)), (λ c, snd (f c)))).
-    split; split.
-    -   intros f g eq.
-        functional_intros c.
-        apply prod_split in eq as [eq1' eq2'].
-        pose proof (func_eq _ _ eq1') as eq1.
-        pose proof (func_eq _ _ eq2') as eq2.
-        clear eq1' eq2'; cbn in eq1, eq2.
-        specialize (eq1 c).
-        specialize (eq2 c).
-        apply prod_combine; assumption.
-    -   intros [f g].
-        exists (λ c, (f c, g c)).
-        cbn.
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ f x, (fst f x, snd f x))).
+    split.
+    -   intros f.
+        apply prod_combine; reflexivity.
+    -   functional_intros f x; cbn.
+        apply prod_combine; reflexivity.
 Qed.
 
 Theorem prop_size : |Prop| = 2.
 Proof.
     unfold one, plus; equiv_simpl.
     exists (λ P, If P then (inl Single) else (inr Single)).
-    split; split.
-    -   intros A B eq.
-        classic_case A as [a|a]; classic_case B as [b|b].
-        +   apply propositional_ext.
-            split; intro; assumption.
-        +   contradiction (inlr_neq eq).
-        +   contradiction (inrl_neq eq).
-        +   apply propositional_ext.
-            split; apply contrapositive_iff; intro; assumption.
-    -   intros [y|y].
-        +   exists True.
-            classic_case True; [>|contradiction].
-            apply f_equal.
-            apply singleton_type_eq.
-        +   exists False.
-            classic_case False; [>contradiction|].
-            apply f_equal.
-            apply singleton_type_eq.
+    apply (inverse_ex_bijective _ (λ x, match x with
+                                        | inl _ => True
+                                        | inr _ => False
+                                        end)).
+    split.
+    -   intros [x|x].
+        +   rewrite (if_true true).
+            apply f_equal; apply singleton_type_eq.
+        +   rewrite (if_false not_false).
+            apply f_equal; apply singleton_type_eq.
+    -   intros P.
+        classic_case P as [p|np].
+        +   symmetry; exact (prop_is_true p).
+        +   symmetry; exact (prop_is_false np).
 Qed.
 
 Theorem power_set_size : ∀ A, |A → Prop| = 2 ^ |A|.

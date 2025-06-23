@@ -3,6 +3,12 @@
 
 Require Export base_logic.
 
+Theorem not_false : ¬False.
+Proof.
+    intros x.
+    exact x.
+Qed.
+
 Theorem contrapositive : ∀ {A B : Prop}, (A → B) → (¬B → ¬A).
 Proof.
     intros A B H b a.
@@ -310,14 +316,14 @@ Proof.
     contradiction.
 Qed.
 
-Theorem not_true : (¬True) = False.
+Theorem not_true_eq : (¬True) = False.
 Proof.
     apply propositional_ext; split.
     -   intro H; apply H; exact true.
     -   contradiction.
 Qed.
 
-Theorem not_false : (¬False) = True.
+Theorem not_false_eq : (¬False) = True.
 Proof.
     apply propositional_ext; split.
     -   intro H; exact true.
@@ -332,7 +338,7 @@ Proof.
         rewrite <- (not_not (∃ _ : P, True)).
         intros contr.
         rewrite not_ex in contr.
-        rewrite not_true in contr.
+        rewrite not_true_eq in contr.
         exact (Ps contr).
     }
     destruct (ex_to_type H) as [p pH].
@@ -360,7 +366,7 @@ Proof.
         apply propositional_ext; split; contradiction.
     -   intro eq.
         rewrite eq.
-        rewrite not_false.
+        rewrite not_false_eq.
         exact true.
 Qed.
 
@@ -398,11 +404,11 @@ Theorem any_prop_neq : ∀ P, P ≠ (¬P).
 Proof.
     intros P eq.
     destruct (prop_split P); subst.
-    -   rewrite not_true in eq.
+    -   rewrite not_true_eq in eq.
         rewrite <- eq.
         exact true.
     -   rewrite eq.
-        rewrite not_false.
+        rewrite not_false_eq.
         exact true.
 Qed.
 

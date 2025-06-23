@@ -410,7 +410,7 @@ Theorem compl_empty : @𝐂 U ∅ = all.
 Proof.
     apply predicate_ext; intros x.
     unfold 𝐂, empty.
-    rewrite not_false.
+    rewrite not_false_eq.
     reflexivity.
 Qed.
 
@@ -418,7 +418,7 @@ Theorem compl_all : @𝐂 U all = ∅.
 Proof.
     apply predicate_ext; intros x.
     unfold 𝐂, all.
-    rewrite not_true.
+    rewrite not_true_eq.
     reflexivity.
 Qed.
 

@@ -372,4 +372,253 @@ product of $\A$ and $\B$, also called their Cartesian product.  Given an $a :
     is injective.
 \end{proof}
 
+\section{Cardinal Exponentiation}
+
+Given two types $\A$ and $\B$, we can create the type of all functions $\A \to
+\B$.  In this sense, we can think of $\to$ as being a binary operation on types.
+This leads to cardinal exponentiation.  However, we want to define the
+exponential $|\A|^{|\B|}$ to be the cardinality of $\B \to \A$, not $\A \to \B$.
+Because of this, we can't quite just say to consider $\to$ as a binary
+operation for the purpose of constructing cardinal exponentiation.
+
+\begin{lemma}
+    $\to$ is well-defined under the equivalence relation $\sim$ given in Section
+    \ref{card_base}, in the reverse sense described above.  More explicitly, if
+    $\A \sim \B$ and$\C \sim \D$, then $(\C \to \A) \sim (\D \to \B)$.
+\end{lemma}
+\begin{proof}
+    From $\A \sim \B$ and $\C \sim \D$, we have bijections $f : \A \to \B$ and
+    $g : \C \to \D$.  Define
+    \[
+        h : (\C \to \A) \to (\D \to \B)
+    \]
+    and
+    \[
+        h^{-1} : (\D \to \B) \to (\C \to \A)
+    \]
+    by
+    \[
+        h(i)(d) = f(i(g^{-1}(d)))
+    \]
+    and
+    \[
+        h^{-1}(i)(c) = f^{-1}(i(g(c))).
+    \]
+    To prove that $h(h^{-1}(i)) = i$ and $h^{-1}(h(i)) = i$, by functional
+    extensionality it suffices that
+    \[
+        h(h^{-1}(i))(d)
+        = f(h^{-1}(i)(g^{-1}(d)))
+        = f(f^{-1}(i(g(g^{-1}(d)))))
+        = i(d)
+    \]
+    and
+    \[
+        h^{-1}(h(i))(c)
+        = f^{-1}(h(i)(g(c)))
+        = f^{-1}(f(i(g^{-1}(g(c)))))
+        = i(c).
+    \]
+\end{proof}
+
+\begin{definition}
+    Define cardinal exponentiation $\mu^\kappa$ to be the binary operation given
+    by Lemma \ref{binary_op_ex} and the previous lemma.  To be explicit, we have
+    $|\A|^{|\B|} = |\B \to \A|$.
+\end{definition}
+
+\begin{theorem}
+    For all cardinals $\kappa$, we have $\kappa^0 = 1$.
+\end{theorem}
+\begin{proof}
+    Given a type $\A$, we can define a map $f$ from $\E \to \A$ to $\S$ that
+    takes all functions to the single value in $\S$, and a map $g$ from $\S$ to
+    $\E$ to $\A$ that takes in the value in $\S$ and produces the empty
+    function $e$, which is the only possible function.  Then
+    \[
+        f(g(I)) = f(e) = I
+    \]
+    and
+    \[
+        g(f(e)) = g(I) = e.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all cardinals $\kappa \neq 0$, we have $0 ^ \kappa = 0$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be a type of cardinality $\kappa$.  Since $0 \neq |\A|$, we have a
+    value $a : \A$ by Theorem \ref{card_nz_ex}.  If we had a function $f : \A
+    \to \E$, we would have a value in the empty type $f(a)$, which is
+    impossible.  Thus, by Theorem \ref{card_false_0}, we have $0^\kappa = 0$.
+\end{proof}
+
+\begin{theorem}
+    For all cardinals $\kappa$, we have $1^\kappa = 1$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be a type.  Then define the functions $f : (\A \to \S) \to \S$ and
+    $g : \S \to (\A \to \S)$ by $f(h) = I$ and $g(I)(x) = I$.  Then
+    \[
+        f(g(I)) = f(I)
+    \]
+    and
+    \[
+        g(f(h)) = g(I) = h.
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all cardinals $\kappa$, we have $\kappa ^ 1 = \kappa$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be a type.  Define the functions $f : (\S \to \A) \to \A$ and $g :
+    \A \to (\S \to \A)$ by $f(h) = h(I)$ and $g(a)(I) = a$.  Then
+    \[
+        f(g(a)) = g(a)(I) = a
+    \]
+    and
+    \[
+        g(f(h))(I) = g(h(I))(I) = h(I).
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all cardinals $\kappa$, $\mu$, and $\nu$, we have $\kappa ^ {\mu + \nu}
+    = \kappa ^ \mu \kappa ^ \nu$.
+\end{theorem}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types.  Then define the functions
+    \[
+        f : ((\B + \C) \to \A) \to ((\B \to \A) \times (\C \to \A))
+    \]
+    and
+    \[
+        g : ((\B \to \A) \times (\C \to \A)) \to ((\B + \C) \to \A)
+    \]
+    by
+    \[
+        f(h) = ((\lambda b, h(b|)), (\lambda c, h(|c)))
+    \]
+    and
+    \[
+        g(h_1, h_2)(b|c) = h_1(b)|h_2(c).
+    \]
+    Then
+    \[
+        f(g(h_1, h_2))
+        = ((\lambda b, g(h_1, h_2)(b|)), (\lambda c, g(h_1, h_2)(|c)))
+        = (\lambda b, h_1(b), \lambda c, h_2(c))
+        = (h_1, h_2)
+    \]
+    and
+    \[
+        g(f(h))(b|c)
+        = g((\lambda b, h(b|)), (\lambda c, h(|c)))(b|c)
+        = h(b|)|h(|c)
+        = h(b|c).
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all cardinals $\kappa$, $\mu$ and $\nu$, we have $(\kappa ^ \mu) ^ \nu =
+    \kappa ^ {\mu \nu}$.
+\end{theorem}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types.  Define the functions
+    \[
+        f : (\C \to (\B \to \A)) \to ((\B \times \C) \to \A)
+    \]
+    and
+    \[
+        g : ((\B \times \C) \to \A) \to (\C \to (\B \to \A))
+    \]
+    by
+    \[
+        f(h)(b, c) = h(c)(b)
+    \]
+    and
+    \[
+        g(h)(c)(b) = h(b, c).
+    \]
+    Then
+    \[
+        f(g(h))(b, c) = g(h)(c)(b) = h(b, c)
+    \]
+    and
+    \[
+        g(f(h))(c)(b) = f(h)(b, c) = h(c)(b).
+    \]
+\end{proof}
+
+\begin{theorem}
+    For all cardinals $\kappa$, $\mu$, and $\nu$, we have $(\kappa \mu)^\nu =
+    \kappa ^ \nu \mu ^ \nu$.
+\end{theorem}
+\begin{proof}
+    Let $\A$, $\B$, and $C$ be types.  Then define functions
+    \[
+        f : (\C \to (\A \times \B)) \to ((\C \to \A) \times (\C \to \B))
+    \]
+    and
+    \[
+        g : ((\C \to \A) \times (\C \to \B)) \to (\C \to (\A \times \B))
+    \]
+    by
+    \[
+        f(h) = ((\lambda c, P_1(h(c))), (\lambda c, P_2(h(c))))
+    \]
+    and
+    \[
+        g(h_1, h_2)(c) = (h_1(c), h_2(c)).
+    \]
+    Then
+    \begin{align*}
+        f(g(h_1, h_2))
+        &= ((\lambda c, P_1(g(h_1, h_2))(c)), (\lambda c, P_2(g(h_1, h_2))(c)))
+            \\
+        &= ((\lambda c, P_1(h_1, h_2)(c)), (\lambda c, P_2(h_1, h_2)(c))) \\
+        &= ((\lambda c, h_1(c)), (\lambda c, h_2(c))) \\
+        &= (h_1, h_2)
+    \end{align*}
+    and
+    \[
+        g(f(h))(c)
+        = g((\lambda c', P_1(h(c'))), (\lambda c', P_2(h(c'))))(c)
+        = (P_1(h(c)), P_2(h(c)))
+        = h(c).
+    \]
+\end{proof}
+
+\begin{theorem}
+    $|\Prop| = 2$.
+\end{theorem}
+\begin{proof}
+    Recall that $2$ is equal to $|\S| + |\S|$.  Define functions $f : \Prop \to
+    \S + \S$ and $g : \S + \S \to \Prop$ given by
+    \[
+        f(P) = \begin{cases}
+            I| & \text{if $P$} \\
+            |I & \text{if $\neg P$}
+        \end{cases}
+    \]
+    and
+    \[
+        g(I|I) = \True|\False.
+    \]
+    Then
+    \[
+        f(g(I|I)) = f(\True|\False) = I|I
+    \]
+    and
+    \[
+        g(f(P)) = g(I|I) = P.
+    \]
+\end{proof}
+
+Notice that because of this, $|\A \to \Prop|$ is equal to $2^{|\A|}$, and more
+importantly, by Theorem \ref{power_set_bigger}, we have $|\A| < 2^{|\A|}$ for
+all cardinals $\A$.
+
 \end{document}

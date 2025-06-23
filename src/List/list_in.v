@@ -20,8 +20,7 @@ Theorem in_list_end {U} : ∀ a : U, ¬in_list [] a.
 Proof.
     intros a.
     unfold in_list; cbn.
-    rewrite not_false.
-    exact true.
+    apply not_false.
 Qed.
 
 Theorem in_list_add_eq {U} : ∀ (a b : U) l,

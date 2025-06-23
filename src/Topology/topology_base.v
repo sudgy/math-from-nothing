@@ -196,14 +196,14 @@ Qed.
 Theorem empty_closed : closed ∅.
 Proof.
     unfold closed, 𝐂, empty; cbn.
-    rewrite not_false.
+    rewrite not_false_eq.
     exact all_open.
 Qed.
 
 Theorem all_closed : closed all.
 Proof.
     unfold closed, 𝐂, all; cbn.
-    rewrite not_true.
+    rewrite not_true_eq.
     exact empty_open.
 Qed.
 

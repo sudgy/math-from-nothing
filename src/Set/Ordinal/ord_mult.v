@@ -395,7 +395,7 @@ Proof.
         apply C_neq.
         symmetry.
         rewrite not_ex in contr.
-        rewrite not_true in contr.
+        rewrite not_true_eq in contr.
         unfold zero; cbn.
         unfold nat_to_ord; equiv_simpl.
         exists (λ x, False_rect _ (contr x)).
@@ -674,7 +674,7 @@ Proof.
                 classic_contradiction contr.
                 apply A_nz.
                 rewrite not_ex in contr.
-                rewrite not_true in contr.
+                rewrite not_true_eq in contr.
                 exists (λ x, False_rect _ (contr x)).
                 split.
                 split; split.
