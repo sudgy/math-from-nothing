@@ -184,4 +184,192 @@ definition or proof at once.
     This is the contrapositive of the previous theorem.
 \end{proof}
 
+\section{Multiplication of Cardinals}
+
+Remember that for two types $\A$ and $\B$, the type $\A \times \B$ is the
+product of $\A$ and $\B$, also called their Cartesian product.  Given an $a :
+\A$ and a $b : \B$, we call the corresponding value in $\A \times \B$ $(a, b)$.
+
+\begin{lemma}
+    The product type operation is well-defined under the equivalence relation
+    $\sim$ given in Section \ref{card_base}.
+\end{lemma}
+\begin{proof}
+    Let $\A \sim \B$ and $\C \sim \D$.  This means that we have bijections $f :
+    \A \to \B$ and $g : \C \to \D$.  We must find a bijection between $\A \times
+    \C$ and $\B \times \D$.  Define $h : \A \times \C \to \B \times \D$ by $h(a,
+    c) = (f(a), g(c))$.  We can also define $h^{-1} : \B \times \D \to \A \times
+    \C$ by $h^{-1}(b, d) = (f^{-1}(b), g^{-1}(d))$.  Then
+    \[
+        h(h^{-1}(b, d))
+        = h(f^{-1}(b), g^{-1}(d))
+        = (f(f^{-1}(b)), g(g^{-1}(d)))
+        = (b, d)
+    \]
+    and
+    \[
+        h^{-1}(h(a, c))
+        = h^{-1}(f(a), g(c))
+        = (f^{-1}(f(a)), g^{-1}(g(c)))
+        = (a, c),
+    \]
+    so $h$ is bijective by Theorem \ref{inverse_ex_bijective}.
+\end{proof}
+
+\begin{instance}
+    Define multiplication in the cardinals as the binary operation given by
+    Theorem \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Multiplication of cardinals is multiplicative.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types.  Define
+    \[
+        f : \A \times (\B \times \C) \to (\A \times \B) \times \C
+    \]
+    and
+    \[
+        g : (\A \times \B) \times \C \to \A \times (\B \times \C)
+    \]
+    by
+    \[
+        f(a, (b, c)) = ((a, b), c)
+    \]
+    and
+    \[
+        g((a, b), c) = (a, (b, c)).
+    \]
+    Then
+    \[
+        f(g((a, b), c)) = f(a, (b, c)) = ((a, b), c)
+    \]
+    and
+    \[
+        g(f(a, (b, c))) = g((a, b), c) = (a, (b, c)).
+    \]
+\end{proof}
+
+\begin{instance}
+    Multiplication of cardinals is commutative.
+\end{instance}
+\begin{proof}
+    Let $\A$ and $\B$ be types.  Define functions
+    \[
+        f : \A \times \B \to \B \times \A
+    \]
+    and
+    \[
+        g : \B \times \A \to \A \times \B
+    \]
+    given by
+    \[
+        f(a, b) = (b, a)
+    \]
+    and
+    \[
+        g(b, a) = (a, b).
+    \]
+    Then
+    \[
+        f(g(b, a)) = f(a, b) = (b, a)
+    \]
+    and
+    \[
+        g(f(a, b)) = g(b, a) = (a, b).
+    \]
+\end{proof}
+
+\begin{instance}
+    Zero is an annihilator in the cardinals.
+\end{instance}
+\begin{proof}
+    We must find a bijective function from $\A \times \E$ to $\E$ for any type
+    $\A$.  Any value in $\A \times \E$ induces a value in $\E$, which is
+    impossible, so $\A \times \E$ can't have any values.  Thus, the empty
+    function works, and is surjective because the codomain is empty as well.
+\end{proof}
+
+\begin{instance}
+    Define one in the cardinals to be $|\S|$, the cardinality of the singleton
+    type.
+\end{instance}
+
+\begin{instance}
+    One is a multiplicative identity in the cardinals.
+\end{instance}
+\begin{proof}
+    Let $\A$ be a type.  Define $f : \A \times \S \to \A$ by $f(a, I) = a$ and
+    $g : \A \to \A \times \S$ by $g(a) = (a, I)$.  Then
+    \[
+        f(g(a)) = f(a, I) = a
+    \]
+    and
+    \[
+        g(f(a, I)) = g(a) = (a, I).
+    \]
+\end{proof}
+
+\begin{instance}
+    Cardinal multiplication distributes over addition.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types.  Define functions
+    \[
+        f : \A \times (\B + \C) \to (\A \times \B) + (\A \times \C)
+    \]
+    and
+    \[
+        g : (\A \times \B) + (\A \times \C) \to \A \times (\B + \C)
+    \]
+    by
+    \[
+        f(a, b|c) = (a, b)|(a, c)
+    \]
+    and
+    \[
+        g((a, b)|(a, c)) = (a, b|c).
+    \]
+    Then
+    \[
+        f(g((a, b)|(a, c))) = f(a, b|c) = (a, b)|(a, c)
+    \]
+    and
+    \[
+        g(f(a, b|c)) = g((a, b)|(a, c)) = (a, b|c).
+    \]
+\end{proof}
+
+\begin{instance}
+    Multiplication of cardinals has the zero property.
+\end{instance}
+\begin{proof}
+    For a contradiction, assume that $0 = |\A \times \B|$ but $0 \neq |\A|$ and
+    $0 \neq |\B|$.  By Theorem \ref{card_nz_ex}, we have values $a : \A$ and $b
+    : \B$.  Because $0 = |\A \times \B|$, we have a bijection $f : \A \times \B
+    \to \E$, meaning that $f(a, b)$ is a value in the empty type, which is
+    impossible.
+\end{proof}
+
+\begin{instance}
+    The order of cardinals is left multiplicative.
+\end{instance}
+\begin{proof}
+    Let $\A$, $\B$, and $\C$ be types such that $|\A| \leq |\B|$.  We must prove
+    that $|\C \times \A| \leq |\C \times \B|$.  Because $|\A| \leq |\B|$, there
+    exists an injective function $f : \A \to \B$.  Define a new function $g : \C
+    \times \A \to \C \times \B$ given by $g(c, a) = (c, f(a))$.  Then if
+    \[
+        g(c_1, a_1) = g(c_2, a_2),
+    \]
+    we have
+    \[
+        (c_1, f(a_1)) = (c_2, f(a_2)),
+    \]
+    from which we get $c_1 = c_2$ and $f(a_1) = f(a_2)$.  By the injectivity of
+    $f$, we get $a_1 = a_2$.  Thus, $(c_1, a_1) = (c_2, a_2)$, showing that $g$
+    is injective.
+\end{proof}
+
 \end{document}

@@ -8,17 +8,14 @@ Lemma card_mult_wd : ∀ A B C D, A ~ B → C ~ D → (A * C ~ B * D)%type.
 Proof.
     intros A B C D [f f_bij] [g g_bij].
     exists (λ x, (f (fst x), g (snd x))).
-    split; split.
-    -   intros [a1 c1] [a2 c2] eq; cbn in eq.
-        apply prod_split in eq as [eq1 eq2].
-        apply inj in eq1, eq2.
-        subst; reflexivity.
-    -   intros [b d].
-        pose proof (sur f b) as [a a_eq].
-        pose proof (sur g d) as [c c_eq].
-        exists (a, c); cbn.
-        rewrite a_eq, c_eq.
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ x,(bij_inv f (fst x), bij_inv g (snd x)))).
+    split; cbn.
+    -   intros x.
+        do 2 rewrite bij_inv_eq2.
+        destruct x; reflexivity.
+    -   intros x.
+        do 2 rewrite bij_inv_eq1.
+        destruct x; reflexivity.
 Qed.
 Global Instance card_mult_class : Mult card := {
     mult := binary_op (binary_self_wd card_mult_wd)
@@ -39,16 +36,10 @@ Proof.
     equiv_get_value A B C.
     unfold mult; equiv_simpl.
     exists (λ x, ((fst x, fst (snd x)), snd (snd x))).
-    split; split.
-    -   intros [a1 [b1 c1]] [a2 [b2 c2]] eq.
-        cbn in eq.
-        apply prod_split in eq as [eq1 eq3].
-        apply prod_split in eq1 as [eq1 eq2].
-        subst; reflexivity.
-    -   intros [[a b] c].
-        exists (a, (b, c)).
-        cbn.
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ x, (fst (fst x), (snd (fst x), snd x)))).
+    split; cbn.
+    -   intros [[a b] c]; reflexivity.
+    -   intros [a [b c]]; reflexivity.
 Qed.
 
 Global Instance card_mult_comm_class : MultComm card.
@@ -58,15 +49,10 @@ Proof.
     equiv_get_value A B.
     unfold mult; equiv_simpl.
     exists (λ x, (snd x, fst x)).
-    split; split.
-    -   intros [a1 b1] [a2 b2] eq.
-        cbn in eq.
-        apply prod_split in eq as [eq1 eq2].
-        subst; reflexivity.
-    -   intros [b a].
-        exists (a, b).
-        cbn.
-        reflexivity.
+    apply (inverse_ex_bijective _ (λ x, (snd x, fst x))).
+    split; cbn.
+    -   intros [b a]; reflexivity.
+    -   intros [a b]; reflexivity.
 Qed.
 
 Global Instance card_mult_lanni_class : MultLanni card.
@@ -94,15 +80,13 @@ Proof.
     equiv_get_value A.
     unfold one, mult; equiv_simpl.
     exists (λ x, snd x).
-    split; split.
-    -   intros [x a] [y b] eq.
-        cbn in eq.
+    apply (inverse_ex_bijective _ (λ x, (Single, x))).
+    split; cbn.
+    -   reflexivity.
+    -   intros [s x]; cbn.
         apply prod_combine; cbn.
         +   apply singleton_type_eq.
-        +   exact eq.
-    -   intros a.
-        exists (Single, a).
-        reflexivity.
+        +   reflexivity.
 Qed.
 
 Global Instance card_ldist_class : Ldist card.
@@ -115,48 +99,37 @@ Proof.
                  | inl b => inl (fst x, b)
                  | inr c => inr (fst x, c)
                  end).
-    split; split.
-    -   intros [a1 [b1|c1]] [a2 [b2|c2]] eq; cbn in eq.
-        +   apply inl_eq in eq.
-            apply prod_split in eq as [eq1 eq2].
-            subst; reflexivity.
-        +   contradiction (inlr_neq eq).
-        +   contradiction (inrl_neq eq).
-        +   apply inr_eq in eq.
-            apply prod_split in eq as [eq1 eq2].
-            subst; reflexivity.
-    -   intros [[a b]|[a c]].
-        +   exists (a, inl b).
-            cbn.
-            reflexivity.
-        +   exists (a, inr c).
-            cbn.
-            reflexivity.
+    apply (inverse_ex_bijective _ (λ x,
+        match x with
+        | inl b => (fst b, inl (snd b))
+        | inr c => (fst c, inr (snd c))
+        end)).
+    split.
+    -   intros [[a b] | [a c]]; reflexivity.
+    -   intros [a [b | c]]; reflexivity.
 Qed.
 
-Theorem card_mult_zero : ∀ κ μ, 0 = κ * μ → {0 = κ} + {0 = μ}.
+Global Instance card_mult_zero : MultZero card.
 Proof.
+    split.
     intros A B.
     equiv_get_value A B.
     unfold mult; equiv_simpl.
     intros eq.
-    apply or_to_strong.
-    apply or_right.
-    intros A_nz.
-    apply card_false_0.
-    intros b.
-    apply A_nz.
-    apply card_false_0.
-    intros a.
+    rewrite <- not_not, not_or.
+    intros [A_nz B_nz].
+    apply card_nz_ex in A_nz as a.
+    apply card_nz_ex in B_nz as b.
     symmetry in eq.
     unfold zero in eq; equiv_simpl in eq.
     destruct eq as [f].
     contradiction (empty_false (f (a, b))).
 Qed.
 
-Theorem card_le_lmult : ∀ {κ μ} ν, κ ≤ μ → ν * κ ≤ ν * μ.
+Global Instance card_le_lmult : OrderLmult card.
 Proof.
-    intros A B C.
+    split.
+    intros A B C C_pos; clear C_pos.
     equiv_get_value A B C.
     unfold le, mult; equiv_simpl.
     intros [f f_inj].
@@ -167,20 +140,6 @@ Proof.
     apply prod_split in eq as [eq1 eq2].
     apply f_inj in eq2.
     subst; reflexivity.
-Qed.
-
-Global Instance card_le_lmult_pos_class : OrderLmult card.
-Proof.
-    split.
-    intros κ μ ν ν_pos.
-    apply card_le_lmult.
-Qed.
-
-Theorem card_le_rmult : ∀ {κ μ} ν, κ ≤ μ → κ * ν ≤ μ * ν.
-Proof.
-    intros κ μ ν.
-    apply le_rmult_pos.
-    apply card_pos.
 Qed.
 
 Close Scope card_scope.
