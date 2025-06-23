@@ -9,7 +9,7 @@
 
 \setcounter{chapter}{8}
 
-\chapter{Cardinals and Ordinals}
+\chapter{The Ordinals}
 
 The cardinals and ordinals are concepts that extend the natural numbers to
 infinite values in two different ways.  Traditionally, the cardinals were
@@ -30,29 +30,22 @@ original definitions.  The exact way around the inconsistencies involves the
 universe hierarchy, and some of the theorems here will need to be explicit about
 what universe certain types are in.
 
-While I wanted to separate the cardinals and ordinals into their own chapters,
-the development of the theory of each one is reliant on the other, so this isn't
-really feasible.  Instead, the basics of ordinals will be developed, then the
-basics of cardinals, which will allow for the rest of the theory of each type to
-be developed separately.
+While this chapter is mostly about the ordinals, a few aspects of the theory are
+simpler with some of the very basics of the cardinals.  Thus, the basics of the
+cardinals will be presented in this chapter as well.  They will be developed
+further in the next chapter.
 
-This chapter can be split into several broad sections.  The first few sections
-will be constructing the ordinals and cardinals and proving basic properties
-about them.  Then, the focus will shift to the arithmetic of ordinals, and then
-to the arithmetic of cardinals.  After this, the concept of infinite
-cardinalities will be explored in more detail.  Finally, due to how useful
-cardinals are in describing infinity, several useful facts about the cardinals
-will be developed at the end.
-
-Cardinal arithmetic is defined by using sum, product, and function types.
-Similar definitions exist for the ordinals, but those definitions can be rather
-cumbersome, especially for exponentiation.  For the ordinals, there exists a
-different way to construct the arithmetic operations using transfinite
+The arithmetic operations on ordinals can be defined in two different ways.  One
+is to define them constructive using sum, product, and (subsets of) function
+types.  This is useful because it will align with the cardinal operations.
+However, these definitions can be rather cumbersome, especially for
+exponentiation.  If these cumbersome definitions are not desirable, there also
+exists a different way to construct the arithmetic operations using transfinite
 recursion.  While using transfinite recursion makes the connection with cardinal
-arithmetic much more opaque, it ends up being simpler to define, so the
-definitions using transfinite recursion are used here.  Unlike the cardinals,
-the ordinals are described here for their own sake, so the connection between
-their arithmetic is not really needed here.
+arithmetic more opaque, it ends up being simpler to define, so the definitions
+using transfinite recursion are used here.  Unlike the cardinals, the ordinals
+are described here mainly for their own sake, so the connection between the
+arithmetic of the cardinals and ordinals is not really needed here.
 
 \section{Construction of the Ordinals}
 
@@ -2604,169 +2597,6 @@ basic algebraic properties that we like types to have.
 \end{theorem}
 \begin{proof}
     We have $2 \omega \leq 1 \omega$ but not $2 \leq 1$.
-\end{proof}
-
-\section{Addition of Cardinals}
-
-Remember that for two types $\A$ and $\B$, the type $\A + \B$ is the sum of $\A$
-and $\B$, also called their disjoint union.  Given an $a : \A$, we call the
-corresponding value in $\A + \B$ $a|$, and given a $b : \B$, we call the
-corresponding value in $\A + \B$ $|b$.  To make definitions and proofs simpler
-here, we will introduce a new notation.  When working with an arbitrary value in
-$\A + \B$, we will often use the notation $a|b$ to represent a value made with
-either an $a : \A$ or a $b : \B$.  We can manipulate functions to/from sum types
-using this notation, and doing so can compactly represent multiple cases of a
-definition or proof at once.
-
-\begin{lemma}
-    The sum type operation is well-defined under the equivalence relation $\sim$
-    given in Section \ref{card_base}.
-\end{lemma}
-\begin{proof}
-    Let $\A \sim \B$ and $\C \sim \D$.  This means that we have bijections $f :
-    \A \to \B$ and $g : \C \to \D$.  We must find a bijection between $\A + \C$
-    and $\B + \D$.  Define $h : \A + \C \to \B + \D$ by $h(a|c) = f(a)|g(c)$.
-    We can also define $h^{-1} : \B + \D \to \A + \C$ by $h(b|d) =
-    f^{-1}(b)|g^{-1}(d)$.  Then
-    \[
-        h(h^{-1}(b|d))
-        = h(f^{-1}(b)|g^{-1}(d))
-        = f(f^{-1}(b))|g(g^{-1}(d))
-        = b|d
-    \]
-    and
-    \[
-        h^{-1}(h(a|b))
-        = h^{-1}(f(a)|g(b))
-        = f^{-1}(f(a))|g^{-1}(g(b)) =
-        a|b,
-    \]
-    so $h$ is bijective by Theorem \ref{inverse_ex_bijective}.
-\end{proof}
-
-\begin{instance}
-    Define addition in the cardinals as the binary operation given by Theorem
-    \ref{binary_op_ex} and the previous lemma.
-\end{instance}
-
-\begin{instance}
-    Addition of cardinals is associative.
-\end{instance}
-\begin{proof}
-    Let $\A$, $\B$, and $\C$ be types.  Define the functions
-    \[
-        f : \A + (\B + \C) \to (\A + \B) + \C
-    \]
-    and
-    \[
-        g : (\A + \B) + \C \to \A + (\B + \C)
-    \]
-    by
-    \[
-        f(a|(b|c)) = (a|b)|c
-    \]
-    and
-    \[
-        g((a|b)|c) = a|(b|c).
-    \]
-    Then
-    \[
-        f(g((a|b)|c)) = f(a|(b|c)) = (a|b)|c
-    \]
-    and
-    \[
-        g(f(a|(b|c))) = g((a|b)|c) = a|(b|c).
-    \]
-\end{proof}
-
-\begin{instance}
-    Addition of cardinals is commutative.
-\end{instance}
-\begin{proof}
-    Let $\A$ and $\B$ be types.  Define functions
-    \[
-        f : \A + \B \to \B + \A
-    \]
-    and
-    \[
-        g : \B + \A \to \A + \B
-    \]
-    by
-    \[
-        f(a|b) = b|a
-    \]
-    and
-    \[
-        g(b|a) = a|b.
-    \]
-    Then
-    \[
-        f(g(b|a)) = f(a|b) = b|a
-    \]
-    and
-    \[
-        g(f(a|b)) = g(b|a) = a|b.
-    \]
-\end{proof}
-
-\begin{instance}
-    Define zero in the cardinals to be $|\E|$, the cardinality of the empty
-    type.
-\end{instance}
-
-\begin{instance}
-    Zero is a left additive identity in the cardinals.
-\end{instance}
-\begin{proof}
-    Let $\A$ be a type.  Define the functions $f : \A + \E \to \A$ and $g : \A
-    \to \A + \E$ by $f(_|a) = a$ and $g(a) = |a$.  Note that the first case of
-    the definition of $f$ is unnecessary because no values of the empty type
-    exist.  Then
-    \[
-        f(g(a)) = f(|a) = a
-    \]
-    and
-    \[
-        g(f(|a)) = g(a) = |a.
-    \]
-\end{proof}
-
-\begin{instance}
-    The order of the cardinals is left additive.
-\end{instance}
-\begin{proof}
-    Let $\A$, $\B$, and $\C$ be types such that there exists an injective
-    function $f : \A \to \B$.  Then define a function $g : \C + \A \to \C + \B$
-    given by
-    \[
-        g(c|a) = c|f(a).
-    \]
-    Now assume that $g(c_1|a_1) = g(c_2|a_2)$.  Then $c_1|f(a_1) = c_2|f(a_2)$.
-    If it's the first branch, we have $c_1 = c_2$, and if it's the second
-    branch, by the injectivity of $f$, we have $a_1 = a_2$.  Thus, we have
-    $c_1|a_1 = c_2|a_2$ as required.
-\end{proof}
-
-\begin{instance}
-    All cardinals are positive.
-\end{instance}
-\begin{proof}
-    The empty function is vacuously injective to any type.
-\end{proof}
-
-\begin{theorem} \label{card_false_0}
-    For all types $\A$, if $\A \to \False$, then $0 = |\A|$.
-\end{theorem}
-\begin{proof}
-    The empty function is vacuously injective from $\E$ to $\A$, and since $\A
-    \to \False$, the empty function is also vacuously surjective.
-\end{proof}
-
-\begin{theorem} \label{card_nz_ex}
-    For all types $\U$, if $0 \neq |\U|$, then a value exists in $\U$.
-\end{theorem}
-\begin{proof}
-    This is the contrapositive of the previous theorem.
 \end{proof}
 
 \end{document}
