@@ -184,6 +184,72 @@ definition or proof at once.
     This is the contrapositive of the previous theorem.
 \end{proof}
 
+\begin{instance}
+    The function $|\alpha|$ taking an ordinal to a cardinal is nullitive.
+\end{instance}
+\begin{proof}
+    Since $0$ is defined as the equivalence class of the empty type in both the
+    cardinals and the ordinals, this follows by reflexivity.
+\end{proof}
+
+\begin{instance}
+    The function $|\alpha|$ taking an ordinal to a cardinal is additive.
+\end{instance}
+\begin{proof}
+    Let $\A$ and $\B$ be order types.  We must prove that
+    \[
+        |[\A] + [\B]| = |[\A]| + |[\B]|.
+    \]
+    By the definition of cardinal addition, this simplifies to
+    \[
+        |[\A] + [\B]| = |\A + \B|.
+    \]
+    The proof will be by Theorem \ref{ord_to_card_eq2}.  Let $f$ be the function
+    given by definition \ref{ord_type_init_ord}.  Then define a function $g : \A
+    + \B \to \Ord$ given by
+    \[
+        g(x) =
+        \begin{cases}
+            f_\A(a) &\text{if $x = a|$} \\
+            [\A] + f_\B(b) &\text{if $x = |b$.}
+        \end{cases}
+    \]
+    Before we can use this function to prove the result, we must prove that it
+    is always less than $[\A] + [\B]$.  If $x = a|$, then
+    \[
+        g(x) = f_\A(a) < [\A] \leq [\A] + [\B],
+    \]
+    and if $x = |b$, then
+    \[
+        g(x) = [\A] + f_\B(b) < [\A] + [\B].
+    \]
+    Thus, we now have a function between $\A + \B$ and $\Ord_{[\A] + [\B]}$.  We
+    will now prove that the function is bijective.
+
+    For injectivity, let $x$ and $y$ be such that $g(x) = g(y)$.  We have four
+    cases for when $x$ and $y$ are values in $\A$ or $\B$.  When $x = a_1|$ and
+    $y = a_2|$, me have $f_\A(a_1) = f_\A(a_2)$, and the result follows from the
+    injectivity of $f_\A$.  When $x = a_1$ and $y = b_2$, we have $f_\A(a_1) =
+    [\A] + f_\B(b_2)$, but $f_\A(a_1) < [\A] \leq [\A] + f_\B(b_2)$, meaning
+    that this case is impossible.  The case $x = b_1$ and $y = a_2$ is similar.
+    When $x = b_1$ and $y = b_2$, we have $[\A] + f_\B(b_1) = [\A] + f_\B(b_2)$,
+    and the result follows from cancelling $[\A]$ and applying the injectivity
+    of $f_\B$.  Thus, $g$ is injective.
+
+    For surjectivity, let $\gamma < [\A] + [\B]$.  There will be two cases:
+    when $\gamma < [\A]$, and when $\gamma \geq [\A]$.  When $\gamma < \alpha$,
+    by the surjectivity of $f_\A$ there exists some $a : \A$ such that
+    $f_\A(a) = \gamma$.  This means that $g(a|) = \gamma$ as required.  When
+    $\gamma \geq [\A]$, by Theorem \ref{ord_le_ex} we have some $\delta$ such
+    that $\gamma = [\A] + \delta$.  Then we have $[\A] + \delta < [\A] + [\B]$,
+    and by cancelling $[\A]$ we get $\delta < [\B]$.  Thus, by the surjectivity
+    of $f_\B$, there exists some $b : \B$ such that $f_\B(b) = \delta$.  Then
+    \[
+        g(|b) = [\A] + f_\B(b) = [\A] + \delta = \gamma
+    \]
+    as required.
+\end{proof}
+
 \section{Multiplication of Cardinals}
 
 Remember that for two types $\A$ and $\B$, the type $\A \times \B$ is the
@@ -370,6 +436,99 @@ product of $\A$ and $\B$, also called their Cartesian product.  Given an $a :
     from which we get $c_1 = c_2$ and $f(a_1) = f(a_2)$.  By the injectivity of
     $f$, we get $a_1 = a_2$.  Thus, $(c_1, a_1) = (c_2, a_2)$, showing that $g$
     is injective.
+\end{proof}
+
+\begin{instance}
+    The function $|\alpha|$ taking an ordinal to a cardinal is unital.
+\end{instance}
+\begin{proof}
+    Since $1$ is defined as the equivalence class of the singleton type in both
+    the cardinals and the ordinals, this follows by reflexivity.
+\end{proof}
+
+\begin{instance}
+    The function $|\alpha|$ taking an ordinal to a cardinal is multiplicative.
+\end{instance}
+\begin{proof}
+    Let $\A$ and $\B$ be order types.  We must prove that
+    \[
+        |[\A][\B]| = |[\A]|\,|[\B]|.
+    \]
+    By the definition of cardinal multiplication, this simplifies to
+    \[
+        |[\A][\B]| = |\A \times \B].
+    \]
+    The proof will be by Theorem \ref{ord_to_card_eq}.  Let $f$ be the function
+    given by Definition \ref{ord_type_init_ord}.  Then define a function $g : \A
+    \times \B \to \Ord$ given by
+    \[
+        g(a, b) = [\A] f_\B(b) + f_\A(a).
+    \]
+    Before we can use this function to prove the result, we must prove that it
+    is always less than $[\A] [\B]$.  Let $a : \A$ and $b : \B$.  Then
+    \[
+        g(a, b) = [\A] f_\B(b) + f_\A(a) < [\A] f_\B(b) + [\A] = [\A] (f_\B(b) +
+        1).
+    \]
+    We have $f_\B(b) < [\B]$, so $f_\B(b) + 1 \leq [\B]$.  Multiplying by $[\A]$
+    on the left we get
+    \[
+        g(a, b) < [\A] (f_\B(b) + 1) \leq [\A] [\B]
+    \]
+    as required.  Thus, we now have a function between $\A \times \B$ and
+    $\Ord_{[\A] [\B]}$.  We will now prove that the function is bijective.
+
+    For injectivity, let $g(a_1, b_1) = g(a_2, b_2)$.  Given that a value $a_1$
+    exists in $\A$, we must have $0 \neq [\A]$.  Expanding $g(a_1, b_1) = g(a_2,
+    b_2)$, we have
+    \begin{equation} \label{ord_to_card_mult_1}
+        [\A] f_\B(b_1) + f_\A(a_1) = [\A] f_\B(b_2) + f_\A(a_2).
+    \end{equation}
+    We have $f_\A(a_1) < [\A]$, and adding $[\A] f_\B(b_1)$ on the left we get
+    \begin{equation} \label{ord_to_card_mult_2}
+        [\A] f_\B(b_1) + f_\A(a_1) < [\A] f_\B(b_1) + [\A] = [\A] (f_\B(b_1) +
+        1).
+    \end{equation}
+    Using (\ref{ord_to_card_mult_1}) in this, we get
+    \begin{equation} \label{ord_to_card_mult_3}
+        [\A] f_\B(b_2) + f_\A(a_2) < [\A] (f_\B(b_1) + 1).
+    \end{equation}
+    Since $[\A] f_\B(b_2) \leq [\A] f_\B(b_2) + f_\A(a_2)$, we also have
+    \begin{equation} \label{ord_to_card_mult_4}
+        [\A] f_\B(b_2) < [\A] (f_\B(b_1) + 1),
+    \end{equation}
+    and we can now cancel $[\A]$ to get
+    \begin{equation} \label{ord_to_card_mult_5}
+        f_\B(b_2) < f_\B(b_1) + 1.
+    \end{equation}
+    The same argument works symmetrically to get
+    \begin{equation} \label{ord_to_card_mult_6}
+        f_\B(b_1) < f_\B(b_2) + 1.
+    \end{equation}
+    This means that $f_\B(b_2) \leq f_\B(b_1)$ and $f_\B(b_1) \leq f_\B(b_2)$,
+    so $f_\B(b_1) = f_\B(b_2)$ by antisymmetry.  By the injectivity of $f_\B$,
+    we have $b_1 = b_2$.  Going back to (\ref{ord_to_card_mult_1}), we now have
+    \begin{equation} \label{ord_to_card_mult_7}
+        [\A] f_\B(b_1) + f_\A(a_1) = [\A] f_\B(b_1) + f_\A(a_2),
+    \end{equation}
+    and we can now cancel $[\A] f_\B(b_1)$ to get $f_\A(a_1) = f_\A(a_2)$, so
+    $a_1 = a_2$ by the injectivity of $f_\A$.  Thus, $(a_1, b_1) = (a_2, b_2)$,
+    so $g$ is injective.
+
+    For surjectivity, let $\gamma < [\A][\B]$.  We must have $0 \neq [\A]$,
+    since if $0 = [\A]$, we would have $\gamma < 0$.  By Theorem \ref{ord_div},
+    there exist ordinals $\varepsilon$ and $\delta$ such that $\gamma = [\A]
+    \varepsilon + \delta$ and $\delta < [\A]$.  We have
+    \[
+        [\A] \varepsilon \leq [\A] \varepsilon + \delta = \gamma < [\A] [\B],
+    \]
+    and cancelling $[\A]$ we get $\varepsilon < [\B]$.  Because $\delta < [\A]$
+    and $\varepsilon < [\B]$, we have values $a : \A$ and $b : \B$ such that
+    $f_\A(a) = \delta$ and $f_\B(b) = \varepsilon$.  Then
+    \[
+        g(a, b) = [\A] f_\B(b) + f_\A(a) = [\A] \varepsilon + \delta = \gamma
+    \]
+    as required.
 \end{proof}
 
 \section{Cardinal Exponentiation}
