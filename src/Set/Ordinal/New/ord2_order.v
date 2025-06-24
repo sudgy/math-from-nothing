@@ -386,10 +386,10 @@ Proof.
     -   apply homo_le_compose; assumption.
 Qed.
 
-Definition ord_type_init_ord_base {A : ord_type} (a : A)
+Definition ord_type_init_ord_base (A : ord_type) (a : A)
     := to_ord (sub_ord_type (initial_segment a)).
 Lemma ord_type_init_ord_in {A : ord_type} :
-    ∀ a : A, initial_segment (to_ord A) (ord_type_init_ord_base a).
+    ∀ a : A, initial_segment (to_ord A) (ord_type_init_ord_base A a).
 Proof.
     intros a.
     unfold ord_type_init_ord_base, initial_segment.
@@ -398,25 +398,7 @@ Proof.
     apply refl.
 Qed.
 Definition ord_type_init_ord (A : ord_type) (a : A)
-    := [ord_type_init_ord_base a | ord_type_init_ord_in a].
-
-Theorem ord_type_init_ord_sur A : Surjective (ord_type_init_ord A).
-Proof.
-    split.
-    intros [y y_lt].
-    unfold initial_segment in y_lt.
-    equiv_get_value y.
-    pose proof y_lt as y_lt2.
-    rewrite ord_lt_simpl in y_lt2.
-    destruct y_lt2 as [x x_eq].
-    exists x.
-    unfold ord_type_init_ord.
-    rewrite set_type_eq2.
-    unfold ord_type_init_ord_base.
-    symmetry.
-    equiv_simpl.
-    exact x_eq.
-Qed.
+    := [ord_type_init_ord_base A a | ord_type_init_ord_in a].
 
 Theorem ord_type_init_ord_le A : HomomorphismLe (ord_type_init_ord A).
 Proof.
@@ -437,6 +419,67 @@ Proof.
         exact xy.
 Qed.
 
+Lemma ord_type_init_ord_inj_wlog A :
+    ∀ a b, ord_type_init_ord_base A a = ord_type_init_ord_base A b → a ≤ b.
+Proof.
+    intros a b eq.
+    unfold ord_type_init_ord_base in eq.
+    equiv_simpl in eq.
+    destruct eq as [f].
+    assert (∀ x, [x|] ≤ [f x|]) as f_leq.
+    {
+        intros x.
+        induction x as [x IHx] using transfinite_induction.
+        order_contradiction ltq2.
+        pose proof (trans ltq2 [|x]) as fx_lt.
+        specialize (IHx [[f x|]|fx_lt]); cbn in IHx.
+        prove_parts IHx; [>apply set_type_lt; apply ltq2|].
+        assert (f x ≤ f [[f x|] | fx_lt]) as leq by exact IHx.
+        apply homo_le2 in leq.
+        unfold le in leq; cbn in leq.
+        contradiction (irrefl _ (le_lt_trans leq ltq2)).
+    }
+    order_contradiction ltq.
+    specialize (f_leq [b|ltq]); cbn in f_leq.
+    pose proof [|f [b|ltq]] as ltq2.
+    unfold initial_segment in ltq2.
+    contradiction (irrefl _ (le_lt_trans f_leq ltq2)).
+Qed.
+
+Theorem ord_type_init_ord_base_inj A : Injective (ord_type_init_ord_base A).
+Proof.
+    split.
+    intros a b eq.
+    apply antisym.
+    -   exact (ord_type_init_ord_inj_wlog A _ _ eq).
+    -   symmetry in eq.
+        exact (ord_type_init_ord_inj_wlog A _ _ eq).
+Qed.
+
+Theorem ord_type_init_ord_bij A : Bijective (ord_type_init_ord A).
+Proof.
+    split; split.
+    -   intros a b eq.
+        unfold ord_type_init_ord in eq.
+        rewrite set_type_eq2 in eq.
+        pose proof (ord_type_init_ord_base_inj A).
+        apply inj.
+        exact eq.
+    -   intros [y y_lt].
+        unfold initial_segment in y_lt.
+        equiv_get_value y.
+        pose proof y_lt as y_lt2.
+        rewrite ord_lt_simpl in y_lt2.
+        destruct y_lt2 as [x x_eq].
+        exists x.
+        unfold ord_type_init_ord.
+        rewrite set_type_eq2.
+        unfold ord_type_init_ord_base.
+        symmetry.
+        equiv_simpl.
+        exact x_eq.
+Qed.
+
 Lemma ords_lt_wo :
     ∀ α : ord, WellOrdered (λ a b : set_type (initial_segment α), [a|] ≤ [b|]).
 Proof.
@@ -444,7 +487,7 @@ Proof.
     split.
     intros S [β Sβ].
     equiv_get_value A.
-    pose proof (ord_type_init_ord_sur A).
+    pose proof (ord_type_init_ord_bij A).
     pose proof (ord_type_init_ord_le A).
     pose (S' (a : A) := S (ord_type_init_ord A a)).
     pose proof (sur (ord_type_init_ord A) β) as [x x_eq].

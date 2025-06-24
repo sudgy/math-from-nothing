@@ -405,15 +405,6 @@ ordinal out of ordinals, using the following function works well enough.
 \end{definition}
 
 \begin{theorem}
-    For all order types $\A$, $f_\A$ is surjective.
-\end{theorem}
-\begin{proof}
-    Let $[\Y]$ be an ordinal less than $[\A]$.  This means that there exists
-    some $x : \A$ such that $\Y$ is order isomorphic to $\A_x$.  Then $f_\A(x) =
-    [\A_x] = [\Y]$ as required.
-\end{proof}
-
-\begin{theorem}
     For all order types $\A$, $f_\A$ is orderly.
 \end{theorem}
 \begin{proof}
@@ -422,6 +413,29 @@ ordinal out of ordinals, using the following function works well enough.
     an injective orderly function from $\A_a$ to $\A_b$.  Because $a \leq b$,
     everything in $\A_a$ is in $\A_b$, so the identity function is such a
     function.
+\end{proof}
+
+\begin{theorem}
+    For all order types $\A$, $f_\A$ is bijective.
+\end{theorem}
+\begin{proof}
+    For injectivity, let $a$ and $b$ be such that $f_\A(a) = f_\A(b)$.  We will
+    prove by antisymmetry that $a = b$.  By symmetry, we only need to prove that
+    $a \leq b$.  Because $f_\A(a) = f_\A(b)$, we have an order isomorphism $g$
+    from $\A_a$ to $\A_b$.  We will prove that for all $x < a$, $x \leq g(x)$.
+    By transfinite induction we can assume that for all $c < x$, we have
+    $c \leq g(c)$.  Then if $g(x) < x$, we have $g(x) < a$, so by the inductive
+    hypothesis we have $g(x) \leq g(g(x))$.  Because $g$ is equivalently
+    orderly, we have $x \leq g(x)$, contradicting $g(x) < x$.  Thus, we must
+    have $x \leq g(x)$ for all $x < a$.
+
+    Now assume that $b < a$.  Then we have $b \leq g(b)$ by the previous
+    paragraph, but $g(b) < b$ by definition of $g$.  Thus, we must have $a \leq
+    b$, proving that $f_\A$ is injective.
+
+    For surjectivity, let $[\Y]$ be an ordinal less than $[\A]$.  This means
+    that there exists some $x : \A$ such that $\Y$ is order isomorphic to
+    $\A_x$.  Then $f_\A(x) = [\A_x] = [\Y]$ as required.
 \end{proof}
 
 \begin{lemma} \label{ords_lt_wo}
