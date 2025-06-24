@@ -117,6 +117,7 @@
 ./src/Set/Ordinal/New/ord2_mult.v
 ./src/Set/Ordinal/New/ord2_pow.v
 ./src/Set/Ordinal/New/ord2_nat.v
+./src/Set/Ordinal/New/ord.v
 ./src/Set/Ordinal/ord_base.v
 ./src/Set/Ordinal/ord_order.v
 ./src/Set/Ordinal/ord_plus.v
