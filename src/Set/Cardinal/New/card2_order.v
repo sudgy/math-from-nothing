@@ -204,6 +204,18 @@ Proof.
     contradiction (irrefl _ (lt_le_trans ltq leq)).
 Qed.
 
+Theorem card_to_initial_ord_other_eq : ∀ α,
+    (∀ β, β < α → ord_to_card β < ord_to_card α) →
+    card_to_initial_ord (ord_to_card α) = α.
+Proof.
+    intros α lt_α.
+    apply antisym; [>apply ord_to_card_to_initial_ord_le|].
+    order_contradiction ltq.
+    specialize (lt_α _ ltq).
+    rewrite card_to_initial_ord_to_card_eq in lt_α.
+    contradiction (irrefl _ lt_α).
+Qed.
+
 Theorem card_lt_ex : ∀ U V, |U| < |V| → ∀ f : U → V, ∃ y, ∀ x, f x ≠ y.
 Proof.
     intros U V ltq f.

@@ -780,4 +780,204 @@ Notice that because of this, $|\A \to \Prop|$ is equal to $2^{|\A|}$, and more
 importantly, by Theorem \ref{power_set_bigger}, we have $|\A| < 2^{|\A|}$ for
 all cardinals $\A$.
 
+\section{Relationship Between the Cardinals and Natural Numbers}
+
+Like with the ordinals, we can think of the function $\iN$ taking natural
+numbers to cardinals.  We will be proving various things about this function and
+relating it to the version of $\iN$ for the ordinals.  As such, for the moment,
+we will need a way to differentiate between the $\iN$ of the cardinals and the
+$\iN$ of the ordinals.  For now, let $\iN^C$ be the version for the cardinals
+and $\iN^O$ be the version for the ordinals.  If just $\iN$ is written, it means
+$\iN^C$.
+
+\begin{theorem} \label{ord_to_card_nat}
+    For all natural numbers $n$, we have $|\iN^O(n)| = \iN^C(n)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, the result follows
+    from $\iN$ and $|\alpha|$ being nullative.  Now assume that $|\iN^O(n)| =
+    \iN^C(n)$.  Then
+    \[
+        |\iN^O(n + 1)| = |\iN^O(n)| + |\iN^O(1)| = \iN^C(n) + 1 = \iN^C(n + 1),
+    \]
+    proving the theorem by induction.
+\end{proof}
+
+\begin{theorem} \label{from_nat_card}
+    For all natural numbers $n$, $\iN^C(n) = |\N_n|$.
+\end{theorem}
+\begin{proof}
+    By the previous theorem, we have $\iN^C(n) = |\iN^O(n)|$.  Then the result
+    follows from Theorem \ref{from_nat_ord}.
+\end{proof}
+
+\begin{instance}
+    The cardinals are characteristic zero.
+\end{instance}
+\begin{proof}
+    If $\iN(S(n)) = 0$, we would have a function $f : \N_{S(n)} \to \E$, and
+    $f(n)$ would be a value in the empty type, which is impossible.
+\end{proof}
+
+Sadly, even with this instance, the usual proof that $\iN$ is injective doesn't
+work here because cardinal addition isn't cancellative.  Instead we have to do a
+lot of extra work to prove that it is injective.
+
+\begin{lemma} \label{from_nat_card_inj_lemma}
+    For all natural numbers $a$ and $b$, if $\iN(S(a)) \leq \iN(S(b))$, then $a
+    \iN(a) \leq \iN(b)$.
+\end{lemma}
+\begin{proof}
+    We have an injective function $f : \N_{S(a)} \to \N_{S(b)}$ and must find an
+    injective function from $\N_a$ to $\N_b$.  Define $g : \N_a \to \N$ by
+    \[
+        g(n) =
+        \begin{cases}
+            f(a) & \text{if $f(n) = b$} \\
+            f(n) & \text{otherwise.}
+        \end{cases}
+    \]
+    We must prove that $g(n) < b$ for all $n < a$.  There are two cases: when
+    $f(n) = b$, and when $f(n) \neq b$.  When $f(n) = b$, we have $g(n) = f(a)$.
+    We already have $f(a) \leq b$ by the definition of $f$, so we just need to
+    prove that $f(a) \neq b$.  If $f(a) = b$, we would have $f(n) = f(a)$, and
+    by the injectivity of $f$ we get $n = a$, cnotradicting $n < a$.  Thus, we
+    must have $f(a) \neq b$, so $g(n) < b$ in the case $f(n) = b$.  In the case
+    $f(n) \neq b$, we have $g(n) = f(n)$.  Since $f(n) \leq b$ by definition and
+    $f(n) \neq b$, we have $g(n) < b$.
+
+    Thus, $g$ is a function from $\N_a$ to $\N_b$.  We must prove that $g$ is
+    injective.  Let $m < a$ and $n < a$ and $g(m) = g(n)$.  There will be four
+    cases, for when $f(m) = b$ and $f(m) \neq b$, and for when $g(m) = b$ and
+    $g(m) \neq b$.  When $f(m) = b$ and $f(n) = b$, we have $f(m) = f(n)$, and
+    by injectivity of $f$ we have $m = n$ as required.  When $f(m) = b$ and
+    $f(n) \neq b$, we have $f(a) = f(n)$, and by injectivity of $f$ we have $a =
+    n$, contradicting $n < a$, so this case is impossible.  The case $f(m) \neq
+    b$ and $f(n) \neq b$ is similar.  When $f(m) \neq b$ and $f(n) \neq b$, we
+    have $f(m) = f(n)$, and by injectivity of $f$ we get $m = n$ as required.
+    Thus, $g$ is injective.
+\end{proof}
+
+\begin{lemma} \label{from_nat_card_zero_eq}
+    For all natural numbers $n$, if $0 = \iN n$, then $0 = n$.
+\end{lemma}
+\begin{proof}
+    Since $\iN n = 0$, we have a bijection $f : \N_n \to \E$.  If $0 \neq n$, we
+    have $0 < n$, so $f(0)$ is a value in the empty type, which is impossible.
+\end{proof}
+
+\begin{instance}
+    $\iN$ is injective.
+\end{instance}
+\begin{proof}
+    Let $\iN(a) = \iN(b)$.  The proof will be byinduction on $a$.  When $a = 0$,
+    the result follows by Lemma \ref{from_nat_card_zero_eq}.  Now assume that
+    for all $b'$ such that $\iN(a) = \iN(b')$, we have $a = b'$.  We have
+    $\iN(S(a)) = \iN(b)$ and must prove $S(a) = b$.  if $b = 0$, we would have
+    $S(a) = 0$ by Lemma \ref{from_nat_card_zero_eq}, which is impossible.  So
+    there exists a $b'$ such that $b = S(b')$.  Then we have $\iN(S(a)) =
+    \iN(S(b'))$, and by antisymmetry and Lemma \ref{from_nat_card_inj_lemma}, we
+    have $\iN(a) = \iN(b')$.  Thus, by the inductive hypothesis, we have $a =
+    b'$, so $S(a) = S(b') = b$ as required.
+\end{proof}
+
+\begin{theorem} \label{card_to_initial_ord_nat}
+    For all natural numbers $n$, $\lfloor \iN^C(n) \rfloor = \iN^O(n)$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_to_card_nat}, we have $\lfloor \iN^C(n) \rfloor =
+    \lfloor | \iN^O(n) | \rfloor$.  To prove that $\lfloor | \iN^O(n) |
+    \rfloor$, we can use Theorem \ref{card_to_initial_ord_other_eq}.  We must
+    prove that for all ordinals $\beta < \iN^O(n)$, we have $|\beta| <
+    |\iN^O(n)|$.  Because $\beta < \iN^O(n)$, we have $\beta < \omega$, so there
+    exists a natural number $m$ such that $\beta = \iN^O(m)$.  Thus, we have
+    $\iN^O(m) < \iN^O(n)$, so $m < n$.  We now must prove that $|\iN^O(m)| <
+    |\iN^O(n)|$.  We have $|\iN^O(m)| \leq |\iN^O(n)|$ from Theorem
+    \ref{ord_to_card_le}.  We have $|\iN^O(m)| \neq |\iN^O(n)|$ from Theorem
+    \ref{ord_to_card_nat} and the fact that $\iN^C$ is injective.
+\end{proof}
+
+\begin{instance}
+    $\iN^C$ is orderly.
+\end{instance}
+\begin{proof}
+    Let $a \leq b$.  Then $\iN^O(a) \leq \iN^O(b)$ by $\iN^O$ being orderly.
+    Then $\lfloor \iN^C(a) \rfloor \leq \lfloor \iN^C(b) \rfloor$ by Theorem
+    \ref{card_to_initial_ord_nat}.  Then $\iN^C(a) \leq \iN^C(b)$ by $\lfloor
+    \mu \rfloor$ being equivalently orderly.
+\end{proof}
+
+Now that we have proven these basic properties of $\iN^C$, we don't need to
+consider it to be any different from $\iN^O$, and $\iN$ will be dropped entirely
+for cardinals/ordinals now.
+
+\begin{theorem} \label{card_omega}
+    $|\omega| = |\N|$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{nat_lt_card}
+    For all natural numbers $n$, we have $n < |\N|$.
+\end{theorem}
+\begin{proof}
+    Assume that $|\N| \leq n$.  This means that there exists an injective
+    function from $\N$ to $\N_n$.  Thus, $\N$ is simply finite, contradicting
+    Theorem \ref{nat_not_finite}.  So we must have $n < |\N|$.
+\end{proof}
+
+\begin{theorem} \label{card_omega_initial}
+    $\lfloor | \N | \rfloor = \omega$.
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{card_to_initial_ord_other_eq}.  We must
+    prove that for all ordinals $\beta < \omega$, we have $|\beta| < |\omega|$.
+    Because $\beta \omega$, we know that $\beta$ is a natural number.  Then the
+    result follows from Theorem \ref{nat_lt_card}.
+\end{proof}
+
+\begin{theorem} \label{card_lt_nat}
+    For all cardinals $\kappa < |\N|$, there exists a natural number $n =
+    \kappa$.
+\end{theorem}
+\begin{proof}
+    Because $\kappa < |\N|$, we have $\lfloor \kappa \rfloor < \lfloor |\N|
+    \rfloor = \omega$, so by Theorem \ref{ord_lt_omega} there exists a natural
+    number $n = \lfloor \kappa \rfloor$.  Then by Theorem
+    \ref{card_to_initial_ord_to_card_eq}, we have $n = \kappa$.
+\end{proof}
+
+\begin{theorem} \label{aleph'_nat}
+    For all natural numbers $n$, we have $\aleph'_n = n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by strong induction on $n$.  The inductive hypothesis
+    states that for all $m < n$, we have $\aleph'_m = m$.  We will prove that
+    $\aleph'_n = n$ by antisymmetry.  To prove that $\aleph'_n \leq n$, we will
+    use Theorem \ref{aleph'_least}.  Let $m < n$.  Then by the inductive
+    hypothesis, $\aleph'_m = m < n$, so we have $\aleph'_n \leq n$.  To prove
+    that $n \leq \aleph'_n$, assume for a contradiction that $\aleph'_n < n$.
+    Then there exists a natural number $m = \aleph'_n$, so $m < n$.  By the
+    inductive hypothesis we have $\aleph'_m = m$, so $\aleph'_m = \aleph'_n$.
+    Because $\aleph'$ is injective, we have $m = n$, contradicting $m < n$.
+    Thus, $n \leq \aleph'_n$, so by antisymmetry we have $\aleph'_n = n$.
+\end{proof}
+
+\begin{theorem} \label{aleph_0}
+    $\aleph_0 = |\N|$.
+\end{theorem}
+\begin{proof}
+    We must prove that $\aleph'_\omega = |\N|$.  We will prove it by
+    antisymmetry.  To prove that $\aleph'_\omega \leq |\N|$, we will use Theorem
+    \ref{aleph'_least}.  Let $m < \omega$.  By Theorem \ref{ord_lt_omega}, $m$
+    is a natural number.  Then $\aleph'_m = m < |\N|$, showing that
+    $\aleph'_\omega \leq |\N|$.  To prove that $|\N| \leq \aleph'_\omega$,
+    assume for a contradiction that $\aleph'_\omega < |\N|$.  Then there exists
+    a natural number $m$ such that $m = \aleph'_\omega$  By Theorem
+    \ref{aleph'_nat}, we have $\aleph'_m = \aleph'_\omega$, so $m = \omega$,
+    which is impossible.  Thus, $|\N| \leq \aleph'_\omega$, so $\aleph_0 = |\N|$
+    by antisymmetry.
+\end{proof}
+
 \end{document}

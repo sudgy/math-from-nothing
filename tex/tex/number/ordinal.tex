@@ -744,6 +744,25 @@ equivalently orderly and strictly orderly.
     This is just the contrapositive of Theorem \ref{ord_to_card_le}.
 \end{proof}
 
+\begin{theorem} \label{card_to_initial_ord_other_eq}
+    For all ordinals $\alpha$, if for all ordinals $\beta < \alpha$ we have
+    $|\beta| < |\alpha|$, then $\lfloor | \alpha | \rfloor = \alpha$.
+\end{theorem}
+\begin{proof}
+    By antisymmetry and Theorem \ref{ord_to_card_to_initial_ord_le}, we just
+    need to prove that $\alpha \leq \lfloor | \alpha | \rfloor$.  To do so,
+    assume that $\lfloor | \alpha | \rfloor < \alpha$.  Then by hypothesis, we
+    have
+    \[
+        |\lfloor|\alpha|\rfloor| < |\alpha|,
+    \]
+    and by Theorem \ref{card_to_initial_ord_to_card_eq} we have
+    \[
+        |\alpha| < |\alpha|,
+    \]
+    which is impossible.
+\end{proof}
+
 \begin{theorem} \label{card_lt_ex}
     For all types $\U$ and $\V$, if $|\U| < |\V|$, then for all functions $f :
     \U \to \V$, there exists a $y$ such that for all $x$, $f(x) \neq y$.
