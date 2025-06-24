@@ -44,6 +44,12 @@ Section FromNat.
 Context {U} `{OrderedFieldClass U, @CharacteristicZero U UP UZ UE}.
 (* end hide *)
 
+Global Instance from_nat_zero : HomomorphismZero (from_nat (U := U)).
+Proof.
+    split.
+    reflexivity.
+Qed.
+
 Theorem from_nat_suc : ∀ n, from_nat (nat_suc n) = 1 + from_nat n.
 Proof.
     reflexivity.
