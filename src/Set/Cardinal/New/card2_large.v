@@ -119,7 +119,7 @@ Proof.
     pose proof (ord_large _ (λ b, f (ord_type_init_ord B b))) as [β β_gt].
     exists β.
     intros α.
-    pose proof (ord_type_init_ord_sur B).
+    pose proof (ord_type_init_ord_bij B).
     pose proof (sur _ α) as [a a_eq]; subst α.
     apply β_gt.
 Qed.
@@ -147,6 +147,26 @@ Proof.
     rewrite <- card_to_initial_ord_to_card_eq in μ_gt.
     apply ord_to_card_lt in μ_gt.
     exact (trans (γ_gt α) μ_gt).
+Qed.
+
+Theorem ord_to_card_eq1 : ∀ α B,
+    (∃ f : set_type (initial_segment α) → B, Bijective f) → ord_to_card α = |B|.
+Proof.
+    intros A B [f f_bij].
+    equiv_get_value A.
+    unfold ord_to_card; equiv_simpl.
+    exists (λ a, f (ord_type_init_ord A a)).
+    apply bij_comp; [>|exact f_bij].
+    apply ord_type_init_ord_bij.
+Qed.
+
+Theorem ord_to_card_eq2 : ∀ α B,
+    (∃ f : B → set_type (initial_segment α), Bijective f) → |B| = ord_to_card α.
+Proof.
+    intros α B [f f_bij].
+    symmetry; apply ord_to_card_eq1.
+    exists (bij_inv f).
+    apply bij_inv_bij.
 Qed.
 
 Definition aleph'_base (β : ord) (g : set_type (λ x, x < β) → card) :=

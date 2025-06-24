@@ -880,7 +880,20 @@ to the cardinals.
     strict upper bound of the image of $f$.
 \end{proof}
 
-As an example of the application of this theorem, we will define something
+\begin{theorem} \label{ord_to_card_eq} \label{ord_to_card_eq1}
+    \label{ord_to_card_eq2}
+    For all ordinals $\alpha$ and types $\B$, to prove that $|\alpha| = |\B|$,
+    it suffices to prove that there exists a bijective function between
+    $\Ord_\alpha$ and $\B$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be an order type for $\alpha$, and let $g$ be a bijective function
+    between $\Ord_\alpha$ and $\B$.  Let $f_\A$ be the function given in
+    Definition \ref{ord_type_init_ord}.  Then $g \circ f_\A$ is a bijective
+    function from $\A$ to $\B$, proving that $|\alpha| = |\B|$.
+\end{proof}
+
+As an example of the application of these theorems, we will define something
 related to the $\aleph$ function.  Note that this isn't quite $\aleph$ itself,
 so we will call it $\aleph'$.  The definition of $\aleph$ itself will be given
 later.
