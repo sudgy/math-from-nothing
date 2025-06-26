@@ -400,12 +400,11 @@ Qed.
 Definition ord_type_init_ord (A : ord_type) (a : A)
     := [ord_type_init_ord_base A a | ord_type_init_ord_in a].
 
-Theorem ord_type_init_ord_le A : HomomorphismLe (ord_type_init_ord A).
+Theorem ord_type_init_ord_base_le A : HomomorphismLe (ord_type_init_ord_base A).
 Proof.
     split.
     intros a b leq.
-    unfold ord_type_init_ord, ord_type_init_ord_base.
-    unfold le; cbn.
+    unfold ord_type_init_ord_base.
     apply ord_le_simpl.
     exists (λ x : sub_ord_type (initial_segment a),
         [[x|] | lt_le_trans [|x] leq] : sub_ord_type (initial_segment b)).
@@ -417,6 +416,15 @@ Proof.
     -   intros x y xy.
         unfold le; cbn.
         exact xy.
+Qed.
+
+Theorem ord_type_init_ord_le A : HomomorphismLe (ord_type_init_ord A).
+Proof.
+    split.
+    intros a b leq.
+    unfold le; cbn.
+    apply ord_type_init_ord_base_le.
+    exact leq.
 Qed.
 
 Lemma ord_type_init_ord_inj_wlog A :
