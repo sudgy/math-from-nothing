@@ -1121,4 +1121,337 @@ too.
     $f$ is injective, so $\U$ is infinite.
 \end{proof}
 
+\section{Arithmetic of Infinite Cardinals}
+
+It turns out that arithmetic of infinite cardinals is trivial in many aspects.
+However, to get to that point, we will have to prove several other things first.
+
+\begin{lemma} \label{card_inf_plus_one}
+    For all infinite cardinals $\mu$, $\mu + 1 = \mu$.
+\end{lemma}
+\begin{proof}
+    Let $\U$ be a type with cardinality $\mu$.  Because $\U$ is infinite, there
+    exists an injective function $f : \N \to \U$.  Now define a functions $g :
+    \U + \S \to \U$ and $h : \U \to \U + \S$ by
+    \[
+        g(x) = \begin{cases}
+            f(S(n)) & \text{if there exists an $n$ with $f(n)| = x$} \\
+            a       & \text{if no such $n$ exists and $a| = x$} \\
+            f(0)    & \text{if $|I = x$}
+        \end{cases}
+    \]
+    and
+    \[
+        h(a) = \begin{cases}
+            |I    & \text{if $a = f(0)$} \\
+            f(n)| & \text{if there exists an $n$ with $f(S(n)) = a$} \\
+            a|    & \text{otherwise.}
+        \end{cases}
+    \]
+
+    Now consider an arbitrary value $a : \U$.  If $a = f(0)$,
+    \[
+        g(h(a)) = g(|I) = f(0) = a.
+    \]
+    If there exists an $n$ with $f(S(n)) = a$,
+    \[
+        g(h(a)) = g(f(n)|) = f(S(n)) = a.
+    \]
+    Otherwise,
+    \[
+        g(h(a)) = g(a|) = a.
+    \]
+    In all cases, $g(h(a)) = a$.
+
+    Now consider an arbitrary value $x : \U + \S$.  If there exists an $n$ with
+    $f(n)| = x$,
+    \[
+        h(g(x)) = h(f(S(n))|) = f(n)| = x.
+    \]
+    If no such $n$ exists and $a| = x$,
+    \[
+        h(g(x)) = h(a) = a| = x.
+    \]
+    Otherwise, $|I = x$, so
+    \[
+        h(g(x)) = h(f(0)) = |I = x.
+    \]
+    In all cases, $h(g(x)) = x$.
+
+    Thus, by Theorem \ref{inverse_ex_bijective}, $g$ is bijective, so $\mu + 1 =
+    \mu$.
+\end{proof}
+
+\begin{lemma} \label{card_inf_minus_one_inf}
+    For all cardinals $\mu$, if $\mu + 1$ is infinite, then $\mu$ is infinite.
+\end{lemma}
+\begin{proof}
+    Assume that $\mu$ is not infinite.  Then $\mu$ is a natural number, meaning
+    that $\mu + 1$ is a natural number too, contradicting $\mu + 1$ being
+    infinite.  Thus, $\mu$ is infinite.
+\end{proof}
+
+\begin{lemma} \label{card_inf_remove_one}
+    For all types $\U$ and values $a : \U$, if $\U$ is infinite, then
+    \[
+        |\U| = |\{x : \U, x \neq a\}|.
+    \]
+\end{lemma}
+\begin{proof}
+    Denote the set $\{x : \U, x \neq a\}$ as $A$.  Then $|A| + 1 = |\U|$ by
+    bringing everything in $A$ to its value in $\U$, and then taking the
+    singleton value to $a$.  Then by Lemma \ref{card_inf_minus_one_inf}, $|A|$
+    is infinite too, so by Lemma \ref{card_inf_plus_one}, $|A| + 1 = |A|$, so
+    $|\U| = |A|$.
+\end{proof}
+
+We can now start moving towards the main result.  It involves many substeps and
+lemmas, all of which work from an infinite order type $\A$ as its starting
+point.  So from this point up until Lemma \ref{ord_mult_idemp}, let $\A$ be an
+arbitrary infinite order type.
+
+\begin{instance}
+    Order the type $\A \times \A$ by saying that $(a_1, a_2) \leq (b_1, b_2)$ if
+    \begin{align*}
+        &(\max(a_1, a_2) < \max(b_1, b_2)) \text{ or} \\
+        &(\max(a_1, a_2) = \max(b_1, b_2) \text{ and } a_1 < b_1) \text{ or} \\
+        &(\max(a_1, a_2) = \max(b_1, b_2) \text{ and } a_1 = b_1 \text{ and }
+            a_2 \leq b_2).
+    \end{align*}
+\end{instance}
+
+\begin{instance}
+    The order on $\A \times \A$ is antisymmetric.
+\end{instance}
+\begin{proof}
+    Let $(a_1, a_2) \leq (b_1, b_2)$ and $(b_1, b_2) \leq (a_1, a_2)$.  Since
+    each inequality has three cases, it would appear that there are nine cases.
+    However, in all but one of those cases, we have either two things strictly
+    less than each other, which is impossible, or two things that are equal but
+    also with one strictly less than the other, which is also impossible.  The
+    only possible cases is when $\max(a_1, a_2) = \max(b_1, b_2)$, $a_1 = b_1$,
+    $a_2 \leq b_2$, and $b_2 \leq a_2$.  Then by antisymmetry we have $a_2 =
+    b_2$, and since $a_1 = b_1$ and $a_2 = b_2$, we have $(a_1, a_2) = (b_1,
+    b_2)$.
+\end{proof}
+
+\begin{instance}
+    The order on $\A \times \A$ is a well order.
+\end{instance}
+\begin{proof}
+    Let $S$ be a nonempty set in $\A \times \A$.  Define a set $S'$ by
+    \[
+        S' = \{a : \A \mid
+            \exists a_1 a_2, (a_1, a_2) \in S \wedge a = \max(a_1, a_2)\}.
+    \]
+    Because $S$ is nonempty, this has a least element $d$.  Now define a set
+    $S''$ by
+    \[
+        S'' = \{a_1 : \A \mid
+            \exists a_2, (a_1, a_2) \in S \wedge d = \max(a_1, a_2)\}.
+    \]
+    Because $d \in S'$, $S''$ is nonempty, so it has a least element $x$.  Now
+    define a set $S'''$ by
+    \[
+        S''' = \{a_2 : \A \mid (x, a_2) \in S \wedge d = \max(x, a_2)\}.
+    \]
+    Then because $x \in S''$, $S'''$ is nonempty, so it has a least element $y$.
+    Note that $d = \max(x, y)$.  We will now prove that $(x, y)$ is the least
+    element of $S$.  First, $(x, y) \in S$ by definition, so we only need to
+    prove that it is the least element of $S$.  So let $(a_1, a_2) \in S$.  We
+    must prove that $(x, y) \leq (a_1, a_2)$.
+
+    If $\max(x, y) = \max(a_1, a_2)$ and $x = a_1$, then $a_2 \in S'''$, so $y
+    \leq a_2$ by the minimality of $y$.  Thus, $(x, y) \leq (a_1, a_2)$.
+
+    If $\max(x, y) = \max(a_1, a_2)$ and $x \neq a_1$, then $a_1 \in S''$, so $x
+    \leq a_1$ by the minimality of $x$.  Thus, $x < a_1$, so $(x, y) \leq (a_1,
+    a_2)$.
+
+    If $\max(x, y) \neq \max(a_1, a_2)$, then $\max(a_1, a_2)$ is in $S'$, so
+    $\max(x, y) = d \leq \max(a_1, a_2)$ by the minimality of $d$.  Thus,
+    $\max(x, y) < \max(a_1, a_2)$, so $(x, y) \leq (a_1, a_2)$.
+
+    In all cases $(x, y) \leq (a_1, a_2)$, showing that $(x, y)$ is the least
+    element of $S$, proving that $\A \times \A$ is well ordered.
+\end{proof}
+
+We will now be working up to the main lemma that $|\A| = |\A \times \A|$.  This
+will be done by transfinite induction.  The inductive hypothesis states that for
+all infinite order types $\B$ with $[\B] < [\A]$, we have $|\B| = |\B \times
+\B|$.  So until Lemma \ref{ord_mult_idemp}, this inductive hypothesis will be
+valid.
+
+\begin{lemma} \label{not_card_idemp}
+    If there exists an order type $\B$ with $[\B] < [\A]$ and $|\B| = |\A|$,
+    then $|\A| = |\A \times \A|$.
+\end{lemma}
+\begin{proof}
+    Since $|\A| = |\B|$ and $|\B| = |\B \times \B|$ by the inductive hypothesis,
+    we have $|\A| = |\A \times \A|$.
+\end{proof}
+
+We will now consider the case when the assumption of the previous lemma is not
+true, that is, when for all ordinals $\beta < [\A]$, we have $|\beta| \neq
+|\A|$.  This assumption will hold until Lemma \ref{ord_mult_idemp}.  Call this
+assumption the cardinality assumption.
+
+\begin{lemma} \label{card_mult_idemp_gt_ex}
+    There exists a $b > a$ for all $a : \A$.
+\end{lemma}
+\begin{proof}
+    Assume otherwise, that is, there exists an $a : \A$ with $b \leq a$ for all
+    $b : \A$.  Then with $f$ being the function given by Definition
+    \ref{ord_type_init_ord}, we have $f_\A(a) < [\A]$, and if we can prove that
+    $|f_\A(a)| = |\A|$, we will have a contradiction with the cardinality
+    assumption.  By Theorem \ref{ord_to_card_init}, we have $|f_\A(a)| =
+    |\A_a|$, so it suffices to prove that $|\A_a| = |\A|$.  Because $a$ is the
+    maximum element of $\A$, $\A_a$ is just the set $\{x : \A \mid x \neq a\}$.
+    Then $|\A_a| = |\A|$ by Lemma \ref{card_inf_remove_one}.
+\end{proof}
+
+\begin{lemma} \label{card_mult_idemp_l_leq}
+    For all $l_1$, $l_2$, and $l$ in $\A$, if $\max(l_1, l_2) < l$, then
+    \[
+        |(\A \times \A)_{(l_1, l_2)} \leq
+        |\A_l| \, |\A_l|.
+    \]
+\end{lemma}
+\begin{proof}
+    First, we will prove that for all $(d_1, d_2) < (l_1, l_2)$, we have $d_1 <
+    l$ and $d_2 < l$.  When $\max(d_1, d_2) < \max(l_1, l_2) < l$, we have $d_1
+    < l$ and $d_2 < l$.  When $\max(d_1, d_2) = \max(l_1, l_2)$, we also have
+    $d_1 < l$ and $d_2 < l$.  In both cases, we have $d_1 < l$ and $d_2 < l$.
+    Then the function taking $(d_1, d_2)$ in $(\A \times \A)_{(l_1, l_2)}$ to
+    $(d_1, d_2)$ in $\A_l \times \A_l$ is an injective function.
+\end{proof}
+
+\begin{lemma} \label{card_mult_idemp_l_lt}
+    For all $l_1$ and $l_2$ in $\A$, with $f$ the function given by Definition
+    \ref{ord_type_init_ord}, we have $f_{\A \times \A}(l_1, l_2) < [\A]$.
+\end{lemma}
+\begin{proof}
+    First, by Lemma \ref{card_mult_idemp_gt_ex}, we have some $l$ with $l_1 < l$
+    and $l_2 < l$.  By Theorems \ref{ord_to_card_lt} and \ref{ord_to_card_init},
+    it suffices to prove that $|(\A \times \A)_{(l_1, l_2)}| < |\A|$.  By
+    transitivity and Lemma \ref{card_mult_idemp_l_leq}, it suffices to prove
+    that $|\A_l| \, |\A_l| < |\A|$.  There will be two cases: when $|\A_l|$ is
+    infinite, and when it is finite.
+
+    When $|\A_l|$ is infinite, by the inductive hypothesis we have $|\A_l| =
+    |\A_l \times \A_l|$.  Then we must prove that $|\A_l| < |\A|$.  By Theorem
+    \ref{ord_to_card_le}, we already have $|\A_l| \leq |\A|$, so we just need to
+    prove that $|\A_l| \neq |\A|$.  This follows directly from the cardinality
+    assumption.
+
+    When $|\A_l|$ is finite, $|\A_l| \, |\A_l|$ is finite as well, and since
+    $|\A|$ is infinite, we have $|\A_l| \, |\A_l| < |\A|$.
+\end{proof}
+
+\begin{lemma} \label{card_mult_idemp_A_leq}
+    $[\A \times \A] \leq [\A]$.
+\end{lemma}
+\begin{proof}
+    Assume that $[\A] < [\A \times \A]$.  Then because the ordinal initial
+    segment function $f_{\A \times \A}$ is surjective, there exist $x_1$ and
+    $x_2$ in $\A$ wuth $f_{\A \times \A}(x_1, x_2) = [\A]$.  However, by Lemma
+    \ref{card_mult_idemp_l_lt}, we have $f_{\A \times \A}(x_1, x_2) < [\A]$, a
+    contradiction.  Thus, $[\A \times \A] \leq [\A]$.
+\end{proof}
+
+\begin{lemma} \label{card_idemp}
+    $|\A| = |\A \times \A|$.
+\end{lemma}
+\begin{proof}
+    The proof will be by antisymmetry.  The function $f(x) = (x, x)$ is
+    injective, showing that $|\A| \leq |\A \times \A|$.  By Lemma
+    \ref{card_mult_idemp_A_leq}, we have $\A \leq \A \times \A$, so by Theorem
+    \ref{ord_to_card_le} we have $|\A| \leq |\A \times \A|$ as well.
+\end{proof}
+
+Now, drop all the assumptions of the previous lemmas and include them as part of
+their conditions.
+
+\begin{lemma} \label{ord_mult_idemp}
+    For all infinite order types $\A$, we have $|\A| = |\A \times \A|$.
+\end{lemma}
+\begin{proof}
+    By transfinite induction we can get the inductive hypothesis the previous
+    lemmas require.  There will be two cases: when a $\beta < [\A]$ with
+    $|\beta| = |\A|$ exists, and when no such $\beta$ exists.  In the case where
+    $\beta$ exists, the result follows by Lemma \ref{not_card_idemp}, and in the
+    case where no such $\beta$ exists, the result follows by Lemma
+    \ref{card_idemp}.
+\end{proof}
+
+We can finally get to the main result:
+
+\begin{theorem} \label{card_mult_idemp}
+    For all infinite cardinals $\kappa$, we have $\kappa\kappa = \kappa$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be a type with cardinality $\kappa$.  By the well ordering theorem,
+    it can be well ordered.  Then the result follows by Lemma
+    \ref{ord_mult_idemp}.
+\end{proof}
+
+From this result, several other similar results follow.
+
+\begin{theorem} \label{card_plus_idemp}
+    For all infinite cardinals $\kappa$, we have $\kappa + \kappa = \kappa$.
+\end{theorem}
+\begin{proof}
+    First, $\kappa + \kappa = 2\kappa$.  Since $\kappa$ is infinite, we have $2
+    \leq \kappa$.  Then multiplying by $\kappa$, we get $2\kappa \leq
+    \kappa\kappa = \kappa$.  Multiplying $1 \leq 2$ by $\kappa$ we get $\kappa
+    \leq 2\kappa$.  Thus, by antisymmetry, $2\kappa = \kappa$.
+\end{proof}
+
+\begin{theorem} \label{card_plus_lmax}
+    For all cardinals $\kappa$ and $\mu$, if $\kappa$ is infinite and $\mu \leq
+    \kappa$, then $\kappa + \mu = \kappa$.
+\end{theorem}
+\begin{proof}
+    From $\mu \leq \kappa$, adding $\kappa$ on both sides we get $\kappa + \mu
+    \leq \kappa + \kappa = \kappa$.  From $0 \leq \mu$ and adding $\kappa$ on
+    both sides we get $\kappa \leq \kappa + \mu$.  Thus, by antisymmetry we get
+    $\kappa + \mu = \kappa$.
+\end{proof}
+
+\begin{theorem} \label{card_mult_lmax}
+    For all cardinals $\kappa$ and $\mu$, if $\kappa$ is infinite, $0 \neq \mu$,
+    and $\mu \leq \kappa$, then $\kappa \mu = \kappa$.
+\end{theorem}
+\begin{proof}
+    From $\mu \leq \kappa$, multiplying by $\kappa$ on both sides we get $\kappa
+    \mu \leq \kappa \kappa = \kappa$,  And from $0 \neq \mu$ we get $1 \leq
+    \mu$, and multiplying by $\kappa$ we get $\kappa \leq \kappa \mu$.  Thus, by
+    antisymmetry we get $\kappa \mu = \kappa$.
+\end{proof}
+
+\begin{theorem} \label{card_plus_max}
+    For all infinite cardinals $\kappa$ and $\mu$, $\kappa + \mu = \max(\kappa,
+    \mu)$.
+\end{theorem}
+\begin{proof}
+    The result follows by looking at the cases $\mu \leq \kappa$ and $\kappa
+    \leq \mu$ and applying Theorem \ref{card_plus_lmax}.
+\end{proof}
+
+\begin{theorem} \label{card_mult_max}
+    For all infinite cardinals $\kappa$ and $\mu$, $\kappa \mu = \max(\kappa,
+    \mu)$.
+\end{theorem}
+\begin{proof}
+    The result follows by looking at the cases $\mu \leq \kappa$ and $\kappa
+    \leq \mu$ and applying Theorem \ref{card_mult_lmax}.
+\end{proof}
+
+\begin{theorem} \label{card_inf_plus_mult}
+    For all infinite cardinals $\kappa$ and $\mu$, $\kappa + \mu = \kappa\mu$.
+\end{theorem}
+\begin{proof}
+    By the previous two theorems, both sides are equal to $\max(\kappa, \mu)$.
+\end{proof}
+
 \end{document}
