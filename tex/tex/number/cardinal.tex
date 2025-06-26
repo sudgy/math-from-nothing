@@ -1017,4 +1017,108 @@ for cardinals/ordinals now.
     by antisymmetry.
 \end{proof}
 
+\section{Infinite and Finite Cardinals}
+
+\begin{definition}
+    A cardinal $\kappa$ is finite if $\kappa < |\N|$.
+\end{definition}
+
+\begin{definition}
+    A cardinal $\kappa$ is infinite if $|\N| \leq \kappa$.
+\end{definition}
+
+Because the cardinals are totally ordered, every cardinal is either finite or
+infinite, and can't be both.
+
+\begin{theorem} \label{nat_is_finite}
+    Every natural number is finite.
+\end{theorem}
+\begin{proof}
+    This is just restating Theorem \ref{nat_is_finite}.
+\end{proof}
+
+\begin{theorem} \label{fin_nat_ex}
+    For all finite cardinals $\kappa$, there exists an $n = \kappa$,
+\end{theorem}
+\begin{proof}
+    This is just restating Theorem \ref{card_lt_nat}.
+\end{proof}
+
+\begin{theorem} \label{greater_all_nat_inf}
+    For all cardinals $\kappa$, if $\kappa > n$ for all natural numbers $n$,
+    then $\kappa$ is infinite.
+\end{theorem}
+\begin{proof}
+    Assume that $\kappa$ is finite.  Then by Theorem \ref{fin_nat_ex}, there
+    exists some natural number $n$ with $n = \kappa$.  Then $n > n$, a
+    contradiction.  Thus, $\kappa$ is infinite.
+\end{proof}
+
+\begin{theorem} \label{inf_not_nat}
+    For all infinite cardinals $\kappa$, $\kappa \neq n$ for all natural numbers
+    $n$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{nat_is_finite}.
+\end{proof}
+
+\begin{theorem} \label{simple_finite_finite}
+    For all types $\U$, $\U$ is simply finite if and only if $|\U|$ is finite.
+\end{theorem}
+\begin{proof}
+    Assume that $\U$ is simply finite.  Then there exists an injective function
+    from $\U$ to $\T(n)$ for some natural number $n$, so $|\U| \leq n$.  Since
+    $n < |\N|$, $|\U|$ is finite.
+
+    Now assume that $|\U|$ is finite.  This means that $|\U| = n$ for some
+    natural number $n$.  Thus, there exists a bijective function $f$ from $\U$
+    to $\T(n)$.  Because $f$ is injective, $\U$ is simply finite.
+\end{proof}
+
+Thus, all of the theorems proven for simply finite types apply to finite types
+too.
+
+\begin{theorem} \label{infinite_nz}
+    For all infinite cardinals $\kappa$, $0 \neq \kappa$.
+\end{theorem}
+\begin{proof}
+    Special case of Theorem \ref{inf_not_nat}.
+\end{proof}
+
+\begin{theorem} \label{infinite_ex}
+    For all infinite types $\U$, there exists a value in $\U$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{card_nz_ex} and the previous theorem.
+\end{proof}
+
+\begin{theorem} \label{all_greater_inf}
+    For all ordered types $\U$, if there exists a value $a : \U$ and if for all
+    $b : \U$, there exists a $c > b$, then $\U$ is infinite.
+\end{theorem}
+\begin{proof}
+    Define a function $f : \N \to \U$ recursively as
+    \[
+        f(n) = \begin{cases}
+            a & \text{if $n = 0$} \\
+            \text{a value greater than $f(n-1)$} &\text{otherwise,}
+        \end{cases}
+    \]
+    where the recursive case always exists by assumption.  Now let $f(m) =
+    f(n)$.  We must prove that $m = n$.  For a contradiction, assume that $m
+    \neq n$, and without loss of generality assume that $m < n$.  By Theorem
+    \ref{nat_lt_ex}, we have some $c : \N$ such that $n = m + S(c)$.  So we now
+    must prove that $f(m) < f(m + S(c))$, which we will do by induction on $c$.
+
+    When $c = 0$, we have $f(m) < f(m + 1)$ by the definition of $f$, so the
+    base case is true.  Now assume that $f(m) < f(m + S(c))$.  Then
+    \[
+        f(m) < f(m + S(c)) = f(S(m + S(c))) = f(m + S(S(c))),
+    \]
+    showing that the inductive case is true.  Thus, by induction, we have $f(m)
+    < f(m + S(c)) = f(n)$.  However, this contradicts $f(m) = f(n)$, so our
+    original assumption that $m < n$ must be false.  Thus, $m = n$, proving that
+    $f$ is injective, so $\U$ is infinite.
+\end{proof}
+
 \end{document}
