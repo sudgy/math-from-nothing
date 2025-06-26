@@ -230,6 +230,33 @@ Proof.
     symmetry; apply card_to_initial_ord_to_card_eq.
 Qed.
 
+Theorem card_lt_one_eq : ∀ κ, κ < 1 → 0 = κ.
+Proof.
+    intros κ κ_lt.
+    rewrite <- (homo_one (f := from_nat)) in κ_lt.
+    pose proof κ_lt as κ_fin.
+    apply (trans2 (nat_lt_card _)) in κ_fin.
+    apply card_lt_nat in κ_fin as [n eq]; subst.
+    apply homo_lt2 in κ_lt.
+    apply nat_lt_one_eq in κ_lt.
+    subst.
+    symmetry; apply homo_zero.
+Qed.
+
+Theorem card_pos_one : ∀ κ, 0 ≠ κ ↔ 1 ≤ κ.
+Proof.
+    intros κ.
+    split.
+    -   intros κ_nz.
+        order_contradiction ltq.
+        apply card_lt_one_eq in ltq.
+        contradiction.
+    -   intros κ_ge eq; subst.
+        rewrite <- nlt_le in κ_ge.
+        apply κ_ge.
+        exact card_one_pos.
+Qed.
+
 Theorem aleph'_nat : ∀ n, aleph' (from_nat n) = from_nat n.
 Proof.
     intros n.

@@ -964,6 +964,27 @@ for cardinals/ordinals now.
     \ref{card_to_initial_ord_to_card_eq}, we have $n = \kappa$.
 \end{proof}
 
+\begin{theorem} \label{card_lt_one_eq}
+    For all cardinals $\kappa$, if $\kappa < 1$, then $0 = \kappa$.
+\end{theorem}
+\begin{proof}
+    Since $\kappa < 1$, we have $\kappa < |\N|$, so $\kappa$ is a natural
+    number.  Then the theorem follows from the corresponding result in the
+    natural numbers.
+\end{proof}
+
+\begin{theorem} \label{card_pos_one}
+    For all cardinals $\kappa$, we have $0 \neq \kappa$ if and only if $1 \leq
+    \kappa$.
+\end{theorem}
+\begin{proof}
+    If $0 \neq \kappa$ and $\kappa < 1$, we have $0 = \kappa$ by the previous
+    theorem, contradicting $0 \neq \kappa$.  Thus, when $0 \neq \kappa$, we have
+    $1 \leq \kappa$.  Now when $1 \leq \kappa$, if we have $0 = \kappa$, we
+    would have $1 \leq 0$, which is impossible.  Thus, if $1 \leq \kappa$, we
+    have $0 \neq \kappa$.
+\end{proof}
+
 \begin{theorem} \label{aleph'_nat}
     For all natural numbers $n$, we have $\aleph'_n = n$.
 \end{theorem}
