@@ -107,4 +107,61 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem ord_to_card_eq1 : ∀ α B,
+    (∃ f : set_type (initial_segment α) → B, Bijective f) → ord_to_card α = |B|.
+Proof.
+    intros A B [f f_bij].
+    equiv_get_value A.
+    unfold ord_to_card; equiv_simpl.
+    exists (λ a, f (ord_type_init_ord A a)).
+    apply bij_comp; [>|exact f_bij].
+    apply ord_type_init_ord_bij.
+Qed.
+
+Theorem ord_to_card_eq2 : ∀ α B,
+    (∃ f : B → set_type (initial_segment α), Bijective f) → |B| = ord_to_card α.
+Proof.
+    intros α B [f f_bij].
+    symmetry; apply ord_to_card_eq1.
+    exists (bij_inv f).
+    apply bij_inv_bij.
+Qed.
+
+Theorem ord_to_card_init : ∀ A a,
+    ord_to_card (ord_type_init_ord_base A a) = |set_type (initial_segment a)|.
+Proof.
+    intros A a.
+    symmetry; apply ord_to_card_eq2.
+    pose proof (ord_type_init_ord_base_le A).
+    pose proof (ord_type_init_ord_base_inj A).
+    pose proof (ord_type_init_ord_bij A).
+    assert (∀ (x : set_type (initial_segment a)),
+        ord_type_init_ord_base A [x|] < ord_type_init_ord_base A a) as lt.
+    {
+        intros [x x_lt]; cbn.
+        rewrite <- homo_lt2.
+        exact x_lt.
+    }
+    exists (λ x, [ord_type_init_ord_base A [x|]|lt x]).
+    split; split.
+    -   intros [x x_lt] [y y_lt]; cbn.
+        intros eq.
+        apply set_type_eq2.
+        rewrite set_type_eq2 in eq.
+        apply inj in eq.
+        exact eq.
+    -   intros [γ γ_lt].
+        pose proof (ord_type_init_ord_in a) as ltq.
+        unfold initial_segment in *.
+        pose proof (sur (ord_type_init_ord A) [γ|trans γ_lt ltq]) as [x x_eq].
+        unfold ord_type_init_ord in x_eq.
+        rewrite set_type_eq2 in x_eq.
+        pose proof γ_lt as x_lt.
+        rewrite <- x_eq in x_lt.
+        apply homo_lt2 in x_lt.
+        exists [x|x_lt].
+        apply set_type_eq; cbn.
+        exact x_eq.
+Qed.
+
 Close Scope card_scope.

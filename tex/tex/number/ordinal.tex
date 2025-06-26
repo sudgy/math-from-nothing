@@ -572,6 +572,37 @@ We can also relate the cardinals to the ordinals in a few ways.
     ordinal equivalent to $|\alpha|$.
 \end{proof}
 
+\begin{theorem} \label{ord_to_card_eq} \label{ord_to_card_eq1}
+    \label{ord_to_card_eq2}
+    For all ordinals $\alpha$ and types $\B$, to prove that $|\alpha| = |\B|$,
+    it suffices to prove that there exists a bijective function between
+    $\Ord_\alpha$ and $\B$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ be an order type for $\alpha$, and let $g$ be a bijective function
+    between $\Ord_\alpha$ and $\B$.  Let $f_\A$ be the function given in
+    Definition \ref{ord_type_init_ord}.  Then $g \circ f_\A$ is a bijective
+    function from $\A$ to $\B$, proving that $|\alpha| = |\B|$.
+\end{proof}
+
+\begin{theorem} \label{ord_to_card_init}
+    With $f$ being the function given by Definition \ref{ord_type_init_ord}, for
+    all order types $\A$ and values $a : \A$, $|f_\A(a)| = |\A_a|$.
+\end{theorem}
+\begin{proof}
+    By the previous theorem, it suffices to prove that there exists a bijective
+    function from the initial segment of $a$ to the initial segment of
+    $f_\A(a)$.  $f_\A$ itself is already a function from $\A$ to the ordinals,
+    and for any $x < a$, we have $f_\A(x) < f_\A(a)$, so $f_\A$ is a function
+    from the initial segment of $a$ to the initial segment of $f_\A$.  It is
+    injective because $f_\A$ as a whole is injective.  To prove that it is
+    surjective, let $\gamma < f_\A(a)$.  Because $f_\A(a) < [\A]$, we have
+    $\gamma < [\A]$, so by the surjectivity of $f_\A$ we have some $x$ such that
+    $f_\A(x) = \gamma$.  Then $f_\A(x) < f_\A(a)$, so $x < a$, meaning that $x$
+    is something in the initial segment of $a$ with $f_\A(x) = \gamma$, proving
+    that $f_\A$ is surjective on these initial segments.
+\end{proof}
+
 \section{Ordering Cardinals}
 
 \begin{definition}
@@ -897,19 +928,6 @@ to the cardinals.
     \rfloor < \lfloor \mu \rfloor$.  Because $\lfloor x \rfloor$ is strictly
     equivalently orderly, we have $f(\alpha) < \mu$, showing that $\mu$ is a
     strict upper bound of the image of $f$.
-\end{proof}
-
-\begin{theorem} \label{ord_to_card_eq} \label{ord_to_card_eq1}
-    \label{ord_to_card_eq2}
-    For all ordinals $\alpha$ and types $\B$, to prove that $|\alpha| = |\B|$,
-    it suffices to prove that there exists a bijective function between
-    $\Ord_\alpha$ and $\B$.
-\end{theorem}
-\begin{proof}
-    Let $\A$ be an order type for $\alpha$, and let $g$ be a bijective function
-    between $\Ord_\alpha$ and $\B$.  Let $f_\A$ be the function given in
-    Definition \ref{ord_type_init_ord}.  Then $g \circ f_\A$ is a bijective
-    function from $\A$ to $\B$, proving that $|\alpha| = |\B|$.
 \end{proof}
 
 As an example of the application of these theorems, we will define something
