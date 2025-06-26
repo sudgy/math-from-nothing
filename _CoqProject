@@ -110,14 +110,14 @@
 ./src/Algebra/Ring/Fraction/fraction_category.v
 ./src/Number/Rat/rat.v
 
-./src/Set/Ordinal/New/ord2_base.v
-./src/Set/Ordinal/New/ord2_order.v
-./src/Set/Ordinal/New/ord2_bounds.v
-./src/Set/Ordinal/New/ord2_plus.v
-./src/Set/Ordinal/New/ord2_mult.v
-./src/Set/Ordinal/New/ord2_pow.v
-./src/Set/Ordinal/New/ord2_nat.v
-./src/Set/Ordinal/New/ord.v
+./src/Number/Ordinal/ord2_base.v
+./src/Number/Ordinal/ord2_order.v
+./src/Number/Ordinal/ord2_bounds.v
+./src/Number/Ordinal/ord2_plus.v
+./src/Number/Ordinal/ord2_mult.v
+./src/Number/Ordinal/ord2_pow.v
+./src/Number/Ordinal/ord2_nat.v
+./src/Number/Ordinal/ord.v
 ./src/Set/Ordinal/ord_base.v
 ./src/Set/Ordinal/ord_order.v
 ./src/Set/Ordinal/ord_plus.v
@@ -127,15 +127,15 @@
 ./src/Set/Ordinal/ord_pow_def.v
 ./src/Set/Ordinal/ord_pow.v
 
-./src/Set/Cardinal/New/card2_base.v
-./src/Set/Cardinal/New/card2_order.v
-./src/Set/Cardinal/New/card2_large.v
-./src/Set/Cardinal/New/card2_plus.v
-./src/Set/Cardinal/New/card2_mult.v
-./src/Set/Cardinal/New/card2_pow.v
-./src/Set/Cardinal/New/card2_nat.v
-./src/Set/Cardinal/New/card2_infinite.v
-./src/Set/Cardinal/New/card2_infinite_arithmetic.v
+./src/Number/Cardinal/card2_base.v
+./src/Number/Cardinal/card2_order.v
+./src/Number/Cardinal/card2_large.v
+./src/Number/Cardinal/card2_plus.v
+./src/Number/Cardinal/card2_mult.v
+./src/Number/Cardinal/card2_pow.v
+./src/Number/Cardinal/card2_nat.v
+./src/Number/Cardinal/card2_infinite.v
+./src/Number/Cardinal/card2_infinite_arithmetic.v
 ./src/Set/Cardinal/card_base.v
 ./src/Set/Cardinal/card_order.v
 ./src/Set/Cardinal/card_plus.v
