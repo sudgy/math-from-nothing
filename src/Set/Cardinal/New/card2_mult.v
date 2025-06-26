@@ -244,4 +244,25 @@ Proof.
         symmetry; exact γ_eq.
 Qed.
 
+Theorem card_not_trivial : 0 ≠ 1.
+Proof.
+    intros eq.
+    symmetry in eq.
+    unfold zero, one in eq; equiv_simpl in eq.
+    destruct eq as [f].
+    destruct (f Single).
+Qed.
+
+Global Instance card_not_trivial_class : NotTrivial card := {
+    not_trivial_a := 0;
+    not_trivial_b := 1;
+    not_trivial := card_not_trivial;
+}.
+
+Theorem card_one_pos : 0 < 1.
+Proof.
+    apply all_pos2.
+    exact card_not_trivial.
+Qed.
+
 Close Scope card_scope.

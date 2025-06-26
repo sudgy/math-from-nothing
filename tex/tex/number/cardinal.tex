@@ -531,6 +531,22 @@ product of $\A$ and $\B$, also called their Cartesian product.  Given an $a :
     as required.
 \end{proof}
 
+\begin{instance} \label{card_not_trivial}
+    The cardinals are not trivial.
+\end{instance}
+\begin{proof}
+    If $0 = 1$, we would have a bijective function $f$ from the singleton type
+    to the empty type.  Then $f(I)$ is a value of the singleton type, which is
+    impossible.  Thus, we must have $0 \neq 1$.
+\end{proof}
+
+\begin{theorem} \label{card_one_pos}
+    In the cardinals, $0 < 1$.
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{all_pos2} and the previous proof.
+\end{proof}
+
 \section{Cardinal Exponentiation}
 
 Given two types $\A$ and $\B$, we can create the type of all functions $\A \to
