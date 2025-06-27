@@ -2,11 +2,21 @@ Require Import init.
 
 Require Export card2_nat.
 Require Import nat.
+Require Export ord2_nat.
 
 Open Scope card_scope.
 
 Definition finite κ := κ < |nat|.
 Definition infinite κ := |nat| ≤ κ.
+
+Theorem aleph_infinite : ∀ α, infinite (aleph α).
+Proof.
+    intros α.
+    unfold infinite.
+    rewrite <- aleph_0.
+    apply homo_le.
+    apply all_pos.
+Qed.
 
 Theorem nat_is_finite : ∀ n, finite (from_nat n).
 Proof.

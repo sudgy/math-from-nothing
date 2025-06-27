@@ -1454,4 +1454,237 @@ From this result, several other similar results follow.
     By the previous two theorems, both sides are equal to $\max(\kappa, \mu)$.
 \end{proof}
 
+\section{Cardinals and Sets}
+
+Recall that sets are thought of as predicates $\U \to \Prop$ on types.
+Cardinals interact with them in many ways.  While this was already done above,
+whenever $S$ is a set, let $|S|$ denote the cardinality of $\T(S)$.
+
+\begin{theorem} \label{card_le_sub}
+    For all cardinals $\kappa$ and types $\A$ with $\kappa \leq |\A|$, there
+    exists a set $S : \A \to \Prop$ with $|S| = \kappa$.
+\end{theorem}
+\begin{proof}
+    Let $\U$ be a type with cardinality $\kappa$.  Because $|\U| \leq |\A|$, we
+    have an injective function $f : \U \to \A$.  Let $S$ be the image of $f$.
+    $f$ is then a bijective function from $\U$ to $S$, showing that $|S| =
+    |\U|$.
+\end{proof}
+
+\begin{theorem} \label{card_subs_le}
+    For all sets $A$ and $B$ on a type $\U$, if $A \subseteq B$, then $|A| \leq
+    |B|$.
+\end{theorem}
+\begin{proof}
+    The identity function is an injective function from $A$ to $B$.
+\end{proof}
+
+\begin{theorem} \label{card_all}
+    For all types $\U$, $|\U| = |\bm U|$, where $\bm U$ is the universal set.
+\end{theorem}
+\begin{proof}
+    The identity function is bijective.
+\end{proof}
+
+\begin{theorem} \label{card_sub_le}
+    For all types $\A$ and sets $S : \A \to \Prop$, we have $|S| \leq |\A|$.
+\end{theorem}
+\begin{proof}
+    Since $S \subset \bm U$, we have $|S| \leq |\bm U| = |\A|$.
+\end{proof}
+
+\begin{theorem} \label{card_minus_le}
+    For all sets $A$ and $B$, $|A - B| \leq |A|$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{card_subs_le}.
+\end{proof}
+
+\begin{theorem} \label{image_le}
+    For all types $\U$ and $\V$ and functions $f : \U \to \V$, with $S$ the
+    image of $f$, we have $|S| \leq |\U|$.
+\end{theorem}
+\begin{proof}
+    By the partition principle, it suffices to find a surjective function from
+    the image of $\U$ to the image of $f$.  $f$ is precisely such a function.
+\end{proof}
+
+\begin{theorem} \label{image_under_le}
+    For all types $\U$ and $\V$, sets $A : \U \to \Prop$, and functions $f : \U
+    \to \V$, we have $|f(A)| \leq |A|$.
+\end{theorem}
+\begin{proof}
+    The proof is the the same in form as the previous proof.
+\end{proof}
+
+\begin{theorem} \label{card_union_left}
+    For all sets $S$ and $T$, $|S| \leq |S \cup T|$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{card_subs_le}.
+\end{proof}
+
+\begin{theorem} \label{card_union_right}
+    For all sets $S$ and $T$, $|T| \leq |S \cup T|$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{card_subs_le}.
+\end{proof}
+
+\begin{theorem} \label{card_plus_union}
+    For all sets $S$ and $T$, $|S \cup T| \leq |S| + |T|$.
+\end{theorem}
+\begin{proof}
+    Define a function $f : (S \cup T) \to (S + T)$ given by
+    \[
+        f(x) = \begin{cases}
+            x| & \text{if $x \in S$} \\
+            |x & \text{if $x \in T$.}
+        \end{cases}
+    \]
+    Let $a$ and $b$ be such that $f(a) = f(b)$.  The only possible cases are $a|
+    = b|$ and $|a = |b$, and in both cases we have $a = b$.
+\end{proof}
+
+\begin{theorem} \label{zero_is_empty}
+    For all sets $S$, if $0 = |S|$, then $S = \varnothing$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{empty_eq}.
+\end{proof}
+
+\begin{theorem} \label{empty_set_size}
+    $|\varnothing| = 0$.
+\end{theorem}
+\begin{proof}
+    Direct from Theorem \ref{empty_set_size}.
+\end{proof}
+
+\begin{theorem} \label{singleton_set_size}
+    For all types $\U$ and $a : \U$, $|\{a\}| = 1$.
+\end{theorem}
+\begin{proof}
+    Defining $f : \{a\} \to \S$ as $f(a) = I$ and $g : \S \to \{a\}$ as $g(I) =
+    a$, $f$ and $g$ are inverses of each other.
+\end{proof}
+
+\begin{theorem} \label{all_greater_inf_set}
+    For ordered sets $\U$ and sets $S : \U \to \Prop$, if $S$ is nonempty and if
+    for all $a \in S$, there exists a $b \in S$ with $a < b$, then $|S|$ is
+    infinite.
+\end{theorem}
+\begin{proof}
+    This is just a special case of Theorem \ref{all_greater_inf}.
+\end{proof}
+
+\begin{theorem} \label{inter_le}
+    For all collections $\mathcal S : (\U \to \Prop) \to \Prop$, sets $S \in
+    \mathcal S$, and cardinals $\mu$, if $|S| \leq \mu$, then $|\bigcap \mathcal
+    S| \leq \mu$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        \bigcap \mathcal S &\subseteq S \\
+        \left|\bigcap \mathcal S\right| &\leq |S| \leq \mu.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{inter_lt}
+    For all collections $\mathcal S : (\U \to \Prop) \to \Prop$, sets $S \in
+    \mathcal S$, and cardinals $\mu$, if $|S| < \mu$, then $|\bigcap \mathcal
+    S| < \mu$.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        \bigcap \mathcal S &\subseteq S \\
+        \left|\bigcap \mathcal S\right| &\leq |S| < \mu.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{finite_inter_finite}
+    For all collections $\mathcal S : (\U \to \Prop) \to \Prop$, if there exists
+    an $S \in \mathcal S$ that is finite, then $\bigcap \mathcal S$ is finite as
+    well.
+\end{theorem}
+\begin{proof}
+    Special case of Theorem \ref{inter_lt}.
+\end{proof}
+
+\begin{theorem} \label{union_size_mult}
+    For all collections $\mathcal S : (\U \to \Prop) \to \Prop$ and cardinals
+    $\kappa$ and $\mu$, if $|\mathcal S| \leq \kappa$ and $|S| \leq \mu$ for all
+    $S \in \mathcal S$, then $|\bigcup \mathcal S| \leq \kappa\mu$.
+\end{theorem}
+\begin{proof}
+    Let $\A$ and $\B$ be types with cardinality $\kappa$ and $\mu$ respectively.
+    Because $|\mathcal S| \leq |\A|$, we have an injective function $f :
+    \mathcal S \to \A$.  Because $|S| \leq |\B|$ for all $S \in \mathcal S$, we
+    have injective functions $g_S : S \to \B$ for all $S \in \mathcal S$.
+    Define a function $G : \bigcup \mathcal S \to \mathcal S$ that takes an $x
+    \in \mathcal S$ and produces a set $S \in \mathcal S$ that contains $x$.
+    Then define a function $h : \bigcup \mathcal S \to \A \times \B$ given by
+    $h(x) = (f(G(x)), g_{G(x)}(x))$.  We will prove that $h$ is injective.
+
+    Let $a$ and $b$ be such that $h(a) = h(b)$.  Then $f(G(a)) = f(G(b))$ and
+    $g_{G(a)}(a) = g_{G(b)}(b)$.  Because $f$ is injective, we have $G(a) =
+    G(b)$.  Thus, $g_{G(a)}(a) = g_{G(a)}(b)$, and because $g_{G(a)}$ is
+    injective, we have $a = b$ as required.
+\end{proof}
+
+As an immediate application of this theorem, we have this important result:
+
+\begin{theorem} \label{countable_union_countable}
+    The countable union of countable sets is countable.  More explicitly, for
+    all collections $\mathcal S$ with $|\mathcal S| \leq |\N|$, if $|S| \leq
+    |\N|$ for all $S \in \mathcal S$, then $|\bigcup \mathcal S| \leq |\N|$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{union_size_mult}, we have $|\bigcup \mathcal S| \leq
+    |\N|\,|\N|$, and then the result follows by Theorem \ref{card_mult_idemp}.
+\end{proof}
+
+Theorem \ref{union_size_mult} used non-strict inequalities.  Does the result
+hold for strict inequalities too?
+
+\begin{theorem}
+    It is not the case that for all collections $\mathcal S : (\U \to \Prop) \to
+    \Prop$ and cardinals $\kappa$ and $\mu$, if $|\mathcal S| < \kappa$ and $|S|
+    < \mu$ for all $S \in \mathcal S$, then $|\bigcup \mathcal S| < \kappa\mu$.
+\end{theorem}
+\begin{proof}
+    Let $\U$ be some type with cardinality $\aleph_\omega$.  By Theorem
+    \ref{card_le_sub}, $\U$ has subsets of all cardinalities $\aleph_0$,
+    $\aleph_1$, etc.  Let $b : \N \to (\U \to \Prop)$ be a function that
+    produces such a subset for each cardinality, that is, $|b(0)| = \aleph_0$,
+    $|b(1)| = \aleph_1$, etc.  Then let $\mathcal S$ be the image of $b$.  By
+    Theorem \ref{image_le}, $|\mathcal S| \leq |\N| = \aleph_0 < \aleph_\omega$,
+    and by construction, for all $S \in \mathcal S$, we have $|S| <
+    \aleph_\omega$.  Now, $|\bigcup \mathcal S| > \aleph_n$ for all natural
+    numbers $n$ by construction, so by Theorem \ref{aleph_least} we have
+    $|\bigcup \mathcal S| \geq \aleph_\omega$.  Since $\aleph_\omega
+    \aleph_\omega = \aleph_\omega$ by Theorem \ref{card_mult_idemp}, we have our
+    counterexample.
+\end{proof}
+
+While the strict version of the theorem is not universally true, it is true in
+many cases, including the following important case:
+
+\begin{theorem} \label{finite_union_finite}
+    The finite union of finite sets is finite, that is, for all collections
+    $\mathcal S : (\U \to \Prop) \to \Prop$, if $|\mathcal S| < |\N|$ and $|S| <
+    |\N|$ for all $S \in \mathcal S$, then $|\bigcup \mathcal S| < |\N|$.
+\end{theorem}
+\begin{proof}
+    First, if $\mathcal S$ is empty, we have $|\bigcup \varnothing| =
+    |\varnothing| = 0 < |\N|$, so from now on assume that $\mathcal S$ is
+    nonempty.  Let $g : \mathcal S \to \N$ be the function that gets the size of
+    each set in $\mathcal S$.  Because $\mathcal S$ is finite, the image of $g$
+    is finite too by Theorem \ref{image_le}, so by Theorem \ref{finite_max} $g$
+    takes on a maximum value $n$.  Thus, for all sets $S \in \mathcal S$, we
+    have $|S| \leq n$.  Furthermore, because $\mathcal S$ is finite, we have a
+    natural number $m$ such that $|\mathcal S| \leq m$.  Thus, by Theorem
+    \ref{union_size_mult}, we have $|\bigcup \mathcal S| \leq mn < |\N|$,
+    showing that $\bigcup \mathcal S$ is finite.
+\end{proof}
+
 \end{document}

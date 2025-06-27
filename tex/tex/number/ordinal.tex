@@ -2599,6 +2599,22 @@ define the true $\aleph$ function.
     \]
 \end{proof}
 
+\begin{theorem} \label{aleph_least}
+    For all ordinals $\alpha \neq 0$ and cardinals $\mu$, if for all $\beta <
+    \alpha$ we have $\aleph_\beta < \mu$, then $\aleph_\alpha \leq \mu$.
+\end{theorem}
+\begin{proof}
+    First, because $0 < \alpha$, we have $\aleph_0 < \mu$.
+    We will use the corresponding theorem for $\aleph'$, Theorem
+    \ref{aleph'_least}.  We must prove that for all $\beta < \omega + \alpha$,
+    we have $\aleph'_\beta < \mu$.  Now if $\beta < \omega$, $\beta$ is a
+    natural number.  Then $\aleph'_\beta < \aleph_0 < \mu$, so this case is
+    true.  Now if $\omega \leq \beta$, by Theorem \ref{ord_le_ex} we have a
+    $\gamma$ with $\beta = \omega + \gamma$.  Then $\gamma < \alpha$, so by
+    assumption we have $\aleph_\gamma < \mu$, and $\aleph_\gamma =
+    \aleph'_{\omega + \gamma} = \aleph'_\beta$, so this case is also true.
+\end{proof}
+
 Arithmetic of ordinals can often be confusing because it is necessary to
 remember which of the basic algebraic properties we are used to are true in the
 ordinals.  The basic properties that are true were listed in the previous

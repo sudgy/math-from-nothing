@@ -136,6 +136,7 @@
 ./src/Number/Cardinal/card2_nat.v
 ./src/Number/Cardinal/card2_infinite.v
 ./src/Number/Cardinal/card2_infinite_arithmetic.v
+./src/Number/Cardinal/card2_set.v
 ./src/Set/Cardinal/card_base.v
 ./src/Set/Cardinal/card_order.v
 ./src/Set/Cardinal/card_plus.v

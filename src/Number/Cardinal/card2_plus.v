@@ -141,6 +141,15 @@ Proof.
     contradiction (A_false a).
 Qed.
 
+Theorem card_0_false : ∀ A, 0 = |A| → (A → False).
+Proof.
+    intros A A_eq a.
+    symmetry in A_eq.
+    unfold zero in A_eq; equiv_simpl in A_eq.
+    destruct A_eq as [f f_bij].
+    destruct (f a).
+Qed.
+
 Theorem card_nz_ex {U} : 0 ≠ |U| → U.
 Proof.
     intros neq.

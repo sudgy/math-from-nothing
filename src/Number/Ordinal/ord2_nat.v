@@ -297,6 +297,26 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem aleph_least : ∀ α μ, 0 ≠ α → (∀ β, β < α → aleph β < μ) → aleph α ≤ μ.
+Proof.
+    intros α μ α_nz μ_gt.
+    apply aleph'_least.
+    intros β β_lt.
+    classic_case (β < ω) as [β_lt'|β_ge].
+    -   apply ord_lt_ω in β_lt' as [n n_eq]; subst β.
+        specialize (μ_gt 0 (all_pos2 α_nz)).
+        unfold aleph in μ_gt.
+        rewrite plus_rid in μ_gt.
+        apply (le_lt_trans2 μ_gt).
+        apply homo_le.
+        apply nat_lt_ω.
+    -   rewrite nlt_le in β_ge.
+        apply ord_le_ex in β_ge as [γ eq]; subst β.
+        apply lt_plus_lcancel in β_lt.
+        apply μ_gt.
+        exact β_lt.
+Qed.
+
 
 Theorem ord_plus_comm_false : ¬PlusComm ord.
 Proof.
