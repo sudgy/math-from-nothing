@@ -530,4 +530,97 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem card_nat_plus_rcancel : ∀ {κ μ} m,
+    κ + from_nat m = μ + from_nat m → κ = μ.
+Proof.
+    assert (∀ κ μ m, infinite κ → ¬infinite μ → κ + from_nat m ≠ μ + from_nat m)
+        as wlog.
+    {
+        intros κ μ m κ_inf μ_fin eq.
+        rewrite (card_plus_lmax _ _ κ_inf) in eq.
+        2: apply (trans2 κ_inf); apply nat_is_finite.
+        rewrite ninf_fin in μ_fin.
+        apply fin_nat_ex in μ_fin as [n n_eq]; subst μ.
+        rewrite <- homo_plus in eq.
+        rewrite eq in κ_inf.
+        pose proof (nat_is_finite (n + m)).
+        rewrite <- nfin_inf in κ_inf.
+        contradiction.
+    }
+    intros κ μ m eq.
+    classic_case (infinite κ) as [κ_inf|κ_fin].
+    all: classic_case (infinite μ) as [μ_inf|μ_fin].
+    -   rewrite (card_plus_lmax _ _ κ_inf) in eq.
+        2: apply (trans2 κ_inf); apply nat_is_finite.
+        rewrite (card_plus_lmax _ _ μ_inf) in eq.
+        2: apply (trans2 μ_inf); apply nat_is_finite.
+        exact eq.
+    -   contradiction (wlog κ μ m κ_inf μ_fin eq).
+    -   symmetry in eq.
+        contradiction (wlog μ κ m μ_inf κ_fin eq).
+    -   rewrite ninf_fin in κ_fin, μ_fin.
+        apply fin_nat_ex in κ_fin as [a a_eq].
+        apply fin_nat_ex in μ_fin as [b b_eq].
+        subst κ μ.
+        do 2 rewrite <- homo_plus in eq.
+        apply inj in eq.
+        apply plus_rcancel in eq.
+        subst; reflexivity.
+Qed.
+
+Theorem card_nat_plus_lcancel : ∀ {κ μ} m,
+    from_nat m + κ = from_nat m + μ → κ = μ.
+Proof.
+    intros κ μ m.
+    do 2 rewrite (plus_comm (from_nat m)).
+    apply card_nat_plus_rcancel.
+Qed.
+
+Theorem card_nat_mult_rcancel : ∀ {κ μ} m, 0 ≠ m →
+    κ * from_nat m = μ * from_nat m → κ = μ.
+Proof.
+    assert (∀ κ μ m, 0 ≠ m →
+        infinite κ → ¬infinite μ → κ * from_nat m ≠ μ * from_nat m) as wlog.
+    {
+        intros κ μ m m_nz κ_inf μ_fin eq.
+        rewrite (card_mult_lmax _ _ κ_inf (inj_zero _ m_nz)) in eq.
+        2: apply (trans2 κ_inf); apply nat_is_finite.
+        rewrite ninf_fin in μ_fin.
+        apply fin_nat_ex in μ_fin as [n n_eq]; subst μ.
+        rewrite <- homo_mult in eq.
+        rewrite eq in κ_inf.
+        pose proof (nat_is_finite (n * m)).
+        rewrite <- nfin_inf in κ_inf.
+        contradiction.
+    }
+    intros κ μ m m_nz eq.
+    classic_case (infinite κ) as [κ_inf|κ_fin].
+    all: classic_case (infinite μ) as [μ_inf|μ_fin].
+    -   rewrite (card_mult_lmax _ _ κ_inf (inj_zero _ m_nz)) in eq.
+        2: apply (trans2 κ_inf); apply nat_is_finite.
+        rewrite (card_mult_lmax _ _ μ_inf (inj_zero _ m_nz)) in eq.
+        2: apply (trans2 μ_inf); apply nat_is_finite.
+        exact eq.
+    -   contradiction (wlog κ μ m m_nz κ_inf μ_fin eq).
+    -   symmetry in eq.
+        contradiction (wlog μ κ m m_nz μ_inf κ_fin eq).
+    -   rewrite ninf_fin in κ_fin, μ_fin.
+        apply fin_nat_ex in κ_fin as [a a_eq].
+        apply fin_nat_ex in μ_fin as [b b_eq].
+        subst κ μ.
+        do 2 rewrite <- homo_mult in eq.
+        apply inj in eq.
+        apply mult_rcancel in eq; [>|exact m_nz].
+        subst; reflexivity.
+Qed.
+
+Theorem card_nat_mult_lcancel : ∀ {κ μ} m, 0 ≠ m →
+    from_nat m * κ = from_nat m * μ → κ = μ.
+Proof.
+    intros κ μ m m_nz.
+    do 2 rewrite (mult_comm (from_nat m)).
+    apply (card_nat_mult_rcancel m m_nz).
+Qed.
+
+
 Close Scope card_scope.

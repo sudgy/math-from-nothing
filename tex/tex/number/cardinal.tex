@@ -1454,6 +1454,41 @@ From this result, several other similar results follow.
     By the previous two theorems, both sides are equal to $\max(\kappa, \mu)$.
 \end{proof}
 
+With these theorems, we can now easily prove that cardinal operations with
+natural numbers are cancellative.
+
+\begin{theorem} \label{card_nat_plus_lcancel} \label{card_nat_plus_rcancel}
+    For all cardinals $\mu$ and $\kappa$ and natural numbers $n$ with $n + \mu =
+    n + \kappa$, we have $\mu = \kappa$.
+\end{theorem}
+\begin{proof}
+    There are three cases: when both $\mu$ and $\kappa$ are infinite, when one
+    is infinite and the other finite, and when both are finite.
+    \setcounter{case}{0}
+    \begin{case} \textit{$\mu$ and $\kappa$ are both infinite.}
+        In this case, we have $n + \mu = \mu$ and $n + \kappa = \kappa$, so $\mu
+        = \kappa$.
+    \end{case}
+    \begin{case} \textit{One of $\mu$ and $\kappa$ is infinite and the other is
+        finite.}
+        Without loss of generality, assume that $\mu$ is infinite and $\kappa$
+        is finite.  Then $n + \mu = \mu = n + \kappa$.  But $\mu$ is infinite
+        and $n + \kappa$ is finite, so this case is impossible.
+    \end{case}
+    \begin{case} \textit{$\mu$ and $\kappa$ are both finite.}
+        The result follows from the corresponding property in the natural
+        numbers.
+    \end{case}
+\end{proof}
+
+\begin{theorem} \label{card_nat_mult_lcancel} \label{card_nat_mult_rcancel}
+    For all cardinals $\mu$ and $\kappa$ and natural numbers $n$ with $n \mu =
+    n \kappa$, we have $\mu = \kappa$.
+\end{theorem}
+\begin{proof}
+    The proof is the same in form as the previous proof.
+\end{proof}
+
 \section{Cardinals and Sets}
 
 Recall that sets are thought of as predicates $\U \to \Prop$ on types.
@@ -1575,6 +1610,54 @@ whenever $S$ is a set, let $|S|$ denote the cardinality of $\T(S)$.
 \end{theorem}
 \begin{proof}
     This is just a special case of Theorem \ref{all_greater_inf}.
+\end{proof}
+
+\begin{theorem} \label{card_plus_one}
+    For all sets $S$ and $a \in S$, $|S| = |S - \{a\}| + 1$.
+\end{theorem}
+\begin{proof}
+    Define functions $f : S \to (S - \{a\}) + \S$ and $g : (S - \{a\}) + \S \to
+    S$ given by
+    \[
+        f(x) = \begin{cases}
+            |I & \text{if $x = a$} \\
+            x| & \text{if $x \neq a$}
+        \end{cases}
+    \]
+    and
+    \[
+        g(x) = \begin{cases}
+            y & \text{if $x = y|$} \\
+            a & \text{if $x = |I$.}
+        \end{cases}
+    \]
+    Then when $x = y|$,
+    \[
+        f(g(x)) = f(y) = y| = x,
+    \]
+    and when $x = |I$,
+    \[
+        f(g(x)) = f(a) = |I = x,
+    \]
+    so $f(g(x)) = x$ for all $x$.  And when $x = a$,
+    \[
+        g(f(x)) = g(|I) = a = x,
+    \]
+    and when $x \neq a$,
+    \[
+        g(f(x)) = g(x|) = x,
+    \]
+    so $g(f(x)) = x$ for all $x$.
+\end{proof}
+
+\begin{theorem} \label{card_plus_one_nat}
+    For all sets $S$, natural numbers $n$, and $a \in S$, if $|S| = n + 1$, then
+    $|S - \{a\}| = n$.
+\end{theorem}
+\begin{proof}
+    By the previous theorem, we have $|S| = |S - \{a\}| + 1$, so $|S - \{a\}| +
+    1 = n + 1$.  By Theorem \ref{card_nat_plus_lcancel}, we can cancel the $1$
+    to get $|S - \{a\}| = n$.
 \end{proof}
 
 \begin{theorem} \label{inter_le}

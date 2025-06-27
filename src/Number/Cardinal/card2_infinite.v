@@ -9,6 +9,18 @@ Open Scope card_scope.
 Definition finite κ := κ < |nat|.
 Definition infinite κ := |nat| ≤ κ.
 
+Theorem nfin_inf : ∀ κ, ¬finite κ ↔ infinite κ.
+Proof.
+    intros κ.
+    apply nlt_le.
+Qed.
+
+Theorem ninf_fin : ∀ κ, ¬infinite κ ↔ finite κ.
+Proof.
+    intros κ.
+    apply nle_lt.
+Qed.
+
 Theorem aleph_infinite : ∀ α, infinite (aleph α).
 Proof.
     intros α.

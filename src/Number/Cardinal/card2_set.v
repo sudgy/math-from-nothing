@@ -164,7 +164,11 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem all_greater_inf_set {U} `{TotalOrder U} : ∀ S : U → Prop,
+Section Order.
+
+Context {U} `{TotalOrder U}.
+
+Theorem all_greater_inf_set : ∀ S : U → Prop,
     (∃ x, S x) → (∀ a : set_type S, ∃ b : set_type S, [a|] < [b|]) →
     infinite (|set_type S|).
 Proof.
@@ -179,6 +183,8 @@ Proof.
     exact b_gt.
 Qed.
 
+End Order.
+
 Theorem empty_finite {U} : finite (|set_type (@empty U)|).
 Proof.
     rewrite <- empty_set_size.
@@ -192,6 +198,59 @@ Proof.
     rewrite singleton_set_size.
     rewrite <- (homo_one (f := from_nat)).
     apply nat_is_finite.
+Qed.
+
+Theorem card_plus_one {U} : ∀ (S : U → Prop) (a : set_type S),
+    |set_type S| = |set_type (S - ❴[a|]❵)%set| + 1.
+Proof.
+    intros S a.
+    unfold one, plus; equiv_simpl.
+    assert (∀ x : set_type S, x ≠ a → (S - ❴[a|]❵)%set [x|]) as x_in.
+    {
+        intros x x_neq.
+        split.
+        -   exact [|x].
+        -   rewrite singleton_eq.
+            symmetry.
+            rewrite set_type_eq.
+            exact x_neq.
+    }
+    exists (λ x : set_type S, IfH (x = a)
+        then λ _, inr Single
+        else λ H, inl [[x|] | x_in x H]).
+    apply (inverse_ex_bijective _ (λ x, match x with
+        | inl y => [[y|] | land [|y]]
+        | inr _ => a
+        end)).
+    split.
+    -   intros [[x [Sx x_neq]]|s]; cbn.
+        +   destruct (sem _) as [eq|neq].
+            *   exfalso.
+                pose proof x_neq as x_neq2.
+                rewrite <- eq in x_neq2.
+                rewrite singleton_eq in x_neq2.
+                contradiction.
+            *   apply f_equal; rewrite set_type_eq2.
+                reflexivity.
+        +   classic_case (a = a); [>|contradiction].
+            apply f_equal; apply singleton_type_eq.
+    -   intros x.
+        classic_case (x = a) as [eq|neq].
+        +   symmetry; exact eq.
+        +   apply set_type_eq; reflexivity.
+Qed.
+
+Theorem card_plus_one_nat {U} : ∀ (S : U → Prop) n (a : set_type S),
+    |set_type S| = from_nat (nat_suc n) →
+    |set_type (S - ❴[a|]❵)%set| = from_nat n.
+Proof.
+    intros S n a eq.
+    rewrite (card_plus_one S a) in eq.
+    rewrite from_nat_suc in eq.
+    rewrite plus_comm in eq.
+    rewrite <- (homo_one (f := from_nat)) in eq.
+    apply card_nat_plus_lcancel in eq.
+    exact eq.
 Qed.
 
 Theorem inter_le {U} : ∀ (SS : (U → Prop) → Prop) S μ,

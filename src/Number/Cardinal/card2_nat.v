@@ -167,27 +167,6 @@ Proof.
     exact leq.
 Qed.
 
-Theorem nat_to_card_plus_lcancel : ∀ {a b} c,
-    (from_nat c : card) + from_nat a = from_nat c + from_nat b →
-    (from_nat a : card) = from_nat b.
-Proof.
-    intros a b c eq.
-    apply f_equal.
-    do 2 rewrite <- homo_plus in eq.
-    apply inj in eq.
-    apply plus_lcancel in eq.
-    exact eq.
-Qed.
-
-Theorem nat_to_card_plus_rcancel : ∀ {a b} c,
-    (from_nat a : card) + from_nat c = from_nat b + from_nat c →
-    (from_nat a : card) = from_nat b.
-Proof.
-    intros a b c eq.
-    do 2 rewrite (plus_comm _ (from_nat c)) in eq.
-    exact (nat_to_card_plus_lcancel c eq).
-Qed.
-
 Theorem card_omega : ord_to_card ω = |nat|.
 Proof.
     unfold ord_to_card, ω; cbn.
