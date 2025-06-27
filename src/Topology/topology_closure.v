@@ -279,9 +279,10 @@ Proof.
         {
             clear - A_fin.
             classic_contradiction contr.
-            rewrite <- card_0_false in contr.
-            rewrite contr in A_fin.
-            apply nat_to_card_eq in A_fin.
+            apply card_false_0 in contr.
+            rewrite <- contr in A_fin.
+            rewrite <- (homo_zero (f := from_nat)) in A_fin.
+            apply inj in A_fin.
             inversion A_fin.
         }
         symmetry in A_fin.

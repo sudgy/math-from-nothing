@@ -46,7 +46,7 @@ Next Obligation.
             apply fin_nat_ex in SS1_fin as [m m_eq].
             apply fin_nat_ex in SS2_fin as [n n_eq].
             rewrite <- m_eq, <- n_eq.
-            rewrite nat_to_card_plus.
+            rewrite <- homo_plus.
             apply nat_is_finite.
         +   reflexivity.
     -   intros S [SS1_S|SS2_S].

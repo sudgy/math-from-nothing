@@ -118,14 +118,6 @@
 ./src/Number/Ordinal/ord2_pow.v
 ./src/Number/Ordinal/ord2_nat.v
 ./src/Number/Ordinal/ord.v
-./src/Set/Ordinal/ord_base.v
-./src/Set/Ordinal/ord_order.v
-./src/Set/Ordinal/ord_plus.v
-./src/Set/Ordinal/ord_mult.v
-./src/Set/Ordinal/ord_basic.v
-./src/Set/Ordinal/ord_induction.v
-./src/Set/Ordinal/ord_pow_def.v
-./src/Set/Ordinal/ord_pow.v
 
 ./src/Number/Cardinal/card2_base.v
 ./src/Number/Cardinal/card2_order.v
@@ -137,19 +129,10 @@
 ./src/Number/Cardinal/card2_infinite.v
 ./src/Number/Cardinal/card2_infinite_arithmetic.v
 ./src/Number/Cardinal/card2_set.v
-./src/Set/Cardinal/card_base.v
-./src/Set/Cardinal/card_order.v
-./src/Set/Cardinal/card_plus.v
-./src/Set/Cardinal/card_mult.v
-./src/Set/Cardinal/card_pow.v
-./src/Set/Cardinal/card_nat.v
-./src/Set/Cardinal/card_infinite1.v
-./src/Set/Cardinal/card_infinite2.v
-./src/Set/Cardinal/card_infinite3.v
-./src/Set/Cardinal/card_types.v
-./src/Set/Cardinal/card_real_interval.v
-./src/Set/Cardinal/card_real.v
-./src/Set/Cardinal/card.v
+./src/Number/Cardinal/card.v
+./src/Number/Cardinal/card_types.v
+./src/Number/Cardinal/card_real_interval.v
+./src/Number/Cardinal/card_real.v
 
 ./src/Number/Real/Cauchy/cauchy_real_base.v
 ./src/Number/Real/Cauchy/cauchy_real_plus.v

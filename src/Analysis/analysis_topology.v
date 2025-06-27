@@ -250,13 +250,15 @@ Proof.
     pose (Ms x := ∃ a b : set_type A, x = d [a|] [b|]).
     assert (finite (|set_type Ms|)) as Ms_fin.
     {
-        assert (|set_type (A * A)%set| ≤ nat_to_card (n * n)) as A2_size.
+        assert (|set_type (A * A)%set| ≤ from_nat (n * n)) as A2_size.
         {
-            rewrite <- nat_to_card_mult.
+            rewrite homo_mult.
             symmetry in n_eq.
-            unfold nat_to_card in n_eq; equiv_simpl in n_eq.
+            rewrite from_nat_card in n_eq.
+            equiv_simpl in n_eq.
             destruct n_eq as [f f_bij].
-            unfold le, nat_to_card, mult; equiv_simpl.
+            rewrite from_nat_card.
+            unfold le, mult; equiv_simpl.
             exists (λ aa,
                 (f [fst [aa|] | land [|aa]], f [snd [aa|] | rand [|aa]])).
             split.
@@ -302,16 +304,18 @@ Proof.
         {
             classic_contradiction contr.
             apply card_false_0 in contr.
-            rewrite contr in n_eq.
-            change 0 with (nat_to_card 0) in n_eq.
-            apply nat_to_card_eq in n_eq.
+            rewrite <- contr in n_eq.
+            change 0 with (from_nat 0) in n_eq.
+            apply inj in n_eq.
             symmetry in n_eq; contradiction.
         }
         exists a, a.
         symmetry; apply d_zero.
     }
-    pose proof (finite_well_ordered_set_max Ms Ms_fin Ms_ex) as [M [MsM M_max]].
+    destruct Ms_ex as [x Msx].
+    pose proof (finite_max Ms_fin [x|Msx]) as [[M MsM] M_max].
     exists (M + 2).
+    clear x Msx.
     intros x y Xx Xy.
     apply sub_A in Xx, Xy.
     destruct Xx as [S1 [[a1 [Aa1 S1_eq]] S1x]]; subst S1.
@@ -322,7 +326,7 @@ Proof.
         exists [a1|Aa1], [a2|Aa2].
         reflexivity.
     }
-    specialize (M_max (d a1 a2) a12_in).
+    specialize (M_max [d a1 a2 | a12_in]).
     pose proof (land S1x) as leq1.
     pose proof (land S2x) as leq2.
     clear - M_max leq1 leq2.

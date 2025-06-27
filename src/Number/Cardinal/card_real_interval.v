@@ -457,9 +457,10 @@ Proof.
         = |set_type (open_interval a b)| + 2) as eq.
     {
         symmetry.
-        unfold one; cbn.
-        rewrite nat_to_card_plus.
-        unfold nat_to_card, plus; equiv_simpl.
+        rewrite <- (homo_one (f := from_nat)).
+        rewrite <- homo_plus.
+        rewrite from_nat_card.
+        unfold plus; equiv_simpl.
         assert (∀ x : set_type (open_interval a b), closed_interval a b [x|])
             as x_in.
         {
@@ -522,6 +523,7 @@ Proof.
                 *   subst.
                     destruct ab; contradiction.
                 *   apply f_equal.
+                    unfold initial_segment in x_lt, y_lt.
                     rewrite nat_sucs_lt in x_lt, y_lt.
                     apply nat_lt_one_eq in x_lt, y_lt.
                     subst.
@@ -554,12 +556,16 @@ Proof.
                 reflexivity.
     }
     rewrite eq.
-    rewrite inf_plus_fin.
+    rewrite card_plus_lmax.
     -   reflexivity.
     -   apply (dense_open_infinite _ _ ab).
-    -   unfold one; cbn.
-        rewrite nat_to_card_plus.
-        apply nat_is_finite.
+    -   rewrite <- (homo_one (f := from_nat)).
+        rewrite <- homo_plus.
+        rewrite real_open_interval_size by exact ab.
+        apply (lt_le_trans (nat_is_finite 2)).
+        unfold le; equiv_simpl.
+        exists from_nat.
+        exact from_nat_inj.
 Qed.
 
 (* begin hide *)

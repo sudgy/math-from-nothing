@@ -307,7 +307,8 @@ Proof.
         specialize (all_S S S_open Sx).
         unfold infinite in all_S.
         apply (lt_le_trans (nat_is_finite 2)) in all_S as [all_S C0]; clear C0.
-        unfold nat_to_card, le in all_S; equiv_simpl in all_S.
+        rewrite from_nat_card in all_S.
+        unfold le in all_S; equiv_simpl in all_S.
         destruct all_S as [f f_inj].
         assert ((zero (U := nat)) < 2) as z_lt.
         {

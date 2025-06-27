@@ -640,12 +640,11 @@ Proof.
                 exists [_|SS'_B].
                 reflexivity.
             }
-            pose proof (finite_well_ordered_set_max _ A'_fin A'_ex)
-                as [a [A'a a_max]].
+            destruct A'_ex as [x A'x].
+            pose proof (finite_max A'_fin [x|A'x]) as [[a A'a] a_max].
             exists [a|A'a].
             intros a' A'a'.
-            apply a_max.
-            exact A'a'.
+            apply (a_max [a'|A'a']).
         }
         destruct a_ex as [[[a Aa] [[S SS'_S] a_eq]] a_max]; cbn in *.
         pose proof Aa as Aa2.
@@ -714,12 +713,12 @@ Proof.
                 exists [_|SS'_B].
                 reflexivity.
             }
-            pose proof (finite_well_ordered_set _ A'_fin A'_ex)
-                as [a [A'a a_min]].
+            destruct A'_ex as [x A'x].
+            pose proof (finite_min A'_fin [x|A'x])
+                as [[a A'a] a_min].
             exists [a|A'a].
             intros a' A'a'.
-            apply a_min.
-            exact A'a'.
+            apply (a_min [a'|A'a']).
         }
         destruct a_ex as [[[a Aa] [[S SS'_S] a_eq]] a_max]; cbn in *.
         pose proof Aa as Aa2.

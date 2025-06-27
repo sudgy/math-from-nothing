@@ -34,14 +34,15 @@ Proof.
     assert (infinite (|set_type A|)) as A_inf.
     {
         pose (op x y := x = y ∨ ∃ n, (∀ n', a n' = x → n' ≤ n) ∧ a n = y).
-        assert (Reflexive op).
+        pose (order := {|le := op|}).
+        assert (Reflexive le).
         {
             split.
             intros x.
             left.
             reflexivity.
         }
-        assert (Antisymmetric op).
+        assert (Antisymmetric le).
         {
             split.
             intros x y [eq1|xy] [eq2|yx]; subst; try reflexivity.
@@ -55,7 +56,7 @@ Proof.
             -   apply n2_max.
                 reflexivity.
         }
-        assert (Transitive op).
+        assert (Transitive le).
         {
             split.
             intros x y z [eq1|xy] [eq2|yz]; subst.
@@ -84,27 +85,35 @@ Proof.
         specialize (contr x).
         unfold infinite in contr.
         rewrite nle_lt in contr.
-        pose proof (finite_well_ordered_set_max _ contr Ax) as [n n_max].
+        destruct Ax as [Axn Axn_in].
+        pose proof (finite_max contr [Axn|Axn_in]) as [[n n_eq] n_max].
         pose (y := a (nat_suc n)).
         assert (A y) as Ay by (exists (nat_suc n); reflexivity).
         exists [y|Ay].
         cbn.
-        destruct n_max as [n_eq n_max].
         split.
         -   right.
             exists (nat_suc n).
             split.
             +   intros n' n'_eq.
-                apply (trans (n_max n' n'_eq)).
+                specialize (n_max [n'|n'_eq]).
+                unfold le in n_max; cbn in n_max.
+                apply (trans n_max).
                 apply nat_le_suc.
             +   reflexivity.
         -   intro eq.
+            assert (∀ m, a m = x → m ≤ n) as leq.
+            {
+                intros m eq'.
+                apply (n_max [m|eq']).
+            }
+            clear n_max.
             rewrite eq in *; clear eq.
             assert (a (nat_suc n) = y) as y_eq by reflexivity.
-            specialize (n_max _ y_eq).
-            clear - n_max.
-            rewrite <- nat_lt_suc_le in n_max.
-            destruct n_max; contradiction.
+            specialize (leq _ y_eq).
+            clear - leq.
+            rewrite <- nat_lt_suc_le in leq.
+            destruct leq; contradiction.
     }
     destruct (lt_le_trans A_fin A_inf); contradiction.
 Qed.
@@ -131,9 +140,10 @@ Proof.
     pose proof x_inf as x_inf.
     classic_contradiction contr.
     rewrite not_ex in contr.
-    assert (|set_type X| ≤ nat_to_card (nat_suc n)) as leq.
+    assert (|set_type X| ≤ from_nat (nat_suc n)) as leq.
     {
-        unfold nat_to_card, le; equiv_simpl.
+        rewrite from_nat_card.
+        unfold le; equiv_simpl.
         assert (∀ x : set_type X, (λ x, x < nat_suc n) [x|]) as x_in.
         {
             intros x.
@@ -204,7 +214,8 @@ Proof.
     rewrite <- nlt_le in ε_inf.
     apply ε_inf.
     apply (le_lt_trans2 (nat_is_finite (nat_suc n))).
-    unfold le, nat_to_card; equiv_simpl.
+    rewrite from_nat_card.
+    unfold le; equiv_simpl.
     assert (∀ x : set_type (A ∩ open_ball y ε),
         ∃ n : nat_to_set_type (nat_suc n), [x|] = a [n|]) as f_ex.
     {
@@ -424,7 +435,8 @@ Proof.
         assert (finite (|set_type A|)) as A_fin.
         {
             apply (le_lt_trans2 (nat_is_finite n)).
-            unfold le, nat_to_card; equiv_simpl.
+            rewrite from_nat_card.
+            unfold le; equiv_simpl.
             exists (λ x : set_type A, ex_val [|x]).
             split.
             intros a b eq.
@@ -918,7 +930,8 @@ Lemma x2_ex : ∀ n, ∃ x2, [S n|] x2 ∧ x2 ≠ x.
 Proof.
     intros n.
     pose proof [|S n] as Sn_inf.
-    pose proof (infinite_seq_ex Sn_inf) as [f f_neq].
+    unfold infs, infinite, le in Sn_inf; equiv_simpl in Sn_inf.
+    destruct Sn_inf as [f f_inj].
     classic_case ([f 0|] = x) as [x_eq|x_neq].
     -   exists [f 1|].
         split.
@@ -927,7 +940,7 @@ Proof.
             rewrite <- contr in x_eq.
             rewrite set_type_eq in x_eq.
             assert ((zero (U := nat)) ≠ 1) as neq by (intro C; inversion C).
-            exact (f_neq 0 1 neq x_eq).
+            apply inj in x_eq; contradiction.
     -   exists [f 0|].
         split.
         +   exact [|f 0].
@@ -965,7 +978,7 @@ Proof.
     rewrite mult_rlinv in N2_eq by apply two_pos.
     pose proof (trans (rmax N1 N2) n_ge) as n_ge2.
     rewrite <- nat_sucs_le in n_ge2.
-    rewrite (homo_le2 (f := from_nat)) in n_ge2.
+    rewrite (homo_le2 (f := (from_nat (U := real)))) in n_ge2.
     apply le_div_pos in n_ge2.
     2: apply from_nat_pos.
     apply le_lmult_pos with 2 in n_ge2.

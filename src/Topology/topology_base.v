@@ -153,9 +153,9 @@ Proof.
             exact B_open.
     -   unfold S.
         apply (le_lt_trans (card_plus_union _ _)).
-        do 2 rewrite singleton_size.
-        unfold one; cbn.
-        rewrite nat_to_card_plus.
+        do 2 rewrite singleton_set_size.
+        rewrite <- (homo_one (f := from_nat)).
+        rewrite <- homo_plus.
         apply nat_is_finite.
 Qed.
 

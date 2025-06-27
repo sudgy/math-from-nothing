@@ -227,14 +227,15 @@ Proof.
     }
     intros T T_fin' T_size.
     change (nat_suc n) with (1 + n) in T_size.
-    rewrite <- nat_to_card_plus in T_size.
-    unfold plus, nat_to_card in T_size; equiv_simpl in T_size.
+    rewrite homo_plus in T_size.
+    do 2 rewrite from_nat_card in T_size.
+    unfold plus in T_size; equiv_simpl in T_size.
     destruct T_size as [f [f_inj f_sur]].
     pose (x := f (inl [0|nat_one_pos])).
     pose (T' v := If v = [x|] then 0 else T v).
-    assert (nat_to_card n = |set_type (λ x, 0 ≠ T' x)|) as T'n.
+    assert (from_nat n = |set_type (λ x, 0 ≠ T' x)|) as T'n.
     {
-        unfold nat_to_card; equiv_simpl.
+        rewrite from_nat_card; equiv_simpl.
         assert (∀ m : set_type (λ x, x < n), 0 ≠ T' [f (inr m)|]) as T'_neq.
         {
             intros m.

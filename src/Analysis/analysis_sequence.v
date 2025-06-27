@@ -87,7 +87,7 @@ Proof.
             unfold B in Bna.
             apply (trans2 N_lt).
             rewrite <- nat_sucs_le in n_gt.
-            rewrite (homo_le2 (f := from_nat)) in n_gt.
+            rewrite (homo_le2 (f := (from_nat (U := real)))) in n_gt.
             apply le_div_pos in n_gt.
             2: apply from_nat_pos.
             apply (lt_le_trans2 n_gt).
@@ -208,8 +208,9 @@ Proof.
     {
         unfold finite.
         apply (le_lt_trans2 (nat_is_finite ((1 + N)*(1 + N)))).
-        rewrite <- nat_to_card_mult.
-        unfold mult, le, nat_to_card; equiv_simpl.
+        rewrite homo_mult.
+        rewrite from_nat_card.
+        unfold mult, le; equiv_simpl.
         pose (to_i (x : set_type S) := ex_val [|x]).
         pose (to_j (x : set_type S) := ex_val (ex_proof [|x])).
         pose (to_i_lt (x : set_type S)
@@ -243,7 +244,8 @@ Proof.
         1, 2: intros contr; inversion contr.
         reflexivity.
     }
-    pose proof (finite_well_ordered_set_max S S_fin S_ex) as [M[Sm M_greatest]].
+    destruct S_ex as [x Sx].
+    pose proof (finite_max S_fin [x|Sx]) as [[M Sm] M_greatest].
     assert (∀ i j, i < 1 + N → j < 1 + N → d (a i) (a j) < M + 1) as lem1.
     {
         intros i j i_lt j_lt.
@@ -251,13 +253,16 @@ Proof.
         apply lt_lplus with M in ltq.
         rewrite plus_rid in ltq.
         apply (le_lt_trans2 ltq).
-        apply M_greatest.
-        exists i, j.
-        split.
-        2: split.
-        -   exact i_lt.
-        -   exact j_lt.
-        -   reflexivity.
+        assert (S (d (a i) (a j))) as ij_in.
+        {
+            exists i, j.
+            split.
+            2: split.
+            -   exact i_lt.
+            -   exact j_lt.
+            -   reflexivity.
+        }
+        apply (M_greatest [_|ij_in]).
     }
     assert (∀ i j, 1 + N ≤ i → j < 1 + N → d (a i) (a j) < M + 1) as lem2.
     {
@@ -266,13 +271,16 @@ Proof.
         specialize (a_cauchy _ _ i_ge2 (refl N)).
         assert (d (a N) (a j) ≤ M) as leq.
         {
-            apply M_greatest.
-            exists N, j.
-            split.
-            2: split.
-            -   apply nat_lt_suc.
-            -   exact j_lt.
-            -   reflexivity.
+            assert (S (d (a N) (a j))) as Nj_in.
+            {
+                exists N, j.
+                split.
+                2: split.
+                -   apply nat_lt_suc.
+                -   exact j_lt.
+                -   reflexivity.
+            }
+            apply (M_greatest [_|Nj_in]).
         }
         pose proof (le_lt_lrplus leq a_cauchy) as ltq.
         clear - ltq.
@@ -297,13 +305,16 @@ Proof.
         apply (lt_le_trans a_cauchy).
         rewrite <- (plus_lid 1) at 1.
         apply le_rplus.
-        apply M_greatest.
-        exists 0, 0.
-        split.
-        2: split.
-        1, 2: apply nat_pos2.
-        rewrite d_zero.
-        reflexivity.
+        assert (S 0) as S0.
+        {
+            exists 0, 0.
+            split.
+            2: split.
+            1, 2: apply nat_pos2.
+            rewrite d_zero.
+            reflexivity.
+        }
+        apply (M_greatest [_|S0]).
     }
     exists (M + 1).
     intros i j.

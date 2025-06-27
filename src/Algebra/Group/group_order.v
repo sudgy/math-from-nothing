@@ -45,9 +45,9 @@ Local Open Scope card_scope.
 
 Definition group_order := |cyclic_subgroup|.
 
-Theorem group_order_countable : countable group_order.
+Theorem group_order_countable : group_order ≤ |nat|.
 Proof.
-    unfold countable, group_order.
+    unfold group_order.
     rewrite <- int_size.
     unfold le; equiv_simpl.
     exists (λ (x : set_type cyclic_set), ex_val [|x]).

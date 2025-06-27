@@ -293,7 +293,8 @@ Theorem sequentially_limit_point_compact :
     sequentially_compact U → limit_point_compact U.
 Proof.
     intros U_comp S S_inf.
-    apply infinite_seq_ex in S_inf as [Sf Sf_inj].
+    unfold infinite, le in S_inf; equiv_simpl in S_inf.
+    destruct S_inf as [Sf Sf_inj].
     remember (λ n, [Sf n|]) as f.
     assert (∀ n, S (f n)) as f_in.
     {
@@ -304,9 +305,9 @@ Proof.
     assert (∀ i j, i ≠ j → f i ≠ f j) as f_inj.
     {
         intros i j neq eq.
-        specialize (Sf_inj i j neq).
         rewrite Heqf in eq.
         apply set_type_eq in eq.
+        apply inj in eq.
         contradiction.
     }
     clear Sf Sf_inj Heqf.

@@ -90,10 +90,9 @@ Qed.
 Definition real_rat_basis (S : real → Prop) := ∃ a b : rat,
     a < b ∧ S = open_interval (from_rat a) (from_rat b).
 
-Theorem real_rat_basis_countable : countable (|set_type real_rat_basis|)%card.
+Theorem real_rat_basis_countable : (|set_type real_rat_basis| ≤ |nat|)%card.
 Proof.
-    unfold countable.
-    rewrite <- nat_mult_nat.
+    rewrite <- (card_mult_idemp (|nat|)%card) by apply refl.
     rewrite <- rat_size.
     unfold le, mult; equiv_simpl.
     exists (λ S, (ex_val [|S], ex_val (ex_proof [|S]))).

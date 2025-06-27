@@ -52,8 +52,9 @@ Proof.
     classic_contradiction contr.
     unfold infinite in contr.
     rewrite nle_lt in contr.
-    pose proof (finite_well_ordered_set _ contr (dense a b ab)) as
-        [m [[m_gt m_lt] m_min]].
+    pose proof (dense a b ab) as [z z_in].
+    pose proof (finite_min contr [z|z_in]) as
+        [[m [m_gt m_lt]] m_min].
     pose (S := (open_interval a b - ❴m❵)%set).
     assert (finite (|set_type S|)) as S_fin.
     {
@@ -81,14 +82,15 @@ Proof.
             +   exact x_lt.
         -   apply x_gt.
     }
-    pose proof (finite_well_ordered_set _ S_fin S_ex) as
-        [n [[[n_gt n_lt] neq] n_min]].
+    destruct S_ex as [x Sx].
+    pose proof (finite_min S_fin [x|Sx]) as
+        [[n [[n_gt n_lt] neq]] n_min].
     assert (m < n) as mn.
     {
         split; try exact neq.
-        apply m_min.
-        split; assumption.
+        apply (m_min [n|make_and n_gt n_lt]).
     }
+    clear x Sx.
     pose proof (dense m n mn) as [x [x_gt x_lt]].
     assert (S x) as Sx.
     {
@@ -98,7 +100,8 @@ Proof.
             +   exact (trans x_lt n_lt).
         -   apply x_gt.
     }
-    specialize (n_min x Sx).
+    specialize (n_min [x|Sx]).
+    unfold le in n_min; cbn in n_min.
     destruct (le_lt_trans n_min x_lt); contradiction.
 Qed.
 
@@ -132,7 +135,7 @@ Proof.
     apply antisym.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
-        rewrite nat_mult_nat.
+        rewrite card_mult_idemp by apply refl.
         apply refl.
     -   unfold le; equiv_simpl.
         exists from_nat.
@@ -145,9 +148,9 @@ Proof.
     -   apply (trans (equiv_card_le _)).
         rewrite card_mult_type.
         pose proof (card_sub_le int (λ x, 0 ≠ x)) as leq.
-        apply card_le_lmult with (|int|) in leq.
+        apply le_lmult with (|int|) in leq.
         rewrite int_size in leq at 2 3.
-        rewrite nat_mult_nat in leq.
+        rewrite card_mult_idemp in leq by apply refl.
         exact leq.
     -   unfold le; equiv_simpl.
         exists from_nat.

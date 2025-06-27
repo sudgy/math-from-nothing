@@ -48,18 +48,17 @@ Next Obligation.
         intros y By A SA.
         exfalso.
         clear - S_fin SA.
-        symmetry in S_fin.
-        rewrite card_0_false in S_fin.
-        apply S_fin.
+        apply (card_0_false _ S_fin).
         exact [A|SA].
     -   intros.
         assert (set_type S) as T.
         {
             clear - S_fin.
             classic_contradiction contr.
-            rewrite <- card_0_false in contr.
-            rewrite contr in S_fin.
-            apply nat_to_card_eq in S_fin.
+            apply card_false_0 in contr.
+            rewrite <- contr in S_fin.
+            rewrite <- (homo_zero (f := from_nat)) in S_fin.
+            apply inj in S_fin.
             inversion S_fin.
         }
         symmetry in S_fin.
