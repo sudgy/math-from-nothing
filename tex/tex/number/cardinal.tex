@@ -4,6 +4,7 @@
 \externaldocument{../basics/set}
 \externaldocument{../basics/elementary_algebra}
 \externaldocument{../basics/natural}
+\externaldocument{rational}
 \externaldocument{ordinal}
 
 \begin{document}
@@ -1768,6 +1769,79 @@ many cases, including the following important case:
     natural number $m$ such that $|\mathcal S| \leq m$.  Thus, by Theorem
     \ref{union_size_mult}, we have $|\bigcup \mathcal S| \leq mn < |\N|$,
     showing that $\bigcup \mathcal S$ is finite.
+\end{proof}
+
+\section{The Cardinality of Previously Developed Types}
+
+Throughout this chapter, the only concrete type we have found the cardinality of
+is the natural numbers.  In this section, we will look at the cardinality of
+several of the other types we have looked at already.
+
+\begin{theorem} \label{equiv_card_le}
+    If $\U$ is a type with an equivalence relation $\sim$, then $|\U/{\sim}|
+    \leq |\U|$.
+\end{theorem}
+\begin{proof}
+    The function $\{X\}$ given by Definition \ref{from_equiv} is a function from
+    $\U/{\sim}$ to $\U$.  If we have $\{a\} = \{b\}$, then $[\{a\}] = [\{b\}]$,
+    and by Theorem \ref{from_equiv_eq} we have $a = b$, showing that the
+    function is injective.
+\end{proof}
+
+\begin{theorem} \label{int_size}
+    $|\Z| = |\N|$.
+\end{theorem}
+\begin{proof}
+    Since the integers are defined as equivalence classes of pairs of natural
+    numbers, we have $|\Z| \leq |\N| \, |\N| = |\N|$, and $\iN$ is injective, so
+    $|\N| \leq |\Z|$.  Thus, by antisymmetry, $|\Z| = |\N|$.
+\end{proof}
+
+\begin{theorem} \label{rat_size}
+    $|\Q| = |\N|$.
+\end{theorem}
+\begin{proof}
+    Since the rational numbers are defined as equivalence classes of pairs of an
+    integer and a nonzero integer, we have
+    \[
+        |\Q| \leq |\Z| \, |\Z - \{0\}| \leq |\Z| \, |\Z| = |\Z| = |\N|,
+    \]
+    and $\iN$ is injective, so $|\N| \leq |\Q|$.  Thus, by antisymmetry, $|\Q| =
+    |\N|$.
+\end{proof}
+
+\begin{theorem} \label{dense_open_infinite}
+    In any dense ordered set $\U$, if $a < b$, then the open interval $(a, b)$
+    is infinite.
+\end{theorem}
+\begin{proof}
+    The proof will be by Theorem \ref{all_greater_inf_set}.  $(a, b)$ is
+    nonempty because $\U$ is dense.  Now if $x \in (a, b)$, by $\U$ being dense
+    we have a $y$ with $x < y < b$.  Then $x < y$ and $y \in (a, b)$, so $(a,
+    b)$ is infinite by Theorem \ref{all_greater_inf_set}.
+\end{proof}
+
+\begin{theorem} \label{dense_closed_infinite}
+    In any dense ordered set $\U$, if $a < b$, then the closed interval $[a, b]$
+    is infinite.
+\end{theorem}
+\begin{proof}
+    Since $(a, b) \subseteq [a, b]$, the theorem follows by a direct application
+    of Theorem \ref{card_subs_le}.
+\end{proof}
+
+\begin{theorem} \label{arch_ordered_size}
+    The cardinality of an Archimedean ordered field is at most $2^{|\N|}$.
+\end{theorem}
+\begin{proof}
+    Let $\U$ be an Archimedean ordered field.  We have $2^{|\N|} = 2^{|\Q|} =
+    |\Q \to \Prop|$, so it suffices to find an injective function from $\U$ to
+    $\Q \to \Prop$.  Define $f : \U \to (\Q \to \Prop)$ by $f(x) = \{q : \Q \mid
+    q < x\}$.  Now let $f(a) = f(b)$.  If $a < b$, by Theorem
+    \ref{rat_dense_in_arch}, we have a rational number $r$ with $a < r < b$.
+    This means that $r \in f(b)$ but $r \notin f(a)$, contradicting $f(a) =
+    f(b)$.  Thus, we can't have $a < b$, and by the same argument, we can't have
+    $b < a$.  This means that $a = b$, so $f$ is injective.
 \end{proof}
 
 \end{document}

@@ -54,6 +54,16 @@ Proof.
     apply all_pos.
 Qed.
 
+Theorem le_lrmult : ∀ a b c d, a ≤ b → c ≤ d → a * c ≤ b * d.
+Proof.
+    intros a b c d ab cd.
+    apply le_lrmult_pos.
+    -   apply all_pos.
+    -   apply all_pos.
+    -   exact ab.
+    -   exact cd.
+Qed.
+
 Theorem lt_lmult : ∀ {a b} c, 0 ≠ c → a < b → c * a < c * b.
 Proof.
     intros a b c c_nz.
@@ -66,6 +76,16 @@ Proof.
     intros a b c c_nz.
     apply lt_rmult_pos.
     exact (all_pos2 c_nz).
+Qed.
+
+Theorem lt_lrmult : ∀ a b c d, a < b → c < d → a * c < b * d.
+Proof.
+    intros a b c d ab cd.
+    apply lt_lrmult_pos.
+    -   apply all_pos.
+    -   apply all_pos.
+    -   exact ab.
+    -   exact cd.
 Qed.
 
 Theorem le_mult_lcancel : ∀ {a b} c, 0 ≠ c → c * a ≤ c * b → a ≤ b.
