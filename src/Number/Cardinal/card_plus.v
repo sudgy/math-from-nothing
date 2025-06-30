@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export card2_order.
+Require Export card_order.
 Require Export set.
 Require Import ord.
 

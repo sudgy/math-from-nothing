@@ -1,9 +1,9 @@
 Require Import init.
-Require Export ord2_base.
-Require Export ord2_order.
-Require Export ord2_bounds.
-Require Export ord2_plus.
-Require Export ord2_mult.
-Require Export ord2_pow.
-Require Export ord2_nat.
+Require Export ord_base.
+Require Export ord_order.
+Require Export ord_bounds.
+Require Export ord_plus.
+Require Export ord_mult.
+Require Export ord_pow.
+Require Export ord_nat.
 Require Export set_induction.

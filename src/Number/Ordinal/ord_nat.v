@@ -1,9 +1,9 @@
 Require Import init.
 
-Require Export ord2_pow.
+Require Export ord_pow.
 Require Import set_induction.
-Require Import ord2_bounds.
-Require Export card2_large.
+Require Import ord_bounds.
+Require Export card_large.
 
 Require Export nat.
 

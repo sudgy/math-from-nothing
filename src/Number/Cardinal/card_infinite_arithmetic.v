@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export card2_infinite.
+Require Export card_infinite.
 Require Import ord.
 Require Import order_minmax.
 Require Import well_order.

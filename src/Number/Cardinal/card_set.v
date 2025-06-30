@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export card2_infinite_arithmetic.
+Require Export card_infinite_arithmetic.
 Require Export set.
 
 Open Scope card_scope.

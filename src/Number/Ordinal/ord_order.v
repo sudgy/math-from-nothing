@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export ord2_base.
+Require Export ord_base.
 Require Import set_induction.
 
 Open Scope ord_scope.

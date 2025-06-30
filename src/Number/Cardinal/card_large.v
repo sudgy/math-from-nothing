@@ -1,7 +1,7 @@
 Require Import init.
 
-Require Export card2_order.
-Require Import ord2_order.
+Require Export card_order.
+Require Import ord_order.
 Require Import set_induction.
 
 Open Scope card_scope.

@@ -1,8 +1,8 @@
 Require Import init.
 
-Require Export ord2_mult.
+Require Export ord_mult.
 Require Import set_induction.
-Require Import ord2_bounds.
+Require Import ord_bounds.
 
 Open Scope ord_scope.
 

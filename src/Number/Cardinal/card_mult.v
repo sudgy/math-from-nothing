@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Export card2_plus.
+Require Export card_plus.
 Require Import ord.
 
 Open Scope card_scope.

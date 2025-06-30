@@ -1,8 +1,8 @@
 Require Import init.
 
-Require Export card2_pow.
+Require Export card_pow.
 Require Export nat.
-Require Import ord2_nat.
+Require Import ord_nat.
 Require Import set_finite.
 
 Open Scope card_scope.

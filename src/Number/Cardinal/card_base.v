@@ -3,7 +3,7 @@ Require Import init.
 Require Export set.
 Require Import well_order.
 
-Require Import ord2_order.
+Require Import ord_order.
 
 Declare Scope card_scope.
 Delimit Scope card_scope with card.

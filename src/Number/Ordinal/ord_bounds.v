@@ -1,7 +1,7 @@
 Require Import init.
 
-Require Export ord2_order.
-Require Import card2_large.
+Require Export ord_order.
+Require Import card_large.
 
 Section OrdBounds.
 
