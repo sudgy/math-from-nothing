@@ -2,7 +2,7 @@ Require Import init.
 
 Require Export cauchy_real_base.
 
-Lemma cauchy_plus : ∀ a b : real_base, cauchy_seq (λ n, r_seq a n + r_seq b n).
+Lemma cauchy_plus : ∀ a b : real_base, cauchy_seq (λ n, a n + b n).
 Proof.
     intros [a a_cauchy] [b b_cauchy]; cbn.
     intros ε ε_pos.
@@ -16,31 +16,24 @@ Proof.
     pose proof (lt_lrplus a_cauchy b_cauchy) as ltq.
     rewrite plus_half in ltq.
     apply (le_lt_trans (abs_tri _ _)) in ltq.
-    applys_eq ltq.
-    apply f_equal.
-    do 2 rewrite <- plus_assoc.
-    apply lplus.
+    rewrite plus_4 in ltq.
     rewrite neg_plus.
-    do 2 rewrite plus_assoc.
-    apply rplus.
-    apply plus_comm.
+    exact ltq.
 Qed.
 
-Lemma cauchy_neg : ∀ a : real_base, cauchy_seq (λ n, -r_seq a n).
+Lemma cauchy_neg : ∀ a : real_base, cauchy_seq (λ n, -a n).
 Proof.
     intros [a a_cauchy] ε ε_pos; cbn.
     specialize (a_cauchy ε ε_pos) as [N a_cauchy].
     exists N.
     intros i j.
-    rewrite abs_minus.
-    rewrite neg_neg, plus_comm.
+    rewrite <- neg_plus.
+    rewrite abs_neg.
     apply a_cauchy.
 Qed.
 
-Notation "a ⊕ b" := (make_real _ (cauchy_plus a b)) : real_scope.
-Notation "⊖ a" := (make_real _ (cauchy_neg a)) : real_scope.
-
-Open Scope real_scope.
+Notation "a ⊕ b" := (make_real _ (cauchy_plus a b)).
+Notation "⊖ a" := (make_real _ (cauchy_neg a)).
 
 Lemma real_plus_wd : ∀ a b c d, a ~ b → c ~ d → a ⊕ c ~ b ⊕ d.
 Proof.
@@ -56,14 +49,9 @@ Proof.
     pose proof (lt_lrplus ab cd) as ltq.
     rewrite plus_half in ltq.
     apply (le_lt_trans (abs_tri _ _)) in ltq.
-    applys_eq ltq.
-    apply f_equal.
-    do 2 rewrite <- plus_assoc.
-    apply lplus.
+    rewrite plus_4 in ltq.
     rewrite neg_plus.
-    do 2 rewrite plus_assoc.
-    apply rplus.
-    apply plus_comm.
+    exact ltq.
 Qed.
 
 Lemma real_neg_wd : ∀ a b, a ~ b → ⊖a ~ ⊖b.
@@ -72,8 +60,8 @@ Proof.
     specialize (ab ε ε_pos) as [N ab].
     exists N.
     intros n.
-    rewrite abs_minus.
-    rewrite neg_neg, plus_comm.
+    rewrite <- neg_plus.
+    rewrite abs_neg.
     apply ab.
 Qed.
 
@@ -95,13 +83,10 @@ Proof.
     intros a b c.
     equiv_get_value a b c.
     unfold plus; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
+    apply real_eq_zero.
+    intros i.
     rewrite plus_assoc.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
+    apply plus_rinv.
 Qed.
 
 Global Instance real_plus_comm : PlusComm real.
@@ -110,13 +95,10 @@ Proof.
     intros a b.
     equiv_get_value a b.
     unfold plus; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
-    rewrite (plus_comm (r_seq a i)).
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
+    apply real_eq_zero.
+    intros i.
+    rewrite (plus_comm (a i)).
+    apply plus_rinv.
 Qed.
 
 Global Instance real_plus_lid : PlusLid real.
@@ -125,13 +107,10 @@ Proof.
     intros a.
     equiv_get_value a.
     unfold plus, zero; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
+    apply real_eq_zero.
+    intros i.
     rewrite plus_lid.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
+    apply plus_rinv.
 Qed.
 
 Global Instance real_plus_linv : PlusLinv real.
@@ -141,11 +120,8 @@ Proof.
     equiv_get_value a.
     unfold plus, neg, zero; cbn.
     unfold rat_to_real; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
+    apply real_eq_zero.
+    intros i.
     rewrite plus_linv.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
+    apply plus_rinv.
 Qed.

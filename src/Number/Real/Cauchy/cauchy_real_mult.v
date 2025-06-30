@@ -2,7 +2,7 @@ Require Import init.
 
 Require Export cauchy_real_plus.
 
-Lemma cauchy_bounded : ∀ a : real_base, ∃ M, ∀ n, |r_seq a n| < M.
+Lemma cauchy_bounded : ∀ a : real_base, ∃ M, ∀ n, |a n| < M.
 Proof.
     intros [a a_cauchy]; cbn.
     specialize (a_cauchy 1 one_pos) as [N a_cauchy].
@@ -59,7 +59,7 @@ Proof.
         exact a_cauchy.
 Qed.
 
-Lemma cauchy_mult : ∀ a b : real_base, cauchy_seq (λ n, r_seq a n * r_seq b n).
+Lemma cauchy_mult : ∀ a b : real_base, cauchy_seq (λ n, a n * b n).
 Proof.
     intros a b ε ε_pos.
     pose proof (cauchy_bounded a) as [M1 M1_gt].
@@ -94,7 +94,7 @@ Proof.
         apply M1_gt.
 Qed.
 
-Notation "a ⊗ b" := (make_real _ (cauchy_mult a b)) : real_scope.
+Notation "a ⊗ b" := (make_real _ (cauchy_mult a b)).
 
 Lemma real_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
     intros [a a_cauchy] b c [d d_cauchy] ab cd ε ε_pos.
@@ -140,10 +140,10 @@ Global Instance real_one : One real := {
 Definition real_div_base (a : real_base) :=
     If (0 = to_equiv real_equiv a)
     then λ _, 0
-    else λ n, /(r_seq a n).
+    else λ n, /(a n).
 
 Lemma cauchy_nz : ∀ a : real_base, 0 ≠ to_equiv real_equiv a →
-    ∃ ε N, 0 < ε ∧ (∀ i, N ≤ i → ε ≤ |r_seq a i|).
+    ∃ ε N, 0 < ε ∧ (∀ i, N ≤ i → ε ≤ |a i|).
 Proof.
     intros [a a_cauchy] a_neq; cbn in *.
     rewrite neq_sym in a_neq.
@@ -224,7 +224,7 @@ Lemma cauchy_div : ∀ a : real_base, cauchy_seq (real_div_base a).
     -   apply i_gt.
 Qed.
 
-Notation "⊘ a" := (make_real _ (cauchy_div a)) : real_scope.
+Notation "⊘ a" := (make_real _ (cauchy_div a)).
 
 Lemma real_div_wd : ∀ a b, a ~ b → ⊘a ~ ⊘b.
 Proof.

@@ -5,7 +5,7 @@ Require Export order_cone.
 
 Definition real_pos_base (a : real_base) :=
     0 = to_equiv real_equiv a ∨
-    ∃ N, ∀ i, N ≤ i → 0 ≤ r_seq a i.
+    ∃ N, ∀ i, N ≤ i → 0 ≤ a i.
 
 Lemma real_pos_wd1 : ∀ a b, a ~ b → real_pos_base a → real_pos_base b.
 Proof.

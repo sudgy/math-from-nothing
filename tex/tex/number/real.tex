@@ -1,6 +1,7 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
 \externaldocument{../basics/elementary_algebra}
+\externaldocument{../basics/set}
 
 \begin{document}
 
@@ -46,18 +47,28 @@ rather than just $a$, to distinguish real numbers from sequences.
 \end{definition}
 
 \begin{definition}
-    Define an equivalence relation $\sim$ on Cauchy sequences by saying that
-    $a_n \sim b_n$ if for all $\varepsilon > 0$, there exists a natural number
-    $N$ such that for all $i \geq N$, we have $|a_i - b_i| < \varepsilon$.
+    Define a relation $\sim$ on Cauchy sequences by saying that $a_n \sim b_n$
+    if for all $\varepsilon > 0$, there exists a natural number $N$ such that
+    for all $i \geq N$, we have $|a_i - b_i| < \varepsilon$.
 \end{definition}
+
+\begin{lemma} \label{real_eq_zero}
+    For all sequences $a_n$ and $b_n$, if $a_i - b_i = 0$ for all $i : \N$, then
+    $a_n \sim b_n$.
+\end{lemma}
+\begin{proof}
+    Let $\varepsilon > 0$.  Then picking $N = 0$, for all $i \geq N$, we have
+    \[
+        |a_i - b_i| = 0 < \varepsilon.
+    \]
+\end{proof}
 
 \begin{lemma}
     The relation $\sim$ is an equivalence relation on Cauchy sequences.
 \end{lemma}
 \begin{proof}
-    \textit{Reflexivity}.  Let $a_n$ be a Cauchy sequence, and let $\varepsilon
-    > 0$.  Then setting $N = 0$, for all $i \geq N$, we have $|a_i - a_i| = 0 <
-    \varepsilon$, showing that $\sim$ is reflexive.
+    \textit{Reflexivity}.  Let $a_n$ be a Cauchy sequence.  Then $a_i - a_i = 0$
+    for all $i$, so $\sim$ is reflexive by Lemma \ref{real_eq_zero}.
 
     \textit{Symmetry}.  Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim
     b_n$.  Let $\varepsilon > 0$.  Because $a_n \sim b_n$, we have an $N$ such
@@ -108,5 +119,158 @@ $\iQ$.  However, by the time we can apply $\iQ$ to $\R$, we will be so far along
 in the construction that we will never need to prove this.  Again, after this
 chapter, this construction won't be used anymore, and with it this way of
 turning rational numbers to real numbers.
+
+\section{Addition}
+
+\begin{lemma}
+    If $a_n$ and $b_n$ are Cauchy sequences, then the sequence $c_i = a_i + b_i$
+    is a Cauchy sequence.
+\end{lemma}
+\begin{proof}
+    Let $\varepsilon > 0$.  Then $\frac{\varepsilon}{2} > 0$, and by $a_n$ being
+    Cauchy we have a natural number $N_1$ such that $|a_i - a_j| <
+    \frac{\varepsilon}{2}$ for all $i \geq N_1$ and $j \geq N_1$, and by $b_n$
+    being Cauchy we have a natural number $N_2$ such that $|b_i - b_j| <
+    \frac{\varepsilon}{2}$ for all $i \geq N_2$ and $j \geq N_2$.  Set $N =
+    \max(N_1, N_2)$.  Then for all $i \geq N$ and $j \geq N$, we have both
+    inequalities.  Thus,
+    \begin{align*}
+        |c_i - c_j|
+        &= |(a_i + b_i) - (a_j + b_j)| && \\
+        &= |(a_i - a_j) + (b_i - b_j)| && \\
+        &\leq |a_i - a_j| + |b_i - b_j| && \text{by Theorem \ref{abs_tri}} \\
+        &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} && \\
+        &= \varepsilon.
+    \end{align*}
+\end{proof}
+
+\begin{definition}
+    Define a binary operation $\oplus$ on Cauchy sequences that takes two Cauchy
+    sequences and produces their sum, which is Cauchy by the previous lemma.
+\end{definition}
+
+\begin{lemma}
+    For all Cauchy sequences $a_n$, the sequence $b_i = -a_i$ is a Cauchy
+    sequence.
+\end{lemma}
+\begin{proof}
+    Let $\varepsilon > 0$.  Because $a_n$ is Cauchy, there exists an $N$ such
+    that $|a_i - a_j| < \varepsilon$ for all $i \geq N$ and $j \geq N$.  Then
+    \[
+        |b_i - b_j|
+        = |{-}a_i - -a_j|
+        = |{-}(a_i - a_j)|
+        = |a_i - a_j|
+        < \varepsilon.
+    \]
+\end{proof}
+
+\begin{definition}
+    Define an operation $\ominus$ on Cauchy sequences that takes a Cauchy
+    sequence and produces its negative, which is Cauchy by the previous lemma.
+\end{definition}
+
+\begin{lemma}
+    The operation $\oplus$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a_n$, $b_n$, $c_n$, and $d_n$ be Cauchy sequences such that $a_n \sim
+    b_n$ and $c_n \sim d_n$.  We must prove that $a_n \oplus c \sim b \oplus d$.
+    Let $\varepsilon > 0$.  Then $\frac{\varepsilon}{2} > 0$, so by $a_n \sim
+    b_n$ we have a natural number $N_1$ such that $|a_i - b_i| <
+    \frac{\varepsilon}{2}$ for all $i \geq N_1$, and by $c_n \sim d_n$ we have a
+    natural number $N_2$ such that $|c_i - d_i| < \frac{\varepsilon}{2}$ for all
+    $i \geq N_2$.  Setting $N = \max(N_1, N_2)$, we get both inequalities for
+    all $i \geq N$.  Then
+    \begin{align*}
+        |(a_n \oplus c_n)_i - (b_n \oplus d_n)_i|
+        &= |(a_i + c_i) - (b_i + d_i)| \\
+        &= |(a_i - b_i) + (c_i - d_i)| \\
+        &\leq |a_i - b_i| + |c_i - d_i| \\
+        &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} \\
+        &= \varepsilon.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Define addition of real numbers as the binary operation given by Theorem
+    \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Define $0$ in the real numbers to be the real version of the rational $0$,
+    that is, the equivalence class of the constant sequence $0$.
+\end{instance}
+
+\begin{lemma}
+    The operation $\ominus$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim b_n$.  We must prove
+    that $\ominus a_n \sim \ominus b_n$.  Let $\varepsilon > 0$.  Then because
+    $a_n \sim b_n$, there exists an $N$ such that $|a_i - b_i| < \varepsilon$
+    for all $i \geq N$.  Then
+    \[
+        |(\ominus a_n)_i - (\ominus b_n)_i|
+        = |{-}a_i - -b_i|
+        = |{-}(a_i - b_i)|
+        = |a_i - b_i|
+        < \varepsilon.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define additive inverses in the real numbers as the operation given by
+    Theorem \ref{unary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Addition of real numbers is associative.
+\end{instance}
+\begin{proof}
+    Let $a_n$, $b_n$, and $c_n$ be Cauchy sequences.  Using Lemma
+    \ref{real_eq_zero},
+    \[
+        (a_i + (b_i + c_i)) - ((a_i + b_i) + c_i)
+        = (a_i + (b_i + c_i)) - (a_i + (b_i + c_i))
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    Addition of real numbers is commutative.
+\end{instance}
+\begin{proof}
+    Let $a_n$ and $b_n$ be Cauchy sequences.  Using Lemma \ref{real_eq_zero},
+    \[
+        (a_i + b_i) - (b_i + a_i)
+        = (a_i + b_i) - (a_i + b_i)
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    $0$ is an additive identity in $\R$.
+\end{instance}
+\begin{proof}
+    Let $a_n$ be a Cauchy sequence.  Using Lemma \ref{real_eq_zero},
+    \[
+        (0 + a_i) - a_i
+        = a_i - a_i
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    Negation is an additive inverse in $\R$.
+\end{instance}
+\begin{proof}
+    Let $a_n$ be a Cauchy sequence.  Using Lemma \ref{real_eq_zero},
+    \[
+        (-a_i + a_i) - 0 = 0 - 0 = 0.
+    \]
+\end{proof}
 
 \end{document}

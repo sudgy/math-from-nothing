@@ -6,7 +6,7 @@ Require Import nat.
 Open Scope nat_scope.
 
 Lemma real_lt : ∀ a b, to_equiv real_equiv a < to_equiv real_equiv b →
-    ∃ ε N, 0 < ε ∧ ∀ i, N ≤ i → r_seq a i + ε < r_seq b i.
+    ∃ ε N, 0 < ε ∧ ∀ i, N ≤ i → a i + ε < b i.
 Proof.
     intros a b ltq.
     destruct ltq as [leq neq].
@@ -38,7 +38,7 @@ Proof.
     specialize (leq i (trans (rmax _ _) i_ge)).
     rewrite abs_pos_eq in nz by exact leq.
     rewrite lt_plus_llmove.
-    rewrite (plus_comm (-(r_seq a i))).
+    rewrite (plus_comm (-(a i))).
     apply (lt_le_trans2 nz).
     rewrite <- (plus_half ε) at 2.
     rewrite <- lt_plus_0_a_b_ab.
