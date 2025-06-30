@@ -1,0 +1,112 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+\externaldocument{../basics/elementary_algebra}
+
+\begin{document}
+
+\setcounter{chapter}{10}
+
+\chapter{The Real Numbers}
+
+Constructing the real numbers is much more complicated than it initially seems.
+I have gone through several constructions in the Coq code trying to find the
+simplest one.  Of all of the constructions I have tried, the simplest one was
+the one using Cauchy sequences of rationals, so that is the one I will be
+presenting in this chapter.  The other constructions I have done will be covered
+in a future chapter.  Because I have swapped constructions before and am open to
+doing it again, after this chapter the particular construction used will not be
+mentioned outside of this chapter.  The only important things will be developed
+in the last section.
+
+One may wonder, why are we using Cauchy sequences when we haven't done any
+analysis yet?  Shouldn't we do analysis first to get the definition of Cauchy
+sequences?  The issue here is that the definition of a metric space depends on
+the real numbers.  One could define metric spaces where the metric has values in
+an arbitrary ordered field, but this approach isn't really that useful and ends
+up introducing a great deal of complexity.  Thus, all of the ideas in analysis
+that we will need for this chapter will be introduced here using the rational
+numbers and then never used again outside of this chapter.  Until the last
+section, none of definitions or theorems in this chapter will be used anywhere
+else, and some future definitions will even have the same names as in this
+chapter despite being distinct.
+
+Throughout this chapter, we will be using sequences of rational numbers
+extensively.  Recall that a sequence of rational numbers is function $a$ from
+$\N$ to $\Q$.  Instead of writing $a(i)$ to denote the $i$th element of the
+sequence, we will use $a_i$.  We will often refer to the sequence as $a_n$
+rather than just $a$, to distinguish real numbers from sequences.
+
+\section{Basic Construction}
+
+\begin{definition}
+    Let $a_n$ be a sequence of rational numbers.  Then we say that $a_n$ is a
+    Cauchy sequence if for all $\varepsilon > 0$, there exists a natural number
+    $N$ such that for all $i$ and $j$ with $N \leq i$ and $N \leq j$, we have
+    $|a_i - a_j| < \varepsilon$.
+\end{definition}
+
+\begin{definition}
+    Define an equivalence relation $\sim$ on Cauchy sequences by saying that
+    $a_n \sim b_n$ if for all $\varepsilon > 0$, there exists a natural number
+    $N$ such that for all $i \geq N$, we have $|a_i - b_i| < \varepsilon$.
+\end{definition}
+
+\begin{lemma}
+    The relation $\sim$ is an equivalence relation on Cauchy sequences.
+\end{lemma}
+\begin{proof}
+    \textit{Reflexivity}.  Let $a_n$ be a Cauchy sequence, and let $\varepsilon
+    > 0$.  Then setting $N = 0$, for all $i \geq N$, we have $|a_i - a_i| = 0 <
+    \varepsilon$, showing that $\sim$ is reflexive.
+
+    \textit{Symmetry}.  Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim
+    b_n$.  Let $\varepsilon > 0$.  Because $a_n \sim b_n$, we have an $N$ such
+    that for $i \geq N$, we have $|a_i - b_i| < \varepsilon$.  By Theorem
+    \ref{abs_minus}, this means that for all $i \geq N$, we have $|b_i - a_i| <
+    \varepsilon$, showing that $b_n \sim a_n$.
+
+    \textit{Transitivity}.  Let $a_n$, $b_n$, and $c_n$ be Cauchy sequences with
+    $a_n \sim b_n$ and $b_n \sim c_n$.  Let $\varepsilon > 0$.  Then
+    $\frac{\varepsilon}{2} > 0$, so by $a_n \sim b_n$ and $b_n \sim c_n$ we have
+    a natural number $N_1$ such that for all $i \geq N_1$ we have $|a_i - b_i| <
+    \frac{\varepsilon}{2}$ and a natural number $N_2$ such that for all $i \geq
+    N_2$ we have $|b_i - c_i| < \frac{\varepsilon}{2}$.  Setting $N = \max(N_1,
+    N_2)$, for all $i \geq N$, we have both inequalities.  Then we have
+    \begin{align*}
+        |a_i - c_i|
+        &= |(a_i - b_i) + (b_i - c_i)| && \\
+        &\leq |a_i - b_i| + |b_i - c_i| && \text{by Theorem \ref{abs_tri}} \\
+        &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} && \\
+        &= \varepsilon. &&
+    \end{align*}
+\end{proof}
+
+\begin{definition}
+    Define the type $\R$ of real numbers to be the quotient of Cauchy sequences
+    by $\sim$.  Given a Cauchy sequence $a_n$, we will often use just $a$ to
+    represent the equivalence class of $a_n$ under this quotient.
+\end{definition}
+
+\begin{lemma}
+    Constant sequences are Cauchy.
+\end{lemma}
+\begin{proof}
+    For some constant rational number $q$, let $q_n = q$ for all $n : \N$.  Then
+    for all $\varepsilon > 0$, setting $N = 0$, for all $i \geq 0$ and $j \geq
+    0$ we have $|q_i - q_j| = |q - q| = 0 < \varepsilon$, so $a_n$ is Cauchy.
+\end{proof}
+
+\begin{definition}
+    Given a rational number $q$, we can consider it to be a real number by
+    turning it into the constant sequence $q_n$ (which we know is Cauchy by the
+    previous lemma) and then taking the equivalence class of it.  We will often
+    refer to the real number as $q$ as well.
+\end{definition}
+
+This induces a function from the rationals to the reals that is in fact equal to
+$\iQ$.  However, by the time we can apply $\iQ$ to $\R$, we will be so far along
+in the construction that we will never need to prove this.  Again, after this
+chapter, this construction won't be used anymore, and with it this way of
+turning rational numbers to real numbers.
+
+\end{document}

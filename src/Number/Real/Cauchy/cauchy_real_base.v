@@ -60,11 +60,10 @@ Proof.
     specialize (bc i (trans (rmax N1 N2) i_ge)).
     pose proof (lt_lrplus ab bc) as ltq.
     rewrite plus_half in ltq.
-    apply (le_lt_trans2 ltq).
-    apply (trans2 (abs_tri _ _)).
-    rewrite plus_assoc.
-    rewrite plus_rlinv.
-    apply refl.
+    apply (le_lt_trans (abs_tri _ _)) in ltq.
+    rewrite plus_assoc in ltq.
+    rewrite plus_rlinv in ltq.
+    exact ltq.
 Qed.
 
 End RealEquiv.
