@@ -98,7 +98,7 @@ rather than just $a$, to distinguish real numbers from sequences.
     represent the equivalence class of $a_n$ under this quotient.
 \end{definition}
 
-\begin{lemma}
+\begin{lemma} \label{rat_to_real_cauchy}
     Constant sequences are Cauchy.
 \end{lemma}
 \begin{proof}
@@ -122,9 +122,14 @@ turning rational numbers to real numbers.
 
 \section{Addition}
 
+\begin{definition}
+    Define a binary operation $\oplus$ on Cauchy sequences that takes two Cauchy
+    sequences $a_n$ and $b_n$ and produces a new sequence given by $a_i + b_i$.
+\end{definition}
+
 \begin{lemma}
-    If $a_n$ and $b_n$ are Cauchy sequences, then the sequence $c_i = a_i + b_i$
-    is a Cauchy sequence.
+    If $a_n$ and $b_n$ are Cauchy sequences, then $a_i \oplus b_i$ is a Cauchy
+    sequence.
 \end{lemma}
 \begin{proof}
     Let $\varepsilon > 0$.  Then $\frac{\varepsilon}{2} > 0$, and by $a_n$ being
@@ -135,7 +140,7 @@ turning rational numbers to real numbers.
     \max(N_1, N_2)$.  Then for all $i \geq N$ and $j \geq N$, we have both
     inequalities.  Thus,
     \begin{align*}
-        |c_i - c_j|
+        |(a_n \oplus b_n)_i - (a_n \oplus b_n)_j|
         &= |(a_i + b_i) - (a_j + b_j)| && \\
         &= |(a_i - a_j) + (b_i - b_j)| && \\
         &\leq |a_i - a_j| + |b_i - b_j| && \text{by Theorem \ref{abs_tri}} \\
@@ -143,32 +148,6 @@ turning rational numbers to real numbers.
         &= \varepsilon.
     \end{align*}
 \end{proof}
-
-\begin{definition}
-    Define a binary operation $\oplus$ on Cauchy sequences that takes two Cauchy
-    sequences and produces their sum, which is Cauchy by the previous lemma.
-\end{definition}
-
-\begin{lemma}
-    For all Cauchy sequences $a_n$, the sequence $b_i = -a_i$ is a Cauchy
-    sequence.
-\end{lemma}
-\begin{proof}
-    Let $\varepsilon > 0$.  Because $a_n$ is Cauchy, there exists an $N$ such
-    that $|a_i - a_j| < \varepsilon$ for all $i \geq N$ and $j \geq N$.  Then
-    \[
-        |b_i - b_j|
-        = |{-}a_i - -a_j|
-        = |{-}(a_i - a_j)|
-        = |a_i - a_j|
-        < \varepsilon.
-    \]
-\end{proof}
-
-\begin{definition}
-    Define an operation $\ominus$ on Cauchy sequences that takes a Cauchy
-    sequence and produces its negative, which is Cauchy by the previous lemma.
-\end{definition}
 
 \begin{lemma}
     The operation $\oplus$ is well-defined under the equivalence relation
@@ -199,34 +178,6 @@ turning rational numbers to real numbers.
 \end{instance}
 
 \begin{instance}
-    Define $0$ in the real numbers to be the real version of the rational $0$,
-    that is, the equivalence class of the constant sequence $0$.
-\end{instance}
-
-\begin{lemma}
-    The operation $\ominus$ is well-defined under the equivalence relation
-    $\sim$.
-\end{lemma}
-\begin{proof}
-    Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim b_n$.  We must prove
-    that $\ominus a_n \sim \ominus b_n$.  Let $\varepsilon > 0$.  Then because
-    $a_n \sim b_n$, there exists an $N$ such that $|a_i - b_i| < \varepsilon$
-    for all $i \geq N$.  Then
-    \[
-        |(\ominus a_n)_i - (\ominus b_n)_i|
-        = |{-}a_i - -b_i|
-        = |{-}(a_i - b_i)|
-        = |a_i - b_i|
-        < \varepsilon.
-    \]
-\end{proof}
-
-\begin{instance}
-    Define additive inverses in the real numbers as the operation given by
-    Theorem \ref{unary_op_ex} and the previous lemma.
-\end{instance}
-
-\begin{instance}
     Addition of real numbers is associative.
 \end{instance}
 \begin{proof}
@@ -252,6 +203,11 @@ turning rational numbers to real numbers.
 \end{proof}
 
 \begin{instance}
+    Define $0$ in the real numbers to be the real version of the rational $0$,
+    that is, the equivalence class of the constant sequence $0$.
+\end{instance}
+
+\begin{instance}
     $0$ is an additive identity in $\R$.
 \end{instance}
 \begin{proof}
@@ -263,6 +219,49 @@ turning rational numbers to real numbers.
     \]
 \end{proof}
 
+\begin{definition}
+    Define an operation $\ominus$ on Cauchy sequences that takes a Cauchy
+    sequence $a_n$ and produces a new sequence given by $-a_i$.
+\end{definition}
+
+\begin{lemma}
+    For all Cauchy sequences $a_n$, $\ominus a_n$ is a Cauchy sequence.
+\end{lemma}
+\begin{proof}
+    Let $\varepsilon > 0$.  Because $a_n$ is Cauchy, there exists an $N$ such
+    that $|a_i - a_j| < \varepsilon$ for all $i \geq N$ and $j \geq N$.  Then
+    \[
+        |(\ominus a_n)_i - (\ominus a_n)_j|
+        = |{-}a_i - -a_j|
+        = |{-}(a_i - a_j)|
+        = |a_i - a_j|
+        < \varepsilon.
+    \]
+\end{proof}
+
+\begin{lemma}
+    The operation $\ominus$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim b_n$.  We must prove
+    that $\ominus a_n \sim \ominus b_n$.  Let $\varepsilon > 0$.  Then because
+    $a_n \sim b_n$, there exists an $N$ such that $|a_i - b_i| < \varepsilon$
+    for all $i \geq N$.  Then
+    \[
+        |(\ominus a_n)_i - (\ominus b_n)_i|
+        = |{-}a_i - -b_i|
+        = |{-}(a_i - b_i)|
+        = |a_i - b_i|
+        < \varepsilon.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define additive inverses in the real numbers as the operation given by
+    Theorem \ref{unary_op_ex} and the previous lemma.
+\end{instance}
+
 \begin{instance}
     Negation is an additive inverse in $\R$.
 \end{instance}
@@ -271,6 +270,301 @@ turning rational numbers to real numbers.
     \[
         (-a_i + a_i) - 0 = 0 - 0 = 0.
     \]
+\end{proof}
+
+\section{Multiplication}
+
+Before moving on to multiplication itself, we need a few lemmas.
+
+\begin{lemma} \label{real_cauchy_bounded}
+    For all Cauchy sequences $a_n$, there exists a rational number $M$ such that
+    $|a_i| < M$ for all $i : \N$.
+\end{lemma}
+\begin{proof}
+    By $a_n$ being Cauchy, since $1 > 0$, we have a natural number $N$ such that
+    for all $i \geq N$ and $j \geq N$, we have $|a_i - a_j| < 1$.  Let $S$ be
+    the set $\{q : \Q \mid \exists i < N, |a_i| = q\}$.  We will prove that $S$
+    has an upper bound.
+
+    First, if $N = 0$, $S$ is empty, so $0$ works as an upper bound.  When $N
+    \neq 0$, notice that $S$, being the image of a function from a finite set,
+    is finite.  Furthermore, because $N \neq 0$, $|a_0| \in S$, so $s$ is
+    nonempty.  Thus, by Theorem \ref{simple_finite_max}, $S$ has a maximum
+    element, which is an upper bound of $S$.
+
+    Thus, $S$ has an upper bound $m$.  Let $M = \max(m + 1, |a_N| + 1)$.  We
+    will show that $|a_i| < M$ for all $i : \N$.  There will be two cases: when
+    $i < N$, and when $i \geq N$.  When $i < N$,
+    \[
+        |a_i| \leq m < m + 1 \leq \max(m + 1, |a_N| + 1).
+    \]
+    When $i \geq N$, we have $|a_i - a_N| < 1$ and by Theorem
+    \ref{abs_reverse_tri2}, we have $|a_i| - |a_N| < 1$, so
+    \[
+        |a_i| < |a_N| + 1 \leq \max(m + 1, |a_N| + 1).
+    \]
+    Either way, $|a_i| < M$.
+\end{proof}
+
+\begin{lemma} \label{real_cauchy_nz}
+    For all Cauchy sequences $a_n$, if $0 \neq a$, then there exists a rational
+    number $\varepsilon > 0$ and a natural number $N$ such that for all $i \geq
+    N$, we have $\varepsilon \leq |a_i|$.
+\end{lemma}
+\begin{proof}
+    Because $0 \neq a_n$, we have some $\varepsilon > 0$ such that for all
+    natural numbers $N$, there exists a $j \geq N$ with
+    \begin{equation} \label{real_cauchy_nz_1}
+        |a_j - 0| = |a_j| \geq \varepsilon.
+    \end{equation}
+    Because $a_n$ is Cauchy and $\frac{\varepsilon}{2} > 0$, there exists a
+    natural number $N$ such that for all $i \geq N$ and $j \geq N$, we have
+    \begin{equation} \label{real_cauchy_nz_2}
+        |a_i - a_j| < \frac{\varepsilon}{2}.
+    \end{equation}
+    Let $j$ be the natural number greater than or equal to $N$ satisfying
+    (\ref{real_cauchy_nz_1}).  Then for all $i \geq N$, by Theorem
+    \ref{abs_reverse_tri2} and (\ref{real_cauchy_nz_2}) we have
+    \begin{gather*}
+        |a_j| - |a_i| \leq |a_j - a_i| < \frac{\varepsilon}{2} \\
+        \implies |a_j| < \frac{\varepsilon}{2} + |a_i|,
+    \end{gather*}
+    and by transitivity with (\ref{real_cauchy_nz_1}) we get
+    \begin{align*}
+        \varepsilon &< \frac{\varepsilon}{2} + |a_i| \\
+        \frac{\varepsilon}{2} &< |a_i|,
+    \end{align*}
+    showing that for all $i \geq N$, we have $\frac{\varepsilon}{2} < |a_i|$ as
+    required.
+\end{proof}
+
+\begin{definition}
+    Define a binary operation $\otimes$ on Cauchy sequences that takes two
+    Cauchy sequences $a_n$ and $b_n$ and produces a new sequence given by $a_i
+    b_i$.
+\end{definition}
+
+\begin{lemma}
+    If $a_n$ and $b_n$ are Cauchy sequences, then $a_n \otimes b_n$ is as well.
+\end{lemma}
+\begin{proof}
+    By Lemma \ref{real_cauchy_bounded}, we have rational numbers $M_1$ and $M_2$
+    with $|a_i| < M_1$ and $|b_i| < M_2$ for all $i : \N$.  Since the absolute
+    value is always positive, $M_1$ and $M_2$ are always greater than zero.  Now
+    let $\varepsilon > 0$.  Then $\frac{\varepsilon}{2M_2} > 0$, so by $a_n$
+    being Cauchy we have a natural number $N_1$ such that for all $i \geq N_1$
+    and $j \geq N_1$, we have $|a_i - a_j| < \frac{\varepsilon}{2M_2}$.
+    Similarly, because $\frac{\varepsilon}{2M_1} > 0$, we have a natural number
+    $N_2$ such that for all $i \geq N_2$ and $j \geq N_2$, we have $|b_i - b_j|
+    < \frac{\varepsilon}{2M_1}$.  Now define $N = \max(N_1, N_2)$.  Then for all
+    $i \geq N$ and $j \geq N$,
+    \begin{align*}
+        |a_i b_i - a_j b_j|
+        &= |a_i b_i - a_i b_j + a_i b_j - a_j b_j| \\
+        &= |a_i (b_i - b_j) + b_j (a_i - a_j)| \\
+        &\leq |a_i (b_i - b_j)| + |b_j (a_i - a_j)| \\
+        &= |a_i|\, |b_i - b_j| + |b_j|\, |a_i - a_j| \\
+        &< M_1 |b_i - b_j| + M_2 |b_i - b_j| \\
+        &< M_1 \frac{\varepsilon}{2M_1} + M_2 \frac{\varepsilon}{2M_2} \\
+        &= \varepsilon.
+    \end{align*}
+\end{proof}
+
+\begin{lemma}
+    The operation $\otimes$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a_n$, $b_n$, $c_n$, and $d_n$ be Cauchy sequences with $a_n \sim b_n$
+    and $c_n \sim d_n$.  We must prove that $a_n \otimes c_n \sim b_n \otimes
+    d_n$.  By Lemma \ref{real_cauchy_bounded}, we have rational numbers $M_1$
+    and $M_2$ with $|b_i| < M_1$ and $|c_i| < M_2$ for all $i : \N$.  Since the
+    absolute value is always positive, $M_1$ and $M_2$ are always greater than
+    zero.  Now let $\varepsilon > 0$.  Then $\frac{\varepsilon}{2M_2} > 0$, so
+    by $a_n \sim b_n$ we have a natural number $N_1$ such that for all $i \geq
+    N_1$, we have $|a_i - b_i| < \frac{\varepsilon}{2M_2}$.  Similarly,
+    $\frac{\varepsilon}{2M_1} > 0$, so by $c_n \sim d_n$ we have a natural
+    number $N_2$ such that for all $i \geq N_2$, we have $|c_i - d_i| <
+    \frac{\varepsilon}{2M_1}$.  Set $N = \max(N_1, N_2)$.  Then for all $i \geq
+    N$,
+    \begin{align*}
+        |a_i c_i - b_i d_i|
+        &= |a_i c_i - b_i c_i + b_i c_i - b_i d_i| \\
+        &= |c_i (a_i - b_i) + b_i (c_i - d_i)| \\
+        &\leq |c_i (a_i - b_i)| + |b_i (c_i - d_i)| \\
+        &= |c_i|\, |a_i - b_i| + |b_i|\, |c_i - d_i| \\
+        &< M_2 |a_i - b_i| + M_1 |c_i - d_i| \\
+        &< M_2 \frac{\varepsilon}{2M_2} + M_1 \frac{\varepsilon}{2M_1} \\
+        &= \varepsilon.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Define multiplication of real numbers as the binary operation given by
+    Theorem \ref{binary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Multiplication of real numbers is distributive over addition.
+\end{instance}
+\begin{proof}
+    Let $a_n$, $b_n$, and $c_n$ be Cauchy sequences.  Using Lemma
+    \ref{real_eq_zero},
+    \[
+        (a_i(b_i + c_i)) - (a_ib_i + a_ic_i)
+        = (a_ib_i + a_ic_i) - (a_ib_i + a_ic_i)
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    Multiplication of real numbers is commutative.
+\end{instance}
+\begin{proof}
+    Let $a_n$ and $b_n$ be Cauchy sequences.  Using Lemma \ref{real_eq_zero},
+    \[
+        (a_i b_i) - (b_i a_i)
+        = (a_i b_i) - (a_i b_i)
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    Multiplication of real numbers is associative.
+\end{instance}
+\begin{proof}
+    Let $a_n$, $b_n$, and $c_n$ be Cauchy sequences.  Using Lemma
+    \ref{real_eq_zero},
+    \[
+        (a_i (b_i c_i)) - ((a_i b_i) c_i)
+        = ((a_i b_i) c_i) - ((a_i b_i) c_i)
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define $1$ in the real numbers to be the real version of the rational $1$,
+    that is, the equivalence class of the constant sequence $1$.
+\end{instance}
+
+\begin{instance}
+    $1$ is a multiplicative identity in $\R$.
+\end{instance}
+\begin{proof}
+    Let $a_n$ be a Cauchy sequence.  Using Lemma \ref{real_eq_zero},
+    \[
+        (1 a_i) - a_i
+        = a_i - a_i
+        = 0.
+    \]
+\end{proof}
+
+\begin{definition}
+    Let $a_n$ be a Cauchy sequence.  Then we will define a new sequence $\oslash
+    a_n$ by saying that $\oslash a_i = 0$ if $a = 0$ as a real number, and
+    $\oslash a_i = a_i^{-1}$ otherwise.
+\end{definition}
+
+\begin{lemma}
+    For all Cauchy sequences $a_n$, $\oslash a_n$ is also a Cauchy sequence.
+\end{lemma}
+\begin{proof}
+    If $a = 0$, then the result follows from Lemma \ref{rat_to_real_cauchy}.  So
+    consider the case $a \neq 0$.  By Lemma \ref{real_cauchy_nz}, we have a
+    rational $\varepsilon' > 0$ and a natural number $N_1$ such that for all $i
+    \geq N_1$, we have $\varepsilon' \leq |a_i|$.  Now let $\varepsilon > 0$.
+    Then $\varepsilon \varepsilon'^2 > 0$, so by $a_n$ being Cauchy, there
+    exists a natural number $N_2$ such that for all $i \geq N_2$ and $j \geq
+    N_2$, we have $|a_i - a_j| < \varepsilon\varepsilon'^2$.  Now set $N =
+    \max(N_1, N_2)$.  For all $i \geq N$ and $j \geq N$, we have $a_i \neq 0$
+    because $|a_i| \geq \varepsilon' > 0$, and by the same argument we have $a_j
+    \neq 0$.  Thus,
+    \begin{align*}
+        \left|\frac{1}{a_i} - \frac{1}{a_j}\right|
+        &= \left|\frac{a_j}{a_ia_j} - \frac{a_i}{a_ia_j}\right| \\
+        &= \left|\frac{a_j - a_i}{a_ia_j}\right| \\
+        &= \frac{|a_j - a_i|}{|a_i|\,|a_j|}.
+    \end{align*}
+    Now by $a_n$ being Cauchy we have
+    \[
+        |a_j - a_i| < \varepsilon \varepsilon'^2
+        \leq \varepsilon |a_i|\,|a_j|,
+    \]
+    so
+    \[
+        \left|\frac{1}{a_i} - \frac{1}{a_j}\right|
+        = \frac{|a_j - a_i|}{|a_i|\,|a_j|}
+        < \varepsilon.
+    \]
+\end{proof}
+
+\begin{lemma}
+    The operation $\oslash$ is well-defined under the equivalence relation
+    $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim b_n$.  Since $a = b$,
+    it's impossible to have $a = 0$ and $b \neq 0$ and vice versa, so there will
+    be two cases: when both $a$ and $b$ are equal to zero, and when neither are
+    equal to zero.  When $a = 0$ and $b = 0$, $\oslash a_i = 0$ and $\oslash b_i
+    = 0$, so $\oslash a_n = \oslash b_n$.  So now consider the case $a \neq 0$
+    and $b \neq 0$.
+
+    By $a \neq 0$, by Lemma \ref{real_cauchy_nz} we have a rational
+    $\varepsilon_1 > 0$ and a natural number $N_1$ such that $\varepsilon_1 \leq
+    |a_i|$ for all $i \geq N_1$, and similarly, we have a rational
+    $\varepsilon_2 > 0$ and a natural number $N_2$ such that $\varepsilon_2 \leq
+    |b_i|$ for all $i \geq N_2$.  Now let $\varepsilon > 0$.  Because $a_n \sim
+    b_n$, there exists a natural number $N_3$ such that for all $i \geq N_3$, we
+    have $|a_i - b_i| < \varepsilon \varepsilon_1 \varepsilon_2$.  Now set $N =
+    \max(N_1, N_2, N_3)$.  Then for all $i \geq N$, we have $a_i \neq 0$ because
+    $|a_i| \geq \varepsilon_1 > 0$, and by the same argument we have $b_i \neq
+    0$.  Thus,
+    \begin{align*}
+        \left|\frac{1}{a_i} - \frac{1}{b_i}\right|
+        &= \left|\frac{b_i}{a_ib_i} - \frac{a_i}{a_ib_i}\right| \\
+        &= \left|\frac{b_i - a_i}{a_ib_i}\right| \\
+        &= \frac{|b_i - a_i|}{|a_i|\,|b_i|}.
+    \end{align*}
+    Now by $a_n \sim b_n$ we have
+    \[
+        |b_i - a_i| < \varepsilon \varepsilon_1 \varepsilon_2
+        \leq \varepsilon |a_i|\,|b_i|,
+    \]
+    so
+    \[
+        \left|\frac{1}{a_i} - \frac{1}{b_i}\right|
+        = \frac{|b_i - a_i|}{|a_i|\,|b_i|}
+        < \varepsilon.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define multiplicative inverses as the operation produced by Theorem
+    \ref{unary_op_ex} and the previous lemma.
+\end{instance}
+
+\begin{instance}
+    The reciprocal in $\R$ is a multiplicative inverse.
+\end{instance}
+\begin{proof}
+    Let $a_n$ be a Cauchy sequence with $a \neq 0$.  Now we can't use Lemma
+    \ref{real_eq_zero} here because even though $a \neq 0$, there may exist some
+    elements of the sequence that are equal to zero.  Instead, let $\varepsilon
+    > 0$.  Because $a \neq 0$, by Lemma \ref{real_cauchy_nz}, there exists a
+    $\varepsilon' > 0$ and a natural number $n$ such that for all $i \geq N$, we
+    have $\varepsilon' \leq |a_i|$.  This means that for all $i \geq N$, $|a_i|
+    \geq \varepsilon > 0$, so $a_i \neq 0$.  Thus, for all $i \geq N$, we have
+    $|a_i^{-1} a_i - 1| = |1 - 1| = 0 < \varepsilon$.
+\end{proof}
+
+\begin{instance}
+    $\R$ is not trivial.
+\end{instance}
+\begin{proof}
+    Assume that $0 \sim 1$.  Because $0 < 1$, there exists an $N$ such that for
+    all $i \geq N$, we have $|0 - 1| < 1$.  $i = N$ works, so we have $|0 - 1| =
+    1 < 1$, which is impossible.
 \end{proof}
 
 \end{document}

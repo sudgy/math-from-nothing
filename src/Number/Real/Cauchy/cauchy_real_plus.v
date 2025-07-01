@@ -21,19 +21,7 @@ Proof.
     exact ltq.
 Qed.
 
-Lemma cauchy_neg : ∀ a : real_base, cauchy_seq (λ n, -a n).
-Proof.
-    intros [a a_cauchy] ε ε_pos; cbn.
-    specialize (a_cauchy ε ε_pos) as [N a_cauchy].
-    exists N.
-    intros i j.
-    rewrite <- neg_plus.
-    rewrite abs_neg.
-    apply a_cauchy.
-Qed.
-
 Notation "a ⊕ b" := (make_real _ (cauchy_plus a b)).
-Notation "⊖ a" := (make_real _ (cauchy_neg a)).
 
 Lemma real_plus_wd : ∀ a b c d, a ~ b → c ~ d → a ⊕ c ~ b ⊕ d.
 Proof.
@@ -54,27 +42,8 @@ Proof.
     exact ltq.
 Qed.
 
-Lemma real_neg_wd : ∀ a b, a ~ b → ⊖a ~ ⊖b.
-Proof.
-    intros [a a_cauchy] [b b_cauchy] ab ε ε_pos; cbn in *.
-    specialize (ab ε ε_pos) as [N ab].
-    exists N.
-    intros n.
-    rewrite <- neg_plus.
-    rewrite abs_neg.
-    apply ab.
-Qed.
-
 Global Instance real_plus : Plus real := {
     plus := binary_op (binary_self_wd real_plus_wd)
-}.
-
-Global Instance real_zero : Zero real := {
-    zero := rat_to_real 0
-}.
-
-Global Instance real_neg : Neg real := {
-    neg := unary_op (unary_self_wd real_neg_wd)
 }.
 
 Global Instance real_plus_assoc : PlusAssoc real.
@@ -101,6 +70,10 @@ Proof.
     apply plus_rinv.
 Qed.
 
+Global Instance real_zero : Zero real := {
+    zero := rat_to_real 0
+}.
+
 Global Instance real_plus_lid : PlusLid real.
 Proof.
     split.
@@ -112,6 +85,34 @@ Proof.
     rewrite plus_lid.
     apply plus_rinv.
 Qed.
+
+Lemma cauchy_neg : ∀ a : real_base, cauchy_seq (λ n, -a n).
+Proof.
+    intros [a a_cauchy] ε ε_pos; cbn.
+    specialize (a_cauchy ε ε_pos) as [N a_cauchy].
+    exists N.
+    intros i j.
+    rewrite <- neg_plus.
+    rewrite abs_neg.
+    apply a_cauchy.
+Qed.
+
+Notation "⊖ a" := (make_real _ (cauchy_neg a)).
+
+Lemma real_neg_wd : ∀ a b, a ~ b → ⊖a ~ ⊖b.
+Proof.
+    intros [a a_cauchy] [b b_cauchy] ab ε ε_pos; cbn in *.
+    specialize (ab ε ε_pos) as [N ab].
+    exists N.
+    intros n.
+    rewrite <- neg_plus.
+    rewrite abs_neg.
+    apply ab.
+Qed.
+
+Global Instance real_neg : Neg real := {
+    neg := unary_op (unary_self_wd real_neg_wd)
+}.
 
 Global Instance real_plus_linv : PlusLinv real.
 Proof.

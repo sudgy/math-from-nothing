@@ -18,16 +18,14 @@ Proof.
         assert (simple_finite (set_type S)) as S_fin.
         {
             apply (simple_finite_trans _ _ (simple_finite_nat (nat_suc N))).
-            exists (λ x : set_type S, [ex_val [|x] | land (ex_proof [|x])]).
+            unfold image_under in S.
+            apply (partition_principle (λ n,
+                [(|a [n|]|)|ex_intro _ [n|] (make_and [|n] Logic.eq_refl)])).
             split.
-            intros x y.
+            intros [y [n [n_lt y_eq]]].
+            exists [n|n_lt]; cbn.
             rewrite set_type_eq2.
-            rewrite_ex_val m [m_lt x_eq].
-            rewrite_ex_val n [n_lt y_eq].
-            intros eq; subst n.
-            rewrite <- y_eq in x_eq.
-            rewrite set_type_eq in x_eq.
-            exact x_eq.
+            symmetry; exact y_eq.
         }
         pose proof (simple_finite_max S_fin) as x_ex.
         prove_parts x_ex.
@@ -59,6 +57,37 @@ Proof.
         exact a_cauchy.
 Qed.
 
+Lemma cauchy_nz : ∀ a : real_base, 0 ≠ to_equiv real_equiv a →
+    ∃ ε N, 0 < ε ∧ (∀ i, N ≤ i → ε ≤ |a i|).
+Proof.
+    intros [a a_cauchy] a_neq; cbn in *.
+    rewrite neq_sym in a_neq.
+    unfold zero in a_neq; cbn in a_neq.
+    unfold rat_to_real in a_neq; equiv_simpl in a_neq.
+    rewrite not_all in a_neq.
+    destruct a_neq as [ε a_neq].
+    rewrite not_impl in a_neq.
+    rewrite not_ex in a_neq.
+    destruct a_neq as [ε_pos a_neq].
+    specialize (a_cauchy _ (half_pos ε_pos)) as [N a_cauchy].
+    specialize (a_neq N).
+    rewrite not_all in a_neq.
+    destruct a_neq as [n a_neq].
+    rewrite not_impl, nlt_le in a_neq.
+    destruct a_neq as [n_ge an_ge].
+    rewrite neg_zero, plus_rid in an_ge.
+    exists (ε/2), N.
+    split; [>exact (half_pos ε_pos)|].
+    intros i i_ge.
+    specialize (a_cauchy n i n_ge i_ge).
+    apply (le_lt_trans (abs_reverse_tri2 _ _)) in a_cauchy.
+    rewrite <- lt_plus_rrmove in a_cauchy.
+    pose proof (le_lt_trans an_ge a_cauchy) as ltq.
+    rewrite <- (plus_half ε) in ltq at 1.
+    apply lt_plus_lcancel in ltq.
+    apply ltq.
+Qed.
+
 Lemma cauchy_mult : ∀ a b : real_base, cauchy_seq (λ n, a n * b n).
 Proof.
     intros a b ε ε_pos.
@@ -76,7 +105,7 @@ Proof.
     specialize (b_cauchy i j (trans (rmax _ _) i_ge) (trans (rmax _ _) j_ge)).
     rewrite <- lt_mult_llmove_pos in a_cauchy by exact M2_pos.
     rewrite <- lt_mult_llmove_pos in b_cauchy by exact M1_pos.
-    pose proof (lt_lrplus a_cauchy b_cauchy) as ltq.
+    pose proof (lt_lrplus b_cauchy a_cauchy) as ltq.
     rewrite plus_half in ltq.
     rewrite <- (plus_rlinv (a i * b i) (a i * b j)).
     rewrite <- mult_rneg, <- ldist.
@@ -84,19 +113,19 @@ Proof.
     rewrite <- mult_lneg, <- rdist.
     rewrite (mult_comm _ (b j)).
     apply (le_lt_trans (abs_tri _ _)).
-    rewrite plus_comm.
     apply (le_lt_trans2 ltq).
     do 2 rewrite abs_mult.
     apply le_lrplus.
     -   apply le_rmult_pos; [>apply abs_pos|].
-        apply M2_gt.
-    -   apply le_rmult_pos; [>apply abs_pos|].
         apply M1_gt.
+    -   apply le_rmult_pos; [>apply abs_pos|].
+        apply M2_gt.
 Qed.
 
 Notation "a ⊗ b" := (make_real _ (cauchy_mult a b)).
 
 Lemma real_mult_wd : ∀ a b c d, a ~ b → c ~ d → a ⊗ c ~ b ⊗ d.
+Proof.
     intros [a a_cauchy] b c [d d_cauchy] ab cd ε ε_pos.
     pose proof (cauchy_bounded b) as [M1 M1_gt].
     pose proof (cauchy_bounded c) as [M2 M2_gt].
@@ -133,53 +162,69 @@ Global Instance real_mult : Mult real := {
     mult := binary_op (binary_self_wd real_mult_wd)
 }.
 
+Global Instance real_ldist : Ldist real.
+Proof.
+    split.
+    intros a b c.
+    equiv_get_value a b c.
+    unfold mult, plus; equiv_simpl.
+    apply real_eq_zero.
+    intros i.
+    rewrite ldist.
+    apply plus_rinv.
+Qed.
+
+Global Instance real_mult_comm : MultComm real.
+Proof.
+    split.
+    intros a b.
+    equiv_get_value a b.
+    unfold mult; equiv_simpl.
+    apply real_eq_zero.
+    intros i.
+    rewrite mult_comm.
+    apply plus_rinv.
+Qed.
+
+Global Instance real_mult_assoc : MultAssoc real.
+Proof.
+    split.
+    intros a b c.
+    equiv_get_value a b c.
+    unfold mult; equiv_simpl.
+    apply real_eq_zero.
+    intros i.
+    rewrite mult_assoc.
+    apply plus_rinv.
+Qed.
+
 Global Instance real_one : One real := {
     one := rat_to_real 1
 }.
+
+Global Instance real_mult_lid : MultLid real.
+Proof.
+    split.
+    intros a.
+    equiv_get_value a.
+    unfold mult, one; equiv_simpl.
+    apply real_eq_zero.
+    intros i.
+    rewrite mult_lid.
+    apply plus_rinv.
+Qed.
 
 Definition real_div_base (a : real_base) :=
     If (0 = to_equiv real_equiv a)
     then λ _, 0
     else λ n, /(a n).
 
-Lemma cauchy_nz : ∀ a : real_base, 0 ≠ to_equiv real_equiv a →
-    ∃ ε N, 0 < ε ∧ (∀ i, N ≤ i → ε ≤ |a i|).
-Proof.
-    intros [a a_cauchy] a_neq; cbn in *.
-    rewrite neq_sym in a_neq.
-    unfold zero in a_neq; cbn in a_neq.
-    unfold rat_to_real in a_neq; equiv_simpl in a_neq.
-    rewrite not_all in a_neq.
-    destruct a_neq as [ε a_neq].
-    rewrite not_impl in a_neq.
-    rewrite not_ex in a_neq.
-    destruct a_neq as [ε_pos a_neq].
-    specialize (a_cauchy _ (half_pos ε_pos)) as [N a_cauchy].
-    specialize (a_neq N).
-    rewrite not_all in a_neq.
-    destruct a_neq as [n a_neq].
-    rewrite not_impl in a_neq.
-    destruct a_neq as [n_ge an_ge].
-    rewrite nlt_le in an_ge.
-    rewrite neg_zero, plus_rid in an_ge.
-    exists (ε/2), N.
-    split; [>exact (half_pos ε_pos)|].
-    intros i i_ge.
-    specialize (a_cauchy n i n_ge i_ge).
-    apply (le_lt_trans (abs_reverse_tri2 _ _)) in a_cauchy.
-    rewrite <- lt_plus_rrmove in a_cauchy.
-    pose proof (le_lt_trans an_ge a_cauchy) as ltq.
-    rewrite <- (plus_half ε) in ltq at 1.
-    apply lt_plus_lcancel in ltq.
-    apply ltq.
-Qed.
-
 Lemma cauchy_div : ∀ a : real_base, cauchy_seq (real_div_base a).
+Proof.
     intros [a a_cauchy].
     unfold real_div_base; cbn.
     case_if [a_eq|a_neq]; [>apply rat_to_real_cauchy|].
-    apply cauchy_nz in a_neq as [ε' [N1 [ε'_pos nz]]].
-    cbn in nz.
+    apply cauchy_nz in a_neq as [ε' [N1 [ε'_pos nz]]]; cbn in nz.
     intros ε ε_pos.
     pose proof (div_pos ε'_pos) as ε''_pos.
     specialize (a_cauchy _ (lt_mult ε_pos (lt_mult ε'_pos ε'_pos)))
@@ -189,20 +234,8 @@ Lemma cauchy_div : ∀ a : real_base, cauchy_seq (real_div_base a).
     pose proof (nz i (trans (lmax N1 N2) i_ge)) as i_gt.
     pose proof (nz j (trans (lmax N1 N2) j_ge)) as j_gt.
     clear nz.
-    assert (0 ≠ a i) as ai_nz.
-    {
-        intros contr.
-        rewrite <- contr in i_gt.
-        rewrite <- abs_zero in i_gt.
-        destruct (lt_le_trans ε'_pos i_gt); contradiction.
-    }
-    assert (0 ≠ a j) as aj_nz.
-    {
-        intros contr.
-        rewrite <- contr in j_gt.
-        rewrite <- abs_zero in j_gt.
-        destruct (lt_le_trans ε'_pos j_gt); contradiction.
-    }
+    assert (0 ≠ a i) as ai_nz by(apply abs_nz; apply (lt_le_trans ε'_pos i_gt)).
+    assert (0 ≠ a j) as aj_nz by(apply abs_nz; apply (lt_le_trans ε'_pos j_gt)).
     rewrite <- (mult_lrinv (/(a i)) (a j)) by exact aj_nz.
     rewrite <- (mult_lrinv (/(a j)) (a i)) at 2 by exact ai_nz.
     rewrite (mult_comm (/(a j))).
@@ -232,21 +265,15 @@ Proof.
     assert (to_equiv real_equiv a = to_equiv real_equiv b) as ab'
         by (equiv_simpl; exact ab).
     unfold real_div_base.
-    case_if [a_z|a_nz]; case_if [b_z|b_nz].
+    classic_case (0 = to_equiv real_equiv a) as [a_z|a_nz].
+    all: classic_case (0 = to_equiv real_equiv b) as [b_z|b_nz].
     {
-        exists 0.
-        intros i i_ge.
-        rewrite neg_zero, plus_rid, <- abs_zero.
-        exact ε_pos.
+        revert ε ε_pos.
+        apply real_eq_zero.
+        intro; apply plus_rinv.
     }
-    {
-        rewrite <- ab' in b_nz.
-        contradiction.
-    }
-    {
-        rewrite ab' in a_nz.
-        contradiction.
-    }
+    1: rewrite <- ab' in b_nz; contradiction.
+    1: rewrite ab' in a_nz; contradiction.
     clear ab'.
     apply cauchy_nz in a_nz as [ε1 [N1 [ε1_pos a_nz]]].
     apply cauchy_nz in b_nz as [ε2 [N2 [ε2_pos b_nz]]].
@@ -257,20 +284,8 @@ Proof.
     specialize (a_nz i (trans (lmax _ _) (trans (rmax _ _) i_ge))).
     specialize (b_nz i (trans (rmax _ _) (trans (rmax _ _) i_ge))).
     specialize (ab i (trans (lmax _ _) i_ge)).
-    assert (0 ≠ a i) as ai_nz.
-    {
-        intros contr.
-        rewrite <- contr in a_nz.
-        rewrite <- abs_zero in a_nz.
-        destruct (lt_le_trans ε1_pos a_nz); contradiction.
-    }
-    assert (0 ≠ b i) as bi_nz.
-    {
-        intros contr.
-        rewrite <- contr in b_nz.
-        rewrite <- abs_zero in b_nz.
-        destruct (lt_le_trans ε2_pos b_nz); contradiction.
-    }
+    assert (0 ≠ a i) as ai_nz by(apply abs_nz; apply (lt_le_trans ε1_pos a_nz)).
+    assert (0 ≠ b i) as bi_nz by(apply abs_nz; apply (lt_le_trans ε2_pos b_nz)).
     rewrite <- (mult_lrinv (/(a i)) (b i)) by exact bi_nz.
     rewrite <- (mult_lrinv (/(b i)) (a i)) at 2 by exact ai_nz.
     rewrite (mult_comm (/(a i))).
@@ -295,66 +310,6 @@ Qed.
 Global Instance real_div : Div real := {
     div := unary_op (unary_self_wd real_div_wd)
 }.
-
-Global Instance real_ldist : Ldist real.
-Proof.
-    split.
-    intros a b c.
-    equiv_get_value a b c.
-    unfold mult, plus; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
-    rewrite ldist.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
-Qed.
-
-Global Instance real_mult_comm : MultComm real.
-Proof.
-    split.
-    intros a b.
-    equiv_get_value a b.
-    unfold mult; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
-    rewrite mult_comm.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
-Qed.
-
-Global Instance real_mult_assoc : MultAssoc real.
-Proof.
-    split.
-    intros a b c.
-    equiv_get_value a b c.
-    unfold mult; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
-    rewrite mult_assoc.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
-Qed.
-
-Global Instance real_mult_lid : MultLid real.
-Proof.
-    split.
-    intros a.
-    equiv_get_value a.
-    unfold mult, one; equiv_simpl.
-    intros ε ε_pos.
-    exists 0.
-    intros i i_ge.
-    rewrite mult_lid.
-    rewrite plus_rinv.
-    rewrite <- abs_zero.
-    exact ε_pos.
-Qed.
 
 Global Instance real_mult_linv : MultLinv real.
 Proof.
