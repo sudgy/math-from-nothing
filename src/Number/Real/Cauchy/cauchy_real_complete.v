@@ -11,7 +11,7 @@ Proof.
     intros a b ltq.
     destruct ltq as [leq neq].
     unfold le in leq; equiv_simpl in leq.
-    unfold neg, plus in leq; equiv_simpl in leq.
+    unfold neg, plus, real_pos in leq; equiv_simpl in leq.
     pose proof (cauchy_nz (b ⊕ ⊖ a)) as nz.
     prove_parts nz.
     {
@@ -60,7 +60,7 @@ Proof.
         intros x Sx.
         apply (trans (u_upper x Sx)).
         unfold le, rat_to_real; equiv_simpl.
-        unfold plus, neg; equiv_simpl.
+        unfold real_pos, plus, neg; equiv_simpl.
         right; cbn.
         exists 0.
         intros i i_ge.
@@ -78,7 +78,7 @@ Proof.
         intros M_upper.
         specialize (M_upper _ Sl) as leq.
         unfold le, rat_to_real in leq; equiv_simpl in leq.
-        unfold plus at 1, neg at 5 in leq; equiv_simpl in leq.
+        unfold real_pos, plus at 1, neg at 5 in leq; equiv_simpl in leq.
         destruct leq as [eq|leq].
         -   unfold zero in eq; cbn in eq.
             unfold rat_to_real in eq; equiv_simpl in eq.
@@ -405,7 +405,7 @@ Proof.
         pose proof (b_cauchy _ ε2_pos) as [N2 cauchy].
         specialize (b_upper (max N1 N2) _ Sx).
         unfold rat_to_real, le in b_upper; equiv_simpl in b_upper.
-        unfold plus, neg in b_upper; equiv_simpl in b_upper.
+        unfold real_pos, plus, neg in b_upper; equiv_simpl in b_upper.
         destruct b_upper as [b_eq|b_leq].
         +   unfold zero in b_eq; cbn in b_eq.
             unfold rat_to_real in b_eq; equiv_simpl in b_eq.
@@ -465,7 +465,7 @@ Proof.
         pose proof (upper_bound_leq _ _ _ (a_lower (max N1 N2)) y_upper)
             as [leq neq]; clear neq.
         unfold rat_to_real, le in leq; equiv_simpl in leq.
-        unfold plus, neg in leq; equiv_simpl in leq.
+        unfold real_pos, plus, neg in leq; equiv_simpl in leq.
         destruct leq as [a_eq|a_leq].
         +   unfold zero in a_eq; cbn in a_eq.
             unfold rat_to_real in a_eq; equiv_simpl in a_eq.

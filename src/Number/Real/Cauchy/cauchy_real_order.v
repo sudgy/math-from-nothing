@@ -50,12 +50,11 @@ Proof.
     exact (real_pos_wd1 _ _ ab).
 Qed.
 
-#[refine]
-Global Instance real_cone : OrderCone real := {
-    cone := unary_op real_pos_wd
-}.
+Definition real_pos := unary_op real_pos_wd.
+
+Lemma real_pos_plus : ∀ a b, real_pos a → real_pos b → real_pos (a + b).
 Proof.
--   intros a b.
+    intros a b.
     classic_case (0 = a) as [a_z|a_nz].
     {
         subst a.
@@ -69,9 +68,9 @@ Proof.
         intros a_in b_in; exact a_in.
     }
     equiv_get_value a b.
-    unfold plus; equiv_simpl.
-    intros [a_z|a_pos] [b_z|b_pos];
-        [>contradiction|contradiction|contradiction|].
+    unfold real_pos, plus; equiv_simpl.
+    intros [a_z|a_pos]; [>contradiction|].
+    intros [b_z|b_pos]; [>contradiction|].
     right.
     destruct a_pos as [N1 a_pos].
     destruct b_pos as [N2 b_pos].
@@ -80,7 +79,11 @@ Proof.
     specialize (a_pos i (trans (lmax N1 N2) i_ge)).
     specialize (b_pos i (trans (rmax N1 N2) i_ge)).
     apply le_pos_plus; assumption.
--   intros a b.
+Qed.
+
+Lemma real_pos_mult : ∀ a b, real_pos a → real_pos b → real_pos (a * b).
+Proof.
+    intros a b.
     classic_case (0 = a) as [a_z|a_nz].
     {
         subst a.
@@ -94,9 +97,9 @@ Proof.
         intros a_in b_in; exact b_in.
     }
     equiv_get_value a b.
-    unfold mult; equiv_simpl.
-    intros [a_z|a_pos] [b_z|b_pos];
-        [>contradiction|contradiction|contradiction|].
+    unfold real_pos, mult; equiv_simpl.
+    intros [a_z|a_pos]; [>contradiction|].
+    intros [b_z|b_pos]; [>contradiction|].
     right.
     destruct a_pos as [N1 a_pos].
     destruct b_pos as [N2 b_pos].
@@ -105,14 +108,22 @@ Proof.
     specialize (a_pos i (trans (lmax N1 N2) i_ge)).
     specialize (b_pos i (trans (rmax N1 N2) i_ge)).
     apply le_mult; assumption.
--   intros a.
+Qed.
+
+Lemma real_pos_square : ∀ a, real_pos (a * a).
+Proof.
+    intros a.
     equiv_get_value a.
-    unfold mult; equiv_simpl.
+    unfold real_pos, mult; equiv_simpl.
     right; cbn.
     exists 0.
     intros i i_ge.
     apply square_pos.
--   unfold neg, one; cbn.
+Qed.
+
+Lemma real_pos_neg : ¬real_pos (-1).
+Proof.
+    unfold real_pos, neg, one; cbn.
     unfold rat_to_real; equiv_simpl.
     unfold real_pos_base; cbn.
     unfold zero at 1; cbn.
@@ -129,9 +140,13 @@ Proof.
         specialize (contr N (refl N)).
         apply neg_pos in contr.
         destruct (le_lt_trans contr one_pos); contradiction.
--   intros a.
+Qed.
+
+Lemma real_pos_all : ∀ a, {real_pos a} + {real_pos (-a)}.
+Proof.
+    intros a.
     equiv_get_value a.
-    unfold neg; equiv_simpl.
+    unfold real_pos, neg; equiv_simpl.
     apply or_to_strong.
     apply or_right.
     unfold real_pos_base; cbn.
@@ -147,9 +162,9 @@ Proof.
     destruct a_neg as [n a_neg].
     rewrite not_impl, nle_lt in a_neg.
     destruct a_neg as [n_ge a_neg].
+    specialize (a_nz n (trans (lmax N1 N2) n_ge)).
     exists (max N1 N2).
     intros i i_ge.
-    specialize (a_nz n (trans (lmax N1 N2) n_ge)).
     specialize (a_cauchy i n (trans (rmax _ _) i_ge) (trans (rmax _ _) n_ge)).
     rewrite abs_neg_eq in a_nz by apply a_neg.
     apply (le_lt_trans (abs_le_pos _)) in a_cauchy.
@@ -157,7 +172,16 @@ Proof.
     rewrite <- lt_plus_a_0_ab_b in ltq.
     apply neg_pos.
     apply ltq.
-Defined.
+Qed.
+
+Global Instance real_cone : OrderCone real := {
+    cone := real_pos;
+    cone_plus := real_pos_plus;
+    cone_mult := real_pos_mult;
+    cone_square := real_pos_square;
+    cone_neg := real_pos_neg;
+    cone_all := real_pos_all;
+}.
 
 Definition real_order := cone_order.
 Definition real_le_connex := cone_le_connex.

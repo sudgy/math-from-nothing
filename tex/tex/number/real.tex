@@ -567,4 +567,134 @@ Before moving on to multiplication itself, we need a few lemmas.
     1 < 1$, which is impossible.
 \end{proof}
 
+\section{Order}
+
+Ordering the real numbers is annoying because Cauchy sequences can approach the
+same number from two different directions, making any definition of order
+require two cases.  We will develop the order of the real numbers using the
+theory of cones.
+
+\begin{definition}
+    Let $a_n$ be a Cauchy sequence.  We will say that $a_n$ is positive if
+    either $0 = a$ as a real number, or if there exists a natural number $N$
+    such that for all $i \geq N$, we have $0 \leq a_i$.
+\end{definition}
+
+\begin{lemma}
+    Cauchy sequences being positive is well-defined under the equivalence
+    relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a_n$ and $b_n$ be Cauchy sequences with $a_n \sim b_n$, and assume that
+    $a_n$ is positive.  We must prove that $b_n$ is positive.  If $a = 0$, we
+    would have $b = 0$ because $a = b$.  So consider the case where there exists
+    an $N_3 : \N$ such that for all $i \geq N_3$, we have $0 \leq a_i$.  We must
+    prove that either $b = 0$, or that there exists an $N : \N$ such that for
+    all $i \geq N$, we have $0 \leq b_i$.  We will prove the second while
+    assuming that $b \neq 0$.  Since $b \neq 0$, we also have $a \neq 0$ by $a_n
+    \sim b_n$.  By Lemma \ref{real_cauchy_nz}, we have an $\varepsilon > 0$ and
+    $N_1 : \N$ such that for all $i \geq N_1$, we have $\varepsilon \leq |a_i|$.
+    And because $a_n \sim b_n$, we have a natural number $N_2$ such that for all
+    $i \geq N_2$, we have $|a_i - b_i| < \varepsilon$.  Now let $N = \max(N_1,
+    N_2, N_3)$.  Then for all $i \geq N$, we have
+    \begin{equation} \label{real_pos_wd_1}
+        0 \leq a_i,
+    \end{equation}
+    \begin{equation} \label{real_pos_wd_2}
+        \varepsilon \leq |a_i|
+    \end{equation}
+    and
+    \begin{equation} \label{real_pos_wd_3}
+        |a_i - b_i| < \varepsilon.
+    \end{equation}
+    From (\ref{real_pos_wd_1}) and (\ref{real_pos_wd_2}), we have
+    \begin{equation} \label{real_pos_wd_4}
+        \varepsilon \leq a_i.
+    \end{equation}
+    By Theorem \ref{abs_le_pos} and (\ref{real_pos_wd_3}), we have
+    \begin{align}
+        a_i - b_i &< \varepsilon \nonumber \\
+        a_i &< \varepsilon + b_i. \label{real_pos_wd_5}
+    \end{align}
+    Then by (\ref{real_pos_wd_4}) and (\ref{real_pos_wd_5}), we have
+    \begin{align*}
+        \varepsilon &\leq \varepsilon + b_i \\
+        0 &\leq b_i.
+    \end{align*}
+\end{proof}
+
+We can now talk about a real number being positive by using Theorem
+\ref{unary_op_ex}.
+
+\begin{instance}
+    Real numbers being positive form a cone.
+\end{instance}
+\begin{proof}
+    We must prove the five conditions for being a cone.
+
+    \textit{If $a$ and $b$ are positive, $a + b$ is positive.}  If $a = 0$, then
+    $a + b = b$ which is already positive, and similarly for $b = 0$.  So
+    consider when $a \neq 0$ and $b \neq 0$.  Then because $a$ and $b$ are
+    positive, we have natural numbers $N_1$ and $N_2$ such that for all $i \geq
+    N_1$, we have $0 \leq a_i$, and for all $i \geq N_2$, we have $0 \leq b_i$.
+    Let $N = \max(N_1, N_2)$.  Then for all $i \geq N$, we have $0 \leq a_i$ and
+    $0 \leq b_i$, and adding the inequalities, we get $0 \leq a_i + b_i$.
+
+
+    \textit{If $a$ and $b$ are positive, $ab$ is positive.}  If $a = 0$, then
+    $ab = 0$ which is already positive, and similarly for $b = 0$.  So consider
+    when $a \neq 0$ and $b \neq 0$.  Then because $a$ and $b$ are positive, we
+    have natural numbers $N_1$ and $N_2$ such that for all $i \geq N_1$, we have
+    $0 \leq a_i$, and for all $i \geq N_2$, we have $0 \leq b_i$.  Let $N =
+    \max(N_1, N_2)$.  Then for all $i \geq N$, we have $0 \leq a_i$ and $0 \leq
+    b_i$, and multiplying the inequalities, we get $0 \leq a_i b_i$.
+
+    \textit{For all $a$, $a^2$ is positive.}  Defining $N = 0$, for all $i \geq
+    N$, we have $0 \leq a_i^2$.
+
+    \textit{-1 is not positive.}  We must prove that both $-1 \neq 0$, and that
+    for all $N : \N$, there exists an $i \geq N$ such that $-1 < 0$.  For $-1
+    \neq 0$, if $-1 = 0$, we would have $1 = 0$, which is impossible.  For the
+    second condition, we have $N \geq N$, and $-1 < 0$ is true in the rationals.
+
+    \textit{For all $a$, either $a$ is positive or $-a$ is positive.}  Assume
+    that $a_n$ is not positive.  Then $a \neq 0$ and for all $N : \N$, we have
+    a $j \geq N$ with $a_j < 0$.  Because $a \neq 0$, by Lemma
+    \ref{real_cauchy_nz}, we have a $\varepsilon > 0$ and an $N_1 : \N$ such
+    that for all $i \geq N_1$, we have $\varepsilon \leq |a_i|$.  Because $a_n$
+    is Cauchy, we have an $N_2 : \N$ such that for all $i \geq N_2$ and $j \geq
+    N_2$, we have $|a_i - a_j| < \varepsilon$.  Set $N = \max(N_1, N_2)$.  Then
+    we have some $j \geq N$ with
+    \begin{equation} \label{real_cone_1}
+        a_j < 0.
+    \end{equation}
+    Because $a \neq 0$, we also have
+    \begin{equation} \label{real_cone_2}
+        \varepsilon \leq |a_j|.
+    \end{equation}
+    Then for any $i \geq N$, we have
+    \begin{equation} \label{real_cone_3}
+        |a_i - a_j| < \varepsilon.
+    \end{equation}
+    From (\ref{real_cone_1}) and (\ref{real_cone_2}),
+    \begin{equation} \label{real_cone_4}
+        \varepsilon \leq -a_j.
+    \end{equation}
+    By Theorem \ref{abs_le_pos} and (\ref{real_cone_3}),
+    \begin{equation} \label{real_cone_5}
+        a_i - a_j < \varepsilon.
+    \end{equation}
+    Then by (\ref{real_cone_4}) and (\ref{real_cone_5}),
+    \begin{align*}
+        a_i - a_j &\leq -a_j \\
+        0 &\leq -a_i,
+    \end{align*}
+    showing that $-a_n$ is positive.
+\end{proof}
+
+Because real numbers being positive forms a cone, by the development of cones in
+chapter \ref{chap_ealgebra}, we can order the real numbers by saying that $a
+\leq b$ if and only if $b - a$ is positive, and this order turns the real
+numbers into an ordered field.
+
 \end{document}
