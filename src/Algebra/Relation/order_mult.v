@@ -805,6 +805,21 @@ Proof.
     apply mult_rid.
 Qed.
 
+Theorem minus_half : ∀ a, a - (a/2) = a/2.
+Proof.
+    intros a.
+    rewrite <- (plus_half a) at 1.
+    apply plus_rrinv.
+Qed.
+
+Theorem half_minus : ∀ a, a/2 - a = -(a/2).
+Proof.
+    intros a.
+    rewrite <- (plus_half a) at 2.
+    rewrite neg_plus.
+    apply plus_lrinv.
+Qed.
+
 Theorem le_div_pos : ∀ a b, 0 < a → a ≤ b → /b ≤ /a.
 Proof.
     intros a b a_pos ab.

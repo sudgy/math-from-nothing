@@ -1,6 +1,7 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
 \externaldocument{../basics/elementary_algebra}
+\externaldocument{../basics/natural}
 \externaldocument{../basics/set}
 
 \begin{document}
@@ -696,5 +697,381 @@ Because real numbers being positive forms a cone, by the development of cones in
 chapter \ref{chap_ealgebra}, we can order the real numbers by saying that $a
 \leq b$ if and only if $b - a$ is positive, and this order turns the real
 numbers into an ordered field.
+
+There are a couple of useful lemma about the order of the real numbers that will
+be useful in the next section.
+
+\begin{lemma} \label{real_lt}
+    For all Cauchy sequences $a_n$ and $b_n$, if $a < b$, then there exists an
+    $\varepsilon > 0$ and an $N$ such that for all $i \geq N$, we have $a_i +
+    \varepsilon < b_i$.
+\end{lemma}
+\begin{proof}
+    Because $a < b$, we have $a \leq b$ and $a \neq b$.  Because $a \neq b$, we
+    have $0 \neq b - a$.  Then, because $a \leq b$ and $0 \neq b - a$, we have
+    an $N_1 : \N$ such that for all $i \geq N_1$, we have $0 \leq b_i - a_i$.
+    Because $0 \neq b - a$, by Lemma \ref{real_cauchy_nz} we have a $\varepsilon
+    > 0$ and an $N_2 : \N$ such that for all $i \geq N_2$, we have $\varepsilon
+    \leq |b_i - a_i|$.  Set $N = \max(N_1, N_2)$.  We will prove that for all $i
+    \geq N$, we have $a_i + \frac{\varepsilon}{2} < b_i$.  For such an $i$, we
+    already have
+    \[
+        0 \leq b_i - a_i
+    \]
+    and
+    \[
+        \varepsilon \leq |b_i - a_i|.
+    \]
+    Combining them, we get
+    \begin{align*}
+        \varepsilon &\leq b_i - a_i \\
+        a_i + \varepsilon &\leq b_i.
+    \end{align*}
+    And since $\frac{\varepsilon}{2} < \varepsilon$, we have $a_i +
+    \frac{\varepsilon}{2} < b_i$ as required.
+\end{proof}
+
+\begin{lemma} \label{real_leq_seq}
+    For all real numbers $x$ and Cauchy sequences $y_n$, if $x \leq y_i$ for all
+    $i : \N$, then $x \leq y$.
+\end{lemma}
+\begin{proof}
+    By definition, we will have $x \leq y$ if $x = y$ or if for all $i$ greater
+    than some $N$, we have $x_i \leq y_i$.  We will prove the latter while
+    assuming the negation of the former.  If $x \neq y$, we have $0 \neq y - x$,
+    so by Lemma \ref{real_cauchy_nz}, we have a $\varepsilon > 0$ and a natural
+    number $N_1$ such that for all $i \geq N_1$, we have $\varepsilon \leq |y_i
+    - x_i|$.  Because $y$ is Cauchy and $\frac{\varepsilon}{2} > 0$, we have a
+    natural number $N_2$ such that for all $i \geq N_2$ and $j \geq N_2$, we
+    have $|y_i - y_j| < \frac{\varepsilon}{2}$.  Let $N' = \max(N_1, N_2)$.  By
+    assumption, we have $x \leq y_{N'}$.  By definition, this means that either
+    $x = y_{N'}$, or there exists some $N_3$ with $x_i \leq y_{N'}$ for all $i
+    \geq N_3$.
+
+    For the case $x = y_{N'}$, we have an $N_3 : \N$ such that for all $i \geq
+    N_3$, we have $|y_{N'} - x_i| < \frac{\varepsilon}{2}$.  Define $i =
+    \max(N', N_3)$.  Then we have
+    \begin{equation} \label{real_leq_seq_1}
+        \varepsilon \leq |y_i - x_i|,
+    \end{equation}
+    \begin{equation} \label{real_leq_seq_2}
+        |y_i - y_{N'}| < \frac{\varepsilon}{2},
+    \end{equation}
+    and
+    \begin{equation} \label{real_leq_seq_3}
+        |y_{N'} - x_i| < \frac{\varepsilon}{2}.
+    \end{equation}
+    Adding (\ref{real_leq_seq_2}) and (\ref{real_leq_seq_3}), we get
+    \begin{align*}
+        |y_i - y_{N'}| + |y_{N'} - x_i|
+            &< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} \\
+        |y_i - y_{N'} + y_{N'} - x_i| < \varepsilon \\
+        |y_i - x_i| < \varepsilon,
+    \end{align*}
+    contradicting (\ref{real_leq_seq_1}).  Thus, this case is impossible.
+
+    For the case where we have some $N_3$ with $x_i \leq y_{N'}$ for all $i
+    \geq N_3$, set $N = \max(N', N_3)$.  Then for all $i \geq N$, we have
+    \begin{equation} \label{real_leq_seq_4}
+        \varepsilon \leq |y_i - x_i|,
+    \end{equation}
+    \begin{equation} \label{real_leq_seq_5}
+        |y_{N'} - y_i| < \frac{\varepsilon}{2} < \varepsilon,
+    \end{equation}
+    and
+    \begin{equation} \label{real_leq_seq_6}
+        x_i \leq y_{N'}.
+    \end{equation}
+    We must prove that $x_i \leq y_i$.  For a contradiction, assume that $y_i -
+    x_i < 0$.  Then $|y_i - x_i| = x_i - y_i$, so by (\ref{real_leq_seq_4}) we
+    have
+    \begin{equation} \label{real_leq_seq_7}
+        \varepsilon \leq x_i - y_i.
+    \end{equation}
+    By Theorem \ref{abs_le_pos} in (\ref{real_leq_seq_5}), we have
+    \begin{equation} \label{real_leq_seq_8}
+        y_{N'} - y_i < \varepsilon.
+    \end{equation}
+    Combining (\ref{real_leq_seq_7}) and (\ref{real_leq_seq_8}), we get
+    \begin{align*}
+        y_{N'} - y_i &< x_i - y_i \\
+        y_{N'} &< x_i,
+    \end{align*}
+    contradicting (\ref{real_leq_seq_6}).  Thus, $x_i \leq y_i$.
+\end{proof}
+
+\section{Completeness}
+
+This whole section will be proving the following instance:
+
+\begin{instance}
+    The real numbers are supremum complete.
+\end{instance}
+
+The proof will be done throughout this whole section, with many definitions and
+lemmas that will only be used in this section.  Let $S$ be a nonempty set of
+real numbers that has an upper bound.
+
+\begin{definition}
+    Define a set $S' : \Q \to \Prop$ where $q \in S'$ means that $q$ is an upper
+    bound of $S$.
+\end{definition}
+
+\begin{lemma}
+    $S'$ is nonempty.
+\end{lemma}
+\begin{proof}
+    By assumption, $S$ has a real upper bound $u$.  By Lemma
+    \ref{real_cauchy_bounded}, there exists a rational $M$ such that $|u_i| < M$
+    for all $i$.  We will prove that $M$ is an upper bound of $S$.  Let $x \in
+    S$.  Since $u$ is an upper bound, we have $x \leq u$.  And since $u_i \leq
+    |u_i| < M$ for all $i$, we have $u \leq M$.  Thus, $x \leq M$, showing that
+    $M$ is an upper bound of $S$, so is in $S'$.
+\end{proof}
+
+\begin{lemma}
+    The complement of $S'$ is nonempty.
+\end{lemma}
+\begin{proof}
+    By assumption, there exists a real value in $S$.  Call that value $\ell$.
+    By Lemma \ref{real_cauchy_bounded}, there exists a rational $M$ such that
+    $|\ell_i| < M$ for all $i$.  By Theorem \ref{abs_le_neg}, we have
+    \begin{equation} \label{real_sup_lower_ex_1}
+        -\ell_i < M
+    \end{equation}
+    for all $i$.  We will show that $-M - 1 \notin S'$.  For a contradiction,
+    assume that $-M - 1$ is an upper bound of $S$.  Then we would have $\ell
+    \leq -M - 1$.  This means that either $\ell = -M - 1$, or there exists an
+    $N$ such that $\ell_i \leq -M - 1$ for all $i \geq N$.
+
+    When $\ell = -M - 1$, by the definition of real equality, there exists an
+    $N$ such that for all $i \geq N$, we have $|\ell_i + M + 1| < 1$  By Theorem
+    \ref{abs_le_pos}, we have
+    \begin{align*}
+        \ell_i + M + 1 &< 1
+        M &< -\ell_i,
+    \end{align*}
+    contradicting (\ref{real_sup_lower_ex_1}).
+
+    When there exists an $N$ such that $\ell_i \leq -M - 1$ for all $i \geq N$,
+    we have
+    \[
+        M \leq -\ell_i - 1 < \ell_i,
+    \]
+    again contradicting (\ref{real_sup_lower_ex_1}).
+
+    In both cases, we got a contradiction, so $-M - 1$ must not be in $S'$.
+\end{proof}
+
+We now know that both $S'$ and its complement are nonempty.  Let $u$ be a
+rational value in $S'$ and let $\ell$ be a rational value not in $S'$.  Unlike
+the original element of $S$ and upper bound that we had before, these two values
+are rational, not real.
+
+\begin{definition}
+    Define a sequence of pairs of rational numbers $p_n$ recursively, with $a_i
+    = P_1(p_i)$, $b_i = P_2(p_i)$, and $m_i = \frac{a_i + b_i}{2}$, by
+    \[
+        p_i =
+        \begin{cases}
+            (\ell, u) & \text{if $i = 0$} \\
+            (a_j, m_j) & \text{if $i = j + 1$ and $m_j \in S'$} \\
+            (m_j, b_j) & \text{if $i = j + 1$ and $m_j \notin S'$.}
+        \end{cases}
+    \]
+    Furthermore, let $d_n$ be the sequence given by $d_i = b_i - a_i$.
+\end{definition}
+
+\begin{lemma} \label{real_sup_a_lower}
+    For all $i$, $a_i \notin S'$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $i$.  When $i = 0$, $a_0 = \ell$, which is
+    not in $S'$ by definition.  Now assume that $a_i \notin S'$.  Then when $m_i
+    \in S'$, $a_{i + 1} = a_i \notin S'$, and when $m_i \notin S'$, $a_{i + 1} =
+    m_i \notin S'$.  Thus the inductive case is true.
+\end{proof}
+
+\begin{lemma} \label{real_sup_b_upper}
+    For all $i$, $b_i \in S'$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $i$.  When $i = 0$, $b_0 = u$, which is in
+    $S'$ by definition.  Now assume that $b_i \in S'$.  Then when $m_i \in S'$,
+    $b_{i + 1} = m_i \in S'$, and when $m_i \notin S'$, $b_{i + 1} = b_i \in
+    S'$.  Thus the inductive case is true.
+\end{proof}
+
+\begin{lemma} \label{real_sup_d_suc}
+    For all $i$, $d_{n+1} = \frac{d_i}{2}$.
+\end{lemma}
+\begin{proof}
+    When $m_i \in S'$,
+    \begin{align*}
+        d_{i + 1}
+        &= b_{i + 1} - a_{i + 1} \\
+        &= m_i - a_i \\
+        &= \frac{b_i + a_i}{2} - a_i \\
+        &= \frac{b_i - a_i}{2} \\
+        &= \frac{d_i}{2}.
+    \end{align*}
+    When $m_i \notin S'$,
+    \begin{align*}
+        d_{i + 1}
+        &= b_{i + 1} - a_{i + 1} \\
+        &= b_i - m_i \\
+        &= b_i - \frac{b_i + a_i}{2} \\
+        &= \frac{b_i - a_i}{2} \\
+        &= \frac{d_i}{2}.
+    \end{align*}
+\end{proof}
+
+\begin{lemma} \label{real_sup_d_eq}
+    For all $i$, $d_i = \frac{d_0}{2^n}$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $i$.  When $i = 0$,
+    \[
+        d_0 = \frac{d_0}{2^0},
+    \]
+    so the base case is true.  Now assume that $d_i = \frac{d_0}{2^i}$.  Then
+    \[
+        d_{i+1} = \frac{d_i}{2} = \frac{d_0}{2^i2} = \frac{d_0}{2^{i+1}},
+    \]
+    so the inductive case is true.
+\end{proof}
+
+\begin{lemma} \label{real_sup_d_pos}
+    For all $i$, $0 < d_i$.
+\end{lemma}
+\begin{proof}
+    Since $d_i = \frac{d_0}{2^i}$ and $\frac{1}{2^i}$ is positive, it suffices
+    to prove that $d_0 = u - \ell$ is positive.  Since $u$ is an upper bound of
+    $S'$ and $\ell$ is not, we have $\ell < u$.  Then by Lemma \ref{real_lt} we
+    have a $\varepsilon > 0$ and an $N : \N$ such that for all $i \geq N$, we
+    have $\ell + \varepsilon < u$.  $i = N$ suffices to show that $\ell +
+    \varepsilon < u$.  Then $0 < \varepsilon < u - \ell$, so $u - \ell$ is
+    positive.
+\end{proof}
+
+\begin{lemma} \label{real_sup_ab_cauchy}
+    For all sequences $x$, if $|x_i - x_{i+1}| \leq d_{i+1}$ for all $i$, then
+    $x$ is a Cauchy sequence.
+\end{lemma}
+\begin{proof}
+    Let $\varepsilon > 0$.  Since $d_i > 0$, $\frac{\varepsilon}{d_0}$ is as
+    well, so by Theorem \ref{arch_pow2}, there exists a natural number $N$ such
+    that $\frac{1}{2^N} < \frac{\varepsilon}{d_0}$.  We will prove that for all
+    $i \geq N$ and $j \geq N$, we have $|x_i - x_j| < \varepsilon$.  Without
+    loss of generality, we may assume that $i \leq j$.  Because $i \leq j$, by
+    Theorem \ref{nat_le_ex}, we have a natural number $c$ with $j = i + c$.  So
+    we must prove that $|x_i - x_{i+c}| < \varepsilon$.  Because $\frac{1}{2^N}
+    < \frac{\varepsilon}{d_0}$, we have $d_N = \frac{d_0}{2^N} < \varepsilon$.
+    Thus, it suffices to prove that $|x_i - x_{i+c}| < d_N$.  We will do so by
+    induction on $c$.
+
+    When $c = 0$, $|x_i - x_{i + 0}| = 0 < d_N$ by Lemma \ref{real_sup_d_pos},
+    so the base case is true.  Now assume that for all $N$ and $i$ with $N \leq
+    i$, we have $|x_i - x_{i+c}| < d_N$.  Since $N \leq i$, we have $N + 1 \leq
+    i + 1$, so
+    \begin{equation} \label{real_sup_ab_cauchy_1}
+        |x_{i+1} - x_{i+1+c}| < d_{N+1}.
+    \end{equation}
+    By assumption, we have
+    \begin{equation} \label{real_sup_ab_cauchy_2}
+        |x_i - x_{i + 1}| \leq d_{i+1}.
+    \end{equation}
+    Because $N + 1 \leq i + 1$, we have
+    \begin{align*}
+        \frac{1}{2^{i + 1}} &\leq \frac{1}{2^{N + 1}} \\
+        \frac{d_0}{2^{i + 1}} &\leq \frac{d_0}{2^{N + 1}} \\
+        d_{i+1} &\leq d_{N+1},
+    \end{align*}
+    and combining this with (\ref{real_sup_ab_cauchy_2}) we get
+    \begin{equation} \label{real_sup_ab_cauchy_3}
+        |x_i - x_{i + 1}| \leq d_{N+1}.
+    \end{equation}
+    Adding (\ref{real_sup_ab_cauchy_1}) and (\ref{real_sup_ab_cauchy_3}), we get
+    \begin{align*}
+        |x_i - x_{i + 1}| + |x_{i + 1} - x_{i + 1 + c}| &< d_{N+1} + d_{N + 1} \\
+        |x_i - x_{i + 1} + x_{i + 1} - x_{i + 1 + c}|
+            &< \frac{d_N}{2} + \frac{d_N}{2} \\
+        |x_i - x_{i + (c + 1)}| &< d_N,
+    \end{align*}
+    showing that the inductive case is true.  Thus, $|x_i - x_{i+c}| < d_N$ by
+    induction.
+\end{proof}
+
+\begin{lemma} \label{real_sup_a_cauchy}
+    $a_n$ is a Cauchy sequence.
+\end{lemma}
+\begin{proof}
+    The proof will be by Lemma \ref{real_sup_ab_cauchy}.  When $m_i \in S'$,
+    \[
+        |a_i - a_{i+1}| = |a_i - a_i| = 0 \leq d_{i+1}.
+    \]
+    When $m_i \notin S'$,
+    \begin{align*}
+        |a_i - a_{i+1}|
+        &= |a_i - m_i| \\
+        &= \left|a_i - \frac{b_i - a_i}{2}\right| \\
+        &= \left|\frac{a_i - b_i}{2}\right| \\
+        &= \left|\frac{b_i - a_i}{2}\right| \\
+        &= \left|\frac{d_i}{2}\right| \\
+        &= |d_{i+1}| \\
+        &= d_{i+1}.
+    \end{align*}
+\end{proof}
+
+\begin{lemma} \label{real_sup_b_cauchy}
+    $b_n$ is a Cauchy sequence.
+\end{lemma}
+\begin{proof}
+    The proof will be by Lemma \ref{real_sup_ab_cauchy}.  When $m_i \in S'$,
+    \begin{align*}
+        |b_i - b_{i+1}|
+        &= |b_i - m_i| \\
+        &= \left|b_i - \frac{b_i - a_i}{2}\right| \\
+        &= \left|\frac{b_i - a_i}{2}\right| \\
+        &= \left|\frac{d_i}{2}\right| \\
+        &= |d_{i+1}| \\
+        &= d_{i+1}.
+    \end{align*}
+    When $m_i \notin S'$,
+    \[
+        |b_i - b_{i+1}| = |b_i - b_i| = 0 \leq d_{i+1}.
+    \]
+\end{proof}
+
+Because $a_n$ and $b_n$ are Cauchy sequences, we can now think of the real
+numbers $a$ and $b$.
+
+\begin{lemma}
+    $a = b$.
+\end{lemma}
+\begin{proof}
+    Let $\varepsilon > 0$.  Then $\frac{\varepsilon}{d_0} > 0$, so by Theorem
+    \ref{arch_pow2}, we have a natural number $N$ such that $\frac{1}{2^N} <
+    \frac{\varepsilon}{d_0}$.  This means that $\frac{d_0}{2^N} <
+    \varepsilon$.  Then for all $i \geq N$, we have
+    \[
+        |b_i - a_i| = |d_i| = d_i = \frac{d_0}{2^i} \leq \frac{d_0}{2^N} <
+        \varepsilon.
+    \]
+\end{proof}
+
+\begin{theorem}
+    $a$ is the supremum of $S$.
+\end{theorem}
+\begin{proof}
+    Let $x \in S$.  Since $b_i$ is an upper bound of $S$ for all $i$, we have $x
+    \leq b_i$ for all $i$.  Thus, by Lemma \ref{real_leq_seq}, we have $x \leq b
+    = a$, proving that $a$ is an upper bound of $S$.
+
+    Let $y$ be an upper bound of $S$.  Then because $a_i$ is not an upper bound
+    of $S$ for all $i$, we have $a_i \leq y$ for all $i$.  This means that $-y
+    \leq -a_i$ for all $i$, so by Lemma \ref{real_leq_seq}, we have $-y \leq
+    -a$.  Thus, $a \leq y$, proving that $a$ is the least upper bound of $S$.
+\end{proof}
 
 \end{document}
