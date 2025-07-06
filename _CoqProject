@@ -148,9 +148,6 @@
 ./src/Number/Complex/complex_mult.v
 ./src/Number/Complex/complex.v
 
-./src/Algebra/Group/group_subgroup.v
-./src/Algebra/Group/group_order.v
-
 ./src/Algebra/Ring/ring_ideal.v
 ./src/Algebra/Ring/Domain/mult_div.v
 ./src/Algebra/Ring/Domain/euclidean_domain.v
@@ -158,6 +155,9 @@
 ./src/Algebra/Ring/Domain/principle_ideal.v
 ./src/Algebra/Ring/Domain/factorization.v
 ./src/Algebra/Ring/Domain/nat_domain.v
+
+./src/Algebra/Group/group_subgroup.v
+./src/Algebra/Group/group_order.v
 
 ./src/Algebra/Linear/Base/linear_base.v
 ./src/Algebra/Linear/Base/module_category.v

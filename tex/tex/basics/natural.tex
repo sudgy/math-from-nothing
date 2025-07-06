@@ -788,40 +788,6 @@ absolute value of the difference of two natural numbers.
     theorem is true by induction.
 \end{proof}
 
-\section{Division}
-
-While division is impossible in the natural numbers, we can do something similar
-with Euclidean division.
-
-\begin{theorem}[Euclidean Division]
-    For all natural numbers $a$ and $b$ with $b \neq 0$, there exist $q$ and $r$
-    such that $a = bq + r$ and $r < b$.
-\end{theorem}
-\begin{proof}
-    Define a set $S$ by $S = \{n : \N \mid a < bn\}$.  Now because $b \neq 0$,
-    we have $0 < b$, and adding $a$ to both sides we get $a < b + a$.
-    Furthermore, by Theorem \ref{nat_le_self_lmult}, $a \leq ba$, and adding $b$
-    to both sides we get $b + a \leq b + ba = b(1 + a)$.  Thus, by transitivity,
-    $a < b(1 + a)$, showing that $1 + a \in S$.
-
-    By the well-ordering principle, because $S$ is nonempty, there exists a
-    minimum element $q' \in S$, with $a < bq'$.  Now if $q' = 0$, we would have
-    $a < 0$, which is impossible, so $q' \neq 0$.  Thus there exists a $q$ such
-    that $q' = S(q)$, so we have $a < bS(q) = b + bq$.
-
-    Now if $a < bq$, we would have $q \in S$, which contradicts the minimality
-    of $q'$ in $S$.  Thus, we have $bq \leq a$.  Then by Theorem
-    \ref{nat_le_ex}, we have some $r$ such that $bq + r = a$.  We thus have our
-    required $q$ and $r$, and we only need to show that $r < b$.  From $a < q +
-    bq$, we get $bq + r < b + bq$, and canceling $bq$ we get $r < b$ as
-    required.
-\end{proof}
-
-While there is much more we can describe about division and divisibility in the
-natural numbers, we will wait to do this until we have described everything in a
-more abstract setting in ring theory.  The reason for including this proof here
-is that it is useful in a proof involving the cardinals.
-
 \section{Factorials}
 
 \begin{definition}
