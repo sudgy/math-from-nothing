@@ -1074,4 +1074,60 @@ numbers $a$ and $b$.
     -a$.  Thus, $a \leq y$, proving that $a$ is the least upper bound of $S$.
 \end{proof}
 
+\section{Basic Facts}
+
+At this point, we now know that the real numbers are a supremum complete ordered
+field.  This turns out to be all that is needed for the real numbers, so for the
+sake of being able to switch constructions in the future, the construction will
+be completely forgotten. The fact that the real numbers are a complete ordered
+field will be the only fact we will assume from now on.  In this section, we
+will prove a couple other basic facts about the real numbers.
+
+\begin{instance}
+    The real numbers are Archimedean.
+\end{instance}
+\begin{proof}
+    Assume they are not.  Then we have an $x > 0$ such that $x \geq n$ for all
+    natural numbers $n$.  Now let $S = \{a : \R \mid \exists n : \N, a < n\}$.
+    Then $S$ is nonempty since $0 < 1$, and $x$ is an upper bound of $S$ since
+    for any $a$ that is less than a natural number $n$, we have $n \leq x$.  By
+    completeness, $S$ has a supremum $m$.  Then $m - 1 \in S$, since if it
+    wasn't, it would be an upper bound of $S$ by the same argument that $x$ is
+    an upper bound of $S$, contradicting $m$ being the least upper bound.  Since
+    $m - 1 \in S$, we have an $n$ with $m - 1 < n$, which means that $m + 1 < n
+    + 2$, showing that $m + 1 \in S$.  However, $m$ is an upper bound of $S$, so
+    $m + 1 \leq m$, which is impossible.  Thus, the real
+    numbers are Archimedean.
+\end{proof}
+
+\begin{theorem} \label{real_nested_interval}
+    For all real sequences $a_n$ and $b_n$, if $a_n \leq b_n$ for all $n$ and if
+    $[a_{n+1}, b_{n+1}] \subseteq [a_n, b_n]$ for all $n$, there exists a real
+    number $x$ such that $x \in [a_n, b_n]$ for all $n$.
+\end{theorem}
+\begin{proof}
+    We will first prove that for all natural numbers $m$ and $n$ with $m \leq
+    n$, we have $[a_n, b_n] \subseteq [a_m, b_m]$.  By Theorem \ref{nat_le_ex},
+    we have a natural number $c$ such that $n = m + c$.  We will prove that
+    $[a_{m + c}, b_{m + c}] \subseteq [a_m, b_m]$ by induction on $c$.  When $c
+    = 0$, the result is trivial.  Now assume that $[a_{m + c}, b_{m + c}]
+    \subseteq [a_m, b_m]$.  Then $[a_{m + c + 1}, b_{m + c + 1}] \subseteq [a_{m
+    + c}, b_{m + c}]$ by assumption, so by transitivity we have $[a_{m + c + 1},
+    b_{m + c + 1}] \subseteq [a_m, b_m]$.  Thus, we know that $[a_n, b_n]
+    \subseteq [a_m, b_m]$ whenever $m \leq n$.
+
+    Using this, we can now prove that $a_m \leq b_n$ for all $m$ and $n$.  When
+    $m \leq n$, we have $b_n \in [a_n, b_n]$, so by the previous paragraph we
+    have $b_n \in [a_m, b_m]$, so $a_m \leq b_n$.  When $n \leq m$, we have $a_m
+    \in [a_m, b_m]$, so by the previous paragraph we have $a_m \in [a_n, b_n]$,
+    so $a_m \leq b_n$.  Either way, $a_m \leq b_n$ for all $m$ and $n$.
+
+    Now let $S$ be the image of $a$.  Then $a_0 \in S$, and $b_0$ is an upper
+    bound of $S$ by the previous paragraph, so by completeness, $S$ has a
+    supremum $x$.  Then $x$ is greater than or equal to all $a_n$ by being the
+    upper bound of $S$, and $x$ is less than or equal to all $b_n$ since they
+    are all upper bounds of $S$ by the previous paragraph.  Thus, $x \in [a_n,
+    b_n]$ for all $n$.
+\end{proof}
+
 \end{document}
