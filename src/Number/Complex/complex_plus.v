@@ -1,84 +1,57 @@
 Require Import init.
 
 Require Export complex_base.
-Require Import nat.
-Require Import int.
-Require Import rat.
 Require Import real.
 
 Global Instance complex_plus : Plus complex := {
     plus a b := (fst a + fst b, snd a + snd b)
 }.
 
-Global Program Instance complex_plus_comm : PlusComm complex.
-Next Obligation.
+Global Instance complex_plus_comm : PlusComm complex.
+Proof.
+    split.
+    intros a b.
     unfold plus; cbn.
-    rewrite plus_comm.
-    rewrite (plus_comm (snd a)).
-    reflexivity.
+    apply prod_combine; apply plus_comm.
 Qed.
 
-Global Program Instance complex_plus_assoc : PlusAssoc complex.
-Next Obligation.
+Global Instance complex_plus_assoc : PlusAssoc complex.
+Proof.
+    split.
+    intros a b c.
     unfold plus; cbn.
-    do 2 rewrite plus_assoc.
-    reflexivity.
+    apply prod_combine; apply plus_assoc.
 Qed.
 
 Global Instance complex_zero : Zero complex := {
     zero := (0, 0)
 }.
 
-Global Program Instance complex_plus_lid : PlusLid complex.
-Next Obligation.
+Global Instance complex_plus_lid : PlusLid complex.
+Proof.
+    split.
+    intros a.
     unfold zero, plus; cbn.
-    do 2 rewrite plus_lid.
-    destruct a; reflexivity.
+    apply prod_combine; apply plus_lid.
 Qed.
 
 Global Instance complex_neg : Neg complex := {
     neg a := (-fst a, -snd a)
 }.
 
-Global Program Instance complex_plus_linv : PlusLinv complex.
-Next Obligation.
+Global Instance complex_plus_linv : PlusLinv complex.
+Proof.
+    split.
+    intros a.
     unfold plus, neg; cbn.
-    do 2 rewrite plus_linv.
-    reflexivity.
+    apply prod_combine; apply plus_linv.
 Qed.
 
-Theorem real_to_complex_plus : ∀ a b,
-    real_to_complex (a + b) = real_to_complex a + real_to_complex b.
+Global Instance real_to_complex_plus : HomomorphismPlus real_to_complex.
 Proof.
+    split.
     intros a b.
     unfold real_to_complex, plus at 2; cbn.
-    rewrite plus_rid.
+    rewrite plus_lid.
     reflexivity.
-Qed.
-
-Theorem rat_to_complex_plus : ∀ a b,
-    rat_to_complex (a + b) = rat_to_complex a + rat_to_complex b.
-Proof.
-    intros a b.
-    unfold rat_to_complex.
-    setoid_rewrite homo_plus.
-    apply real_to_complex_plus.
-Qed.
-
-Theorem int_to_complex_plus : ∀ a b,
-    int_to_complex (a + b) = int_to_complex a + int_to_complex b.
-Proof.
-    intros a b.
-    unfold int_to_complex.
-    setoid_rewrite homo_plus.
-    apply real_to_complex_plus.
-Qed.
-
-Theorem nat_to_complex_plus : ∀ a b,
-    nat_to_complex (a + b) = nat_to_complex a + nat_to_complex b.
-Proof.
-    intros a b.
-    unfold nat_to_complex.
-    setoid_rewrite homo_plus.
-    apply real_to_complex_plus.
 Qed.

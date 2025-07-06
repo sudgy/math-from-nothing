@@ -174,6 +174,18 @@ Definition int_domain := odomain_to_domain int.
 Definition int_ring := domain_to_ring int_domain.
 Definition int_cring := domain_to_cring int_domain.
 
+Theorem int_nat_ex : ∀ n : int_base, ∃ a b : nat, n = from_nat a - from_nat b.
+Proof.
+    intros n.
+    equiv_get_value n.
+    destruct n as [a b].
+    exists a, b.
+    do 2 rewrite from_nat_int.
+    unfold plus, neg; equiv_simpl.
+    rewrite plus_lid, plus_rid.
+    reflexivity.
+Qed.
+
 Theorem int_lt_nat : ∀ a b,
     to_equiv int_equiv a < to_equiv int_equiv b ↔ fst a + snd b < snd a + fst b.
 Proof.

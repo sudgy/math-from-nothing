@@ -319,6 +319,12 @@ Proof.
     apply mult_3.
 Qed.
 
+Theorem square_nz : ∀ x, 0 = x * x → 0 = x.
+Proof.
+    intros x x_z.
+    apply mult_zero in x_z as [z|z]; exact z.
+Qed.
+
 (* begin hide *)
 End MultRing.
 

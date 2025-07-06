@@ -1,0 +1,296 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+\externaldocument{../basics/elementary_algebra}
+\externaldocument{integer}
+
+\begin{document}
+
+\setcounter{chapter}{11}
+
+\chapter{The Complex Numbers}
+
+I haven't really done much with the complex numbers.  I wasn't even going to
+include them at first, but then once I wanted to try something with them so I
+quickly did the basic construction, but that's it.  So here's the basic
+construction.
+
+\begin{definition}
+    Define the complex numbers $\mathbb C$ to be the type $\mathbb R \times
+    \mathbb R$.  We will write a complex number $(a, b)$ as $a + bi$, with $i$
+    in this case being a purely formal notational device.  Define a canonical
+    injection $\iR : \mathbb R \to \mathbb C$ given by $\iR(x) = x + 0i$.
+\end{definition}
+
+Like all canonical injections, $\iR$ will be dropped unless it is needed.
+
+\section{Addition}
+
+\begin{instance}
+    Define addition of complex numbers by
+    \[
+        (a_1 + a_2i) + (b_1 + b_2i) = (a_1 + b_1) + (a_2 + b_2)i.
+    \]
+\end{instance}
+
+\begin{instance}
+    Addition of complex numbers is commutative.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        (a_1 + a_2i) + (b_1 + b_2i)
+        &= (a_1 + b_1) + (a_2 + b_2)i \\
+        &= (b_1 + a_1) + (b_2 + a_2)i \\
+        &= (b_1 + b_2i) + (a_1 + a_2i).
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Addition of complex numbers is associative.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        (a_1 + a_2i) + ((b_1 + b_2i) + (c_1 + c_2i))
+        &= (a_1 + a_2i) + ((b_1 + c_1) + (b_2 + c_2)i) \\
+        &= (a_1 + (b_1 + c_1)) + (a_2 + (b_2 + c_2))i \\
+        &= ((a_1 + b_1) + c_1) + ((a_2 + b_2) + c_2)i \\
+        &= ((a_1 + b_1) + (a_2 + b_2)i) + (c_1 + c_2i) \\
+        &= ((a_1 + a_2i) + (b_1 + b_2)i) + (c_1 + c_2i).
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Define zero in the complex numbers to be $0 + 0i$.
+\end{instance}
+
+\begin{instance}
+    Zero is an additive identity in the complex numbers.
+\end{instance}
+\begin{proof}
+    \[
+        0 + a
+        = (0 + 0i) + (a_1 + a_2i)
+        = (0 + a_1) + (0 + a_2)i
+        = a_1 + a_2i = a.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define negation in the complex numbers as $-(a_1 + a_2i) = (-a_1) +
+    (-a_2)i$.
+\end{instance}
+
+\begin{instance}
+    Negation of complex numbers is an additive inverse.
+\end{instance}
+\begin{proof}
+    \[
+        -a + a
+        = ((-a_1) + (-a_2)i) + (a_1 + a_2i)
+        = (-a_1 + a_1) + (-a_2 + a_2)i
+        = 0 + 0i
+        = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    $\iR$ is additive.
+\end{instance}
+\begin{proof}
+    \[
+        \iR(a + b) = (a + b) + 0i = (a + 0i) + (b + 0i) = \iR(a) + \iR(b).
+    \]
+\end{proof}
+
+\section{Multiplication}
+
+\begin{instance}
+    Define multiplication of complex numbers as
+    \[
+        (a_1 + a_2i)(b_1 + b_2i) = (a_1b_1 - a_2b_2) + (a_1b_2 + a_2 b_1)i.
+    \]
+\end{instance}
+
+\begin{instance}
+    Multiplication of complex numbers is commutative.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        (a_1 + a_2i)(b_1 + b_2i)
+        &= (a_1b_1 - a_2b_2) + (a_1b_2 + a_2 b_1)i \\
+        &= (b_1a_1 - b_2a_2) + (b_1a_2 + b_2 a_1)i \\
+        &= (b_1a_1 - b_2a_2) + (b_2 a_1 + b_1a_2)i \\
+        &= (b_1 + b_2i)(a_1 + a_2i).
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Multiplication of complex numbers is associative.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+        &\phantom{{}={}} a(bc) \\
+        &= (a_1 + a_2i)((b_1 + b_2i)(c_1 + c_2i)) \\
+        &= (a_1 + a_2i)((b_1 c_1 - b_2 c_2) + (b_1 c_2 + b_2 c_1)i) \\
+        &= (a_1 b_1 c_1 - a_1 b_2 c_2 - a_2 b_1 c_2 - a_2 b_2 c_1) +
+            (a_1 b_1 c_2 + a_1 b_2 c_1 + a_2 b_1 c_1 - a_2 b_2 c_2)i \\
+        &= (a_1 b_1 c_1 - a_2 b_2 c_1 - a_1 b_2 c_2 - a_2 b_1 c_2) +
+            (a_1 b_1 c_2 - a_2 b_2 c_2 + a_1 b_2 c_1 + a_2 b_1 c_1)i \\
+        &= ((a_1 b_1 - a_2 b_2) + (a_1 b_2 + a_2 b_1)i)(c_1 + c_2i) \\
+        &= ((a_1 + a_2i)(b_1 + b_2i))(c_1 + c_2i) \\
+        &= (ab)c.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Multiplication of complex numbers is distributive.
+\end{instance}
+\begin{proof}
+    \begin{align*}
+    &\phantom{{}={}} a(b + c) \\
+    &= (a_1 + a_2i)((b_1 + b_2i) + (c_1 + c_2i)) \\
+    &= (a_1 + a_2i)((b_1 + c_1) + (b_2 + c_2)i) \\
+    &= (a_1 b_1 + a_1 c_1 - a_2 b_2 - a_2 c_2) +
+        (a_1 b_2 + a_1 c_2 + a_2 b_1 + a_2 c_1)i \\
+    &= (a_1 b_1 - a_2 b_2 + a_1 c_1 - a_2 c_2) +
+        (a_1 b_2 + a_2 b_1 + a_1 c_2 + a_2 c_1)i \\
+    &= ((a_1 b_1 - a_2 b_2) + (a_1 b_2 + a_2 b_1)i) +
+        ((a_1 c_2 - a_2 c_2) + (a_1 c_1 + a_2 c_1)i) \\
+    &= (a_1 + a_2i)(b_1 + b_2i) + (a_1 + a_2i)(c_1 + c_2i) \\
+    &= ab + ac.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    Define one in the complex numbers to be $1 + 0i$.
+\end{instance}
+
+\begin{instance}
+    The complex numbers are not trivial.
+\end{instance}
+\begin{proof}
+    If $0 + 0i = 1 + 0i$, we would have $0 = 1$ in the real numbers, which is
+    impossible.
+\end{proof}
+
+\begin{instance}
+    One is a multiplicative identity in the complex numbers.
+\end{instance}
+\begin{proof}
+    \[
+        1a = (1 + 0i)(a_1 + a_2i) = (1 a_1 - 0a_2) + (1 a_2 + 0 a_1)i
+        = a_1 + a_2i = a.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define multiplicative inverses in the complex numbers using
+    \[
+        (a_1 + a_2i)^{-1}
+        = \frac{a_1}{a_1^2 + a_2^2} - \frac{a_2}{a_1^2 + a_2^2} i.
+    \]
+\end{instance}
+
+\begin{instance}
+    Reciprocals are multiplicative inverses in the complex numbers.
+\end{instance}
+\begin{proof}
+    Let $a \neq 0$.  Before we move on to the calculation, we will prove that $0
+    \neq a_1^2 + a_2^2$.  If $0 = a_1^2 + a_2^2$, we would have $a_1^2 =
+    -a_2^2$, and since $a_1^2 \geq 0$, we would have $-a_2^2 \geq 0$.  This
+    means that $a_2^2 \leq 0$, and since $0 \leq a_2^2$, we have $a_2^2 = 0$,
+    so by Theorem \ref{square_nz} we have $a_2 = 0$.  The same argument shows
+    that $a_1 = 0$.  This would mean that $a = 0$, contradicting $a \neq 0$.
+    Thus, we must have $a_1^2 + a_2^2 \neq 0$.  Then
+    \begin{align*}
+        a^{-1}a
+        &= \left( \frac{a_1}{a_1^2 + a_2^2} - \frac{a_2}{a_1^2 + a_2^2}i \right)
+            (a_1 + a_2i) \\
+        &= \left( \frac{a_1^2}{a_1^2 + a_2^2} +
+                \frac{a_2^2}{a_1^2 + a_2^2} \right) +
+            \left( -\frac{a_1a_2}{a_1^2 + a_2^2} +
+                \frac{a_1a_2}{a_1^2 + a_2^2} \right)i \\
+        &= \frac{a_1^2 + a_2^2}{a_1^2 + a_2^2} + 0i \\
+        &= 1 + 0i \\
+        &= 1
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    $\iR$ is multiplicative.
+\end{instance}
+\begin{proof}
+    \[
+        \iR(ab)
+        = ab + 0i
+        = (ab - 0^2) + (a0 + 0b)i
+        = (a + 0i)(b + 0i)
+        = \iR(a) \iR(b).
+    \]
+\end{proof}
+
+\begin{instance}
+    $\iR$ is unital.
+\end{instance}
+\begin{proof}
+    \[
+        \iR(1) = 1 + 0i = 1.
+    \]
+\end{proof}
+
+Thus, $\iR$ is a field homomorphism, and in particular, it is injective.
+
+\begin{theorem}
+    For all natural numbers $n$, $\iR(\iN(n)) = \iN(n)$.
+\end{theorem}
+\begin{proof}
+    We will prove the result by induction.  When $n = 0$, the result follows
+    from $\iR$ and $\iN$ being nullitive.  When $\iR(\iN(n)) = \iN(n)$,
+    \[
+        \iR(\iN(n + 1)) = \iR(\iN(n)) + \iR(\iN(1)) = \iN(n) + 1 = \iN(n + 1).
+    \]
+\end{proof}
+
+\begin{instance}
+    The complex numbers are characteristic zero.
+\end{instance}
+\begin{proof}
+    Because the real numbers are characteristic zero, we have $0 \neq \iN(n+1)$
+    in the real numbers.  Because $\iR$ is injective, we can apply it to both
+    sides of the inequality to get $\iR(0) \neq \iR(\iN(n + 1))$, producing $0
+    \neq \iN(n + 1)$ in the complex numbers.
+\end{proof}
+
+\begin{theorem}
+    For all integers $n$, $\iR(\iZ(n)) = \iZ(n)$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{int_nat_ex}, we have natural numbers $a$ and $b$ such that
+    $n = \iN(a) - \iN(b)$.  Then
+    \begin{align*}
+        \iR(\iZ(n))
+        &= \iR(\iZ(\iN(a) - \iN(b))) \\
+        &= \iR(\iZ(\iN(a)) - \iZ(\iN(b))) \\
+        &= \iR(\iN(a) - \iN(b)) \\
+        &= \iR(\iN(a)) - \iR(\iN(b)) \\
+        &= \iN(a) - \iN(b) \\
+        &= \iZ(n).
+    \end{align*}
+\end{proof}
+
+\begin{theorem}
+    For all rational numbers $n$, $\iR(\iQ(n)) = \iQ(n)$.
+\end{theorem}
+\begin{proof}
+    We have $n = \iZ(a)/\iZ(b)$ with $b \neq 0$.  Then
+    \begin{align*}
+        \iR(\iQ(n))
+        &= \iR\left( \iQ\left( \frac{\iZ(a)}{\iZ(b)} \right) \right) \\
+        &= \iR\left( \frac{\iQ(\iZ(a))}{\iQ(\iZ(b))} \right) \\
+        &= \iR\left( \frac{\iZ(a)}{\iZ(b)} \right) \\
+        &= \frac{\iR(\iZ(a))}{\iR(\iZ(b))} \\
+        &= \frac{\iZ(a)}{\iZ(b)} \\
+        &= \iQ(n).
+    \end{align*}
+\end{proof}
+
+\end{document}
