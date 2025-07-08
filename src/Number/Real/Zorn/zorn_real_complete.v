@@ -51,19 +51,19 @@ Next Obligation.
         specialize (l_upper x Sx).
         exact (trans l_upper lu).
     }
-    pose (ZP := zorn_real_plus cut cut_in cut_out cut_lt).
-    pose (ZPA := zorn_real_plus_assoc cut cut_in cut_out cut_lt).
-    pose (ZPC := zorn_real_plus_comm cut cut_in cut_out cut_lt).
-    pose (ZZ := zorn_real_zero cut cut_in cut_out cut_lt).
-    pose (ZPZ := zorn_real_plus_lid cut cut_in cut_out cut_lt).
-    pose (ZN := zorn_real_neg cut cut_in cut_out cut_lt).
-    pose (ZPN := zorn_real_plus_linv cut cut_in cut_out cut_lt).
-    pose (ZM := zorn_real_mult cut cut_in cut_out cut_lt).
-    pose (ZL := zorn_real_ldist cut cut_in cut_out cut_lt).
-    pose (ZMA := zorn_real_mult_assoc cut cut_in cut_out cut_lt).
-    pose (ZMC := zorn_real_mult_comm cut cut_in cut_out cut_lt).
-    pose (ZE := zorn_real_one cut cut_in cut_out cut_lt).
-    pose (ZME := zorn_real_mult_lid cut cut_in cut_out cut_lt).
+    pose (ZP := cring_plus (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZPA := cring_plus_assoc (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZPC := cring_plus_comm (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZZ := cring_zero (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZPZ := cring_plus_lid (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZN := cring_neg (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZPN := cring_plus_linv (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZM := cring_mult (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZL := cring_ldist (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZMA := cring_mult_assoc (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZMC := cring_mult_comm (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZE := cring_one (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
+    pose (ZME := cring_mult_lid (quotient_cring (zorn_real_ideal cut cut_in cut_out cut_lt))).
     pose (ZML := zorn_real_mult_lcancel cut cut_in cut_out cut_lt).
     pose (ZO := zorn_real_order cut cut_in cut_out cut_lt).
     pose (ZOC := zorn_real_order_le_connex cut cut_in cut_out cut_lt).
@@ -110,7 +110,7 @@ Next Obligation.
     cbn in f_ex.
     change (set_type (aof_set real_aof)) with real in f_ex.
     pose (f1 (x : real) := to_polynomial real_cring x).
-    pose (f2 (x : polynomial real_cring) := to_qring
+    pose (f2 (x : polynomial real_cring) := to_qcring
                     (zorn_real_ideal cut cut_in cut_out cut_lt) x : zrq).
     pose (f3 (x : zrq) := to_frac zrq x).
     pose (f4 (x : frac_type zrq) := aof_ex_f x).
@@ -120,23 +120,23 @@ Next Obligation.
         unfold f, f1, f2, f3, f4.
         split; [>|split; [>|split; [>|split]]].
         -   rewrite to_polynomial_zero.
-            rewrite to_qring_zero.
+            rewrite (homo_zero (f := to_qcring _)).
             rewrite (homo_zero (f := to_frac zrq)).
             reflexivity.
         -   rewrite to_polynomial_one.
-            rewrite to_qring_one.
+            rewrite (homo_one (f := to_qcring _)).
             rewrite (homo_one (f := to_frac zrq)).
             reflexivity.
         -   intros x y.
             rewrite to_polynomial_plus.
-            rewrite to_qring_plus.
+            rewrite (homo_plus (f := to_qcring _)).
             rewrite (homo_plus (f := to_frac zrq)).
             unfold plus at 2; cbn.
             do 2 rewrite aof_ex_f_eq1.
             reflexivity.
         -   intros x y.
             rewrite to_polynomial_mult.
-            rewrite to_qring_mult.
+            rewrite (homo_mult (f := to_qcring _)).
             rewrite (homo_mult (f := to_frac zrq)).
             unfold mult at 2; cbn.
             do 2 rewrite aof_ex_f_eq1.

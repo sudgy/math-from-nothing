@@ -16,36 +16,20 @@ Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
 
 Section Euclidean.
 
-Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UM : Mult U,
-    UO : One U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    @Ldist U UP UM,
-    @Rdist U UP UM,
-    @MultAssoc U UM,
-    @MultLid U UM UO,
-    @MultRid U UM UO,
-    @EuclideanDomain U UP UZ UM
-}.
+Context {U : IntegralDomain} `{@EuclideanDomain U _ _ _}.
 
-Program Instance euclidean_principle_ideal : PrincipleIdealDomain.
+Program Instance euclidean_principle_ideal : @PrincipleIdealDomain U. 
 Next Obligation.
-    classic_case (∀ x, ideal_set I x → 0 = x) as [I_z|I_nz].
+    classic_case (∀ x, cideal_set I x → 0 = x) as [I_z|I_nz].
     {
         exists 0.
-        apply ideal_eq.
+        apply cideal_eq.
         intros x.
         split.
         -   intros Ix.
             apply I_z in Ix.
             rewrite <- Ix.
-            apply ideal_zero.
+            apply (cideal_zero (principle_ideal_by 0)).
         -   intros [l x_eq].
             assert (0 = x) as x_z.
             {
@@ -57,16 +41,16 @@ Next Obligation.
                 -   rewrite ulist_image_add, ulist_sum_add.
                     rewrite <- IHl.
                     rewrite plus_rid.
-                    destruct a as [[a1 a2] [a3 a3_eq]].
-                    unfold list_to_set in a3_eq.
-                    rewrite <- a3_eq; cbn.
-                    rewrite mult_ranni, mult_lanni.
+                    destruct a as [a1 [a2 a2_eq]].
+                    unfold list_to_set in a2_eq.
+                    rewrite <- a2_eq; cbn.
+                    rewrite mult_lanni.
                     reflexivity.
             }
             rewrite <- x_z.
-            apply ideal_zero.
+            apply (cideal_zero I).
     }
-    pose (S n := ∃ a, 0 ≠ a ∧ ideal_set I a ∧ euclidean_f a = n).
+    pose (S n := ∃ a, 0 ≠ a ∧ cideal_set I a ∧ euclidean_f a = n).
     assert (∃ n, S n) as S_ex.
     {
         rewrite not_all in I_nz.
@@ -78,21 +62,20 @@ Next Obligation.
     }
     pose proof (well_ordered S S_ex) as [n [[b [b_nz [Ib n_eq]]] n_min]].
     exists b.
-    apply ideal_eq.
+    apply cideal_eq.
     intros a.
     split.
     -   intros Ia.
         cbn.
-        unfold ideal_generated_by_set.
+        unfold cideal_generated_by_set.
         pose proof (euclidean_division a b b_nz) as [q [r [eq ltq]]].
         classic_case (0 = r) as [r_z | r_nz].
         +   rewrite <- r_z in eq.
             rewrite plus_rid in eq.
-            exists (((1, q), [b|Logic.eq_refl]) ː ulist_end).
+            exists ((q, [b|Logic.eq_refl]) ː ulist_end).
             rewrite ulist_image_add, ulist_sum_add; cbn.
             rewrite ulist_image_end, ulist_sum_end.
             rewrite plus_rid.
-            rewrite mult_lid.
             exact eq.
         +   destruct ltq as [|ltq]; [>contradiction|].
             assert (S (euclidean_f r)) as Sr.
@@ -102,9 +85,9 @@ Next Obligation.
                 -   exact r_nz.
                 -   apply plus_rlmove in eq.
                     rewrite <- eq.
-                    apply ideal_plus.
-                    +   apply ideal_neg.
-                        apply ideal_rmult.
+                    apply (cideal_plus I).
+                    +   apply (cideal_neg I).
+                        apply (cideal_mult I).
                         exact Ib.
                     +   exact Ia.
             }
@@ -115,14 +98,13 @@ Next Obligation.
         rewrite a_eq; clear a_eq.
         induction l as [|c l] using ulist_induction.
         +   rewrite ulist_image_end, ulist_sum_end.
-            apply ideal_zero.
+            apply (cideal_zero I).
         +   rewrite ulist_image_add, ulist_sum_add.
-            apply ideal_plus; [>clear IHl|exact IHl].
-            destruct c as [[c1 c2] [c3 c3_eq]]; cbn.
-            rewrite singleton_eq in c3_eq.
-            rewrite <- c3_eq.
-            apply ideal_rmult.
-            apply ideal_lmult.
+            apply (cideal_plus I); [>clear IHl|exact IHl].
+            destruct c as [c1 [c2 c2_eq]]; cbn.
+            rewrite singleton_eq in c2_eq.
+            rewrite <- c2_eq.
+            apply (cideal_mult I).
             exact Ib.
 Qed.
 

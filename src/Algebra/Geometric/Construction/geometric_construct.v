@@ -138,7 +138,10 @@ Proof.
     reflexivity.
 Qed.
 
-Definition ga_ideal_base (x : FR) :=
+Definition FR_ring : Ring := make_ring FR _ _ _ FR_mult _ _ _ _ FR_mult_assoc
+    FR_ldist FR_rdist FR_one FR_mult_lid FR_mult_rid.
+
+Definition ga_ideal_base (x : FR_ring) :=
     (∃ a b, x = to_FR [a + b] - to_FR [a] - to_FR [b]) ∨
     (∃ α b, x = to_FR [α · b] - α · to_FR [b]) ∨
     (∃ v, x = to_FR [v; v] - [B|] v v · 1).
@@ -146,25 +149,6 @@ Definition ga_ideal_base (x : FR) :=
 Definition ga_ideal := ideal_generated_by ga_ideal_base.
 
 Definition geometric_algebra_base := quotient_ring ga_ideal.
-Definition geometric_algebra_plus := quotient_ring_plus ga_ideal.
-Definition geometric_algebra_plus_assoc := quotient_ring_plus_assoc ga_ideal.
-Definition geometric_algebra_plus_comm := quotient_ring_plus_comm ga_ideal.
-Definition geometric_algebra_zero := quotient_ring_zero ga_ideal.
-Definition geometric_algebra_plus_lid := quotient_ring_plus_lid ga_ideal.
-Definition geometric_algebra_neg := quotient_ring_neg ga_ideal.
-Definition geometric_algebra_plus_linv := quotient_ring_plus_linv ga_ideal.
-Definition geometric_mult_class := quotient_ring_mult ga_ideal.
-Definition geometric_mult_ldist := quotient_ring_ldist ga_ideal.
-Definition geometric_mult_rdist := quotient_ring_rdist ga_ideal.
-Definition geometric_mult_assoc := quotient_ring_mult_assoc ga_ideal.
-Definition geometric_one := quotient_ring_one ga_ideal.
-Definition geometric_mult_lid := quotient_ring_mult_lid ga_ideal.
-Definition geometric_mult_rid := quotient_ring_mult_rid ga_ideal.
-Existing Instances geometric_algebra_plus geometric_algebra_plus_assoc
-    geometric_algebra_plus_comm geometric_algebra_zero
-    geometric_algebra_plus_lid geometric_algebra_neg geometric_algebra_plus_linv
-    geometric_mult_class geometric_mult_ldist geometric_mult_rdist
-    geometric_mult_assoc geometric_one geometric_mult_lid geometric_mult_rid.
 
 Lemma ga_scalar_wd : ∀ c u v, eq_equal (ideal_equiv ga_ideal) u v →
     eq_equal (ideal_equiv ga_ideal) (c · u) (c · v).
@@ -210,7 +194,7 @@ Proof.
     split.
     intros a u v.
     equiv_get_value u v.
-    unfold plus, scalar_mult; equiv_simpl.
+    unfold plus, scalar_mult, geometric_algebra_base, quotient_ring; equiv_simpl.
     apply f_equal.
     change (sum_module_type _ _) with (module_V FR).
     apply scalar_ldist.
@@ -221,6 +205,7 @@ Proof.
     intros a b v.
     equiv_get_value v.
     unfold scalar_mult, plus at 2; equiv_simpl.
+    unfold geometric_algebra_base, quotient_ring; equiv_simpl.
     apply f_equal.
     change (sum_module_type _ _) with (module_V FR).
     apply scalar_rdist.
@@ -230,7 +215,7 @@ Proof.
     split.
     intros a u v.
     equiv_get_value u v.
-    unfold mult, scalar_mult; equiv_simpl.
+    unfold mult, scalar_mult, geometric_algebra_base, quotient_ring; equiv_simpl.
     apply f_equal.
     apply scalar_lmult.
 Qed.
@@ -239,7 +224,7 @@ Proof.
     split.
     intros a u v.
     equiv_get_value u v.
-    unfold mult, scalar_mult; equiv_simpl.
+    unfold mult, scalar_mult, geometric_algebra_base, quotient_ring; equiv_simpl.
     apply f_equal.
     apply scalar_rmult.
 Qed.
@@ -251,8 +236,9 @@ Theorem vector_to_geo_plus : ∀ u v,
 Proof.
     intros a b.
     unfold vector_to_geo.
-    unfold plus at 2; cbn.
-    unfold to_qring; equiv_simpl.
+    unfold plus at 2, to_qring, quotient_ring; cbn.
+    unfold to_qring_type; equiv_simpl.
+    apply equiv_eq; cbn.
     unfold ideal_generated_by_set.
     assert (ga_ideal_base (to_FR [a + b] - to_FR [a] - to_FR [b])) as ab_in.
     {
@@ -277,7 +263,8 @@ Proof.
     intros α v.
     unfold vector_to_geo.
     unfold scalar_mult at 2; cbn.
-    unfold to_qring; equiv_simpl.
+    unfold to_qring, to_qring_type; equiv_simpl.
+    apply equiv_eq; cbn.
     unfold ideal_generated_by_set.
     assert (ga_ideal_base (to_FR [α · v] - α · to_FR [v])) as v_in.
     {
@@ -301,7 +288,8 @@ Proof.
     unfold vector_to_geo.
     unfold mult; cbn.
     unfold scalar_mult; cbn.
-    unfold to_qring; equiv_simpl.
+    unfold quotient_ring, to_qring, to_qring_type; equiv_simpl.
+    apply equiv_eq.
     unfold mult; cbn.
     change (sum_module_type _ _) with (module_V FR).
     rewrite (free_bilinear_free U (list V)).
@@ -330,26 +318,26 @@ Definition geometric_algebra_object
     := make_algebra F
         (make_module F
             (geometric_algebra_base B)
-            (geometric_algebra_plus B)
-            (geometric_algebra_zero B)
-            (geometric_algebra_neg B)
-            (geometric_algebra_plus_assoc B)
-            (geometric_algebra_plus_comm B)
-            (geometric_algebra_plus_lid B)
-            (geometric_algebra_plus_linv B)
+            _
+            _
+            _
+            _
+            _
+            _
+            _
             (geometric_algebra_scalar_mult B)
             (geometric_algebra_scalar_id B)
             (geometric_algebra_scalar_ldist B)
             (geometric_algebra_scalar_rdist B)
             (geometric_algebra_scalar_comp B)
         )
-        (geometric_mult_class B)
-        (geometric_mult_ldist B)
-        (geometric_mult_rdist B)
-        (geometric_mult_assoc B)
-        (geometric_one B)
-        (geometric_mult_lid B)
-        (geometric_mult_rid B)
+        _
+        _
+        _
+        _
+        _
+        _
+        _
         (geometric_scalar_lmult B)
         (geometric_scalar_rmult B)
     .

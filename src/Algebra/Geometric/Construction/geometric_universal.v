@@ -111,8 +111,8 @@ Proof.
     {
         intros α v.
         unfold scalar_mult at 2; cbn.
-        unfold to_qring; equiv_simpl.
-        apply (ideal_eq_reflexive (ga_ideal B)).
+        unfold to_qring_type; equiv_simpl.
+        reflexivity.
     }
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
@@ -184,6 +184,7 @@ Proof.
             rewrite <- module_homo_neg.
             rewrite <- module_homo_plus.
             remember (x - y) as v.
+            rewrite <- Heqv.
             rewrite <- Heqv in eq.
             clear x y Heqv.
             destruct eq as [l v_eq]; subst v.
@@ -239,7 +240,7 @@ Proof.
             intros u v.
             equiv_get_value u v.
             unfold plus at 1; cbn.
-            unfold h; equiv_simpl.
+            unfold h, geometric_algebra_base, quotient_ring; equiv_simpl.
             apply module_homo_plus.
         }
         assert (∀ a v, h (a · v) = a · h v) as h_scalar.
@@ -255,7 +256,7 @@ Proof.
             intros u v.
             equiv_get_value u v.
             unfold mult at 1; cbn.
-            unfold h; equiv_simpl.
+            unfold h, geometric_algebra_base, quotient_ring; equiv_simpl.
             apply homo_mult.
         }
         assert (h 1 = 1) as h_one.
@@ -284,17 +285,18 @@ Proof.
             (to_qring (ga_ideal B) v).
         induction v as [|a v] using grade_induction.
         {
-            rewrite to_qring_zero.
+            rewrite homo_zero.
             do 2 rewrite algebra_homo_zero.
             reflexivity.
         }
-        rewrite to_qring_plus.
+        rewrite homo_plus.
         do 2 rewrite algebra_homo_plus.
         rewrite IHv.
         apply rplus.
         clear v IHv.
         destruct a as [v [l vl]]; cbn.
         apply to_free_ex in vl as [α v_eq]; subst v.
+        cbn in to_qring_scalar.
         rewrite to_qring_scalar.
         do 2 rewrite algebra_homo_scalar.
         apply f_equal.
@@ -308,7 +310,7 @@ Proof.
         rewrite <- (free_bilinear_free U (list V)
             (λ a b, to_free U (list V) (a + b) : free_linear _ _) [a] l).
         change (free_bilinear _ _ _ _ _) with (to_free U _ [a] * to_free U _ l).
-        rewrite to_qring_mult.
+        rewrite homo_mult.
         do 2 rewrite algebra_homo_mult.
         rewrite IHl.
         apply rmult.

@@ -1,6 +1,7 @@
 Require Import init.
 
 Require Export ring_ideal.
+Require Export domain_category.
 Require Import factorization.
 
 Require Import gcd.
@@ -13,31 +14,17 @@ Require Import order_minmax.
 (* begin hide *)
 Section PrincipleIdealDef.
 
-Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UM : Mult U,
-    UO : One U,
-    @PlusAssoc U UP,
-    @PlusComm U UP,
-    @PlusLid U UP UZ,
-    @PlusLinv U UP UZ UN,
-    @Ldist U UP UM,
-    @Rdist U UP UM,
-    @MultAssoc U UM,
-    @MultComm U UM,
-    @MultLid U UM UO,
-    @MultRid U UM UO
-}.
+Context {U : IntegralDomain}.
 
 (* end hide *)
-Definition principle_ideal_by x := ideal_generated_by ❴x❵.
+Definition principle_ideal_by (x : domain_to_cring U)
+    := cideal_generated_by ❴x❵.
 
-Definition principle_ideal (I : Ideal U)
+Definition principle_ideal (I : CIdeal (domain_to_cring U))
     := ∃ x, I = principle_ideal_by x.
 
-Theorem principle_ideal_div : ∀ a b, ideal_set (principle_ideal_by a) b ↔ a ∣ b.
+Theorem principle_ideal_div :
+    ∀ a b, cideal_set (principle_ideal_by a) b ↔ a ∣ b.
 Proof.
     intros a b.
     split.
@@ -48,18 +35,15 @@ Proof.
             apply divides_zero.
         +   rewrite ulist_image_add, ulist_sum_add.
             apply plus_stays_divides.
-            *   destruct b as [[b1 b2] [b3 b3_eq]]; cbn.
-                rewrite singleton_eq in b3_eq; subst b3.
-                exists (b1 * b2).
-                do 2 rewrite <- mult_assoc.
-                apply f_equal.
-                apply mult_comm.
+            *   destruct b as [b1 [b2 b2_eq]]; cbn.
+                rewrite singleton_eq in b2_eq; subst b2.
+                apply mult_div_lself.
             *   exact IHl.
     -   intros [c eq].
-        exists (((c, 1), [a|Logic.eq_refl]) ː ulist_end).
+        exists ((c, [a|Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
-        rewrite mult_rid, plus_rid.
+        rewrite plus_rid, mult_comm.
         symmetry; exact eq.
 Qed.
 
@@ -69,13 +53,13 @@ Proof.
     intros a b.
     split.
     -   intros eq.
-        assert (ideal_set (principle_ideal_by a) b) as ab.
+        assert (cideal_set (principle_ideal_by a) b) as ab.
         {
             rewrite eq.
             rewrite principle_ideal_div.
             apply refl.
         }
-        assert (ideal_set (principle_ideal_by b) a) as ba.
+        assert (cideal_set (principle_ideal_by b) a) as ba.
         {
             rewrite <- eq.
             rewrite principle_ideal_div.
@@ -84,7 +68,7 @@ Proof.
         rewrite principle_ideal_div in ab, ba.
         split; assumption.
     -   intros [ab ba].
-        apply ideal_eq.
+        apply cideal_eq.
         intros x.
         do 2 rewrite principle_ideal_div.
         split; intros x_div.
@@ -93,40 +77,22 @@ Proof.
 Qed.
 
 Class PrincipleIdealDomain := {
-    ideal_principle : ∀ I : Ideal U, principle_ideal I
+    ideal_principle : ∀ I : CIdeal (domain_to_cring U), principle_ideal I
 }.
 
 (* begin hide *)
 End PrincipleIdealDef.
 Section PrincipleIdeal.
 
-Context {U} `{
-    UP : Plus U,
-    UZ : Zero U,
-    UN : Neg U,
-    UM : Mult U,
-    UO : One U,
-    UPA : @PlusAssoc U UP,
-    UPC : @PlusComm U UP,
-    UPZ : @PlusLid U UP UZ,
-    UPN : @PlusLinv U UP UZ UN,
-    UL : @Ldist U UP UM,
-    UR : @Rdist U UP UM,
-    UMA : @MultAssoc U UM,
-    @MultComm U UM,
-    @MultLid U UM UO,
-    @MultRid U UM UO,
-    @MultLcancel U UZ UM,
-    @PrincipleIdealDomain U UP UZ UN UM UPA UPC UPZ UPN UL UR UMA
-}.
+Context {U : IntegralDomain} `{@PrincipleIdealDomain U}.
 
 (* end hide *)
-Theorem pid_noetherian : ∀ I : nat → Ideal U,
-    (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) →
+Theorem pid_noetherian : ∀ I : nat → CIdeal (domain_to_cring U),
+    (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) →
     ∃ n0, ∀ n, n0 ≤ n → I n0 = I n.
 Proof.
     intros In I_sub.
-    assert (∀ m n, m ≤ n → ideal_set (In m) ⊆ ideal_set (In n)) as I_sub2.
+    assert (∀ m n, m ≤ n → cideal_set (In m) ⊆ cideal_set (In n)) as I_sub2.
     {
         intros m n leq.
         apply nat_le_ex in leq as [c eq].
@@ -138,10 +104,10 @@ Proof.
             rewrite nat_plus_rsuc.
             apply I_sub.
     }
-    pose (I x := ∃ n, ideal_set (In n) x).
+    pose (I x := ∃ n, cideal_set (In n) x).
     assert (∃ a, I a) as I_nempty.
     {
-        destruct (ideal_nempty (In 0)) as [a Ia].
+        destruct (cideal_nempty (In 0)) as [a Ia].
         exists a.
         exists 0.
         exact Ia.
@@ -150,44 +116,37 @@ Proof.
     {
         intros a b [m Ia] [n Ib].
         exists (max m n).
-        apply ideal_plus.
+        apply (cideal_plus (In (max m n))).
         -   apply (I_sub2 m); [>|exact Ia].
             apply lmax.
         -   apply (I_sub2 n); [>|exact Ib].
             apply rmax.
     }
-    assert (∀ a b, I b → I (a * b)) as I_lmult.
-    {
-        intros a b [n Ib].
-        exists n.
-        apply ideal_lmult.
-        exact Ib.
-    }
-    assert (∀ a b, I a → I (a * b)) as I_rmult.
+    assert (∀ a b, I a → I (a * b)) as I_mult.
     {
         intros a b [n Ia].
         exists n.
-        apply ideal_rmult.
+        apply (cideal_mult (In n)).
         exact Ia.
     }
-    pose (I' := make_ideal I I_nempty I_plus I_lmult I_rmult).
+    pose (I' := make_cideal I I_nempty I_plus I_mult).
     pose proof (ideal_principle I') as [a0 I'_eq].
-    assert (ideal_set I' a0) as [n0 Ia0].
+    assert (cideal_set I' a0) as [n0 Ia0].
     {
         rewrite I'_eq.
-        exists (((1, 1), [a0|Logic.eq_refl]) ː ulist_end).
+        exists ((1, [a0|Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
-        rewrite mult_lid, mult_rid.
+        rewrite mult_rid.
         reflexivity.
     }
     exists n0.
     intros n n_ge.
-    apply ideal_eq_set.
+    apply cideal_eq_set.
     apply antisym.
     1: apply (I_sub2 _ _ n_ge).
-    assert (ideal_set (In n) ⊆ I) as sub1.
+    assert (cideal_set (In n) ⊆ I) as sub1.
     {
         intros a Ia.
         exists n.
@@ -195,25 +154,24 @@ Proof.
     }
     apply (trans sub1).
     intros a Ia.
-    assert (ideal_set I' a) as I'a by exact Ia.
+    assert (cideal_set I' a) as I'a by exact Ia.
     rewrite I'_eq in I'a.
     destruct I'a as [l a_eq].
     rewrite a_eq; clear a Ia a_eq.
     induction l as [|a l] using ulist_induction.
     -   rewrite ulist_image_end, ulist_sum_end.
-        apply ideal_zero.
+        apply cideal_zero.
     -   rewrite ulist_image_add, ulist_sum_add; cbn.
-        apply ideal_plus; [>clear IHl|exact IHl].
-        destruct a as [[a1 a2] [a3 a3_eq]]; cbn.
-        apply ideal_rmult.
-        apply ideal_lmult.
-        rewrite singleton_eq in a3_eq; subst.
+        apply (cideal_plus (In n0)); [>clear IHl|exact IHl].
+        destruct a as [a1 [a2 a2_eq]]; cbn.
+        apply (cideal_mult (In n0)).
+        rewrite singleton_eq in a2_eq; subst.
         exact Ia0.
 Qed.
 
-Program Instance pid_gcd : GCDDomain U := {
+Program Instance pid_gcd : GCDDomain (domain_to_cring U) := {
     gcd a b := ex_val (ideal_principle
-        (ideal_generated_by (❴a❵ ∪ ❴b❵)))
+        (cideal_generated_by (❴a❵ ∪ ❴b❵)))
 }.
 Next Obligation.
     rewrite_ex_val d d_eq.
@@ -221,26 +179,26 @@ Next Obligation.
     -   rewrite <- principle_ideal_div.
         rewrite <- d_eq.
         cbn.
-        exists (((1, 1), [a|make_lor Logic.eq_refl]) ː ulist_end).
+        exists ((1, [a|make_lor Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
-        rewrite mult_lid, mult_rid.
+        rewrite mult_rid.
         reflexivity.
     -   rewrite <- principle_ideal_div.
         rewrite <- d_eq.
         cbn.
-        exists (((1, 1), [b|make_ror Logic.eq_refl]) ː ulist_end).
+        exists ((1, [b|make_ror Logic.eq_refl]) ː ulist_end).
         rewrite ulist_image_add, ulist_sum_add; cbn.
         rewrite ulist_image_end, ulist_sum_end.
         rewrite plus_rid.
-        rewrite mult_lid, mult_rid.
+        rewrite mult_rid.
         reflexivity.
 Qed.
 Next Obligation.
-    destruct H5 as [da db].
+    destruct H1 as [da db].
     rewrite_ex_val d' d'_eq.
-    assert (ideal_set (principle_ideal_by d') d') as d'_in.
+    assert (cideal_set (principle_ideal_by d') d') as d'_in.
     {
         rewrite principle_ideal_div.
         apply refl.
@@ -254,15 +212,13 @@ Next Obligation.
         apply divides_zero.
     -   rewrite ulist_image_add, ulist_sum_add.
         apply plus_stays_divides; [>clear IHl|exact IHl].
-        destruct c as [[c1 c2] [c3 c3_eq]]; cbn.
+        destruct c as [c1 [c2 c2_eq]]; cbn.
         apply mult_factors_extend.
-        rewrite mult_comm.
-        apply mult_factors_extend.
-        unfold list_to_set, union in c3_eq; cbn in c3_eq.
-        destruct c3_eq; subst c3; assumption.
+        unfold list_to_set, union in c2_eq; cbn in c2_eq.
+        destruct c2_eq; subst c2; assumption.
 Qed.
 
-Lemma pid_factor_ex : ∀ a, 0 ≠ a → ¬unit a → ∃ b, prime b ∧ b ∣ a.
+Lemma pid_factor_ex : ∀ a : U, 0 ≠ a → ¬unit a → ∃ b, prime b ∧ b ∣ a.
 Proof.
     intros a a_nz au.
     classic_contradiction contr.
@@ -337,7 +293,7 @@ Proof.
             (rand (rand [|build_a n']))
         end).
     pose (I n := principle_ideal_by (fst [build_a' n|])).
-    assert (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) as I_sub.
+    assert (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) as I_sub.
     {
 Local Arguments principle_ideal_by : simpl never.
         intros n x Inx.
@@ -382,7 +338,7 @@ Qed.
 Program Instance pid_factorization : UniqueFactorizationDomain U.
 Next Obligation.
     rename x into a.
-    rename H4 into a_nz.
+    rename H0 into a_nz.
     classic_case (unit a) as [au|au].
     {
         exists a, ulist_end.
@@ -444,7 +400,7 @@ Next Obligation.
              ex_proof (ex_proof p_ex)]
         end).
     pose (I n := principle_ideal_by (fst [build_p n|])).
-    assert (∀ l, ulist_prop (λ x, prime x) l → 0 ≠ ulist_prod l) as l_nz.
+    assert (∀ l : ulist U, ulist_prop (λ x, prime x) l → 0 ≠ ulist_prod l) as l_nz.
     {
         clear au contr b_ex S a_eq build_p I.
         intros l l_prime.
@@ -465,7 +421,7 @@ Next Obligation.
             +   contradiction.
             +   exact p_nz.
     }
-    assert (∀ n, ideal_set (I n) ⊆ ideal_set (I (nat_suc n))) as I_sub.
+    assert (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) as I_sub.
     {
         intros n.
         unfold I; cbn.
@@ -500,7 +456,7 @@ Next Obligation.
     destruct [|build_p n] as [C0 a_eq']; clear C0.
     remember (fst [build_p n|]) as b; clear Heqb.
     remember (snd [build_p n|]) as l; clear Heql.
-    assert (ideal_set (principle_ideal_by a') a') as a'_in.
+    assert (cideal_set (principle_ideal_by a') a') as a'_in.
     {
         rewrite principle_ideal_div.
         apply refl.

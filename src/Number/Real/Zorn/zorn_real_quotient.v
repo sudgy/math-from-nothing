@@ -14,30 +14,9 @@ Require Import nat.
 
 Section Quotient.
 
-Let PP := polynomial_plus real_cring.
-Let PZ := polynomial_zero real_cring.
-Let PN := polynomial_neg real_cring.
-Let PPC := polynomial_plus_comm real_cring.
-Let PPA := polynomial_plus_assoc real_cring.
-Let PPZ := polynomial_plus_lid real_cring.
-Let PPN := polynomial_plus_linv real_cring.
-Let PM := polynomial_mult real_cring.
-Let PO := polynomial_one real_cring.
-Let PL := polynomial_ldist real_cring.
-Let PMA := polynomial_mult_assoc real_cring.
-Let PMC := polynomial_mult_comm real_cring.
-Let PMO := polynomial_mult_lid real_cring.
-Let PSM := polynomial_scalar real_cring.
-Let PSMO := polynomial_scalar_id real_cring.
-Let PSML := polynomial_scalar_ldist real_cring.
-Let PSMR := polynomial_scalar_rdist real_cring.
-Let PSMC := polynomial_scalar_comp real_cring.
-Let PML := polynomial_scalar_lmult real_cring.
-Let PMR := polynomial_scalar_rmult real_cring.
 Let PG := polynomial_grade real_cring.
 
-Local Existing Instances PP PZ PN PPC PPA PPZ PPN PM PO PL PMA PMC PMO PSM PSMO
-    PSML PSMR PSMC PML PMR PG.
+Local Existing Instances PG.
 
 Theorem top_of_cut_ex_wlog : ∀ (cut : real → Prop) b,
     cut 0 → ¬cut b → (∀ l u, cut u → l ≤ u → cut l) →
@@ -123,7 +102,7 @@ Qed.
 
 Notation "| a |" := (abs a) (at level 30).
 
-Definition zorn_real_ideal_set (c : polynomial real_cring) :=
+Definition zorn_real_ideal_set (c : polynomial_cring real_cring) :=
     ∀ ε, 0 < ε → ∃ δ, 0 < δ ∧
         (∀ x, top_of_cut δ x → |polynomial_eval c x| < ε).
 
@@ -165,10 +144,11 @@ Proof.
         apply abs_tri.
 Qed.
 
-Theorem zorn_real_ideal_lmult : ∀ a b,
-    zorn_real_ideal_set b → zorn_real_ideal_set (a * b).
+Theorem zorn_real_ideal_mult : ∀ a b,
+    zorn_real_ideal_set a → zorn_real_ideal_set (a * b).
 Proof.
-    intros f g g_in.
+    intros g f g_in.
+    rewrite mult_comm.
     intros ε ε_pos.
     destruct cut_in as [a a_in].
     destruct cut_out as [b b_out].
@@ -227,43 +207,15 @@ Proof.
         exact ltq.
 Qed.
 
-Theorem zorn_real_ideal_rmult : ∀ a b,
-    zorn_real_ideal_set a → zorn_real_ideal_set (a * b).
-Proof.
-    intros a b a_in.
-    rewrite mult_comm.
-    apply zorn_real_ideal_lmult.
-    exact a_in.
-Qed.
-
-Definition zorn_real_ideal := make_ideal
+Definition zorn_real_ideal : (CIdeal (polynomial_cring real_cring))
+:= make_cideal
     zorn_real_ideal_set
     zorn_real_ideal_nempty
     zorn_real_ideal_plus
-    zorn_real_ideal_lmult
-    zorn_real_ideal_rmult.
-Let I := ideal_set zorn_real_ideal.
+    zorn_real_ideal_mult.
+Local Notation "'I'" := (cideal_set zorn_real_ideal).
 
-Definition zorn_real_quotient := quotient_ring zorn_real_ideal.
-Definition zorn_real_plus := quotient_ring_plus zorn_real_ideal.
-Definition zorn_real_plus_assoc := quotient_ring_plus_assoc zorn_real_ideal.
-Definition zorn_real_plus_comm := quotient_ring_plus_comm zorn_real_ideal.
-Definition zorn_real_zero := quotient_ring_zero zorn_real_ideal.
-Definition zorn_real_plus_lid := quotient_ring_plus_lid zorn_real_ideal.
-Definition zorn_real_neg := quotient_ring_neg zorn_real_ideal.
-Definition zorn_real_plus_linv := quotient_ring_plus_linv zorn_real_ideal.
-Definition zorn_real_mult := quotient_ring_mult zorn_real_ideal.
-Definition zorn_real_ldist := quotient_ring_ldist zorn_real_ideal.
-Definition zorn_real_rdist := quotient_ring_rdist zorn_real_ideal.
-Definition zorn_real_mult_assoc := quotient_ring_mult_assoc zorn_real_ideal.
-Definition zorn_real_mult_comm := quotient_ring_mult_comm zorn_real_ideal.
-Definition zorn_real_one := quotient_ring_one zorn_real_ideal.
-Definition zorn_real_mult_lid := quotient_ring_mult_lid zorn_real_ideal.
-Definition zorn_real_mult_rid := quotient_ring_mult_rid zorn_real_ideal.
-Existing Instances zorn_real_plus zorn_real_plus_assoc zorn_real_plus_comm
-    zorn_real_zero zorn_real_plus_lid zorn_real_neg zorn_real_plus_linv
-    zorn_real_mult zorn_real_ldist zorn_real_rdist zorn_real_mult_assoc
-    zorn_real_mult_comm zorn_real_one zorn_real_mult_lid zorn_real_mult_rid.
+Definition zorn_real_quotient := quotient_cring zorn_real_ideal.
 
 Lemma zorn_real_polynomial_nz : ∀ f, ¬zorn_real_ideal_set f →
     ∃ ε δ, 0 < ε ∧ 0 < δ ∧
@@ -316,22 +268,14 @@ Qed.
 Lemma zorn_real_quotient_domain : ∀ a b : zorn_real_quotient,
     0 = a * b → 0 = a ∨ 0 = b.
 Proof.
-    intros a b.
-    equiv_get_value a b.
-    unfold zero, mult, zorn_real_quotient, quotient_ring; equiv_simpl.
+    intros x y.
+    pose proof (qcring_ex _ x) as [a a_eq]; subst x.
+    pose proof (qcring_ex _ y) as [b b_eq]; subst y.
+    rewrite <- homo_mult.
+    do 3 rewrite <- (to_qcring_zero zorn_real_ideal).
     intros ab.
-    classic_case (zorn_real_ideal_set (0 - a)) as [a_in|a_nin']; [>left; exact a_in|].
-    right.
-    assert (¬zorn_real_ideal_set (a - 0)) as a_nin.
-    {
-        intros contr.
-        apply (ideal_eq_symmetric zorn_real_ideal) in contr.
-        contradiction.
-    }
-    clear a_nin'.
-    apply (ideal_eq_symmetric zorn_real_ideal).
-    apply (ideal_eq_symmetric zorn_real_ideal) in ab.
-    rewrite neg_zero, plus_rid in *.
+    apply or_right.
+    intros a_nin.
 
     intros ε ε_pos.
     pose proof (zorn_real_polynomial_nz a a_nin)
@@ -390,7 +334,7 @@ Proof.
         +   rewrite ab_eq.
             right.
             rewrite plus_rinv.
-            apply ideal_zero.
+            apply (cideal_zero zorn_real_ideal).
         +   left.
             exists 1.
             split; [>exact one_pos|].
@@ -485,7 +429,7 @@ Proof.
     classic_case (I f) as [f_in'|f_nin].
     {
         right.
-        apply ideal_plus; assumption.
+        apply (cideal_plus zorn_real_ideal); assumption.
     }
     left.
     cbn in g_in, f_nin.
@@ -565,16 +509,16 @@ Proof.
     -   rewrite plus_comm.
         apply zorn_real_q_le_trans_wlog; assumption.
     -   right.
-        apply ideal_plus; assumption.
+        apply (cideal_plus zorn_real_ideal); assumption.
 Qed.
 
-Local Infix "~" := (eq_equal (ideal_equiv zorn_real_ideal)).
+Local Infix "~" := (eq_equal (ideal_equiv (cideal_ideal zorn_real_ideal))).
 
 Lemma real_zorn_quotient_eq_le : ∀ a b, a ~ b → zorn_real_q_le a b.
 Proof.
     intros a b ab.
     right.
-    apply ideal_eq_symmetric in ab.
+    apply (cideal_minus (zorn_real_ideal)).
     exact ab.
 Qed.
 
@@ -582,7 +526,7 @@ Lemma real_zorn_quotient_le_wd1 : ∀ a b c d, a ~ b → c ~ d →
     zorn_real_q_le a c → zorn_real_q_le b d.
 Proof.
     intros a b c d ab cd ac.
-    apply ideal_eq_symmetric in ab.
+    apply (cideal_minus (zorn_real_ideal)) in ab.
     pose proof (real_zorn_quotient_eq_le b a ab) as ab2.
     pose proof (zorn_real_q_le_trans ab2 ac) as bc.
     pose proof (real_zorn_quotient_eq_le c d cd) as cd2.
@@ -596,7 +540,7 @@ Proof.
     apply propositional_ext.
     split; [>apply real_zorn_quotient_le_wd1; assumption|].
     intros bd.
-    apply ideal_eq_symmetric in ab, cd.
+    apply (cideal_minus (zorn_real_ideal)) in ab, cd.
     exact (real_zorn_quotient_le_wd1 _ _ _ _ ab cd bd).
 Qed.
 
@@ -605,7 +549,7 @@ Local Instance zorn_real_order : Order zorn_real_quotient := {
 }.
 
 Theorem zorn_real_quotient_le : ∀ a b, zorn_real_q_le a b ↔
-    to_qring zorn_real_ideal a ≤ to_qring zorn_real_ideal b.
+    to_qcring zorn_real_ideal a ≤ to_qcring zorn_real_ideal b.
 Proof.
     intros a b.
     unfold le; equiv_simpl.
@@ -621,6 +565,7 @@ Next Obligation.
     rewrite neg_plus, neg_neg.
     rewrite (plus_comm _ x).
     remember (x - y) as f.
+    rewrite <- Heqf.
     clear x y Heqf.
     apply or_to_strong.
     classic_case (zorn_real_q_pos (-f)) as [f'_pos|f'_neg].
@@ -689,15 +634,18 @@ Next Obligation.
     intros xy yx.
     destruct xy as [xy|xy].
     2: {
-        apply (ideal_eq_symmetric zorn_real_ideal).
+        symmetry.
+        apply equiv_eq.
         exact xy.
     }
+    apply equiv_eq.
     destruct yx as [yx|yx].
     2: exact yx.
     cbn.
     rewrite <- neg_neg in xy.
     rewrite neg_plus, neg_neg, plus_comm in xy.
     remember (x - y) as f.
+    rewrite <- Heqf in *.
     clear Heqf x y.
     intros ε ε_pos.
     unfold zorn_real_q_pos in xy, yx.
@@ -736,25 +684,36 @@ Qed.
 
 Local Program Instance zorn_real_order_le_mult : OrderMult zorn_real_quotient.
 Next Obligation.
-    classic_case (a = 0) as [a_z|a_nz].
+    classic_case (0 = a) as [a_z|a_nz].
     {
-        rewrite a_z.
+        rewrite <- a_z.
         rewrite mult_lanni.
         apply refl.
     }
-    classic_case (b = 0) as [b_z|b_nz].
+    classic_case (0 = b) as [b_z|b_nz].
     {
-        rewrite b_z.
+        rewrite <- b_z.
         rewrite mult_ranni.
         apply refl.
     }
     revert H H0 a_nz b_nz.
-    equiv_get_value a b.
-    unfold zero, mult, le, zorn_real_quotient, quotient_ring; equiv_simpl.
+    rename a into x, b into y.
+    pose proof (qcring_ex _ x) as [a a_eq]; subst x.
+    pose proof (qcring_ex _ y) as [b b_eq]; subst y.
+    do 2 rewrite <- (to_qcring_zero zorn_real_ideal).
+    rewrite <- homo_mult.
+    unfold zero, le; equiv_simpl.
     intros a_pos b_pos a_nz b_nz.
-    destruct a_pos as [a_pos|]; [>|contradiction].
-    destruct b_pos as [b_pos|]; [>|contradiction].
-    rewrite neg_zero, plus_rid in a_pos, b_pos.
+    destruct a_pos as [a_pos|].
+    2: {
+        rewrite neg_zero, plus_rid in H.
+        contradiction.
+    }
+    destruct b_pos as [b_pos|].
+    2: {
+        rewrite neg_zero, plus_rid in H.
+        contradiction.
+    }
     left.
     destruct a_pos as [δ1 [δ1_pos a_pos]].
     destruct b_pos as [δ2 [δ2_pos b_pos]].
@@ -765,26 +724,35 @@ Next Obligation.
     rewrite polynomial_eval_mult.
     specialize (a_pos _ (top_of_cut_in _ _ _ (lmin _ _) x_in)).
     specialize (b_pos _ (top_of_cut_in _ _ _ (rmin _ _) x_in)).
+    rewrite neg_zero, plus_rid in a_pos, b_pos.
     exact (lt_mult a_pos b_pos).
 Qed.
 
 Local Program Instance zorn_real_order_le_mult_lcancel : OrderMultLcancel zorn_real_quotient.
 Next Obligation.
     destruct H as [c_pos c_nz].
-    rewrite neq_sym in c_nz.
     revert c_pos c_nz H0.
-    equiv_get_value a b c.
-    unfold zero, mult, le, zorn_real_quotient, quotient_ring; equiv_simpl.
+    rename a into x, b into y, c into z.
+    pose proof (qcring_ex _ x) as [a a_eq]; subst x.
+    pose proof (qcring_ex _ y) as [b b_eq]; subst y.
+    pose proof (qcring_ex _ z) as [c c_eq]; subst z.
+    rewrite <- (to_qcring_zero zorn_real_ideal).
+    do 2 rewrite <- homo_mult.
+    unfold zero, le; equiv_simpl.
     intros c_pos c_nz.
     unfold zorn_real_q_le.
-    rewrite <- mult_rneg.
-    rewrite <- ldist.
+    rewrite <- (mult_rneg c a).
+    rewrite <- (ldist c b (-a)).
     remember (b - a) as f.
+    rewrite <- Heqf.
     clear Heqf a b.
     intros cf.
-    destruct c_pos as [c_pos|c_z]; [>|contradiction].
-    cbn in c_nz.
-    rewrite neg_zero, plus_rid in c_pos, c_nz.
+    destruct c_pos as [c_pos|c_z].
+    2: {
+        rewrite neg_zero, plus_rid in c_z.
+        contradiction.
+    }
+    rewrite neg_zero, plus_rid in c_pos.
     destruct cf as [cf|cf].
     -   left.
         destruct c_pos as [δ1 [δ1_pos c_pos]].
@@ -801,23 +769,28 @@ Next Obligation.
         rewrite <- (mult_ranni cx) in cf_pos.
         apply lt_mult_lcancel_pos in cf_pos; assumption.
     -   right.
-        assert (∀ x, 0 = to_equiv (ideal_equiv zorn_real_ideal) x ↔ I x)
+        assert (∀ x, (0 : quotient_cring zorn_real_ideal)
+            = to_equiv (ideal_equiv (cideal_ideal zorn_real_ideal)) x ↔ I x)
             as z_eq.
         {
             intros x.
             split; intros eq.
             -   symmetry in eq.
                 unfold zero in eq; equiv_simpl in eq.
+                rewrite (equiv_eq (E := ideal_equiv (cideal_ideal zorn_real_ideal))) in eq.
+                cbn in eq.
                 rewrite neg_zero, plus_rid in eq.
                 exact eq.
             -   symmetry.
                 unfold zero; equiv_simpl.
+                apply equiv_eq; cbn.
                 rewrite neg_zero, plus_rid.
                 exact eq.
         }
         classic_contradiction contr.
-        apply (mult_nz (to_equiv (ideal_equiv zorn_real_ideal) c)
-                       (to_equiv (ideal_equiv zorn_real_ideal) f)).
+        apply (mult_nz (U := quotient_cring zorn_real_ideal)
+            (to_equiv (ideal_equiv (cideal_ideal zorn_real_ideal)) c)
+            (to_equiv (ideal_equiv (cideal_ideal zorn_real_ideal)) f)).
         3: unfold mult; equiv_simpl.
         all: rewrite z_eq.
         all: assumption.
@@ -830,10 +803,9 @@ Local Program Instance zorn_real_quotient_not_trivial
     not_trivial_b := 1;
 }.
 Next Obligation.
-    unfold zero, one, zorn_real_quotient, quotient_ring; equiv_simpl.
+    rewrite <- (homo_one (f := to_qcring zorn_real_ideal)).
+    rewrite <- (to_qcring_zero zorn_real_ideal).
     intros contr.
-    apply (ideal_eq_symmetric zorn_real_ideal) in contr.
-    rewrite neg_zero, plus_rid in contr.
     specialize (contr 1 one_pos) as [δ [δ_pos contr]].
     pose proof (top_of_cut_ex δ δ_pos) as [x x_in].
     specialize (contr x x_in).
@@ -846,18 +818,27 @@ Qed.
 Lemma real_zorn_quotient_arch1 : ∀ x y : zorn_real_quotient, 0 < x → 0 < y →
     ∃ n, x ≤ n × y.
 Proof.
-    intros f g f_pos g_pos.
+    intros x y f_pos g_pos.
     destruct f_pos as [f_pos f_nz].
     destruct g_pos as [g_pos g_nz].
-    rewrite neq_sym in f_nz, g_nz.
-    equiv_get_value f g.
-    revert f_pos f_nz g_pos g_nz.
-    unfold zero, le, zorn_real_quotient, quotient_ring; equiv_simpl.
-    intros f_pos f_nz g_pos g_nz.
-    destruct f_pos as [f_pos|f_z]; [>|contradiction].
-    destruct g_pos as [g_pos|g_z]; [>|contradiction].
+    pose proof (qcring_ex _ x) as [f f_eq]; subst x.
+    pose proof (qcring_ex _ y) as [g g_eq]; subst y.
+    rewrite <- (to_qcring_zero zorn_real_ideal) in f_nz, g_nz.
+    revert f_pos g_pos.
+    unfold zero, le; equiv_simpl.
+    intros f_pos g_pos.
+    destruct f_pos as [f_pos|f_z].
+    2: {
+        rewrite neg_zero, plus_rid in f_z.
+        contradiction.
+    }
+    destruct g_pos as [g_pos|g_z].
+    2: {
+        rewrite neg_zero, plus_rid in g_z.
+        contradiction.
+    }
     cbn in f_nz, g_nz.
-    rewrite neg_zero, plus_rid in f_pos, f_nz, g_pos, g_nz.
+    rewrite neg_zero, plus_rid in f_pos, g_pos.
     pose proof (zorn_real_polynomial_nz g g_nz)
         as [ε [δ1 [ε_pos [δ1_pos g_gt]]]].
     pose proof (polynomial_continuous cut cut_in cut_out cut_lt f 1 one_pos)
@@ -885,8 +866,9 @@ Proof.
     1: exact ε_pos.
     destruct n_ex as [n n_ltq].
     exists n.
-    assert (n × to_equiv (ideal_equiv zorn_real_ideal) g =
-        to_equiv (ideal_equiv zorn_real_ideal) (n × g)) as n_eq.
+    assert (n × (to_equiv (ideal_equiv (cideal_ideal zorn_real_ideal)) g
+        : quotient_cring (zorn_real_ideal)) =
+        to_equiv (ideal_equiv (cideal_ideal zorn_real_ideal)) (n × g)) as n_eq.
     {
         clear.
         nat_induction n.
@@ -922,7 +904,7 @@ Proof.
     rewrite polynomial_eval_plus, polynomial_eval_neg.
     rewrite lt_plus_0_anb_b_a.
     applys_eq n_ltq.
-    rewrite nat_mult_from.
+    rewrite (nat_mult_from n g).
     rewrite polynomial_eval_mult.
     apply rmult.
     clear.

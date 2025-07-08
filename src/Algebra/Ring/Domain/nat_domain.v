@@ -56,7 +56,7 @@ Global Instance nat_euclidean_class : EuclideanDomain nat := {
     euclidean_division := nat_euclidean
 }.
 
-Theorem nat_plus_changes_divides : ∀ p a b,
+Theorem nat_plus_changes_divides : ∀ p a b : nat,
                                     p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
 Proof.
     intros p a b [c c_eq] not [d d_eq].
@@ -91,7 +91,7 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem nat_even_neq_odd : ∀ m n, m * 2 ≠ n * 2 + 1.
+Theorem nat_even_neq_odd : ∀ m n : nat, m * 2 ≠ n * 2 + 1.
 Proof.
     intros m n eq.
     assert (even (m * 2)) as m_even by (exists m; reflexivity).
@@ -123,10 +123,10 @@ Proof.
     contradiction.
 Qed.
 
-Theorem nat_odd_plus_one : ∀ a, odd a → ∃ b, a = 2 * b + 1.
+Theorem nat_odd_plus_one : ∀ a : nat, odd a → ∃ b, a = 2 * b + 1.
 Proof.
     intros a a_odd.
-    assert (0 ≠ 2) as two_nz by (intro contr; inversion contr).
+    assert ((0 : nat) ≠ 2) as two_nz by (intro contr; inversion contr).
     pose proof (euclidean_division a 2 two_nz) as [q [r [eq ltq]]].
     cbn in ltq.
     exists q.

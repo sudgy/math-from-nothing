@@ -16,101 +16,54 @@ Require Import unordered_list.
 Section TensorAlgebraCategory.
 
 (* end hide *)
-Context {F : CRingObj} (V : ModuleObj F).
+Context {U : CRing} (V : Module U).
 
-Let f := make_module_homomorphism F V (algebra_module (tensor_algebra_object V))
+Let f := make_module_homomorphism U V (algebra_module (tensor_algebra_object V))
     (vector_to_tensor V)
     (vector_to_tensor_plus V)
     (vector_to_tensor_scalar V).
 
 Definition tensor_to_algebra_base := make_to_algebra _ _ f.
 
-Let FR_module := free_linear F (list (module_V V)).
+Let FR_module := free_linear U (list V).
 Let FR := module_V FR_module.
-Let to_FR a := to_free F (list (module_V V)) a.
+Let to_FR a := to_free U (list V) a.
 
-Let FR_plus := module_plus FR_module.
-Let FR_zero := module_zero FR_module.
-Let FR_neg := module_neg FR_module.
-Let FR_plus_comm := module_plus_comm FR_module.
-Let FR_plus_assoc := module_plus_assoc FR_module.
-Let FR_plus_lid := module_plus_lid FR_module.
-Let FR_plus_linv := module_plus_linv FR_module.
-Let FR_scalar := module_scalar FR_module.
-Let FR_scalar_id := module_scalar_id FR_module.
-Let FR_scalar_ldist := module_scalar_ldist FR_module.
-Let FR_scalar_rdist := module_scalar_rdist FR_module.
-Let FR_scalar_comp := module_scalar_comp FR_module.
-Let FR_grade := free_grade F (list (module_V V)).
-Existing Instances FR_plus FR_zero FR_neg FR_plus_comm FR_plus_assoc FR_plus_lid
-    FR_plus_linv FR_scalar FR_scalar_id FR_scalar_ldist FR_scalar_rdist
-    FR_scalar_comp FR_grade FR_mult FR_ldist FR_rdist FR_lscalar FR_rscalar
+Let FR_grade := free_grade U (list V).
+Existing Instances FR_grade FR_mult FR_ldist FR_rdist FR_lscalar FR_rscalar
     FR_mult_assoc FR_one FR_mult_lid FR_mult_rid.
 
 Theorem tensor_algebra_ex : ∃ T, @initial (TO_ALGEBRA V) T.
 Proof.
-    exists tensor_to_algebra_base.
-    pose (TAP := tensor_algebra_plus V).
-    pose (TAZ := tensor_algebra_zero V).
-    pose (TAN := tensor_algebra_neg V).
-    pose (TAPC := tensor_algebra_plus_comm V).
-    pose (TAPA := tensor_algebra_plus_assoc V).
-    pose (TAPZ := tensor_algebra_plus_lid V).
-    pose (TAPN := tensor_algebra_plus_linv V).
     pose (TASM := tensor_algebra_scalar_mult V).
     pose (TASO := tensor_algebra_scalar_id V).
     pose (TASC := tensor_algebra_scalar_comp V).
     pose (TASL := tensor_algebra_scalar_ldist V).
     pose (TASR := tensor_algebra_scalar_rdist V).
-    pose (TAM := tensor_mult_class V).
-    pose (TAO := tensor_one V).
-    pose (TAL := tensor_mult_ldist V).
-    pose (TAR := tensor_mult_rdist V).
+    exists tensor_to_algebra_base.
     unfold tensor_to_algebra_base, initial; cbn.
     intros [A g].
-    pose (AP := algebra_plus A).
-    pose (AZ := algebra_zero A).
-    pose (AN := algebra_neg A).
-    pose (APC := algebra_plus_comm A).
-    pose (APA := algebra_plus_assoc A).
-    pose (APZ := algebra_plus_lid A).
-    pose (APN := algebra_plus_linv A).
-    pose (ASM := algebra_scalar A).
-    pose (ASO := algebra_scalar_id A).
-    pose (ASC := algebra_scalar_comp A).
-    pose (ASL := algebra_scalar_ldist A).
-    pose (ASR := algebra_scalar_rdist A).
-    pose (AM := algebra_mult A).
-    pose (AO := algebra_one A).
-    pose (AL := algebra_ldist A).
-    pose (AR := algebra_rdist A).
-    pose (AMA := algebra_mult_assoc A).
-    pose (AML := algebra_mult_lid A).
-    pose (AMR := algebra_mult_rid A).
-    pose (ASML := algebra_scalar_lmult A).
-    pose (ASMR := algebra_scalar_rmult A).
+    change (ModuleObjHomomorphism V (algebra_module A)) with (morphism V (algebra_module A)) in g.
     unfold to_algebra_set; cbn.
     assert (∀ α v, to_qring (tensor_ideal V) (α · v) =
         α · (to_qring (tensor_ideal V) v)) as to_qring_scalar.
     {
         intros α v.
         unfold scalar_mult at 2; cbn.
-        unfold to_qring; equiv_simpl.
-        apply (ideal_eq_reflexive (tensor_ideal V)).
+        unfold to_qring, to_qring_type; equiv_simpl.
+        reflexivity.
     }
     apply singleton_ex; [>split|].
     -   apply ex_set_type.
-        pose (h1 := free_extend F (list (module_V V))
-            (λ l, list_prod (list_image g l))).
-        assert (∀ v, h1 (to_free F (list (module_V V)) [v]) = g v)
-            as h1_vec.
+        pose (h1 := free_extend U (list V) (λ l, list_prod (list_image g l))).
+        assert (∀ v, h1 (to_FR [v]) = g v) as h1_vec.
         {
             intros v.
             unfold h1.
             rewrite (free_extend_free _ _).
             rewrite list_image_single.
-            cbn.
-            apply mult_rid.
+            rewrite list_prod_single.
+            reflexivity.
         }
         assert (HomomorphismPlus h1) as h1_plus.
         {
@@ -176,6 +129,7 @@ Proof.
             rewrite <- homo_plus.
             remember (x - y) as v.
             rewrite <- Heqv in eq.
+            rewrite <- Heqv.
             clear x y Heqv.
             destruct eq as [l v_eq]; subst v.
             induction l as [|a l] using ulist_induction.
@@ -214,12 +168,12 @@ Proof.
             rewrite mult_ranni, mult_lanni.
             reflexivity.
         }
-        pose (h := unary_op wd).
+        pose (h := unary_op wd : (tensor_algebra_base V) → algebra_module A).
         assert (∀ u v, h (u + v) = h u + h v) as h_plus.
         {
             intros u v.
             equiv_get_value u v.
-            unfold plus at 1; cbn.
+            unfold plus at 1, tensor_algebra_base, quotient_ring; cbn.
             unfold h; equiv_simpl.
             apply homo_plus.
         }
@@ -235,7 +189,7 @@ Proof.
         {
             intros u v.
             equiv_get_value u v.
-            unfold mult at 1; cbn.
+            unfold mult at 1, tensor_algebra_base, quotient_ring; cbn.
             unfold h; equiv_simpl.
             apply homo_mult.
         }
@@ -249,7 +203,7 @@ Proof.
             rewrite list_image_end.
             reflexivity.
         }
-        exists (make_algebra_homomorphism F (tensor_algebra_object V) _
+        exists (make_algebra_homomorphism U (tensor_algebra_object V) _
             h h_plus h_scalar h_mult h_one).
         intros x; cbn.
         unfold h, vector_to_tensor.
@@ -266,11 +220,11 @@ Proof.
             (to_qring (tensor_ideal V) v).
         induction v as [|a v] using grade_induction.
         {
-            rewrite to_qring_zero.
+            rewrite homo_zero.
             do 2 rewrite algebra_homo_zero.
             reflexivity.
         }
-        rewrite to_qring_plus.
+        rewrite homo_plus.
         do 2 rewrite algebra_homo_plus.
         rewrite IHv.
         apply rplus.
@@ -288,10 +242,10 @@ Proof.
         }
         cbn.
         rewrite <- list_conc_single.
-        rewrite <- (free_bilinear_free F (list (module_V V))
-            (λ a b, to_free F (list (module_V V)) (a + b)) [a] l).
-        change (free_bilinear _ _ _ _ _) with (to_free F _ [a] * to_free F _ l).
-        rewrite to_qring_mult.
+        rewrite <- (free_bilinear_free U (list (module_V V))
+            (λ a b, to_free U (list (module_V V)) (a + b)) [a] l).
+        change (free_bilinear _ _ _ _ _) with (to_free U _ [a] * to_free U _ l).
+        rewrite homo_mult.
         do 2 rewrite algebra_homo_mult.
         rewrite IHl.
         apply rmult.
