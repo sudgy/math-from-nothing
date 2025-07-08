@@ -286,25 +286,26 @@ Definition to_qring : morphism U quotient_ring :=
     make_ring_homomorphism U quotient_ring to_qring_type
     to_qring_plus to_qring_mult to_qring_one.
 
-Theorem to_qring_zero : ∀ x, I x → 0 = to_qring x.
+Theorem to_qring_eq : ∀ x y, I (x - y) ↔ to_qring x = to_qring y.
 Proof.
-    intros x Ix.
-    symmetry.
-    unfold zero, to_qring, to_qring_type; cbn.
-    apply equiv_eq; cbn.
-    unfold ideal_eq.
-    rewrite neg_zero, plus_rid.
-    exact Ix.
+    intros x y.
+    cbn; unfold to_qring_type.
+    rewrite (equiv_eq (E := ideal_equiv)).
+    reflexivity.
 Qed.
 
-Theorem to_qring_eq : ∀ x y, I (x - y) → to_qring x = to_qring y.
+Theorem to_qring_zero : ∀ x, I x ↔ 0 = to_qring x.
 Proof.
-    intros x y xy.
-    rewrite <- plus_0_anb_a_b.
-    rewrite <- homo_neg.
-    rewrite <- homo_plus.
-    apply to_qring_zero.
-    exact xy.
+    intros x.
+    assert (0 = to_qring x ↔ to_qring x = 0) as eq
+        by (split; intro; symmetry; assumption).
+    rewrite eq.
+    unfold zero; cbn.
+    unfold to_qring_type; cbn.
+    rewrite (equiv_eq (E := ideal_equiv)); cbn.
+    unfold ideal_eq.
+    rewrite neg_zero, plus_rid.
+    reflexivity.
 Qed.
 
 Theorem qring_unary_op {V} : ∀ (f : U → V) (wd : ∀ a b, a ~ b → f a = f b),
@@ -480,6 +481,14 @@ Definition to_qcring : morphism U quotient_cring :=
     (to_qring_plus cideal_ideal) (to_qring_mult cideal_ideal)
     (to_qring_one cideal_ideal).
 
+Theorem to_qcring_eq : ∀ x y, I (x - y) ↔ to_qcring x = to_qcring y.
+Proof.
+    intros x y.
+    cbn; unfold to_qring_type; equiv_simpl.
+    rewrite (equiv_eq (E := ideal_equiv cideal_ideal)); cbn.
+    reflexivity.
+Qed.
+
 Theorem to_qcring_zero : ∀ x, I x ↔ 0 = to_qcring x.
 Proof.
     intros x.
@@ -490,16 +499,6 @@ Proof.
     rewrite (equiv_eq (E := ideal_equiv cideal_ideal)); cbn.
     rewrite neg_zero, plus_rid.
     reflexivity.
-Qed.
-
-Theorem to_qcring_eq : ∀ x y, I (x - y) → to_qcring x = to_qcring y.
-Proof.
-    intros x y xy.
-    rewrite <- plus_0_anb_a_b.
-    rewrite <- homo_neg.
-    rewrite <- homo_plus.
-    apply to_qring_zero.
-    exact xy.
 Qed.
 
 Local Infix "~" := (eq_equal (ideal_equiv cideal_ideal)).

@@ -1,0 +1,195 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+\externaldocument{../basics/set}
+
+\begin{document}
+
+\setcounter{chapter}{12}
+
+\chapter{Basic Ring Theory}
+
+While groups have less structure than rings making studying groups before rings
+seem natural, some of the content in this chapter will be useful in the chapter
+about basic group theory, so we will look at ring theory first.
+
+\section{Ideals}
+
+\begin{definition}
+    Let $\U$ be a ring.  Then a set $I : \U \to \Prop$ is called an ideal if all
+    of the following are true:
+    \begin{itemize}
+        \item $I$ is not empty.
+        \item For all $a \in I$ and $b \in I$, we have $a + b \in I$,
+        \item For all $a \in I$ and $b : \U$, $ab \in I$.
+        \item For all $a : \U$ and $b \in I$, $ab \in I$.
+    \end{itemize}
+    Note that in a commutative ring, only one of the laft two conditions needs
+    to be checked.
+\end{definition}
+
+Throughout this section, let $I$ be an ideal in some ring $\U$.
+
+\begin{theorem} \label{ideal_neg}
+    If $a \in I$, then $-a \in I$.
+\end{theorem}
+\begin{proof}
+    Since $a \in I$, we have $(-1)a \in I$, so $-a \in I$.
+\end{proof}
+
+\begin{theorem} \label{ideal_zero}
+    $0 \in I$.
+\end{theorem}
+\begin{proof}
+    By definition, $I$ is not empty.  Let $a \in I$.  Then $a0 = 0 \in I$.
+\end{proof}
+
+\begin{definition}
+    Define a relation $\sim : \U \to \U \to \Prop$ where $a \sim b$ is defined
+    to mean $a - b \in I$.
+\end{definition}
+
+\begin{lemma}
+    $\sim$ is an equivalence relation.
+\end{lemma}
+\begin{proof}
+    \textit{Reflexivity.} For all $x : \U$, we have $x - x = 0 \in I$.
+
+    \textit{Symmetry.} For all $a$ and $b$ in $\U$, if $a - b \in I$, by Theorem
+    \ref{ideal_neg} we have $b - a \in I$.
+
+    \textit{Transitivity.}  If $a - b \in I$ and $b - c \in I$, adding the two
+    together we get $a - b + b - c = a - c \in I$.
+\end{proof}
+
+\begin{lemma}
+    Addition is well-defined under the equivalence relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a \sim b$ and $c \sim d$.  We must prove that $a + c \sim b + d$.  From
+    $a \sim b$ and $c \sim d$, we have $a - b \in I$ and $c - d \in I$.  Adding
+    them together, we get $a + c - (b + d) \in I$, showing that $a + c \sim b +
+    d$.
+\end{proof}
+
+\begin{instance}
+    Define addition in $\U/{\sim}$ to be addition in $\U$ brought to the
+    quotient, which is well-defined by the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Define zero in $\U/{\sim}$ to be $[0]$, the equivalence class of $0$ in
+    $\U$.
+\end{instance}
+
+\begin{lemma}
+    Negation is well-defined under the equivalence relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a \sim b$.  Then $a - b \in I$, meaning that $-a - -b \in I$, showing
+    that $-a \sim -b$.
+\end{proof}
+
+\begin{instance}
+    Define negation in $\U/{\sim}$ to be negation in $\U$ brought to the
+    quotient, which is well-defined by the previous lemma.
+\end{instance}
+
+\begin{lemma}
+    Multiplication is well-defined under the equivalence relation $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a \sim b$ and $c \sim d$.  We must prove that $ac \sim bd$.  From $a
+    \sim b$ and $c \sim d$, we have $a - b \in I$ and $c - d \in I$.  Then $(a -
+    b)c = ac - bc \in I$, and $b(c - d) bc - bd \in I$.  Adding them together,
+    we get $ac - bc + bc - bd = ac - bd \in I$, so $ac \sim bd$.
+\end{proof}
+
+\begin{instance}
+    Define multiplication in $\U/{\sim}$ to be multiplication in $\U$ brought to
+    the quotient, which is well-defined by the previous lemma.
+\end{instance}
+
+\begin{instance}
+    Define one in $\U/{\sim}$ to be $[1]$, the equivalence class of $1$ in
+    $\U$.
+\end{instance}
+
+Trivially, all of these operations have the same algebraic properties that the
+base ring does.  Thus, $\U/{\sim}$ is a ring, and if $\U$ is a commutative ring,
+then $\U/{\sim}$ is as well.  Furthermore, the function $\phi : \U \to
+\U/{\sim}$ given by $\phi(x) = [x]$ is a ring homomorphism.  This leads to the
+following definition:
+
+\begin{definition}
+    Given a ring $\U$ and an ideal $I$, we define $\U/I$ to be the ring
+    $\U/{\sim}$ developed above.  Unlike the previous quotients we have used
+    which act on types, this quotient acts on rings.  It takes in a ring and an
+    ideal and produces another ring, or it takes in a commutative ring and an
+    ideal and produces another commutative ring.  We will use the letter $\phi$
+    to denote the canonical homorphism from $\U$ to $\U/I$ given by $\phi(x) =
+    [x]$.
+\end{definition}
+
+\begin{theorem} \label{to_qring_eq}
+    For all $x$ and $y$ in $\U$, if $x - y \in I$, then $\phi(x) = \phi(y)$.
+\end{theorem}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{to_qring_zero}
+    For all $x : \U$, if $x \in I$, then $0 = \phi(x)$.
+\end{theorem}
+\begin{proof}
+    Since $x \in I$, we have $x - 0 \in I$, showing that $\phi(x) = \phi(0) =
+    0$.
+\end{proof}
+
+\begin{theorem} \label{qring_f_ex}
+    For all rings $\V$ and ring homomorphisms $f : \U \to \V$, if $x \in I$
+    implies that $0 = f(x)$ for all $x$, then there exists a ring homorphism $g
+    : \U/I \to V$ such that for all $x$, $f(x) = g(\phi(x))$.
+\end{theorem}
+\begin{proof}
+    First, given $a$ and $b$ such that $a \sim b$, we have $a - b \in I$, which
+    implies that $0 = f(a - b) = f(a) - f(b)$, so $f(a) = f(b)$.  This means
+    that $f$ is well-defined under the equivalence relation $\sim$, so by
+    Theorem \ref{unary_op_ex} we can get a function $g : \U/I \to \V$.  This
+    function is easily a ring homorphism from $f$ being a ring homorphism, and
+    it satisfies $f(x) = g(\phi(x))$ by definition.
+\end{proof}
+
+Whenever possible, the previous theorem will be used when working with ring
+quotients instead of the general theory of quotients developed previously.
+
+\begin{lemma}
+    Let $S$ be a set in $\U$.  Define a function $f : (\U \times S \times \U)
+    \to \U$ given by $f(a, b, c) = abc$.  Define a set $I$ by saying that $x \in
+    I$ if there exists an unordered list $l : \L_u(\U \times S \times \U)$ such
+    that $x = \sum f(l)$.  Then $I$ is an ideal.
+\end{lemma}
+\begin{proof}
+    \textit{$I$ is nonempty.} We have $0 = \sum f([])$, so $0 \in I$.
+
+    \textit{If $a \in I$ and $b \in I$, then $a + b \in I$.}  We have lists $x$
+    and $y$ such that $a = \sum f(x)$ and $b = \sum f(y)$.  Then $a + b = \sum
+    f(x) + \sum f(x) = \sum f(x + y)$, so $a + b \in I$.
+
+    \textit{If $b \in I$, then $ab \in I$.}  We have a list $l$ such that $b =
+    \sum f(l)$.  Let $g : \U \times S \times \U \to \U \times S \times \U$ be
+    given by $g(x, y, z) = (ax, y, z)$.  Then $ab = a\sum f(b) = \sum af(b) =
+    f(g(b))$, showing that $ab \in I$.
+
+    \textit{If $a \in I$, then $ab \in I$.}  We have a list $l$ such that $a =
+    \sum f(l)$.  Let $g : \U \times S \times \U \to \U \times S \times \U$ be
+    given by $g(x, y, z) = (x, y, zb)$.  Then $ab = \left( \sum f(a) \right) b =
+    \sum f(a)b = f(g(a))$, showing that $ab \in I$.
+\end{proof}
+
+\begin{definition}
+    Given a set $S$, let the ideal $I$ given by the previous lemma be called the
+    ideal generated by $S$.  Note that if $\U$ is a commutative ring, the ideal
+    can be simplified to only having factors on one side.
+\end{definition}
+
+\end{document}
