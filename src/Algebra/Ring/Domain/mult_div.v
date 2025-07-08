@@ -20,59 +20,27 @@ Definition prime {U} `{Zero U, Mult U, One U} p
 Definition even {U} `{Plus U, Mult U, One U} a := 2 ∣ a.
 Definition odd {U} `{Plus U, Mult U, One U} a := ¬(2 ∣ a).
 
-(* begin hide *)
 Section Div.
 
-Context {U} `{Up : Plus U,
-                  @PlusAssoc U Up,
-                  @PlusComm U Up,
-              Uz : Zero U,
-                  @PlusLid U Up Uz,
-              Un : Neg U,
-                  @PlusLinv U Up Uz Un,
-              Um : Mult U,
-                  @MultAssoc U Um,
-                  @MultComm U Um,
-                  @Ldist U Up Um,
-                  @Rdist U Up Um,
-                  @MultLanni U Uz Um,
-                  @MultRanni U Uz Um,
-              Uo : One U,
-                  @MultLid U Um Uo,
-                  @MultRid U Um Uo,
-                  @MultLcancel U Uz Um,
-                  @MultRcancel U Uz Um,
-              Ul : Order U,
-                  @Connex U le,
-                  @Antisymmetric U le,
-                  @Transitive U le
-              }.
+Context {U} `{AllMultClass U}.
 
-Lemma divides_refl : ∀ a, a ∣ a.
+Global Instance divides_refl : Reflexive divides.
 Proof.
+    split.
     intros a.
     exists 1.
     apply mult_lid.
 Qed.
-(* end hide *)
-Global Instance divides_refl_class : Reflexive divides := {
-    refl := divides_refl
-}.
 
-(* begin hide *)
-Lemma divides_trans : ∀ a b c, a ∣ b → b ∣ c → a ∣ c.
+Global Instance divides_trans : Transitive divides.
 Proof.
+    split.
     intros a b c [d eq1] [e eq2].
     exists (e * d).
     rewrite <- mult_assoc.
     rewrite eq1.
-    rewrite eq2.
-    reflexivity.
+    exact eq2.
 Qed.
-(* end hide *)
-Global Instance divides_trans_class : Transitive divides := {
-    trans := divides_trans
-}.
 
 Theorem one_divides : ∀ n, 1 ∣ n.
 Proof.
@@ -105,28 +73,23 @@ Proof.
     apply rdist.
 Qed.
 
-Theorem plus_changes_divides : ∀ p a b,
-                               p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
+Theorem plus_divides_back : ∀ p a b, p ∣ a → p ∣ (a + b) → p ∣ b.
 Proof.
-    intros p a b [c c_eq] not [d d_eq].
-    rewrite <- c_eq in d_eq.
-    apply lplus with (-(c * p)) in d_eq.
-    rewrite plus_assoc, plus_linv, plus_lid in d_eq.
-    rewrite <- mult_lneg in d_eq.
-    rewrite <- rdist in d_eq.
-    unfold divides in not.
-    rewrite not_ex in not.
-    specialize (not (-c + d)).
-    contradiction.
+    intros p a b [c c_eq] [d d_eq].
+    exists (-c + d).
+    rewrite rdist.
+    rewrite mult_lneg.
+    rewrite c_eq, d_eq.
+    apply plus_llinv.
 Qed.
 
 Theorem mult_factors_extend : ∀ p a b, p ∣ a → p ∣ a * b.
 Proof.
     intros p a b [c eq].
     exists (b * c).
-    rewrite (mult_comm a).
-    rewrite <- eq.
-    symmetry; apply mult_assoc.
+    rewrite <- mult_assoc.
+    rewrite eq.
+    apply mult_comm.
 Qed.
 
 Theorem mult_factors_back : ∀ a b c, a * b = c → a ∣ c ∧ b ∣ c.
@@ -171,15 +134,44 @@ Proof.
     exact a_nz.
 Qed.
 
+Theorem unit_div : ∀ a b, unit a → a ∣ b.
+Proof.
+    intros a b [c a_eq].
+    exists (b * c).
+    rewrite <- mult_assoc.
+    rewrite a_eq.
+    apply mult_rid.
+Qed.
+
+Theorem div_zero : ∀ a, 0 ∣ a → 0 = a.
+Proof.
+    intros a [b b_eq].
+    rewrite mult_ranni in b_eq.
+    exact b_eq.
+Qed.
+
+Theorem one_unit : unit 1.
+Proof.
+    exists 1.
+    apply mult_lid.
+Qed.
+
+Theorem zero_not_unit : ¬unit 0.
+Proof.
+    intros [a eq].
+    rewrite mult_ranni in eq.
+    contradiction (not_trivial_one eq).
+Qed.
+
 Theorem unit_mult : ∀ a b, unit a → unit b → unit (a * b).
 Proof.
-    intros a b [a' a_eq] [b' b_eq].
-    exists (b' * a').
+    intros a b [c a_eq] [d b_eq].
+    exists (d * c).
     rewrite <- mult_assoc.
-    rewrite (mult_assoc a').
+    rewrite (mult_assoc c).
     rewrite a_eq.
     rewrite mult_lid.
-    apply b_eq.
+    exact b_eq.
 Qed.
 
 Theorem div_mult_unit : ∀ a b, 0 ≠ a → a * b ∣ a → unit b.
@@ -197,55 +189,77 @@ Qed.
 Theorem prime_irreducible : ∀ p, prime p → irreducible p.
 Proof.
     intros p [p_nz [p_nu p_prime]].
-    repeat split; [>exact p_nz|exact p_nu|].
+    split; [>exact p_nz|].
+    split; [>exact p_nu|].
     intros a b a_nu b_nu.
     intros contr.
     subst p.
-    assert (0 ≠ a) as a_nz.
-    {
-        intros contr.
-        subst a.
-        rewrite mult_lanni in p_nz.
-        contradiction.
-    }
-    assert (0 ≠ b) as b_nz.
-    {
-        intros contr.
-        subst b.
-        rewrite mult_ranni in p_nz.
-        contradiction.
-    }
+    apply nz_mult in p_nz as [a_nz b_nz].
     specialize (p_prime a b (refl (a * b))) as [d1|d2].
-    -   apply div_mult_unit in d1; [>|exact a_nz].
+    -   apply (div_mult_unit _ _ a_nz) in d1.
         contradiction.
     -   rewrite mult_comm in d2.
-        apply div_mult_unit in d2; [>|exact b_nz].
+        apply (div_mult_unit _ _ b_nz) in d2.
         contradiction.
 Qed.
 
-Theorem associates_refl : ∀ a, associates a a.
+Global Instance associates_refl : Reflexive associates.
 Proof.
-    intros a.
     split.
-    all: exists 1.
-    all: apply mult_lid.
+    intros a.
+    split; apply refl.
 Qed.
 
-Theorem associates_sym : ∀ a b, associates a b → associates b a.
+Global Instance associates_sym : Symmetric associates.
 Proof.
+    split.
     intros a b [ab ba].
     split; assumption.
 Qed.
 
-Theorem associates_trans :
-    ∀ a b c, associates a b → associates b c → associates a c.
+Global Instance associates_trans : Transitive associates.
 Proof.
+    split.
     intros a b c [ab ba] [bc cb].
     split.
-    -   exact (divides_trans _ _ _ ab bc).
-    -   exact (divides_trans _ _ _ cb ba).
+    -   exact (trans ab bc).
+    -   exact (trans cb ba).
 Qed.
 
-(* begin hide *)
+Theorem unit_associates : ∀ a b, unit a → unit b → associates a b.
+Proof.
+    intros a b a_unit b_unit.
+    split.
+    -   apply (unit_div _ _ a_unit).
+    -   apply (unit_div _ _ b_unit).
+Qed.
+
+Theorem associates_zero : ∀ a, associates 0 a → 0 = a.
+Proof.
+    intros a [div1 div2].
+    apply div_zero.
+    exact div1.
+Qed.
+
+Theorem associates_unit : ∀ a b, associates a b → ∃ c, unit c ∧ c * a = b.
+Proof.
+    intros a b [[c c_eq] [d d_eq]].
+    classic_case (0 = b) as [b_z|b_nz].
+    -   destruct b_z.
+        exists 1.
+        split; [>exact one_unit|].
+        rewrite mult_lid.
+        rewrite mult_ranni in d_eq.
+        symmetry; exact d_eq.
+    -   exists c.
+        split; [>|exact c_eq].
+        rewrite <- d_eq in c_eq.
+        rewrite mult_assoc in c_eq.
+        rewrite <- (mult_lid b) in c_eq at 2.
+        apply (mult_rcancel _ b_nz) in c_eq.
+        exists d.
+        rewrite mult_comm.
+        exact c_eq.
+Qed.
+
 End Div.
-(* end hide *)

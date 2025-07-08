@@ -192,4 +192,239 @@ quotients instead of the general theory of quotients developed previously.
     can be simplified to only having factors on one side.
 \end{definition}
 
+\section{Divisibility}
+
+Throughout this section, let $\U$ be an integral domain, or some type that has
+the requisite typeclasses for the definitions.
+
+\begin{definition}
+    Define a relation $\mathord{\mid} : \U \to \U \to \Prop$ where $a \mid b$
+    means that there exists a $c$ with $ca = b$.
+\end{definition}
+
+\begin{definition}
+    We say that a value $a : \U$ is a unit if $a \mid 1$.
+\end{definition}
+
+\begin{definition}
+    We say that two values $a$ and $b$ in $\U$ associate if $a \mid b$ and $b
+    \mid a$.
+\end{definition}
+
+\begin{definition}
+    We say that a value $p : \U$ is irreducible if it is not zero, not a unit,
+    and if for all non-unit values $a$ and $b$, $p \neq ab$.
+\end{definition}
+
+\begin{definition}
+    We say that a value $p : \U$ is prime if it is not zero, not a unit, and if
+    for all $a$ and $b$ such that $p \mid ab$, then $p \mid a$ or $p \mid b$.
+\end{definition}
+
+\begin{definition}
+    We say that a value $a : \U$ is even if $2 \mid a$, and it is odd otherwise.
+\end{definition}
+
+\begin{instance}
+    $\mid$ is reflexive.
+\end{instance}
+\begin{proof}
+    We have $1a = a$, so $a \mid a$.
+\end{proof}
+
+\begin{instance}
+    $\mid$ is transitive.
+\end{instance}
+\begin{proof}
+    Let $a \mid b$ and $b \mid c$.  Then we have values $d$ and $e$ such that
+    $da = b$ and $eb = c$.  Then $eda = eb = c$, showing that $a \mid c$.
+\end{proof}
+
+\begin{theorem} \label{one_divides}
+    For all $a$, we have $1 \mid a$.
+\end{theorem}
+\begin{proof}
+    We have $a1 = a$.
+\end{proof}
+
+\begin{theorem} \label{divides_zero}
+    For all $a$, we have $a \mid 0$.
+\end{theorem}
+\begin{proof}
+    We have $0a = 0$.
+\end{proof}
+
+\begin{theorem} \label{divides_neg}
+    For all $a$ and $b$, if $a \mid b$, then $a \mid -b$.
+\end{theorem}
+\begin{proof}
+    Since $a \mid b$, we have a $c$ such that $ca = b$.  Then $(-c)a = -ca =
+    -b$, showing that $a \mid -b$.
+\end{proof}
+
+\begin{theorem} \label{plus_stays_divides}
+    For all $p$, $a$, and $b$, if $p \mid a$ and $p \mid b$, then $p \mid a +
+    b$.
+\end{theorem}
+\begin{proof}
+    We have values $c$ and $d$ such that $cp = a$ and $dp = b$.  Then $(c + d)p
+    = cp + dp = a + b$, showing that $p \mid a + b$.
+\end{proof}
+
+\begin{theorem} \label{plus_divides_back}
+    For all $p$, $a$, and $b$, if $p \mid a$ and $p \mid a + b$, then $p \mid
+    b$.
+\end{theorem}
+\begin{proof}
+    We have values $c$ and $d$ such that $cp = a$ and $dp = a + b$.  Then $(-c +
+    d)p = -cp + dp = -a + a + b = b$, showing that $p \mid b$.
+\end{proof}
+
+\begin{theorem} \label{mult_factors_extend}
+    For all $p$, $a$, and $b$, if $p \mid a$, then $p \mid ab$.
+\end{theorem}
+\begin{proof}
+    We have a $c$ such that $cp = a$.  Then $(bc)p = ba$, showing that $p \mid
+    ab$.
+\end{proof}
+
+\begin{theorem} \label{mult_div_lself}
+    For all $a$ and $b$, we have $a \mid ab$.
+\end{theorem}
+\begin{proof}
+    We directly have $ba = ab$.
+\end{proof}
+
+\begin{theorem} \label{mult_div_rself}
+    For all $a$ and $b$, we have $a \mid ba$.
+\end{theorem}
+\begin{proof}
+    We directly have $ba = ba$.
+\end{proof}
+
+\begin{theorem} \label{div_rcancel}
+    For all $a$, $b$, and $c$, if $0 \neq c$ and $ac \mid bc$, then $a \mid b$.
+\end{theorem}
+\begin{proof}
+    We have some $x$ such that $xac = bc$.  Cancelling $c$, we get $xa = b$,
+    showing that $a \mid b$.
+\end{proof}
+
+\begin{theorem} \label{div_lcancel}
+    For all $a$, $b$, and $c$, if $0 \neq a$ and $ab \mid ac$, then $b \mid c$.
+\end{theorem}
+\begin{proof}
+    Follows from commutativity and the previous theorem.
+\end{proof}
+
+\begin{theorem} \label{unit_div}
+    For all $a$ and $b$, if $a$ is a unit, then $a \mid b$.
+\end{theorem}
+\begin{proof}
+    Because $a$ is a unit, we have some $c$ such that $ca = 1$.  Then $(bc)a =
+    b1 = b$, so $a \mid b$.
+\end{proof}
+
+\begin{theorem} \label{div_zero}
+    For all $a$, if $0 \mid a$, then $0 = a$.
+\end{theorem}
+\begin{proof}
+    Because $0 \mid a$, we have a $b$ such that $b0 = 0 = a$.
+\end{proof}
+
+\begin{theorem} \label{one_unit}
+    $1$ is a unit.
+\end{theorem}
+\begin{proof}
+    We have $(1)1 = 1$.
+\end{proof}
+
+\begin{theorem} \label{zero_not_unit}
+    If $\U$ is not trivial, $0$ is not a unit.
+\end{theorem}
+\begin{proof}
+    If $0$ was a unit, we would have some $a$ with $a0 = 0 = 1$, contradicting
+    $\U$ being not trivial.
+\end{proof}
+
+\begin{theorem} \label{unit_mult}
+    If $a$ and $b$ are units, then $ab$ is a unit.
+\end{theorem}
+\begin{proof}
+    Because $a$ and $b$ are units, we have values $c$ and $d$ such that $ca = 1$
+    and $db = 1$.  Then $(dc)(ab) = dcab = db = 1$, so $ab$ is a unit.
+\end{proof}
+
+\begin{theorem} \label{div_mult_unit}
+    For all $a$ and $b$, if $0 \neq a$ and $ab \mid a$, then $b$ is a unit.
+\end{theorem}
+\begin{proof}
+    Because $ab \mid a$, we have some $c$ such that $cab = a$.  Cancelling $a$,
+    we get $cb = 1$, showing that $b$ is a unit.
+\end{proof}
+
+\begin{theorem} \label{prime_irreducible}
+    All primes are irreducible.
+\end{theorem}
+\begin{proof}
+    Let $p$ be prime, and let $a$ and $b$ be non-units.  For a contradiction,
+    assume that $p = ab$.  Because primes are nonzero, $0 \neq p = ab$, so $a$
+    and $b$ are nonzero as well.  Now $p \mid p = ab$, so by the definition of
+    being prime, either $p \mid a$ or $p \mid b$.  This means that $ab \mid a$
+    or $ab \mid b$.  In each case, either $a$ or $b$ is a unit by Theorem
+    \ref{div_mult_unit}, which is a contradiction.  Thus we must have $p \neq
+    ab$, showing that $p$ is irreducible.
+\end{proof}
+
+\begin{instance}
+    Values associating with each other is reflexive.
+\end{instance}
+\begin{proof}
+    This follows directly from $\mid$ being reflexive.
+\end{proof}
+
+\begin{instance}
+    Values associating with each other is symmetric.
+\end{instance}
+\begin{proof}
+    If $a$ is associated with $b$, then $a \mid b$ and $b \mid a$, showing that
+    $b$ is associated with $a$.
+\end{proof}
+
+\begin{instance}
+    Values associating with each other is transitive.
+\end{instance}
+\begin{proof}
+    Let $a$ be associated with $b$, and $b$ with $c$.  Then we have $a \mid b$,
+    $b \mid a$, $b \mid c$, and $c \mid b$.  By the transitivity of $\mid$, we
+    have $a \mid c$ and $c \mid a$, showing that $a$ is associated with $c$.
+\end{proof}
+
+\begin{theorem} \label{unit_associates}
+    All units associate with each other.
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{unit_div}.
+\end{proof}
+
+\begin{theorem} \label{associates_zero}
+    If $a$ is associated with $0$, then $0 = a$.
+\end{theorem}
+\begin{proof}
+    Because $a$ is associated with $0$, we have $0 \mid a$, so the result
+    follows from Theorem \ref{div_zero}.
+\end{proof}
+
+\begin{theorem} \label{associates_unit}
+    If $a$ is associated with $b$, there exists a unit $c$ such that $ca = b$.
+\end{theorem}
+\begin{proof}
+    We have $a \mid b$ and $b \mid a$, so there exist values $c$ and $d$ such
+    that $ca = b$ and $db = a$.  If $0 = b$, we have $a = 0$ as well, so $(1)0 =
+    0$ works since $1$ is a unit.  If $0 \neq b$, then we already have a $c$
+    such that $ca = b$, and all that remains is to prove that $c$ is a unit.
+    From $ca = b$ and $db = a$, we have $cdb = b$, and cancelling $b$ we get $cd
+    = 1$, showing that $c$ is a unit.
+\end{proof}
+
 \end{document}

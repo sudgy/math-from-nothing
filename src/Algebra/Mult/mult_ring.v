@@ -179,6 +179,18 @@ Proof.
     destruct contr; contradiction.
 Qed.
 
+Theorem nz_mult : ∀ a b, 0 ≠ a * b → 0 ≠ a ∧ 0 ≠ b.
+Proof.
+    intros a b nz.
+    split.
+    -   intros contr; subst a.
+        rewrite mult_lanni in nz.
+        contradiction.
+    -   intros contr; subst b.
+        rewrite mult_ranni in nz.
+        contradiction.
+Qed.
+
 Theorem lmult : ∀ {a b} c, a = b → c * a = c * b.
 Proof.
     intros a b c ab.
