@@ -1112,6 +1112,38 @@ explicitly saying that every value in a list satisfies a predicate).
     This is just the combination of the previous two theorems.
 \end{proof}
 
+\begin{theorem} \label{list_sum_lmult}
+    For all lists $l$ and values $a : \U$, let $al$ be the list acquired from
+    multiplying each element of $l$ on the left by $a$.  Then $a \sum l = \sum
+    al$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $l$.  When $l = []$,
+    \[
+        a \sum [] = a0 = 0 = \sum a[],
+    \]
+    so the base case is true.  Now assume that $a \sum l = \sum al$.  Then for
+    all values $x$,
+    \[
+        a \sum (x : l)
+        = a\left( x + \sum l \right)
+        = ax + a \sum l
+        = ax + \sum al
+        = \sum ax : al
+        = \sum a(x : l),
+    \]
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list_sum_rmult}
+    For all lists $l$ and values $a : \U$, let $la$ be the list acquired from
+    multiplying each element of $l$ on the right by $a$.  Then $\left( \sum l
+    \right) a = \sum la$.
+\end{theorem}
+\begin{proof}
+    The proof is the same in form as the previous proof.
+\end{proof}
+
 \begin{theorem}
     For all elements $x$, $\prod [x] = x$.
 \end{theorem}
@@ -1907,6 +1939,15 @@ theorem for lists.
 
 \begin{theorem} \label{ulist_sum_minus}
     For all unordered lists $a$ and $b$, $\sum (a + (-b)) = \sum a - \sum b$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_sum_lmult}
+    For all unordered lists $l$ and values $a$, $a\sum l = \sum al$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_sum_rmult}
+    For all unordered lists $l$ and values $a$, $\left( \sum l \right) a = \sum
+    la$.
 \end{theorem}
 
 \begin{theorem}

@@ -96,6 +96,34 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem list_sum_lmult : ∀ a l,
+    a * list_sum l = list_sum (list_image (λ x, a * x) l).
+Proof.
+    intros a l.
+    induction l as [|b l].
+    -   rewrite list_image_end, list_sum_end.
+        apply mult_ranni.
+    -   rewrite list_image_add.
+        do 2 rewrite list_sum_add.
+        rewrite ldist.
+        apply lplus.
+        exact IHl.
+Qed.
+
+Theorem list_sum_rmult : ∀ a l,
+    list_sum l * a = list_sum (list_image (λ x, x * a) l).
+Proof.
+    intros a l.
+    induction l as [|b l].
+    -   rewrite list_image_end, list_sum_end.
+        apply mult_lanni.
+    -   rewrite list_image_add.
+        do 2 rewrite list_sum_add.
+        rewrite rdist.
+        apply lplus.
+        exact IHl.
+Qed.
+
 Theorem list_prod_end : list_prod [] = 1.
 Proof.
     reflexivity.

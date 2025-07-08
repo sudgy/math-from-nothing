@@ -73,6 +73,24 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem ulist_sum_lmult : ∀ a l,
+    a * ulist_sum l = ulist_sum (ulist_image (λ x, a * x) l).
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold ulist_sum, ulist_image; equiv_simpl.
+    apply list_sum_lmult.
+Qed.
+
+Theorem ulist_sum_rmult : ∀ a l,
+    ulist_sum l * a = ulist_sum (ulist_image (λ x, x * a) l).
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold ulist_sum, ulist_image; equiv_simpl.
+    apply list_sum_rmult.
+Qed.
+
 Theorem list_prod_perm : ∀ l1 l2, list_permutation l1 l2 →
     list_prod l1 = list_prod l2.
 Proof.
