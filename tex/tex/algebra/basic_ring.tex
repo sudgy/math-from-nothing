@@ -427,4 +427,78 @@ the requisite typeclasses for the definitions.
     = 1$, showing that $c$ is a unit.
 \end{proof}
 
+\section{GCDs}
+
+\begin{definition}
+    Let $a$ and $b$ be values in an integral domain $\U$.  Then $d$ is a common
+    divisor of $a$ and $b$ if $d \mid a$ and $d \mid b$.
+\end{definition}
+
+\begin{definition}
+    Let $a$ and $b$ be values in an integral domain $\U$.  Then $d$ is the
+    greatest common divisor of $a$ and $b$ if it is a common divisor, and if for
+    all other common divisors $d'$, we have $d' \mid d$.
+\end{definition}
+
+\begin{class}
+    Let $\U$ be an integral domain.  Then we call $\U$ a GCD Domain if there
+    exists a function $\gcd : \U \to \U \to \U$ such that for all $a$ and $b$
+    with at least one of them nonzero, $\gcd(a, b)$ is a greatest common divisor
+    of $a$ and $b$.
+\end{class}
+
+\begin{theorem} \label{gcd_associates}
+    For all $a$ and $b$ with two greatest common divisors $d_1$ and $d_2$, $d_1$
+    and $d_2$ are associated.
+\end{theorem}
+\begin{proof}
+    Since $d_1$ and $d_2$ are both greatest common divisors, we have $d_1 \mid
+    d_2$ and $d_2 \mid d_1$, so $d_1$ and $d_2$ are associated.
+\end{proof}
+
+\begin{theorem} \label{gcd_div_comm}
+    In a GCD domain, for all $a$ and $b$ with at least one of them nonzero,
+    $\gcd(a, b) \mid \gcd(b, a)$.
+\end{theorem}
+\begin{proof}
+    The definition of common divisor is symmetric, so $\gcd(a, b)$ is a common
+    divisor of $b$ and $a$, meaning that $\gcd(a, b) \div \gcd(b, a)$.
+\end{proof}
+
+\begin{theorem} \label{gcd_comm}
+    In a GCD domain, for all $a$ and $b$ with at least one of them nonzero,
+    $\gcd(a, b)$ is associated with $\gcd(b, a)$.
+\end{theorem}
+\begin{proof}
+    Just apply the previous theorem forwards and backwards.
+\end{proof}
+
+\begin{theorem} \label{irreducible_prime}
+    In a GCD Domain, all irreducible elements are prime.
+\end{theorem}
+\begin{proof}
+    Let $p$ be irreducible, and let $p \mid ab$.  We must prove that either $p
+    \mid a$ or $p \mid b$.  If $b = 0$, then $p \mid b$, so consider the case
+    when $b \neq 0$.  If $ab = 0$, then $a = 0$ since $b \neq 0$, meaning that
+    $p \mid a$, so consider the case when $ab \neq 0$.  Let $d = \gcd(pb, ab)$.
+    Then $d \neq 0$, because if $d = 0$, we would have $0 \mid ab$, implying
+    that $0 = ab$, contradicting $ab \neq 0$.  By Theorems \ref{mult_div_lself}
+    and \ref{mult_div_rself}, we have $p \mid pb$, $b \mid pb$, and $b \mid ab$.
+    Because of this and $p \mid ab$, both $p$ and $b$ are common divisors of
+    $ab$ and $pb$, so $p \mid d$ and $b \mid d$.  Thus, we have values $u$ and
+    $v$ such that $up = d$ and $vb = d$.  There will now be two cases: when $v$
+    is a unit, and when $v$ is not a unit.
+
+    When $v$ is a unit, we have a $v'$ such that $v'v = 1$.  We have $up = vb$,
+    so $v'up = v'vb = b$, showing that $p \mid b$.
+
+    When $v$ is not a unit, Because $d \mid pb$, we have $vb \mid pb$, so by
+    Theorem \ref{div_rcancel}, we have $v \mid p$.  Thus, we have a $c$ such
+    that $cv = p$.  Because $v$ is not a unit and $p$ is irreducible, $c$ must
+    be a unit.  Then we have a $c'$ such that $c'c = 1$.  Since $cv = p$, we
+    have $c'cv = c'p$, so $v = c'p$, showing that $p \mid v$.  Now from $d \mid
+    ab$, we have $vb \mid ab$, and by Theorem \ref{div_rcancel} we have $v \mid
+    a$.  Since $p \mid v$ and $v \mid a$, we have $p \mid a$.
+\end{proof}
+
 \end{document}

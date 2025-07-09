@@ -1,45 +1,25 @@
 Require Import init.
 
-Require Import mult_div.
-Require Import relation.
+Require Export mult_div.
+Require Export domain_category.
 
 Definition common_divisor {U} `{Mult U} a b d := d ∣ a ∧ d ∣ b.
 Definition is_gcd {U} `{Mult U} a b d
     := common_divisor a b d ∧ ∀ d', common_divisor a b d' → d' ∣ d.
 
-#[universes(template)]
-Class GCDDomain U `{Mult U, Zero U} := {
+Class GCDDomain (U : IntegralDomain) := {
     gcd : U → U → U;
     gcd_cd : ∀ a b, common_divisor a b (gcd a b);
     gcd_greatest :
         ∀ a b, (0 ≠ a ∨ 0 ≠ b) → ∀ d, common_divisor a b d → d ∣ (gcd a b)
 }.
 
-(* begin hide *)
 Section GCD.
 
-Context {U} `{Up : Plus U,
-                  @PlusAssoc U Up,
-                  @PlusComm U Up,
-              Uz : Zero U,
-                  @PlusLid U Up Uz,
-              Un : Neg U,
-                  @PlusLinv U Up Uz Un,
-              Um : Mult U,
-                  @MultAssoc U Um,
-                  @MultComm U Um,
-                  @Ldist U Up Um,
-                  @Rdist U Up Um,
-              Uo : One U,
-                  @MultLid U Um Uo,
-                  @MultRid U Um Uo,
-                  @MultLcancel U Uz Um,
-                  @MultRcancel U Uz Um
-              }.
+Context {U : IntegralDomain}.
 
-(* end hide *)
 Theorem gcd_associates :
-    ∀ a b d1 d2, is_gcd a b d1 → is_gcd a b d2 → associates d1 d2.
+    ∀ a b d1 d2 : U, is_gcd a b d1 → is_gcd a b d2 → associates d1 d2.
 Proof.
     intros a b d1 d2 [d1_cd d1_gcd] [d2_cd d2_gcd].
     specialize (d1_gcd d2 d2_cd).
@@ -47,10 +27,8 @@ Proof.
     split; assumption.
 Qed.
 
-(* begin hide *)
-Context `{@GCDDomain U Um Uz}.
+Context `{GCDDomain U}.
 
-(* end hide *)
 Theorem gcd_gcd : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → is_gcd a b (gcd a b).
 Proof.
     intros a b nz.
@@ -60,7 +38,7 @@ Proof.
         apply gcd_greatest; assumption.
 Qed.
 
-Lemma gcd_comm_wlog : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → gcd a b ∣ gcd b a.
+Lemma gcd_div_comm : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → gcd a b ∣ gcd b a.
 Proof.
     intros a b nz.
     apply gcd_greatest.
@@ -73,15 +51,16 @@ Qed.
 Theorem gcd_comm : ∀ a b, (0 ≠ a ∨ 0 ≠ b) → associates (gcd a b) (gcd b a).
 Proof.
     intros a b nz.
-    split; apply gcd_comm_wlog.
+    split; apply gcd_div_comm.
     2: rewrite or_comm.
     all: exact nz.
 Qed.
 
-Theorem irreducible_prime : ∀ p, irreducible p → prime p.
+Theorem irreducible_prime : ∀ p : U, irreducible p → prime p.
 Proof.
     intros p [p_nz [p_nu p_irr]].
-    repeat split; [>exact p_nz|exact p_nu|].
+    split; [>exact p_nz|].
+    split; [>exact p_nu|].
     intros a b p_div.
     pose (d := gcd (p * b) (a * b)).
     classic_case (0 = b) as [b_z|b_nz].
@@ -92,10 +71,9 @@ Proof.
     }
     classic_case (0 = a * b) as [ab_z|ab_nz].
     {
-        rewrite <- (mult_lanni b) in ab_z.
-        apply mult_rcancel in ab_z; [>|exact b_nz].
+        apply mult_zero in ab_z as [a_z|b_z]; [>|contradiction].
         left.
-        rewrite <- ab_z.
+        rewrite <- a_z.
         apply divides_zero.
     }
     assert (0 ≠ d) as d_nz.
@@ -103,9 +81,8 @@ Proof.
         intros contr.
         pose proof (gcd_cd (p * b) (a * b)) as [d1 d2].
         unfold d in contr.
-        rewrite <- contr in d1, d2.
-        destruct d2 as [c eq].
-        rewrite mult_ranni in eq.
+        rewrite <- contr in d2.
+        apply div_zero in d2.
         contradiction.
     }
     pose proof (mult_div_lself p b) as p_div2.
@@ -117,17 +94,6 @@ Proof.
         as bd.
     fold d in pd, bd.
     destruct pd as [u pd], bd as [v bd].
-    assert (v ∣ p) as vp.
-    {
-        pose proof (gcd_cd (p * b) (a * b)) as [d1 d2].
-        fold d in d1, d2.
-        rewrite <- bd in d1.
-        destruct d1 as [c eq].
-        rewrite mult_assoc in eq.
-        apply mult_rcancel in eq; [>|exact b_nz].
-        exists c.
-        exact eq.
-    }
     classic_case (unit v) as [v_u|v_nu].
     -   destruct v_u as [v' eq].
         rewrite <- bd in pd.
@@ -140,7 +106,11 @@ Proof.
         exact pd.
     -   assert (p ∣ v) as pv.
         {
-            destruct vp as [c vp].
+            pose proof (gcd_cd (p * b) (a * b)) as [d1 d2].
+            fold d in d1, d2.
+            rewrite <- bd in d1.
+            apply (div_rcancel _ _ _ b_nz) in d1.
+            destruct d1 as [c vp].
             assert (unit c) as c_u.
             {
                 classic_contradiction contr.
@@ -156,13 +126,11 @@ Proof.
             symmetry; exact vp.
         }
         left.
-        unfold d in bd.
         pose proof (gcd_cd (p * b) (a * b)) as [d1 d2]; clear d1.
+        fold d in d2.
         rewrite <- bd in d2.
         apply div_rcancel in d2; [>|exact b_nz].
         exact (trans pv d2).
 Qed.
-(* begin hide *)
 
 End GCD.
-(* end hide *)

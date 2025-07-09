@@ -169,14 +169,14 @@ Proof.
         exact Ia0.
 Qed.
 
-Program Instance pid_gcd : GCDDomain (domain_to_cring U) := {
-    gcd a b := ex_val (ideal_principle
+Program Instance pid_gcd : GCDDomain U := {
+    gcd (a b : domain_to_cring U) := ex_val (ideal_principle
         (cideal_generated_by (❴a❵ ∪ ❴b❵)))
 }.
 Next Obligation.
     rewrite_ex_val d d_eq.
     split.
-    -   rewrite <- principle_ideal_div.
+    -   rewrite <- (principle_ideal_div d a).
         rewrite <- d_eq.
         cbn.
         exists ((1, [a|make_lor Logic.eq_refl]) ː ulist_end).
@@ -185,7 +185,7 @@ Next Obligation.
         rewrite plus_rid.
         rewrite mult_rid.
         reflexivity.
-    -   rewrite <- principle_ideal_div.
+    -   rewrite <- (principle_ideal_div d b).
         rewrite <- d_eq.
         cbn.
         exists ((1, [b|make_ror Logic.eq_refl]) ː ulist_end).

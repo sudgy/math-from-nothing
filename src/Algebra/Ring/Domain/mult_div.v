@@ -1,7 +1,7 @@
 Require Import init.
 
 Require Export mult_ring.
-Require Import relation.
+Require Export relation.
 
 Definition divides {U} `{Mult U} a b := ∃ c, c * a = b.
 (** Note that this is the unicode symbol '∣', not '|'!  It is the LaTeX \mid.
