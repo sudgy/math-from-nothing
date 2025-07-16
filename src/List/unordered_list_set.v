@@ -299,6 +299,16 @@ Proof.
     apply list_prop_other_filter.
 Qed.
 
+Theorem ulist_prop_image {U V} : ∀ S T (f : U → V) l,
+    ulist_prop S l → (∀ x, S x → T (f x)) → ulist_prop T (ulist_image f l).
+Proof.
+    intros S T f l l_in sub.
+    equiv_get_value l.
+    unfold ulist_prop, ulist_image; equiv_simpl.
+    unfold ulist_prop in l_in; equiv_simpl in l_in.
+    exact (list_prop_image S T f l l_in sub).
+Qed.
+
 Theorem ulist_prop_split {U} : ∀ l (S : U → Prop),
     (∀ a l', l = a ː l' → S a) → ulist_prop S l.
 Proof.

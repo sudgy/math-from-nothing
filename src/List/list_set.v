@@ -338,6 +338,19 @@ Proof.
     apply list_filter_in.
 Qed.
 
+Theorem list_prop_image {U V} : ∀ S T (f : U → V) l,
+    list_prop S l → (∀ x, S x → T (f x)) → list_prop T (list_image f l).
+Proof.
+    intros S T f l l_in sub.
+    list_prop_induction l l_in as x x_in IHl.
+    -   rewrite list_image_end.
+        apply list_prop_end.
+    -   rewrite list_image_add, list_prop_add.
+        split; [>|exact IHl].
+        apply sub.
+        exact x_in.
+Qed.
+
 Theorem list_prop2_end {U} : ∀ S : U → U → Prop, list_prop2 S [].
 Proof.
     intros S.

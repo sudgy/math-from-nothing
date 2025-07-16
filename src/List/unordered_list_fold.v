@@ -140,3 +140,38 @@ Proof.
 Qed.
 
 End Fold.
+
+Section FoldHomo.
+
+Context {U V} `{CRingClass U, CRingClass V}.
+Context (f : U → V)
+    `{@HomomorphismZero _ _ _ _ f, @HomomorphismPlus _ _ _ _ f}
+    `{@HomomorphismOne _ _ _ _ f, @HomomorphismMult _ _ _ _ f}.
+
+Theorem ulist_sum_homo : ∀ l, f (ulist_sum l) = ulist_sum (ulist_image f l).
+Proof.
+    intros l.
+    induction l as [|a l IHl] using ulist_induction.
+    -   rewrite ulist_image_end.
+        do 2 rewrite ulist_sum_end.
+        apply homo_zero.
+    -   rewrite ulist_image_add.
+        do 2 rewrite ulist_sum_add.
+        rewrite <- IHl.
+        apply homo_plus.
+Qed.
+
+Theorem ulist_prod_homo : ∀ l, f (ulist_prod l) = ulist_prod (ulist_image f l).
+Proof.
+    intros l.
+    induction l as [|a l IHl] using ulist_induction.
+    -   rewrite ulist_image_end.
+        do 2 rewrite ulist_prod_end.
+        apply homo_one.
+    -   rewrite ulist_image_add.
+        do 2 rewrite ulist_prod_add.
+        rewrite <- IHl.
+        apply homo_mult.
+Qed.
+
+End FoldHomo.

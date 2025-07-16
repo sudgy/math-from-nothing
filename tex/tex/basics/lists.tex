@@ -841,6 +841,19 @@ explicitly saying that every value in a list satisfies a predicate).
     \ref{list_filter_in}.
 \end{proof}
 
+\begin{theorem} \label{list_prop_image}
+    For all types $\U$ and $\V$, functions $f : \U \to \V$, and sets $S : \U \to
+    \Prop$ and $T : \V \to \Prop$, if $x \in S$ implies $f(x) \in T$ for all $x
+    : \U$, then for all lists $a$, if $a \in S$, then $f(a) \in T$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  First, $f([]) = [] \in T$, so the
+    base case is true.  Now assume that $f(a) \in T$.  Then for all values $x$
+    with $x : a \in S$, we have $x \in S$ and $a \in S$.  By assumption, we have
+    $f(x) \in T$, so $(f(x) : f(a)) \in T$, meaning that $f(x : a) \in T$.
+    Thus, the theorem is true by induction.
+\end{proof}
+
 \begin{theorem} \label{list_prop2_single}
     For all relations $\usim$ and values $x$, $[x] \in \usim$.
 \end{theorem}
@@ -1158,6 +1171,45 @@ explicitly saying that every value in a list satisfies a predicate).
 \end{theorem}
 \begin{proof}
     The proof is identical in form to the proof of Theorem \ref{list_sum_conc}.
+\end{proof}
+
+\begin{theorem} \label{list_sum_homo}
+    For all types $\U$ and $\V$ with an additive and nullitive function $f : \U
+    \to \V$, for all lists $a$,
+    \[
+        f\left( \sum a \right) = \sum f(a).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction ono $a$.  When $a = []$,
+    \[
+        f \left( \sum [] \right) = f(0) = 0 = \sum [] = \sum f([]),
+    \]
+    so the base case is true.  Now assume that
+    \[
+        f\left( \sum a \right) = \sum f(a).
+    \]
+    Then for all values $x$,
+    \begin{align*}
+        f\left( \sum (x : a) \right)
+        &= f\left( x + \sum a \right) \\
+        &= f(x) + f\left( \sum a \right) \\
+        &= f(x) + \sum f(a) \\
+        &= \sum (f(x) : f(a)) \\
+        &= \sum f(x : a),
+    \end{align*}
+    so the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list_prod_homo}
+    For all types $\U$ and $\V$ with a multiplicative and unital function $f :
+    \U \to \V$, for all lists $a$,
+    \[
+        f\left( \prod a \right) = \prod f(a).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof is the same in form as the previous proof.
 \end{proof}
 
 \section{Permutations}
@@ -1868,6 +1920,12 @@ theorem for lists.
     \in S$.
 \end{theorem}
 
+\begin{theorem} \label{ulist_prop_image}
+    For all types $\U$ and $\V$, functions $f : \U \to \V$, and sets $S : \U \to
+    \Prop$ and $T : \V \to \Prop$, if $x \in S$ implies $f(x) \in T$ for all $x
+    : \U$, then for all unordered lists $a$, if $a \in S$, then $f(a) \in T$.
+\end{theorem}
+
 \begin{theorem} \label{ulist_prop_split}
     For all unordered lists $a$ and sets $S$, if, for all values $x$ and lists
     $b$ such that $a = x : b$, we have $x \in S$, then we have $a \in S$.
@@ -1956,6 +2014,22 @@ theorem for lists.
 
 \begin{theorem} \label{ulist_prod_conc}
     For all unordered lists $a$ and $b$, $\prod (a + b) = (\prod a) (\prod b)$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_sum_homo}
+    For all types $\U$ and $\V$ with an additive and nullitive function $f : \U
+    \to \V$, for all unordered lists $a$,
+    \[
+        f\left( \sum a \right) = \sum f(a).
+    \]
+\end{theorem}
+
+\begin{theorem} \label{ulist_prod_homo}
+    For all types $\U$ and $\V$ with a multiplicative and unital function $f :
+    \U \to \V$, for all unordered lists $a$,
+    \[
+        f\left( \prod a \right) = \prod f(a).
+    \]
 \end{theorem}
 
 \begin{theorem} \label{ulist_finite}

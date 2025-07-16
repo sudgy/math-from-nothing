@@ -157,3 +157,38 @@ Proof.
 Qed.
 
 End Fold.
+
+Section FoldHomo.
+
+Context {U V} `{RingClass U, RingClass V}.
+Context (f : U → V)
+    `{@HomomorphismZero _ _ _ _ f, @HomomorphismPlus _ _ _ _ f}
+    `{@HomomorphismOne _ _ _ _ f, @HomomorphismMult _ _ _ _ f}.
+
+Theorem list_sum_homo : ∀ l, f (list_sum l) = list_sum (list_image f l).
+Proof.
+    intros l.
+    induction l as [|a l IHl].
+    -   rewrite list_image_end.
+        do 2 rewrite list_sum_end.
+        apply homo_zero.
+    -   rewrite list_image_add.
+        do 2 rewrite list_sum_add.
+        rewrite <- IHl.
+        apply homo_plus.
+Qed.
+
+Theorem list_prod_homo : ∀ l, f (list_prod l) = list_prod (list_image f l).
+Proof.
+    intros l.
+    induction l as [|a l IHl].
+    -   rewrite list_image_end.
+        do 2 rewrite list_prod_end.
+        apply homo_one.
+    -   rewrite list_image_add.
+        do 2 rewrite list_prod_add.
+        rewrite <- IHl.
+        apply homo_mult.
+Qed.
+
+End FoldHomo.
