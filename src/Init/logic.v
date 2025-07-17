@@ -470,3 +470,26 @@ Proof.
     -   left; exact AH.
     -   right; exact (H AH).
 Qed.
+
+Theorem iff_land : ∀ {A B} C, (A ↔ B) → (C ∧ A ↔ C ∧ B).
+Proof.
+    intros A B C ab.
+    split.
+    -   intros [c a].
+        split.
+        +   exact c.
+        +   apply ab.
+            exact a.
+    -   intros [c b].
+        split.
+        +   exact c.
+        +   apply ab.
+            exact b.
+Qed.
+
+Theorem iff_rand : ∀ {A B} C, (A ↔ B) → (A ∧ C ↔ B ∧ C).
+Proof.
+    intros A B C.
+    do 2 rewrite (and_comm _ C).
+    apply iff_land.
+Qed.

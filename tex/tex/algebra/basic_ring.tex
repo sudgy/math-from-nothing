@@ -302,19 +302,20 @@ the requisite typeclasses for the definitions.
     We directly have $ba = ba$.
 \end{proof}
 
-\begin{theorem} \label{div_rcancel}
+\begin{theorem} \label{div_lmult} \label{div_rmult}
+    For all $a$, $b$, and $c$, if $a \mid b$, then $ca \mid cb$.
+\end{theorem}
+\begin{proof}
+    Because $a \mid b$, we have some $d$ with $da = b$.  Then $dca = cb$,
+    showing that $ca \mid cb$.
+\end{proof}
+
+\begin{theorem} \label{div_rcancel} \label{div_lcancel}
     For all $a$, $b$, and $c$, if $0 \neq c$ and $ac \mid bc$, then $a \mid b$.
 \end{theorem}
 \begin{proof}
     We have some $x$ such that $xac = bc$.  Cancelling $c$, we get $xa = b$,
     showing that $a \mid b$.
-\end{proof}
-
-\begin{theorem} \label{div_lcancel}
-    For all $a$, $b$, and $c$, if $0 \neq a$ and $ab \mid ac$, then $b \mid c$.
-\end{theorem}
-\begin{proof}
-    Follows from commutativity and the previous theorem.
 \end{proof}
 
 \begin{theorem} \label{unit_div}
@@ -347,6 +348,13 @@ the requisite typeclasses for the definitions.
     $\U$ being not trivial.
 \end{proof}
 
+\begin{theorem} \label{unit_nz}
+    If $\U$ is not trivial, then if $a$ is a unit, then $0 \neq a$.
+\end{theorem}
+\begin{proof}
+    This is basically the contrapositive of the previous theorem.
+\end{proof}
+
 \begin{theorem} \label{unit_mult}
     If $a$ and $b$ are units, then $ab$ is a unit.
 \end{theorem}
@@ -355,12 +363,39 @@ the requisite typeclasses for the definitions.
     and $db = 1$.  Then $(dc)(ab) = dcab = db = 1$, so $ab$ is a unit.
 \end{proof}
 
+\begin{theorem} \label{lmult_unit} \label{rmult_unit}
+    If $ab$ is a unit, then $a$ and $b$ are units.
+\end{theorem}
+\begin{proof}
+    By commutativity, it suffices to prove that $a$ is a unit.  Because $ab$ is
+    a unit, we have some $c$ with $cab = 1$.  Then $(cb)a = 1$, showing that $a$
+    is a unit.
+\end{proof}
+
+\begin{theorem} \label{div_unit_mult}
+    For all $a$, $b$, and $c$, if $a$ is a unit and $b \mid c$, then $ab \mid
+    c$.
+\end{theorem}
+\begin{proof}
+    Because $a$ is a unit, we have some $a'$ such that $a'a = 1$, and because $b
+    \mid c$, we have some $d$ such that $db = c$.  Then $(da')(ab) = db = c$,
+    showing that $ab \mid c$.
+\end{proof}
+
 \begin{theorem} \label{div_mult_unit}
     For all $a$ and $b$, if $0 \neq a$ and $ab \mid a$, then $b$ is a unit.
 \end{theorem}
 \begin{proof}
     Because $ab \mid a$, we have some $c$ such that $cab = a$.  Cancelling $a$,
     we get $cb = 1$, showing that $b$ is a unit.
+\end{proof}
+
+\begin{theorem} \label{unit_ex}
+    If $a$ is a unit, then there exists a unit $b$ with $ba = 1$.
+\end{theorem}
+\begin{proof}
+    This is basically just the definition of $a$ being a unit, but being
+    explicit about the fact that $b$ is a unit.
 \end{proof}
 
 \begin{theorem} \label{prime_irreducible}
@@ -374,6 +409,50 @@ the requisite typeclasses for the definitions.
     or $ab \mid b$.  In each case, either $a$ or $b$ is a unit by Theorem
     \ref{div_mult_unit}, which is a contradiction.  Thus we must have $p \neq
     ab$, showing that $p$ is irreducible.
+\end{proof}
+
+\begin{theorem} \label{nz_unit}
+    If $a$ is a unit and $b \neq 0$, then $ab \neq 0$.
+\end{theorem}
+\begin{proof}
+    Because $a$ is a unit, $a \neq 0$, and since $b \neq 0$, we have $ab \neq
+    0$.
+\end{proof}
+
+\begin{theorem} \label{not_unit_mult}
+    For all $a$ and $b$, if $b$ is not a unit, then $ab$ is not a unit.
+\end{theorem}
+\begin{proof}
+    If $ab$ was a unit, $b$ would be a unit by Theorem \ref{rmult_unit}, which
+    is a contradiction.
+\end{proof}
+
+\begin{theorem} \label{irreducible_unit}
+    For all units $a$ and irreducible elements $b$, $ab$ is irreducible.
+\end{theorem}
+\begin{proof}
+    That $ab$ is not zero and not a unit follows from Theorems \ref{nz_unit} and
+    \ref{not_unit_mult}.  For the final condition, let $x$ and $y$ be non-units.
+    We must prove that $ab \neq xy$.  Because $a$ is a unit, we have some unit
+    $c$ such that $ca = 1$.  Then $cx$ is not a unit by Theorem
+    \ref{not_unit_mult}, so by $b$ being irreducible, we know that $b \neq cxy$.
+    Multiplying by $a$, we get $ab \neq acxy = xy$, showing that $ab$ is
+    irreducible.
+\end{proof}
+
+\begin{theorem} \label{prime_unit}
+    For all units $a$ and prime elements $b$, $ab$ is prime.
+\end{theorem}
+\begin{proof}
+    That $ab$ is not zero and not a unit follows from Theorems \ref{nz_unit} and
+    \ref{not_unit_mult}.  For the final condition, let $x$ and $y$ be values
+    such that $ab \mid xy$.  We must prove that either $ab \mid x$ or $ab \mid
+    y$.  Because $a$ is a unit, there exists a unit $c$ such that $ca = 1$.  By
+    Theroem \ref{div_lmult}, we have $cab \mid cxy$, so $b \mid (cx)y$.  Because
+    $b$ is prime, we must have either $b \mid cx$ or $b \mid y$.  If $b \mid
+    cx$, by Theorem \ref{div_lmult} we have $ab \mid acx = x$.  If $b \mid y$,
+    then $ab \mid y$ by Theorem \ref{div_unit_mult}.  Either way, we have either
+    $ab \mid x$ or $ab \mid y$, so $ab$ is prime.
 \end{proof}
 
 \begin{instance}
@@ -415,6 +494,15 @@ the requisite typeclasses for the definitions.
     follows from Theorem \ref{div_zero}.
 \end{proof}
 
+\begin{theorem} \label{associates_one}
+    For all $a$, $a$ associates with one if and only if $a$ is a unit.
+\end{theorem}
+\begin{proof}
+    The forward direction is trivial.  For the reverse direction, $a$ being a
+    unit is already one of the conditions for $a$ to associate with one.  The
+    other condition is $1 \mid a$, which follows from Theorem \ref{one_divides}.
+\end{proof}
+
 \begin{theorem} \label{associates_unit}
     If $a$ is associated with $b$, there exists a unit $c$ such that $ca = b$.
 \end{theorem}
@@ -425,6 +513,159 @@ the requisite typeclasses for the definitions.
     such that $ca = b$, and all that remains is to prove that $c$ is a unit.
     From $ca = b$ and $db = a$, we have $cdb = b$, and cancelling $b$ we get $cd
     = 1$, showing that $c$ is a unit.
+\end{proof}
+
+The fact that units are not always equal to one can be annoying when working
+with divisibility.  It is possible to work around this issue by passing to a
+particular quotient.
+
+\begin{definition}
+    Define $\D(\U)$ to be the quotient of $\U$ by the equivalence relation of
+    values associating with each other.  Given some $a : \U$, we will use
+    $\D(a)$ to mean the equivalence class of $a$ in $\D(\U)$.
+\end{definition}
+
+Note that this is not a quotient by an ideal.  In fact, this quotient is not a
+ring at all since addition is not well-defined.  (For example, in the integers,
+$2 + (-2) = 0$, but in the quotient $2$ and $-2$ go to the same value and their
+sum would not equal zero.)  However, multiplication is still well-defined, which
+is what will allow this quotient to be useful.
+
+\begin{lemma}
+    Multiplication is well-defined in $\D(\U)$.
+\end{lemma}
+\begin{proof}
+    We must prove that if $a$ and $b$ associate and if $c$ and $d$ associate,
+    then $ac$ and $bd$ associate.  We have $a \mid b$, $b \mid a$, $c \mid d$,
+    and $d \mid c$.  We can multiply $a \mid b$ by $c$ on the right and $c \mid
+    d$ by $b$ on the left to get $ac \mid bc \mid bd$.  We can multiply $b \mid
+    a$ on the right by $d$ and $d \mid c$ on the left by $a$ to get $bd \mid ad
+    \mid ac$.  Thus, $ac \mid bd$ and $bd \mid ac$, so $ac$ and $bd$ associate.
+\end{proof}
+
+\begin{instance}
+    Define multiplication in $\D(\U)$ to be multiplication in $\U$ passed to the
+    quotient, which is well-defined by the previous lemma.
+\end{instance}
+
+Even if addition isn't well-defined in $\D(\U)$, zero itself is.
+
+\begin{instance}
+    Define zero in $\D(\U)$ to be zero in $\U$ passed to the quotient.
+\end{instance}
+
+\begin{instance}
+    Define one in $\D(\U)$ to be one in $\U$ passed to the quotient.
+\end{instance}
+
+Trivially, multiplication in $\D(\U)$ is commutative and associative, one is an
+identity, and zero is an annihilator.  Multiplication being cancellative is not
+quite as trivial.
+
+\begin{instance}
+    Multiplication in $\D(\U)$ is cancellative.
+\end{instance}
+\begin{proof}
+    Let $c \neq 0$ and $ca = cb$.  Bringing this back down to $\U$, we have $c$
+    is not associated with $0$, and $ca$ and $cb$ associate.  Because $c$ is not
+    associated with $0$, $c$ itself is not zero.  Because $ca$ and $cb$
+    associate, we have $ca \mid cb$ and $cb \mid ca$.  Because $c \neq 0$, by
+    Theorem \ref{div_lcancel}, we have $a \mid b$ and $b \mid a$, showing that
+    $a$ and $b$ associate, so they are equal in the quotient.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_div}
+    For all $a$ and $b$ in $\U$, $a \mid b$ if and only if $\D(a) \mid \D(b)$.
+\end{theorem}
+\begin{proof}
+    Assume that $a \mid b$.  Then there exists some $c$ such that $ca = b$.
+    Then $\D(c) \D(a) = \D(ca) = \D(b)$, showing that $\D(a) \mid \D(b)$.
+
+    Assume that $\D(a) \mid \D(b)$.  Then there exists some $c$ such that $\D(c)
+    \D(a) = \D(ca) = \D(b)$.  Thus, $ca$ and $b$ associate.  By Theorem
+    \ref{associates_unit}, there is a unit $d$ such that $dca = b$.  Since
+    $(dc)a = b$ we have $a \mid b$.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_unit}
+    For all $a : \D(\U)$, $a$ is a unit if and only if $a = 1$.
+\end{theorem}
+\begin{proof}
+    The reverse is true by Theorem \ref{one_unit}, so we only need to check that
+    if $\D(a)$ is a unit, then $\D(a) = 1$.  If $\D(a)$ is a unit, we have
+    $\D(a) \mid 1 = \D(1)$.  Thus, by Theorem \ref{div_equiv_div}, we have $a
+    \mid 1$, so $a$ is a unit.  Thus, by Theorem \ref{associates_one}, $a$
+    associates with $1$, meaning that $\D(a) = 1$.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_unit2}
+    For all $a : \U$, $a$ is a unit if and only if $\D(a)$ is a unit.
+\end{theorem}
+\begin{proof}
+    This is just a special case of Theorem \ref{div_equiv_div}.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_zero}
+    For all $a : \U$, $a = 0$ if and only if $\D(a) = 0$.
+\end{theorem}
+\begin{proof}
+    The forward direction is trivial.  For the reverse direction, assume that
+    $\D(a) = 0$.  Then $a$ is associated with $0$, so $0 \mid a$, meaning that
+    by Theorem \ref{div_zero}, we have $a = 0$.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_irreducible}
+    For all $a : \U$, $a$ is irreducible if and only if $\D(a)$ is irreducible.
+\end{theorem}
+\begin{proof}
+    $a$ being nonzero and not a unit is equivalent to $\D(a)$ being nonzero and
+    not a unit by Theorems \ref{div_equiv_zero} and \ref{div_equiv_unit2}, so we
+    only need to prove that the main irreducibility condition goes back and
+    forth.
+
+    Assume that $a$ is irreducible.  Let $c$ and $d$ be such that $\D(c)$ and
+    $\D(d)$ are not units.  Then by Theorem \ref{div_equiv_unit2}, $c$ and $d$
+    are not units.  For a contradiction, assume that $\D(a) = \D(c) \D(d)$.
+    This means that $a$ and $cd$ are associated.  Then by Theorem
+    \ref{associates_unit}, we have a unit $u$ such that $a = ucd$.  By Theorem
+    \ref{not_unit_mult}, $uc$ is not a unit, which means that $a$ is the product
+    of two non-units $uc$ and $d$, which contradicts $a$ being irreducible.
+    Thus, $\D(a) \neq \D(c) \D(d)$, showing that $\D(a)$ is irreducible.
+
+    Now assume that $\D(a)$ is irreducible.  Let $c$ and $d$ be non-units in
+    $\U$.  Then by Theorem \ref{div_equiv_unit2}, $\D(c)$ and $\D(d)$ are not
+    units, so by $\D(a)$ being irreducible, we have $\D(a) \neq \D(c) \D(d) =
+    \D(cd)$.  Thus, $a \neq cd$, showing that $a$ is irreducible.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_prime}
+    For all $a : \U$, $a$ is prime if and only if $\D(a)$ is prime.
+\end{theorem}
+\begin{proof}
+    $a$ being nonzero and not a unit is equivalent to $\D(a)$ being nonzero and
+    not a unit by Theorems \ref{div_equiv_zero} and \ref{div_equiv_unit2}, so we
+    only need to prove that the main primality condition goes back and forth.
+
+    Assume that $a$ is prime.  Let $c$ and $d$ be such that $\D(a) \mid \D(c)
+    \D(d) = \D(cd)$.  By Theorem \ref{div_equiv_div}, we have $a \mid cd$, so by
+    $a$ being prime, we have either $a \mid c$ or $a \mid d$.  By Theorem
+    \ref{div_equiv_div} again, we have either $\D(a) \mid \D(c)$ or $\D(a) \mid
+    \D(d)$, proving that $\D(a)$ is prime.
+
+    Assume that $\D(a)$ is prime.  Let $c$ and $d$ be such that $a \mid cd$.
+    Then by Theorem \ref{div_equiv_div}, we have $\D(a) \mid \D(cd) = \D(c)
+    \D(d)$, so by $\D(a)$ being prime, we have $\D(a) \mid \D(c)$ or $\D(a) \mid
+    \D(d)$.  By Theorem \ref{div_equiv_div} again, we have $a \mid c$ or $a \mid
+    d$, proving that $a$ is prime.
+\end{proof}
+
+\begin{theorem}
+    For all units $a$ and values $x$, $\D(ax) = \D(x)$.
+\end{theorem}
+\begin{proof}
+    Because $a$ is a unit, there exists a $b$ with $ba = 1$.  Then $bax = x$,
+    showing that $ax \mid x$, and $x \mid ax$ by Theorem \ref{mult_div_rself},
+    so $ax$ and $x$ associate.  Thus, $\D(ax) = \D(x)$.
 \end{proof}
 
 \section{GCDs}
