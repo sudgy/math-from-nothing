@@ -11,12 +11,10 @@ Require Import set.
 Require Import unordered_list.
 Require Import order_minmax.
 
-(* begin hide *)
 Section PrincipleIdealDef.
 
 Context {U : IntegralDomain}.
 
-(* end hide *)
 Definition principle_ideal_by (x : domain_to_cring U)
     := cideal_generated_by ❴x❵.
 
@@ -80,13 +78,11 @@ Class PrincipleIdealDomain := {
     ideal_principle : ∀ I : CIdeal (domain_to_cring U), principle_ideal I
 }.
 
-(* begin hide *)
 End PrincipleIdealDef.
 Section PrincipleIdeal.
 
 Context {U : IntegralDomain} `{@PrincipleIdealDomain U}.
 
-(* end hide *)
 Theorem pid_noetherian : ∀ I : nat → CIdeal (domain_to_cring U),
     (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) →
     ∃ n0, ∀ n, n0 ≤ n → I n0 = I n.
@@ -169,14 +165,14 @@ Proof.
         exact Ia0.
 Qed.
 
-Program Instance pid_gcd : GCDDomain U := {
+Program Instance pid_gcd : GCDDomain (domain_to_cring U) := {
     gcd (a b : domain_to_cring U) := ex_val (ideal_principle
         (cideal_generated_by (❴a❵ ∪ ❴b❵)))
 }.
 Next Obligation.
     rewrite_ex_val d d_eq.
     split.
-    -   rewrite <- (principle_ideal_div d a).
+    -   rewrite <- (principle_ideal_div d).
         rewrite <- d_eq.
         cbn.
         exists ((1, [a|make_lor Logic.eq_refl]) ː ulist_end).
@@ -185,7 +181,7 @@ Next Obligation.
         rewrite plus_rid.
         rewrite mult_rid.
         reflexivity.
-    -   rewrite <- (principle_ideal_div d b).
+    -   rewrite <- (principle_ideal_div d).
         rewrite <- d_eq.
         cbn.
         exists ((1, [b|make_ror Logic.eq_refl]) ː ulist_end).
@@ -335,10 +331,11 @@ Local Arguments principle_ideal_by : simpl never.
         contradiction.
 Qed.
 
-Program Instance pid_factorization : UniqueFactorizationDomain U.
-Next Obligation.
-    rename x into a.
-    rename H0 into a_nz.
+(* This is just to get the code to compile, I'll make this better soon *)
+Lemma pid_factorization_unit : ∀ x : U, 0 ≠ x → ∃ a l,
+    unit a ∧ ulist_prop prime l ∧ x = a * ulist_prod l.
+Proof.
+    intros a a_nz.
     classic_case (unit a) as [au|au].
     {
         exists a, ulist_end.
@@ -400,7 +397,8 @@ Next Obligation.
              ex_proof (ex_proof p_ex)]
         end).
     pose (I n := principle_ideal_by (fst [build_p n|])).
-    assert (∀ l : ulist U, ulist_prop (λ x, prime x) l → 0 ≠ ulist_prod l) as l_nz.
+    assert (∀ l : ulist U, ulist_prop (λ x, prime x) l → 0 ≠ ulist_prod l)
+        as l_nz.
     {
         clear au contr b_ex S a_eq build_p I.
         intros l l_prime.
@@ -489,7 +487,31 @@ Next Obligation.
     exists c.
     symmetry; exact a'_eq.
 Qed.
-(* begin hide *)
+
+Program Instance pid_factorization : UniqueFactorizationDomain U.
+Next Obligation.
+    rename H0 into x_nz.
+    rename H1 into x_uni.
+    pose proof (pid_factorization_unit x x_nz)
+        as [a [l [a_uni [l_prime x_eq]]]].
+    destruct l as [|p l] using ulist_destruct.
+    -   rewrite ulist_prod_end, mult_rid in x_eq.
+        subst.
+        contradiction.
+    -   rewrite ulist_prop_add in l_prime.
+        destruct l_prime as [p_prime l_prime].
+        rewrite ulist_prod_add in x_eq.
+        exists (a * p ː l).
+        split.
+        +   rewrite ulist_prop_add.
+            split; [>|apply l_prime].
+            apply div_equiv_prime.
+            rewrite div_unit_eq by exact a_uni.
+            rewrite <- div_equiv_prime.
+            exact p_prime.
+        +   rewrite ulist_prod_add.
+            rewrite mult_assoc in x_eq.
+            exact x_eq.
+Qed.
 
 End PrincipleIdeal.
-(* end hide *)
