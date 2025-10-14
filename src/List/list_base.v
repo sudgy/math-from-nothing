@@ -45,6 +45,13 @@ Fixpoint list_image {A B : Type} (f : A → B) (l : list A) :=
     end.
 Arguments list_image : simpl never.
 
+Fixpoint list_flatten {U : Type} (l : list (list U)) : list U :=
+    match l with
+    | [] => []
+    | a ꞉ l' => a + list_flatten l'
+    end.
+Arguments list_flatten : simpl never.
+
 Theorem list_end_neq {U} : ∀ {a : U} {l}, a ꞉ l ≠ [].
 Proof.
     intros a l eq.
@@ -262,4 +269,37 @@ Proof.
     -   do 3 rewrite list_image_add.
         rewrite IHl.
         reflexivity.
+Qed.
+
+Theorem list_flatten_end {U} : list_flatten (U := U) [] = [].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_flatten_add {U} :
+    ∀ (a : list U) l, list_flatten (a ꞉ l) = a + list_flatten l.
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_flatten_single {U} : ∀ a : list U, list_flatten [a] = a.
+Proof.
+    intros a.
+    rewrite list_flatten_add.
+    rewrite list_flatten_end.
+    apply list_conc_rid.
+Qed.
+
+Theorem list_flatten_conc {U} : ∀ l1 l2 : list (list U),
+    list_flatten (l1 + l2) = list_flatten l1 + list_flatten l2.
+Proof.
+    intros l1 l2.
+    induction l1 as [|al l1].
+    -   rewrite list_flatten_end.
+        do 2 rewrite list_conc_lid.
+        reflexivity.
+    -   rewrite list_conc_add.
+        do 2 rewrite list_flatten_add.
+        rewrite IHl1.
+        apply plus_assoc.
 Qed.

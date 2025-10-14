@@ -245,3 +245,86 @@ Proof.
     rewrite list_image_comp.
     apply refl.
 Qed.
+
+Theorem ulist_flatten1_wd U : ∀ l1 l2 : list (list U),
+    list_permutation l1 l2 →
+    to_equiv (ulist_equiv U) (list_flatten l1) =
+    to_equiv (ulist_equiv U) (list_flatten l2).
+Proof.
+    intros l1 l2 eq.
+    equiv_simpl.
+    revert l2 eq.
+    induction l1 as [|al l1 IHl]; intros.
+    -   apply list_perm_nil_eq in eq.
+        rewrite <- eq.
+        apply refl.
+    -   apply list_perm_split_eq in eq as [l21 [l22 [eq1 eq2]]].
+        subst l2.
+        rewrite list_flatten_conc.
+        apply (trans2 (list_perm_comm _ _)).
+        do 2 rewrite list_flatten_add.
+        rewrite <- plus_assoc.
+        apply list_perm_rpart.
+        apply (trans2 (list_perm_comm _ _)).
+        rewrite <- list_flatten_conc.
+        remember (l21 + l22) as l2.
+        clear l21 l22 Heql2.
+        apply IHl.
+        exact eq2.
+Qed.
+Definition ulist_flatten1 {U} :=
+    unary_op (E := ulist_equiv (list U)) (ulist_flatten1_wd U).
+
+Definition ulist_flatten {U} (l : ulist (ulist U)) :=
+    ulist_flatten1 (ulist_image from_equiv l).
+
+Theorem ulist_flatten_end {U} : ulist_flatten (U := U) ⟦⟧ = ⟦⟧.
+Proof.
+    unfold ulist_flatten.
+    rewrite ulist_image_end.
+    unfold ulist_flatten1, ulist_end; equiv_simpl.
+    rewrite list_flatten_end.
+    apply refl.
+Qed.
+
+Theorem ulist_flatten_add {U} :
+    ∀ (a : ulist U) l, ulist_flatten (a ː l) = a + ulist_flatten l.
+Proof.
+    intros a l.
+    unfold ulist_flatten.
+    rewrite ulist_image_add.
+    equiv_get_value l a.
+    unfold ulist_flatten1, plus, ulist_add, ulist_image; equiv_simpl.
+    rewrite list_flatten_add.
+    apply list_perm_lpart.
+    assert (to_equiv (ulist_equiv U) (from_equiv (to_equiv (ulist_equiv U) a))
+        = to_equiv (ulist_equiv U) a) as eq.
+    {
+        rewrite from_equiv_eq.
+        reflexivity.
+    }
+    equiv_simpl in eq.
+    exact eq.
+Qed.
+
+Theorem ulist_flatten_single {U} : ∀ a : ulist U, ulist_flatten ⟦a⟧ = a.
+Proof.
+    intros a.
+    rewrite ulist_flatten_add.
+    rewrite ulist_flatten_end.
+    apply ulist_conc_rid.
+Qed.
+
+Theorem ulist_flatten_conc {U} : ∀ l1 l2 : ulist (ulist U),
+    ulist_flatten (l1 + l2) = ulist_flatten l1 + ulist_flatten l2.
+Proof.
+    intros l1 l2.
+    induction l1 as [|a l1] using ulist_induction.
+    -   rewrite ulist_flatten_end.
+        do 2 rewrite ulist_conc_lid.
+        reflexivity.
+    -   rewrite ulist_conc_add.
+        do 2 rewrite ulist_flatten_add.
+        rewrite IHl1.
+        apply plus_assoc.
+Qed.

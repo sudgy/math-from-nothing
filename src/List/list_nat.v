@@ -19,6 +19,13 @@ Fixpoint list_count {U} (l : list U) (a : U) : nat :=
 end.
 Arguments list_count : simpl never.
 
+Fixpoint list_constant {U} (a : U) (n : nat) :=
+    match n with
+    | nat_zero => []
+    | nat_suc n' => a ꞉ list_constant a n'
+    end.
+Arguments list_constant : simpl never.
+
 Theorem list_size_end U : list_size (U := U) [] = 0.
 Proof.
     reflexivity.
@@ -218,4 +225,48 @@ Proof.
         exact l_uni.
     -   apply list_count_in in a_in.
         apply (nat_neq0_leq1 a_in).
+Qed.
+
+Theorem list_constant_zero {U} : ∀ a : U, list_constant a 0 = [].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_constant_suc {U} : ∀ (a : U) n,
+    list_constant a (nat_suc n) = a ꞉ list_constant a n.
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_constant_one {U} : ∀ a : U, list_constant a 1 = [a].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem in_list_constant {U} : ∀ (a b : U) n,
+    in_list (list_constant a n) b → a = b.
+Proof.
+    intros a b n b_in.
+    nat_induction n.
+    -   rewrite list_constant_zero in b_in.
+        apply in_list_end in b_in.
+        contradiction.
+    -   rewrite list_constant_suc in b_in.
+        apply in_list_add_eq in b_in.
+        destruct b_in as [eq|b_in].
+        +   exact eq.
+        +   exact (IHn b_in).
+Qed.
+
+Theorem list_count_constant {U} : ∀ (a : U) n,
+    list_count (list_constant a n) a = n.
+Proof.
+    intros a n.
+    nat_induction n.
+    -   rewrite list_constant_zero.
+        apply list_count_end.
+    -   rewrite list_constant_suc.
+        rewrite list_count_add_eq.
+        rewrite IHn.
+        reflexivity.
 Qed.

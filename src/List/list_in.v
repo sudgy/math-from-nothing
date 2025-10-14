@@ -16,6 +16,15 @@ Fixpoint list_unique {U : Type} (l : list U) :=
     end.
 Arguments list_unique : simpl never.
 
+Fixpoint list_make_unique {U : Type} (l : list U) :=
+    match l with
+    | [] => []
+    | a ꞉ l' => If in_list l' a
+        then list_make_unique l'
+        else a ꞉ list_make_unique l'
+    end.
+Arguments list_make_unique : simpl never.
+
 Theorem in_list_end {U} : ∀ a : U, ¬in_list [] a.
 Proof.
     intros a.
@@ -166,6 +175,30 @@ Proof.
                 exact x_in.
 Qed.
 
+Theorem in_list_flatten {U} : ∀ (a : U) l, in_list (list_flatten l) a →
+    ∃ al, in_list l al ∧ in_list al a.
+Proof.
+    intros a l a_in.
+    induction l as [|al l].
+    -   rewrite list_flatten_end in a_in.
+        apply in_list_end in a_in.
+        contradiction.
+    -   rewrite list_flatten_add in a_in.
+        apply in_list_conc in a_in.
+        destruct a_in as [a_in|a_in].
+        +   exists al.
+            split.
+            *   apply in_list_add.
+            *   exact a_in.
+        +   specialize (IHl a_in) as [al' [al'_in a_in']].
+            exists al'.
+            split.
+            *   rewrite in_list_add_eq.
+                right.
+                exact al'_in.
+            *   exact a_in'.
+Qed.
+
 Theorem list_unique_end U : list_unique (U := U) [].
 Proof.
     exact true.
@@ -311,4 +344,79 @@ Proof.
         apply inj in x_eq.
         subst x.
         contradiction.
+Qed.
+
+Theorem list_make_unique_end {U} : list_make_unique (U := U) [] = [].
+Proof.
+    reflexivity.
+Qed.
+
+Theorem list_make_unique_add_in {U} : ∀ {a : U} {l},
+    in_list l a → list_make_unique (a ꞉ l) = list_make_unique l.
+Proof.
+    intros a l a_in.
+    unfold list_make_unique at 1; fold (list_make_unique (U := U)).
+    rewrite (if_true a_in).
+    reflexivity.
+Qed.
+
+Theorem list_make_unique_add_nin {U} : ∀ {a : U} {l},
+    ¬in_list l a → list_make_unique (a ꞉ l) = a ꞉ list_make_unique l.
+Proof.
+    intros a l a_in.
+    unfold list_make_unique at 1; fold (list_make_unique (U := U)).
+    rewrite (if_false a_in).
+    reflexivity.
+Qed.
+
+Theorem list_make_unique_in {U} : ∀ l (a : U),
+    in_list l a ↔ in_list (list_make_unique l) a.
+Proof.
+    intros l a.
+    induction l as [|b l].
+    -   rewrite list_make_unique_end.
+        reflexivity.
+    -   rewrite in_list_add_eq.
+        split.
+        +   intros [eq|a_in].
+            *   subst.
+                classic_case (in_list l a) as [a_in|a_nin].
+                --  rewrite (list_make_unique_add_in a_in).
+                    apply IHl.
+                    exact a_in.
+                --  rewrite (list_make_unique_add_nin a_nin).
+                    apply in_list_add.
+            *   apply IHl in a_in.
+                classic_case (in_list l b) as [b_in|b_nin].
+                --  rewrite (list_make_unique_add_in b_in).
+                    exact a_in.
+                --  rewrite (list_make_unique_add_nin b_nin).
+                    apply in_list_add_eq.
+                    right.
+                    exact a_in.
+        +   intros a_in.
+            classic_case (in_list l b) as [b_in|b_nin].
+            *   rewrite (list_make_unique_add_in b_in) in a_in.
+                apply IHl in a_in.
+                right; exact a_in.
+            *   rewrite (list_make_unique_add_nin b_nin) in a_in.
+                rewrite in_list_add_eq in a_in.
+                rewrite IHl.
+                exact a_in.
+Qed.
+
+Theorem list_make_unique_unique {U} :
+    ∀ l : list U, list_unique (list_make_unique l).
+Proof.
+    intros l.
+    induction l as [|a l].
+    -   rewrite list_make_unique_end.
+        apply list_unique_end.
+    -   classic_case (in_list l a) as [a_in|a_nin].
+        +   rewrite (list_make_unique_add_in a_in).
+            exact IHl.
+        +   rewrite (list_make_unique_add_nin a_nin).
+            apply list_unique_add.
+            rewrite <- list_make_unique_in.
+            split; assumption.
 Qed.

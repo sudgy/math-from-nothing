@@ -48,6 +48,29 @@ Qed.
 Definition ulist_unique {U} :=
     unary_op (E := ulist_equiv U) (ulist_unique_wd U).
 
+Lemma ulist_make_unique_wd U : ∀ l1 l2 : list U, list_permutation l1 l2 →
+    list_permutation (list_make_unique l1) (list_make_unique l2).
+Proof.
+    intros l1 l2 eq x.
+    classic_case (in_list l1 x) as [x_in1|x_nin1].
+    -   pose proof x_in1 as x_in2.
+        rewrite (list_perm_in eq) in x_in2.
+        pose proof (list_make_unique_unique l1) as l1_uni.
+        pose proof (list_make_unique_unique l2) as l2_uni.
+        rewrite list_make_unique_in in x_in1, x_in2.
+        rewrite (list_count_in_unique _ _ l1_uni x_in1).
+        rewrite (list_count_in_unique _ _ l2_uni x_in2).
+        reflexivity.
+    -   pose proof x_nin1 as x_nin2.
+        rewrite (list_perm_in eq) in x_nin2.
+        rewrite list_make_unique_in in x_nin1, x_nin2.
+        rewrite list_count_nin in x_nin1, x_nin2.
+        rewrite <- x_nin1, <- x_nin2.
+        reflexivity.
+Qed.
+Definition ulist_make_unique {U} :=
+    unary_op (unary_self_wd (E := ulist_equiv U) (ulist_make_unique_wd U)).
+
 Theorem in_ulist_end {U} : ∀ a : U, ¬in_ulist ulist_end a.
 Proof.
     intros a contr.
@@ -145,6 +168,22 @@ Proof.
     exists x.
     equiv_simpl.
     exact H.
+Qed.
+
+Theorem in_ulist_flatten {U} : ∀ (a : U) l, in_ulist (ulist_flatten l) a →
+    ∃ al, in_ulist l al ∧ in_ulist al a.
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold in_ulist, ulist_flatten, ulist_flatten1, ulist_image; equiv_simpl.
+    intros a_in.
+    apply in_list_flatten in a_in as [al [al_in a_in]].
+    apply image_in_list in al_in as [al' [al'_eq al'_in]].
+    exists (to_equiv (ulist_equiv U) al).
+    equiv_simpl.
+    rewrite <- al'_eq at 1.
+    rewrite from_equiv_eq.
+    split; assumption.
 Qed.
 
 Theorem ulist_unique_end {U} : ulist_unique (@ulist_end U).
@@ -271,4 +310,51 @@ Proof.
         exists l.
         rewrite ulist_conc_add.
         reflexivity.
+Qed.
+
+Theorem ulist_make_unique_end {U} : ulist_make_unique (U := U) ⟦⟧ = ⟦⟧.
+Proof.
+    unfold ulist_make_unique, ulist_end; equiv_simpl.
+    rewrite list_make_unique_end.
+    apply refl.
+Qed.
+
+Theorem ulist_make_unique_add_in {U} : ∀ {a : U} {l},
+    in_ulist l a → ulist_make_unique (a ː l) = ulist_make_unique l.
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold in_ulist, ulist_make_unique, ulist_add; equiv_simpl.
+    intros a_in.
+    rewrite (list_make_unique_add_in a_in).
+    apply refl.
+Qed.
+
+Theorem ulist_make_unique_add_nin {U} : ∀ {a : U} {l},
+    ¬in_ulist l a → ulist_make_unique (a ː l) = a ː ulist_make_unique l.
+Proof.
+    intros a l.
+    equiv_get_value l.
+    unfold in_ulist, ulist_make_unique, ulist_add; equiv_simpl.
+    intros a_in.
+    rewrite (list_make_unique_add_nin a_in).
+    apply refl.
+Qed.
+
+Theorem ulist_make_unique_in {U} : ∀ l (a : U),
+    in_ulist l a ↔ in_ulist (ulist_make_unique l) a.
+Proof.
+    intros l a.
+    equiv_get_value l.
+    unfold in_ulist, ulist_make_unique; equiv_simpl.
+    apply list_make_unique_in.
+Qed.
+
+Theorem ulist_make_unique_unique {U} :
+    ∀ l : ulist U, ulist_unique (ulist_make_unique l).
+Proof.
+    intros l.
+    equiv_get_value l.
+    unfold ulist_unique, ulist_make_unique; equiv_simpl.
+    apply list_make_unique_unique.
 Qed.

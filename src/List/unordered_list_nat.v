@@ -28,6 +28,9 @@ Definition ulist_size {U} := unary_op (E := ulist_equiv U) (ulist_size_wd U).
 Definition ulist_count {U} (l : ulist U) (a : U)
     := unary_op (E := ulist_equiv U) (λ l1 l2 eq, eq a) l.
 
+Definition ulist_constant {U} (a : U) (n : nat)
+    := to_equiv (ulist_equiv U) (list_constant a n).
+
 Theorem ulist_size_end {U} : ulist_size (@ulist_end U) = 0.
 Proof.
     unfold ulist_size, ulist_end; equiv_simpl.
@@ -66,6 +69,18 @@ Proof.
     equiv_get_value l.
     unfold ulist_size, ulist_image; equiv_simpl.
     apply list_image_size.
+Qed.
+
+Theorem ulist_count_eq {A} : ∀ a b : ulist A,
+    (∀ x, ulist_count a x = ulist_count b x) → a = b.
+Proof.
+    intros a b eq.
+    equiv_get_value a b.
+    equiv_simpl.
+    intros x.
+    specialize (eq x).
+    unfold ulist_count in eq; equiv_simpl in eq.
+    exact eq.
 Qed.
 
 Theorem ulist_count_end {U} : ∀ (x : U), ulist_count ⟦⟧ x = 0.
@@ -165,4 +180,42 @@ Proof.
     equiv_get_value l.
     unfold ulist_unique, in_ulist, ulist_count; equiv_simpl.
     apply list_count_in_unique.
+Qed.
+
+Theorem ulist_constant_zero {U} : ∀ a : U, ulist_constant a 0 = ⟦⟧.
+Proof.
+    reflexivity.
+Qed.
+
+Theorem ulist_constant_suc {U} : ∀ (a : U) n,
+    ulist_constant a (nat_suc n) = a ː ulist_constant a n.
+Proof.
+    intros a n.
+    unfold ulist_constant, ulist_add; equiv_simpl.
+    rewrite list_constant_suc.
+    apply refl.
+Qed.
+
+Theorem ulist_constant_one {U} : ∀ a : U, ulist_constant a 1 = ⟦a⟧.
+Proof.
+    intros a.
+    rewrite ulist_constant_suc.
+    rewrite ulist_constant_zero.
+    reflexivity.
+Qed.
+
+Theorem in_ulist_constant {U} : ∀ (a b : U) n,
+    in_ulist (ulist_constant a n) b → a = b.
+Proof.
+    intros a b n.
+    unfold in_ulist, ulist_constant; equiv_simpl.
+    apply in_list_constant.
+Qed.
+
+Theorem ulist_count_constant {U} : ∀ (a : U) n,
+    ulist_count (ulist_constant a n) a = n.
+Proof.
+    intros a n.
+    unfold ulist_count, ulist_constant; equiv_simpl.
+    apply list_count_constant.
 Qed.
