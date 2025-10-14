@@ -742,4 +742,23 @@ quite as trivial.
     a$.  Since $p \mid v$ and $v \mid a$, we have $p \mid a$.
 \end{proof}
 
+\section{Factorization}
+
+\begin{class}
+    Let $\U$ be an integral domain.  Then we call $\U$ a unique factorization
+    domain (UFD) if for all $x \neq 0$ that is not a unit, there exists a list
+    of primes $a$ such that $x = \prod a$.  This list $a$ will be called the
+    factorization of $x$.
+\end{class}
+
+There are a couple notable differences between this definition and the usual
+definition.  Traditionally, the definition also requires uniqueness.  Also, the
+list traditionally contains irreducible elements, not prime elements.  These two
+differences from the traditional definition are related: if you use prime
+elements instead of irreducible elements, uniqueness can be proved just from
+existence.  Thus, to make it easier to prove that integral domains are UFDs,
+this alternative definition has been used so that uniqueness never has to be
+proved.  It turns out that UFDs are GCD domains, as will be proven below, so the
+distinction between prime and irreducible elements isn't really that important.
+
 \end{document}
