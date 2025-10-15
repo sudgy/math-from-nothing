@@ -134,6 +134,14 @@ Proof.
     apply div_lmult.
 Qed.
 
+Theorem div_lrmult : ∀ {a b c d}, a ∣ b → c ∣ d → a * c ∣ b * d.
+Proof.
+    intros a b c d ab cd.
+    apply (div_lmult b) in cd.
+    apply (div_rmult c) in ab.
+    exact (trans ab cd).
+Qed.
+
 Theorem div_rcancel : ∀ a b c, 0 ≠ c → a * c ∣ b * c → a ∣ b.
 Proof.
     intros a b c c_nz [x eq].
@@ -318,6 +326,26 @@ Proof.
         apply div_unit_mult; assumption.
 Qed.
 
+Theorem prime_back : ∀ a b c, prime b → a ∣ b * c → ¬(b ∣ a) → a ∣ c.
+Proof.
+    intros a b c b_prime [d eq] ba.
+    assert (b ∣ d * a) as bda.
+    {
+        exists c.
+        rewrite mult_comm.
+        symmetry; exact eq.
+    }
+    apply b_prime in bda as [bd|ba'].
+    2: contradiction.
+    destruct bd as [e e_eq].
+    subst d.
+    rewrite (mult_comm e b) in eq.
+    rewrite <- mult_assoc in eq.
+    apply mult_lcancel in eq; [>|apply b_prime].
+    exists e.
+    exact eq.
+Qed.
+
 Global Instance associates_refl : Reflexive associates.
 Proof.
     split.
@@ -474,6 +502,18 @@ Proof.
     split.
     -   exact (div_lcancel _ _ _ c_nz eq1).
     -   exact (div_lcancel _ _ _ c_nz eq2).
+Qed.
+
+#[refine]
+Global Instance div_not_trivial : NotTrivial div_type := {
+    not_trivial_a := to_div 0;
+    not_trivial_b := to_div 1;
+}.
+Proof.
+    equiv_simpl.
+    intros contr.
+    apply associates_zero in contr.
+    contradiction (not_trivial_one contr).
 Qed.
 
 Global Instance to_div_zero : HomomorphismZero to_div.

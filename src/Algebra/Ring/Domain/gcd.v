@@ -56,6 +56,20 @@ Proof.
     all: exact nz.
 Qed.
 
+Theorem is_gcd_comm : ∀ a b d : U, is_gcd a b d → is_gcd b a d.
+Proof.
+    intros a b d [d_div d_least].
+    split.
+    -   unfold common_divisor.
+        rewrite and_comm.
+        exact d_div.
+    -   intros d' d'_div.
+        apply d_least.
+        unfold common_divisor.
+        rewrite and_comm.
+        exact d'_div.
+Qed.
+
 Theorem irreducible_prime : ∀ p : U, irreducible p → prime p.
 Proof.
     intros p [p_nz [p_nu p_irr]].
@@ -131,6 +145,35 @@ Proof.
         rewrite <- bd in d2.
         apply div_rcancel in d2; [>|exact b_nz].
         exact (trans pv d2).
+Qed.
+
+Theorem div_equiv_common_divisor : ∀ a b d : U,
+    common_divisor a b d ↔ common_divisor (to_div a) (to_div b) (to_div d).
+Proof.
+    intros a b d.
+    unfold common_divisor.
+    do 2 rewrite <- div_equiv_div.
+    reflexivity.
+Qed.
+
+Theorem div_equiv_gcd : ∀ a b d : U,
+    is_gcd a b d ↔ is_gcd (to_div a) (to_div b) (to_div d).
+Proof.
+    intros a b d.
+    unfold is_gcd.
+    rewrite <- div_equiv_common_divisor.
+    apply iff_land.
+    split.
+    -   intros gcd d'.
+        pose proof (sur to_div d') as [g eq]; subst d'.
+        rewrite <- div_equiv_common_divisor.
+        rewrite <- div_equiv_div.
+        apply gcd.
+    -   intros gcd d'.
+        specialize (gcd (to_div d')).
+        rewrite <- div_equiv_common_divisor in gcd.
+        rewrite <- div_equiv_div in gcd.
+        exact gcd.
 Qed.
 
 End GCD.
