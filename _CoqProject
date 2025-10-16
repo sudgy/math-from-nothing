@@ -112,7 +112,9 @@
 
 ./src/Number/Ordinal/ord_base.v
 ./src/Number/Ordinal/ord_order.v
-./src/Number/Ordinal/ord_bounds.v
+./src/Number/Ordinal/ord_sup.v
+./src/Number/Ordinal/ord_limit.v
+./src/Number/Ordinal/ord_normal.v
 ./src/Number/Ordinal/ord_plus.v
 ./src/Number/Ordinal/ord_mult.v
 ./src/Number/Ordinal/ord_pow.v

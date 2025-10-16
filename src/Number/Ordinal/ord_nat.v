@@ -2,7 +2,6 @@ Require Import init.
 
 Require Export ord_pow.
 Require Import set_induction.
-Require Import ord_bounds.
 Require Export card_large.
 
 Require Export nat.
@@ -11,41 +10,14 @@ Open Scope ord_scope.
 
 Definition nat_ord_type : ord_type := make_ord_type nat _ _ _.
 
-Theorem nat_to_ord_lt : ∀ a b : nat_ord_type, a < b →
-    to_ord (sub_ord_type (initial_segment a)) <
-    to_ord (sub_ord_type (initial_segment b)).
+Theorem nat_ord_suc : ∀ n, from_nat (nat_suc n) = ord_suc (from_nat n).
 Proof.
-    intros a b ltq.
-    apply ord_lt_simpl.
-    unfold initial_segment.
-    exists [a|ltq].
-    split.
-    pose (f (x : set_type (λ m, m < a))
-        := [[x|] | trans [|x] ltq] : set_type (λ m, m < b)).
-    assert (∀ x, f x < [a|ltq]) as f_in.
-    {
-        intros [x x_lt]; cbn.
-        unfold f; cbn.
-        apply set_type_lt.
-        exact x_lt.
-    }
-    exists (λ x, [f x|f_in x]).
-    1: split.
-    all: split.
-    -   intros m n eq.
-        unfold f in eq.
-        apply set_type_eq in eq; cbn in eq.
-        apply set_type_eq in eq; cbn in eq.
-        apply set_type_eq; exact eq.
-    -   intros [[y y_lt1] y_lt2].
-        unfold initial_segment in y_lt2.
-        assert (y < a) as y_lt3 by (apply set_type_lt in y_lt2; exact y_lt2).
-        exists [y|y_lt3].
-        unfold f; cbn.
-        apply set_type_eq; cbn.
-        apply set_type_eq; reflexivity.
-    -   intros m n leq.
-        exact leq.
+    intros n.
+    change (nat_suc n) with (1 + n).
+    rewrite plus_comm.
+    rewrite homo_plus.
+    rewrite homo_one.
+    symmetry; apply ord_suc_plus_one.
 Qed.
 
 Theorem from_nat_ord : ∀ n : nat,
@@ -63,88 +35,69 @@ Proof.
     rewrite homo_plus.
     rewrite IHn; clear IHn.
     rewrite homo_one.
-    rewrite ord_plus_lsub by exact not_trivial.
-    apply ord_lsub_eq.
-    -   intros [α α_lt]; cbn.
-        apply ord_lt_one_eq in α_lt.
-        subst.
-        rewrite plus_rid.
-        apply nat_to_ord_lt.
-        apply nat_lt_suc.
-    -   intros ε ε_ge.
-        specialize (ε_ge [0|ord_one_pos]); cbn in ε_ge.
-        rewrite plus_rid in ε_ge.
-        equiv_get_value ε.
-        rewrite ord_lt_simpl in ε_ge.
-        apply ord_le_simpl.
-        destruct ε_ge as [x [f]].
-        exists (λ m, IfH [m|] < n
-            then λ H, [f [[m|] | H]|]
-            else λ _, x).
-        split; split; cbn.
-        +   intros [a a_lt] [b b_lt]; cbn.
-            classic_case (a < n) as [an|an]; classic_case (b < n) as [bn|bn].
-            pose proof (ord_iso_bij _ _ f).
-            all: intros eq.
-            *   apply set_type_eq in eq.
-                apply set_type_eq2.
-                apply inj in eq.
-                apply set_type_eq in eq; cbn in eq.
-                exact eq.
-            *   pose proof [|f[a|an]] as ltq.
-                rewrite eq in ltq.
-                unfold initial_segment in ltq.
-                contradiction (irrefl _ ltq).
-            *   pose proof [|f[b|bn]] as ltq.
-                rewrite <- eq in ltq.
-                unfold initial_segment in ltq.
-                contradiction (irrefl _ ltq).
-            *   rewrite nlt_le in an, bn.
-                unfold initial_segment in a_lt, b_lt.
-                apply set_type_eq2.
-                rewrite nat_lt_suc_le in a_lt.
-                rewrite nat_lt_suc_le in b_lt.
-                rewrite (antisym a_lt an).
-                rewrite (antisym b_lt bn).
-                reflexivity.
-        +   intros [a a_lt] [b b_lt] leq; cbn.
-            unfold le in leq; cbn in leq.
-            classic_case (a < n) as [an|an]; classic_case (b < n) as [bn|bn].
-            *   change ([f[a|an]|] ≤ [f[b|bn]|]) with (f[a|an] ≤ f[b|bn]).
-                apply homo_le.
-                exact leq.
-            *   apply [|f [a|an]].
-            *   rewrite nlt_le in an.
-                exfalso.
-                unfold initial_segment in *.
-                rewrite nat_lt_suc_le in a_lt.
-                rewrite nat_lt_suc_le in b_lt.
-                rewrite (antisym a_lt an) in leq.
-                rewrite (antisym b_lt leq) in bn.
-                contradiction (irrefl _ bn).
-            *   apply refl.
+    rewrite <- ord_suc_plus_one.
+    rewrite ord_suc_type.
+    equiv_simpl.
+    split.
+    exists (λ x, match x with
+        | inl m => [[m|] | trans ([|m] : [m|] < n) (nat_lt_suc n)]
+        | inr _ => [n | nat_lt_suc n]
+        end).
+    1: split.
+    all: split.
+    -   intros [a|s1] [b|s2] eq.
+        +   apply set_type_eq in eq; cbn in eq.
+            apply set_type_eq in eq.
+            rewrite eq; reflexivity.
+        +   apply set_type_eq in eq; cbn in eq.
+            pose proof [|a] as ltq.
+            unfold initial_segment in ltq.
+            rewrite eq in ltq.
+            contradiction (irrefl _ ltq).
+        +   apply set_type_eq in eq; cbn in eq.
+            pose proof [|b] as ltq.
+            unfold initial_segment in ltq.
+            rewrite eq in ltq.
+            contradiction (irrefl _ ltq).
+        +   apply f_equal.
+            apply singleton_type_eq.
+    -   intros [y y_lt].
+        unfold initial_segment in *.
+        classic_case (y = n) as [eq|neq].
+        +   subst y.
+            exists (inr Single).
+            apply set_type_eq; reflexivity.
+        +   pose proof y_lt as y_le.
+            rewrite nat_lt_suc_le in y_le.
+            exists (inl [y|make_and y_le neq]).
+            apply set_type_eq; reflexivity.
+    -   intros [a|s1] [b|s2] leq.
+        +   unfold le in leq; cbn in leq.
+            unfold le; cbn.
+            exact leq.
+        +   unfold le; cbn.
+            apply [|a].
+        +   unfold le in leq; cbn in leq.
+            contradiction.
+        +   apply refl.
 Qed.
 
 Global Instance ord_char_zero : CharacteristicZero ord.
 Proof.
     split.
     intros n.
-    rewrite from_nat_ord.
-    intros contr.
-    symmetry in contr.
-    unfold zero in contr; equiv_simpl in contr.
-    destruct contr as [f].
-    contradiction (empty_false (f [n | nat_lt_suc n])).
+    rewrite nat_ord_suc.
+    apply ord_zero_suc.
 Qed.
 
 Global Instance from_nat_ord_le : HomomorphismLe (from_nat (U := ord)).
 Proof.
     split.
     intros a b leq.
-    do 2 rewrite from_nat_ord.
-    classic_case (a = b) as [eq|neq].
-    -   subst; apply refl.
-    -   apply (nat_to_ord_lt _ _ (make_and leq neq)).
+    apply nat_le_ex in leq as [c b_eq]; subst b.
+    rewrite homo_plus.
+    rewrite <- le_plus_0_a_b_ba.
+    apply all_pos.
 Qed.
 
 Theorem from_nat_ord_pow : ∀ a b, from_nat (a ^ b) = from_nat a ^ from_nat b.
@@ -200,13 +153,26 @@ Proof.
     apply ltq.
 Qed.
 
+Theorem ω_lim : lim_ord ω.
+Proof.
+    split; [>exact ω_nz|].
+    intros [n n_eq].
+    pose proof (ord_lt_suc n) as n_lt.
+    rewrite <- n_eq in n_lt.
+    apply ord_lt_ω in n_lt as [m m_eq]; subst n.
+    rewrite <- nat_ord_suc in n_eq.
+    symmetry in n_eq.
+    apply nat_lt_ω in n_eq.
+    exact n_eq.
+Qed.
+
 Theorem nat_plus_omega : ∀ n : nat, from_nat n + ω = ω.
 Proof.
     intros n.
     apply antisym.
     2: apply ord_le_self_lplus.
-    rewrite ord_plus_lsub by exact ω_nz.
-    apply ord_lsub_least.
+    rewrite ord_plus_lim by exact ω_lim.
+    apply ord_sup_least.
     intros [α α_lt]; cbn.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- homo_plus.
@@ -222,12 +188,11 @@ Proof.
         apply (inj_zero from_nat).
         exact n_nz.
     }
-    rewrite ord_mult_lub.
-    apply ord_lub_least.
+    rewrite ord_mult_lim by exact ω_lim.
+    apply ord_sup_least.
     intros [α α_lt]; cbn.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- homo_mult.
-    rewrite <- homo_plus.
     apply nat_lt_ω.
 Qed.
 
@@ -241,12 +206,17 @@ Proof.
         apply (homo_lt2 (f := from_nat)).
         exact n_gt.
     }
-    rewrite ord_pow_lub by exact ω_nz.
-    apply ord_lub_least.
+    rewrite ord_pow_lim; [>| |exact ω_lim].
+    2: {
+        apply (trans nat_one_pos) in n_gt.
+        destruct n_gt as [n_ge n_nz].
+        apply (inj_zero from_nat).
+        exact n_nz.
+    }
+    apply ord_sup_least.
     intros [α α_lt]; cbn.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- from_nat_ord_pow.
-    rewrite <- homo_mult.
     apply nat_lt_ω.
 Qed.
 
@@ -317,6 +287,57 @@ Proof.
         exact β_lt.
 Qed.
 
+Theorem ord_normal_fixed : ∀ f, ord_normal f → ∀ α, ∃ β, α ≤ β ∧ f β = β.
+Proof.
+    intros f f_norm α.
+    pose proof f_norm as [f_inj [f_le f_lim]].
+    pose (a n := iterate_func f n α).
+    pose (β := ord_sup ω (λ n, a (ex_val (ord_lt_ω _ [|n])))).
+    exists β.
+    split.
+    -   unfold β.
+        pose (z := [0|nat_lt_ω 0] : set_type (λ α, α < ω)).
+        apply (trans2 (ord_sup_ge ω _ z)).
+        rewrite_ex_val n n_eq.
+        cbn in n_eq.
+        rewrite <- homo_zero in n_eq.
+        apply inj in n_eq.
+        subst n.
+        apply refl.
+    -   unfold β.
+        rewrite (ord_normal_sup f f_norm ω).
+        2: {
+            rewrite <- homo_zero.
+            apply nat_lt_ω.
+        }
+        apply antisym.
+        +   apply ord_sup_least.
+            intros [n n_lt].
+            pose proof n_lt as n_lt'.
+            apply ord_lt_ω in n_lt' as [m n_eq].
+            cbn.
+            apply ord_sup_other_leq.
+            intros ε ε_ge.
+            rewrite_ex_val n1 n1_eq.
+            specialize (ε_ge [from_nat (nat_suc n1)|nat_lt_ω (nat_suc n1)]).
+            rewrite_ex_val n2 n2_eq; cbn in *.
+            apply inj in n2_eq.
+            subst n2.
+            rewrite n_eq in n1_eq.
+            apply inj in n1_eq.
+            subst n1.
+            exact ε_ge.
+        +   apply ord_sup_least.
+            intros [n n_lt]; cbn.
+            apply ord_sup_other_leq.
+            intros ε ε_ge.
+            rewrite_ex_val n1 n1_eq.
+            apply (trans2 (ε_ge [from_nat n1|nat_lt_ω n1])).
+            rewrite_ex_val n2 n2_eq; cbn in *.
+            apply inj in n2_eq; subst n2.
+            apply (ord_normal_le f f_norm).
+Qed.
+
 
 Theorem ord_plus_comm_false : ¬PlusComm ord.
 Proof.
@@ -340,6 +361,18 @@ Proof.
     rewrite <- (homo_one (f := from_nat)) in eq.
     apply inj in eq.
     contradiction (nat_neq_suc _ eq).
+Qed.
+
+Theorem ord_rdist_false : ¬Rdist ord.
+Proof.
+    intros contr.
+    pose proof (rdist (from_nat 1) (from_nat 1) ω) as eq.
+    rewrite <- homo_plus in eq.
+    rewrite nat_mult_omega in eq by apply nat_zero_suc.
+    rewrite nat_mult_omega in eq by apply nat_zero_suc.
+    rewrite <- (plus_rid ω) in eq at 1.
+    apply plus_lcancel in eq.
+    exact (ω_nz eq).
 Qed.
 
 Theorem ord_plus_rcancel_false : ¬PlusRcancel ord.

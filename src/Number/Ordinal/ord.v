@@ -1,7 +1,9 @@
 Require Import init.
 Require Export ord_base.
 Require Export ord_order.
-Require Export ord_bounds.
+Require Export ord_sup.
+Require Export ord_limit.
+Require Export ord_normal.
 Require Export ord_plus.
 Require Export ord_mult.
 Require Export ord_pow.

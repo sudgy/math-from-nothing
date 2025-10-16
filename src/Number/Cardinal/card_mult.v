@@ -173,7 +173,7 @@ Proof.
         fold β in b_lt.
         apply (lt_lplus (α * ord_type_init_ord_base B b)) in a_lt.
         apply (lt_le_trans a_lt).
-        rewrite <- ord_ldist_one.
+        rewrite <- ord_mult_suc.
         apply le_lmult.
         rewrite ord_le_suc_lt.
         exact b_lt.
@@ -206,7 +206,7 @@ Proof.
         rewrite <- eq in ltq2.
         apply (le_lt_trans (ord_le_self_rplus _ _)) in ltq1.
         apply (le_lt_trans (ord_le_self_rplus _ _)) in ltq2.
-        rewrite <- ord_ldist_one in ltq1, ltq2.
+        rewrite <- ord_mult_suc in ltq1, ltq2.
         apply (lt_mult_lcancel α α_nz) in ltq1, ltq2.
         rewrite ord_lt_suc_le in ltq1, ltq2.
         pose proof (antisym ltq1 ltq2) as eq'.

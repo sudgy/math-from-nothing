@@ -1,93 +1,13 @@
 Require Import init.
 
 Require Export ord_order.
+Require Export ord_normal.
 Require Import set_induction.
-
-Require Import ord_bounds.
 
 Open Scope ord_scope.
 
-Global Instance ord_zero : Zero ord := {
-    zero := to_ord (make_ord_type empty_type _ _ _)
-}.
-
-Theorem ord_false_0 : ∀ A : ord_type, (A → False) → 0 = to_ord A.
-Proof.
-    intros A A_false.
-    unfold zero; equiv_simpl.
-    split.
-    exists (λ a, False_rect _ (empty_false a)).
-    1: split.
-    all: split; cbn.
-    -   intros a.
-        contradiction (empty_false a).
-    -   intros y.
-        contradiction (A_false y).
-    -   intros a.
-        contradiction (empty_false a).
-Qed.
-
-Global Instance ord_pos : OrderPositive ord.
-Proof.
-    split.
-    intros A.
-    equiv_get_value A.
-    unfold zero; equiv_simpl.
-    apply ord_le_simpl; cbn.
-    exists (λ a, False_rect _ (empty_false a)).
-    split; split; cbn.
-    -   intros a.
-        contradiction (empty_false a).
-    -   intros a.
-        contradiction (empty_false a).
-Qed.
-
-Theorem ord_lsub_f_zero : ∀ β f, 0 = ord_lsub β f → 0 = β.
-Proof.
-    intros β f f_z.
-    classic_contradiction neq.
-    pose proof (ord_lsub_gt β f [0|all_pos2 neq]) as ltq.
-    rewrite <- f_z in ltq.
-    contradiction (not_neg ltq).
-Qed.
-
-Theorem ord_lub_f_zero : ∀ β f, 0 = ord_lub β f → ∀ α, 0 = f α.
-Proof.
-    intros β f f_z α.
-    apply all_neg_eq.
-    rewrite f_z.
-    apply ord_lub_ge.
-Qed.
-
-Theorem ord_lub_constant : ∀ α β, 0 ≠ β → ord_lub β (λ _, α) = α.
-Proof.
-    intros α β β_nz.
-    apply ord_lub_eq.
-    -   intros γ.
-        apply refl.
-    -   intros ε ε_ge.
-        exact (ε_ge [0|all_pos2 β_nz]).
-Qed.
-
-Module OrdPlusDef.
-Section OrdPlusDef.
-
-Context (α : ord).
-
-Definition f (β : ord) (g : set_type (λ x, x < β) → ord) :=
-    If 0 = β then α else (ord_lsub β g).
-
-Definition g := ex_val (transfinite_recursion _ f).
-Lemma g_eq : ∀ β : ord, g β = f β (λ δ : set_type (λ δ, δ < β), g [δ|]).
-Proof.
-    exact (ex_proof (transfinite_recursion _ f)).
-Qed.
-
-End OrdPlusDef.
-End OrdPlusDef.
-
 Global Instance ord_plus : Plus ord := {
-    plus α β := OrdPlusDef.g α β
+    plus α := make_ord_normal α (λ α β, ord_suc β)
 }.
 
 Global Instance ord_plus_rid : PlusRid ord.
@@ -95,46 +15,56 @@ Proof.
     split.
     intros α.
     unfold plus; cbn.
-    rewrite OrdPlusDef.g_eq.
-    unfold OrdPlusDef.f.
-    rewrite (if_true Logic.eq_refl).
-    reflexivity.
+    apply make_ord_normal_zero.
 Qed.
 
-Theorem ord_plus_lsub : ∀ α β, 0 ≠ β → α + β = ord_lsub β (λ δ, α + [δ|]).
+Theorem ord_plus_suc : ∀ α β, α + ord_suc β = ord_suc (α + β).
 Proof.
-    intros α β β_nz.
+    intros α β.
     unfold plus; cbn.
-    rewrite OrdPlusDef.g_eq at 1.
-    unfold OrdPlusDef.f.
-    rewrite (if_false β_nz).
-    reflexivity.
+    apply make_ord_normal_suc.
+Qed.
+
+Theorem ord_plus_lim : ∀ α β, lim_ord β → α + β = ord_sup β (λ δ, α + [δ|]).
+Proof.
+    intros α β β_lim.
+    unfold plus; cbn.
+    apply make_ord_normal_lim.
+    exact β_lim.
+Qed.
+
+Theorem ord_plus_normal : ∀ α, ord_normal (plus α).
+Proof.
+    intros α.
+    apply make_ord_normal_normal.
+    intros β.
+    rewrite make_ord_normal_suc.
+    apply ord_lt_suc.
 Qed.
 
 Global Instance ord_plus_lid : PlusLid ord.
 Proof.
     split.
     intros α.
-    induction α as [α IHα] using transfinite_induction.
-    classic_case (0 = α) as [α_z|α_nz].
-    1: subst; apply plus_rid.
-    rewrite ord_plus_lsub by exact α_nz.
-    rewrite <- ord_lsub_self_eq.
-    apply ord_lsub_f_eq.
-    intros [δ δ_lt]; cbn.
-    apply IHα.
-    exact δ_lt.
+    induction α as [|α IHα|α α_lim IHα] using ord_induction.
+    -   apply plus_rid.
+    -   rewrite ord_plus_suc.
+        rewrite IHα.
+        reflexivity.
+    -   rewrite (ord_plus_lim _ _ α_lim).
+        rewrite <- (ord_sup_lim_eq α α_lim) at 2.
+        apply ord_sup_f_eq.
+        intros [δ δ_lt]; cbn.
+        exact (IHα δ δ_lt).
 Qed.
 
 Global Instance ord_lt_lplus : OrderLplus2 ord.
 Proof.
     split.
     intros α β γ ltq.
-    rewrite (ord_plus_lsub γ β).
-    -   exact (ord_lsub_gt β (λ δ, γ + [δ|]) [α|ltq]).
-    -   intros contr.
-        subst β.
-        contradiction (not_neg ltq).
+    pose proof (ord_plus_normal γ) as [plus_inj [plus_le plus_lim]].
+    rewrite <- (homo_lt2 (f := plus γ)).
+    exact ltq.
 Qed.
 
 Definition ord_plus_lcancel := plus_lcancel1 : PlusLcancel ord.
@@ -146,18 +76,14 @@ Proof.
     intros α β.
     rewrite <- plus_rid at 1.
     apply le_lplus.
-    apply ord_pos.
+    apply all_pos.
 Qed.
 
 Theorem ord_le_self_lplus : ∀ α β, α ≤ β + α.
 Proof.
     intros α β.
-    induction α as [α IHα] using transfinite_induction.
-    order_contradiction ltq.
-    specialize (IHα _ ltq).
-    apply (lt_lplus β) in ltq.
-    pose proof (le_lt_trans IHα ltq) as contr.
-    contradiction (irrefl _ contr).
+    apply ord_normal_le.
+    apply ord_plus_normal.
 Qed.
 
 Theorem ord_le_ex : ∀ α β, α ≤ β → ∃ γ, α + γ = β.
@@ -176,26 +102,30 @@ Proof.
         apply ord_le_self_lplus.
     }
     destruct γ_ex as [γ [γ_lt γ_least]].
-    assert (0 ≠ γ) as γ_nz.
-    {
-        intros contr.
-        subst.
-        rewrite plus_rid in γ_lt.
+    exists γ.
+    induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
+    -   rewrite plus_rid in γ_lt.
         pose proof (antisym leq γ_lt).
         contradiction.
-    }
-    exists γ.
-    rewrite ord_plus_lsub by exact γ_nz.
-    apply ord_lsub_eq.
-    -   intros [δ δ_lt]; cbn.
-        order_contradiction contr.
-        specialize (γ_least _ contr).
-        contradiction (irrefl _ (le_lt_trans γ_least δ_lt)).
-    -   intros x x_gt.
-        apply (trans γ_lt).
-        rewrite ord_plus_lsub by exact γ_nz.
-        apply ord_lsub_least.
-        exact x_gt.
+    -   apply antisym; [>|apply γ_lt].
+        order_contradiction ltq.
+        rewrite ord_plus_suc in ltq.
+        rewrite ord_lt_suc_le in ltq.
+        specialize (γ_least _ ltq).
+        rewrite <- nlt_le in γ_least.
+        apply γ_least.
+        apply ord_lt_suc.
+    -   rewrite ord_plus_lim by exact γ_lim.
+        apply ord_sup_eq.
+        +   intros [δ δ_lt]; cbn.
+            order_contradiction contr.
+            specialize (γ_least _ (land contr)).
+            contradiction (irrefl _ (le_lt_trans γ_least δ_lt)).
+        +   intros x x_gt.
+            apply (trans γ_lt).
+            rewrite ord_plus_lim by exact γ_lim.
+            apply ord_sup_least.
+            exact x_gt.
 Qed.
 
 Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
@@ -212,11 +142,21 @@ Qed.
 Theorem ord_nz_rplus : ∀ α β, 0 ≠ β → 0 ≠ α + β.
 Proof.
     intros α β β_nz contr.
-    rewrite ord_plus_lsub in contr by exact β_nz.
-    pose proof (ord_lsub_gt β (λ δ, α + [δ|])) as ltq.
-    rewrite <- contr in ltq.
-    specialize (ltq [0|all_pos2 β_nz]).
-    contradiction (not_neg ltq).
+    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+    -   contradiction.
+    -   rewrite ord_plus_suc in contr.
+        apply ord_zero_suc in contr.
+        exact contr.
+    -   rewrite ord_plus_lim in contr by exact β_lim.
+        pose proof (ord_sup_ge β (λ δ, α + [δ|])) as leq.
+        rewrite <- contr in leq.
+        specialize (leq [ord_suc 0|ord_lim_gt β β_lim]).
+        cbn in leq.
+        rewrite ord_plus_suc in leq.
+        rewrite <- nlt_le in leq.
+        apply leq.
+        apply all_pos2.
+        apply ord_zero_suc.
 Qed.
 
 Theorem ord_nz_lplus : ∀ α β, 0 ≠ α → 0 ≠ α + β.
@@ -230,71 +170,24 @@ Proof.
         exact neq.
 Qed.
 
-Theorem ord_lsub_plus : ∀ α β f, 0 ≠ β →
-    α + ord_lsub β f = ord_lsub β (λ x, α + f x).
-Proof.
-    intros α β f β_nz.
-    pose proof (contrapositive (ord_lsub_f_zero β f) β_nz) as f_nz.
-    apply antisym.
-    -   rewrite ord_plus_lsub by exact f_nz.
-        apply ord_lsub_least.
-        intros [δ δ_lt]; cbn.
-        pose proof (ord_lsub_in _ _ _ δ_lt) as [γ γ_ge].
-        apply (le_lplus α) in γ_ge.
-        apply (le_lt_trans γ_ge).
-        apply (ord_lsub_gt β (λ x, α + f x)).
-    -   apply ord_lsub_least.
-        intros δ.
-        apply ord_lt_lplus.
-        apply ord_lsub_gt.
-Qed.
-
-Theorem ord_lub_plus : ∀ α β f, 0 ≠ β →
-    α + ord_lub β f = ord_lub β (λ x, α + f x).
-Proof.
-    intros α β f β_nz.
-    classic_case (0 = ord_lub β f) as [f_z|f_nz].
-    {
-        rewrite <- f_z.
-        rewrite plus_rid.
-        rewrite <- (ord_lub_constant α β) at 1 by exact β_nz.
-        apply ord_lub_f_eq.
-        intros x.
-        rewrite <- (ord_lub_f_zero _ _ f_z).
-        symmetry; apply plus_rid.
-    }
-    apply antisym.
-    -   rewrite ord_plus_lsub by exact f_nz.
-        apply ord_lsub_least.
-        intros [δ δ_lt]; cbn.
-        pose proof (ord_lub_in _ _ _ δ_lt) as [γ γ_ge].
-        apply (lt_lplus α) in γ_ge.
-        apply (lt_le_trans γ_ge).
-        apply (ord_lub_ge β (λ x, α + f x)).
-    -   apply ord_lub_least.
-        intros δ.
-        apply le_lplus.
-        apply ord_lub_ge.
-Qed.
-
 Global Instance ord_plus_assoc : PlusAssoc ord.
 Proof.
     split.
     intros α β γ.
-    induction γ as [γ IHγ] using transfinite_induction.
-    classic_case (0 = γ) as [eq|neq].
-    {
-        subst.
-        do 2 rewrite plus_rid.
+    induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
+    -   do 2 rewrite plus_rid.
         reflexivity.
-    }
-    rewrite (ord_plus_lsub β γ) by exact neq.
-    rewrite ord_lsub_plus by exact neq.
-    rewrite ord_plus_lsub by exact neq.
-    apply ord_lsub_f_eq.
-    intros [δ δ_lt]; cbn.
-    apply IHγ.
-    exact δ_lt.
+    -   do 3 rewrite ord_plus_suc.
+        rewrite IHγ.
+        reflexivity.
+    -   do 2 rewrite (ord_plus_lim _ γ γ_lim).
+        rewrite ord_normal_sup.
+        2: apply ord_plus_normal.
+        2: apply γ_lim.
+        apply ord_sup_f_eq.
+        intros [δ δ_lt]; cbn.
+        apply IHγ.
+        exact δ_lt.
 Qed.
 
 Global Instance ord_le_rplus : OrderRplus ord.
@@ -317,6 +210,18 @@ Proof.
         rewrite <- plus_rid in contr at 1.
         apply plus_lcancel in contr.
         contradiction.
+Qed.
+
+Theorem ord_plus_zero : ∀ α β, 0 = α + β → 0 = α ∧ 0 = β.
+Proof.
+    intros α β eq.
+    split.
+    -   classic_contradiction neq.
+        apply (ord_nz_lplus _ _ neq) in eq.
+        exact eq.
+    -   classic_contradiction neq.
+        apply (ord_nz_rplus _ _ neq) in eq.
+        exact eq.
 Qed.
 
 Close Scope ord_scope.

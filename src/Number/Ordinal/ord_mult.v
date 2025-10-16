@@ -1,66 +1,63 @@
 Require Import init.
 
 Require Export ord_plus.
-Require Import ord_bounds.
 Require Import set_induction.
 
 Open Scope ord_scope.
 
-Module OrdMultDef.
-Section OrdMultDef.
-
-Context (α : ord).
-
-Definition f (β : ord) (g : set_type (λ x, x < β) → ord) :=
-    ord_lub β (λ δ, g δ + α).
-
-Definition g := ex_val (transfinite_recursion _ f).
-Lemma g_eq : ∀ β : ord, g β = f β (λ δ : set_type (λ δ, δ < β), g [δ|]).
-Proof.
-    exact (ex_proof (transfinite_recursion _ f)).
-Qed.
-
-End OrdMultDef.
-End OrdMultDef.
-
 Global Instance ord_mult : Mult ord := {
-    mult α β := OrdMultDef.g α β
+    mult α := make_ord_normal 0 (λ _ β, β + α)
 }.
 
-Theorem ord_mult_lub : ∀ α β, α * β = ord_lub β (λ δ, α * [δ|] + α).
+Global Instance ord_mult_ranni : MultRanni ord.
+Proof.
+    split.
+    intros α.
+    unfold mult; cbn.
+    apply make_ord_normal_zero.
+Qed.
+
+Theorem ord_mult_suc : ∀ α β, α * ord_suc β = α * β + α.
 Proof.
     intros α β.
     unfold mult; cbn.
-    rewrite OrdMultDef.g_eq at 1.
-    unfold OrdMultDef.f.
-    reflexivity.
+    apply make_ord_normal_suc.
+Qed.
+
+Theorem ord_mult_lim : ∀ α β, lim_ord β → α * β = ord_sup β (λ δ, α * [δ|]).
+Proof.
+    intros α β β_lim.
+    unfold mult; cbn.
+    apply make_ord_normal_lim.
+    exact β_lim.
+Qed.
+
+Theorem ord_mult_normal : ∀ α, 0 ≠ α → ord_normal (mult α).
+Proof.
+    intros α α_nz.
+    apply make_ord_normal_normal.
+    intros β.
+    rewrite make_ord_normal_suc.
+    apply ord_lt_self_rplus.
+    exact α_nz.
 Qed.
 
 Global Instance ord_mult_lanni : MultLanni ord.
 Proof.
     split.
     intros α.
-    induction α as [α IHα] using transfinite_induction.
-    rewrite ord_mult_lub.
-    apply ord_lub_eq.
-    -   intros [β β_lt]; cbn.
-        rewrite IHα by exact β_lt.
-        rewrite plus_rid.
-        apply refl.
-    -   intros ε ε_ge.
-        apply ord_pos.
-Qed.
-
-Global Instance ord_mult_ranni : MultRanni ord.
-Proof.
-    split.
-    intros α.
-    rewrite ord_mult_lub.
-    apply ord_lub_eq.
-    -   intros [δ δ_lt]; cbn.
-        contradiction (not_neg δ_lt).
-    -   intros ε ε_ge.
-        apply ord_pos.
+    induction α as [|α IHα|α α_lim IHα] using ord_induction.
+    -   apply mult_ranni.
+    -   rewrite ord_mult_suc.
+        rewrite IHα.
+        apply plus_lid.
+    -   rewrite (ord_mult_lim _ α α_lim).
+        apply ord_sup_eq.
+        +   intros [β β_lt]; cbn.
+            rewrite IHα by exact β_lt.
+            apply refl.
+        +   intros ε ε_ge.
+            apply all_pos.
 Qed.
 
 Global Instance ord_one : One ord := {
@@ -118,80 +115,24 @@ Proof.
         contradiction (leq ord_one_pos).
 Qed.
 
-Theorem ord_lt_suc_le : ∀ α β, α < β + 1 ↔ α ≤ β.
+Theorem ord_suc_zero_one : ord_suc 0 = 1.
 Proof.
-    intros α β.
-    split.
-    -   intros ltq.
-        rewrite ord_plus_lsub in ltq by exact ord_not_trivial.
-        pose proof (ord_lsub_least 1 (λ δ, β + [δ|])) as least.
-        order_contradiction contr.
-        specialize (least α).
-        prove_parts least.
-        {
-            intros [δ δ_lt]; cbn.
-            apply ord_lt_one_eq in δ_lt.
-            subst.
-            rewrite plus_rid.
-            exact contr.
-        }
-        contradiction (irrefl _ (le_lt_trans least ltq)).
-    -   intros leq.
-        apply ord_le_ex in leq as [γ γ_eq].
-        subst β.
-        rewrite <- (plus_rid α) at 1.
-        rewrite <- plus_assoc.
-        apply lt_lplus.
-        apply all_pos2.
-        apply ord_nz_rplus.
-        exact ord_not_trivial.
+    apply antisym.
+    -   rewrite ord_le_suc_lt.
+        apply ord_one_pos.
+    -   apply ord_pos_one.
+        apply ord_zero_suc.
 Qed.
 
-Theorem ord_le_suc_lt : ∀ α β, α + 1 ≤ β ↔ α < β.
-Proof.
-    intros α β.
-    split.
-    -   intros leq.
-        rewrite <- ord_lt_suc_le in leq.
-        apply lt_plus_rcancel in leq.
-        exact leq.
-    -   intros ltq.
-        apply ord_lt_ex in ltq as [γ [γ_nz γ_eq]].
-        subst β.
-        apply le_lplus.
-        apply ord_pos_one.
-        exact γ_nz.
-Qed.
-
-Theorem ord_le_suc : ∀ α, α ≤ α + 1.
+Theorem ord_suc_plus_one : ∀ α, ord_suc α = α + 1.
 Proof.
     intros α.
-    apply ord_le_self_rplus.
+    rewrite <- ord_suc_zero_one.
+    rewrite ord_plus_suc.
+    rewrite plus_rid.
+    reflexivity.
 Qed.
-
-Theorem ord_lt_suc : ∀ α, α < α + 1.
-Proof.
-    intros α.
-    rewrite ord_lt_suc_le.
-    apply refl.
-Qed.
-
-Theorem ord_lsub_lub : ∀ β f, ord_lsub β f = ord_lub β (λ x, f x + 1).
-Proof.
-    intros β f.
-    symmetry; apply ord_lub_eq.
-    -   intros α.
-        apply ord_lsub_other_leq.
-        intros ε ε_ge.
-        rewrite ord_le_suc_lt.
-        apply ε_ge.
-    -   intros ε ε_ge.
-        apply ord_lsub_least.
-        intros α.
-        rewrite <- ord_le_suc_lt.
-        apply ε_ge.
-Qed.
-
+(*
 Theorem ord_lub_one : ∀ α : ord, ord_lub 1 (λ _, α) = α.
 Proof.
     intros α.
@@ -201,147 +142,131 @@ Proof.
     -   intros ε ε_ge.
         exact (ε_ge [0|ord_one_pos]).
 Qed.
-
+*)
 Global Instance ord_mult_lid : MultLid ord.
 Proof.
     split.
     intros α.
-    induction α as [α IHα] using transfinite_induction.
-    rewrite ord_mult_lub.
-    rewrite <- (ord_lsub_self_eq α) at 2.
-    rewrite ord_lsub_lub.
-    apply ord_lub_f_eq.
-    intros [δ δ_lt]; cbn.
-    rewrite IHα by exact δ_lt.
-    reflexivity.
+    induction α as [|α IHα|α α_lim IHα] using ord_induction.
+    -   apply mult_ranni.
+    -   rewrite ord_mult_suc.
+        rewrite IHα.
+        rewrite ord_suc_plus_one.
+        reflexivity.
+    -   rewrite (ord_mult_lim _ α α_lim).
+        rewrite <- (ord_sup_lim_eq α α_lim) at 2.
+        apply ord_sup_f_eq.
+        intros [δ δ_lt]; cbn.
+        exact (IHα _ δ_lt).
 Qed.
 
 Global Instance ord_mult_rid : MultRid ord.
 Proof.
     split.
     intros α.
-    rewrite ord_mult_lub.
-    rewrite <- (ord_lub_one α) at 1.
-    apply ord_lub_f_eq.
-    intros [δ δ_lt]; cbn.
-    apply ord_lt_one_eq in δ_lt; subst.
-    rewrite mult_ranni, plus_lid.
-    reflexivity.
+    rewrite <- ord_suc_zero_one.
+    rewrite ord_mult_suc.
+    rewrite mult_ranni.
+    apply plus_lid.
 Qed.
 
 Global Instance ord_mult_zero : MultZero ord.
 Proof.
     split.
     intros α β eq.
-    rewrite <- not_not, not_or.
-    intros [α_nz β_nz].
-    rewrite ord_mult_lub in eq.
-    pose proof (ord_lub_ge β (λ δ, α * [δ|] + α)) as leq.
-    rewrite <- eq in leq.
-    specialize (leq [0|all_pos2 β_nz]); cbn in leq.
-    rewrite mult_ranni, plus_lid in leq.
-    apply all_neg_eq in leq.
-    contradiction.
+    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+    -   right; reflexivity.
+    -   rewrite ord_mult_suc in eq.
+        apply ord_plus_zero in eq.
+        left; exact (rand eq).
+    -   rewrite <- not_not, not_or.
+        intros [α_nz β_nz].
+        rewrite ord_mult_lim in eq by exact β_lim.
+        pose proof (ord_sup_ge β (λ δ, α * [δ|])) as leq.
+        rewrite <- eq in leq.
+        specialize (leq [ord_suc 0|ord_lim_gt β β_lim]); cbn in leq.
+        rewrite ord_mult_suc in leq.
+        rewrite mult_ranni, plus_lid in leq.
+        apply all_neg_eq in leq.
+        contradiction.
 Qed.
 
 Global Instance ord_le_lmult : OrderLmult ord.
 Proof.
     split.
     intros α β γ γ_pos leq.
-    rewrite (ord_mult_lub γ α).
-    apply ord_lub_least.
-    intros [δ δ_lt]; cbn.
-    rewrite (ord_mult_lub γ β).
-    apply ord_lub_other_leq.
-    intros ε ε_ge.
-    exact (ε_ge [δ|lt_le_trans δ_lt leq]).
-Qed.
-
-Theorem ord_ldist_one : ∀ α β, α * (β + 1) = α * β + α.
-Proof.
-    intros α β.
-    rewrite ord_mult_lub.
-    apply ord_lub_eq.
-    -   intros [δ δ_lt]; cbn.
-        rewrite ord_lt_suc_le in δ_lt.
-        apply ord_le_rplus.
-        apply le_lmult.
-        exact δ_lt.
-    -   intros ε ε_ge.
-        exact (ε_ge [β|ord_lt_suc β]).
-Qed.
-
-Theorem ord_lub_mult : ∀ α β f,
-    α * ord_lub β f = ord_lub β (λ x, α * f x).
-Proof.
-    intros α β f.
-    apply antisym.
-    -   rewrite ord_mult_lub.
-        apply ord_lub_least.
-        intros [δ δ_lt]; cbn.
-        pose proof (ord_lub_in _ _ _ δ_lt) as [γ γ_ge].
-        rewrite <- ord_le_suc_lt in γ_ge.
-        rewrite <- ord_ldist_one.
-        apply (le_lmult α) in γ_ge.
-        apply (trans γ_ge).
-        apply (ord_lub_ge β (λ x, α * f x)).
-    -   apply ord_lub_least.
-        intros δ.
-        apply le_lmult.
-        apply ord_lub_ge.
+    classic_case (0 = γ) as [γ_z|γ_nz].
+    1: subst γ; do 2 rewrite mult_lanni; apply refl.
+    pose proof (ord_mult_normal γ γ_nz) as [mult_inj [mult_le]].
+    apply homo_le.
+    exact leq.
 Qed.
 
 Global Instance ord_ldist : Ldist ord.
 Proof.
     split.
     intros α β γ.
-    induction γ as [γ IHγ] using transfinite_induction.
-    classic_case (0 = γ) as [γ_z|γ_nz].
+    classic_case (0 = α) as [α_z|α_nz].
     {
-        subst γ.
-        rewrite mult_ranni.
+        subst α.
+        do 3 rewrite mult_lanni.
+        symmetry; apply plus_lid.
+    }
+    induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
+    -   rewrite mult_ranni.
         do 2 rewrite plus_rid.
         reflexivity.
-    }
-    rewrite (ord_plus_lsub β γ) by exact γ_nz.
-    rewrite (ord_mult_lub α γ).
-    rewrite ord_lsub_lub.
-    rewrite ord_lub_mult.
-    rewrite ord_lub_plus by exact γ_nz.
-    apply ord_lub_f_eq.
-    intros [x x_lt]; cbn.
-    rewrite plus_assoc.
-    rewrite ord_ldist_one.
-    rewrite IHγ by exact x_lt.
-    reflexivity.
+    -   rewrite ord_plus_suc.
+        do 2 rewrite ord_mult_suc.
+        rewrite IHγ.
+        rewrite plus_assoc.
+        reflexivity.
+    -   rewrite (ord_plus_lim _ γ γ_lim).
+        rewrite (ord_mult_lim _ γ γ_lim).
+        rewrite ord_normal_sup.
+        2: apply (ord_mult_normal α α_nz).
+        2: apply γ_lim.
+        rewrite ord_normal_sup.
+        2: apply ord_plus_normal.
+        2: apply γ_lim.
+        apply ord_sup_f_eq.
+        intros [δ δ_lt]; cbn.
+        exact (IHγ δ δ_lt).
 Qed.
 
 Global Instance ord_mult_assoc : MultAssoc ord.
 Proof.
     split.
     intros α β γ.
-    induction γ as [γ IHγ] using transfinite_induction.
-    rewrite (ord_mult_lub β γ).
-    rewrite ord_lub_mult.
-    rewrite ord_mult_lub.
-    apply ord_lub_f_eq.
-    intros [δ δ_lt]; cbn.
-    rewrite ldist.
-    rewrite IHγ by exact δ_lt.
-    reflexivity.
+    classic_case (0 = α) as [α_z|α_nz].
+    {
+        subst α.
+        do 3 rewrite mult_lanni.
+        reflexivity.
+    }
+    induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
+    -   do 3 rewrite mult_ranni.
+        reflexivity.
+    -   do 2 rewrite ord_mult_suc.
+        rewrite ldist.
+        rewrite IHγ.
+        reflexivity.
+    -   do 2 rewrite (ord_mult_lim _ γ γ_lim).
+        rewrite ord_normal_sup.
+        2: apply (ord_mult_normal α α_nz).
+        2: apply γ_lim.
+        apply ord_sup_f_eq.
+        intros [δ δ_lt]; cbn.
+        exact (IHγ δ δ_lt).
 Qed.
 
 Global Instance ord_lt_lmult : OrderLmult2 ord.
 Proof.
     split.
     intros α β γ [γ_pos γ_nz] ltq.
-    apply ord_lt_ex in ltq as [δ [δ_nz δ_eq]].
-    subst β.
-    rewrite ldist.
-    rewrite <- (plus_rid (γ * α)) at 1.
-    apply lt_lplus.
-    apply all_pos2.
-    apply mult_nz; assumption.
+    pose proof (ord_mult_normal γ γ_nz) as [mult_inj [mult_le]].
+    apply homo_lt.
+    exact ltq.
 Qed.
 
 Definition ord_mult_lcancel := mult_lcancel1 : MultLcancel ord.
@@ -352,25 +277,26 @@ Proof.
     split.
     intros α β γ γ_pos leq.
     clear γ_pos.
-    induction γ as [γ IHγ] using transfinite_induction.
-    rewrite (ord_mult_lub β γ).
-    apply ord_lub_other_leq.
-    intros ε ε_ge.
-    rewrite (ord_mult_lub α γ).
-    apply ord_lub_least.
-    intros [δ δ_lt]; cbn.
-    specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
-    specialize (IHγ δ δ_lt).
-    pose proof (le_lrplus IHγ leq) as leq2.
-    exact (trans leq2 ε_ge).
+    induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
+    -   do 2 rewrite mult_ranni.
+        apply refl.
+    -   do 2 rewrite ord_mult_suc.
+        apply le_lrplus; assumption.
+    -   do 2 rewrite ord_mult_lim by exact γ_lim.
+        apply ord_sup_other_leq.
+        intros ε ε_ge.
+        apply ord_sup_least.
+        intros [δ δ_lt]; cbn.
+        specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
+        specialize (IHγ δ δ_lt).
+        exact (trans IHγ ε_ge).
 Qed.
 
 Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α ≤ β * α.
 Proof.
     intros α β β_nz.
-    apply ord_pos_one in β_nz.
-    apply (le_rmult α) in β_nz.
-    rewrite mult_lid in β_nz.
+    apply ord_normal_le.
+    apply ord_mult_normal.
     exact β_nz.
 Qed.
 
@@ -390,7 +316,7 @@ Proof.
     pose proof (well_ordered S) as ε_ex.
     prove_parts ε_ex.
     {
-        exists (α + 1).
+        exists (ord_suc α).
         unfold S.
         rewrite <- ord_le_suc_lt.
         apply ord_le_self_lmult.
@@ -398,45 +324,39 @@ Proof.
     }
     destruct ε_ex as [ε [ε_ltq ε_least]].
     unfold S in *.
-    classic_case (0 = ε) as [ε_z|ε_nz].
-    {
-        subst.
-        rewrite mult_ranni in ε_ltq.
+    induction ε as [|ε IHε|ε ε_lim IHε] using ord_induction.
+    -   rewrite mult_ranni in ε_ltq.
         contradiction (not_neg ε_ltq).
-    }
-    assert (∃ γ, γ + 1 = ε) as [γ γ_eq].
-    {
-        classic_contradiction contr.
-        assert (β * ε ≤ α) as α_ge.
+    -   assert (β * ε ≤ α) as leq.
         {
-            rewrite ord_mult_lub.
-            apply ord_lub_least.
-            intros [ζ ζ_lt]; cbn.
-            rewrite <- ord_le_suc_lt in ζ_lt.
-            rewrite <- ord_ldist_one.
             order_contradiction ltq.
             specialize (ε_least _ ltq).
-            apply contr.
+            rewrite <- nlt_le in ε_least.
+            contradiction (ε_least (ord_lt_suc _)).
+        }
+        apply ord_le_ex in leq as [δ δ_eq].
+        exists ε, δ.
+        split; [>subst; reflexivity|].
+        subst.
+        rewrite ord_mult_suc in ε_ltq.
+        apply lt_plus_lcancel in ε_ltq.
+        exact ε_ltq.
+    -   assert (β * ε ≤ α) as α_ge.
+        {
+            rewrite ord_mult_lim by exact ε_lim.
+            apply ord_sup_least.
+            intros [ζ ζ_lt]; cbn.
+            rewrite <- ord_le_suc_lt in ζ_lt.
+            order_contradiction ltq.
+            specialize (ε_least _ ltq).
+            apply (rand ε_lim).
             exists ζ.
-            apply antisym; assumption.
+            apply antisym.
+            -   apply (trans ε_least).
+                apply ord_lt_suc.
+            -   exact ζ_lt.
         }
         contradiction (irrefl _ (le_lt_trans α_ge ε_ltq)).
-    }
-    subst ε.
-    assert (β * γ ≤ α) as leq.
-    {
-        order_contradiction ltq.
-        specialize (ε_least _ ltq).
-        rewrite <- nlt_le in ε_least.
-        contradiction (ε_least (ord_lt_suc _)).
-    }
-    apply ord_le_ex in leq as [δ δ_eq].
-    exists γ, δ.
-    split; [>subst; reflexivity|].
-    subst.
-    rewrite ord_ldist_one in ε_ltq.
-    apply lt_plus_lcancel in ε_ltq.
-    exact ε_ltq.
 Qed.
 
 Close Scope ord_scope.
