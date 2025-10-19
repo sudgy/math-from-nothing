@@ -287,10 +287,18 @@ Proof.
         exact β_lt.
 Qed.
 
-Theorem ord_normal_fixed : ∀ f, ord_normal f → ∀ α, ∃ β, α ≤ β ∧ f β = β.
+Section OrdNormalFixed.
+
+Context (f : ord → ord) `{
+    @HomomorphismLt _ _ _ _ f,
+    @HomomorphismLe _ _ _ _ f,
+    Injective _ _ f,
+    OrdNormal f
+}.
+
+Theorem ord_normal_fixed : ∀ α, ∃ β, α ≤ β ∧ f β = β.
 Proof.
-    intros f f_norm α.
-    pose proof f_norm as [f_inj [f_le f_lim]].
+    intros α.
     pose (a n := iterate_func f n α).
     pose (β := ord_sup ω (λ n, a (ex_val (ord_lt_ω _ [|n])))).
     exists β.
@@ -305,7 +313,7 @@ Proof.
         subst n.
         apply refl.
     -   unfold β.
-        rewrite (ord_normal_sup f f_norm ω).
+        rewrite (ord_normal_sup f ω).
         2: {
             rewrite <- homo_zero.
             apply nat_lt_ω.
@@ -335,8 +343,10 @@ Proof.
             apply (trans2 (ε_ge [from_nat n1|nat_lt_ω n1])).
             rewrite_ex_val n2 n2_eq; cbn in *.
             apply inj in n2_eq; subst n2.
-            apply (ord_normal_le f f_norm).
+            apply (ord_normal_le f).
 Qed.
+
+End OrdNormalFixed.
 
 
 Theorem ord_plus_comm_false : ¬PlusComm ord.

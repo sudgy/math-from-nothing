@@ -32,14 +32,51 @@ Proof.
     exact β_lim.
 Qed.
 
-Theorem ord_mult_normal : ∀ α, 0 ≠ α → ord_normal (mult α).
+Theorem ord_mult_normal : ∀ α, OrdNormal (mult α).
 Proof.
-    intros α α_nz.
-    apply make_ord_normal_normal.
-    intros β.
-    rewrite make_ord_normal_suc.
+    intros α.
+    apply make_ord_normal_lim.
+Qed.
+
+Lemma ord_mult_le_suc : ∀ α β, α * β ≤ α * ord_suc β.
+Proof.
+    intros α β.
+    rewrite ord_mult_suc.
+    apply ord_le_self_rplus.
+Qed.
+
+Lemma ord_mult_lt_suc : ∀ α β, 0 ≠ α → α * β < α * ord_suc β.
+Proof.
+    intros α β α_nz.
+    rewrite ord_mult_suc.
     apply ord_lt_self_rplus.
     exact α_nz.
+Qed.
+
+Theorem ord_mult_homo_le : ∀ α, HomomorphismLe (mult α).
+Proof.
+    intros α.
+    apply make_ord_normal_le.
+    apply ord_mult_le_suc.
+Qed.
+
+Theorem ord_mult_homo_inj : ∀ α, 0 ≠ α → Injective (mult α).
+Proof.
+    intros α α_nz.
+    apply make_ord_normal_inj.
+    intros β.
+    apply ord_mult_lt_suc.
+    exact α_nz.
+Qed.
+
+Theorem ord_mult_sup : ∀ α,
+    ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
+    α * (ord_sup β g) = ord_sup β (λ δ, α * g δ).
+Proof.
+    intros α.
+    apply ord_normal_sup.
+    -   apply ord_mult_homo_le.
+    -   apply ord_mult_normal.
 Qed.
 
 Global Instance ord_mult_lanni : MultLanni ord.
@@ -132,17 +169,7 @@ Proof.
     rewrite plus_rid.
     reflexivity.
 Qed.
-(*
-Theorem ord_lub_one : ∀ α : ord, ord_lub 1 (λ _, α) = α.
-Proof.
-    intros α.
-    apply ord_lub_eq.
-    -   intros x.
-        apply refl.
-    -   intros ε ε_ge.
-        exact (ε_ge [0|ord_one_pos]).
-Qed.
-*)
+
 Global Instance ord_mult_lid : MultLid ord.
 Proof.
     split.
@@ -195,9 +222,7 @@ Global Instance ord_le_lmult : OrderLmult ord.
 Proof.
     split.
     intros α β γ γ_pos leq.
-    classic_case (0 = γ) as [γ_z|γ_nz].
-    1: subst γ; do 2 rewrite mult_lanni; apply refl.
-    pose proof (ord_mult_normal γ γ_nz) as [mult_inj [mult_le]].
+    pose proof (ord_mult_homo_le γ).
     apply homo_le.
     exact leq.
 Qed.
@@ -206,12 +231,6 @@ Global Instance ord_ldist : Ldist ord.
 Proof.
     split.
     intros α β γ.
-    classic_case (0 = α) as [α_z|α_nz].
-    {
-        subst α.
-        do 3 rewrite mult_lanni.
-        symmetry; apply plus_lid.
-    }
     induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
     -   rewrite mult_ranni.
         do 2 rewrite plus_rid.
@@ -223,12 +242,8 @@ Proof.
         reflexivity.
     -   rewrite (ord_plus_lim _ γ γ_lim).
         rewrite (ord_mult_lim _ γ γ_lim).
-        rewrite ord_normal_sup.
-        2: apply (ord_mult_normal α α_nz).
-        2: apply γ_lim.
-        rewrite ord_normal_sup.
-        2: apply ord_plus_normal.
-        2: apply γ_lim.
+        rewrite ord_mult_sup by apply γ_lim.
+        rewrite ord_plus_sup by apply γ_lim.
         apply ord_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHγ δ δ_lt).
@@ -238,12 +253,6 @@ Global Instance ord_mult_assoc : MultAssoc ord.
 Proof.
     split.
     intros α β γ.
-    classic_case (0 = α) as [α_z|α_nz].
-    {
-        subst α.
-        do 3 rewrite mult_lanni.
-        reflexivity.
-    }
     induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
     -   do 3 rewrite mult_ranni.
         reflexivity.
@@ -252,9 +261,7 @@ Proof.
         rewrite IHγ.
         reflexivity.
     -   do 2 rewrite (ord_mult_lim _ γ γ_lim).
-        rewrite ord_normal_sup.
-        2: apply (ord_mult_normal α α_nz).
-        2: apply γ_lim.
+        rewrite ord_mult_sup by apply γ_lim.
         apply ord_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHγ δ δ_lt).
@@ -264,7 +271,8 @@ Global Instance ord_lt_lmult : OrderLmult2 ord.
 Proof.
     split.
     intros α β γ [γ_pos γ_nz] ltq.
-    pose proof (ord_mult_normal γ γ_nz) as [mult_inj [mult_le]].
+    pose proof (ord_mult_homo_le γ).
+    pose proof (ord_mult_homo_inj γ γ_nz).
     apply homo_lt.
     exact ltq.
 Qed.
@@ -296,8 +304,9 @@ Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α ≤ β * α.
 Proof.
     intros α β β_nz.
     apply ord_normal_le.
-    apply ord_mult_normal.
-    exact β_nz.
+    -   apply ord_mult_homo_le.
+    -   apply ord_mult_homo_inj.
+        exact β_nz.
 Qed.
 
 Theorem ord_le_self_rmult : ∀ α β, 0 ≠ β → α ≤ α * β.

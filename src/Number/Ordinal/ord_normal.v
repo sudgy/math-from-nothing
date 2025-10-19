@@ -2,6 +2,7 @@ Require Import init.
 
 Require Export ord_limit.
 Require Import nat.
+Require Import set_induction.
 
 Theorem ord_normal_recursion : ∀
     (f0 : ord)
@@ -21,9 +22,9 @@ Proof.
     exact g_lim.
 Qed.
 
-Definition ord_normal (f : ord → ord) :=
-    Injective f ∧ HomomorphismLe f ∧
-    ∀ α, lim_ord α → f α = ord_sup α (λ β, f [β|]).
+Class OrdNormal (f : ord → ord) := {
+    ord_normal : ∀ α, lim_ord α → f α = ord_sup α (λ β, f [β|])
+}.
 
 Section MakeOrdNormal.
 
@@ -42,15 +43,16 @@ Proof.
     apply (ex_proof (ord_normal_recursion f0 f_suc)).
 Qed.
 
-Lemma make_ord_normal_lim : ∀ α, lim_ord α → f α = ord_sup α (λ β, f [β|]).
+Global Instance make_ord_normal_lim : OrdNormal f.
 Proof.
+    split.
     apply (ex_proof (ord_normal_recursion f0 f_suc)).
 Qed.
 
-Context (f_increasing : ∀ α, f α < f (ord_suc α)).
+Context (f_increasing : ∀ α, f α ≤ f (ord_suc α)).
 
 Lemma make_ord_normal_lt_sucs : ∀ α n,
-    f α < f (iterate_func ord_suc (nat_suc n) α).
+    f α ≤ f (iterate_func ord_suc (nat_suc n) α).
 Proof.
     intros α n.
     nat_induction n.
@@ -61,18 +63,20 @@ Proof.
         apply f_increasing.
 Qed.
 
-Lemma make_ord_normal_lt_lim : ∀ α β, lim_ord β → α < β → f α < f β.
+Lemma make_ord_normal_lt_lim : ∀ α β, lim_ord β → α ≤ β → f α ≤ f β.
 Proof.
-    intros α β β_lim ltq.
-    rewrite (make_ord_normal_lim β β_lim).
-    apply (lt_le_trans (f_increasing α)).
+    intros α β β_lim leq.
+    classic_case (α = β) as [eq|neq].
+    1: subst; apply refl.
+    rewrite (ord_normal (f := f) β β_lim).
+    apply (trans (f_increasing α)).
     apply ord_sup_other_leq.
     intros ε ε_ge.
     assert (ord_suc α < β) as ltq2.
     {
         split.
         -   rewrite ord_le_suc_lt.
-            exact ltq.
+            split; assumption.
         -   intros contr.
             apply (rand β_lim).
             exists α.
@@ -81,32 +85,25 @@ Proof.
     exact (ε_ge [ord_suc α|ltq2]).
 Qed.
 
-Lemma make_ord_normal_lt : ∀ α β, α < β → make_ord_normal α < make_ord_normal β.
+Local Instance make_ord_normal_le : HomomorphismLe f.
 Proof.
-    intros α β ltq.
+    split.
+    intros α β leq.
     induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
-    -   contradiction (not_neg ltq).
-    -   classic_case (α = β) as [eq|neq].
+    -   apply all_neg_eq in leq.
+        subst; apply refl.
+    -   classic_case (α = ord_suc β) as [eq|neq].
         {
-            subst β.
-            apply f_increasing.
+            subst α.
+            apply refl.
         }
+        pose proof (make_and leq neq : α < ord_suc β) as ltq.
         rewrite ord_lt_suc_le in ltq.
-        classic_case (∀ n, iterate_func ord_suc n α ≠ β) as [β_neq|β_eq].
-        +   pose proof (ord_far_lim α β (make_and ltq neq) β_neq)
-                as [γ [n [γ_lim [γ_gt β_eq]]]].
-            rewrite <- β_eq.
-            apply (make_ord_normal_lt_lim _ _ γ_lim) in γ_gt.
-            apply (trans γ_gt).
-            apply make_ord_normal_lt_sucs.
-        +   rewrite not_all in β_eq.
-            destruct β_eq as [n β_eq].
-            rewrite not_not in β_eq.
-            rewrite <- β_eq.
-            apply make_ord_normal_lt_sucs.
-    -   exact (make_ord_normal_lt_lim α β β_lim ltq).
+        apply (trans (IHβ ltq)).
+        apply f_increasing.
+    -   exact (make_ord_normal_lt_lim α β β_lim leq).
 Qed.
-
+(*
 Global Instance make_ord_normal_inj : Injective f.
 Proof.
     split.
@@ -120,47 +117,79 @@ Proof.
         rewrite eq in ltq.
         contradiction (irrefl _ ltq).
 Qed.
-
-Global Instance make_ord_normal_le : HomomorphismLe f.
-Proof.
-    split.
-    intros α β leq.
-    classic_case (α = β) as [eq|neq].
-    -   subst; apply refl.
-    -   apply make_ord_normal_lt.
-        split; assumption.
-Qed.
-
-Theorem make_ord_normal_normal : ord_normal f.
-Proof.
-    split; [>|split].
-    -   exact make_ord_normal_inj.
-    -   exact make_ord_normal_le.
-    -   exact make_ord_normal_lim.
-Qed.
+*)
 
 End MakeOrdNormal.
 
-Theorem ord_normal_le : ∀ f, ord_normal f → ∀ α, α ≤ f α.
+Section MakeOrdNormal2.
+
+Context (f0 : ord) (f_suc : ord → ord → ord).
+Local Notation "'f'" := (make_ord_normal f0 f_suc).
+
+Context (f_increasing : ∀ α, f α < f (ord_suc α)).
+
+Local Instance make_ord_normal_inj_le : HomomorphismLe f.
 Proof.
-    intros f [f_inj [f_le f_lim]] α.
-    order_contradiction ltq.
-    pose proof (well_ordered (λ β, f β < β)) as β_ex.
-    prove_parts β_ex.
-    1: exists α; exact ltq.
-    destruct β_ex as [β [β_lt β_least]].
-    pose proof β_lt as fβ_lt.
-    apply (homo_lt (f := f)) in fβ_lt.
-    specialize (β_least _ fβ_lt).
-    contradiction (irrefl _ (lt_le_trans β_lt β_least)).
+    apply make_ord_normal_le.
+    intros α.
+    apply f_increasing.
 Qed.
 
-Theorem ord_normal_sup : ∀ f, ord_normal f →
+Local Instance make_ord_normal_inj : Injective f.
+Proof.
+    split.
+    pose proof make_ord_normal_inj_le.
+    assert (∀ α β, α < β → f α ≠ f β) as wlog.
+    {
+        intros α β ltq eq.
+        induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+        -   contradiction (not_neg ltq).
+        -   clear IHβ.
+            specialize (f_increasing β).
+            rewrite <- eq in f_increasing.
+            rewrite ord_lt_suc_le in ltq.
+            apply (homo_le (f := f)) in ltq.
+            contradiction (irrefl _ (le_lt_trans ltq f_increasing)).
+        -   specialize (f_increasing α).
+            rewrite <- ord_le_suc_lt in ltq.
+            apply (homo_le (f := f)) in ltq.
+            rewrite eq in f_increasing.
+            contradiction (irrefl _ (le_lt_trans ltq f_increasing)).
+    }
+    intros α β eq.
+    destruct (trichotomy α β) as [[ltq|eq']|ltq].
+    -   contradiction (wlog _ _ ltq eq).
+    -   exact eq'.
+    -   symmetry in eq.
+        contradiction (wlog _ _ ltq eq).
+Qed.
+
+End MakeOrdNormal2.
+
+Section OrdNormal.
+
+Context (f : ord → ord) `{
+    @HomomorphismLt ord ord _ _ f,
+    @HomomorphismLe ord ord _ _ f,
+    @Injective ord ord f,
+    OrdNormal f
+}.
+
+Theorem ord_normal_le : ∀ α, α ≤ f α.
+Proof.
+    intros α.
+    induction α as [α IHα] using transfinite_induction.
+    order_contradiction ltq.
+    specialize (IHα _ ltq).
+    apply homo_le2 in IHα.
+    contradiction (irrefl _ (le_lt_trans IHα ltq)).
+Qed.
+
+Theorem ord_normal_sup :
     ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
     f (ord_sup β g) = ord_sup β (λ α, f (g α)).
 Proof.
-    intros f f_norm β g β_nz.
-    pose proof f_norm as [f_inj [f_le f_lim]].
+    intros β g β_nz.
     apply antisym.
     -   remember (ord_sup β g) as γ.
         induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
@@ -210,7 +239,7 @@ Proof.
             apply ε_ge.
         +   clear IHγ.
             subst γ.
-            rewrite (f_lim _ γ_lim).
+            rewrite (ord_normal _ γ_lim).
             apply ord_sup_least.
             intros [α α_lt]; cbn.
             assert (∃ ζ, α ≤ g ζ) as [ζ α_leq].
@@ -238,3 +267,5 @@ Qed.
 
 (* The fixed point lemma requires facts about ω which will be proved in ord_nat.
  * Thus, the fixed point lemma will be there instead. *)
+
+End OrdNormal.

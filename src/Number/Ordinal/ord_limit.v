@@ -278,6 +278,19 @@ Proof.
         exact (lem α γ n β_neq ltq).
 Qed.
 
+Theorem ord_lt_lim : ∀ α β, lim_ord β → α ≠ β →
+    ∀ n, iterate_func ord_suc n α ≠ β.
+Proof.
+    intros α β β_lim neq n.
+    nat_destruct n.
+    -   exact neq.
+    -   cbn.
+        intros eq.
+        apply (rand β_lim).
+        exists (iterate_func ord_suc n α).
+        symmetry; exact eq.
+Qed.
+
 Theorem ord_sup_lim_eq : ∀ α, lim_ord α → ord_sup α (λ δ, [δ|]) = α.
 Proof.
     intros α α_lim.

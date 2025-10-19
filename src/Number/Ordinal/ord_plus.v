@@ -33,13 +33,41 @@ Proof.
     exact β_lim.
 Qed.
 
-Theorem ord_plus_normal : ∀ α, ord_normal (plus α).
+Theorem ord_plus_normal : ∀ α, OrdNormal (plus α).
 Proof.
     intros α.
-    apply make_ord_normal_normal.
-    intros β.
-    rewrite make_ord_normal_suc.
+    apply make_ord_normal_lim.
+Qed.
+
+Lemma ord_plus_lt_suc : ∀ α β, α + β < α + ord_suc β.
+Proof.
+    intros α β.
+    rewrite ord_plus_suc.
     apply ord_lt_suc.
+Qed.
+
+Theorem ord_plus_homo_le : ∀ α, HomomorphismLe (plus α).
+Proof.
+    intros α.
+    apply make_ord_normal_le.
+    apply ord_plus_lt_suc.
+Qed.
+
+Theorem ord_plus_homo_inj : ∀ α, Injective (plus α).
+Proof.
+    intros α.
+    apply make_ord_normal_inj.
+    apply ord_plus_lt_suc.
+Qed.
+
+Theorem ord_plus_sup : ∀ α,
+    ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
+    α + (ord_sup β g) = ord_sup β (λ δ, α + g δ).
+Proof.
+    intros α.
+    apply ord_normal_sup.
+    -   apply ord_plus_homo_le.
+    -   apply ord_plus_normal.
 Qed.
 
 Global Instance ord_plus_lid : PlusLid ord.
@@ -62,8 +90,9 @@ Global Instance ord_lt_lplus : OrderLplus2 ord.
 Proof.
     split.
     intros α β γ ltq.
-    pose proof (ord_plus_normal γ) as [plus_inj [plus_le plus_lim]].
-    rewrite <- (homo_lt2 (f := plus γ)).
+    pose proof (ord_plus_homo_le γ).
+    pose proof (ord_plus_homo_inj γ).
+    rewrite <- homo_lt2.
     exact ltq.
 Qed.
 
@@ -83,7 +112,8 @@ Theorem ord_le_self_lplus : ∀ α β, α ≤ β + α.
 Proof.
     intros α β.
     apply ord_normal_le.
-    apply ord_plus_normal.
+    -   apply ord_plus_homo_le.
+    -   apply ord_plus_homo_inj.
 Qed.
 
 Theorem ord_le_ex : ∀ α β, α ≤ β → ∃ γ, α + γ = β.
@@ -181,9 +211,7 @@ Proof.
         rewrite IHγ.
         reflexivity.
     -   do 2 rewrite (ord_plus_lim _ γ γ_lim).
-        rewrite ord_normal_sup.
-        2: apply ord_plus_normal.
-        2: apply γ_lim.
+        rewrite (ord_plus_sup _ _ _ (land γ_lim)).
         apply ord_sup_f_eq.
         intros [δ δ_lt]; cbn.
         apply IHγ.
