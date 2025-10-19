@@ -5,16 +5,16 @@
 \section*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-This document is intended to be a version of my Coq project ``Math From
+This document is intended to be a version of my Rocq project ``Math From
 Nothing'' which is written in a more traditional format.  Feel free to look
-around in here if you want to understand an argument used in the Coq code.
+around in here if you want to understand an argument used in the Rocq code.
 While I am trying to be rigorous in this document, I am not trying to be formal,
 and there are probably many typos throughout it.  Also, I am not writing to be
 understood by others, so the proofs given here may be a bit more obtuse than
 they should be.  I'm mainly writing this to make it easier for me to understand
-what my Coq code is doing.
+what my Rocq code is doing.
 
-This document uses a system based off of Coq's typeclass system.  Several
+This document uses a system based off of Rocq's typeclass system.  Several
 ``definitions'' are given as classes instead.  These are definitions or
 conditions that don't care about what thing they are attached to.  Later on,
 instances of these classes can be made for particular things.  Theorems can be
@@ -24,7 +24,7 @@ defined in a similar manner to definitions, but with the name ``Class''.
 Instances of a class on a particular thing will be proved similarly to theorems,
 but with the name ``Instance''.  Then, at various times, certain theorems or
 sections will require certain classes.  Note that not all theorems will actually
-require all listed classes, or list all required classes.  Coq automatically
+require all listed classes, or list all required classes.  Rocq automatically
 determines which are required itself and I don't want to do the work of figuring
 this out and then listing every single required class.
 

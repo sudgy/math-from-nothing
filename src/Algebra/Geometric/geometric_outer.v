@@ -56,7 +56,7 @@ Qed.
 Definition geo_outer := bilinear_extend (λ i j, [_|geo_outer_bilinear i j])
     : geo → geo → geo.
 
-(** Note: Because Coq already uses ∧ for logical and, this symbol is actually
+(** Note: Because Rocq already uses ∧ for logical and, this symbol is actually
 \bigwedge, not \wedge!
 *)
 (* begin show *)

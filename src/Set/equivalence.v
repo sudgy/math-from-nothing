@@ -53,7 +53,7 @@ details of this implementation of quotients:
   f_wd (to_equiv E a))].  When simplifying, we would want to use unary_op_eq
   twice, once to convert it to [unary_op f_wd (f a)], and the second to convert
   it to [f (f a)].  However, if the unary operation was defined using [to_equiv]
-  (as many of them are), then Coq would see that the term is [unary_op f_wd
+  (as many of them are), then Rocq would see that the term is [unary_op f_wd
   (to_equiv ...)] and would then use the first [unary_op_eq] rewrite to rewrite
   the first instance of [unary_op] rather than the second.  Because of this, the
   definitions of [unary_op] and [binary_op] are opaque.

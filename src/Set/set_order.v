@@ -68,11 +68,11 @@ Proof.
     intros S S_wo a b Sa Sb.
     specialize (S_wo ❴a, b❵).
     prove_parts S_wo.
-    -   intros x [|]; subst x; assumption.
+    -   intros x [eq|eq]; rewrite <- eq; assumption.
     -   exists a.
         left; reflexivity.
     -   destruct S_wo as [x [x_in x_least]].
-        destruct x_in as [|]; subst x.
+        destruct x_in as [eq|eq]; destruct eq.
         +   left.
             apply x_least.
             right; reflexivity.

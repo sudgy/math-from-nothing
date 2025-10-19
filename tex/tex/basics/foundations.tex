@@ -8,14 +8,14 @@
 \section{Calculus of Inductive Constructions}
 
 The basic foundation for math used here is the Calculus of Inductive
-Constructions (CIC) used by Coq.  I actually don't know how to describe CIC
+Constructions (CIC) used by Rocq.  I actually don't know how to describe CIC
 rigorously, so in this section I will only describe things in non-precise terms.
 
 The fundamental entity is types.  Types have values, and a value $a$ having a
 type $\mathbb U$ is written as $a : \mathbb U$.  Each type itself has a type,
 and there exists a hierarchy of these ``types of types'' \verb|Type|$_0$,
 \verb|Type|$_1$, \ldots such that $\verb|Type|_n : \verb|Type|_{n + 1}$.  For
-utility, Coq further adds the rule that $\verb|Type|_i : \verb|Type|_j$ for all
+utility, Rocq further adds the rule that $\verb|Type|_i : \verb|Type|_j$ for all
 $i < j$.  $\verb|Type|_n : \verb|Type|_n$ is inconsistent.
 
 There are two special types at the bottom of the hierarchy: \verb|Prop| and
@@ -68,7 +68,7 @@ to produce a value in any \verb|Type|, including \verb|Prop| itself.  However,
 there is an axiom that can partially get around this issue described below.
 
 While the universe hierarchy might seem complicated, it is thankfully rarely an
-issue.  Coq automatically assigns arbitrary universes to all definitions, and
+issue.  Rocq automatically assigns arbitrary universes to all definitions, and
 internally ensures that all the universes work out.  If you ever do something
 that implies $\verb|Type|_n : \verb|Type|_n$, it will give you an error called a
 universe inconsistency.  Thus, I hardly ever think about universes, and I won't
@@ -76,7 +76,7 @@ mention them in most of this document.  However, there are a couple areas where
 they are important, most notably in some of the facts involving cardinals and
 ordinals.  I'll bring up universes again there.
 
-Basic logical propositions are defined in Coq and will not be defined in detail
+Basic logical propositions are defined in Rocq and will not be defined in detail
 here.  Here is a list of the ones used here:
 \begin{itemize}
     \item True, which is a proposition that has a single constructor with no

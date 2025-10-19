@@ -47,8 +47,8 @@ Distributed under the terms of the LGPL-v3 license                        *
 
 Set Implicit Arguments.
 
-Require Import Coq.Lists.List.
-Require Import Coq.Init.Prelude.
+Require Import Corelib.Lists.ListDef.
+Require Import Corelib.Init.Prelude.
 
 Declare Scope ltac_scope.
 
@@ -60,7 +60,7 @@ Declare Scope ltac_scope.
   Lemma test : forall b, b = false.
   time eauto 7. (* takes over 4 seconds to fail! *) *)
 
-Global Remove Hints Bool.trans_eq_bool : core.
+(*Global Remove Hints Bool.trans_eq_bool : core.*)
 
 
 (* ---------------------------------------------------------------------- *)
@@ -196,7 +196,7 @@ Notation "'>>' v1 v2 v3 v4 v5 v6 v7 v8 v9 v10 v11 v12 v13" :=
     - otherwise, it returns the list [(boxer E)::nil]. *)
 Ltac list_boxer_of E :=
   match type of E with
-  | List.list Boxer => constr:(E)
+  | list Boxer => constr:(E)
   | _ => constr:((boxer E)::nil)
   end.
 

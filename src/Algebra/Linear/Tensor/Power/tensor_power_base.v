@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import Coq.Init.Tactics.
+Require Import Corelib.Init.Tactics.
 
 Require Import tensor_product_universal.
 Require Import tensor_product_isomorphisms.

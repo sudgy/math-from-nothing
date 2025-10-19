@@ -598,7 +598,7 @@ the two types.
 In the future, because it matches up with traditional mathematics more, I will
 often not mention that we are actually using $\T$.  This may cause a bit of
 confusion at times if you're not following along with the proofs carefully.  The
-exact uses of $\T$ can be found in the Coq code.
+exact uses of $\T$ can be found in the Rocq code.
 
 \subsection{Converting sets to/from $\T(X)$}
 
@@ -1288,9 +1288,9 @@ $S$ be a set on $\U$.
 
 While a full discussion of infinite and finite types requires developing the
 theory of the cardinals, some facts about finite types can be proved directly
-here.  In the Coq code, this also has the practical benefit that using the ideas
+here.  In the Rocq code, this also has the practical benefit that using the ideas
 developed here allows parts of the code to not depend on the cardinals, allowing
-for more parallelization when compiling it.  Thus, as in the Coq code, we will
+for more parallelization when compiling it.  Thus, as in the Rocq code, we will
 distinguish between the concept of finiteness developed here and the concept of
 finiteness in the cardinals, even though they are equivalent.
 
@@ -1619,7 +1619,7 @@ well-ordered type.
 Transfinite recursion is a bit trickier.  The proof employed here has a few
 lemmas that are repeated for the whole type and for initial segments.  I feel
 like this repetition is unneeded because we can consider an initial segment to
-be its own type, but I have not managed to figure out how to do this in the Coq
+be its own type, but I have not managed to figure out how to do this in the Rocq
 code, so the extra lemmas will be presented here.  Because the proof of the
 lemmas for initial segments is identical to the proof for the whole type, they
 will not be presented here.
@@ -2028,7 +2028,7 @@ Using $\sim$, we can prove a version of Zorn's lemma that is valid on preorders:
     $\U$, whereas here we allow the relation to be defined on all of $\U$, but
     only a well-ordering on a subset.  This is because working on relations on
     sets of a type involves having to deal with dependent types, which can be
-    annoying to work with in Coq and their use is preferably avoided unless
+    annoying to work with in Rocq and their use is preferably avoided unless
     needed.
 
     For any $(D, \leq) \in \mathcal F$, because $D$ well-orders $\U$, we also

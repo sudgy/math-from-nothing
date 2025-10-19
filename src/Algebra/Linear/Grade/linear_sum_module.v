@@ -1,6 +1,6 @@
 Require Import init.
 
-Require Import Coq.Init.Tactics.
+Require Import Corelib.Init.Tactics.
 
 Require Export linear_base.
 Require Import module_category.

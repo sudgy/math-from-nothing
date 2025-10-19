@@ -19,13 +19,13 @@ facts about them, and haven't even proven the Yoneda lemma.  I know that there
 are many things later on that could be simplified by the use of category theory,
 but the fact is I just haven't studied it enough yet.
 
-Another thing that I should point out is that in the Coq code, I am unable to
+Another thing that I should point out is that in the Rocq code, I am unable to
 make arguments using commutative diagrams.  Because this document is supposed to
-mirror the Coq code, I will not be using commutative diagrams here either.  This
-is not to say that I prefer not using commutative diagrams.  It's just that not
-using them makes this document a better representation of the Coq code.
+mirror the Rocq code, I will not be using commutative diagrams here either.
+This is not to say that I prefer not using commutative diagrams.  It's just that
+not using them makes this document a better representation of the Rocq code.
 
-A quick note on the order here: In the Coq code, functors and natural
+A quick note on the order here: In the Rocq code, functors and natural
 transformations are defined the moment after categories are.  That's because
 it's helpful to have categories be objects in the category of categories, to
 have functors be both the morphisms there and the objects in the category of
@@ -33,7 +33,7 @@ functors, and to have natural transformations be the morphisms in the category
 of functors.  By defining these notions first, they can be used as the
 definition of categories, functors, and natural transformations, allowing for
 similar notation to be used for all of them.  However, here we don't have to
-worry about making sure Coq will know what categories are objects are in, so
+worry about making sure Rocq will know what categories are objects are in, so
 I'll present things in a different order here.  Instead, I will define
 categories and several of the notions that are definable with just categories,
 then functors and their notions after that, and then natural transformations.
@@ -807,7 +807,7 @@ Throughout this section, let $C$ be a category and $A$ and $B$ be objects.
 \end{class}
 
 Note that the notation for products here is $A \prod B$, not $A \times B$.  This
-is mainly because I wanted to reserve $\times$ for other uses in the Coq code,
+is mainly because I wanted to reserve $\times$ for other uses in the Rocq code,
 and I'm just being consistent here.
 
 While the above definition of products is snappy, it can be confusing having to

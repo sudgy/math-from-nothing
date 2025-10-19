@@ -1,7 +1,7 @@
 (** This file contains the three logical axioms and the direct consequences of
 those axioms. *)
 
-Require Export coq_logic.
+Require Export rocq_logic.
 Require Export Setoid.
 
 Set Implicit Arguments.

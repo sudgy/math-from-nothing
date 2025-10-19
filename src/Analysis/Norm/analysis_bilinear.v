@@ -144,7 +144,7 @@ Proof.
 Qed.
 
 (** This is using (V1 * V2) → V3 instead of V1 → V2 → V3 so that we can say
-things like "This bilinear function is continuous" and Coq will automatically
+things like "This bilinear function is continuous" and Rocq will automatically
 know what we are talking about.
 *)
 Record bilinear_map := make_bilinear_map {

@@ -1,4 +1,4 @@
-(** Basic types, like sum and product types.  While these are in the Coq
+(** Basic types, like sum and product types.  While these are in the Rocq
 standard library, I prefer defining as much as I can on my own. *)
 
 Require Import base_logic.

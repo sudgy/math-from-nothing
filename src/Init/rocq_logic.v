@@ -1,13 +1,14 @@
-(** This file contains all of Coq's default logical types and a few basic things
-related to them.  Because we pass -nois to the compiler, we need to explicitly
-export these things to be able to use them.  However, I don't like a lot of the
-names that Coq made for them, so I give a bunch of new names here. *)
+(** This file contains all of Rocq's default logical types and a few basic
+things related to them.  Because we pass -nois to the compiler, we need to
+explicitly export these things to be able to use them.  However, I don't like a
+lot of the names that Rocq made for them, so I give a bunch of new names here.
+*)
 
-Require Coq.Init.Logic.
-Require Export Coq.Init.Ltac.
-Require Export Coq.Init.Notations.
+Require Corelib.Init.Logic.
+Require Export Corelib.Init.Ltac.
+Require Export Corelib.Init.Notations.
 (* Even though we never use it, not requiring this makes things break? *)
-Require Utf8.
+(*Require Utf8.*)
 
 Require Export notations.
 
@@ -16,26 +17,26 @@ Set Implicit Arguments.
 Notation "x → y" := (forall (_ : x), y)
   (at level 99, y at level 200, right associativity): type_scope.
 
-Notation "'equal'" := Coq.Init.Logic.eq.
-Export Coq.Init.Logic (ex).
-Export Coq.Init.Logic (ex_intro).
-Export Coq.Init.Logic (iff).
-Export Coq.Init.Logic (not).
-Export Coq.Init.Logic (inhabits).
-Export Coq.Init.Logic (inhabited).
-Export Coq.Init.Logic (all).
-Export Coq.Init.Logic (f_equal).
-Export Coq.Init.Logic (f_equal2).
-Export Coq.Init.Logic (f_equal3).
-Export Coq.Init.Logic (f_equal4).
+Notation "'equal'" := Corelib.Init.Logic.eq.
+Export Corelib.Init.Logic (ex).
+Export Corelib.Init.Logic (ex_intro).
+Export Corelib.Init.Logic (iff).
+Export Corelib.Init.Logic (not).
+Export Corelib.Init.Logic (inhabits).
+Export Corelib.Init.Logic (inhabited).
+Export Corelib.Init.Logic (all).
+Export Corelib.Init.Logic (f_equal).
+Export Corelib.Init.Logic (f_equal2).
+Export Corelib.Init.Logic (f_equal3).
+Export Corelib.Init.Logic (f_equal4).
 
-Export Coq.Init.Logic (True).
-Definition true := Coq.Init.Logic.I.
-Export Coq.Init.Logic (False).
-Export Coq.Init.Logic (False_rect).
+Export Corelib.Init.Logic (True).
+Definition true := Corelib.Init.Logic.I.
+Export Corelib.Init.Logic (False).
+Export Corelib.Init.Logic (False_rect).
 
-Export Coq.Init.Logic (and).
-Notation "'make_and'" := Coq.Init.Logic.conj.
+Export Corelib.Init.Logic (and).
+Notation "'make_and'" := Corelib.Init.Logic.conj.
 Notation "A ∧ B" := (and A B).
 
 Section Conjunction.
@@ -54,9 +55,9 @@ Section Conjunction.
 
 End Conjunction.
 
-Export Coq.Init.Logic (or).
-Notation "'make_lor'" := Coq.Init.Logic.or_introl.
-Notation "'make_ror'" := Coq.Init.Logic.or_intror.
+Export Corelib.Init.Logic (or).
+Notation "'make_lor'" := Corelib.Init.Logic.or_introl.
+Notation "'make_ror'" := Corelib.Init.Logic.or_intror.
 Notation "A ∨ B" := (or A B) : type_scope.
 
 Notation "A ↔ B" := (iff A B) : type_scope.

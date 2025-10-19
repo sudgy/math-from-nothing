@@ -1,4 +1,4 @@
-Require Export Coq.Classes.Init.
+Require Export Corelib.Classes.Init.
 Require Export logic.
 Require Export tactics.
 Require Export tlc_tactics.

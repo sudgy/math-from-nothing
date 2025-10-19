@@ -60,7 +60,7 @@ Proof.
     apply topology_finer_antisym.
     -   apply subbasis_finer.
         intros S [a S_eq].
-        destruct S_eq; subst S.
+        destruct S_eq as [eq|eq]; destruct eq.
         +   apply inf_open_interval_open.
         +   apply open_inf_interval_open.
     -   apply basis_finer.

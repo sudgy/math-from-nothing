@@ -1,6 +1,6 @@
 # math-from-nothing
-This is a project that I work on in my spare time where I am developing mathematics in Coq.  There are several things that set this project apart from others:
-- The point of the project is for me to prove everything myself from the ground up.  Thus, the project hardly uses any automation or the Coq standard library.  The standard library is used just for the very basic logical definitions and for the Setoid library (although I don't even use any custom Setoids).
+This is a project that I work on in my spare time where I am developing mathematics in Rocq.  There are several things that set this project apart from others:
+- The point of the project is for me to prove everything myself from the ground up.  Thus, the project hardly uses any automation or the Rocq standard library.  The standard library is used just for the very basic logical definitions and for the Setoid library (although I don't even use any custom Setoids).
 - The project includes three axioms: functional extensionality, propositional extensionality, and indefinite description.  These axioms imply predicate extensionality, proof irrelevance, and the strong law of the excluded middle.  This provides a classical and non-constructive way of doing math.
 - Other than these three axioms, nothing is ever assumed or admitted.
 

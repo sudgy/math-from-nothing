@@ -571,7 +571,7 @@ Proof.
     intros A B x Ax Bx a_con B_con.
     rewrite <- union_pair.
     apply (connected_union_connected _ x).
-    intros S [SA|SB]; subst; split; assumption.
+    intros S [eq|eq]; destruct eq; split; assumption.
 Qed.
 
 Theorem sub_separation_closure_disjoint : ∀ X A B, sub_separation X A B →

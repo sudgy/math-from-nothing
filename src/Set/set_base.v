@@ -27,7 +27,7 @@ Fixpoint list_to_set {U} l (a : U) :=
     | list_add x l' => x = a ∨ list_to_set l' a
     end.
 Arguments list_to_set : simpl never.
-(** Note that is not curly brackets!  That gets Coq confused with notations
+(** Note that is not curly brackets!  That gets Rocq confused with notations
 like {A} + {B}.  Instead, these are U+2774 and U+2775, MEDIUM LEFT/RIGHT CURLY
 BRACKET ORNAMENT *)
 Notation "❴ x , .. , y ❵"
