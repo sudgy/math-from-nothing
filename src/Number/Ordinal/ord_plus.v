@@ -119,12 +119,6 @@ Qed.
 Theorem ord_le_ex : ∀ α β, α ≤ β → ∃ γ, α + γ = β.
 Proof.
     intros α β leq.
-    classic_case (α = β) as [eq|neq].
-    {
-        subst.
-        exists 0.
-        apply plus_rid.
-    }
     pose proof (well_ordered (λ γ, β ≤ α + γ)) as γ_ex.
     prove_parts γ_ex.
     {
@@ -133,12 +127,11 @@ Proof.
     }
     destruct γ_ex as [γ [γ_lt γ_least]].
     exists γ.
+    apply antisym; [>|exact γ_lt].
     induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
-    -   rewrite plus_rid in γ_lt.
-        pose proof (antisym leq γ_lt).
-        contradiction.
-    -   apply antisym; [>|apply γ_lt].
-        order_contradiction ltq.
+    -   rewrite plus_rid.
+        exact leq.
+    -   order_contradiction ltq.
         rewrite ord_plus_suc in ltq.
         rewrite ord_lt_suc_le in ltq.
         specialize (γ_least _ ltq).
@@ -146,16 +139,11 @@ Proof.
         apply γ_least.
         apply ord_lt_suc.
     -   rewrite ord_plus_lim by exact γ_lim.
-        apply ord_sup_eq.
-        +   intros [δ δ_lt]; cbn.
-            order_contradiction contr.
-            specialize (γ_least _ (land contr)).
-            contradiction (irrefl _ (le_lt_trans γ_least δ_lt)).
-        +   intros x x_gt.
-            apply (trans γ_lt).
-            rewrite ord_plus_lim by exact γ_lim.
-            apply ord_sup_least.
-            exact x_gt.
+        apply ord_sup_least.
+        intros [δ δ_lt]; cbn.
+        order_contradiction contr.
+        specialize (γ_least _ (land contr)).
+        contradiction (irrefl _ (le_lt_trans γ_least δ_lt)).
 Qed.
 
 Theorem ord_lt_ex : ∀ α β, α < β → ∃ γ, 0 ≠ γ ∧ α + γ = β.
@@ -250,6 +238,16 @@ Proof.
     -   classic_contradiction neq.
         apply (ord_nz_rplus _ _ neq) in eq.
         exact eq.
+Qed.
+
+Theorem ord_plus_lim_lim : ∀ α β, lim_ord β → lim_ord (α + β).
+Proof.
+    intros α β β_lim.
+    pose proof (ord_plus_normal α).
+    pose proof (ord_plus_homo_le α).
+    pose proof (ord_plus_homo_inj α).
+    apply (ord_normal_lim_ord (plus α)).
+    exact β_lim.
 Qed.
 
 Close Scope ord_scope.

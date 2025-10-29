@@ -69,20 +69,9 @@ Proof.
     classic_case (α = β) as [eq|neq].
     1: subst; apply refl.
     rewrite (ord_normal (f := f) β β_lim).
-    apply (trans (f_increasing α)).
     apply ord_sup_other_leq.
     intros ε ε_ge.
-    assert (ord_suc α < β) as ltq2.
-    {
-        split.
-        -   rewrite ord_le_suc_lt.
-            split; assumption.
-        -   intros contr.
-            apply (rand β_lim).
-            exists α.
-            symmetry; exact contr.
-    }
-    exact (ε_ge [ord_suc α|ltq2]).
+    apply (ε_ge [α|make_and leq neq]).
 Qed.
 
 Local Instance make_ord_normal_le : HomomorphismLe f.
@@ -103,21 +92,6 @@ Proof.
         apply f_increasing.
     -   exact (make_ord_normal_lt_lim α β β_lim leq).
 Qed.
-(*
-Global Instance make_ord_normal_inj : Injective f.
-Proof.
-    split.
-    intros α β eq.
-    destruct (trichotomy α β) as [[ltq|eq']|ltq].
-    -   apply make_ord_normal_lt in ltq.
-        rewrite eq in ltq.
-        contradiction (irrefl _ ltq).
-    -   exact eq'.
-    -   apply make_ord_normal_lt in ltq.
-        rewrite eq in ltq.
-        contradiction (irrefl _ ltq).
-Qed.
-*)
 
 End MakeOrdNormal.
 
@@ -263,6 +237,32 @@ Proof.
         intros α.
         apply homo_le.
         apply ord_sup_ge.
+Qed.
+
+Theorem ord_normal_lim_ord : ∀ α, lim_ord α → lim_ord (f α).
+Proof.
+    intros α α_lim.
+    rewrite (ord_normal α α_lim).
+    split.
+    -   intros contr.
+        pose proof (ord_sup_ge α (λ β, f [β|])) as leq; cbn in leq.
+        specialize (leq [ord_suc 0|ord_lim_gt α α_lim]); cbn in leq.
+        rewrite <- contr in leq.
+        apply (trans (ord_normal_le (ord_suc 0))) in leq.
+        rewrite <- nlt_le in leq.
+        contradiction (leq (ord_lt_suc _)).
+    -   intros [β eq].
+        pose proof (ord_sup_suc _ _ _ eq) as [[δ δ_lt] δ_eq].
+        cbn in δ_eq.
+        apply (ord_lim_suc _ _ α_lim) in δ_lt.
+        pose proof (ord_sup_ge α (λ δ, f [δ|]) [ord_suc δ|δ_lt]) as leq.
+        rewrite eq in leq.
+        cbn in leq.
+        rewrite <- δ_eq in leq.
+        rewrite <- nlt_le in leq.
+        apply leq.
+        apply homo_lt.
+        apply ord_lt_suc.
 Qed.
 
 (* The fixed point lemma requires facts about ω which will be proved in ord_nat.

@@ -281,6 +281,16 @@ Proof.
             exact IHl.
 Qed.
 
+Theorem list_prop_filter_empty {U} : ∀ (l : list U) S,
+    list_prop (λ x, ¬S x) l → list_filter S l = [].
+Proof.
+    intros l S l_nin.
+    list_prop_induction l l_nin as a a_nin IHl.
+    -   apply list_filter_end.
+    -   rewrite (list_filter_add_nin a_nin).
+        exact IHl.
+Qed.
+
 Theorem list_prop_in {U} : ∀ (a : list U) S, list_prop S a →
     ∀ x, in_list a x → S x.
 Proof.

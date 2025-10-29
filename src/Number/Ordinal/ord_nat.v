@@ -166,6 +166,36 @@ Proof.
     exact n_eq.
 Qed.
 
+Theorem ord_lim_omega : ∀ α, lim_ord α → ω ≤ α.
+Proof.
+    intros α α_lim.
+    order_contradiction ltq.
+    apply ord_lt_ω in ltq as [n eq]; subst.
+    nat_destruct n.
+    -   apply (land α_lim).
+        symmetry; apply homo_zero.
+    -   apply (rand α_lim).
+        exists (from_nat n).
+        apply nat_ord_suc.
+Qed.
+
+Theorem ord_lim_pow_lim : ∀ α β, 0 ≠ β → lim_ord α → lim_ord (α ^ β).
+Proof.
+    intros α β β_nz α_lim.
+    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+    -   contradiction.
+    -   rewrite ord_pow_suc.
+        apply ord_mult_lim_lim.
+        +   apply ord_pow_nz.
+            apply α_lim.
+        +   exact α_lim.
+    -   apply ord_pow_lim_lim.
+        +   apply (lt_le_trans2 (ord_lim_omega α α_lim)).
+            rewrite <- homo_one.
+            apply nat_lt_ω.
+        +   exact β_lim.
+Qed.
+
 Theorem nat_plus_omega : ∀ n : nat, from_nat n + ω = ω.
 Proof.
     intros n.
@@ -177,6 +207,56 @@ Proof.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- homo_plus.
     apply nat_lt_ω.
+Qed.
+
+Theorem ord_plus_eat : ∀ α β, α * ω ≤ β → α + β = β.
+Proof.
+    intros α β leq.
+    apply ord_le_ex in leq as [γ γ_eq]; subst β.
+    rewrite plus_assoc.
+    rewrite <- (mult_rid α) at 1.
+    rewrite <- ldist.
+    rewrite <- homo_one.
+    rewrite nat_plus_omega.
+    reflexivity.
+Qed.
+
+Theorem ord_plus_no_eat : ∀ α β, β < α * ω → β < α + β.
+Proof.
+    intros α β ltq.
+    assert (∃ n, β < α * from_nat n) as n_ex.
+    {
+        classic_contradiction contr.
+        rewrite not_ex in contr.
+        rewrite <- nle_lt in ltq.
+        apply ltq; clear ltq.
+        rewrite ord_mult_lim by exact ω_lim.
+        apply ord_sup_least.
+        intros [n' n'_lt]; cbn.
+        apply ord_lt_ω in n'_lt as [n n_eq]; subst n'.
+        rewrite <- nlt_le.
+        apply contr.
+    }
+    apply well_ordered in n_ex as [n [n_gt n_least]].
+    nat_destruct n.
+    {
+        rewrite homo_zero in n_gt.
+        rewrite mult_ranni in n_gt.
+        contradiction (not_neg n_gt).
+    }
+    assert (α * from_nat n ≤ β) as β_gt.
+    {
+        order_contradiction ltq'.
+        apply n_least in ltq'.
+        contradiction (irrefl _ (le_lt_trans ltq' (nat_lt_suc _))).
+    }
+    apply le_lplus with α in β_gt.
+    apply (lt_le_trans2 β_gt).
+    applys_eq n_gt.
+    rewrite from_nat_suc.
+    rewrite ldist.
+    rewrite mult_rid.
+    reflexivity.
 Qed.
 
 Theorem nat_mult_omega : ∀ n : nat, 0 ≠ n → from_nat n * ω = ω.
@@ -218,6 +298,91 @@ Proof.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- from_nat_ord_pow.
     apply nat_lt_ω.
+Qed.
+
+Theorem ord_nat_plus_limit : ∀ n α, lim_ord α → from_nat n + α = α.
+Proof.
+    intros n α α_lim.
+    apply ord_plus_eat.
+    nat_destruct n.
+    -   rewrite homo_zero.
+        rewrite mult_lanni.
+        apply all_pos.
+    -   rewrite nat_mult_omega by apply nat_zero_suc.
+        apply ord_lim_omega.
+        exact α_lim.
+Qed.
+
+Theorem ord_lim_plus_nat : ∀ α, ∃ α' n, ¬suc_ord α' ∧ α = α' + from_nat n.
+Proof.
+    intros α.
+    pose proof (ord_near_lim α) as [n [β [β_nsuc α_eq]]].
+    exists β, n.
+    split; [>exact β_nsuc|].
+    subst α.
+    nat_induction n.
+    -   rewrite (homo_zero (f := from_nat)), plus_rid.
+        reflexivity.
+    -   cbn.
+        rewrite IHn.
+        rewrite nat_ord_suc, ord_plus_suc.
+        reflexivity.
+Qed.
+
+Theorem ord_lim_omega_times : ∀ α, lim_ord α → ∃ β, α = ω * β.
+Proof.
+    intros α α_lim.
+    pose proof (ord_div α ω (land ω_lim)) as [γ [δ [α_eq δ_lt]]].
+    subst α.
+    exists γ.
+    apply ord_lt_ω in δ_lt as [n eq]; subst.
+    nat_destruct n.
+    -   rewrite homo_zero.
+        apply plus_rid.
+    -   exfalso; apply (rand α_lim).
+        exists (ω * γ + from_nat n).
+        rewrite nat_ord_suc.
+        apply ord_plus_suc.
+Qed.
+
+Theorem ord_nat_mult_limit : ∀ n α, 0 ≠ n → lim_ord α → from_nat n * α = α.
+Proof.
+    intros n α n_nz α_lim.
+    apply ord_lim_omega_times in α_lim as [α' eq]; subst α.
+    rewrite mult_assoc.
+    rewrite nat_mult_omega by exact n_nz.
+    reflexivity.
+Qed.
+
+Theorem ord_nz_one_plus : ∀ α, 0 ≠ α → ∃ β, α = 1 + β.
+Proof.
+    intros α α_nz.
+    classic_case (α < ω) as [α_lt|α_ge].
+    -   apply ord_lt_ω in α_lt as [n eq]; subst α.
+        nat_destruct n.
+        +   rewrite (homo_zero (f := from_nat)) in α_nz.
+            contradiction.
+        +   exists (from_nat n).
+            rewrite <- from_nat_suc.
+            reflexivity.
+    -   rewrite nlt_le in α_ge.
+        exists α.
+        apply ord_le_ex in α_ge as [γ eq]; subst α.
+        rewrite plus_assoc.
+        rewrite <- homo_one.
+        rewrite nat_plus_omega.
+        reflexivity.
+Qed.
+
+Theorem nat_mult_omega_pow :
+    ∀ n α, 0 ≠ α → from_nat (nat_suc n) * ω ^ α = ω ^ α.
+Proof.
+    intros n α α_nz.
+    pose proof (ord_nz_one_plus α α_nz) as [β eq]; subst α.
+    rewrite ord_pow_plus, ord_pow_one.
+    rewrite mult_assoc.
+    rewrite nat_mult_omega by apply nat_zero_suc.
+    reflexivity.
 Qed.
 
 Definition aleph (α : ord) := aleph' (ω + α).

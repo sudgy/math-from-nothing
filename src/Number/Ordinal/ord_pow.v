@@ -198,6 +198,15 @@ Proof.
             exact ε_ge.
 Qed.
 
+Theorem ord_pow_2 : ∀ α, α ^ 2 = α * α.
+Proof.
+    intros α.
+    rewrite <- ord_suc_zero_one at 2.
+    rewrite ord_plus_suc, plus_rid.
+    rewrite ord_pow_suc, ord_pow_one.
+    reflexivity.
+Qed.
+
 Theorem ord_pow_le : ∀ α β γ : ord, 0 ≠ α → β ≤ γ → α ^ β ≤ α ^ γ.
 Proof.
     intros α β γ α_nz leq.
@@ -334,6 +343,35 @@ Proof.
         apply β_gt.
     -   apply ord_pow_homo_inj.
         exact β_gt.
+Qed.
+
+Theorem ord_pow_lim_lim : ∀ α β, 1 < α → lim_ord β → lim_ord (α ^ β).
+Proof.
+    intros α β α_gt β_lim.
+    pose proof α_gt as α_nz.
+    apply (trans ord_one_pos) in α_nz.
+    apply rand in α_nz.
+    pose proof (ord_pow_normal α α_nz).
+    pose proof (ord_pow_homo_le α α_nz).
+    pose proof (ord_pow_homo_inj α α_gt).
+    apply (ord_normal_lim_ord (ord_pow α)).
+    exact β_lim.
+Qed.
+
+Theorem ord_pow_self_le : ∀ α β, 0 ≠ β → α ≤ α ^ β.
+Proof.
+    intros α β β_nz.
+    classic_case (0 = α) as [α_z|α_nz].
+    -   subst α.
+        rewrite zero_ord_pow by exact β_nz.
+        apply refl.
+    -   rewrite <- (ord_pow_one α) at 1.
+        apply ord_pow_le.
+        +   exact α_nz.
+        +   rewrite <- ord_suc_zero_one.
+            rewrite ord_le_suc_lt.
+            apply all_pos2.
+            exact β_nz.
 Qed.
 
 Close Scope ord_scope.

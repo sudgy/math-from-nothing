@@ -137,6 +137,31 @@ Proof.
     apply α_pos.
 Qed.
 
+Theorem ord_sup_suc : ∀ β γ f, ord_sup β f = ord_suc γ → ∃ δ, f δ = ord_suc γ.
+Proof.
+    intros β γ f eq.
+    classic_contradiction contr.
+    rewrite not_ex in contr.
+    assert (ord_sup β f = γ) as eq2.
+    {
+        apply ord_sup_eq.
+        -   intros [δ δ_lt].
+            rewrite <- ord_lt_suc_le.
+            split.
+            +   rewrite <- eq.
+                apply ord_sup_ge.
+            +   apply contr.
+        -   intros ε ε_ge.
+            apply (trans (ord_le_suc γ)).
+            rewrite <- eq.
+            apply ord_sup_least.
+            exact ε_ge.
+    }
+    rewrite eq2 in eq.
+    apply ord_lt_suc in eq.
+    exact eq.
+Qed.
+
 Definition suc_ord (α : ord) := ∃ β, α = ord_suc β.
 
 Definition lim_ord (α : ord) := 0 ≠ α ∧ ¬suc_ord α.
@@ -160,6 +185,18 @@ Theorem zero_not_suc_ord : ¬suc_ord 0.
 Proof.
     intros [α contr].
     contradiction (ord_zero_suc _ contr).
+Qed.
+
+Theorem ord_lim_suc : ∀ α β, lim_ord β → α < β → ord_suc α < β.
+Proof.
+    intros α β β_lim αβ.
+    split.
+    -   rewrite ord_le_suc_lt.
+        exact αβ.
+    -   intros eq.
+        apply (rand β_lim).
+        exists α.
+        symmetry; exact eq.
 Qed.
 
 Theorem ord_sup_f_zero : ∀ β f, 0 = ord_sup β f → ∀ α, 0 = f α.

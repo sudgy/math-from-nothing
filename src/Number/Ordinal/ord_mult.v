@@ -368,4 +368,27 @@ Proof.
         contradiction (irrefl _ (le_lt_trans α_ge ε_ltq)).
 Qed.
 
+Theorem ord_mult_lim_lim : ∀ α β, 0 ≠ α → lim_ord β → lim_ord (α * β).
+Proof.
+    intros α β α_nz β_lim.
+    pose proof (ord_mult_normal α).
+    pose proof (ord_mult_homo_le α).
+    pose proof (ord_mult_homo_inj α α_nz).
+    apply (ord_normal_lim_ord (mult α)).
+    exact β_lim.
+Qed.
+
+Theorem ord_lim_mult_lim : ∀ α β, 0 ≠ β → lim_ord α → lim_ord (α * β).
+Proof.
+    intros α β β_nz α_lim.
+    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+    -   contradiction.
+    -   rewrite ord_mult_suc.
+        apply ord_plus_lim_lim.
+        exact α_lim.
+    -   apply ord_mult_lim_lim.
+        +   apply α_lim.
+        +   exact β_lim.
+Qed.
+
 Close Scope ord_scope.

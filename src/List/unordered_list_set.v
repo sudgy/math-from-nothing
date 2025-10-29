@@ -251,6 +251,18 @@ Proof.
     apply list_prop_filter.
 Qed.
 
+Theorem ulist_prop_filter_empty {U} : ∀ (l : ulist U) S,
+    ulist_prop (λ x, ¬S x) l → ulist_filter S l = ⟦⟧.
+Proof.
+    intros l S.
+    equiv_get_value l.
+    unfold ulist_prop, ulist_filter, ulist_end; equiv_simpl.
+    intros l_nin.
+    apply list_prop_filter_empty in l_nin.
+    rewrite l_nin.
+    apply refl.
+Qed.
+
 Theorem ulist_prop_in {U} : ∀ (a : ulist U) S, ulist_prop S a →
     ∀ x, in_ulist a x → S x.
 Proof.

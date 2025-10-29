@@ -224,6 +224,25 @@ Proof.
     exact eq.
 Qed.
 
+Theorem list_backwards_induction {U} : ∀ S : list U → Prop,
+    S [] → (∀ a l, S l → S (l + [a])) → ∀ l, S l.
+Proof.
+    intros S S_end S_ind l.
+    remember (list_reverse l) as l'.
+    revert l Heql'.
+    induction l' as [|a l' IHl']; intros.
+    -   apply list_reverse_end_eq in Heql'.
+        subst.
+        exact S_end.
+    -   apply (f_equal list_reverse) in Heql'.
+        rewrite list_reverse_reverse in Heql'.
+        rewrite list_reverse_add in Heql'.
+        subst l.
+        apply S_ind.
+        apply IHl'.
+        symmetry; apply list_reverse_reverse.
+Qed.
+
 Theorem list_image_end {A B : Type} : ∀ (f : A → B), list_image f [] = [].
 Proof.
     reflexivity.
