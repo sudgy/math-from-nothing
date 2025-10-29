@@ -72,3 +72,21 @@ Proof.
     specialize (ge_ex α) as [α' leq].
     exact (trans leq (ε_ge α')).
 Qed.
+
+Theorem ord_sup_union : ∀ α f,
+    initial_segment (ord_sup α f) = ⋃ (λ S, ∃ β, S = initial_segment (f β)).
+Proof.
+    intros α f.
+    unfold initial_segment in *.
+    apply antisym.
+    -   intros β β_lt.
+        apply ord_sup_in in β_lt as [γ β_lt].
+        exists (initial_segment (f γ)).
+        split.
+        +   exists γ.
+            reflexivity.
+        +   exact β_lt.
+    -   intros β [S [[γ S_eq] Sγ]]; subst S.
+        apply (lt_le_trans Sγ).
+        apply ord_sup_ge.
+Qed.

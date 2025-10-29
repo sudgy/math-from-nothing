@@ -124,6 +124,7 @@
 ./src/Number/Ordinal/ord_pow.v
 ./src/Number/Ordinal/ord_nat.v
 ./src/Number/Ordinal/ord_cnf.v
+./src/Number/Ordinal/ord_countable.v
 ./src/Number/Ordinal/ord.v
 
 ./src/Number/Cardinal/card_base.v
