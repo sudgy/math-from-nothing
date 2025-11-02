@@ -61,10 +61,10 @@ Proof.
     contradiction (irrefl _ (le_lt_trans leq ltq)).
 Qed.
 
-Theorem ord_sup_leq_sup : ∀ β f g,
-    (∀ α, ∃ α', f α ≤ g α') → ord_sup β f ≤ ord_sup β g.
+Theorem ord_sup_leq_sup : ∀ β1 β2 f g,
+    (∀ α, ∃ α', f α ≤ g α') → ord_sup β1 f ≤ ord_sup β2 g.
 Proof.
-    intros β f g ge_ex.
+    intros β1 β2 f g ge_ex.
     apply ord_sup_least.
     intros α.
     apply ord_sup_other_leq.

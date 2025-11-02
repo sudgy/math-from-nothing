@@ -452,67 +452,6 @@ Proof.
         exact β_lt.
 Qed.
 
-Section OrdNormalFixed.
-
-Context (f : ord → ord) `{
-    @HomomorphismLt _ _ _ _ f,
-    @HomomorphismLe _ _ _ _ f,
-    Injective _ _ f,
-    OrdNormal f
-}.
-
-Theorem ord_normal_fixed : ∀ α, ∃ β, α ≤ β ∧ f β = β.
-Proof.
-    intros α.
-    pose (a n := iterate_func f n α).
-    pose (β := ord_sup ω (λ n, a (ex_val (ord_lt_ω _ [|n])))).
-    exists β.
-    split.
-    -   unfold β.
-        pose (z := [0|nat_lt_ω 0] : set_type (λ α, α < ω)).
-        apply (trans2 (ord_sup_ge ω _ z)).
-        rewrite_ex_val n n_eq.
-        cbn in n_eq.
-        rewrite <- homo_zero in n_eq.
-        apply inj in n_eq.
-        subst n.
-        apply refl.
-    -   unfold β.
-        rewrite (ord_normal_sup f ω).
-        2: {
-            rewrite <- homo_zero.
-            apply nat_lt_ω.
-        }
-        apply antisym.
-        +   apply ord_sup_least.
-            intros [n n_lt].
-            pose proof n_lt as n_lt'.
-            apply ord_lt_ω in n_lt' as [m n_eq].
-            cbn.
-            apply ord_sup_other_leq.
-            intros ε ε_ge.
-            rewrite_ex_val n1 n1_eq.
-            specialize (ε_ge [from_nat (nat_suc n1)|nat_lt_ω (nat_suc n1)]).
-            rewrite_ex_val n2 n2_eq; cbn in *.
-            apply inj in n2_eq.
-            subst n2.
-            rewrite n_eq in n1_eq.
-            apply inj in n1_eq.
-            subst n1.
-            exact ε_ge.
-        +   apply ord_sup_least.
-            intros [n n_lt]; cbn.
-            apply ord_sup_other_leq.
-            intros ε ε_ge.
-            rewrite_ex_val n1 n1_eq.
-            apply (trans2 (ε_ge [from_nat n1|nat_lt_ω n1])).
-            rewrite_ex_val n2 n2_eq; cbn in *.
-            apply inj in n2_eq; subst n2.
-            apply (ord_normal_le f).
-Qed.
-
-End OrdNormalFixed.
-
 
 Theorem ord_plus_comm_false : ¬PlusComm ord.
 Proof.

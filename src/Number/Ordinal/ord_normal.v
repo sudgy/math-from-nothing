@@ -1,8 +1,11 @@
 Require Import init.
 
 Require Export ord_limit.
+
 Require Import nat.
 Require Import set_induction.
+Require Import well_order.
+Require Import list.
 
 Theorem ord_normal_recursion : ∀
     (f0 : ord)
@@ -25,6 +28,14 @@ Qed.
 Class OrdNormal (f : ord → ord) := {
     ord_normal : ∀ α, lim_ord α → f α = ord_sup α (λ β, f [β|])
 }.
+
+Record OrdNormalFunction := make_ord_normal_function {
+    ord_normal_f :> ord → ord;
+    ord_normal_normal : OrdNormal ord_normal_f;
+    ord_normal_homo_le : HomomorphismLe ord_normal_f;
+    ord_normal_inj : Injective ord_normal_f;
+}.
+Global Existing Instances ord_normal_normal ord_normal_homo_le ord_normal_inj.
 
 Section MakeOrdNormal.
 
@@ -265,7 +276,71 @@ Proof.
         apply ord_lt_suc.
 Qed.
 
-(* The fixed point lemma requires facts about ω which will be proved in ord_nat.
- * Thus, the fixed point lemma will be there instead. *)
-
 End OrdNormal.
+
+Theorem ord_normal_family_fixed :
+    ∀ (α : ord) (f : set_type (λ δ, δ < α) → OrdNormalFunction),
+    ∀ β, ∃ γ, β ≤ γ ∧ (∀ δ, f δ γ = γ).
+Proof.
+    intros A f β.
+    equiv_get_value A.
+    pose (lA := make_ord_type
+        (list A) (@wo_le (list A)) (@wo_antisym (list A)) (@wo_wo (list A))).
+    pose (g := ord_type_init_ord lA).
+    pose proof (ord_type_init_ord_bij lA : Bijective g).
+    pose proof (ord_type_init_ord_bij A).
+    pose (g' := bij_inv g).
+    pose proof (bij_inv_bij g : Bijective g').
+    pose (h (δ : set_type (λ δ, δ < to_ord lA)) :=
+        rfold (λ h1 h2, (λ x, h1 (h2 x))) identity
+        (list_image (λ a, ord_normal_f (f (ord_type_init_ord A a))) (g' δ)) β).
+    exists (ord_sup _ h).
+    split.
+    -   pose proof (sur g' []) as [e e_eq].
+        assert (β = h e) as eq.
+        {
+            unfold h.
+            rewrite e_eq.
+            rewrite list_image_end, rfold_end.
+            reflexivity.
+        }
+        rewrite eq.
+        apply ord_sup_ge.
+    -   intros δ.
+        rewrite (ord_normal_sup (f δ)).
+        2: {
+            unfold zero; cbn.
+            rewrite neq_sym.
+            equiv_simpl.
+            intros [i].
+            contradiction (i []).
+        }
+        apply antisym; apply ord_sup_leq_sup.
+        +   intros α.
+            pose (αl := g' α).
+            pose proof (sur (ord_type_init_ord A) δ) as [fA A_eq].
+            pose (f_αl := fA ꞉ αl).
+            exists (g f_αl).
+            unfold f_αl, αl.
+            unfold h.
+            unfold g' at 2.
+            rewrite bij_inv_eq1.
+            rewrite list_image_add, rfold_add.
+            rewrite A_eq.
+            apply refl.
+        +   intros α.
+            exists α.
+            apply (ord_normal_le (f δ)).
+Qed.
+
+Theorem ord_normal_fixed : ∀ (f : OrdNormalFunction) β, ∃ γ, β ≤ γ ∧ f γ = γ.
+Proof.
+    intros f β.
+    pose proof (ord_normal_family_fixed (ord_suc 0) (λ _, f) β)
+        as [γ [γ_ge γ_eq]].
+    exists γ.
+    split; [>exact γ_ge|].
+    apply γ_eq.
+    exists 0.
+    apply ord_lt_suc.
+Qed.
