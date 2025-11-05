@@ -44,7 +44,7 @@ Proof.
 Qed.
 
 Theorem ord_pow_lim : ∀ α β, 0 ≠ α → lim_ord β →
-    α ^ β = ord_sup β (λ δ, α ^ [δ|]).
+    α ^ β = ord_f_sup β (λ δ, α ^ [δ|]).
 Proof.
     intros α β α_nz β_lim.
     unfold ord_pow.
@@ -62,7 +62,7 @@ Proof.
     -   rewrite ord_pow_suc.
         apply mult_nz; assumption.
     -   rewrite (ord_pow_lim _ β α_nz β_lim).
-        pose proof (ord_sup_ge β (λ δ, α ^ [δ|]) [0|all_pos2 (land β_lim)])
+        pose proof (ord_f_sup_ge β (λ δ, α ^ [δ|]) [0|all_pos2 (land β_lim)])
             as leq; cbn in leq.
         rewrite ord_pow_zero in leq.
         rewrite <- ord_suc_zero_one in leq.
@@ -154,12 +154,12 @@ Qed.
 
 Theorem ord_pow_sup : ∀ α, 0 ≠ α →
     ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
-    α ^ (ord_sup β g) = ord_sup β (λ δ, α ^ g δ).
+    α ^ (ord_f_sup β g) = ord_f_sup β (λ δ, α ^ g δ).
 Proof.
     intros α α_nz.
     unfold ord_pow.
     rewrite (if_false α_nz).
-    apply ord_normal_sup.
+    apply ord_normal_f_sup.
     -   pose proof (ord_pow_homo_le α α_nz) as pow_le.
         unfold ord_pow in pow_le.
         rewrite (if_false α_nz) in pow_le.
@@ -188,7 +188,7 @@ Proof.
         rewrite IHα.
         apply mult_lid.
     -   rewrite (ord_pow_lim _ α ord_not_trivial α_lim).
-        apply ord_sup_eq.
+        apply ord_f_sup_eq.
         +   intros [δ δ_lt]; cbn.
             rewrite IHα by exact δ_lt.
             apply refl.
@@ -241,7 +241,7 @@ Proof.
         rewrite (ord_pow_lim α γ α_nz γ_lim).
         rewrite (ord_pow_sup _ α_nz) by apply γ_lim.
         rewrite ord_mult_sup by apply γ_lim.
-        apply ord_sup_f_eq.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHγ δ δ_lt).
 Qed.
@@ -276,7 +276,7 @@ Proof.
         rewrite (ord_pow_lim _ γ (ord_pow_nz α β α_nz) γ_lim).
         rewrite (ord_mult_lim _ γ γ_lim).
         rewrite (ord_pow_sup _ α_nz) by apply γ_lim.
-        apply ord_sup_f_eq.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHγ δ δ_lt).
 Qed.
@@ -325,9 +325,9 @@ Proof.
         }
         rewrite (ord_pow_lim α γ α_nz γ_lim).
         rewrite (ord_pow_lim β γ β_nz γ_lim).
-        apply ord_sup_least.
+        apply ord_f_sup_least.
         intros [δ δ_lt]; cbn.
-        apply ord_sup_other_leq.
+        apply ord_f_sup_other_leq.
         intros ε ε_ge.
         specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
         specialize (IHγ δ δ_lt).

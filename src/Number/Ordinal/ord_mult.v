@@ -24,7 +24,7 @@ Proof.
     apply make_ord_normal_suc.
 Qed.
 
-Theorem ord_mult_lim : ∀ α β, lim_ord β → α * β = ord_sup β (λ δ, α * [δ|]).
+Theorem ord_mult_lim : ∀ α β, lim_ord β → α * β = ord_f_sup β (λ δ, α * [δ|]).
 Proof.
     intros α β β_lim.
     unfold mult; cbn.
@@ -71,10 +71,10 @@ Qed.
 
 Theorem ord_mult_sup : ∀ α,
     ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
-    α * (ord_sup β g) = ord_sup β (λ δ, α * g δ).
+    α * (ord_f_sup β g) = ord_f_sup β (λ δ, α * g δ).
 Proof.
     intros α.
-    apply ord_normal_sup.
+    apply ord_normal_f_sup.
     -   apply ord_mult_homo_le.
     -   apply ord_mult_normal.
 Qed.
@@ -89,7 +89,7 @@ Proof.
         rewrite IHα.
         apply plus_lid.
     -   rewrite (ord_mult_lim _ α α_lim).
-        apply ord_sup_eq.
+        apply ord_f_sup_eq.
         +   intros [β β_lt]; cbn.
             rewrite IHα by exact β_lt.
             apply refl.
@@ -181,8 +181,8 @@ Proof.
         rewrite ord_suc_plus_one.
         reflexivity.
     -   rewrite (ord_mult_lim _ α α_lim).
-        rewrite <- (ord_sup_lim_eq α α_lim) at 2.
-        apply ord_sup_f_eq.
+        rewrite <- (ord_f_sup_lim_eq α α_lim) at 2.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHα _ δ_lt).
 Qed.
@@ -209,7 +209,7 @@ Proof.
     -   rewrite <- not_not, not_or.
         intros [α_nz β_nz].
         rewrite ord_mult_lim in eq by exact β_lim.
-        pose proof (ord_sup_ge β (λ δ, α * [δ|])) as leq.
+        pose proof (ord_f_sup_ge β (λ δ, α * [δ|])) as leq.
         rewrite <- eq in leq.
         specialize (leq [ord_suc 0|ord_lim_gt β β_lim]); cbn in leq.
         rewrite ord_mult_suc in leq.
@@ -244,7 +244,7 @@ Proof.
         rewrite (ord_mult_lim _ γ γ_lim).
         rewrite ord_mult_sup by apply γ_lim.
         rewrite ord_plus_sup by apply γ_lim.
-        apply ord_sup_f_eq.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHγ δ δ_lt).
 Qed.
@@ -262,7 +262,7 @@ Proof.
         reflexivity.
     -   do 2 rewrite (ord_mult_lim _ γ γ_lim).
         rewrite ord_mult_sup by apply γ_lim.
-        apply ord_sup_f_eq.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHγ δ δ_lt).
 Qed.
@@ -291,9 +291,9 @@ Proof.
     -   do 2 rewrite ord_mult_suc.
         apply le_lrplus; assumption.
     -   do 2 rewrite ord_mult_lim by exact γ_lim.
-        apply ord_sup_other_leq.
+        apply ord_f_sup_other_leq.
         intros ε ε_ge.
-        apply ord_sup_least.
+        apply ord_f_sup_least.
         intros [δ δ_lt]; cbn.
         specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
         specialize (IHγ δ δ_lt).
@@ -353,7 +353,7 @@ Proof.
     -   assert (β * ε ≤ α) as α_ge.
         {
             rewrite ord_mult_lim by exact ε_lim.
-            apply ord_sup_least.
+            apply ord_f_sup_least.
             intros [ζ ζ_lt]; cbn.
             rewrite <- ord_le_suc_lt in ζ_lt.
             order_contradiction ltq.

@@ -137,20 +137,21 @@ Proof.
     apply α_pos.
 Qed.
 
-Theorem ord_sup_suc : ∀ β γ f, ord_sup β f = ord_suc γ → ∃ δ, f δ = ord_suc γ.
+Theorem ord_sup_suc : ∀ S Ss γ, ord_sup S Ss = ord_suc γ → S (ord_suc γ).
 Proof.
-    intros β γ f eq.
+    intros S Ss γ eq.
     classic_contradiction contr.
-    rewrite not_ex in contr.
-    assert (ord_sup β f = γ) as eq2.
+    assert (ord_sup S Ss = γ) as eq2.
     {
         apply ord_sup_eq.
-        -   intros [δ δ_lt].
+        -   intros δ Sδ.
             rewrite <- ord_lt_suc_le.
             split.
             +   rewrite <- eq.
                 apply ord_sup_ge.
-            +   apply contr.
+                exact Sδ.
+            +   intro; subst.
+                contradiction.
         -   intros ε ε_ge.
             apply (trans (ord_le_suc γ)).
             rewrite <- eq.
@@ -160,6 +161,15 @@ Proof.
     rewrite eq2 in eq.
     apply ord_lt_suc in eq.
     exact eq.
+Qed.
+
+Theorem ord_f_sup_suc : ∀ β f γ,
+    ord_f_sup β f = ord_suc γ → ∃ δ, f δ = ord_suc γ.
+Proof.
+    intros β f γ eq.
+    pose proof (ord_sup_suc _ _ _ eq) as [δ δ_eq].
+    exists δ.
+    symmetry; exact δ_eq.
 Qed.
 
 Definition suc_ord (α : ord) := ∃ β, α = ord_suc β.
@@ -199,18 +209,39 @@ Proof.
         symmetry; exact eq.
 Qed.
 
-Theorem ord_sup_f_zero : ∀ β f, 0 = ord_sup β f → ∀ α, 0 = f α.
+Theorem ord_sup_zero : ∀ S Ss, 0 = ord_sup S Ss → ∀ α, S α → 0 = α.
+Proof.
+    intros S Ss S_eq α Sα.
+    apply all_neg_eq.
+    rewrite S_eq.
+    apply ord_sup_ge.
+    exact Sα.
+Qed.
+
+Theorem ord_f_sup_zero : ∀ β f, 0 = ord_f_sup β f → ∀ α, 0 = f α.
 Proof.
     intros β f f_z α.
     apply all_neg_eq.
     rewrite f_z.
-    apply ord_sup_ge.
+    apply ord_f_sup_ge.
 Qed.
 
-Theorem ord_sup_constant : ∀ α β, 0 ≠ β → ord_sup β (λ _, α) = α.
+Theorem ord_sup_singleton : ∀ α, ord_sup ❴α❵ (singleton_small α) = α.
+Proof.
+    intros α.
+    apply ord_sup_eq.
+    -   intros γ γ_eq.
+        rewrite γ_eq.
+        apply refl.
+    -   intros ε ε_ge.
+        apply ε_ge.
+        reflexivity.
+Qed.
+
+Theorem ord_f_sup_constant : ∀ α β, 0 ≠ β → ord_f_sup β (λ _, α) = α.
 Proof.
     intros α β β_nz.
-    apply ord_sup_eq.
+    apply ord_f_sup_eq.
     -   intros γ.
         apply refl.
     -   intros ε ε_ge.
@@ -328,29 +359,34 @@ Proof.
         symmetry; exact eq.
 Qed.
 
-Theorem ord_sup_lim_eq : ∀ α, lim_ord α → ord_sup α (λ δ, [δ|]) = α.
+Theorem ord_sup_lim_eq : ∀ α, lim_ord α → ord_sup _ (ord_initial_small α) = α.
 Proof.
     intros α α_lim.
-    apply antisym.
-    -   apply ord_sup_least.
-        intros [β β_lt].
-        apply β_lt.
-    -   apply ord_sup_other_leq.
-        intros ε ε_ge.
+    apply ord_sup_eq.
+    -   intros δ δ_lt.
+        apply δ_lt.
+    -   intros ε ε_ge.
         order_contradiction ltq.
-        rewrite <- ord_le_suc_lt in ltq.
-        assert (ord_suc ε ≠ α) as neq.
-        {
-            intros eq.
-            apply (rand α_lim).
-            exists ε.
-            symmetry; exact eq.
-        }
-        specialize (ε_ge [ord_suc ε|make_and ltq neq]).
-        cbn in ε_ge.
+        apply (ord_lim_suc _ _ α_lim) in ltq.
+        specialize (ε_ge _ ltq).
         rewrite <- nlt_le in ε_ge.
         apply ε_ge.
         apply ord_lt_suc.
+Qed.
+
+Theorem ord_f_sup_lim_eq : ∀ α, lim_ord α → ord_f_sup α (λ δ, [δ|]) = α.
+Proof.
+    intros α α_lim.
+    rewrite <- (ord_sup_lim_eq α α_lim) at 2.
+    unfold ord_f_sup.
+    apply ord_sup_set_eq.
+    intros β.
+    split.
+    -   intros [γ β_eq]; subst.
+        exact [|γ].
+    -   intros ltq.
+        exists [β|ltq].
+        reflexivity.
 Qed.
 
 Theorem ord_recursion {X} : ∀

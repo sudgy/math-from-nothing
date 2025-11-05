@@ -202,7 +202,7 @@ Proof.
     apply antisym.
     2: apply ord_le_self_lplus.
     rewrite ord_plus_lim by exact ω_lim.
-    apply ord_sup_least.
+    apply ord_f_sup_least.
     intros [α α_lt]; cbn.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- homo_plus.
@@ -231,7 +231,7 @@ Proof.
         rewrite <- nle_lt in ltq.
         apply ltq; clear ltq.
         rewrite ord_mult_lim by exact ω_lim.
-        apply ord_sup_least.
+        apply ord_f_sup_least.
         intros [n' n'_lt]; cbn.
         apply ord_lt_ω in n'_lt as [n n_eq]; subst n'.
         rewrite <- nlt_le.
@@ -269,7 +269,7 @@ Proof.
         exact n_nz.
     }
     rewrite ord_mult_lim by exact ω_lim.
-    apply ord_sup_least.
+    apply ord_f_sup_least.
     intros [α α_lt]; cbn.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- homo_mult.
@@ -293,7 +293,7 @@ Proof.
         apply (inj_zero from_nat).
         exact n_nz.
     }
-    apply ord_sup_least.
+    apply ord_f_sup_least.
     intros [α α_lt]; cbn.
     apply ord_lt_ω in α_lt as [m eq]; subst.
     rewrite <- from_nat_ord_pow.

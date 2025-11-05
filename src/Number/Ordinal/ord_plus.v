@@ -25,7 +25,7 @@ Proof.
     apply make_ord_normal_suc.
 Qed.
 
-Theorem ord_plus_lim : ∀ α β, lim_ord β → α + β = ord_sup β (λ δ, α + [δ|]).
+Theorem ord_plus_lim : ∀ α β, lim_ord β → α + β = ord_f_sup β (λ δ, α + [δ|]).
 Proof.
     intros α β β_lim.
     unfold plus; cbn.
@@ -62,10 +62,10 @@ Qed.
 
 Theorem ord_plus_sup : ∀ α,
     ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
-    α + (ord_sup β g) = ord_sup β (λ δ, α + g δ).
+    α + (ord_f_sup β g) = ord_f_sup β (λ δ, α + g δ).
 Proof.
     intros α.
-    apply ord_normal_sup.
+    apply ord_normal_f_sup.
     -   apply ord_plus_homo_le.
     -   apply ord_plus_normal.
 Qed.
@@ -80,8 +80,8 @@ Proof.
         rewrite IHα.
         reflexivity.
     -   rewrite (ord_plus_lim _ _ α_lim).
-        rewrite <- (ord_sup_lim_eq α α_lim) at 2.
-        apply ord_sup_f_eq.
+        rewrite <- (ord_f_sup_lim_eq α α_lim) at 2.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         exact (IHα δ δ_lt).
 Qed.
@@ -139,7 +139,7 @@ Proof.
         apply γ_least.
         apply ord_lt_suc.
     -   rewrite ord_plus_lim by exact γ_lim.
-        apply ord_sup_least.
+        apply ord_f_sup_least.
         intros [δ δ_lt]; cbn.
         order_contradiction contr.
         specialize (γ_least _ (land contr)).
@@ -166,7 +166,7 @@ Proof.
         apply ord_zero_suc in contr.
         exact contr.
     -   rewrite ord_plus_lim in contr by exact β_lim.
-        pose proof (ord_sup_ge β (λ δ, α + [δ|])) as leq.
+        pose proof (ord_f_sup_ge β (λ δ, α + [δ|])) as leq.
         rewrite <- contr in leq.
         specialize (leq [ord_suc 0|ord_lim_gt β β_lim]).
         cbn in leq.
@@ -200,7 +200,7 @@ Proof.
         reflexivity.
     -   do 2 rewrite (ord_plus_lim _ γ γ_lim).
         rewrite (ord_plus_sup _ _ _ (land γ_lim)).
-        apply ord_sup_f_eq.
+        apply ord_f_sup_f_eq.
         intros [δ δ_lt]; cbn.
         apply IHγ.
         exact δ_lt.

@@ -2,172 +2,207 @@ Require Import init.
 
 Require Export ord_nat.
 Require Import set_induction.
+Require Import list.
 
-Lemma ord_family_derivative_ex :
-    ∀ (α : ord) (f : set_type (λ δ, δ < α) → OrdNormalFunction) (β : ord)
-    (g : set_type (λ δ, δ < β) → ord),
-    ∃ γ, (∀ δ, f δ γ = γ) ∧ (∀ δ, g δ < γ).
+Definition ord_family_derivative_base {X} (S : X → Prop) (Ss : small S)
+    (f : set_type S → OrdNormalFunction) : ord → ord :=
+    make_ord_normal
+        (ord_normal_family_fixed S Ss f 0)
+        (λ α gα, ord_normal_family_fixed S Ss f (ord_suc gα)).
+
+Lemma ord_family_derivative_base_zero {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ord_family_derivative_base S Ss f 0 =
+    ord_normal_family_fixed S Ss f 0.
 Proof.
-    intros α f β g.
-    pose proof (ord_normal_family_fixed α f (ord_suc (ord_sup β g)))
-        as [γ [γ_geq γ_eq]].
-    exists γ.
-    split; [>exact γ_eq|].
-    rewrite ord_le_suc_lt in γ_geq.
-    intros δ.
-    apply (le_lt_trans2 γ_geq).
-    apply ord_sup_ge.
+    intros S Ss f.
+    apply make_ord_normal_zero.
 Qed.
 
-Definition ord_family_derivative_base
-    (α : ord) (f : set_type (λ δ, δ < α) → OrdNormalFunction) : ord → ord :=
-    ex_val (transfinite_recursion ord
-    (λ β g, ex_val (well_ordered _ (ord_family_derivative_ex α f β g)))).
-
-Lemma ord_family_derivative_base_fixed :
-    ∀ α (f : set_type (λ δ, δ < α) → OrdNormalFunction) δ β,
-    f δ (ord_family_derivative_base α f β) = ord_family_derivative_base α f β.
+Lemma ord_family_derivative_base_suc {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ∀ α, ord_family_derivative_base S Ss f (ord_suc α) =
+    ord_normal_family_fixed S Ss f
+        (ord_suc (ord_family_derivative_base S Ss f α)).
 Proof.
-    intros α f δ β.
-    unfold ord_family_derivative_base.
-    rewrite_ex_val g g_eq.
-    specialize (g_eq β).
-    rewrite_ex_val γ [[γ_eq γ_gt] γ_least].
-    rewrite g_eq.
-    apply γ_eq.
+    intros S Ss f.
+    apply make_ord_normal_suc.
 Qed.
 
-Lemma ord_family_derivative_base_gt :
-    ∀ α (f : set_type (λ δ, δ < α) → OrdNormalFunction) β,
-    ∀ δ, δ < β →
-    ord_family_derivative_base α f δ < ord_family_derivative_base α f β.
+Lemma ord_family_derivative_normal {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    OrdNormal (ord_family_derivative_base S Ss f).
 Proof.
-    intros α f β δ ltq.
-    unfold ord_family_derivative_base.
-    rewrite_ex_val g g_eq.
-    specialize (g_eq β).
-    rewrite_ex_val γ [[γ_eq γ_gt] γ_least].
-    rewrite g_eq.
-    exact (γ_gt [δ|ltq]).
+    intros S Ss f.
+    apply make_ord_normal_lim.
 Qed.
 
-Lemma ord_family_derivative_base_least :
-    ∀ α (f : set_type (λ δ, δ < α) → OrdNormalFunction) β,
-    ∀ γ, (∀ δ, f δ γ = γ) → (∀ δ, δ < β → ord_family_derivative_base α f δ < γ)→
-    ord_family_derivative_base α f β ≤ γ.
+Lemma ord_family_derivative_base_increasing {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ∀ α, ord_family_derivative_base S Ss f α <
+         ord_family_derivative_base S Ss f (ord_suc α).
 Proof.
-    intros α f β γ γ_eq γ_gt.
-    unfold ord_family_derivative_base in *.
-    rewrite_ex_val g g_eq.
-    specialize (g_eq β).
-    rewrite_ex_val δ [[δ_eq δ_gt] δ_least].
-    rewrite g_eq.
-    apply δ_least.
-    split; [>exact γ_eq|].
-    intros ε.
-    apply γ_gt.
-    exact [|ε].
+    intros S Ss f α.
+    rewrite ord_family_derivative_base_suc.
+    apply (lt_le_trans2 (ord_normal_family_fixed_leq _ _ _ _)).
+    apply ord_lt_suc.
 Qed.
 
-Lemma ord_family_derivative_normal :
-    ∀ α f, OrdNormal (ord_family_derivative_base α f).
+Lemma ord_family_derivative_le {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    HomomorphismLe (ord_family_derivative_base S Ss f).
 Proof.
-    intros α f.
-    split.
-    intros γ γ_lim.
-    apply antisym.
-    -   apply ord_family_derivative_base_least.
-        +   intros δ.
-            rewrite (ord_normal_sup (f δ)) by apply γ_lim.
-            apply ord_sup_f_eq.
-            intros x.
-            apply ord_family_derivative_base_fixed.
-        +   intros δ δ_lt.
-            pose proof (ord_lt_suc δ) as ltq.
-            apply (ord_family_derivative_base_gt α f) in ltq.
-            apply (lt_le_trans ltq).
-            apply (ord_lim_suc _ _ γ_lim) in δ_lt.
-            apply (trans2 (ord_sup_ge _ _ [ord_suc δ|δ_lt])).
-            apply refl.
-    -   apply ord_sup_least.
-        intros [β β_lt]; cbn.
-        apply ord_family_derivative_base_gt.
-        exact β_lt.
+    intros S Ss f.
+    apply make_ord_normal_le.
+    intros α.
+    apply ord_family_derivative_base_increasing.
 Qed.
 
-Lemma ord_family_derivative_le : ∀ α f,
-    HomomorphismLe (ord_family_derivative_base α f).
+Lemma ord_family_derivative_inj {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    Injective (ord_family_derivative_base S Ss f).
 Proof.
-    intros α f.
-    split.
-    intros a b leq.
-    classic_case (a = b) as [eq|neq].
-    -   subst; apply refl.
-    -   apply ord_family_derivative_base_gt.
-        split; assumption.
-Qed.
-
-Lemma ord_family_derivative_inj : ∀ α f,
-    Injective (ord_family_derivative_base α f).
-Proof.
-    intros α f.
-    split.
-    intros a b eq.
-    destruct (trichotomy a b) as [[ltq|eq']|ltq].
-    -   apply (ord_family_derivative_base_gt α f) in ltq.
-        rewrite eq in ltq; contradiction (irrefl _ ltq).
-    -   exact eq'.
-    -   apply (ord_family_derivative_base_gt α f) in ltq.
-        rewrite eq in ltq; contradiction (irrefl _ ltq).
+    intros S Ss f.
+    apply make_ord_normal_inj.
+    intros α.
+    apply ord_family_derivative_base_increasing.
 Qed.
 
 Definition ord_family_derivative
-    (α : ord) (f : set_type (λ δ, δ < α) → OrdNormalFunction)
+    {X} (S : X → Prop) Ss (f : set_type S → OrdNormalFunction)
     : OrdNormalFunction :=
     make_ord_normal_function
-        (ord_family_derivative_base α f)
-        (ord_family_derivative_normal α f)
-        (ord_family_derivative_le α f)
-        (ord_family_derivative_inj α f).
+        (ord_family_derivative_base S Ss f)
+        (ord_family_derivative_normal S Ss f)
+        (ord_family_derivative_le S Ss f)
+        (ord_family_derivative_inj S Ss f).
 Arguments ord_family_derivative : simpl never.
 
-Theorem ord_family_derivative_fixed :
-    ∀ α (f : set_type (λ δ, δ < α) → OrdNormalFunction) δ β,
-    f δ (ord_family_derivative α f β) = ord_family_derivative α f β.
+Theorem ord_family_derivative_zero {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ord_family_derivative S Ss f 0 =
+    ord_normal_family_fixed S Ss f 0.
 Proof.
-    apply ord_family_derivative_base_fixed.
+    apply ord_family_derivative_base_zero.
 Qed.
 
-Theorem ord_family_derivative_least :
-    ∀ α (f : set_type (λ δ, δ < α) → OrdNormalFunction) β,
-    ∀ γ, (∀ δ, f δ γ = γ) → (∀ δ, δ < β → ord_family_derivative α f δ < γ) →
-    ord_family_derivative α f β ≤ γ.
+Theorem ord_family_derivative_suc {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ∀ α, ord_family_derivative S Ss f (ord_suc α) =
+    ord_normal_family_fixed S Ss f
+        (ord_suc (ord_family_derivative S Ss f α)).
 Proof.
-    apply ord_family_derivative_base_least.
+    apply ord_family_derivative_base_suc.
 Qed.
 
-Definition ord_derivative (f : OrdNormalFunction) :=
-    ord_family_derivative 1 (λ _, f).
+Theorem ord_family_derivative_lim {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ∀ γ, lim_ord γ → ord_family_derivative S Ss f γ =
+    ord_f_sup γ (λ δ, ord_family_derivative S Ss f [δ|]).
+Proof.
+    intros S Ss f.
+    apply ord_normal.
+Qed.
+
+Theorem ord_family_derivative_fixed {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ∀ x α,
+    f x (ord_family_derivative S Ss f α) = ord_family_derivative S Ss f α.
+Proof.
+    intros S Ss f x α.
+    induction α as [|α IHα | α α_lim IHα] using ord_induction.
+    -   rewrite ord_family_derivative_zero.
+        apply ord_normal_family_fixed_eq.
+    -   rewrite ord_family_derivative_suc.
+        apply ord_normal_family_fixed_eq.
+    -   rewrite ord_family_derivative_lim by exact α_lim.
+        rewrite (ord_normal_sup (f x)).
+        2: {
+            exists (ord_family_derivative S Ss f 0).
+            exists [0|all_pos2 (land α_lim)].
+            reflexivity.
+        }
+        apply antisym; apply ord_sup_leq_sup.
+        +   intros β' [β [[[δ δ_lt]]]]; subst; cbn.
+            exists (ord_family_derivative S Ss f δ).
+            split.
+            *   exists [δ|δ_lt].
+                reflexivity.
+            *   rewrite IHα by exact δ_lt.
+                apply refl.
+        +   intros β' [[δ δ_lt]]; subst β'; cbn.
+            exists (ord_family_derivative S Ss f δ).
+            split; [>|apply refl].
+            unfold image_under.
+            exists (ord_family_derivative S Ss f δ).
+            split.
+            *   exists [δ|δ_lt].
+                reflexivity.
+            *   symmetry; apply IHα.
+                exact δ_lt.
+Qed.
+
+Theorem ord_family_derivative_lim_eq {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    ∀ γ, lim_ord γ → ord_family_derivative S Ss f γ =
+    ord_normal_family_fixed S Ss f
+        (ord_f_sup γ (λ δ, ord_family_derivative S Ss f [δ|])).
+Proof.
+    intros S Ss f γ γ_lim.
+    apply antisym.
+    -   rewrite ord_family_derivative_lim by exact γ_lim.
+        apply ord_f_sup_least.
+        intros [δ δ_lt]; cbn.
+        apply (trans2 (ord_normal_family_fixed_leq _ _ _ _)).
+        apply (trans2 (ord_f_sup_ge _ _ [δ|δ_lt])).
+        apply refl.
+    -   apply ord_normal_family_fixed_least.
+        +   rewrite ord_family_derivative_lim by exact γ_lim.
+            apply refl.
+        +   intros x.
+            apply ord_family_derivative_fixed.
+Qed.
+
+Definition ord_derivative (f : OrdNormalFunction) : OrdNormalFunction :=
+    ord_family_derivative _ (ord_initial_small (ord_suc 0)) (λ _, f).
 Arguments ord_derivative : simpl never.
+
+Theorem ord_derivative_zero : ∀ f, ord_derivative f 0 = ord_normal_fixed f 0.
+Proof.
+    intros f.
+    apply ord_family_derivative_zero.
+Qed.
+
+Theorem ord_derivative_suc : ∀ f α,
+    ord_derivative f (ord_suc α) =
+    ord_normal_fixed f (ord_suc (ord_derivative f α)).
+Proof.
+    intros f α.
+    apply ord_family_derivative_suc.
+Qed.
+
+Theorem ord_derivative_lim : ∀ f γ, lim_ord γ →
+    ord_derivative f γ = ord_f_sup γ (λ δ, ord_derivative f [δ|]).
+Proof.
+    intros f.
+    apply ord_family_derivative_lim.
+Qed.
 
 Theorem ord_derivative_fixed : ∀ (f : OrdNormalFunction) α,
     f (ord_derivative f α) = ord_derivative f α.
 Proof.
     intros f α.
     unfold ord_derivative.
-    rewrite <- (ord_family_derivative_fixed) at 2; [>reflexivity|].
+    rewrite <- ord_family_derivative_fixed at 2; [>reflexivity|].
     exists 0.
-    apply ord_one_pos.
+    apply ord_lt_suc.
 Qed.
 
-Theorem ord_derivative_least : ∀ (f : OrdNormalFunction) α,
-    ∀ β, f β = β → (∀ δ, δ < α → ord_derivative f δ < β) →
-    ord_derivative f α ≤ β.
+Theorem ord_derivative_lim_eq : ∀ f γ, lim_ord γ →
+    ord_derivative f γ =
+    ord_normal_fixed f
+        (ord_f_sup γ (λ δ, ord_derivative f [δ|])).
 Proof.
-    intros f α β β_eq β_gt.
-    apply ord_family_derivative_least.
-    -   intro; exact β_eq.
-    -   intros δ δ_lt.
-        apply β_gt.
-        exact δ_lt.
+    intros f.
+    apply ord_family_derivative_lim_eq.
 Qed.

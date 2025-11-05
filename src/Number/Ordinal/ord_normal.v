@@ -13,10 +13,10 @@ Theorem ord_normal_recursion : ∀
     ∃ g : ord → ord,
         (g 0 = f0) ∧
         (∀ α, g (ord_suc α) = f_suc α (g α)) ∧
-        (∀ α, lim_ord α → g α = ord_sup α (λ β, g [β|])).
+        (∀ α, lim_ord α → g α = ord_f_sup α (λ β, g [β|])).
 Proof.
     intros f0 f_suc.
-    pose (f_lim α (h : set_type (λ β, β < α) → ord) := ord_sup α h).
+    pose (f_lim α (h : set_type (λ β, β < α) → ord) := ord_f_sup α h).
     exists (ex_val (ord_recursion f0 f_suc f_lim)).
     rewrite_ex_val g [g0 [g_suc g_lim]].
     split; [>exact g0|].
@@ -26,7 +26,7 @@ Proof.
 Qed.
 
 Class OrdNormal (f : ord → ord) := {
-    ord_normal : ∀ α, lim_ord α → f α = ord_sup α (λ β, f [β|])
+    ord_normal : ∀ α, lim_ord α → f α = ord_f_sup α (λ β, f [β|])
 }.
 
 Record OrdNormalFunction := make_ord_normal_function {
@@ -36,6 +36,19 @@ Record OrdNormalFunction := make_ord_normal_function {
     ord_normal_inj : Injective ord_normal_f;
 }.
 Global Existing Instances ord_normal_normal ord_normal_homo_le ord_normal_inj.
+
+Theorem ord_normal_function_eq :
+    ∀ f g : OrdNormalFunction, (∀ α, f α = g α) → f = g.
+Proof.
+    intros [f f_normal f_le f_inj] [g g_normal g_le g_inj] eq.
+    cbn in eq.
+    apply functional_ext in eq.
+    subst g.
+    rewrite (proof_irrelevance f_normal g_normal).
+    rewrite (proof_irrelevance f_le g_le).
+    rewrite (proof_irrelevance f_inj g_inj).
+    reflexivity.
+Qed.
 
 Section MakeOrdNormal.
 
@@ -80,7 +93,7 @@ Proof.
     classic_case (α = β) as [eq|neq].
     1: subst; apply refl.
     rewrite (ord_normal (f := f) β β_lim).
-    apply ord_sup_other_leq.
+    apply ord_f_sup_other_leq.
     intros ε ε_ge.
     apply (ε_ge [α|make_and leq neq]).
 Qed.
@@ -170,84 +183,70 @@ Proof.
     contradiction (irrefl _ (le_lt_trans IHα ltq)).
 Qed.
 
-Theorem ord_normal_sup :
-    ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
-    f (ord_sup β g) = ord_sup β (λ α, f (g α)).
+Theorem ord_normal_sup : ∀ S Ss, (∃ x, S x) →
+    f (ord_sup S Ss) = ord_sup _ (small_image_under f S Ss).
 Proof.
-    intros β g β_nz.
+    intros S Ss S_nempty.
     apply antisym.
-    -   remember (ord_sup β g) as γ.
+    -   remember (ord_sup S Ss) as γ.
         induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
         +   apply ord_sup_other_leq.
             intros ε ε_ge.
-            apply all_pos2 in β_nz.
-            specialize (ε_ge [0|β_nz]).
-            assert (g [0 | β_nz] = 0) as g_eq.
-            {
-                apply antisym; [>|apply all_pos].
-                rewrite Heqγ.
-                apply ord_sup_ge.
-            }
-            rewrite g_eq in ε_ge.
-            exact ε_ge.
-        +   clear IHγ.
-            assert (∃ δ, g δ = ord_suc γ) as [δ δ_eq].
-            {
-                classic_contradiction contr.
-                rewrite not_ex in contr.
-                rewrite Heqγ in contr.
-                assert (ord_sup β g = γ) as γ_eq.
-                {
-                    apply ord_sup_eq.
-                    -   intros [α α_lt].
-                        rewrite <- ord_lt_suc_le.
-                        rewrite Heqγ.
-                        split; [>apply ord_sup_ge|].
-                        apply contr.
-                    -   intros ε ε_ge.
-                        apply ord_sucs_le.
-                        rewrite Heqγ.
-                        apply ord_sup_least.
-                        intros α.
-                        specialize (ε_ge α).
-                        rewrite <- ord_lt_suc_le in ε_ge.
-                        apply ε_ge.
-                }
-                rewrite γ_eq in Heqγ.
-                symmetry in Heqγ.
-                apply ord_lt_suc in Heqγ.
-                exact Heqγ.
-            }
-            rewrite <- δ_eq.
-            apply ord_sup_other_leq.
-            intros ε ε_ge.
             apply ε_ge.
+            exists 0.
+            split; [>|reflexivity].
+            destruct S_nempty as [x Sx].
+            pose proof (ord_sup_zero S Ss Heqγ x Sx); subst x.
+            exact Sx.
+        +   clear IHγ.
+            symmetry in Heqγ; apply ord_sup_suc in Heqγ.
+            apply ord_sup_ge.
+            exists (ord_suc γ).
+            split; [>exact Heqγ | reflexivity].
         +   clear IHγ.
             subst γ.
             rewrite (ord_normal _ γ_lim).
-            apply ord_sup_least.
+            apply ord_f_sup_least.
             intros [α α_lt]; cbn.
-            assert (∃ ζ, α ≤ g ζ) as [ζ α_leq].
-            {
-                classic_contradiction contr.
-                rewrite <- nle_lt in α_lt.
-                apply α_lt.
-                apply ord_sup_least.
-                intros ζ.
-                rewrite not_ex in contr.
-                specialize (contr ζ).
-                rewrite nle_lt in contr.
-                apply contr.
-            }
+            apply ord_sup_in in α_lt as [ζ [Sζ [ζ_ge ζ_neq]]].
             apply ord_sup_other_leq.
             intros ε ε_ge.
-            apply (homo_le (f := f)) in α_leq.
-            apply (trans α_leq).
+            apply (homo_le (f := f)) in ζ_ge.
+            apply (trans ζ_ge).
             apply ε_ge.
+            exists ζ.
+            split; [>exact Sζ|reflexivity].
     -   apply ord_sup_least.
-        intros α.
+        intros α' [α [Sα]]; subst α'.
         apply homo_le.
         apply ord_sup_ge.
+        exact Sα.
+Qed.
+
+Theorem ord_normal_f_sup :
+    ∀ β (g : set_type (λ α, α < β) → ord), 0 ≠ β →
+    f (ord_f_sup β g) = ord_f_sup β (λ α, f (g α)).
+Proof.
+    intros β g β_nz.
+    unfold ord_f_sup.
+    rewrite ord_normal_sup.
+    2: {
+        apply all_pos2 in β_nz.
+        exists (g [0|β_nz]).
+        exists [0|β_nz].
+        reflexivity.
+    }
+    apply ord_sup_set_eq.
+    intros α.
+    split.
+    -   intros [γ' [[γ]]]; subst.
+        exists γ.
+        reflexivity.
+    -   intros [γ]; subst α.
+        exists (g γ).
+        split; [>|reflexivity].
+        exists γ.
+        reflexivity.
 Qed.
 
 Theorem ord_normal_lim_ord : ∀ α, lim_ord α → lim_ord (f α).
@@ -256,17 +255,17 @@ Proof.
     rewrite (ord_normal α α_lim).
     split.
     -   intros contr.
-        pose proof (ord_sup_ge α (λ β, f [β|])) as leq; cbn in leq.
+        pose proof (ord_f_sup_ge α (λ β, f [β|])) as leq; cbn in leq.
         specialize (leq [ord_suc 0|ord_lim_gt α α_lim]); cbn in leq.
         rewrite <- contr in leq.
         apply (trans (ord_normal_le (ord_suc 0))) in leq.
         rewrite <- nlt_le in leq.
         contradiction (leq (ord_lt_suc _)).
     -   intros [β eq].
-        pose proof (ord_sup_suc _ _ _ eq) as [[δ δ_lt] δ_eq].
+        pose proof (ord_f_sup_suc _ _ _ eq) as [[δ δ_lt] δ_eq].
         cbn in δ_eq.
         apply (ord_lim_suc _ _ α_lim) in δ_lt.
-        pose proof (ord_sup_ge α (λ δ, f [δ|]) [ord_suc δ|δ_lt]) as leq.
+        pose proof (ord_f_sup_ge α (λ δ, f [δ|]) [ord_suc δ|δ_lt]) as leq.
         rewrite eq in leq.
         cbn in leq.
         rewrite <- δ_eq in leq.
@@ -278,69 +277,130 @@ Qed.
 
 End OrdNormal.
 
-Theorem ord_normal_family_fixed :
-    ∀ (α : ord) (f : set_type (λ δ, δ < α) → OrdNormalFunction),
-    ∀ β, ∃ γ, β ≤ γ ∧ (∀ δ, f δ γ = γ).
+Section OrdNormalFamily.
+
+Context {X} (S : X → Prop) (S_small : small S)
+    (f : set_type S → OrdNormalFunction) (α : ord).
+
+Definition ord_normal_family_fixed_set (β : ord) :=
+    ∃ l : list (set_type S), β = rfold (λ h1 h2, (λ x, h1 (h2 x))) identity
+        (list_image (λ x, ord_normal_f (f x)) l) α.
+
+Theorem ord_normal_family_fixed_small : small ord_normal_family_fixed_set.
 Proof.
-    intros A f β.
-    equiv_get_value A.
-    pose (lA := make_ord_type
-        (list A) (@wo_le (list A)) (@wo_antisym (list A)) (@wo_wo (list A))).
-    pose (g := ord_type_init_ord lA).
-    pose proof (ord_type_init_ord_bij lA : Bijective g).
-    pose proof (ord_type_init_ord_bij A).
-    pose (g' := bij_inv g).
-    pose proof (bij_inv_bij g : Bijective g').
-    pose (h (δ : set_type (λ δ, δ < to_ord lA)) :=
-        rfold (λ h1 h2, (λ x, h1 (h2 x))) identity
-        (list_image (λ a, ord_normal_f (f (ord_type_init_ord A a))) (g' δ)) β).
-    exists (ord_sup _ h).
+    destruct S_small as [Y [g g_sur]].
+    exists (list Y).
+    assert (∀ l : list Y, ord_normal_family_fixed_set
+        (rfold (λ h1 h2, (λ x, h1 (h2 x))) identity
+        (list_image (λ y, ord_normal_f (f (g y))) l) α)) as l_in.
+    {
+        intros l.
+        exists (list_image g l).
+        rewrite list_image_comp.
+        reflexivity.
+    }
+    exists (λ y, [_|l_in y]).
     split.
-    -   pose proof (sur g' []) as [e e_eq].
-        assert (β = h e) as eq.
-        {
-            unfold h.
-            rewrite e_eq.
-            rewrite list_image_end, rfold_end.
-            reflexivity.
-        }
-        rewrite eq.
-        apply ord_sup_ge.
-    -   intros δ.
-        rewrite (ord_normal_sup (f δ)).
-        2: {
-            unfold zero; cbn.
-            rewrite neq_sym.
-            equiv_simpl.
-            intros [i].
-            contradiction (i []).
-        }
-        apply antisym; apply ord_sup_leq_sup.
-        +   intros α.
-            pose (αl := g' α).
-            pose proof (sur (ord_type_init_ord A) δ) as [fA A_eq].
-            pose (f_αl := fA ꞉ αl).
-            exists (g f_αl).
-            unfold f_αl, αl.
-            unfold h.
-            unfold g' at 2.
-            rewrite bij_inv_eq1.
-            rewrite list_image_add, rfold_add.
-            rewrite A_eq.
-            apply refl.
-        +   intros α.
-            exists α.
-            apply (ord_normal_le (f δ)).
+    intros [y [l y_eq]].
+    exists (list_image (λ x, ex_val (sur g x)) l).
+    apply set_type_eq; cbn.
+    subst y.
+    apply f_equal2; [>|reflexivity].
+    rewrite list_image_comp.
+    induction l as [|x l].
+    -   do 2 rewrite list_image_end.
+        reflexivity.
+    -   do 2 rewrite list_image_add.
+        rewrite IHl.
+        rewrite_ex_val y y_eq.
+        rewrite y_eq.
+        reflexivity.
 Qed.
 
-Theorem ord_normal_fixed : ∀ (f : OrdNormalFunction) β, ∃ γ, β ≤ γ ∧ f γ = γ.
+Definition ord_normal_family_fixed := ord_sup _ ord_normal_family_fixed_small.
+
+Theorem ord_normal_family_fixed_eq : ∀ x,
+    f x ord_normal_family_fixed = ord_normal_family_fixed.
 Proof.
-    intros f β.
-    pose proof (ord_normal_family_fixed (ord_suc 0) (λ _, f) β)
-        as [γ [γ_ge γ_eq]].
-    exists γ.
-    split; [>exact γ_ge|].
-    apply γ_eq.
-    exists 0.
-    apply ord_lt_suc.
+    intros x.
+    unfold ord_normal_family_fixed.
+    rewrite (ord_normal_sup (f x)).
+    2: {
+        exists α.
+        exists [].
+        rewrite list_image_end, rfold_end.
+        reflexivity.
+    }
+    apply antisym; apply ord_sup_leq_sup.
+    -   intros β' [β [β_in]]; subst β'.
+        destruct β_in as [l β_eq].
+        exists (f x β).
+        split; [>|apply refl].
+        exists (x ꞉ l).
+        rewrite β_eq.
+        rewrite list_image_add, rfold_add.
+        reflexivity.
+    -   intros β β_in.
+        exists (f x β).
+        split.
+        +   exists β.
+            split; [>exact β_in | reflexivity].
+        +   apply (ord_normal_le (f x)).
+Qed.
+
+Theorem ord_normal_family_fixed_leq : α ≤ ord_normal_family_fixed.
+Proof.
+    unfold ord_normal_family_fixed.
+    apply ord_sup_ge.
+    exists [].
+    rewrite list_image_end, rfold_end.
+    reflexivity.
+Qed.
+
+Theorem ord_normal_family_fixed_least : ∀ β, α ≤ β → (∀ x, f x β = β) →
+    ord_normal_family_fixed ≤ β.
+Proof.
+    intros β leq β_eq.
+    unfold ord_normal_family_fixed.
+    apply ord_sup_least.
+    intros γ [l γ_eq]; subst γ.
+    induction l as [|x l].
+    -   rewrite list_image_end, rfold_end.
+        exact leq.
+    -   rewrite list_image_add, rfold_add.
+        rewrite <- (β_eq x).
+        apply homo_le.
+        exact IHl.
+Qed.
+
+End OrdNormalFamily.
+
+Definition ord_normal_fixed (f : OrdNormalFunction) α
+    := ord_normal_family_fixed _ (ord_initial_small (ord_suc 0)) (λ _, f) α.
+
+Theorem ord_normal_fixed_eq : ∀ (f : OrdNormalFunction) α,
+    f (ord_normal_fixed f α) = ord_normal_fixed f α.
+Proof.
+    intros f α.
+    unfold ord_normal_fixed.
+    rewrite <- ord_normal_family_fixed_eq at 2.
+    -   reflexivity.
+    -   exists 0.
+        apply ord_lt_suc.
+Qed.
+
+Theorem ord_normal_fixed_leq : ∀ (f : OrdNormalFunction) α,
+    α ≤ ord_normal_fixed f α.
+Proof.
+    intros f α.
+    apply ord_normal_family_fixed_leq.
+Qed.
+
+Theorem ord_normal_fixed_least : ∀ (f : OrdNormalFunction) α,
+    ∀ β, α ≤ β → f β = β → ord_normal_fixed f α ≤ β.
+Proof.
+    intros f α β leq β_eq.
+    apply ord_normal_family_fixed_least.
+    -   exact leq.
+    -   intro; exact β_eq.
 Qed.

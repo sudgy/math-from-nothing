@@ -210,7 +210,7 @@ Proof.
     rewrite <- IHl.
     rewrite plus_assoc.
     do 2 rewrite (ord_mult_lim _ _ ωβ_lim).
-    apply antisym; apply ord_sup_leq_sup.
+    apply antisym; apply ord_f_sup_leq_sup.
     -   intros [δ δ_lt]; cbn.
         pose proof (lt_omega_pow_two δ β δ_lt) as δ2_lt.
         exists [2 * δ|δ2_lt]; cbn.
