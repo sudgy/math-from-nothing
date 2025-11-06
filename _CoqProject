@@ -140,6 +140,7 @@
 ./src/Number/Cardinal/card_set.v
 ./src/Number/Cardinal/card.v
 ./src/Number/Cardinal/card_types.v
+./src/Number/Cardinal/card_list.v
 ./src/Number/Cardinal/card_real_interval.v
 ./src/Number/Cardinal/card_real.v
 
