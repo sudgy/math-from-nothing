@@ -1,11 +1,12 @@
 Require Import init.
 
 Require Export ord_limit.
+Require Export list.
 
 Require Import nat.
 Require Import set_induction.
 Require Import well_order.
-Require Import list.
+Require Import order_minmax.
 
 Theorem ord_normal_recursion : ∀
     (f0 : ord)

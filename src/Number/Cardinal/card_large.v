@@ -214,6 +214,19 @@ Proof.
     -   apply bij_inv_bij.
 Qed.
 
+Theorem small_set_to_card_leq {U} (S : U → Prop) Ss :
+    ∀ X (f : set_type S → X), Injective f → small_set_to_card S Ss ≤ |X|.
+Proof.
+    intros X f f_inj.
+    unfold small_set_to_card.
+    rewrite_ex_val Y [g g_bij].
+    unfold le; equiv_simpl.
+    exists (λ y, f (g y)).
+    apply inj_comp.
+    -   apply g_bij.
+    -   apply f_inj.
+Qed.
+
 Definition aleph'_base (β : ord) (g : set_type (λ x, x < β) → card) :=
     ex_val (well_ordered _
         (card_small_bounded (image g) (ord_initial_image_small β g))).

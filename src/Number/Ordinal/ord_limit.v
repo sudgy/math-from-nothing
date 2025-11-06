@@ -282,6 +282,22 @@ Proof.
         split; assumption.
 Qed.
 
+Theorem ord_destruct :
+    ∀ S : ord → Prop,
+    (S 0) →
+    (∀ α, S (ord_suc α)) →
+    (∀ α, lim_ord α → S α) →
+    ∀ α, S α.
+Proof.
+    intros S S0 S_suc S_lim α.
+    apply ord_induction.
+    -   exact S0.
+    -   intros β IHβ.
+        apply S_suc.
+    -   intros γ γ_lim IHγ.
+        apply (S_lim γ γ_lim).
+Qed.
+
 Theorem ord_near_lim : ∀ α,
     ∃ n β, ¬suc_ord β ∧ iterate_func ord_suc n β = α.
 Proof.

@@ -126,6 +126,7 @@
 ./src/Number/Ordinal/ord_cnf.v
 ./src/Number/Ordinal/ord_countable.v
 ./src/Number/Ordinal/ord_derivative.v
+./src/Number/Ordinal/ord_veblen.v
 ./src/Number/Ordinal/ord.v
 
 ./src/Number/Cardinal/card_base.v
