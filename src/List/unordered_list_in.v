@@ -341,6 +341,14 @@ Proof.
     apply refl.
 Qed.
 
+Theorem ulist_make_unique_single {U} : ∀ a : U, ulist_make_unique ⟦a⟧ = ⟦a⟧.
+Proof.
+    intros a.
+    unfold ulist_make_unique, ulist_add, ulist_end; equiv_simpl.
+    rewrite list_make_unique_single.
+    apply refl.
+Qed.
+
 Theorem ulist_make_unique_in {U} : ∀ l (a : U),
     in_ulist l a ↔ in_ulist (ulist_make_unique l) a.
 Proof.

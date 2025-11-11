@@ -56,6 +56,16 @@ that are not lists will be assumed to be of this type.
     \end{align*}
 \end{definition}
 
+\newcommand{\flatten}[1]{\underline{\overline{#1}}}
+\begin{definition}
+    Let $a$ be a list of lists.  We will define the flattened list $\flatten{a}$
+    recursively:
+    \begin{align*}
+        \flatten{[]} &= [] \\
+        \flatten{x : a} &= x + \flatten a.
+    \end{align*}
+\end{definition}
+
 \begin{instance}
     Define $0 = []$.  Note that we will still use the notation $[]$ instead of
     $0$.
@@ -216,6 +226,23 @@ that are not lists will be assumed to be of this type.
     from the previous theorem.
 \end{proof}
 
+Sometimes, we want to do an induction on a list backwards.  The following
+theorem shows how this can be done:
+
+\begin{theorem} \label{list_backwards_induction}
+    For all sets $S : \L(\U) \to \Prop$, if $[] \in S$ and if $a \in S$ implies
+    $a + [x] \in S$ for all values $x : \U$, then all lists are in $S$.
+\end{theorem}
+\begin{proof}
+    Let $a$ be an arbitrary list.  Let $b = a^{-1}$.  We will do a normal list
+    induction on $b$.  For the base case, when $b = []$, we have $a = []$ as
+    well, and $[]$ is in $S$ by assumption.  Now when $x : b = a^{-1}$, assume
+    that for all $c$ such that $b = c^{-1}$, we have $c \in S$.  We must prove
+    that $a \in S$.  From $x : b = a^{-1}$, we have $a = b^{-1} + [x]$.  By the
+    inductive assumption of the theorem, it suffices to prove that $b^{-1} \in
+    S$.  This follows directly from the inductive hypothesis.
+\end{proof}
+
 \begin{theorem}
     For all $x : \A$, $f([x]) = [f(x)]$.
 \end{theorem}
@@ -294,6 +321,15 @@ that are not lists will be assumed to be of this type.
 \noindent Notice that because $(a : l)$ having unique elements implies that $l$
 has unique elements, when doing induction on a list, it having unique elements
 does not need to be considered as a part of the inductive hypothesis.
+
+\begin{definition}
+    Let $a$ be a list.  We will define the deduplicated list $u(a)$ recursively:
+    \begin{align*}
+        u([]) &= [] \\
+        u(x : a) &= u(a) \text{ if $x \in a$} \\
+        u(x : a) &= x : u(a) \text{ if $x \notin a$.}
+    \end{align*}
+\end{definition}
 
 \begin{theorem}
     For all elements $x$ and $y$, $x \in [y] \leftrightarrow x = y$.
@@ -521,6 +557,60 @@ does not need to be considered as a part of the inductive hypothesis.
     that $f(x) = f(y)$.  Because $f$ is injective, we have $x = y$, but because
     $x \notin a$ and $y \in a$ we have a contradiction.  Thus, $f(x) \notin
     f(a)$, showing that the theorem is true by induction.
+\end{proof}
+
+\begin{theorem} \label{list_make_unique_single}
+    For all values $x$, we have $u([x]) = [x]$.
+\end{theorem}
+\begin{proof}
+    Because $x \notin []$, we have
+    \[
+        u([x]) = x : u([]) = x : [] = [x].
+    \]
+\end{proof}
+
+\begin{theorem} \label{list_make_unique_in}
+    For all lists $a$ and values $x$, $x \in a$ if and only if $x \in u(a)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we have $u(a) = []$
+    as well, so the base case is trivial.  Now assume that $x \in a$ if and only
+    if $x \in u(a)$.  We need to prove that for all values $y$, $x \in (y : a)$
+    if and only if $x \in u(y : a)$.  We will prove the two directions
+    separately.
+
+    To prove that $x \in (y : a)$ implies $x \in u(y : a)$, assume that $x \in y
+    : a$.  This means that either $x = y$ or $x \in a$.  When $x = y$, we have
+    two further cases for when $x \in a$ and when $x \notin a$.  When $x \in a$,
+    we have $x \in u(a) = u(y : a)$ by the inductive hypothesis.  When $x \notin
+    a$, we have $x \in x : u(a) = u(y : a)$.  Either way, when $x = y$, we have
+    $x \in u(y : a)$.  If instead we have $x \in a$, we have $x \in u(a)$ by the
+    inductive hypothesis.  Then if $y \in a$, we have $x \in u(a) = u(y : a)$,
+    and if $y \notin a$, we have $x \in y : u(a) = u(y : a)$.  Either way, when
+    $x \in a$, we have $x \in u(y : a)$.  In all cases, we have $x \in u(y :
+    a)$, so $x \in (y : a)$ implies $x \in u(y : a)$.
+
+    To prove that $x \in u(y : a)$ implies $x \in (y : a)$, assume that $x \in
+    u(y : a)$.  When $y \in a$, we have $x \in u(y : a) = u(a)$, so by the
+    inductive hypothesis we have $x \in a$, so $x \in (y : a)$.  When $y \notin
+    a$, we have $x \in (y : u(a))$, and by the inductive hypothesis this is
+    equivalent to $x \in (y : a)$.  Either way, we have $x \in (y : a)$, so $x
+    \in u(y : a)$ implies $x \in (y : a)$.
+\end{proof}
+
+\begin{theorem} \label{list_make_unique_unique}
+    For all lists $a$, $u(a)$ has unique elements.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, $u(a) = []$ as well,
+    and $[]$ has unique elements.  Now assume that $u(a)$ has unique elements,
+    and let $x$ be an arbitrary value.  When $x \in a$, we have $u(x : a) =
+    u(a)$, so $u(x : a)$ has unique values by the inductive hypothesis.  When $x
+    \notin a$, we have $u(x : a) = x : u(a)$.  Because $x \notin a$, by Theorem
+    \ref{list_make_unique_in}, we have $x \notin u(a)$ as well.  Because $x
+    \notin u(a)$ and $u(a)$ has unique elements by the inductive hypothesis, $x
+    : u(a)$ has unique elements as well.  Either way, $u(x : a)$ has unique
+    elements.
 \end{proof}
 
 \section{Lists and Sets}
@@ -787,6 +877,19 @@ explicitly saying that every value in a list satisfies a predicate).
     S$, so the theorem is true by induction.
 \end{proof}
 
+\begin{theorem} \label{list_prop_filter_empty}
+    For all lists $a$ and sets $S$, if $x \notin S$ for all $x : \U$, then $a^S
+    = []$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  The base case is trivial.  Now
+    assume that $a^S = []$.  Then for any value $x$, we have $x \notin S$ by
+    assumption.  Thus,
+    \[
+        (x : a)^S = a^S = [].
+    \]
+\end{proof}
+
 \begin{theorem} \label{list_prop_in}
     For all lists $a$ and sets $S$, if $a \in S$, then for all $x \in a$, we
     have $x \in S$.
@@ -886,6 +989,15 @@ explicitly saying that every value in a list satisfies a predicate).
             1 \quad \text{If $x = y$} \\
             0 \quad \text{If $x \neq y$}.
         \end{cases}
+    \end{align*}
+\end{definition}
+
+\begin{definition}
+    Let $x$ be a value and $n$ a natural number.  Define the constant list
+    $[x]_n$ recursively on $n$:
+    \begin{align*}
+        [x]_0 &= [] \\
+        [x]_{S(n)} &= x : [x]_n.
     \end{align*}
 \end{definition}
 
@@ -1053,6 +1165,43 @@ explicitly saying that every value in a list satisfies a predicate).
 \begin{proof}
     This follows directly from antisymmetry and Theorems \ref{list_count_unique}
     and \ref{list_count_in}.
+\end{proof}
+
+\begin{theorem} \label{list_constant_one}
+    Let $x : \U$.  Then $[x]_1 = [x]$.
+\end{theorem}
+\begin{proof}
+    \[
+        [x]_1 = x : [x]_0 = x : [] = [x].
+    \]
+\end{proof}
+
+\begin{theorem} \label{list_count_constant}
+    For all $x : \U$ and $n : \N$, we have $|[x]_n| = n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$,
+    \[
+        |[x]_0| = |[]| = 0.
+    \]
+    Now assume that $|[x]_n| = n$.  Then
+    \[
+        |[x]_{S(n)}| = |x : [x]_n| = 1 + [x]_n = 1 + n = S(n).
+    \]
+\end{proof}
+
+\begin{theorem} \label{in_list_constant}
+    For all values $x$ and $y$ in $\U$ and natural numbers $n$, if $y \in
+    [x]_n$, then $x = y$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $y \in [x]_0 = []$ is
+    impossible, so the base case is impossible.  Now assume that if $y \in
+    [x]_n$, then $x = y$.  We must prove that if $y \in [x]_{S(n)}$, then $x =
+    y$.  Because $y \in [x]_{S(n)} = x : [x]_n$, we either have $y = x$ or $y
+    \in [x]_n$.  The first case is directly what we are trying to prove, while
+    the second case is directly the assumption in the inductive hypothesis.
+    Either way, we have $x = y$.
 \end{proof}
 
 \section{Folds}
@@ -1534,6 +1683,42 @@ well-defined.
 \end{proof}
 
 \begin{lemma}
+    For all lists of lists $a$ and $b$, if $a \sim b$, then $\flatten{a} \sim
+    \flatten{b}$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $a$ with the statement ``For all $b$, if
+    $a \sim b$, then $\flatten a \sim \flatten b$.''  When $a = []$, from $[]
+    \sim b$ we have $b = []$ as well, and $\flatten{[]} = \flatten{[]}$.  Now
+    assume that for all $b'$, if $a \sim b'$, then $\flatten a \sim \flatten
+    b'$, and let $x$ be a list with $x : a \sim b$.  We must prove that
+    $\flatten{x : a} \sim \flatten{b}$.  By Theorem \ref{list_perm_split_eq}, we
+    have lists $b_1$ and $b_2$ such that $b = b_1 + x : b_2$.  We now have
+    \begin{align*}
+        x : a &\sim b_1 + x : b_2 \\
+        x : a &\sim x : b_2 + b_1 \\
+        a &\sim b_2 + b_1 \\
+        a &\sim b_1 + b_2 \\
+        \flatten{a} &\sim \flatten{b_1 + b_2} \text{\quad (by the inductive
+            hypothesis)} \\
+        \flatten{a} &\sim \flatten{b_1} + \flatten{b_2} \\
+        \flatten{a} &\sim \flatten{b_2} + \flatten{b_1} \\
+        x + \flatten{a} &\sim x + \flatten{b_2} + \flatten{b_1} \\
+        \flatten{x : a} &\sim \flatten{x : b_2} + \flatten{b_1} \\
+        \flatten{x : a} &\sim \flatten{b_1} + \flatten{x : b_2} \\
+        \flatten{x : a} &\sim \flatten{b_1 + x : b_2} \\
+        \flatten{x : a} &\sim \flatten{b}.
+    \end{align*}
+\end{proof}
+
+Directly making an operation from the previous lemma, we get an operation from
+unordered lists of \textit{ordered} lists to unordered lists, when we want an
+operation from unordored lists of \textit{unordered} lists to unordered lists.
+But we can define the operation we want by taking an unordered list of unordered
+lists, apply the function ${a}$ that extracts a list from an unordered list to
+that list, and then apply the operation produced by the previous lemma.
+
+\begin{lemma}
     Values being in lists is well-defined under permutation of lists.
 \end{lemma}
 \begin{proof}
@@ -1559,6 +1744,27 @@ well-defined.
     c$, we know that $x : d + c$ has unique elements.  By Theorem
     \ref{list_unique_comm}, this means that $c + x : d = b$ has unique elements,
     so the theorem is true by induction.
+\end{proof}
+
+\begin{lemma}
+    The function $u$ making deduplicated lists is well-defined under permutation
+    of lists.
+\end{lemma}
+\begin{proof}
+    Let $a \sim b$.  We must prove that $u(a) \sim u(b)$.  Let $x$ be a value in
+    $\U$.  There will be two cases: when $x \in a$, and when $x \notin a$.
+
+    When $x \in a$, we also have $x \in b$ by Theorem \ref{list_perm_in}.  Then,
+    by Theorem \ref{list_make_unique_in}, we have $x \in u(a)$ and $x \in u(b)$
+    as well.  Furthermore, by Theorem \ref{list_make_unique_unique}, both $u(a)$
+    and $u(b)$ have unique elements.  Thus, by Theorem
+    \ref{list_count_in_unique}, we have $|u(a)|_x = 1 = |u(b)|_x$, showing that
+    $u(a) \sim u(b)$.
+
+    When $x \notin a$, we also have $x \notin b$ by Theorem \ref{list_perm_in}.
+    Then, by Theorem \ref{list_make_unique_in}, we also have $x \notin u(a)$ and
+    $x \notin u(b)$.  By Theorem \ref{list_count_nin}, we have $|u(a)|_x = 0 =
+    |u(b)|_x$, showing that $u(a) \sim u(b)$.
 \end{proof}
 
 \begin{lemma}
@@ -1644,6 +1850,10 @@ well-defined.
     elements $x$, $|a|_x = |b|_x$.  This is precisely the definition of $a \sim
     b$.
 \end{proof}
+
+We don't even need to prove that forming constant lists is well-defined because
+we can just define a constant unordered list to be the equivalence class of a
+constant ordered list.
 
 \begin{lemma}
     The sum of a list is well-defined under permutation of lists.
@@ -1735,6 +1945,15 @@ theorem for lists.
 \end{theorem}
 
 \begin{theorem}
+    For all unordered lists $a$, $\flatten{\llbracket a\rrbracket} = a$.
+\end{theorem}
+
+\begin{theorem}
+    For all unordered lists of unordered lists $a$ and $b$, we have $\flatten{a
+    + b} = \flatten{a} + \flatten{b}$.
+\end{theorem}
+
+\begin{theorem}
     For all elements $x$ and $y$, $x \in \llbracket y\rrbracket \leftrightarrow
     x = y$.
 \end{theorem}
@@ -1807,6 +2026,20 @@ theorem for lists.
 \begin{theorem} \label{ulist_image_unique_inj}
     For all unordered lists $a$ and injective functions $f : \U \to \V$, if $a$
     has unique elements, then $f(a)$ does as well.
+\end{theorem}
+
+\begin{theorem} \label{ulist_make_unique_single}
+    For all values $x$, we have $u(\llbracket x \rrbracket) = \llbracket x
+    \rrbracket$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_make_unique_in}
+    For all unordered lists $a$ and values $x$, $x \in a$ if and only if $x \in
+    u(a)$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_make_unique_unique}
+    For all unordered lists $a$, $u(a)$ has unique elements.
 \end{theorem}
 
 \begin{theorem} \label{ulist_sub_ex}
@@ -1900,6 +2133,11 @@ theorem for lists.
     For all unordered lists $a$ and sets $S$, $a^S \in S$.
 \end{theorem}
 
+\begin{theorem} \label{ulist_prop_filter_empty}
+    For all unordered lists $a$ and sets $S$, if $x \notin S$ for all $x : \U$,
+    then $a^S = []$.
+\end{theorem}
+
 \begin{theorem} \label{ulist_prop_in}
     For all unordered lists $a$ and sets $S$, if $a \in S$, then for all $x \in
     a$, we have $x \in S$.
@@ -1981,6 +2219,19 @@ theorem for lists.
 \begin{theorem} \label{ulist_count_in_unique}
     For all unordered lists $a$ and values $x$, if $a$ has unique elements and
     $x \in a$, then $|a|_x = 1$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_constant_one}
+    Let $x : \U$.  Then $\llbracket x \rrbracket_1 = \llbracket x\rrbracket$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_count_constant}
+    For all $x : \U$ and $n : \N$, we have $|\llbracket x\rrbracket_n| = n$.
+\end{theorem}
+
+\begin{theorem} \label{uin_list_constant}
+    For all values $x$ and $y$ in $\U$ and natural numbers $n$, if $y \in
+    \llbracket x\rrbracket_n$, then $x = y$.
 \end{theorem}
 
 \begin{theorem}

@@ -369,6 +369,14 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem list_make_unique_single {U} : ∀ a : U, list_make_unique [a] = [a].
+Proof.
+    intros a.
+    rewrite list_make_unique_add_nin by apply in_list_end.
+    rewrite list_make_unique_end.
+    reflexivity.
+Qed.
+
 Theorem list_make_unique_in {U} : ∀ l (a : U),
     in_list l a ↔ in_list (list_make_unique l) a.
 Proof.

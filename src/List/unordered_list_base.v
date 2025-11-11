@@ -267,8 +267,6 @@ Proof.
         apply list_perm_rpart.
         apply (trans2 (list_perm_comm _ _)).
         rewrite <- list_flatten_conc.
-        remember (l21 + l22) as l2.
-        clear l21 l22 Heql2.
         apply IHl.
         exact eq2.
 Qed.

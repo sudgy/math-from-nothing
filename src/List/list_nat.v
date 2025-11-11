@@ -243,6 +243,19 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem list_count_constant {U} : ∀ (a : U) n,
+    list_count (list_constant a n) a = n.
+Proof.
+    intros a n.
+    nat_induction n.
+    -   rewrite list_constant_zero.
+        apply list_count_end.
+    -   rewrite list_constant_suc.
+        rewrite list_count_add_eq.
+        rewrite IHn.
+        reflexivity.
+Qed.
+
 Theorem in_list_constant {U} : ∀ (a b : U) n,
     in_list (list_constant a n) b → a = b.
 Proof.
@@ -256,17 +269,4 @@ Proof.
         destruct b_in as [eq|b_in].
         +   exact eq.
         +   exact (IHn b_in).
-Qed.
-
-Theorem list_count_constant {U} : ∀ (a : U) n,
-    list_count (list_constant a n) a = n.
-Proof.
-    intros a n.
-    nat_induction n.
-    -   rewrite list_constant_zero.
-        apply list_count_end.
-    -   rewrite list_constant_suc.
-        rewrite list_count_add_eq.
-        rewrite IHn.
-        reflexivity.
 Qed.
