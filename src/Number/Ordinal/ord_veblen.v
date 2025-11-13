@@ -131,12 +131,15 @@ Proof.
         }
         apply veblen_gt_eq_nat.
     -   rewrite not_ex in n_nex.
-        apply (ord_far_lim _ _ ltq) in n_nex as [γ [n [γ_lim [γ_gt β_eq]]]].
-        subst β.
+        pose proof (ord_near_lim_lt _ _ ltq n_nex) as γ_gt.
+        pose proof (ord_near_lim_lim _ _ ltq n_nex) as γ_lim.
+        rewrite <- (ord_near_lim_eq β).
+        rewrite <- (ord_near_lim_eq β) in ltq.
+        remember (ord_near_lim_n β) as n; clear Heqn.
         revert ζ.
         nat_induction n; intros.
         +   unfold zero; cbn.
-            rewrite (veblen_lim γ γ_lim).
+            rewrite (veblen_lim _ γ_lim).
             apply (ord_family_derivative_fixed _ _ (λ δ, veblen [δ|]) [α|ltq]).
         +   prove_parts IHn.
             {

@@ -8,24 +8,6 @@ Require Import set_induction.
 Require Import well_order.
 Require Import order_minmax.
 
-Theorem ord_normal_recursion : ∀
-    (f0 : ord)
-    (f_suc : ord → ord → ord),
-    ∃ g : ord → ord,
-        (g 0 = f0) ∧
-        (∀ α, g (ord_suc α) = f_suc α (g α)) ∧
-        (∀ α, lim_ord α → g α = ord_f_sup α (λ β, g [β|])).
-Proof.
-    intros f0 f_suc.
-    pose (f_lim α (h : set_type (λ β, β < α) → ord) := ord_f_sup α h).
-    exists (ex_val (ord_recursion f0 f_suc f_lim)).
-    rewrite_ex_val g [g0 [g_suc g_lim]].
-    split; [>exact g0|].
-    split; [>exact g_suc|].
-    unfold f_lim in g_lim.
-    exact g_lim.
-Qed.
-
 Class OrdNormal (f : ord → ord) := {
     ord_normal : ∀ α, lim_ord α → f α = ord_f_sup α (λ β, f [β|])
 }.
@@ -49,6 +31,24 @@ Proof.
     rewrite (proof_irrelevance f_le g_le).
     rewrite (proof_irrelevance f_inj g_inj).
     reflexivity.
+Qed.
+
+Theorem ord_normal_recursion : ∀
+    (f0 : ord)
+    (f_suc : ord → ord → ord),
+    ∃ g : ord → ord,
+        (g 0 = f0) ∧
+        (∀ α, g (ord_suc α) = f_suc α (g α)) ∧
+        (∀ α, lim_ord α → g α = ord_f_sup α (λ β, g [β|])).
+Proof.
+    intros f0 f_suc.
+    pose (f_lim α (h : set_type (λ β, β < α) → ord) := ord_f_sup α h).
+    exists (ex_val (ord_recursion f0 f_suc f_lim)).
+    rewrite_ex_val g [g0 [g_suc g_lim]].
+    split; [>exact g0|].
+    split; [>exact g_suc|].
+    unfold f_lim in g_lim.
+    exact g_lim.
 Qed.
 
 Section MakeOrdNormal.
@@ -76,46 +76,24 @@ Qed.
 
 Context (f_increasing : ∀ α, f α ≤ f (ord_suc α)).
 
-Lemma make_ord_normal_lt_sucs : ∀ α n,
-    f α ≤ f (iterate_func ord_suc (nat_suc n) α).
-Proof.
-    intros α n.
-    nat_induction n.
-    -   unfold one; cbn.
-        apply f_increasing.
-    -   apply (trans IHn).
-        cbn.
-        apply f_increasing.
-Qed.
-
-Lemma make_ord_normal_lt_lim : ∀ α β, lim_ord β → α ≤ β → f α ≤ f β.
-Proof.
-    intros α β β_lim leq.
-    classic_case (α = β) as [eq|neq].
-    1: subst; apply refl.
-    rewrite (ord_normal (f := f) β β_lim).
-    apply ord_f_sup_other_leq.
-    intros ε ε_ge.
-    apply (ε_ge [α|make_and leq neq]).
-Qed.
-
 Local Instance make_ord_normal_le : HomomorphismLe f.
 Proof.
     split.
     intros α β leq.
+    classic_case (α = β) as [eq|neq].
+    1: subst; apply refl.
+    pose proof (make_and leq neq : α < β) as ltq.
+    clear leq neq.
     induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
-    -   apply all_neg_eq in leq.
-        subst; apply refl.
-    -   classic_case (α = ord_suc β) as [eq|neq].
-        {
-            subst α.
-            apply refl.
-        }
-        pose proof (make_and leq neq : α < ord_suc β) as ltq.
-        rewrite ord_lt_suc_le in ltq.
-        apply (trans (IHβ ltq)).
-        apply f_increasing.
-    -   exact (make_ord_normal_lt_lim α β β_lim leq).
+    -   contradiction (not_neg ltq).
+    -   rewrite ord_lt_suc_le in ltq.
+        classic_case (α = β) as [eq|neq].
+        +   subst.
+            apply f_increasing.
+        +   apply (trans (IHβ (make_and ltq neq))).
+            apply f_increasing.
+    -   rewrite (ord_normal (f := f) _ β_lim).
+        apply (ord_f_sup_ge _ (λ δ, f [δ|]) [α|ltq]).
 Qed.
 
 End MakeOrdNormal.
@@ -141,19 +119,11 @@ Proof.
     assert (∀ α β, α < β → f α ≠ f β) as wlog.
     {
         intros α β ltq eq.
-        induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
-        -   contradiction (not_neg ltq).
-        -   clear IHβ.
-            specialize (f_increasing β).
-            rewrite <- eq in f_increasing.
-            rewrite ord_lt_suc_le in ltq.
-            apply (homo_le (f := f)) in ltq.
-            contradiction (irrefl _ (le_lt_trans ltq f_increasing)).
-        -   specialize (f_increasing α).
-            rewrite <- ord_le_suc_lt in ltq.
-            apply (homo_le (f := f)) in ltq.
-            rewrite eq in f_increasing.
-            contradiction (irrefl _ (le_lt_trans ltq f_increasing)).
+        specialize (f_increasing α).
+        rewrite <- ord_le_suc_lt in ltq.
+        apply (homo_le (f := f)) in ltq.
+        rewrite eq in f_increasing.
+        contradiction (irrefl _ (le_lt_trans ltq f_increasing)).
     }
     intros α β eq.
     destruct (trichotomy α β) as [[ltq|eq']|ltq].
@@ -190,33 +160,27 @@ Proof.
     intros S Ss S_nempty.
     apply antisym.
     -   remember (ord_sup S Ss) as γ.
-        induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
-        +   apply ord_sup_other_leq.
-            intros ε ε_ge.
-            apply ε_ge.
+        induction γ as [|γ|γ γ_lim] using ord_destruct.
+        +   apply ord_sup_ge.
             exists 0.
             split; [>|reflexivity].
             destruct S_nempty as [x Sx].
             pose proof (ord_sup_zero S Ss Heqγ x Sx); subst x.
             exact Sx.
-        +   clear IHγ.
-            symmetry in Heqγ; apply ord_sup_suc in Heqγ.
+        +   symmetry in Heqγ; apply ord_sup_suc in Heqγ.
             apply ord_sup_ge.
             exists (ord_suc γ).
             split; [>exact Heqγ | reflexivity].
-        +   clear IHγ.
-            subst γ.
+        +   subst γ.
             rewrite (ord_normal _ γ_lim).
-            apply ord_f_sup_least.
-            intros [α α_lt]; cbn.
-            apply ord_sup_in in α_lt as [ζ [Sζ [ζ_ge ζ_neq]]].
-            apply ord_sup_other_leq.
-            intros ε ε_ge.
-            apply (homo_le (f := f)) in ζ_ge.
-            apply (trans ζ_ge).
-            apply ε_ge.
+            apply ord_sup_leq_sup.
+            intros α [[β β_lt]]; subst α; cbn.
+            apply ord_sup_in in β_lt as [ζ [Sζ [ζ_ge ζ_neq]]].
+            exists (f ζ).
+            split.
+            2: apply homo_le; exact ζ_ge.
             exists ζ.
-            split; [>exact Sζ|reflexivity].
+            split; trivial.
     -   apply ord_sup_least.
         intros α' [α [Sα]]; subst α'.
         apply homo_le.

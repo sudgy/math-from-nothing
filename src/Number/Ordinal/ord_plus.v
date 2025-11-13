@@ -128,7 +128,7 @@ Proof.
     destruct γ_ex as [γ [γ_lt γ_least]].
     exists γ.
     apply antisym; [>|exact γ_lt].
-    induction γ as [|γ IHγ|γ γ_lim IHγ] using ord_induction.
+    induction γ as [|γ|γ γ_lim] using ord_destruct.
     -   rewrite plus_rid.
         exact leq.
     -   order_contradiction ltq.
@@ -160,21 +160,10 @@ Qed.
 Theorem ord_nz_rplus : ∀ α β, 0 ≠ β → 0 ≠ α + β.
 Proof.
     intros α β β_nz contr.
-    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
-    -   contradiction.
-    -   rewrite ord_plus_suc in contr.
-        apply ord_zero_suc in contr.
-        exact contr.
-    -   rewrite ord_plus_lim in contr by exact β_lim.
-        pose proof (ord_f_sup_ge β (λ δ, α + [δ|])) as leq.
-        rewrite <- contr in leq.
-        specialize (leq [ord_suc 0|ord_lim_gt β β_lim]).
-        cbn in leq.
-        rewrite ord_plus_suc in leq.
-        rewrite <- nlt_le in leq.
-        apply leq.
-        apply all_pos2.
-        apply ord_zero_suc.
+    pose proof (ord_le_self_lplus β α) as leq.
+    rewrite <- contr in leq.
+    apply all_neg_eq in leq.
+    contradiction.
 Qed.
 
 Theorem ord_nz_lplus : ∀ α β, 0 ≠ α → 0 ≠ α + β.

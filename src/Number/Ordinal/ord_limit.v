@@ -61,13 +61,9 @@ Qed.
 Theorem ord_sucs_le : ∀ α β, ord_suc α ≤ ord_suc β ↔ α ≤ β.
 Proof.
     intros α β.
-    split; intros leq.
-    -   order_contradiction ltq.
-        apply ord_sucs_lt in ltq.
-        contradiction (irrefl _ (le_lt_trans leq ltq)).
-    -   order_contradiction ltq.
-        rewrite ord_sucs_lt in ltq.
-        contradiction (irrefl _ (le_lt_trans leq ltq)).
+    do 2 rewrite <- nlt_le.
+    rewrite ord_sucs_lt.
+    reflexivity.
 Qed.
 
 Theorem ord_suc_eq : ∀ {α β}, ord_suc α = ord_suc β → α = β.
@@ -135,6 +131,17 @@ Proof.
         apply ord_lt_suc.
     }
     apply α_pos.
+Qed.
+
+Theorem ord_f_sup_constant : ∀ β f α,
+    0 ≠ β → (∀ γ, f γ = α) → ord_f_sup β f = α.
+Proof.
+    intros β f α β_nz α_eq.
+    apply ord_sup_constant.
+    -   exists [0|all_pos2 β_nz].
+        symmetry; apply α_eq.
+    -   intros γ' [γ]; subst γ'.
+        apply α_eq.
 Qed.
 
 Theorem ord_sup_suc : ∀ S Ss γ, ord_sup S Ss = ord_suc γ → S (ord_suc γ).
@@ -238,27 +245,12 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem ord_f_sup_constant : ∀ α β, 0 ≠ β → ord_f_sup β (λ _, α) = α.
-Proof.
-    intros α β β_nz.
-    apply ord_f_sup_eq.
-    -   intros γ.
-        apply refl.
-    -   intros ε ε_ge.
-        exact (ε_ge [0|all_pos2 β_nz]).
-Qed.
-
 Theorem ord_lim_gt : ∀ α, lim_ord α → ord_suc 0 < α.
 Proof.
     intros α α_lim.
-    split.
-    -   rewrite ord_le_suc_lt.
-        apply all_pos2.
-        apply α_lim.
-    -   intros eq.
-        apply (rand α_lim).
-        exists 0.
-        symmetry; exact eq.
+    apply ord_lim_suc; [>exact α_lim|].
+    apply all_pos2.
+    apply α_lim.
 Qed.
 
 Theorem ord_induction :
@@ -298,7 +290,59 @@ Proof.
         apply (S_lim γ γ_lim).
 Qed.
 
-Theorem ord_near_lim : ∀ α,
+Theorem ord_recursion {X} : ∀
+    (f0 : X)
+    (f_suc : ord → X → X)
+    (f_lim : ∀ α : ord, (set_type (λ β, β < α) → X) → X),
+    ∃ g : ord → X,
+        (g 0 = f0) ∧
+        (∀ α, g (ord_suc α) = f_suc α (g α)) ∧
+        (∀ α, lim_ord α → g α = f_lim α (λ x, g [x|])).
+Proof.
+    intros f0 f_suc f_lim.
+    assert (∀ α, suc_ord α → ∃ β : set_type (λ β, β < α), α = ord_suc [β|])
+        as suc_ex.
+    {
+        intros α [β α_eq].
+        subst α.
+        exists [β|ord_lt_suc β].
+        reflexivity.
+    }
+    pose (f α h :=
+        If 0 = α
+        then
+            f0
+        else (IfH (suc_ord α)
+        then
+            λ H, f_suc [ex_val (suc_ex α H)|] (h (ex_val (suc_ex α H)))
+        else
+            λ _, f_lim α h)).
+    pose proof (transfinite_recursion X f) as [g g_eq].
+    exists g.
+    split; [>|split].
+    -   rewrite g_eq.
+        unfold f.
+        rewrite (if_true Logic.eq_refl).
+        reflexivity.
+    -   intros α.
+        rewrite g_eq.
+        unfold f.
+        rewrite (if_false (ord_zero_suc α)).
+        classic_case (suc_ord (ord_suc α)) as [α_suc|α_nsuc].
+        2: contradiction (α_nsuc (suc_ord_suc α)).
+        rewrite_ex_val α' α'_eq.
+        apply ord_suc_eq in α'_eq.
+        rewrite <- α'_eq.
+        reflexivity.
+    -   intros α [α_nz α_nsuc].
+        rewrite g_eq.
+        unfold f.
+        rewrite (if_false α_nz).
+        classic_case (suc_ord α); [>contradiction|].
+        reflexivity.
+Qed.
+
+Theorem ord_near_lim_ex : ∀ α,
     ∃ n β, ¬suc_ord β ∧ iterate_func ord_suc n β = α.
 Proof.
     intros α.
@@ -318,61 +362,73 @@ Proof.
         reflexivity.
 Qed.
 
-Theorem ord_far_lim : ∀ α β, α < β → (∀ n, iterate_func ord_suc n α ≠ β) →
-    ∃ γ n, lim_ord γ ∧ α < γ ∧ iterate_func ord_suc n γ = β.
+Definition ord_near_lim α := ex_val (ex_proof (ord_near_lim_ex α)).
+Definition ord_near_lim_n α := ex_val (ord_near_lim_ex α).
+
+Theorem ord_near_lim_nsuc : ∀ α, ¬suc_ord (ord_near_lim α).
 Proof.
-    assert (∀ α γ n, (∀ m, iterate_func ord_suc m α ≠ iterate_func ord_suc n γ)
-        → α < iterate_func ord_suc n γ → α < γ) as lem.
-    {
-        intros α γ n α_neq α_lt.
-        order_contradiction leq.
-        rewrite <- not_not in α_neq.
-        rewrite not_all in α_neq.
-        apply α_neq; clear α_neq.
-        nat_induction n.
-        -   unfold zero in α_lt; cbn in α_lt.
-            contradiction (irrefl _ (lt_le_trans α_lt leq)).
-        -   cbn in α_lt.
-            classic_case (α = iterate_func ord_suc n γ) as [α_eq|α_neq].
-            +   exists 1.
-                rewrite not_not.
-                unfold one; cbn.
-                apply f_equal.
-                rewrite α_eq.
-                reflexivity.
-            +   rewrite ord_lt_suc_le in α_lt.
-                specialize (IHn (make_and α_lt α_neq)) as [m eq].
-                exists (nat_suc m).
-                rewrite not_not in *.
-                cbn.
-                rewrite eq.
-                reflexivity.
-    }
-    intros α β ltq β_neq.
-    pose proof (ord_near_lim β) as [n [γ [γ_nsuc β_eq]]].
-    apply not_suc_ord in γ_nsuc as [γ_z|γ_lim].
-    -   exfalso.
-        subst β γ.
-        apply (@not_neg _ _ _ _ _ _ _ α).
-        exact (lem α 0 n β_neq ltq).
-    -   exists γ, n.
-        split; [>exact γ_lim|].
-        split; [>|exact β_eq].
-        subst β.
-        exact (lem α γ n β_neq ltq).
+    intros α.
+    apply (ex_proof (ex_proof (ord_near_lim_ex α))).
 Qed.
 
-Theorem ord_lt_lim : ∀ α β, lim_ord β → α ≠ β →
-    ∀ n, iterate_func ord_suc n α ≠ β.
+Theorem ord_near_lim_eq : ∀ α,
+    iterate_func ord_suc (ord_near_lim_n α) (ord_near_lim α) = α.
 Proof.
-    intros α β β_lim neq n.
+    intros α.
+    apply (ex_proof (ex_proof (ord_near_lim_ex α))).
+Qed.
+
+Theorem ord_near_lim_other : ∀ α β, ord_near_lim β ≤ α → α < β →
+    ∃ n, iterate_func ord_suc n α = β.
+Proof.
+    intros α β leq ltq.
+    assert (∃ m, β ≤ iterate_func ord_suc m α) as m_ex.
+    {
+        pose proof (ord_near_lim_eq β) as n_eq.
+        remember (ord_near_lim_n β) as n; clear Heqn.
+        exists n.
+        rewrite <- n_eq; clear n_eq.
+        nat_induction n.
+        -   apply leq.
+        -   cbn.
+            apply ord_sucs_le.
+            exact IHn.
+    }
+    apply well_ordered in m_ex as [n [n_ge n_least]].
+    exists n.
+    apply antisym; [>|exact n_ge].
+    order_contradiction ltq2.
     nat_destruct n.
-    -   exact neq.
-    -   cbn.
-        intros eq.
-        apply (rand β_lim).
-        exists (iterate_func ord_suc n α).
-        symmetry; exact eq.
+    -   unfold zero in ltq2; cbn in ltq2.
+        contradiction (irrefl _ (trans ltq ltq2)).
+    -   cbn in ltq2.
+        rewrite ord_lt_suc_le in ltq2.
+        specialize (n_least _ ltq2).
+        rewrite <- nlt_le in n_least.
+        exact (n_least (nat_lt_suc n)).
+Qed.
+
+Theorem ord_near_lim_lt : ∀ α β, α < β → (∀ m, iterate_func ord_suc m α ≠ β) →
+    α < ord_near_lim β.
+Proof.
+    intros α β ltq α_neq.
+    order_contradiction leq.
+    pose proof (ord_near_lim_other α β leq ltq) as [n eq].
+    exact (α_neq n eq).
+Qed.
+
+Theorem ord_near_lim_lim : ∀ α β, α < β → (∀ n, iterate_func ord_suc n α ≠ β) →
+    lim_ord (ord_near_lim β).
+Proof.
+    intros α β ltq β_neq.
+    pose proof (ord_near_lim_nsuc β) as β_nsuc.
+    apply not_suc_ord in β_nsuc as [β_z|β_lim].
+    2: exact β_lim.
+    exfalso.
+    apply (@not_neg _ _ _ _ _ _ _ α).
+    rewrite β_z.
+    apply ord_near_lim_lt; assumption.
+    all: assumption.
 Qed.
 
 Theorem ord_sup_lim_eq : ∀ α, lim_ord α → ord_sup _ (ord_initial_small α) = α.
@@ -402,59 +458,6 @@ Proof.
         exact [|γ].
     -   intros ltq.
         exists [β|ltq].
-        reflexivity.
-Qed.
-
-Theorem ord_recursion {X} : ∀
-    (f0 : X)
-    (f_suc : ord → X → X)
-    (f_lim : ∀ α : ord, (set_type (λ β, β < α) → X) → X),
-    ∃ g : ord → X,
-        (g 0 = f0) ∧
-        (∀ α, g (ord_suc α) = f_suc α (g α)) ∧
-        (∀ α, lim_ord α → g α = f_lim α (λ x, g [x|])).
-Proof.
-    intros f0 f_suc f_lim.
-    assert (∀ α, suc_ord α → ∃ β : set_type (λ β, β < α), α = ord_suc [β|])
-        as suc_ex.
-    {
-        intros α [β α_eq].
-        subst α.
-        exists [β|ord_lt_suc β].
-        reflexivity.
-    }
-    pose (f α h :=
-        IfH 0 = α
-        then
-            λ _, f0
-        else λ _, (IfH (suc_ord α)
-        then
-            λ H, f_suc [ex_val (suc_ex α H)|] (h (ex_val (suc_ex α H)))
-        else
-            λ _, f_lim α h)).
-    exists (ex_val (transfinite_recursion X f)).
-    rewrite_ex_val g g_eq.
-    split; [>|split].
-    -   rewrite g_eq.
-        unfold f.
-        classic_case (0 = 0); [>|contradiction].
-        reflexivity.
-    -   intros α.
-        rewrite g_eq.
-        unfold f.
-        classic_case (0 = ord_suc α) as [Sα_z|Sα_nz].
-        1: contradiction (ord_zero_suc α Sα_z).
-        classic_case (suc_ord (ord_suc α)) as [α_suc|α_nsuc].
-        2: contradiction (α_nsuc (suc_ord_suc α)).
-        rewrite_ex_val α' α'_eq.
-        apply ord_suc_eq in α'_eq.
-        rewrite <- α'_eq.
-        reflexivity.
-    -   intros α [α_nz α_nsuc].
-        rewrite g_eq.
-        unfold f.
-        classic_case (0 = α); [>contradiction|].
-        classic_case (suc_ord α); [>contradiction|].
         reflexivity.
 Qed.
 

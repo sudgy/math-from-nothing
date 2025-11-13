@@ -53,23 +53,6 @@ Proof.
     exact β_lim.
 Qed.
 
-Theorem ord_pow_nz : ∀ α β, 0 ≠ α → 0 ≠ α ^ β.
-Proof.
-    intros α β α_nz.
-    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
-    -   rewrite ord_pow_zero.
-        apply ord_not_trivial.
-    -   rewrite ord_pow_suc.
-        apply mult_nz; assumption.
-    -   rewrite (ord_pow_lim _ β α_nz β_lim).
-        pose proof (ord_f_sup_ge β (λ δ, α ^ [δ|]) [0|all_pos2 (land β_lim)])
-            as leq; cbn in leq.
-        rewrite ord_pow_zero in leq.
-        rewrite <- ord_suc_zero_one in leq.
-        rewrite ord_le_suc_lt in leq.
-        apply leq.
-Qed.
-
 Theorem ord_gt_one : ∀ α, 0 ≠ α → 1 ≠ α → 1 < α.
 Proof.
     intros α α_nz α_none.
@@ -92,33 +75,9 @@ Qed.
 Lemma ord_pow_le_suc : ∀ α β, 0 ≠ α → α ^ β ≤ α ^ ord_suc β.
 Proof.
     intros α β α_nz.
-    unfold ord_pow.
-    rewrite (if_false α_nz).
-    rewrite make_ord_normal_suc.
+    rewrite ord_pow_suc.
     apply ord_le_self_rmult.
     exact α_nz.
-Qed.
-
-Lemma ord_pow_lt_suc : ∀ α β, 1 < α → α ^ β < α ^ ord_suc β.
-Proof.
-    intros α β α_gt.
-    assert (0 ≠ α) as α_nz.
-    {
-        apply (trans ord_one_pos) in α_gt.
-        apply α_gt.
-    }
-    unfold ord_pow.
-    rewrite (if_false α_nz).
-    rewrite make_ord_normal_suc.
-    pose (αβ := make_ord_normal 1 (λ _ β0, β0 * α) β).
-    fold αβ.
-    apply (lt_lmult αβ) in α_gt.
-    -   rewrite mult_rid in α_gt.
-        exact α_gt.
-    -   pose proof (ord_pow_nz α β α_nz) as neq.
-        unfold ord_pow in neq.
-        rewrite (if_false α_nz) in neq.
-        exact neq.
 Qed.
 
 Theorem ord_pow_homo_le : ∀ α, 0 ≠ α → HomomorphismLe (ord_pow α).
@@ -132,6 +91,30 @@ Proof.
     unfold ord_pow in leq.
     rewrite (if_false α_nz) in leq.
     exact leq.
+Qed.
+
+Theorem ord_pow_nz : ∀ α β, 0 ≠ α → 0 ≠ α ^ β.
+Proof.
+    intros α β α_nz.
+    pose proof (ord_pow_homo_le α α_nz).
+    pose proof (all_pos β) as leq.
+    apply (homo_le (f := ord_pow α)) in leq.
+    rewrite ord_pow_zero in leq.
+    rewrite <- ord_suc_zero_one in leq.
+    rewrite ord_le_suc_lt in leq.
+    apply leq.
+Qed.
+
+Lemma ord_pow_lt_suc : ∀ α β, 1 < α → α ^ β < α ^ ord_suc β.
+Proof.
+    intros α β α_gt.
+    rewrite ord_pow_suc.
+    apply (lt_lmult (α ^ β)) in α_gt.
+    -   rewrite mult_rid in α_gt.
+        exact α_gt.
+    -   apply ord_pow_nz.
+        apply (trans ord_one_pos) in α_gt.
+        apply α_gt.
 Qed.
 
 Theorem ord_pow_homo_inj : ∀ α, 1 < α → Injective (ord_pow α).
@@ -188,14 +171,11 @@ Proof.
         rewrite IHα.
         apply mult_lid.
     -   rewrite (ord_pow_lim _ α ord_not_trivial α_lim).
-        apply ord_f_sup_eq.
-        +   intros [δ δ_lt]; cbn.
-            rewrite IHα by exact δ_lt.
-            apply refl.
-        +   intros ε ε_ge.
-            specialize (ε_ge [0|all_pos2 (land α_lim)]); cbn in ε_ge.
-            rewrite ord_pow_zero in ε_ge.
-            exact ε_ge.
+        apply ord_f_sup_constant.
+        +   apply α_lim.
+        +   intros δ.
+            apply IHα.
+            exact [|δ].
 Qed.
 
 Theorem ord_pow_2 : ∀ α, α ^ 2 = α * α.
@@ -229,21 +209,19 @@ Proof.
         rewrite mult_assoc.
         reflexivity.
     -   classic_case (0 = α) as [α_z|α_nz].
-        {
-            subst.
+        +   subst.
             rewrite (zero_ord_pow γ (land γ_lim)).
             rewrite mult_ranni.
             apply zero_ord_pow.
             apply ord_nz_rplus.
             apply γ_lim.
-        }
-        rewrite (ord_plus_lim β γ γ_lim).
-        rewrite (ord_pow_lim α γ α_nz γ_lim).
-        rewrite (ord_pow_sup _ α_nz) by apply γ_lim.
-        rewrite ord_mult_sup by apply γ_lim.
-        apply ord_f_sup_f_eq.
-        intros [δ δ_lt]; cbn.
-        exact (IHγ δ δ_lt).
+        +   rewrite (ord_plus_lim β γ γ_lim).
+            rewrite (ord_pow_lim α γ α_nz γ_lim).
+            rewrite (ord_pow_sup _ α_nz) by apply γ_lim.
+            rewrite ord_mult_sup by apply γ_lim.
+            apply ord_f_sup_f_eq.
+            intros [δ δ_lt]; cbn.
+            exact (IHγ δ δ_lt).
 Qed.
 
 Theorem ord_pow_pow : ∀ α β γ : ord, (α ^ β) ^ γ = α ^ (β * γ).
@@ -325,13 +303,11 @@ Proof.
         }
         rewrite (ord_pow_lim α γ α_nz γ_lim).
         rewrite (ord_pow_lim β γ β_nz γ_lim).
-        apply ord_f_sup_least.
-        intros [δ δ_lt]; cbn.
-        apply ord_f_sup_other_leq.
-        intros ε ε_ge.
-        specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
-        specialize (IHγ δ δ_lt).
-        exact (trans IHγ ε_ge).
+        apply ord_f_sup_leq_sup.
+        intros δ.
+        exists δ.
+        apply IHγ.
+        exact [|δ].
 Qed.
 
 Theorem ord_pow_le_pow : ∀ α β, 1 < β → α ≤ β ^ α.
@@ -363,8 +339,7 @@ Proof.
     intros α β β_nz.
     classic_case (0 = α) as [α_z|α_nz].
     -   subst α.
-        rewrite zero_ord_pow by exact β_nz.
-        apply refl.
+        apply all_pos.
     -   rewrite <- (ord_pow_one α) at 1.
         apply ord_pow_le.
         +   exact α_nz.

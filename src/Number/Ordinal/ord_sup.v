@@ -78,6 +78,18 @@ Proof.
     exact (trans leq (ε_ge α' Tα')).
 Qed.
 
+Theorem ord_sup_constant : ∀ S Ss α,
+    S α → (∀ γ, S γ → γ = α) → ord_sup S Ss = α.
+Proof.
+    intros S Ss α Sα α_eq.
+    apply ord_sup_eq.
+    -   intros γ Sγ.
+        apply α_eq in Sγ.
+        subst; apply refl.
+    -   intros ε ε_ge.
+        apply (ε_ge α Sα).
+Qed.
+
 Theorem ord_sup_union : ∀ S Ss,
     initial_segment (ord_sup S Ss) = ⋃ (image_under initial_segment S).
 Proof.

@@ -30,6 +30,90 @@ Proof.
     exact y_eq.
 Qed.
 
+Theorem small_image_under {A B} : ∀ (f : A → B) (S : A → Prop),
+    small S → small (image_under f S).
+Proof.
+    intros f S [X [g g_sur]].
+    exists X.
+    exists (λ x, [f [g x|] | image_under_in [|g x]]).
+    split.
+    intros [y' [y [Sy y'_eq]]]; subst y'.
+    pose proof (sur g [y|Sy]) as [x x_eq].
+    exists x.
+    apply set_type_eq; cbn.
+    rewrite x_eq.
+    reflexivity.
+Qed.
+
+Theorem small_image {A B} : ∀ (S : A → Prop) (S_small : small S),
+    ∀ f : set_type S → B, small (image f).
+Proof.
+    intros S [X [g g_sur]] f.
+    exists X.
+    exists (λ x, [f (g x) | ex_intro _ _ Logic.eq_refl]).
+    split.
+    intros [y' [y y_eq]]; subst y'.
+    pose proof (sur g y) as [x x_eq].
+    exists x.
+    apply set_type_eq; cbn.
+    rewrite x_eq.
+    reflexivity.
+Qed.
+
+Theorem small_bij_ex {U} : ∀ S : U → Prop, small S →
+    ∃ X (f : X → set_type S), Bijective f.
+Proof.
+    intros S [X [f f_sur]].
+    pose (f' y := ex_val (sur f y)).
+    assert (∀ y, f (f' y) = y) as f_eq.
+    {
+        intros y.
+        exact (ex_proof (sur f y)).
+    }
+    pose (T := image f').
+    exists (set_type T).
+    exists (λ x, f [x|]).
+    split; split.
+    -   intros [a' [a a'_eq]] [b' [b b'_eq]] eq; subst a' b'.
+        cbn in eq.
+        apply set_type_eq; cbn.
+        do 2 rewrite f_eq in eq.
+        subst b.
+        reflexivity.
+    -   intros y.
+        exists [f' y | ex_intro _ _ Logic.eq_refl]; cbn.
+        apply f_eq.
+Qed.
+
+Definition small_set_to_card {U} (S : U → Prop) S_small :=
+    |ex_val (small_bij_ex S S_small)|.
+
+Theorem small_set_to_card_eq {U} (S : U → Prop) S_small :
+    ∀ X (f : X → set_type S), Bijective f → small_set_to_card S S_small = |X|.
+Proof.
+    intros X f f_bij.
+    unfold small_set_to_card.
+    rewrite_ex_val Y [g g_bij].
+    equiv_simpl.
+    exists (λ x, bij_inv f (g x)).
+    apply bij_comp.
+    -   exact g_bij.
+    -   apply bij_inv_bij.
+Qed.
+
+Theorem small_set_to_card_leq {U} (S : U → Prop) Ss :
+    ∀ X (f : set_type S → X), Injective f → small_set_to_card S Ss ≤ |X|.
+Proof.
+    intros X f f_inj.
+    unfold small_set_to_card.
+    rewrite_ex_val Y [g g_bij].
+    unfold le; equiv_simpl.
+    exists (λ y, f (g y)).
+    apply inj_comp.
+    -   apply g_bij.
+    -   apply f_inj.
+Qed.
+
 Section CardLarge.
 
 Context (S : card → Prop) (S_small : small S).
@@ -106,36 +190,6 @@ Qed.
 
 End CardLarge.
 
-Theorem small_image_under {A B} : ∀ (f : A → B) (S : A → Prop),
-    small S → small (image_under f S).
-Proof.
-    intros f S [X [g g_sur]].
-    exists X.
-    exists (λ x, [f [g x|] | image_under_in [|g x]]).
-    split.
-    intros [y' [y [Sy y'_eq]]]; subst y'.
-    pose proof (sur g [y|Sy]) as [x x_eq].
-    exists x.
-    apply set_type_eq; cbn.
-    rewrite x_eq.
-    reflexivity.
-Qed.
-
-Theorem small_image {A B} : ∀ (S : A → Prop) (S_small : small S),
-    ∀ f : set_type S → B, small (image f).
-Proof.
-    intros S [X [g g_sur]] f.
-    exists X.
-    exists (λ x, [f (g x) | ex_intro _ _ Logic.eq_refl]).
-    split.
-    intros [y' [y y_eq]]; subst y'.
-    pose proof (sur g y) as [x x_eq].
-    exists x.
-    apply set_type_eq; cbn.
-    rewrite x_eq.
-    reflexivity.
-Qed.
-
 Theorem ord_small_bounded : ∀ S : ord → Prop, small S → ∃ γ, ∀ α, S α → α < γ.
 Proof.
     intros S S_small.
@@ -175,56 +229,6 @@ Proof.
     intros β g.
     apply small_image.
     apply ord_initial_small.
-Qed.
-
-Theorem small_bij_ex {U} : ∀ S : U → Prop, small S →
-    ∃ X (f : X → set_type S), Bijective f.
-Proof.
-    intros S [X [f f_sur]].
-    pose (T (x : X) := ∃ y, x = ex_val (sur f y)).
-    exists (set_type T).
-    exists (λ x, f [x|]).
-    split; split.
-    -   intros [a' [a a'_eq]] [b' [b b'_eq]] eq; subst a' b'.
-        cbn in eq.
-        apply set_type_eq; cbn.
-        rewrite (ex_proof (sur f a)) in eq.
-        rewrite (ex_proof (sur f b)) in eq.
-        subst b.
-        reflexivity.
-    -   intros y.
-        exists [ex_val (sur f y) | ex_intro _ _ Logic.eq_refl]; cbn.
-        rewrite_ex_val x x_eq.
-        exact x_eq.
-Qed.
-
-Definition small_set_to_card {U} (S : U → Prop) S_small :=
-    |ex_val (small_bij_ex S S_small)|.
-
-Theorem small_set_to_card_eq {U} (S : U → Prop) S_small :
-    ∀ X (f : X → set_type S), Bijective f → small_set_to_card S S_small = |X|.
-Proof.
-    intros X f f_bij.
-    unfold small_set_to_card.
-    rewrite_ex_val Y [g g_bij].
-    equiv_simpl.
-    exists (λ x, bij_inv f (g x)).
-    apply bij_comp.
-    -   exact g_bij.
-    -   apply bij_inv_bij.
-Qed.
-
-Theorem small_set_to_card_leq {U} (S : U → Prop) Ss :
-    ∀ X (f : set_type S → X), Injective f → small_set_to_card S Ss ≤ |X|.
-Proof.
-    intros X f f_inj.
-    unfold small_set_to_card.
-    rewrite_ex_val Y [g g_bij].
-    unfold le; equiv_simpl.
-    exists (λ y, f (g y)).
-    apply inj_comp.
-    -   apply g_bij.
-    -   apply f_inj.
 Qed.
 
 Definition aleph'_base (β : ord) (g : set_type (λ x, x < β) → card) :=

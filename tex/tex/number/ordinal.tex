@@ -50,21 +50,11 @@ arithmetic of the cardinals and ordinals is not really needed here.
 \section{Construction of the Ordinals}
 
 \begin{definition}
-    We will say that an order type is a type $\U$ that has a well order.
-\end{definition}
-
-In general, people often use ``order type'' to refer to more than just well
-orders, but the concept is mainly useful for well orders, so for the sake of
-simplicity we will consider order types to only be well orders.  Remember that
-to prove that a type is well-ordered, it suffices to prove that the relation is
-antisymmetric and that every nonempty subset has a least element.
-
-\begin{definition}
-    Define a relation $\sim$ on order types where $\A \sim \B$ is defined to
-    mean that there exists an order isomorphism between $\A$ and $\B$, that is,
-    a function $f$ that is bijective and orderly.  Note that these conditions
-    also imply that $f$ is equivalently orderly and strictly equivalently
-    orderly.
+    Define a relation $\sim$ on well-ordered types where $\A \sim \B$ is defined
+    to mean that there exists an order isomorphism between $\A$ and $\B$, that
+    is, a function $f$ that is bijective and orderly.  Note that these
+    conditions also imply that $f$ is equivalently orderly and strictly
+    equivalently orderly.
 \end{definition}
 
 \begin{lemma}
@@ -79,25 +69,27 @@ antisymmetric and that every nonempty subset has a least element.
     isomorphism, $f^{-1}(a) \leq f^{-1}(b)$, so $f^{-1}$ is an order isomorphism
     from $\B$ to $\A$.
 
-    \textit{Transitivity.}  Given three order types $\A$, $\B$, and $\C$ with
-    order isomorphisms $f : \A \to \B$ and $g : \B \to \C$, $g \circ f$ is an
-    order isomorphism from $\A$ to $\C$.
+    \textit{Transitivity.}  Given three well-ordered types $\A$, $\B$, and $\C$
+    with order isomorphisms $f : \A \to \B$ and $g : \B \to \C$, $g \circ f$ is
+    an order isomorphism from $\A$ to $\C$.
 \end{proof}
 
 \begin{definition}
-    Define the type $\Ord$ to be the quotient of all order types by $\sim$.
+    Define the type $\Ord$ to be the quotient of all well-ordered types by
+    $\sim$.  Given a well-ordered type $\A$, we will call $[\A]$ the order type
+    of $\A$.
 \end{definition}
 
-Note that because $\Ord$ is a type that contains order types, $\Ord$ must be
-higher on the universe hierarchy than order types are.  In particular, if order
-types live in $\Type_n$, then $\Ord$ lives in $\Type_{n+1}$.  This means that it
-is impossible to build an order type out of ordinals, so it is also impossible
-to build an ordinal out of a set of ordinals.  So while there is a type of all
-ordinals, it lives in a different universe than order types themselves, removing
-the inconsistencies of naive set theory.  However, being unable to create
-ordinals out of sets of ordinals entirely seems to be a major restriction on the
-theory.  We will find a way around this restriction in a few sections after
-developing the theory of cardinals for a bit.
+Note that because $\Ord$ is a type that contains other types, $\Ord$ must be
+higher on the universe hierarchy than the well-ordered types are.  In
+particular, if the well-ordered types live in $\Type_n$, then $\Ord$ lives in
+$\Type_{n+1}$.  This means that it is impossible to build an ordinal out of a
+set of ordinals.  So while there is a type of all ordinals, it lives in a
+different universe than the well-ordered types used to make the ordinals,
+removing the inconsistencies of naive set theory.  However, being unable to
+create ordinals out of sets of ordinals entirely seems to be a major restriction
+on the theory.  We will find a way around this restriction in a few sections
+after developing the theory of cardinals for a bit.
 
 \section{Ordering Ordinals}
 
@@ -110,25 +102,26 @@ orderings in the Rocq code, so I will first describe the order on ordinals using
 non-strict inequalities.
 
 \begin{definition}
-    Let $\A$ and $\B$ be order types.  Then we say that $f : \A \to \B$ is an
-    ordinal inequality function if it is injective, orderly, and if for all $b :
-    \B$ with $f(a) \neq b$ for all $a : \A$, we have $f(a) < b$ for all $a :
-    \A$.
+    Let $\A$ and $\B$ be well-ordered types.  Then we say that $f : \A \to \B$
+    is an ordinal inequality function if it is injective, orderly, and if for
+    all $b : \B$ with $f(a) \neq b$ for all $a : \A$, we have $f(a) < b$ for all
+    $a : \A$.
 \end{definition}
 
 \begin{definition}
-    Given two order types $\A$ and $\B$, we will say that $\A \leqq \B$ if there
-    exists an ordinal inequality function from $\A$ to $\B$.
+    Given two well-ordered types $\A$ and $\B$, we will say that $\A \leqq \B$
+    if there exists an ordinal inequality function from $\A$ to $\B$.
 \end{definition}
 
 \begin{lemma}
     The relation $\leqq$ is well-defined under the relation $\sim$.
 \end{lemma}
 \begin{proof}
-    Let $A$, $B$, $C$, and $D$ be order types with order isomorphisms $f : A \to
-    B$ and $g : C \to D$, and let $h$ be an ordinal inequality function from $A$
-    to $C$.  We must prove that there exists an ordinal inequality function from
-    $B$ to $D$.  We will prove that $g \circ h \circ f^{-1}$ is such a function.
+    Let $A$, $B$, $C$, and $D$ be well-ordered types with order isomorphisms $f
+    : A \to B$ and $g : C \to D$, and let $h$ be an ordinal inequality function
+    from $A$ to $C$.  We must prove that there exists an ordinal inequality
+    function from $B$ to $D$.  We will prove that $g \circ h \circ f^{-1}$ is
+    such a function.
 
     \noindent \textit{Injectivity.}
     $g$, $h$, and $f^{-1}$ are all injective, so by Instance \ref{inj_comp}, $g
@@ -159,8 +152,8 @@ As the following theorem shows, this order is equivalent to the usual definition
 of the order on ordinals.
 
 \begin{theorem} \label{ord_lt_simpl}
-    For two order types $\A$ and $\B$, $[\A] < [\B]$ iff there exists a $x : \B$
-    such that $\A \sim \B_x$, the initial segment of $x$ in $\B$.
+    For two well-ordered $\A$ and $\B$, $[\A] < [\B]$ iff there exists a $x :
+    \B$ such that $\A \sim \B_x$, the initial segment of $x$ in $\B$.
 \end{theorem}
 \begin{proof}
     First assume that $[\A] < [\B]$.  This means that there exists an ordinal
@@ -206,15 +199,15 @@ connex, so those will have to be proven on their own anyway.
 \begin{instance}
     The order on ordinals is connex.
 \end{instance}
-
 \begin{proof}
     The proof of this instance is rather involved and will be split up into
     several sub-definitions and lemmas.
 
     It suffices to prove that for all ordinals $\alpha$ and $\beta$, if $\alpha
-    \nless \beta$, then $\beta \leq \alpha$.  Let $\A$ be an order type of
-    $\alpha$ and $\B$ be an order type of $\beta$.  Then we know that $\A$ is
-    not order isomorphic to an initial segment of $\B$.
+    \nless \beta$, then $\beta \leq \alpha$.  Let $\A$ be a well-ordered type
+    with order type $\alpha$ and $\B$ be a well-ordered type of order type
+    $\beta$.  Then we know that $\A$ is not order isomorphic to an initial
+    segment of $\B$.
     \begin{definition}
         Define a function $f : (p : \B) \to (\B_p \to \A) \to \A$ with $f(p,
         g)$ given by:
@@ -334,12 +327,12 @@ connex, so those will have to be proven on their own anyway.
     The order on ordinals is antisymmetric.
 \end{instance}
 \begin{proof}
-    Let $\A$ and $\B$ be order types with ordinal inequality functions $f : \A
-    \to \B$ and $g : \B \to \A$.  We will prove that $f$ itself is an order
-    isomorphism.  It is already orderly and injective, so we only
-    need to prove that it is surjective.  Let $x : \B$.  We will prove that
-    $f(g(x)) = x$.  The proof will be by transfinite induction on $x$.  The
-    inductive hypothesis states that for all $b < x$, $f(g(b)) = b$.
+    Let $\A$ and $\B$ be well-ordered types with ordinal inequality functions $f
+    : \A \to \B$ and $g : \B \to \A$.  We will prove that $f$ itself is an order
+    isomorphism.  It is already orderly and injective, so we only need to prove
+    that it is surjective.  Let $x : \B$.  We will prove that $f(g(x)) = x$.
+    The proof will be by transfinite induction on $x$.  The inductive hypothesis
+    states that for all $b < x$, $f(g(b)) = b$.
 
     We will now use Lemma \ref{ord_le_part} to prove that $f(g(x)) \leq x$.  So
     let $a < g(x)$.  We must prove that $f(a) \neq x$.  For a contradiction,
@@ -359,8 +352,8 @@ connex, so those will have to be proven on their own anyway.
 We can now prove a simpler form of ordinal inequalities.
 
 \begin{lemma} \label{ord_le_simpl}
-    For all order types $\A$ and $\B$, if there exists an injective orderly
-    function from $\A$ to $\B$, then $[\A] \leq [\B]$.
+    For all well-ordered types $\A$ and $\B$, if there exists an injective
+    orderly function from $\A$ to $\B$, then $[\A] \leq [\B]$.
 \end{lemma}
 \begin{proof}
     Let $f$ be an injective orderly function from $\A$ to $\B$, and assume for a
@@ -388,10 +381,11 @@ another.
     The order on ordinals is transitive.
 \end{instance}
 \begin{proof}
-    Let $\A$, $\B$, and $\C$ be order types with ordinal inequality functions $f
-    : \A \to \B$ and $g : \B \to \C$.  By Lemma \ref{ord_le_simpl}, We need to
-    find an injective orderly function from $\A$ to $\C$.  By instances
-    \ref{inj_comp} and \ref{homo_le_compose}, $g \circ f$ is such a function.
+    Let $\A$, $\B$, and $\C$ be well-ordered types with ordinal inequality
+    functions $f : \A \to \B$ and $g : \B \to \C$.  By Lemma \ref{ord_le_simpl},
+    We need to find an injective orderly function from $\A$ to $\C$.  By
+    instances \ref{inj_comp} and \ref{homo_le_compose}, $g \circ f$ is such a
+    function.
 \end{proof}
 
 Because we can't have $\Type_n : \Type_n$, it is impossible to make an ordinal
@@ -399,61 +393,62 @@ out of ordinals.  However, in many of the cases where we would want to make an
 ordinal out of ordinals, using the following function works well enough.
 
 \begin{definition} \label{ord_type_init_ord}
-    Given an order type $\A$, define a function $f_\A : \A \to \Ord_{[\A]}$ that
-    takes $a : \A$ to $[\A_a]$.  This is well-defined by Theorem
-    \ref{ord_lt_simpl}.
+    Given a well-ordered type $\A$, define a function $\mathcal O_\A : \A \to
+    \Ord_{[\A]}$ that takes $a : \A$ to $[\A_a]$.  This is well-defined by
+    Theorem \ref{ord_lt_simpl}.
 \end{definition}
 
 \begin{theorem}
-    For all order types $\A$, $f_\A$ is orderly.
+    For all order types $\A$, $\mathcal O_\A$ is orderly.
 \end{theorem}
 \begin{proof}
     Let $a$ and $b$ be values in $\A$ such that $a \leq b$.  Then we must prove
-    that $f_\A(a) \leq f_\A(b)$.  By Lemma \ref{ord_le_simpl}, we need to find
-    an injective orderly function from $\A_a$ to $\A_b$.  Because $a \leq b$,
-    everything in $\A_a$ is in $\A_b$, so the identity function is such a
-    function.
+    that $\mathcal O_\A(a) \leq \mathcal O_\A(b)$.  By Lemma \ref{ord_le_simpl},
+    we need to find an injective orderly function from $\A_a$ to $\A_b$.
+    Because $a \leq b$, everything in $\A_a$ is in $\A_b$, so the identity
+    function is such a function.
 \end{proof}
 
 \begin{theorem}
-    For all order types $\A$, $f_\A$ is bijective.
+    For all well-ordered types $\A$, $\mathcal O_\A$ is bijective.
 \end{theorem}
 \begin{proof}
-    For injectivity, let $a$ and $b$ be such that $f_\A(a) = f_\A(b)$.  We will
+    For injectivity, let $a$ and $b$ be such that $\mathcal O_\A(a) = \mathcal O_\A(b)$.  We will
     prove by antisymmetry that $a = b$.  By symmetry, we only need to prove that
-    $a \leq b$.  Because $f_\A(a) = f_\A(b)$, we have an order isomorphism $g$
-    from $\A_a$ to $\A_b$.  We will prove that for all $x < a$, $x \leq g(x)$.
-    By transfinite induction we can assume that for all $c < x$, we have
-    $c \leq g(c)$.  Then if $g(x) < x$, we have $g(x) < a$, so by the inductive
-    hypothesis we have $g(x) \leq g(g(x))$.  Because $g$ is equivalently
-    orderly, we have $x \leq g(x)$, contradicting $g(x) < x$.  Thus, we must
-    have $x \leq g(x)$ for all $x < a$.
+    $a \leq b$.  Because $\mathcal O_\A(a) = \mathcal O_\A(b)$, we have an order
+    isomorphism $g$ from $\A_a$ to $\A_b$.  We will prove that for all $x < a$,
+    $x \leq g(x)$.  By transfinite induction we can assume that for all $c < x$,
+    we have $c \leq g(c)$.  Then if $g(x) < x$, we have $g(x) < a$, so by the
+    inductive hypothesis we have $g(x) \leq g(g(x))$.  Because $g$ is
+    equivalently orderly, we have $x \leq g(x)$, contradicting $g(x) < x$.
+    Thus, we must have $x \leq g(x)$ for all $x < a$.
 
     Now assume that $b < a$.  Then we have $b \leq g(b)$ by the previous
     paragraph, but $g(b) < b$ by definition of $g$.  Thus, we must have $a \leq
-    b$, proving that $f_\A$ is injective.
+    b$, proving that $\mathcal O_\A$ is injective.
 
     For surjectivity, let $[\Y]$ be an ordinal less than $[\A]$.  This means
     that there exists some $x : \A$ such that $\Y$ is order isomorphic to
-    $\A_x$.  Then $f_\A(x) = [\A_x] = [\Y]$ as required.
+    $\A_x$.  Then $\mathcal O_\A(x) = [\A_x] = [\Y]$ as required.
 \end{proof}
 
 \begin{lemma} \label{ords_lt_wo}
     For all ordinals $\alpha$, the initial segment of $\alpha$ is well-ordered.
 \end{lemma}
 \begin{proof}
-    Let $\A$ be an order type, let $\beta < [\A]$, and let $S$ be a set on
+    Let $\A$ be a well-ordered type, let $\beta < [\A]$, and let $S$ be a set on
     $\Ord_{[\A]}$, the initial segment of $[\A]$, with $\beta \in S$.  Define a
-    new set $S' = \{a \A \mid f_\A(a) \in S\}$.  Because $f_\A$ is surjective,
-    there exists some $x : \A$ such that $f_\A(a) = \beta$.  Since $\beta \in
-    S$, we have $x \in S'$.  Thus, because $\A$ is well-ordered, $S'$ has a
-    least element $m$.  We will prove that $f_\A(m)$ is the least element of
-    $S$.  $f_\A(m) \in S$ since $m \in S'$.  To prove that it's the least
-    element in $S$, let $\gamma$ be an ordinal less than $[\A]$ that is in $S$.
-    Since $f_\A$ is surjective, there exists some $z$ such that $f_\A(z) =
-    \gamma$.  Then $z \in S'$, so $m \leq z$ because $m$ is the least element of
-    $S'$.  Because $f_\A$ is orderly, $f_\A(m) \leq f_\A(z) = \gamma$, showing
-    that $f_\A(m)$ is the least element of $S$.
+    new set $S' = \{a \A \mid \mathcal O_\A(a) \in S\}$.  Because $\mathcal
+    O_\A$ is surjective, there exists some $x : \A$ such that $\mathcal O_\A(a)
+    = \beta$.  Since $\beta \in S$, we have $x \in S'$.  Thus, because $\A$ is
+    well-ordered, $S'$ has a least element $m$.  We will prove that $\mathcal
+    O_\A(m)$ is the least element of $S$.  $\mathcal O_\A(m) \in S$ since $m \in
+    S'$.  To prove that it's the least element in $S$, let $\gamma$ be an
+    ordinal less than $[\A]$ that is in $S$.  Since $\mathcal O_\A$ is
+    surjective, there exists some $z$ such that $\mathcal O_\A(z) = \gamma$.
+    Then $z \in S'$, so $m \leq z$ because $m$ is the least element of $S'$.
+    Because $\mathcal O_\A$ is orderly, $\mathcal O_\A(m) \leq \mathcal O_\A(z)
+    = \gamma$, showing that $\mathcal O_\A(m)$ is the least element of $S$.
 \end{proof}
 
 \begin{instance}
@@ -587,7 +582,7 @@ We can also relate the cardinals to the ordinals in a few ways.
 
 \begin{theorem} \label{ord_to_card_init}
     With $f$ being the function given by Definition \ref{ord_type_init_ord}, for
-    all order types $\A$ and values $a : \A$, $|f_\A(a)| = |\A_a|$.
+    all well-ordered types $\A$ and values $a : \A$, $|f_\A(a)| = |\A_a|$.
 \end{theorem}
 \begin{proof}
     By the previous theorem, it suffices to prove that there exists a bijective
@@ -714,7 +709,7 @@ ways.
     $|\alpha| \leq |\beta|$.
 \end{theorem}
 \begin{proof}
-    Let $\A$ and $\B$ be order types representing $\alpha$ and $\beta$
+    Let $\A$ and $\B$ be well-ordered types representing $\alpha$ and $\beta$
     respectively.  By $\alpha \leq \beta$, we have an ordinal inequality
     function from $\A$ to $\B$.  Ordinal inequality functions are injective,
     proving that $|\alpha| \leq |\beta|$ as well.
@@ -828,7 +823,7 @@ equivalently orderly and strictly orderly.
     This follows directly from the previous theorem.
 \end{proof}
 
-\section{The Largeness of the Cardinals and Ordinals}
+\section{Small and Large Sets}
 
 As mentioned above, it is impossible to make cardinals out of other cardinals or
 ordinals out of other ordinals.  However, there are many situations where doing
@@ -837,24 +832,87 @@ issue.  Care needs to be taken when talking about types in this section, since
 the problem we are trying to work around involves universes.  Thus, in this
 section, universes will be explicitly given for types.
 
-Let $\Type_n$ be the universe that the types and order types that we use to
-build ordinals and cardinals are in.  Then, ordinals and cardinals are in
+Let $\Type_n$ be the universe that the types and well-ordered types that we use
+to build ordinals and cardinals are in.  Then, ordinals and cardinals are in
 $\Type_{n + 1}$.
 
-\begin{theorem} \label{card_large_set}
-    Let $S$ be a set of cardinals, $\X$ a type in $\Type_n$, and $f$ a
-    surjective function from $\X$ to $\T(S)$.  Then there exists a cardinal
-    $\kappa$ that is gerater than all cardinals in $S$.
+\begin{definition}
+    Let $\U$ be any type in $\Type_{n + 1}$ and let $S$ be a set on $\U$.  Then
+    we will say that the set $S$ is small if there exists a type $X : \Type_n$
+    and a surjective function $f : X \to \T(S)$.
+\end{definition}
+
+\begin{theorem}
+    For all types $\U : \Type_{n + 1}$, the empty set is small.
 \end{theorem}
 \begin{proof}
-    Define a new dependent type $\C$ that has a single constructor that takes in
-    a value in $x : \X$ and a value in some type that has cardinality equal to
-    $f(x)$.  $\C : \Type_n$, because $\X : \Type_n$ and the other value is in a
-    type that we make cardinals from, which is also $\Type_n$.  Thus, $|\C|$ is
-    a well-formed cardinal.  Let $\A$ be a type such that $|\A| \in S$.  We will
-    prove that $|\A| \leq |\C|$, which by Theorem \ref{power_set_bigger} implies
-    that $|\A| < |\C \to \Prop|$, which will show that $|\C \to \Prop|$ is the
-    cardinal we are looking for.
+    The empty type can be defined in $\Type_n$, and then the empty function is
+    surjective.
+\end{proof}
+
+\begin{theorem}
+    For all types $\U : \Type_{n + 1}$ and values $x : \U$, the set $\{x\}$ is
+    small.
+\end{theorem}
+\begin{proof}
+    The singleton type can be defined in $\Type_n$, at which point the function
+    $f : \S \to \{x\}$ defined by $f(I) = x$ is surjective.
+\end{proof}
+
+\begin{theorem} \label{small_image_under} \label{small_image}
+    Let $\A$ and $\B$ be types in $\Type_{n + 1}$ and let $f$ be a function from
+    $\A$ to $\B$.  Then the image of all small sets under $f$ is small.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a small set, so that there exists a type $X : \Type_n$ and a
+    surjective function $g : X \to \T(S)$.  Define $h = f \circ g$.  This is a
+    function from $X$ to $f(S)$.  Let $y \in f(S)$.  Then there exists a $y' \in
+    S$ such that $f(y') = y$.  Then because $g$ is surjective, we have an $x$
+    such that $g(x) = y'$.  Then $h(x) = f(g(x)) = f(y') = y$, showing that $h$
+    is surjective.
+\end{proof}
+
+\begin{theorem} \label{small_bij_ex}
+    Let $\U : \Type_{n + 1}$ and let $S$ be a small set.  Then there exists a
+    type $X$ and a bijective function $f : X \to \T(S)$.
+\end{theorem}
+\begin{proof}
+    Because $S$ is small, we have a type $Y$ and a surjective function $f : Y
+    \to \T(S)$.  We can define a function $f^{-1} : \T(S) \to Y$ where
+    $f^{-1}(y)$ is defined such that $f(f^{-1}(y)) = y$.  Then define the type
+    $X$ to be the image of $f^{-1}$.  Then we can take $f$ and restrict its
+    domain to $X$, producing a function from $X$ to $\T(S)$.  Given any $y :
+    \T(S)$, we have $f(f^{-1}(y)) = y$, showing that $f$ is surjective.  To
+    prove that $f$ is injective, let $f(a') = f(b')$ with $a'$ and $b'$ in $X$.
+    This means that we have an $a$ with $a' = f^{-1}(a)$ and a $b$ with $b' =
+    f^{-1}(b)$.  Then $f(f^{-1}(a)) = f(f^{-1}(b))$, so $a = b$.  This means
+    that $a' = b'$ as well, showing that $f$ is injective.  Because $f$ is
+    injective and surjective, it is bijective.
+\end{proof}
+
+\begin{definition}
+    Given a type $\U : \Type_{n + 1}$ and a small set $S$, we can define the
+    cardinality of $S$ as the cardinality of a type $X$ that is in bijection
+    with $S$, as given by the previous theorem.  We will write this as $|S|$.
+\end{definition}
+
+We also know that any type that is in bijection with a small set has the same
+cardinality.
+
+\begin{theorem} \label{card_small_bounded}
+    Let $S$ be a small set of cardinals.  Then there exists a cardinal $\kappa$
+    that is greater than all cardinals in $S$.
+\end{theorem}
+\begin{proof}
+    Let $X$ and $f$ be the type and surjective function given by $S$ being
+    small.  Define a new dependent type $\C$ that has a single constructor that
+    takes in a value in $x : \X$ and a value in some type that has cardinality
+    equal to $f(x)$.  $\C : \Type_n$, because $\X : \Type_n$ and the other value
+    is in a type that we make cardinals from, which is also $\Type_n$.  Thus,
+    $|\C|$ is a well-formed cardinal.  Let $\A$ be a type such that $|\A| \in
+    S$.  We will prove that $|\A| \leq |\C|$, which by Theorem
+    \ref{power_set_bigger} implies that $|\A| < |\C \to \Prop|$, which will show
+    that $|\C \to \Prop|$ is the cardinal we are looking for.
 
     To prove that $|\A| \leq |\C|$, we must find an injective function from
     $\A$ to $\C$.  Because $f$ is surjective, we have some $x : \X$ such that
@@ -866,69 +924,33 @@ $\Type_{n + 1}$.
     injectivity of $g$, we have $a = b$ as required.
 \end{proof}
 
-While this theorem is useful, the conditions are a little annoying to satisfy.
-However, there are a few variations that are more easily used.
-
-\begin{theorem} \label{card_large}
-    For all types $\X$ in $\Type_n$ and functions $f : \X \to \Card$, there
-    exists a cardinal $\kappa$ that is greater than the image of $f$.
+\begin{theorem} \label{ord_small_bounded}
+    Let $S$ be a small set of ordinals.  Then there exists an ordinal $\gamma$
+    that is greater than all ordinals in $S$.
 \end{theorem}
 \begin{proof}
-    Let $S$ be the image of $f$.  $f$ is trivially surjective when restricted to
-    its image, so the result follows from the previous theorem.
+    Consider the image of $S$ under the function that converts ordinals to
+    cardinals.  This set of cardinals is small by Theorem
+    \ref{small_image_under}.  Thus, by Theorem \ref{card_small_bounded}, it has
+    a strict upper bound $\kappa$.  Then for any $\alpha \in S$, we have
+    $|\alpha| < \kappa = |\lfloor \kappa \rfloor |$, so by Theorem
+    \ref{ord_to_card_lt} we have $\alpha < \lfloor \kappa \rfloor$, showing that
+    $\lfloor \kappa \rfloor$ is a strict upper bound of $S$.
 \end{proof}
-
-There is also a corresponding theorem for ordinals.
-
-\begin{theorem} \label{ord_large}
-    For all types $\X$ in $\Type_n$ and functions $f : \X \to \Ord$, there
-    exists an ordinal $\alpha$ that is greater than the image of $f$.
-\end{theorem}
-\begin{proof}
-    Define a new function $g : \X \to \Card$ given by $g(x) = |f(x)|$.  Then
-    there exists a cardinal $\mu$ such that $g(x) < \mu$ for all $x : \X$.  By
-    Theorem \ref{ord_to_card_lt}, we have $\lfloor | f(x) | \rfloor < \lfloor
-    \mu \rfloor$ and by Theorem \ref{card_to_initial_ord_to_card_eq} we have
-    $f(x) < \lfloor \mu \rfloor$, showing that $\lfloor \mu \rfloor$ is greater
-    than everything in the image of $f$.
-\end{proof}
-
-These theorems are still a little annoying in that you need to explicitly find a
-type $X : \Type_n$ to use.  However, there is a very important special case of
-these theorems that is incredibly useful.
 
 \begin{theorem} \label{ord_initial_small}
-    For all ordinals $\beta$ and functions $f : \Ord_\beta \to \Ord$, there
-    exists an ordinal $\gamma$ such that $f(\alpha) < \gamma$ for all $\alpha$.
+    All initial segments in the ordinals is small.
 \end{theorem}
 \begin{proof}
-    Let $\B$ be an order type for $\beta$.  $\B$ has type $\Type_n$.  Using $g :
-    \B \to \Ord_\beta$ to denote the function given by Definition
-    \ref{ord_type_init_ord}, $f \circ g$ is a surjective function from $\B$ to
-    $\Ord$, so the result follows from the previous theorem.
+    Let $[\B]$ be an ordinal.  The function $\mathcal O_\B$ given by Definition
+    \ref{ord_type_init_ord} is a surjective function from $\B$, which is in
+    $\Type_n$, to the initial segment of $[\B]$.
 \end{proof}
 
-This theorem means that when doing transfinite recursion on the ordinals, one
-can always use suprema (or strict suprema).  As such, it is basically required
-for doing much more with the ordinals.  There is a corresponding theorem for
-cardinals that can be used for recursively defining functions from the ordinals
-to the cardinals.
-
-\begin{theorem} \label{ord_card_large}
-    For all ordinals $\beta$ and functions $f : \Ord_\beta \to \Card$, there
-    exists a cardinal $\mu$ such that $f(\alpha) < \mu$ for all $\alpha$.
-\end{theorem}
-\begin{proof}
-    Define $g : \Ord_\beta \to \Ord$ by $g(\alpha) = \lfloor f(\alpha) \rfloor$.
-    By the previous theorem, this function has a bound $\gamma$.  By Theorem
-    \ref{card_unbounded}, we have a cardinal $\mu$ with $|\gamma| < \mu$.  By
-    Theorems \ref{card_to_initial_ord_to_card_eq} and \ref{ord_to_card_lt}, we
-    have $\gamma < \lfloor \mu \rfloor$.  Then for all $\alpha$, we have
-    $\lfloor f(\alpha) \rfloor < \gamma$, so by transitivity $\lfloor f(\alpha)
-    \rfloor < \lfloor \mu \rfloor$.  Because $\lfloor x \rfloor$ is strictly
-    equivalently orderly, we have $f(\alpha) < \mu$, showing that $\mu$ is a
-    strict upper bound of the image of $f$.
-\end{proof}
+The previous theorem is the most useful out of all the theorems proved in this
+section.  It theorem means that when doing transfinite recursion on the
+ordinals, one can always use suprema.  As such, it is basically required for
+doing much more with the ordinals.
 
 As an example of the application of these theorems, we will define something
 related to the $\aleph$ function.  Note that this isn't quite $\aleph$ itself,
@@ -1017,123 +1039,185 @@ Thus, $\aleph'$ is a bijective order-preserving function, so the cardinals and
 ordinals are order-isomorphic to each other!  However, it is still helpful to
 distinguish between the two because they are used in very different ways.
 
-Given that every ordinal function with a bounded input has a bounded output,
-there are a few helpful definitions we can make:
+\section{Suprema, Successors, and Limits}
+
+Given that every small set of ordinals is bounded, and since the ordinals are
+well ordered, there a helpful definition we can make:
 
 \begin{definition}
-    Given an ordinal function $f$, let $\lub(f(\alpha), \alpha < \beta)$ be the
-    least upper bound of the restriction of $f$ to the initial segment of
-    $\beta$.
+    Let $S$ be a small set of ordinals.  Then define $\sup S$ to be the least
+    upper bound of $S$.
 \end{definition}
 
-\begin{definition}
-    Given an ordinal function $f$, let $\lsub(f(\alpha), \alpha < \beta)$ be the
-    least strict upper bound of the restriction of $f$ to the initial segment of
-    $\beta$.
-\end{definition}
+Recall that the image of a small set is a small set, and that all initial
+segments are small.  Thus, given any ordinal function $f$ and ordinal $\alpha$,
+the set $\{f(\delta) \mid \delta < \alpha\}$ is small as well.  We will mostly
+be using $\sup$ on sets of that form.  In fact, it's so common that in the Rocq
+code there is a special definition just to make suprema of that form more
+streamlined!  But we won't really need to do that here.
 
-Least upper bounds and least strict upper bounds have many properties, and for
-convenience, these will be stated below.  No proofs will be given because they
-follow directly from the definitions.
+Supremahave many properties, and for convenience, these will be stated below.
+No proofs will be given because they follow directly from the definitions.
 
-\begin{theorem} \label{ord_lub_ge}
+\begin{theorem} \label{ord_sup_ge}
     For all $\alpha$, $\beta$, and $f$ with $\alpha < \beta$, we have $f(\alpha)
-    \leq \lub(f(\delta), \delta < \beta)$.
+    \leq \sup\{f(\delta), \delta < \beta\}$.
 \end{theorem}
 
-\begin{theorem} \label{ord_lub_least}
+\begin{theorem} \label{ord_sup_least}
     For all $\beta$, $\gamma$, and $f$, if for all $\alpha < \beta$ we have
-    $f(\alpha) \leq \gamma$, we have $\lub(f(\delta), \delta < \beta) \leq
+    $f(\alpha) \leq \gamma$, we have $\sup\{f(\delta), \delta < \beta\} \leq
     \gamma$.
 \end{theorem}
 
-\begin{theorem} \label{ord_lub_other_leq}
+\begin{theorem} \label{ord_sup_other_leq}
     For all $\beta$, $\gamma$, and $f$, if $\gamma$ has the same property as
-    $\lub(f(\delta), \delta < \alpha)$ in the previous theorem, then $\gamma
-    \leq \lub(f(\delta), \delta < \beta)$.
+    $\sup\{f(\delta), \delta < \alpha\}$ in the previous theorem, then $\gamma
+    \leq \sup\{f(\delta), \delta < \beta\}$.
 \end{theorem}
 
-\begin{theorem} \label{ord_lub_eq}
-    $\lub(f(\delta), \delta < \beta)$ is uniquely described by the previous two
-    theorems.
-\end{theorem}
-
-\begin{theorem} \label{ord_lsub_gt}
-    For all $\alpha$, $\beta$, and $f$ with $\alpha < \beta$, we have $f(\alpha)
-    < \lsub(f(\delta), \delta < \beta)$.
-\end{theorem}
-
-\begin{theorem} \label{ord_lsub_least}
-    For all $\beta$, $\gamma$, and $f$, if for all $\alpha < \beta$ we have
-    $f(\alpha) < \gamma$, we have $\lsub(f(\delta), \delta < \beta) \leq
-    \gamma$.
-\end{theorem}
-
-\begin{theorem} \label{ord_lsub_other_leq}
-    For all $\beta$, $\gamma$, and $f$, if $\gamma$ has the same property as
-    $\lsub(f(\delta), \delta < \alpha)$ in the previous theorem, then $\gamma
-    \leq \lsub(f(\delta), \delta < \beta)$.
-\end{theorem}
-
-\begin{theorem} \label{ord_lsub_eq}
-    $\lsub(f(\delta), \delta < \beta)$ is uniquely described by the previous two
-    theorems.
+\begin{theorem} \label{ord_sup_eq}
+    $\sup\{f(\delta), \delta < \beta\}$ is uniquely described by the previous
+    two theorems.
 \end{theorem}
 
 There are also a few not quite trivial facts about these functions:
 
-\begin{theorem} \label{ord_lsub_self_eq}
-    For all ordinals $\beta$, we have $\lsub(\alpha, \alpha < \beta) = \beta$.
+\begin{theorem} \label{ord_sup_in}
+    For all small sets $S$ and ordinals $\alpha$, if $\alpha < \sup S$, then
+    there exists a $\gamma \in S$ with $\alpha < \gamma$.
 \end{theorem}
 \begin{proof}
-    The proof will be by Theorem \ref{ord_lsub_eq}.  $\beta$ is a strict upper
-    bound of $\alpha$ for all $\alpha < \beta$ by definition.  Now let
-    $\varepsilon$ be another strict upper bound of $\alpha$ for all $\alpha <
-    \beta$.  If $\varepsilon < \beta$, we would have $\varepsilon < \varepsilon$
-    by $\varepsilon$ being a strict upper bound, which is impossible, so we must
-    have $\beta \leq \varepsilon$.  Thus, $\beta$ is the least strict upper
-    bound.
+    Assume that no such $\gamma$ exists.  Then we have $\beta \leq \alpha$ for
+    all $\beta \in S$, so by Theorem \ref{ord_sup_least} we have $\sup S \leq
+    \alpha$, contradicting $\alpha < \sup S$.
 \end{proof}
 
-\begin{theorem} \label{ord_lsub_in}
-    For all $\alpha$, $\beta$, and $f$, if $\alpha < \lsub(f(\delta), \delta <
-    \beta)$, then there exists a $\gamma < \beta$ such that $\alpha \leq
-    f(\gamma)$.
+\begin{theorem} \label{ord_sup_leq_sup}
+    For all small sets $S$ and $T$, if for all $\alpha \in S$, there exists a
+    $\beta \in T$ with $\alpha \leq \beta$, then $\sup S \leq \sup T$.
 \end{theorem}
 \begin{proof}
-    Assume the opposite, that is, that for all $\gamma < \beta$, we have
-    $f(\gamma) < \alpha$.  This means that $\alpha$ is an upper bound of $f$, so
-    by Theorem \ref{ord_lsub_least}, we have $\lsub(f(\delta), \delta < \beta)
-    \leq \alpha$, contradicting the hypothesis that $\alpha < \lsub(f(\delta),
-    \delta < \beta)$.  Thus, we must have some $\gamma < \beta$ with $\alpha
-    \leq f(\gamma)$.
+    By Theorem \ref{ord_sup_least}, it suffices to prove that $\alpha \leq \sup
+    T$ for all $\alpha \in S$.  Then by Theorem \ref{ord_sup_other_leq} it
+    suffices to prove that for all upper bounds of $T$ $\varepsilon$, we have
+    $\alpha \leq \varepsilon$.  Because $\alpha \in S$, by assumption we have a
+    $\beta \in T$ with $\alpha \leq \beta$.  Then $\beta \leq \varepsilon$, so
+    $\alpha \leq \varepsilon$ by transitivity.
 \end{proof}
 
-\begin{theorem} \label{ord_lub_in}
-    For all $\alpha$, $\beta$, and $f$, if $\alpha < \lub(f(\delta), \delta <
-    \beta)$, then there exists a $\gamma < \beta$ such that $\alpha <
-    f(\gamma)$.
+\begin{theorem} \label{ord_sup_union}
+    For all small sets $S$, let $\mathcal S$ be the collection of initial
+    segments of $S$.  Then
+    \[
+        \Ord_{\sup S} = \bigcup \mathcal S.
+    \]
 \end{theorem}
 \begin{proof}
-    The proof is the same in form as the previous proof, although a couple
-    strict/nonstrict inequalities get converted to nonstrict/strict
-    inequalities.
+    The proof will be by antisymmetry.  First, let $\beta \in \Ord_{\sup S}$,
+    meaning that $\beta < \sup S$.  Then by Theorem \ref{ord_sup_in}, we have a
+    $\gamma \in S$ such that $\beta < \gamma$.  Then $\beta \in \Ord_\gamma$,
+    meaning that $\beta \in \bigcup \mathcal S$.  Thus, $\Ord_{\sup S} \subseteq
+    \bigcup \mathcal S$.
+
+    Now let $\beta \in \bigcup \mathcal S$.  This means that there exists an
+    ordinal $\gamma \in S$ such that $\beta < \gamma$.  By Theorem
+    \ref{ord_sup_ge}, we have $\gamma \leq \sup S$, so by transitivity we have
+    $\beta < \sup S$.  Thus, $\beta \in \Ord_{\sup S}$, so $\bigcup \mathcal S
+    \subseteq \Ord_{\sup S}$.
 \end{proof}
 
-There will be more to prove about these functions, but those will have to wait
-until we have developed a small amount of ordinal orithmetic.
+Given that every small set of ordinals has a strict upper bound, we know that
+there is no greatest ordinal.  Thus, we can find the smallest ordinal greater
+than any given ordinal.
 
-\section{Addition of Ordinals}
+\begin{definition}
+    Let $\alpha$ be an ordinal.  Then we define $S(\alpha)$ to be the smallest
+    ordinal that is greater than $\alpha$.
+\end{definition}
 
-The definition of addition will use $0$, so we will define the ordinal $0$
-first.
+\begin{theorem} \label{ord_le_suc_lt}
+    For all ordinals $\alpha$ and $\beta$, $S(\alpha) \leq \beta$ if and only if
+    $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    The reverse direction follows directly from the definition of $S$.  For the
+    forward direction, assume that $S(\alpha) \leq \beta$.  Along with $\alpha <
+    S(\alpha$, we get $\alpha < \beta$ by transitivity.
+\end{proof}
+
+\begin{theorem} \label{ord_sucs_lt}
+    For all ordinals $\alpha$ and $\beta$, $S(\alpha) < S(\beta)$ if and only if
+    $\alpha < \beta$.
+\end{theorem}
+\begin{proof}
+    First, assume that $S(\alpha) < S(\beta)$.  To prove $\alpha < \beta$, it
+    suffices to prove $S(\alpha) \leq \beta$.  For a contradiction, assume that
+    $\beta < S(\alpha)$.  That itself is equivalent to $S(\beta) \leq
+    S(\alpha)$, which contradicts $S(\alpha) < S(\beta)$.  Thus, we must have
+    $\alpha < \beta$.
+
+    Now assume that $\alpha < \beta$.  This is equivalent to $S(\alpha) \leq
+    \beta$.  For a contradiction, assume that $S(\beta) \leq S(\alpha)$.  This
+    is equivalent to $\beta < S(\alpha)$.  This contradicts $S(\alpha) \leq
+    \beta$, so we must have $S(\alpha) < S(\beta)$.
+\end{proof}
+
+\begin{theorem} \label{ord_sucs_le}
+    For all ordinals $\alpha$ and $\beta$, $S(\alpha) \leq S(\beta)$ if and only
+    if $\alpha \leq \beta$.
+\end{theorem}
+\begin{proof}
+    \[
+        S(\alpha) \leq S(\beta) \leftrightarrow
+        \neg(S(\beta) < S(\alpha)) \leftrightarrow
+        \neg(\beta < \alpha) \leftrightarrow
+        \alpha \leq \beta.
+    \]
+\end{proof}
+
+\begin{theorem}
+    The ordinal function $S$ is injective.
+\end{theorem}
+\begin{proof}
+    Let $S(\alpha) = S(\beta)$.  For a contradiction, assume that $\alpha \neq
+    \beta$, and without loss of generality, assume that $\alpha < \beta$.  Then
+    $S(\alpha) < S(\beta)$, contradicting $S(\alpha) = S(\beta)$.
+\end{proof}
+
+\begin{theorem} \label{ord_lt_suc_le}
+    For all ordinals $\alpha$ and $\beta$, $\alpha < S(\beta)$ if and only if
+    $\alpha \leq \beta$.
+\end{theorem}
+\begin{proof}
+    \[
+        \alpha < S(\beta) \leftrightarrow
+        S(\alpha) \leq S(\beta) \leftrightarrow
+        \alpha \leq \beta.
+    \]
+\end{proof}
+
+Given the $S$ function, we can partition the ordinals into three categories:
+The first ordinal, those that are the successor of another ordinal, and those
+that are neither the first ordinal nor the successor of another ordinal.  We
+will call the first ordinal $0$.
 
 \begin{instance}
-    Define the ordinal $0$ to be the ordinal corresponding to the empty type.
+    Define $0$ in the ordinals to be the order type of the empty set.
 \end{instance}
 
+\begin{definition}
+    We will say that an ordinal $\alpha$ is a successor ordinal if there exists
+    an ordinal $\beta$ such that $S(\beta) = \alpha$.
+\end{definition}
+
+\begin{definition}
+    We will say that an ordinal $\gamma$ is a limit ordinal if it is not zero
+    and is not a successor ordinal.
+\end{definition}
+
 \begin{theorem} \label{ord_false_0}
-    For all order types $\A$, if $\A \to \False$, we have $0 = [\A]$.
+    For all well-ordered types $\A$, if $\A \to \False$, we have $0 = [\A]$.
 \end{theorem}
 \begin{proof}
     The empty function is vacuously injective and orderly, and it is vacuously
@@ -1144,52 +1228,493 @@ first.
     All ordinals are positive.
 \end{instance}
 \begin{proof}
-    The empty function is trivially an injective orderly function.
+    The empty function is vacuously injective and orderly, so the result follows
+    by Theorem \ref{ord_le_simpl}.
 \end{proof}
 
-\begin{theorem} \label{ord_lsub_f_zero}
-    For all ordinals $\beta$ and ordinal functions $f$, if $0 = \lsub(f(\delta),
-    \delta < \beta)$, then $0 = \beta$.
+\begin{theorem} \label{ord_zero_suc}
+    For all ordinals $\alpha$, we have $0 \neq S(\alpha)$.
 \end{theorem}
 \begin{proof}
-    If we instead had $0 \neq \beta$, we would have $f(0) < 0$ by Theorem
-    \ref{ord_lsub_gt}, which is impossible.
+    We have $0 \leq \alpha$ and $\alpha < S(\alpha)$, so $0 < S(\alpha)$, which
+    implies $0 \neq S(\alpha)$.
 \end{proof}
 
-\begin{theorem} \label{ord_lub_f_zero}
-    For all ordinals $\beta$ and ordinal functions $f$, if $0 = \lub(f(\delta),
-    \delta < \beta)$, then $f(\delta) = 0$ for all $\delta < \beta$.
+\begin{theorem} \label{ord_sup_suc}
+    For all small sets $T$, if $\sup T$ is a successor ordinal, then $\sup T \in
+    T$.
 \end{theorem}
 \begin{proof}
-    The result follows directly from Theorems \ref{all_neg_eq} and
-    \ref{ord_lub_ge}.
+    Assume that $\sup T = S(\gamma)$ for some ordinal $\gamma$.  Assume for a
+    contradiction that $\sup T \notin T$.  We will prove that $\sup T = \gamma$,
+    which will contradict $\sup T = S(\gamma)$.  To prove that $\gamma$ is an
+    upper bound, let $\delta \in T$.  To prove that $\delta \leq \gamma$, we can
+    instead prove $\delta < S(\gamma)$.  We have $\delta \leq S(\gamma) = \sup
+    T$ already, and we can't have $\delta = S(\gamma)$ because $\delta \in T$
+    but $S(\gamma) \notin T$.  Thus, $\delta < S(\gamma)$, so $\gamma$ is an
+    upper bound of $T$.  To prove that $\gamma$ is the least upper bound, let
+    $\varepsilon$ be another upper bound of $T$.  Then we have $S(\gamma) \leq
+    \varepsilon$ because $S(\gamma)$ is the least upper bound of $T$, so we have
+    $\gamma \leq S(\gamma) \leq \varepsilon$ as required.  Thus, $\gamma$ is the
+    least upper bound of $T$, contradicting $S(\gamma)$ being the least upper
+    bound of $T$.
 \end{proof}
 
-\begin{theorem} \label{ord_lub_constant}
-    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $\lub(\alpha,
-    \delta < \beta) = \alpha$.  (Notice that $\delta$, despite being the input
-    in the function, isn't used in the actual value of the function.)
+\begin{theorem} \label{ord_lim_suc}
+    For all ordinals $\alpha$ and $\gamma$, if $\gamma$ is a limit ordinal and
+    $\alpha < \gamma$, then $S(\alpha) < \gamma$ as well.
 \end{theorem}
 \begin{proof}
-    The proof will be by Theorem \ref{ord_lub_eq}.  $\alpha$ is an upper bound
-    of the constant function $\alpha$ by reflexivity.  Let $\varepsilon$ be
-    another upper bound of the constant function $\alpha$.  $0$ is a valid input
-    to this function because $0 \neq \beta$, so looking at $\varepsilon$ being
-    an upper bound at this input, we get $\alpha \leq \varepsilon$, showing
-    thath $\alpha$ is the least upper bound.
+    We already have $S(\alpha) \leq \gamma$ by Theorem \ref{ord_le_suc_lt}.  We
+    can't have $S(\alpha) = \gamma$ because $\gamma$ isn't a successor ordinal,
+    so we have $S(\alpha) < \gamma$.
 \end{proof}
+
+\begin{theorem} \label{ord_sup_zero}
+    For all small sets $S$, if $\sup S = 0$, then $\alpha = 0$ for all $\alpha
+    \in S$.
+\end{theorem}
+\begin{proof}
+    Because $\sup S = 0$, we have $\alpha \leq 0$ for all $\alpha \in S$.
+    Because all ordinals are positive, this means that $\alpha = 0$.
+\end{proof}
+
+\begin{theorem} \label{ord_sup_singleton}
+    For all ordinals $\alpha$, $\sup \{\alpha\} = \alpha$.
+\end{theorem}
+\begin{proof}
+    $\alpha$ is an upper bound because $\alpha \leq \alpha$, and for any other
+    upper bound $\varepsilon$ we have $\alpha \leq \varepsilon$, showing that
+    $\alpha$ is the least upper bound.
+\end{proof}
+
+\begin{theorem} \label{ord_lim_gt}
+    For all limit ordinals $\alpha$, we have $S(0) < \alpha$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lim_suc}, it suffices to prove $0 < \alpha$.  This
+    follows from $\alpha$ being a limit ordinal, since a part of the definition
+    is that $0 \neq \alpha$.
+\end{proof}
+
+In the ordinals, there is a common variant of transfinite induction/recursion
+that is often used:
+
+\begin{theorem}[Ordinal Induction]
+    For all sets of ordinals $S$, if $0 \in S$, if $\alpha \in S$ implies
+    $S(\alpha) \in S$, and if for all limit ordinals $\gamma$, $\beta \in S$ for
+    all $\beta < \gamma$ implies $\gamma \in S$, then all ordinals are in $S$.
+\end{theorem}
+\begin{proof}
+    Let $\alpha$ be an arbitrary ordinal.  The proof will be by transfinite
+    induction on $\alpha$.  The inductive hypothesis states that for all $\beta
+    < \alpha$, we have $\beta \in S$.  There will now be three cases for when
+    $\alpha = 0$, when $\alpha$ is a successor ordinal, and when $\alpha$ is a
+    limit ordinal.  When $\alpha = 0$, we have $0 \in S$ by assumption.  When
+    $\alpha = S(\beta)$ for some ordinal $\beta$, because $\beta < \alpha$, we
+    have $\beta \in S$ by the inductive hypothesis, so by assumption $S(\beta) =
+    \alpha \in S$.  When $\alpha$ is a limit ordinal, the inductive hypothesis
+    matches the third assumption to show that $\alpha \in S$.
+\end{proof}
+
+\begin{theorem}[Ordinal Recursion]
+    For all types $\X$, values $f_0 : \X$, functions $f_S : \Ord \to \X \to \X$,
+    and functions $f_\infty : \forall \alpha, (\T(\Ord_\alpha) \to \X) \to \X$,
+    there exists a function $g : \Ord \to \X$ such that
+    \begin{align*}
+        g(0) &= f_0 \\
+        g(S(\alpha)) &= f_S(\alpha, g(\alpha)) \\
+        g(\gamma) &= f_\infty(\alpha, g \uparrow \alpha)
+            \text{\quad when $\gamma$ is a limit ordinal.}
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    Define a function $f : \forall \alpha, (\T(\Ord_\alpha) \to \X) \to \X$
+    given by
+    \begin{align*}
+        f(0, h) &= f_0 \\
+        f(S(\alpha), h) &= f_S(\alpha, h(\alpha)) \\
+        f(\gamma, h) &= f_\infty(\gamma, h)
+            \text{\quad when $\gamma$ is a limit ordinal.}
+    \end{align*}
+    Then by transfinite recursion, there exists a $g : \Ord \to \X$ such that
+    $g(\alpha) = f(\alpha, g \uparrow \alpha)$ for all ordinals $\alpha$.  This
+    function $g$ satisfies all of the conditions necessary.
+\end{proof}
+
+To distinguish between the different forms of transfinite induction and
+recursion, these versions will be called ordinal induction and recursion
+instead.
+
+\begin{theorem} \label{ord_near_lim}
+    For all ordinals $\alpha$, there exists a non-successor ordinal $\beta$ and
+    natural number $n$ such that $S^n(\beta) = \alpha$.
+\end{theorem}
+\begin{proof}
+    The proof will be by ordinal induction on $\alpha$.  The non-successor cases
+    follow directly with $\beta = \alpha$ and $n = 0$, so the only interesting
+    case is the successor case.  So assume that there exists some $\beta$ and
+    $n$ such that $\beta$ isn't a successor ordinal and that $S^n(\beta) =
+    \alpha$.  Then $S^{S(n)}(\beta) = S(\alpha)$.
+\end{proof}
+
+\newcommand{\prelim}[1]{{{}_\infty {#1}}}
+\begin{definition}
+    Given an ordinal $\alpha$, call its preceding non-successor ordinal as
+    given by the previous theorem $\prelim{\alpha}$.
+\end{definition}
+
+\begin{theorem} \label{ord_near_lim_other}
+    Let $\alpha$ and $\beta$ be ordinals such that $\prelim \beta \leq \alpha$
+    and $\alpha < \beta$.  Then there exists a natural number $n$ such that
+    $S^n(\alpha) = \beta$.
+\end{theorem}
+\begin{proof}
+    Let $m$ be such that $S^m(\prelim \beta) = \beta$.  Define the set $T =
+    \{n : \N \mid \beta \leq S^n(\alpha)\}$.  This set is nonempty because
+    $\beta = S^m(\prelim \beta) \leq S^m(\alpha)$.  Thus, $T$ has a least
+    element we'll call $n$.  We will prove that $S^n(\alpha) = \beta$.  We
+    already have $S^n(\alpha) \geq \beta$, so by antisymmetry it suffices to
+    prove $S^n(\alpha) \leq \beta$.  For a contradiction, assume that $\beta <
+    S^n(\alpha)$.  When $n = 0$, we would have $\beta < \alpha$, contradicting
+    $\alpha < \beta$.  When $n = S(n')$, we have $\beta < S(S^{n'}(\alpha))$, so
+    $\beta \leq S^{n'}(\alpha)$, contradicting the minimality of $n$.  Either
+    way, we got a contradiction, so we must have $S^n(\alpha) \leq \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_near_lim_lt}
+    For all ordinals $\alpha$ and $\beta$ such that $\alpha < \beta$ and
+    $S^n(\alpha) \neq \beta$ for all natural numbers $n$, we have $\alpha <
+    \prelim \beta$.
+\end{theorem}
+\begin{proof}
+    Assume otherwise.  Then by Theorem \ref{ord_near_lim_other}, we have an $n$
+    such that $S^n(\alpha) = \beta$, contradicting one of this theorem's
+    assumptions.
+\end{proof}
+
+\begin{theorem} \label{ord_near_lim_lim}
+    For all ordinals $\alpha$ and $\beta$ such that $\alpha < \beta$ and
+    $S^n(\alpha) \neq \beta$ for all natural numbers $n$, $\prelim \beta$ is a
+    limit ordinal.
+\end{theorem}
+\begin{proof}
+    Because $\prelim \beta$ is a non-successor ordinal, all we need to do is
+    show that it can't be zero.  So assume that $\prelim \beta = 0$.  Then we
+    have $\prelim \beta \leq \alpha$ and $\alpha < \beta$, so by Theorem
+    \ref{ord_near_lim_other}, we have an $n$ such that $S^n(\alpha) = \beta$,
+    contradicting one of this theorem's assumptions.
+\end{proof}
+
+\begin{theorem} \label{ord_sup_lim_eq}
+    For all limit ordinals $\gamma$, $\sup\{\delta \mid \delta < \gamma\} =
+    \gamma$.
+\end{theorem}
+\begin{proof}
+    $\gamma$ is directly an upper bound, so we only need to prove that it's the
+    least upper bound.  So let $\varepsilon$ be another upper bound.  For a
+    contradiction, assume that $\varepsilon < \gamma$.  Then by Theorem
+    \ref{ord_lim_suc}, we have $S(\varepsilon) < \gamma$.  Because $\varepsilon$
+    is an upper bound, we have $S(\varepsilon) \leq \varepsilon$, which is
+    impossible.  Thus, $\gamma$ is the least upper bound.
+\end{proof}
+
+Up to this point, we have mostly been working with successors in an abstract
+way.  But ordinals are equivalence classes of well-ordered types.  What is a
+well-ordered type that corresponds to a successor?
+
+\begin{definition}
+    Let $\A$ be a well-ordered type.  Then we will order the type $\A + \S$ as
+    follows:
+    \begin{align*}
+        (\iota_1(a) \leq \iota_1(b)) &= (a \leq b) \\
+        (\iota_2(a) \leq \iota_1(b)) &= \False \\
+        (a \leq \iota_2(b)) &= \True.
+    \end{align*}
+\end{definition}
+
+\begin{theorem}
+    When $\A$ is well ordered, the order on $\A + \S$ is a well order.
+\end{theorem}
+\begin{proof}
+    For antisymmetry, let $a$ and $b$ be values in $\A + \S$ such that $a \leq
+    b$ and $b \leq a$.  $a$ and $b$ have to either both come from $\A$ or both
+    come from $\S$ because it's impossible for something in $\A$ to be greater
+    than or equal to something in $\S$.  When they both come from $\A$, the
+    result follows from the antisymmetry of the order in $\A$.  When they both
+    come from $\S$, they are equal because $\S$ only has one value.
+
+    For being well-ordered, let $S$ be a nonempty set in $\A + \S$.  There will
+    be two cases: for when there exists an $a : \A$ such that $\iota_1(a) \in
+    S$, or when no such $a$ exists.  When such an $a$ exists, define the set $S'
+    = \{a : \A \mid \iota_1(a) \in S\}$.  This is a nonempty set in $\A$, and
+    because $\A$ is well ordered, it has a least element $m$.  $m$ is the least
+    element of $S$ as well.  When no $\iota_1(a) \in S$ exists, then $I$, the
+    value in the singleton type, must be the least element of $S$ instead.
+\end{proof}
+
+\begin{theorem} \label{ord_suc_type}
+    For all well-ordered types $\A$, we have $S([\A]) = [\A + \S]$.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  To prove that $S([\A]) \leq [\A + \S]$,
+    it suffices to prove that $[\A] < [\A + \S]$.  $\A$ is order isomorphic to
+    the initial segment of $\iota_2(I)$ in $\A + \S$, so the result follows by
+    Theorem \ref{ord_lt_simpl}.
+
+    Proving that $[\A + \S] \leq S([\A])$ is much more difficult.  We know that
+    $[\A] < S([\A])$.  Let $\B$ be a well-ordered type with order type
+    $S([\A])$.  So we have $[\A] < [\B]$ and must prove that $[\A + \S] \leq
+    [\B]$.  By Theorem \ref{ord_lt_simpl} we have some $b : \B$ such that $\A$
+    is order isomorphic to $\B_b$.  Let $f$ be that order isomorphism.  Then
+    define a function $g : \A + \S \to \B$ given by
+    \begin{align*}
+        g(\iota_1(a)) &= f(a) \\
+        g(\iota_2(I)) &= b.
+    \end{align*}
+    This function is injective and orderly, so by Theorem \ref{ord_le_simpl} we
+    have $[\A + \S] \leq [\B]$.
+\end{proof}
+
+\section{Normal Functions}
+
+\begin{class}
+    Let $f$ be an ordinal function.  Then we say that $f$ satisfies the normal
+    limit condition if for all limit ordinals $\gamma$, we have
+    \[
+        f(\gamma) = \sup\{f(\delta) \mid \delta < \gamma\}.
+    \]
+\end{class}
+
+\begin{definition}
+    We call an ordinal function $f$ a normal function if it is orderly,
+    injective, and satisfies the normal limit condition.  Equivalently, $f$ is
+    normal if it is strictly orderly and satisfies the normal limit condition.
+\end{definition}
+
+We commonly make normal functions through ordinal recursion, so here is a
+specialized recursion scheme for making normal functions:
+
+\begin{theorem}[Normal Recursion]
+    Let $f_0$ be an ordinal and let $f_S : \Ord \to \Ord \to \Ord$.  Then there
+    exists a function $g : \Ord \to \Ord$ such that
+    \begin{align*}
+        g(0) &= f_0 \\
+        g(S(\alpha)) &= f_S(\alpha, g(\alpha)) \\
+        g(\gamma) &= \sup\{g(\delta) \mid \delta < \gamma\}
+            \text{\quad when $\gamma$ is a limit ordinal.}
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    The result follows directly from ordinal recursion with $f_0$, $f_S$, and
+    the function $f_\infty(\gamma, h) = \sup\{h(\delta) \mid \delta < \gamma\}$.
+\end{proof}
+
+To distinguish this type of recursion from transfinite recursion and ordinal
+recursion, we will call this normal recursion.  Note that by definition, all
+functions made with normal recursion satisfy the normal limit condition.
+
+\begin{theorem} \label{make_ord_normal_le}
+    If an ordinal function $f$ was defined with normal recursion and if
+    $f(\alpha) \leq f(S(\alpha))$ for all $\alpha$, then $f$ is orderly.
+\end{theorem}
+\begin{proof}
+    Let $\alpha \leq \beta$.  if $\alpha = \beta$, we would be done, so assume
+    that $\alpha < \beta$.  The proof will be by ordinal induction on $\beta$.
+
+    We can't have $\beta = 0$ because $\alpha < \beta$.
+
+    Assume that if $\alpha < \beta$, then $f(\alpha) \leq f(\beta)$, and
+    assume $\alpha < S(\beta)$.  This means that $\alpha \leq \beta$.  If
+    $\alpha = \beta$, we would have $f(\alpha) \leq f(S(\alpha))$ by assumption.
+    If $\alpha \neq \beta$, we would have $\alpha < \beta$, so by the inductive
+    hypothesis we have $f(\alpha) \leq f(\beta)$, and $f(\beta) \leq
+    f(S(\beta))$, so $f(\alpha) \leq f(S(\beta))$.  Either way, $f(\alpha) \leq
+    f(S(\beta))$.
+
+    When $\beta$ is a limit ordinal, we won't need the inductive hypothesis.  By
+    the normal limit condition, we have $f(\beta) = \sup\{f(\delta) \mid \delta
+    < \beta\}$, and since $\alpha < \beta$, we have $f(\alpha) \leq f(\beta)$.
+\end{proof}
+
+\begin{theorem} \label{make_ord_normal_inj}
+    If an ordinal function $f$ was defined with normal recursion and if
+    $f(\alpha) < f(S(\alpha))$ for all $\alpha$, then $f$ is injective.
+\end{theorem}
+\begin{proof}
+    Let $f(\alpha) = f(\beta)$, and assume for a contradiction without loss of
+    generality that $\alpha < \beta$.  We know that $f(\beta) = f(\alpha) <
+    f(S(\alpha))$.  From $\alpha < \beta$, we have $S(\alpha) \leq \beta$, and
+    because $f$ is orderly, we have $f(S(\alpha)) \leq f(\beta)$, contradicting
+    $f(\beta) < f(S(\alpha))$.  Thus, we must have $\alpha = \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_normal_le}
+    For all normal functions $f$, for all ordinals $\alpha$ we have $\alpha \leq
+    f(\alpha)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by transfinite induction.  The inductive hypothesis states
+    that for all $\beta < \alpha$, we have $\beta \leq f(\beta)$.  For a
+    contradiction, assume that $f(\alpha) < \alpha$.  Then by the inductive
+    hypothesis we have $f(\alpha) \leq f(f(\alpha))$, and because $f$ is
+    equivalently orderly we have $\alpha \leq f(\alpha)$.
+\end{proof}
+
+\begin{theorem} \label{ord_normal_sup}
+    For all nonempty small sets $T$ and functions $f$ that are orderly and
+    satisfy the normal limit condition, we have
+    \[
+        f(\sup T) = \sup f(T).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  For $\sup f(T) \leq f(\sup T)$, we need
+    to prove that for any $\alpha \in T$, we have $f(\alpha) \leq f(\sup T)$.
+    By $f$ being orderly, it suffices to prove that $\alpha \leq \sup T$, which
+    follows directly from $\alpha \in T$.  $f(\sup T) \leq \sup f(T)$ is a
+    little more difficult.  We will split it into the three cases for when $\sup
+    T = 0$, when it is a successor ordinal, or when it is a limit ordinal.
+
+    When $\sup T = 0$, we must prove that $f(0) \leq \sup f(T)$.  Because $T$ is
+    nonempty, it must have a value in it, and because $\sup T = 0$, by Theorem
+    \ref{ord_sup_zero} we must have $0 \in T$.  Thus, $f(0) \in f(T)$, so $f(0)
+    \leq \sup f(T)$.
+
+    For the case when $\sup T$ is a successor ordinal, let $\sup T = S(\gamma)$.
+    By Theorem \ref{ord_sup_suc}, $S(\gamma) \in T$.  Thus, $f(S(\gamma)) \in
+    f(T)$, so $f(S(\gamma)) \leq \sup f(T)$.
+
+    For the case when $\sup T$ is a limit ordinal, we have $f(\sup T) =
+    \sup\{f(\delta) \mid \delta\}$.  We must prove that
+    \[
+        \sup\{f(\delta) \mid \delta\} \leq \sup f(T).
+    \]
+    By Theorem \ref{ord_sup_leq_sup}, it suffices to prove that for all $\beta <
+    \sup T$, we have some $\zeta \in T$ such that $f(\beta) \leq f(\zeta)$.
+    Because $\sup T$ is a limit ordinal, by Theorem \ref{ord_sup_in} we have a
+    $\zeta \in T$ with $\beta \leq \zeta$.  Then because $f$ is orderly, we have
+    $f(\beta) \leq f(\zeta)$ as required.
+\end{proof}
+
+Note that we don't need injectivity in the previous theorem.
+
+\begin{theorem} \label{ord_normal_lim_ord}
+    For all normal functions $f$, if $\gamma$ is a limit ordinal, then
+    $f(\gamma)$ is a limit ordinal.
+\end{theorem}
+\begin{proof}
+    We know that $f(\gamma) = \sup\{f(\delta) \mid \delta < \gamma\}$.  We must
+    prove that this is not equal to zero and not a successor ordinal.
+
+    Assume that $\sup\{f(\delta) \mid \delta < \gamma\} = 0$.  Because $\gamma$
+    is a limit ordinal, we know that $S(0) < \gamma$, so $f(S(0)) \leq 0$.  But
+    $f(S(0)) > f(0) \geq 0$, which is impossible.  Thus, $\sup\{f(\delta) \mid
+    \delta < \gamma\} \neq 0$.
+
+    Assume that $\sup\{f(\delta) \mid \delta < \gamma\} = S(\beta)$ for some
+    ordinal $\beta$.  Then by Theorem \ref{ord_sup_suc}, there exists an ordinal
+    $\delta < \gamma$ such that $f(\delta) = S(\beta)$.  Because $\gamma$ is a
+    limit ordinal, $S(\delta) < \gamma$ as well, so
+    \[
+        f(S(\delta)) \leq \sup\{f(\delta) \mid \delta < \gamma\} = S(\beta)
+        = f(\delta).
+    \]
+    This contradicts $f(\delta) < f(S(\delta))$, so $\sup\{f(\delta) \mid
+    \delta < \gamma\}$ can't be a successor ordinal.
+\end{proof}
+
+\begin{definition}
+    Let $S$ be a small set of any type, and let $f_i$ be a normal function for
+    all $i \in S$.  We will call $f_i$ a small family of normal functions.
+\end{definition}
+
+\begin{definition}
+    Let $f_i$ be a small family of normal functions, and let $\alpha$ be an
+    ordinal.  Define the set $F(\alpha) : \Ord \to \Prop$ defined by saying that
+    $\beta \in F(\alpha)$ if there exists a list $[f_0, f_1, \ldots, f_n]$ of
+    functions in $f_i$ such that $\beta = f_0(f_1(\cdots(f_n(\alpha))))$.
+\end{definition}
+
+\begin{theorem}
+    For all small families of normal functions $f_i$ and ordinals $\alpha$, the
+    set $F(\alpha)$ is small.
+\end{theorem}
+\begin{proof}
+    Because $f_i$ is small, we have a type $\X : \Type_n$ and a surjective
+    function $f : \X \to f_i$.  We can defined a surjection from $\L(\X)$ to
+    $F(\alpha)$ by taking a list of values in $\X$, applying $f$ to them, and
+    then applying the functions in sequence to $\alpha$.  We have $\L(\X) :
+    \Type_n$, so $F(\alpha)$ is small.
+\end{proof}
+
+\begin{theorem}
+    For all small families of normal functions $f_i$ and ordinals $\alpha$, we
+    have $f_x(\sup F(\alpha)) = \sup F(\alpha)$ for all $x \in S$.
+\end{theorem}
+\begin{proof}
+    We know that $F(\alpha)$ is nonempty because $\alpha \in F(\alpha)$, so we
+    have
+    \[
+        f_x(\sup F(\alpha)) = \sup f_x(F(\alpha)).
+    \]
+    We must prove
+    \[
+        \sup f_x(F(\alpha)) = \sup F(\alpha),
+    \]
+    which we will do by antisymmetry and Theorem \ref{ord_sup_leq_sup}.
+
+    Let $\beta \in F(\alpha)$.  We must prove that there exists an ordinal
+    $\gamma \in F(\alpha)$ such that $f_x(\beta) \leq \gamma$.  $f_x(\beta)$ is
+    precisely such a $\gamma$.
+
+    Let $\beta \in F(\alpha)$.  We must prove that there exists an ordinal
+    $\gamma \in f_x(F(\alpha))$ such that $\beta \leq \gamma$.  Because $\beta
+    \in F(\alpha)$, $f_x(\beta) \in f_x(F(\alpha))$.  Because $f_x$ is normal,
+    we have $\beta \leq f_x(\beta)$, showing that $\gamma = f_x(\beta)$
+    suffices.
+\end{proof}
+
+\begin{theorem}
+    For all small families of normal functions $f_i$ and ordinals $\alpha$, we
+    have $\alpha \leq \sup F(\alpha)$.
+\end{theorem}
+\begin{proof}
+    We have $\alpha \in F(\alpha)$ because applying the empty list of functions
+    to $\alpha$ produces $\alpha$.
+\end{proof}
+
+\begin{theorem}
+    For all small families of normal functions $f_i$ and ordinals $\alpha$,
+    $\sup F(\alpha)$ is the smallest ordinal greater than or equal to $\alpha$
+    that is a fixed point of all $f_i$.
+\end{theorem}
+\begin{proof}
+    Let $\beta$ be a fixed point of all $f_i$ with $\alpha \leq \beta$.  We will
+    prove that $\beta$ is an upper bound of $F(\alpha)$, showing that $\sup
+    F(\alpha) \leq \beta$.  Let $\gamma \in F(\alpha)$.  Then there exists a
+    list $a$ of functions $f_i$ such that $\gamma =
+    f_0(f_1(\cdots(f_n(\alpha))))$.  We will prove that $\gamma \leq \beta$ by
+    induction on $a$.  When $a = []$, we have $\gamma = \alpha$, and we have
+    $\alpha \leq \beta$ by assumption.  Now assume that
+    $f_1(f_2(\cdots(f_n(\alpha)))) \leq \beta$.  Then
+    \[
+        f_0(f_1(f_2(\cdots(f_n(\alpha))))) \leq f_0(\beta) = \beta.
+    \]
+\end{proof}
+
+Given that singleton sets are small, we can also find the fixed points of a
+single normal function.
+
+\section{Addition of Ordinals}
 
 \begin{instance}
-    Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
-    (g : \Ord_\beta \to \Ord) \to \Ord$ that is given by
-    \[
-        f(\beta, g) = \begin{cases}
-            \alpha &\text{if $0 = \beta$} \\
-            \lsub(g(\delta), \delta < \beta) &\text{otherwise.}
-        \end{cases}
-    \]
-    Let $g$ be the function given by transfinite recursion on $f$.  Then define
-    the sum $\alpha + \beta$ to be equal to $g(\beta)$.
+    Let $\alpha$ and $\beta$ be ordinals.  Define the sum $\alpha + \beta$
+    recursively on $\beta$ using normal recursion such that
+    \begin{align*}
+        \alpha + 0 &= \alpha \\
+        \alpha + S(\beta) &= S(\alpha + \beta).
+    \end{align*}
 \end{instance}
 
 Addition of ordinals is quite strange in that it is noncommutative, and some
@@ -1203,37 +1728,77 @@ which identities hold and which do not.
     This follows directly from the definition.
 \end{proof}
 
+\begin{lemma} \label{ord_plus_lt_suc}
+    For all ordinals $\alpha$ and $\beta$, we have $\alpha + \beta < \alpha +
+    S(\beta)$.
+\end{lemma}
+\begin{proof}
+    \[
+        \alpha + \beta < S(\alpha + \beta) = \alpha + \S(\beta).
+    \]
+\end{proof}
+
+\begin{instance}
+    For all ordinals $\alpha$, the function $f_\alpha(\beta) = \alpha + \beta$
+    satisfies the normal limit condition.
+\end{instance}
+\begin{proof}
+    This comes directly from the definition using normal recursion.
+\end{proof}
+
+\begin{instance}
+    For all ordinals $\alpha$, the function $f_\alpha(\beta) = \alpha + \beta$
+    is orderly.
+\end{instance}
+\begin{proof}
+    This is a direct application of Theorem \ref{make_ord_normal_le} and Lemma
+    \ref{ord_plus_lt_suc}.
+\end{proof}
+
+\begin{instance}
+    For all ordinals $\alpha$, the function $f_\alpha(\beta) = \alpha + \beta$
+    is injective.
+\end{instance}
+\begin{proof}
+    This is a direct application of Theorem \ref{make_ord_normal_inj} and Lemma
+    \ref{ord_plus_lt_suc}.
+\end{proof}
+
+Thus, ordinal addition is a normal function.
+
+\begin{theorem} \label{ord_plus_sup}
+    For all ordinals $\alpha$ and small sets $S$, we have
+    \[
+        \alpha + \sup S = \sup\{\alpha + \delta \mid \delta \in S\}.
+    \]
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{ord_normal_sup}.
+\end{proof}
+
 \begin{instance}
     $0$ is a left additive identity in $\Ord$.
 \end{instance}
 \begin{proof}
     Let $\alpha$ be an ordinal.  We will prove that $0 + \alpha = \alpha$ by
-    transfinite induction.  The inductive hypothesis states that for all $\delta
-    < \alpha$, we have $0 + \delta = \beta$.  When $\alpha = 0$, we have $0 + 0 =
-    0$.  When $\alpha \neq 0$,
-    \begin{align*}
+    ordinal induction.  When $\alpha = 0$, we have $0 + 0 = 0$.  For the
+    successor case, assume that $0 + \alpha = \alpha$.  Then
+    \[
+        0 + S(\alpha) = S(0 + \alpha) = S(\alpha).
+    \]
+    For the limit case, assume that $\alpha$ is a limit ordinal with $0 + \delta
+    = \delta$ for all $\delta < \alpha$.  Then
+    \[
         0 + \alpha
-        &= \lsub(0 + \delta, \delta < \alpha)
-            && \text{by the definition of addition} \\
-        &= \lsub(\delta, \delta < \alpha)
-            && \text{by the inductive hypothesis} \\
-        &= \alpha
-            && \text{by Theorem \ref{ord_lsub_self_eq}.} \\
-    \end{align*}
+        = \sup\{0 + \delta \mid \delta < \alpha\}
+        = \sup\{\delta \mid \delta < \alpha\}
+        = \alpha.
+    \]
 \end{proof}
 
-\begin{instance}
-    The order of ordinals is strictly left additive.
-\end{instance}
-\begin{proof}
-    First, because $\alpha < \beta$, we have $0 \neq \beta$.  Then the result
-    follows directly from Theorem \ref{ord_lsub_gt}.
-\end{proof}
-
-By Instances \ref{plus_lcancel1} and \ref{le_lplus2}, addition is left
-cancellative and the order is left additive.  Then by Instances
-\ref{le_plus_lcancel2} and \ref{lt_plus_lcancel2}, the order is also left
-addition cancellative and strictly left addition cancellative.
+Because normal functions are equivalently strictly orderly and injective, we can
+add and cancel addition on the left in equations, inequalities, and strict
+inequalities.
 
 \begin{theorem} \label{ord_le_self_rplus}
     For all ordinals $\alpha$ and $\beta$, we have $\alpha \leq \alpha + \beta$.
@@ -1250,12 +1815,7 @@ addition cancellative and strictly left addition cancellative.
     For all ordinals $\alpha$ and $\beta$, we have $\alpha \leq \beta + \alpha$.
 \end{theorem}
 \begin{proof}
-    The proof will be by transfinite induction on $\alpha$.  The inductive
-    hypothesis says that for all $\gamma < \alpha$, we have $\gamma \leq \beta +
-    \gamma$.  If $\beta + \alpha < \alpha$, this would mean that $\beta + \alpha
-    \leq \beta + (\beta \alpha)$.  By adding $\beta$ on the left we have $\beta
-    + (\beta + \alpha) < \beta + \alpha$.  The last two inequalities are
-    incompatible, so we must have $\alpha \leq \beta + \alpha$.
+    This follows from Theorem \ref{ord_normal_le}.
 \end{proof}
 
 \begin{theorem} \label{ord_le_ex}
@@ -1263,25 +1823,28 @@ addition cancellative and strictly left addition cancellative.
     exists an ordinal $\gamma$ such that $\alpha + \gamma = \beta$.
 \end{theorem}
 \begin{proof}
-    If $\alpha = \beta$, then $\gamma = 0$ suffices, so now consider the case
-    $\alpha \neq \beta$.  Let $S$ be the set $\{\varepsilon : \Ord \mid \beta
+    Let $C$ be the set $\{\varepsilon : \Ord \mid \beta
     \leq \alpha + \varepsilon\}$.  By Theorem \ref{ord_le_self_lplus}, this set
-    is nonempty, so it has a least element $\gamma$.  If $\gamma = 0$, we would
-    have $0 \in S$, so $\beta \leq \alpha$, contradicting $\alpha \leq \beta$
-    and $\alpha \neq \beta$.  So we must have $\gamma \neq 0$.  We will prove by
-    Theorem \ref{ord_lsub_eq} that $\alpha + \gamma = \beta$.
+    is nonempty, so it has a least element $\gamma$.  Because $\beta \leq \alpha
+    + \gamma$, all we need to prove is $\alpha + \gamma \leq \beta$.  We will
+    look at the three cases for when $\gamma$ is zero, a successor ordinal, or a
+    limit ordinal.
 
-    First, let $\delta < \gamma$.  We must prove that $\alpha + \delta < \beta$.
-    If $\beta \leq \alpha + \delta$, we would have $\delta \in S$, so $\gamma
-    \leq \delta$, contradicting $\delta < \gamma$.  Thus, we must have $\alpha +
-    \delta < \beta$ as required.
+    If $\gamma = 0$, we have $\alpha + 0 = \alpha \leq \beta$ by assumption.
 
-    Now let $\zeta$ be another ordinal such that for all $\delta < \gamma$, we
-    have $\alpha + \delta < \zeta$.  We must prove that $\beta \leq \zeta$.
-    Because $\gamma \in S$, we have $\beta \leq \alpha + \gamma$, so by
-    transitivity it suffices to prove $\alpha + \gamma \leq \zeta$.  The result
-    follows directly $\alpha + \gamma$ being the least element that satisfies
-    the conditions that $\zeta$ does.
+    If $\gamma = S(\gamma')$, assume for a contradiction that $\beta < \alpha +
+    \gamma$.  Then $\beta < \alpha + S(\gamma') = S(\alpha + \gamma')$, so
+    $\beta \leq \alpha + \gamma'$.  This means that $\gamma' \in T$.  But then
+    $\gamma \leq \gamma' = S(\gamma)$, which is impossible.  Thus, $\alpha +
+    \gamma \leq \beta$.
+
+    If $\gamma$ is a limit ordinal, we have $\alpha + \gamma = \sup\{\alpha +
+    \delta \mid \delta < \gamma\}$.  To prove that $\alpha + \gamma \leq \beta$,
+    it suffices to show that $\beta$ is an upper bound of this set.  So let
+    $\delta < \gamma$.  We must show that $\alpha + \delta \leq \beta$.  If we
+    had $\beta < \alpha + \delta$, we would have $\delta \in T$, meaning that
+    $\gamma \leq \delta$, contradicting $\delta < \gamma$.  Thus, $\alpha +
+    \gamma \leq \beta$.
 \end{proof}
 
 \begin{theorem} \label{ord_lt_ex}
@@ -1300,9 +1863,9 @@ addition cancellative and strictly left addition cancellative.
     \alpha + \beta$.
 \end{theorem}
 \begin{proof}
-    If $0 = \alpha + \beta$, then by Theorem \ref{ord_lsub_gt}, we have $\alpha
-    + \delta < 0$ for all $\delta < \beta$.  Since $\beta \neq 0$, such a
-    $\delta$ exists, which is impossible.
+    By Theorem \ref{ord_le_self_lplus}, we have $\beta \leq \alpha + \beta$.
+    If $0 = \alpha + \beta$, we would have $\beta \leq 0$, so $\beta = 0$,
+    contradictiong $\beta \neq 0$.  Thus, $0 \neq \alpha + \beta$.
 \end{proof}
 
 \begin{theorem} \label{ord_nz_lplus}
@@ -1314,133 +1877,38 @@ addition cancellative and strictly left addition cancellative.
     result follows from the previous theorem.
 \end{proof}
 
-\begin{theorem} \label{ord_lsub_plus}
-    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$, if $0 \neq
-    \beta$, then
-    \[
-        \alpha + \lsub(f(\delta), \delta < \beta)
-        = \lsub(\alpha + f(\delta), \delta < \beta).
-    \]
-\end{theorem}
-\begin{proof}
-    Because $0 \neq \beta$, we also have $0 \neq \lsub(f(\delta), \delta <
-    \beta)$ by Theorem \ref{ord_lsub_f_zero}.  We will prove the result by
-    antisymmetry.
-
-    To prove that
-    \[
-        \alpha + \lsub(f(\delta), \delta < \beta)
-        \leq \lsub(\alpha + f(\delta), \delta < \beta),
-    \]
-    first notice that by the definition of addition this is equivalent to
-    \[
-        \lsub(\alpha + \delta_1, \delta_1 < \lsub(f(\delta_2), \delta_2 <
-        \beta)) \leq \lsub(\alpha + f(\delta), \delta < \beta).
-    \]
-    Then by Theorem \ref{ord_lsub_least}, it suffices to prove that for all
-    $\zeta < \lsub(f(\delta), \delta < \beta)$, we have
-    \[
-        \alpha + \zeta < \lsub(\alpha + f(\delta), \delta < \beta).
-    \]
-    By Theorem \ref{ord_lsub_in}, we have some $\gamma < \beta$ with $\zeta
-    \leq f(\gamma)$.  Adding $\alpha$ on both sides, we get
-    \[
-        \alpha + \zeta \leq \alpha + f(\gamma).
-    \]
-    By Theorem \ref{ord_lsub_gt}, we have
-    \[
-        \alpha + f(\gamma) < \lsub(\alpha + f(\delta), \delta < \beta),
-    \]
-    and the result follows from transitivity with the last two inequalities.
-
-    To prove that
-    \[
-        \lsub(\alpha + f(\delta), \delta < \beta)
-        \leq \alpha + \lsub(f(\delta), \delta < \beta),
-    \]
-    we will use Theorem \ref{ord_lsub_least}.  Let $\zeta < \beta$.  Then by
-    Theorem \ref{ord_lsub_gt}, we have
-    \[
-        f(\zeta) < \lsub(f(\delta), \delta < \beta),
-    \]
-    and adding $\alpha$ on the left shows that $\alpha + \lsub(f(\delta), \delta
-    < \beta)$ is an upper bound as required.
-\end{proof}
-
-\begin{theorem} \label{ord_lub_plus}
-    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$, if $0 \neq
-    \beta$, then
-    \[
-        \alpha + \lub(f(\delta), \delta < \beta)
-        = \lub(\alpha + f(\delta), \delta < \beta).
-    \]
-\end{theorem}
-\begin{proof}
-    If $0 = \lub(f(\delta), \delta < \beta)$, we would have $f(\delta) = 0$ for
-    all $\delta$ by Theorem \ref{ord_lub_f_zero}.  Then the result would follow
-    from Theorem \ref{ord_lub_constant}.  So now consider the case $0 \neq
-    \lub(f(\delta), \delta < \beta)$.  We will prove the result by antisymmetry.
-
-    To prove that
-    \[
-        \alpha + \lub(f(\delta), \delta < \beta)
-        \leq \lub(\alpha + f(\delta), \delta < \beta),
-    \]
-    first notice that by the definition of addition this is equivalent to
-    \[
-        \lsub(\alpha + \delta_1, \delta_1 < \lub(f(\delta_2), \delta_2 < \beta))
-        \leq \lub(\alpha + f(\delta), \delta < \beta).
-    \]
-    Then by Theorem \ref{ord_lsub_least}, it suffices to prove that for all
-    $\zeta < \lsub(f(\delta), \delta < \beta)$, we have
-    \[
-        \alpha + \zeta < \lub(\alpha + f(\delta), \delta < \beta).
-    \]
-    By Theorem \ref{ord_lsub_in}, we have some $\gamma < \beta$ with $\zeta
-    < f(\gamma)$.  Adding $\alpha$ on both sides, we get
-    \[
-        \alpha + \zeta < \alpha + f(\gamma).
-    \]
-    By Theorem \ref{ord_lub_ge}, we have
-    \[
-        \alpha + f(\gamma) \leq \lub(\alpha + f(\delta), \delta < \beta),
-    \]
-    and the result follows from transitivity with the last two inequalities.
-
-    To prove that
-    \[
-        \lub(\alpha + f(\delta), \delta < \beta)
-        \leq \alpha + \lub(f(\delta), \delta < \beta),
-    \]
-    we will use Theorem \ref{ord_lub_least}.  Let $\zeta < \beta$.  Then by
-    Theorem \ref{ord_lub_ge}, we have
-    \[
-        f(\zeta) \leq \lub(f(\delta), \delta < \beta),
-    \]
-    and adding $\alpha$ on the left shows that $\alpha + \lub(f(\delta), \delta
-    < \beta)$ is an upper bound as required.
-\end{proof}
-
 \begin{instance}
     Addition of ordinals is associative.
 \end{instance}
 \begin{proof}
     Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that $\alpha
-    + (\beta + \gamma) = (\alpha + \beta) + \gamma$ by transfinite induction on
-    $\gamma$.  The inductive hypothesis states that for all $\delta < \gamma$,
-    we have $\alpha + (\beta + \delta) = (\alpha + \beta) + \delta$.  If $\gamma
-    = 0$, the result follows instantly, so now consider the case $\gamma \neq
-    0$.  Then
+    + (\beta + \gamma) = (\alpha + \beta) + \gamma$ by ordinal induction on
+    $\gamma$.
+
+    When $\gamma = 0$, we have
+    \[
+        \alpha + (\beta + 0) = \alpha + \beta = (\alpha + \beta) + 0.
+    \]
+
+    For the successor case, assume that $\alpha + (\beta + \gamma) = (\alpha +
+    \beta) + \gamma$.  Then
+    \begin{align*}
+        \alpha + (\beta + S(\gamma))
+        &= \alpha + S(\beta + \gamma) \\
+        &= S(\alpha + (\beta + \gamma)) \\
+        &= S((\alpha + \beta) + \gamma) \\
+        &= (\alpha + \beta) + S(\gamma).
+    \end{align*}
+
+    For the limit case, assume that $\gamma$ is a limit ordinal and that for all
+    $\delta < \gamma$, we have $\alpha + (\beta + \delta) = (\alpha + \beta) +
+    \delta$.  Then
     \begin{align*}
         \alpha + (\beta + \gamma)
-        &= \alpha + \lsub(\beta + \delta, \delta < \gamma)
-            &&\text{by the definition of addition} \\
-        &= \lsub(\alpha + (\beta + \delta), \delta < \gamma)
-            &&\text{by Theorem \ref{ord_lsub_plus}} \\
-        &= \lsub((\alpha + \beta) + \delta, \delta < \gamma)
-            &&\text{by the inductive hypothesis} \\
-        &= (\alpha + \beta) + \gamma
-            &&\text{by the definition of addition.} \\
+        &= \alpha + \sup\{\beta + \delta \mid \delta < \gamma\} \\
+        &= \sup\{\alpha + (\beta + \delta)\} \\
+        &= \sup\{(\alpha + \beta) + \delta\} \\
+        &= (\alpha + \beta) + \gamma.
     \end{align*}
 \end{proof}
 
@@ -1473,44 +1941,120 @@ cancellative.
     $0 = \beta$, contradicting $0 \neq \beta$.
 \end{proof}
 
+\begin{theorem} \label{ord_plus_zero}
+    For all ordinals $\alpha$ and $\beta$, if $0 = \alpha + \beta$, we have
+    $\alpha = 0$ and $\beta = 0$.
+\end{theorem}
+\begin{proof}
+    Each thing to prove can be seen as the contrapositive of Theorems
+    \ref{ord_nz_lplus} and \ref{ord_nz_rplus}.
+\end{proof}
+
+\begin{theorem} \label{ord_plus_lim_lim}
+    For all ordinals $\alpha$ and $\beta$, if $\beta$ is a limit ordinal, then
+    $\alpha + \beta$ is a limit ordinal.
+\end{theorem}
+\begin{proof}
+    This follows from addition being a normal function and Theorem
+    \ref{ord_normal_lim_ord}.
+\end{proof}
+
 \section{Multiplication of Ordinals}
 
 \begin{instance}
-    Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
-    (g : \Ord_\beta \to \Ord) \to \Ord$ given by
-    \[
-        f(\beta, g) = \lub(g(\delta) + \alpha, \delta < \beta).
-    \]
-    Let $g$ be the function given by transfinite recursion on $f$.  Then define
-    the product $\alpha \beta$ to be equal to $g(\beta)$.
+    Let $\alpha$ and $\beta$ be ordinals.  Define the product $\alpha \beta$
+    recursively on $\beta$ using normal recursion such that
+    \begin{align*}
+        \alpha 0 &= 0 \\
+        \alpha S(\beta) &= \alpha \beta + \alpha.
+    \end{align*}
 \end{instance}
-
-Note that this definition uses $\lub$, not $\lsub$ like with addition.
-
-\begin{instance}
-    Zero is a left annihilator in the ordinals.
-\end{instance}
-\begin{proof}
-    Let $\alpha$ be an ordinal.  We will prove that $0\alpha = 0$ by transfinite
-    induction.  The inductive hypothesis states that for all $\delta < \alpha$,
-    we have $0\delta = 0$.  We will prove the result using Theorem
-    \ref{ord_lub_eq}.  For every $\delta < \alpha$, we have $0\delta + 0 = 0
-    \leq 0$ by the inductive hypothesis, so $0$ is an upper bound.  And because
-    all ordinals are positive, $0$ is the least upper bound.
-\end{proof}
 
 \begin{instance}
     Zero is a right annihilator in the ordinals.
 \end{instance}
 \begin{proof}
-    Let $\alpha$ be an ordinal.  We will prove that $\alpha 0 = 0$ using Theorem
-    \ref{ord_lub_eq}.  It's impossible for there to be any $\delta < 0$, so $0$
-    is vacuously an upper bound. And because all ordinals are positive, $0$ is
-    the least upper bound.
+    This follows directly from the definition.
+\end{proof}
+
+\begin{lemma} \label{ord_mult_le_suc}
+    For all ordinals $\alpha$ and $\beta$, we have $\alpha \beta \leq \alpha
+    S(\beta)$.
+\end{lemma}
+\begin{proof}
+    \[
+        \alpha \beta \leq \alpha \beta + \alpha = \alpha S(\beta).
+    \]
+\end{proof}
+
+\begin{lemma} \label{ord_mult_lt_suc}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha \neq 0$, we have $\alpha
+    \beta < \alpha S(\beta)$.
+\end{lemma}
+\begin{proof}
+    \[
+        \alpha \beta < \alpha \beta + \alpha = \alpha S(\beta).
+    \]
+\end{proof}
+
+\begin{instance} \label{ord_mult_normal}
+    For all ordinals $\alpha$, the function $f_\alpha(\beta) = \alpha \beta$
+    satisfies the normal limit condition.
+\end{instance}
+\begin{proof}
+    This follows directly from the definition.
+\end{proof}
+
+\begin{theorem} \label{ord_mult_homo_le}
+    For all ordinals $\alpha$, the function $f_\alpha(\beta) = \alpha \beta$ is
+    orderly.
+\end{theorem}
+\begin{proof}
+    This is a direct application of Theorem \ref{make_ord_normal_le} and Lemma
+    \ref{ord_mult_le_suc}.
+\end{proof}
+
+\begin{theorem} \label{ord_mult_homo_inj}
+    For all ordinals $\alpha \neq 0$, the function $f_\alpha(\beta) = \alpha
+    \beta$ is injective.
+\end{theorem}
+\begin{proof}
+    This is a direct application of Theorem \ref{make_ord_normal_inj} and Lemma
+    \ref{ord_mult_lt_suc}.
+\end{proof}
+
+Note that this requires $\alpha \neq 0$!  Thus, any time we want to use
+multiplication as a normal function, we need to ensure that $\alpha \neq 0$.
+However, some things that we normally do with normal functions still works when
+$\alpha = 0$, like the following theorem.
+
+\begin{theorem} \label{ord_mult_sup}
+    For all ordinals $\alpha$ and small sets $S$, we have
+    \[
+        \alpha \sup S = \sup\{\alpha + \delta \mid \delta \in S\}.
+    \]
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{ord_normal_sup}.  Note that we don't
+    need $\alpha \neq 0$ because the proof of Theorem \ref{ord_normal_sup}
+    doesn't require the function to be strictly increasing.
 \end{proof}
 
 \begin{instance}
-    Define the ordinal 1 to be the ordinal corresponding to the singleton type.
+    Zero is a left annihilator in the ordinals.
+\end{instance}
+\begin{proof}
+    Let $\alpha$ be an ordinal.  We will prove that $0\alpha = 0$ by ordinal
+    induction.  When $\alpha = 0$, we have $0(0) = 0$.  When $0\alpha = 0$, we
+    have $0S(\alpha) = 0\alpha + 0 = 0 + 0 = 0$.  When $\alpha$ is a limit
+    ordinal with $0\delta = 0$ for all $\delta < \alpha$, we have
+    \[
+        0\alpha = \sup\{0\delta \mid \delta < \alpha\} = \sup\{0\} = 0.
+    \]
+\end{proof}
+
+\begin{instance}
+    Define the ordinal 1 to be the order type of the singleton type.
 \end{instance}
 
 \begin{instance} \label{ord_not_trivial}
@@ -1518,7 +2062,7 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \end{instance}
 \begin{proof}
     If $0 = 1$, we would have an order isomorphism $f$ from the singleton type
-    to the empty type.  Then $f(I)$ is a value of the singleton type, which is
+    to the empty type.  Then $f(I)$ is a value of the empty type, which is
     impossible.  Thus, we must have $0 \neq 1$.
 \end{proof}
 
@@ -1552,89 +2096,25 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
     a contradiction.
 \end{proof}
 
-\begin{theorem} \label{ord_lt_suc_le}
-    For all ordinals $\alpha$ and $\beta$, $\alpha < \beta + 1$ if and only if
-    $\alpha \leq \beta$.
+\begin{theorem} \label{ord_suc_zero_one}
+    In the ordinals, $S(0) = 1$.
 \end{theorem}
 \begin{proof}
-    First assume that $\alpha < \beta + 1$.  By the definition of addition, we
-    have $\alpha < \lsub(\beta + \delta, \delta < 1)$.  Since $\delta < 1$
-    implies $\delta = 0$, this means that $\beta + 1$ is the smallest ordinal
-    greater than $\beta$.  Because of this, if $\beta < \alpha$, we would have
-    $\beta + 1 \leq \alpha$, contradicting $\alpha < \beta + 1$.  Thus, we must
-    have $\alpha \leq \beta$.
-
-    Now assume that $\alpha \leq \beta$.  By Theorem \ref{ord_le_ex}, there
-    exsits a $\gamma$ such that $\alpha + \gamma = \beta$.  Then we have
-    \begin{align*}
-        0 &\neq 1 && \text{by Instance \ref{ord_not_trivial}} \\
-        0 &\neq \gamma + 1 && \text{by Theorem \ref{ord_nz_rplus}} \\
-        0 &< \gamma + 1 && \text{by Theorem \ref{all_pos2}} \\
-        \alpha &< \alpha + \gamma + 1 && \\
-        \alpha &< \beta + 1 &&
-    \end{align*}
+    We know that $0 < 1$, so by Theorem \ref{ord_le_suc_lt} we have $S(0) \leq
+    1$.  Furthermore, because $0 \neq S(0)$, by Theorem \ref{ord_pos_one} we
+    have $1 \leq S(0)$.  By antisymmetry, we have $S(0) = 1$.
 \end{proof}
 
-\begin{theorem} \label{ord_le_suc_lt}
-    For all ordinals $\alpha$ and $\beta$, $\alpha + 1 \leq \beta$ if and only
-    if $\alpha < \beta$.
+\begin{theorem} \label{ord_suc_plus_one}
+    For all ordinals $\alpha$, we have $S(\alpha) = \alpha + 1$.
 \end{theorem}
 \begin{proof}
-    First assume that $\alpha + 1 \leq \beta$.  Then by the previous theorem,
-    $\alpha + 1 < \beta + 1$, so $\alpha < \beta$.
-
-    Now assume that $\alpha < \beta$.  Then by Theorem \ref{ord_lt_ex}, we have
-    some $\gamma \neq 0$ such that $\alpha + \gamma = \beta$.  Then since
-    $\gamma \neq 0$, we have $1 \leq \gamma$ by Theorem \ref{ord_pos_one}, and
-    adding $\alpha$ to both sides on the left, we get $\alpha + 1 \leq \alpha +
-    \gamma = \beta$.
-\end{proof}
-
-\begin{theorem} \label{ord_le_suc}
-    For all ordinals $\alpha$, we have $\alpha \leq \alpha + 1$.
-\end{theorem}
-\begin{proof}
-    Special case of Theorem \ref{ord_le_self_rplus}.
-\end{proof}
-
-\begin{theorem} \label{ord_lt_suc}
-    For all ordinals $\alpha$, we have $\alpha < \alpha + 1$.
-\end{theorem}
-\begin{proof}
-    By Theorem \ref{ord_lt_suc_le}, this is equivalent to $\alpha \leq \alpha$,
-    which is true by reflexivity.
-\end{proof}
-
-\begin{theorem} \label{ord_lsub_lub}
-    For all ordinals $\beta$ and ordinal functions $f$,
     \[
-        \lsub(f(\delta), \delta < \beta) = \lub(f(\delta) + 1, \delta < \beta).
+        S(\alpha)
+        = S(\alpha + 0)
+        = \alpha + S(0)
+        = \alpha + 1.
     \]
-\end{theorem}
-\begin{proof}
-    The proof will be by Theorem \ref{ord_lub_eq}.  First, let $\alpha < \beta$.
-    Then for any $\varepsilon$ with $f(\delta) < \varepsilon$ with $\delta <
-    \beta$, we have $f(\alpha) + 1 \leq \varepsilon$ by Theorem
-    \ref{ord_le_suc_lt}.  Thus, by Theorem \ref{ord_lsub_other_leq}, we have
-    $f(\alpha) + 1 \leq \lsub(f(\delta), \delta < \beta)$, so $\lsub(f(\delta),
-    \delta < \beta)$ is an upper bound of $f(\delta) + 1$.
-
-    To prove that it's the least upper bound, let $\varepsilon$ be another upper
-    bound.  Then for all $\alpha < \beta$ we have $f(\alpha) + 1 \leq
-    \varepsilon$, so by Theorem \ref{ord_le_suc_lt}, we have $f(\alpha) <
-    \varepsilon$.  Thus, by Theorem \ref{ord_lsub_least}, we have
-    $\lsub(f(\delta), \delta < \beta) \leq \varepsilon$, showing that
-    $\lsub(f(\delta), \delta < \beta)$ is the least upper bound.
-\end{proof}
-
-\begin{theorem} \label{ord_lub_one}
-    For all ordinals $\alpha$, $\lub(\alpha, \delta < 1) = \alpha$.
-\end{theorem}
-\begin{proof}
-    The proof will be by Theorem \ref{ord_lub_eq}.  $\alpha \leq \alpha$, so
-    $\alpha$ is an upper bound.  Then for any $\varepsilon$ with $\alpha \leq
-    \varepsilon$ for any $\delta < 1$, $\delta = 0$ works, so $\alpha$ is the
-    least upper bound.
 \end{proof}
 
 \begin{instance}
@@ -1642,19 +2122,16 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \end{instance}
 \begin{proof}
     Let $\alpha$ be an ordinal.  We will prove that $1\alpha = \alpha$ by
-    transfinite induction.  The inductive hypothesis states that for all $\delta
-    < \alpha$, we have $1\delta = \delta$.  Then
-    \begin{align*}
+    ordinal induction.  When $\alpha = 0$, we have $1(0) = 0$.  When $1\alpha =
+    \alpha$, we have $1S(\alpha) = 1\alpha + 1 = \alpha + 1 = S(\alpha)$.  When
+    $\alpha$ is a limit ordinal with $1\delta = \delta$ for all $\delta <
+    \alpha$,
+    \[
         1\alpha
-        &= \lub(1\delta + 1, \delta < \alpha)
-            && \text{by the definition of multiplication} \\
-        &= \lub(\delta + 1, \delta < \alpha)
-            && \text{by the inductive hypothesis} \\
-        &= \lsub(\delta, \delta < \alpha)
-            && \text{by Theorem \ref{ord_lsub_lub}} \\
-        &= \delta
-            && \text{by Theorem \ref{ord_lsub_self_eq}.} \\
-    \end{align*}
+        = \sup\{1\delta \mid \delta < \alpha\}
+        = \sup\{\delta \mid \delta < \alpha\}
+        = \alpha.
+    \]
 \end{proof}
 
 \begin{instance}
@@ -1662,154 +2139,60 @@ Note that this definition uses $\lub$, not $\lsub$ like with addition.
 \end{instance}
 \begin{proof}
     Let $\alpha$ be an ordinal.  Then
-    \begin{align*}
-        \alpha1
-        &= \lub(\alpha \delta + \alpha, \delta < 1)
-            && \text{by the definition of multiplication} \\
-        &= \lub(\alpha 0 + \alpha, \delta < 1)
-            && \text{by Theorem \ref{ord_lt_one_eq}} \\
-        &= \lub(\alpha, \delta < 1) && \\
-        &= \alpha
-            && \text{by Theorem \ref{ord_lub_one}.} \\
-    \end{align*}
+    \[
+        \alpha 1 = \alpha S(0) = \alpha 0 + \alpha = 0 + \alpha = \alpha.
+    \]
 \end{proof}
 
 \begin{instance}
     Multiplication in the ordinals has the zero property.
 \end{instance}
 \begin{proof}
-    Let $\alpha$ and $\beta$ be ordinals such that $0 = \alpha \beta$.  For a
-    contradiction, assume that both $0 \neq \alpha$ and $0 \neq \beta$.  Then
-    because $0 = \alpha \beta$, we know that $\alpha \delta + \alpha \leq 0$ for
-    all $\delta < \beta$.  Because $0 \neq \beta$, we have $0 < \beta$, so
-    $\alpha 0 + \alpha = \alpha \leq 0$.  By Theorem \ref{all_neg_eq}, we have
-    $\alpha = 0$, a contradiction.
+    Let $\alpha$ and $\beta$ be ordinals such that $0 = \alpha \beta$.  If
+    $\beta = 0$, we are done, so consider the case when $\beta \neq 0$.  We must
+    prove that $\alpha = 0$.  If $\beta = S(\beta')$ for some ordinal $\beta'$,
+    we have $0 = \alpha S(\beta') = \alpha \beta' + \alpha$.  By Theorem
+    \ref{ord_plus_zero}, we must have $0 = \alpha$.  The only case remaining is
+    when $\beta$ is a limit ordinal.  In this case, we have $0 =
+    \sup\{\alpha\delta \mid \delta < \beta\}$.  Because $\beta$ is a limit
+    ordinal, we have $1 < \beta$, so $\alpha 1 \leq 0$.  This implies that
+    $\alpha = 0$ as required.
 \end{proof}
 
-\begin{instance}
-    The order of the ordinals is left multiplicative.
-\end{instance}
-\begin{proof}
-    Let $\alpha$, $\beta$, and $\gamma$ be such that $\alpha \leq \beta$.  By
-    Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta <
-    \alpha$, we have
-    \[
-        \gamma \delta + \gamma \leq \gamma \beta.
-    \]
-    Then by Theorem \ref{ord_lub_other_leq}, it suffices to prove that for all
-    $\varepsilon$ such that $\gamma \zeta + \gamma \leq \varepsilon$ for all
-    $\zeta < \beta$, we have
-    \[
-        \gamma\delta + \gamma \leq \varepsilon.
-    \]
-    Since $\delta < \beta$, the result is immediate from the definition of
-    $\varepsilon$.
-\end{proof}
-
-By Instance \ref{lt_mult_lcancel2}, the order is also strictly left
-multiplication cancellative.
-
-\begin{theorem} \label{ord_ldist_one}
-    For all ordinals $\alpha$ and $\beta$, we have $\alpha(\beta + 1) =
-    \alpha\beta + \alpha$.
-\end{theorem}
-\begin{proof}
-    By the definition of multiplication, we know that
-    \[
-        \alpha(\beta + 1) = \lub(\alpha\delta + \alpha, \delta < \beta + 1).
-    \]
-    We will use Theorem \ref{ord_lub_eq} to show that this is equal to $\alpha
-    \beta + \alpha$.
-
-    First, let $\delta < \beta + 1$.  By Theorem \ref{ord_lt_suc_le}, we have
-    $\alpha \leq \beta$.  Then multiplying by $\alpha$ on the left and adding
-    $\alpha$ on the right, we get $\alpha\delta + \alpha \leq \alpha \beta +
-    \alpha$, showing that $\alpha\beta + \alpha$ is an upper bound.
-
-    Now let $\varepsilon$ be any other upper bound of $\alpha \delta + \alpha$
-    for all $\delta < \beta + 1$.  Since $\beta < \beta + 1$, we have $\alpha
-    \beta + \alpha \leq \varepsilon$, showing that $\alpha \beta + \alpha$ is
-    the least upper bound.
-\end{proof}
-
-\begin{theorem} \label{ord_lub_mult}
-    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$,
-    \[
-        \alpha \lub(f(\delta), \delta < \beta) = \lub(\alpha f(\delta),
-        \delta < \beta).
-    \]
-\end{theorem}
-\begin{proof}
-    The proof will be by antisymmetry.  To prove that
-    \[
-        \alpha \lub(f(\delta), \delta < \beta)
-        \leq \lub(\alpha f(\delta), \delta < \beta),
-    \]
-    first notice that
-    \[
-        \alpha \lub(f(\delta), \delta < \beta)
-        = \lub(\alpha \delta_1 + \alpha,
-            \delta_1 < \lub(f(\delta_2), \delta_\beta)).
-    \]
-    Then by Theorem \ref{ord_lub_least}, it suffices to prove that for all
-    $\zeta < \lub(f(\delta), \delta < \beta)$, we have
-    \[
-        \alpha \zeta + \alpha \leq \lub(\alpha f(\delta), \delta < \beta).
-    \]
-    Because $\zeta < \lub(f(\delta), \delta < \beta)$, by Theorem
-    \ref{ord_lub_in} we have some $\gamma < \beta$ such that $\zeta <
-    f(\gamma)$.  Then by Theorem \ref{ord_le_suc_lt}, we have $\zeta + 1 \leq
-    f(\gamma)$, and multiplying by $\alpha$ and applying Theorem
-    \ref{ord_ldist_one} we get
-    \[
-        \alpha \zeta + \alpha \leq \alpha f(\gamma).
-    \]
-    Furthermore, by Theorem \ref{ord_lub_ge}, we have
-    \[
-        \alpha f(\gamma) \leq \lub(\alpha f(\delta), \delta < \beta).
-    \]
-    Applying transitivity to the previous two inequalities we get the desired
-    result.
-
-    To prove that
-    \[
-        \lub(\alpha f(\delta), \delta < \beta)
-        \leq \alpha \lub(f(\delta), \delta < \beta),
-    \]
-    we will use Theorem \ref{ord_lub_least}.  Let $\delta < \beta$.  We must
-    prove that
-    \[
-        \alpha f(\delta) \leq \alpha \lub(f(\delta), \delta < \beta).
-    \]
-    This follows directly from Theorem \ref{ord_lub_ge} and then multiplying on
-    the left by $\alpha$.
-\end{proof}
+By the properties of normal functions, we can multiply and cancel on the left in
+equations, inequalities, and strict inequalities.  Note that in some of these
+cases, for multiplication to be normal, we need the first argument to be
+nonzero.  However, those are precisely the cases where the corresponding
+multiplicative property requires the first argument to be nonzero anyway.
 
 \begin{instance}
     Multiplication of ordinals is left distributive.
 \end{instance}
 \begin{proof}
     Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that
-    $\alpha(\beta + \gamma) = \alpha \beta + \alpha \gamma$ by transfinite
-    induction on $\gamma$.  The inductive hypothesis states that for all $\delta
-    < \gamma$, we have $\alpha(\beta + \delta) = \alpha \beta + \alpha \delta$.
-    If $\gamma = 0$, the result is trivial.  If $\gamma \neq 0$, then
+    $\alpha(\beta + \gamma) = \alpha \beta + \alpha \gamma$ by ordinal induction
+    on $\gamma$.  When $\gamma = 0$, we have
+    \[
+        \alpha(\beta + 0) = \alpha \beta = \alpha \beta + 0 = \alpha \beta +
+        \alpha 0.
+    \]
+    When $\alpha(\beta + \gamma) = \alpha\beta + \alpha \gamma$,
+    \[
+        \alpha(\beta + S(\gamma))
+        = \alpha S(\beta + \gamma)
+        = \alpha (\beta + \gamma) + \alpha
+        = \alpha \beta + \alpha \gamma + \alpha
+        = \alpha \beta + \alpha S(\gamma).
+    \]
+    When $\gamma$ is a limit ordinal with $\alpha (\beta + \delta) = \alpha
+    \beta + \alpha \delta$ for all $\delta < \gamma$,
     \begin{align*}
         \alpha(\beta + \gamma)
-        &= \alpha \lsub(\beta + \delta, \delta < \gamma)
-            && \text{by the definition of addition} \\
-        &= \alpha \lub(\beta + \delta + 1, \delta < \gamma)
-            && \text{by Theorem \ref{ord_lsub_lub}} \\
-        &= \lub(\alpha(\beta + \delta + 1), \delta < \gamma)
-            && \text{by Theorem \ref{ord_lub_mult}} \\
-        &= \lub(\alpha(\beta + \delta) + \alpha, \delta < \gamma)
-            && \text{by Theorem \ref{ord_ldist_one}} \\
-        &= \lub(\alpha\beta + \alpha\delta + \alpha, \delta < \gamma)
-            && \text{by the inductive hypothesis} \\
-        &= \alpha\beta + \lub(\alpha\delta + \alpha, \delta < \gamma)
-            && \text{by Theorem \ref{ord_lub_plus}} \\
-        &= \alpha\beta + \alpha\gamma
-            && \text{by the definition of multiplication.}
+        &= \alpha \sup\{\beta + \delta \mid \delta < \gamma\} \\
+        &= \sup\{\alpha (\beta + \delta) \mid \delta < \gamma\} \\
+        &= \sup\{\alpha \beta + \alpha \delta \mid \delta < \gamma\} \\
+        &= \alpha \beta + \sup\{\alpha \delta \mid \delta < \gamma\} \\
+        &= \alpha \beta + \alpha \gamma.
     \end{align*}
 \end{proof}
 
@@ -1818,95 +2201,62 @@ multiplication cancellative.
 \end{instance}
 \begin{proof}
     Let $\alpha$, $\beta$, and $\gamma$ be ordinals.  We will prove that
-    $\alpha(\beta\gamma) = (\alpha \beta) \gamma$ by transfinite
-    induction on $\gamma$.  The inductive hypothesis states that for all $\delta
-    < \gamma$, we have $\alpha(\beta\delta) = (\alpha \beta) \delta$.  Then
+    $\alpha (\beta \gamma) = (\alpha \beta) \gamma$ by ordinal
+    induction on $\gamma$.  When $\gamma = 0$,
+    \[
+        \alpha (\beta 0) = \alpha 0 = 0 = (\alpha \beta) 0.
+    \]
+    When $\alpha (\beta \gamma) = (\alpha \beta) \gamma$,
+    \[
+        \alpha (\beta S(\gamma))
+        = \alpha (\beta \gamma + \beta)
+        = \alpha (\beta \gamma) + \alpha \beta
+        = (\alpha \beta) \gamma + \alpha \beta
+        = (\alpha \beta) S(\gamma).
+    \]
+    When $\gamma$ is a limit ordinal and $\alpha (\beta \delta) = (\alpha \beta)
+    \delta$ for all $\delta < \gamma$,
     \begin{align*}
-        \alpha(\beta\gamma)
-        &= \alpha \lub(\beta \delta + \beta, \delta < \gamma)
-            && \text{by the definition of multiplication} \\
-        &= \lub(\alpha(\beta \delta + \beta), \delta < \gamma)
-            && \text{by Theorem \ref{ord_lub_mult}} \\
-        &= \lub(\alpha(\beta \delta) + \alpha \beta, \delta < \gamma)
-            && \\
-        &= \lub((\alpha\beta) \delta + \alpha \beta, \delta < \gamma)
-            && \text{by the inductive hypothesis} \\
-        &= (\alpha\beta) \gamma
-            && \text{by the definition of multiplication.}
+        \alpha (\beta \gamma)
+        &= \alpha \sup\{\beta \delta \mid \delta < \gamma\} \\
+        &= \sup\{\alpha (\beta \delta) \mid \delta < \gamma\} \\
+        &= \sup\{(\alpha \beta) \delta \mid \delta < \gamma\} \\
+        &= (\alpha \beta) \gamma.
     \end{align*}
 \end{proof}
-
-\begin{instance}
-    The order of ordinals is strictly left multiplicative.
-\end{instance}
-\begin{proof}
-    Assume that $\alpha < \beta$ and $0 \neq \gamma$.  Because $\alpha < \beta$,
-    there exists a $\delta \neq 0$ such that $\alpha + \delta = \beta$.  Then
-    because multiplication of ordinals has the zero property, we have
-    \begin{align*}
-        0 &< \gamma\delta \\
-        \gamma\alpha &< \gamma\alpha + \gamma\delta \\
-        \gamma\alpha &< \gamma(\alpha + \delta) \\
-        \gamma\alpha &< \gamma\beta.
-    \end{align*}
-\end{proof}
-
-By Instances \ref{le_mult_lcancel2} and \ref{mult_lcancel1}, the order is left
-multiplication cancellative and multiplication of ordinals is left cancellative.
 
 \begin{instance}
     The order of the ordinals is right multiplicative.
 \end{instance}
 \begin{proof}
-    Let $\alpha$, $\beta$, and $\gamma$ be such that $\alpha \leq \beta$.  The
-    proof will be by transfinite induction on $\gamma$.  The inductive
-    hypothesis states that for all $\delta < \gamma$, we have $\alpha \delta
-    \leq \beta \delta$.  To prove that
-    \[
-        \alpha \gamma \leq \beta\gamma
-        = \lub(\beta\delta + \beta, \delta < \gamma),
-    \]
-    we will use Theorem \ref{ord_lub_other_leq}.  So let $\varepsilon$ be an
-    ordinal such that for all $\delta < \gamma$, we have $\beta \delta + \beta
-    \leq \varepsilon$.  We must prove that
-    \[
-        \alpha\gamma = \lub(\alpha \delta + \alpha, \delta < \gamma)
-        \leq \varepsilon.
-    \]
-    To do this, we will use Theorem \ref{ord_lub_least}.  So let $\delta <
-    \gamma$.  We must prove that $\alpha\delta + \alpha \leq \varepsilon$.
-    Because $\delta < \gamma$, we have
-    \begin{equation} \label{ord_le_rmult_1}
-        \beta\delta + \beta \leq \varepsilon
-    \end{equation}
-    by the definition of $\varepsilon$.  By the inductive hypothesis, we also
-    have
-    \begin{equation} \label{ord_le_rmult_2}
-        \alpha\delta \leq \beta\delta.
-    \end{equation}
-    We can add the inequalites $\alpha \leq \beta$ and (\ref{ord_le_rmult_2}) to
-    get
-    \begin{equation} \label{ord_le_rmult_3}
-        \alpha\delta + \alpha \leq \beta\delta + \beta.
-    \end{equation}
-    Then, by transitivity with (\ref{ord_le_rmult_3}) and
-    (\ref{ord_le_rmult_1}), we get
-    \[
-        \alpha\delta + \alpha \leq \varepsilon
-    \]
-    as required.
+    Let $\alpha$, $\beta$, and $\gamma$ be such that $\alpha \leq \beta$.  We
+    will prove that $\alpha \gamma \leq \beta \gamma$ by ordinal induction on
+    $\gamma$.  When $\gamma = 0$, we have $\alpha 0 = 0 = \beta 0$, so $\alpha 0
+    \leq \beta 0$.  When $\alpha \gamma \leq \beta \gamma$, adding $\alpha \leq
+    \beta$ to that inequality produces
+    \begin{align*}
+        \alpha \gamma + \alpha &\leq \beta \gamma + \beta \\
+        \alpha S(\gamma) &\leq \beta S(\gamma).
+    \end{align*}
+    When $\gamma$ is a limit ordinal such that $\alpha \delta \leq \beta \delta$
+    for all $\delta < \gamma$, we must prove
+    \begin{align*}
+        \alpha \gamma &\leq \beta \gamma \\
+        \sup\{\alpha \delta \mid \delta < \gamma\}
+        &\leq
+        \sup\{\beta \delta \mid \delta < \gamma\}.
+    \end{align*}
+    The inductive hypothesis tells us that everything in the first set is less
+    than or equal to its corresponding element in the second set, so the result
+    follows by Theorem \ref{ord_sup_leq_sup}.
 \end{proof}
-
-By Instance \ref{lt_mult_lcancel2}, the order is also strictly right
-multiplication cancellative.
 
 \begin{theorem} \label{ord_le_self_lmult}
     For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$, then $\alpha \leq
     \beta \alpha$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{ord_pos_one}, we have $1 \leq \beta$.  Then multiplying by
-    $\alpha$ we get $\alpha \leq \beta \alpha$.
+    This follows from multiplication being normal.
 \end{proof}
 
 \begin{theorem} \label{ord_le_self_rmult}
@@ -1924,107 +2274,128 @@ multiplication cancellative.
     and $\delta < \beta$.
 \end{theorem}
 \begin{proof}
-    Let $S$ be the set $\{\eta : \Ord \mid \alpha < \beta \eta\}$.  Because $0
+    Let $D$ be the set $\{\eta : \Ord \mid \alpha < \beta \eta\}$.  Because $0
     \neq \beta$, by Theorem \ref{ord_le_self_lmult} we have
     \begin{align*}
         \alpha + 1 &\leq \beta(\alpha + 1) \\
         \alpha &< \beta(\alpha + 1),
     \end{align*}
-    so $S$ is nonempty.  Let $\varepsilon$ be the least element of $S$.
-    $\varepsilon \neq 0$, because if it was, we would have $\alpha < \beta 0 =
-    0$.
+    so $D$ is nonempty.  Let $\varepsilon$ be the least element of $D$.
+    We will now look at the cases when $\varepsilon = 0$, when $\varepsilon$ is
+    a successor ordinal, and when $\varepsilon$ is a limit ordinal.
 
-    We will now prove that there exists an ordinal $\gamma$ such that $\gamma +
-    1 = \varepsilon$.  To do so, assume that there is no such $\gamma$.  We will
-    prove that $\beta \varepsilon \leq \alpha$, which will be a contradiction
-    since $\varepsilon \in S$.  By Theorem \ref{ord_lub_least}, it suffices to
-    prove that for all $\zeta < \varepsilon$, we have $\beta\zeta + \beta \leq
-    \alpha$.  By Theorem \ref{ord_le_suc_lt}, we have $\zeta + 1 \leq
-    \varepsilon$.  If we had $\alpha < \beta\zeta + \beta = \beta(\zeta + 1)$,
-    this would mean that $\zeta + 1$ is an upper bound of $S$, so $\varepsilon
-    \leq \zeta + 1$.  Since $\zeta + 1 \leq \varepsilon$ too, by antisymmetry we
-    have $\zeta + 1 = \varepsilon$.  This contradicts our original assumption
-    that no such $\zeta$ exists, so we must have $\beta \varepsilon \leq
-    \alpha$, contradicting $\varepsilon \in S$, so we must have some $\gamma$
-    such that $\gamma + 1 = \varepsilon$.
+    The case $\varepsilon = 0$ is impossible because we would then have $\alpha
+    < \beta 0 = 0$.
 
-    Now we must have $\beta \gamma \leq \alpha$, because if $\alpha < \beta
-    \gamma$, we would have $\gamma \in S$, implying that $\varepsilon = \gamma +
-    1 \leq \gamma$, which is impossible.  Thus, by Theorem \ref{ord_le_ex}, we
-    have an ordinal $\delta$ such that $\beta \gamma + \delta = \alpha$.  This
-    shows that $\gamma$ and $\delta$ already satisfy one of the conditions
-    required.  To prove that $\delta < \beta$, assume that $\beta \leq \delta$.
-    Since $\varepsilon \in \delta$, $\beta \gamma + \delta = \alpha$, and
-    $\varepsilon = \gamma + 1$, we have
+    We will look at the limit case next, because it turns out to be impossible
+    too.  We will prove that when $\varepsilon$ is a limit ordinal, we have
+    $\beta \varepsilon \leq \alpha$, which is a contradiction because
+    $\varepsilon \in D$.  Because $\varepsilon$ is a limit ordinal, we have
+    $\beta \varepsilon = \sup\{\beta \delta \mid \delta < \varepsilon\}$.  To
+    prove that this is less than or equal to $\alpha$, it suffices to prove that
+    $\alpha$ is an upper bound of the set.  So let $\zeta < \varepsilon$.  We
+    must prove that $\beta \zeta \leq \alpha$.  Assume for another contradiction
+    that $\alpha < \beta \zeta$.  Then by the minimality of $\varepsilon$, we
+    have $\varepsilon \leq \zeta$.  But $\zeta < \varepsilon$, which is a
+    contradiction.
+
+    With the two impossible cases out of the way, now consider the case when
+    there exists an ordinal $\gamma$ with $\varepsilon = S(\gamma)$.  Because
+    $\gamma < \varepsilon$, we must have $\beta \varepsilon \leq \alpha$ by the
+    minimality of $\varepsilon$.  By Theorem \ref{ord_le_ex}, we have an ordinal
+    $\delta$ such that $\beta \gamma + \delta = \alpha$.  This is precisely the
+    equation we are looking for, and all that remains is to prove that $\delta <
+    \beta$.  Because $\varepsilon \in D$, we have $\alpha < \beta \varepsilon =
+    \beta S(\gamma) = \beta \gamma + \beta$, and since $\alpha = \beta \gamma +
+    \delta$ we have
     \[
-        \beta \gamma + \delta < \beta (\gamma + 1).
+        \beta \gamma + \delta < \beta \gamma + \beta.
     \]
-    Distributing and cancelling $\beta \gamma$, we get $\delta < \beta$ as
-    required.
+    Cancelling $\beta \gamma$ we get $\delta < \beta$ as required.
+\end{proof}
+
+\begin{theorem} \label{ord_mult_lim_lim}
+    For all ordinals $\alpha \neq 0$ and $\beta$, if $\beta$ is a limit ordinal,
+    then $\alpha \beta$ is a limit ordinal.
+\end{theorem}
+\begin{proof}
+    This follows from addition being a normal function and Theorem
+    \ref{ord_normal_lim_ord}.
+\end{proof}
+
+\begin{theorem} \label{ord_lim_mult_lim}
+    For all ordinals $\alpha$ and $\beta \neq 0$, if $\alpha$ is a limit
+    ordinal, then $\alpha \beta$ is a limit ordinal.
+\end{theorem}
+\begin{proof}
+    If $\beta$ is a successor ordinal with $\beta = S(\beta')$, then
+    \[
+        \alpha \beta = \alpha S(\beta') = \alpha \beta' + \alpha,
+    \]
+    and then the result follows from Theorem \ref{ord_plus_lim_lim}.  And if
+    $\beta$ is a limit ordinal, then the result follows from the previous
+    theorem.
 \end{proof}
 
 \section{Ordinal Exponentiation}
 
-\begin{definition}
-    Let $\alpha$ be an ordinal.  Consider the function $f : (\beta : \Ord) \to
-    (g : \Ord_\beta \to \Ord) \to \Ord$ that is given by
-    \[
-        f(\beta, g) = \begin{cases}
-            \alpha & \text{if $0 = \beta$} \\
-            \lub(g(\delta)\alpha, \delta < \beta) & \text{otherwise.}
-        \end{cases}
-    \]
-    Let $g$ be the function given by transfinite recursion on $f$.  Then define
-    the power $\alpha^\beta$ to be equal to $g(\beta)$.
-\end{definition}
+Ordinal exponentiation is slightly more tricky to define than addition and
+multiplication.  Because $0^0 = 1$ but $0^\omega = 0$, we don't have the normal
+limit condition in all cases, so we can't define it with normal recursion.
+However, the theory as built up so far relies on the normal limit condition
 
-\begin{theorem} \label{ord_pow_zero}
-    For all ordinals $\alpha$, we have $\alpha^0 = 1$.
-\end{theorem}
-\begin{proof}
-    This is true by definition.
-\end{proof}
+\begin{definition}
+    Let $\alpha$ and $\beta$ be ordinals.  We will define the power $\alpha ^
+    \beta$ piecewise.  When $\alpha = 0$ and $\beta = 0$, we define
+    $\alpha^\beta = 1$.  When $\alpha = 0$ and $\beta \neq 0$, we define
+    $\alpha^\beta = 0$.  Otherwise, we define $\alpha^\beta$ by normal recursion
+    on $\beta$ such that
+    \begin{align*}
+        \alpha^0 &= 1 \\
+        \alpha^{S(\beta)} &= \alpha^\beta \beta.
+    \end{align*}
+\end{definition}
 
 \begin{theorem} \label{zero_ord_pow}
     For all ordinals $\alpha$, if $0 \neq \alpha$, we have $0 ^ \alpha = 0$.
 \end{theorem}
 \begin{proof}
-    The proof will be by Theorem \ref{ord_lub_eq}.  First, let $\delta <
-    \alpha$.  Then $0^\delta 0 = 0 \leq 0$, so $0$ is an upper bound.  $0$ is
-    the least ordinal, so it is also the least upper bound.
+    This is true by definition.
 \end{proof}
 
-\begin{theorem} \label{ord_pow_one}
-    For all ordinals $\alpha$, $\alpha^1 = \alpha$.
+\begin{theorem} \label{ord_pow_zero}
+    For all ordinals $\alpha$, we have $\alpha^0 = 1$.
 \end{theorem}
 \begin{proof}
-    The proof will be by Theorem \ref{ord_lub_eq}.  Let $\delta < 1$.  Then
-    $\delta = 0$, so $\alpha^\delta \alpha = \alpha^0 \alpha = \alpha \leq
-    \alpha$, so $\alpha$ is an upper bound.  Now let $\varepsilon$ be another
-    upper bound of $\alpha^\delta \alpha$ for all $\delta < 1$.  $\delta = 0$
-    works to show that $\alpha \leq \varepsilon$, showing that $\alpha$ is the
-    least upper bound.
+    We technically need to check the cases $\alpha = 0$ and $\alpha \neq 0$, but
+    in both cases this is simply true by definition.
 \end{proof}
 
-\begin{theorem} \label{one_ord_pow}
-    For all ordinals $\alpha$, $1^\alpha = 1$.
+\begin{instance} \label{ord_pow_lim}
+    When $\alpha \neq 0$ and $\beta$ is a limit ordinal, the function
+    $f_\alpha(\beta) = \alpha^\beta$ satisfies the normal limit condition.
+\end{instance}
+\begin{proof}
+    When $\alpha \neq 0$, $\alpha^\beta$ is defined by normal recursion, so it
+    satisfies the normal limit condition.
+\end{proof}
+
+\begin{lemma} \label{ord_pow_le_suc}
+    For all ordinals $\alpha \neq 0$ and $\beta$, if $\alpha \neq 0$, then
+    $\alpha ^ \beta \leq \alpha ^ {S(\beta)}$.
+\end{lemma}
+\begin{proof}
+    Because $\alpha^{S(\beta)} = \alpha^\beta \alpha$, the result follows
+    directly from Theorem \ref{ord_le_self_rmult}.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_homo_le}
+    For all $\alpha \neq 0$, the function $f_\alpha(\beta) = \alpha^\beta$ is
+    orderly.
 \end{theorem}
 \begin{proof}
-    The proof will be by transfinite induction.  The inductive hypothesis states
-    that for all $\delta < \alpha$, we have $1^\delta = 1$.  If $\alpha = 0$,
-    the theorem follows directly from Theorem \ref{ord_pow_zero}.  For $\alpha
-    \neq 0$, the proof will be by Theorem \ref{ord_lub_eq}.  When $\delta <
-    \alpha$, we have $1^\delta = 1$ by the inductive hypothesis, so
-    \[
-        1^\delta 1 = 1^\delta = 1 \leq 1,
-    \]
-    showing that $1$ is an upper bound.  Now let $\varepsilon$ be another upper
-    bound of $1^\delta 1$ for all $\delta < \alpha$.  Because $\alpha \neq 0$,
-    $\delta = 0$ works, showing that
-    \[
-        1^0 1 = 1 \leq \varepsilon,
-    \]
-    showing that $1$ is the least upper bound.
+    This is a direct application of Theorem \ref{make_ord_normal_le} and Lemma
+    \ref{ord_pow_le_suc}.
 \end{proof}
 
 \begin{theorem} \label{ord_pow_nz}
@@ -2032,13 +2403,67 @@ multiplication cancellative.
     \alpha^\beta$.
 \end{theorem}
 \begin{proof}
-    If $\beta = 0$, then $\alpha ^ \beta = 1$, so the theorem follows in this
-    case because $0 \neq 1$.  So consider the case $0 \neq \beta$.  Assume for a
-    contradiction that $0 = \alpha ^ \beta$.  Then by Theorem \ref{ord_lub_ge},
-    for all $\delta < \beta$, we have $\alpha^\delta \alpha \leq 0$.  Because
-    $\beta \neq 0$, $\delta = 0$ works, so we have $\alpha^0 \alpha = \alpha
-    \leq 0$.  This implies $\alpha = 0$, contradicting $\alpha \neq 0$.  Thus,
-    we must have $0 \neq \alpha ^ \beta$.
+    Because ordinal exponentiation is orderly, from $0 \leq \beta$ we have
+    $\alpha^0 \leq \alpha^\beta$.  Since $0 < 1 = \alpha^0 \leq \alpha^\beta$,
+    we have $0 \neq \alpha^\beta$.
+\end{proof}
+
+\begin{lemma} \label{ord_pow_lt_suc}
+    For all ordinals $\alpha$ and $\beta$, if $1 < \alpha$, then $\alpha ^ \beta
+    < \alpha ^ {S(\beta)}$.
+\end{lemma}
+\begin{proof}
+    Because $\alpha \neq 0$, we have $\alpha^\beta \neq 0$ by Theorem
+    \ref{ord_pow_nz}.  Thus, we can multiply $1 < \alpha$ by $\alpha^\beta$ to
+    get $\alpha^\beta < \alpha^\beta \alpha = \alpha^{S(\beta)}$.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_homo_inj}
+    For all $\alpha > 1$, the function $f_\alpha(\beta) = \alpha^\beta$ is
+    injective.
+\end{theorem}
+\begin{proof}
+    This is a direct application of Theorem \ref{make_ord_normal_inj} and Lemma
+    \ref{ord_pow_lt_suc}.
+\end{proof}
+
+Thus, ordinal exponentiation is only normal when $\alpha > 1$.  However, it
+still satisfies the normal limit condition and being orderly even when $\alpha =
+1$, but not when $\alpha = 0$.
+
+\begin{theorem} \label{ord_pow_sup}
+    For all $\alpha \neq 0$ and small sets $S$, we have
+    \[
+        \alpha^{\sup S} = \sup\{\alpha^\delta \mid \delta \in S\}.
+    \]
+\end{theorem}
+\begin{proof}
+    This follows directly from Theorem \ref{ord_normal_sup}.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_one}
+    For all ordinals $\alpha$, $\alpha^1 = \alpha$.
+\end{theorem}
+\begin{proof}
+    \[
+        \alpha ^ 1 = \alpha ^{S(0)} = \alpha^0 \alpha = 1 \alpha = \alpha.
+    \]
+\end{proof}
+
+\begin{theorem} \label{one_ord_pow}
+    For all ordinals $\alpha$, $1^\alpha = 1$.
+\end{theorem}
+\begin{proof}
+    The proof will be by ordinal induction.  When $\alpha = 0$, we have $1^0 =
+    1$.  When $1^\alpha = 1$, we have $1^{S(\alpha)} = 1^\alpha 1 = 1^\alpha =
+    1$.  When $\alpha$ is a limit ordinal such that $1^\delta = 1$ for all
+    $\delta < \alpha$, we have
+    \[
+        1^\alpha
+        = \sup\{1^\delta \mid \delta < \alpha\}
+        = \sup\{1 \mid \delta < \alpha\}
+        = 1.
+    \]
 \end{proof}
 
 \begin{theorem} \label{ord_pow_le}
@@ -2046,101 +2471,7 @@ multiplication cancellative.
     $\beta \leq \gamma$, then $\alpha ^ \beta \leq \alpha ^ \gamma$.
 \end{theorem}
 \begin{proof}
-    First, if $\gamma = 0$, then from $\beta \leq \gamma$ we get $\beta = 0$ as
-    well.  Then both sides are equal to one, and the theorem follows by
-    reflexivity.  Also, if $\beta = 0$, then $\alpha ^ \beta = 1$.  By Theorem
-    \ref{ord_pow_nz}, we have $\alpha ^ \gamma \neq 0$, so by Theorem
-    \ref{ord_pos_one}, we have $1 \leq \alpha ^ \gamma$, proving the theorem in
-    this case.
-
-    Now consider the case when both $\beta$ and $\gamma$ are not zero.  By
-    Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta <
-    \beta$, we have $\alpha^\delta \alpha \leq \alpha ^ \gamma$.  Then the
-    result follow directly from Theorem \ref{ord_lub_other_leq}.
-\end{proof}
-
-\begin{theorem} \label{ord_pow_plus_one}
-    For all ordinals $\alpha$ and $\beta$, $\alpha ^ {\beta + 1} = \alpha ^
-    \beta \alpha$.
-\end{theorem}
-\begin{proof}
-    First, by Theorem \ref{ord_nz_rplus}, $0 \neq \beta + 1$.  Now if $\alpha =
-    0$, the theorem follows by Theorem \ref{zero_ord_pow}.  In the case $\alpha
-    \neq 0$, the proof will be by Theorem \ref{ord_lub_eq}.  Let $\delta < \beta
-    + 1$.  Then $\delta \leq \beta$, and by Theorem \ref{ord_pow_le} we have
-    $\alpha ^ \delta \leq \alpha ^ \beta$.  Then multiplying by $\alpha$ on the
-    right we see that $\alpha ^ \beta \alpha$ is an upper bound.  Now let
-    $\varepsilon$ be an ordinal such that for all $\delta < \beta + 1$, we have
-    $\alpha ^ \delta \alpha \leq \varepsilon$.  Choosing $\delta = \beta$, we
-    get $\alpha ^ \beta \alpha \leq \varepsilon$, showing that $\alpha ^ \beta
-    \alpha$ is the least upper bound.
-\end{proof}
-
-\begin{theorem} \label{ord_lub_pow}
-    For all ordinals $\alpha$ and $\beta$ and ordinal functions $f$ with $0 \neq
-    \alpha$ and $0 \neq \beta$, we have
-    \[
-        \alpha^{\lub(f(\delta), \delta < \beta)}
-        = \lub(\alpha^{f(\delta)}, \delta < \beta).
-    \]
-\end{theorem}
-\begin{proof}
-    First, consider the case $0 = \lub(f(\delta), \delta < \beta)$.  Then
-    \begin{align*}
-        \alpha^{\lub(f(\delta), \delta < \beta)}
-        &= \alpha^0
-            && \\
-        &= 1
-            && \\
-        &= \lub(1, \delta < \beta)
-            && \text{by Theorem \ref{ord_lub_constant}} \\
-        &= \lub(\alpha^0, \delta < \beta)
-            && \\
-        &= \lub(\alpha^{f(\delta)}, \delta < \beta)
-            && \text{by Theorem \ref{ord_lub_f_zero}.}
-    \end{align*}
-    Now consider the case $0 \neq \lub(f(\delta), \delta < \beta)$.  The proof
-    will be by antisymmetry.
-
-    To prove that
-    \[
-        \alpha^{\lub(f(\delta), \delta < \beta)}
-        \leq \lub(\alpha^{f(\delta)}, \delta < \beta),
-    \]
-    first notice that by the definition of ordinal exponentiation, we have
-    \[
-        \alpha^{\lub(f(\delta), \delta < \beta)}
-        = \lub(\alpha^{\delta_1} \alpha, \delta_1 < \lub(f(\delta_2), \delta_2 <
-        \beta)).
-    \]
-    So by Theorem \ref{ord_lub_least}, it suffices to prove that for all $\delta
-    < \lub(f(\delta), \delta < \beta)$, we have
-    \[
-        \alpha ^ \delta \alpha \leq \lub(\alpha^{f(\delta)}, \delta < \beta).
-    \]
-    By Theorem \ref{ord_lub_in}, there exists some $\gamma < \beta$ such that
-    $\delta < f(\gamma)$.  Then $\delta + 1 \leq f(\gamma)$, so
-    \[
-        \alpha^{\delta + 1} = \alpha\delta + \alpha \leq \alpha^{f(\gamma)}
-    \]
-    by Theorem \ref{ord_pow_le}.  By transitivity, it suffices to prove that
-    \[
-        \alpha^{f(\gamma)}
-        \leq \lub(\alpha^{f(\delta)}, \delta < \beta),
-    \]
-    which follows directly by Theorem \ref{ord_lub_ge}.
-
-    To prove that
-    \[
-        \lub(\alpha^{f(\delta)}, \delta < \beta)
-        \leq \alpha^{\lub(f(\delta), \delta < \beta)},
-    \]
-    we will use Theorem \ref{ord_lub_least}.  Let $\delta < \beta$.  Then by
-    Theorem \ref{ord_lub_ge}, we have
-    \[
-        f(\delta) \leq \lub(f(\delta), \delta < \beta),
-    \]
-    and the result follows from Theorem \ref{ord_pow_le}.
+    This is just a rephrasing of ordinal exponentiation being orderly.
 \end{proof}
 
 \begin{theorem} \label{ord_pow_plus}
@@ -2148,34 +2479,35 @@ multiplication cancellative.
     \gamma} = \alpha ^ \beta \alpha ^ \gamma$.
 \end{theorem}
 \begin{proof}
-    The proof will be by transfinite induction on $\gamma$.  The inductive
-    hypothesis states that for all $\delta < \gamma$, we have $\alpha^{\beta +
-    \delta} = \alpha ^ \beta \alpha ^ \delta$.  When $\gamma = 0$, we have
+    The proof will be by ordinal induction on $\gamma$.  When $\gamma = 0$, we
+    have
     \[
         \alpha^{\beta + 0} = \alpha^\beta = \alpha^\beta 1 = \alpha^\beta
         \alpha^0.
     \]
-    When $\alpha = 0$ and $\gamma \neq 0$, we have $0 \neq \beta + \gamma$, so
+    When $\alpha^{\beta + \gamma} = \alpha ^ \beta \alpha ^ \gamma$,
     \[
-        0^{\beta + \gamma} = 0 = 0^\beta 0^\gamma.
+        \alpha^{\beta + S(\gamma)}
+        = \alpha^{S(\beta + \gamma)}
+        = \alpha^{\beta + \gamma} \alpha
+        = \alpha^\beta \alpha^\gamma \alpha
+        = \alpha^\beta \alpha^{S(\gamma)}.
     \]
-    Now when $\alpha \neq 0$ and $\gamma \neq 0$,
+    The limit case will be a bit more complicated.  Assume that $\gamma$ is a
+    limit ordinal such that $\alpha^{\beta + \delta} = \alpha^\beta
+    \alpha^\delta$ for all $\delta < \gamma$.  Then when $\alpha = 0$, we have
+    $\beta + \gamma \neq 0$ as well from $\gamma$ being a limit ordinal, so
+    \[
+        0^{\beta + \gamma} = 0 = 0^\beta 0 = 0^\beta 0^\gamma.
+    \]
+    Then when $\alpha \neq 0$,
     \begin{align*}
-        \alpha^{\beta + \gamma}
-        &= \alpha^{\lsub(\beta + \delta, \delta < \gamma)}
-            && \text{by the definition of addition} \\
-        &= \alpha^{\lub(\beta + \delta + 1, \delta < \gamma)}
-            && \text{by Theorem \ref{ord_lsub_lub}} \\
-        &= \lub(\alpha^{\beta + \delta + 1}, \delta < \gamma)
-            && \text{by Theorem \ref{ord_lub_pow}} \\
-        &= \lub(\alpha^{\beta + \delta} \alpha, \delta < \gamma)
-            && \text{by Theorem \ref{ord_pow_plus_one}} \\
-        &= \lub(\alpha^\beta \alpha^\delta \alpha, \delta < \gamma)
-            && \text{by the inductive hypothesis} \\
-        &= \alpha^\beta \lub(\alpha^\delta \alpha, \delta < \gamma)
-            && \text{by Theorem \ref{ord_lub_mult}} \\
-        &= \alpha^\beta \alpha^\gamma
-            && \text{by the definition of exponentiation.}
+        \alpha ^ {\beta + \gamma}
+        &= \alpha ^ {\sup\{\beta + \delta \mid \delta < \gamma\}} \\
+        &= \sup\{\alpha^{\beta + \delta} \mid \delta < \gamma\} \\
+        &= \sup\{\alpha^\beta \alpha^\delta \mid \delta < \gamma\} \\
+        &= \alpha^\beta \sup\{\alpha^\delta \mid \delta < \gamma\} \\
+        &= \alpha^\beta \alpha^\gamma.
     \end{align*}
 \end{proof}
 
@@ -2184,47 +2516,36 @@ multiplication cancellative.
     ^ \gamma = \alpha ^ {\beta \gamma}$.
 \end{theorem}
 \begin{proof}
-    The proof will be by transfinite induction on $\gamma$.  The inductive
-    hypothesis states that for all $\delta < \gamma$, we have $(\alpha ^ \beta)
-    ^ \delta = \alpha ^ {\beta \delta}$.  If $\gamma = 0$, we have
+    The proof will be by ordinal induction on $\gamma$.  When $\gamma = 0$,
     \[
         (\alpha ^ \beta) ^ 0 = 1 = \alpha^0 = \alpha^{\beta 0}.
     \]
-    If $\beta = 0$, we have
+    When $(\alpha ^ \beta)^\gamma = \alpha ^ {\beta \gamma}$,
     \[
-        (\alpha ^ 0) ^ \gamma = 1 ^ \gamma = 1 = \alpha ^ 0 = \alpha^{0 \gamma}.
+        (\alpha ^ \beta)^{S(\gamma)}
+        = (\alpha ^ \beta)^\gamma \alpha ^ \beta
+        = \alpha^{\beta \gamma} \alpha^\beta
+        = \alpha^{\beta \gamma + \beta}
+        = \alpha^{\beta S(\gamma)}.
     \]
-    If $\alpha = 0$, we have
+    The limit case is a little more complicated.  Assume that $\gamma$ is a
+    limit ordinal with $(\alpha ^ \beta) ^ \delta = \alpha ^ {\beta \delta}$ for
+    all $\delta < \gamma$.  When $\beta = 0$,
+    \[
+        (\alpha ^ 0) ^ \gamma = 1 ^ \gamma = 1 = \alpha^0 = \alpha^{0 \gamma}.
+    \]
+    When $\beta \neq 0$ and $\alpha = 0$,
     \[
         (0 ^ \beta) ^ \gamma = 0 ^ \gamma = 0 = 0 ^ {\beta \gamma}.
     \]
-    So now consider the case where $\alpha$, $\beta$, and $\gamma$ are all not
-    equal to zero.  Then
+    Finally, when $\beta \neq 0$ and $\alpha \neq 0$,
     \begin{align*}
-        (\alpha ^ \beta) ^ \gamma
-        &= \lub((\alpha ^ \beta) ^ \delta \alpha^\beta, \delta < \gamma)
-            && \text{by the definition of exponentiation} \\
-        &= \lub(\alpha ^ {\beta \delta} \alpha^\beta, \delta < \gamma)
-            && \text{by the inductive hypothesis} \\
-        &= \lub(\alpha ^ {\beta \delta + \beta}, \delta < \gamma)
-            && \text{by Theorem \ref{ord_pow_plus}} \\
-        &= \alpha ^ {\lub(\beta \delta + \beta, \delta < \gamma)}
-            && \text{by Theorem \ref{ord_lub_pow}} \\
-        &= \alpha ^ {\beta\gamma}
-            && \text{by the definition of multiplication.}
+        (\alpha^\beta)^\gamma
+        &= \sup\{(\alpha^\beta)^\delta \mid \delta < \gamma\} \\
+        &= \sup\{\alpha^{\beta\delta} \mid \delta < \gamma\} \\
+        &= \alpha^{\sup\{\beta\delta \mid \delta < \gamma\}} \\
+        &= \alpha^{\beta \gamma}.
     \end{align*}
-\end{proof}
-
-\begin{theorem} \label{ord_pow_gt_one}
-    For all ordinals $\alpha$ and $\beta$, if $0 \neq \beta$ and $1 < \alpha$,
-    we have $1 < \alpha ^ \beta$.
-\end{theorem}
-\begin{proof}
-    By Theorem \ref{ord_lub_ge}, because $0 < \beta$, we have
-    \[
-        \alpha = \alpha^0 \alpha \leq \alpha ^ \beta.
-    \]
-    Then the result from transitivity with $1 < \alpha$.
 \end{proof}
 
 \begin{theorem} \label{ord_pow_lt}
@@ -2232,14 +2553,7 @@ multiplication cancellative.
     < \gamma$, we have $\alpha ^ \beta < \alpha ^ \gamma$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{ord_lt_ex}, there exists a nonzero $\delta$ with $\gamma =
-    \beta + \delta$.  Then by Theorem \ref{ord_pow_gt_one} we have $1 < \alpha ^
-    \delta$, and since $0 \neq \alpha ^ \beta$ by Theorem \ref{ord_pow_nz}, we
-    can multiply by it on the left to get
-    \[
-        \alpha^\beta < \alpha^\beta \alpha^\delta = \alpha^{\beta + \delta}
-        = \alpha^\gamma.
-    \]
+    This is a rephrasing of ordinal exponentiation being strictly orderly.
 \end{proof}
 
 \begin{theorem} \label{ord_pow_lcancel}
@@ -2247,9 +2561,7 @@ multiplication cancellative.
     $\alpha ^ \beta = \alpha ^ \gamma$, then $\beta = \gamma$.
 \end{theorem}
 \begin{proof}
-    For a contradiction, assume that $\beta \neq \gamma$, and without loss of
-    generality, assume that $\beta < \gamma$.  Then by Theorem \ref{ord_pow_lt},
-    we have $\alpha ^ \beta < \alpha ^ \gamma$, which is impossible.
+    This is a rephrasing of ordinal exponentiation being injective.
 \end{proof}
 
 \begin{theorem} \label{ord_le_rpow}
@@ -2257,39 +2569,31 @@ multiplication cancellative.
     then $\alpha ^ \gamma \leq \beta ^ \gamma$.
 \end{theorem}
 \begin{proof}
-    The proof will be by transfinite induction on $\gamma$.  The inductive
-    hypothesis states that for all $\delta < \gamma$, we have $\alpha ^ \delta
-    \leq \beta ^ \delta$.  When $\gamma = 0$, the theorem is trivial by
-    reflexivity.  When $\beta = 0$, we have $\alpha = 0$ as well because $\alpha
-    \leq \beta$, and then the theorem is again trivial by reflexivity.  So now
-    consider the case $0 \neq \beta$ and $0 \neq \gamma$.
-
-    To prove that $\alpha^\gamma \leq \beta^\gamma$, by Theorem
-    \ref{ord_lub_least} it suffices to prove that for all $\delta < \gamma$, we
-    have
+    The proof will be by ordinal induction on $\gamma$.  When $\gamma = 0$, we
+    have $\alpha^0 \leq \beta^0$.  When $\alpha ^ \gamma \leq \beta ^ \gamma$,
+    we can multiply this by $\alpha \leq \beta$ to get
+    \begin{align*}
+        \alpha ^ \gamma \alpha &\leq \beta ^ \gamma \beta \\
+        \alpha ^ {S(\gamma)} &\leq \beta ^ {S(\gamma)}.
+    \end{align*}
+    The limit case is more complicated.  Assume that $\gamma$ is a limit ordinal
+    such that for all $\delta < \gamma$, we have $\alpha ^ \delta \leq \beta ^
+    \delta$.  Then when $\alpha = 0$, we have
     \[
-        \alpha ^ \delta \alpha \leq \beta ^ \gamma.
+        0^\gamma = 0 \leq \beta^\gamma,
     \]
-    Then, by Theorem \ref{ord_lub_other_leq}, it suffices to prove that for all
-    $\varepsilon$ such that $\beta^\zeta \beta \leq \varepsilon$ for all $\zeta
-    < \gamma$, we have
-    \[
-        \alpha ^ \zeta \alpha \leq \varepsilon.
-    \]
-    We can use $\zeta = \delta$ to get that
-    \begin{equation} \label{ord_le_rpow_1}
-        \beta ^ \delta \beta \leq \varepsilon.
-    \end{equation}
-    By the inductive hypothesis, we have
-    \begin{equation} \label{ord_le_rpow_2}
-        \alpha ^ \delta \leq \beta ^ \delta.
-    \end{equation}
-    Then from this and $\alpha \leq \beta$, we have
-    \begin{equation} \label{ord_le_rpow_3}
-        \alpha^\delta \alpha \leq \beta^\delta \beta.
-    \end{equation}
-    By transitivity with (\ref{ord_le_rpow_3}) and (\ref{ord_le_rpow_1}) we get
-    the desired result.
+    and when $\beta = 0$, we get $\alpha = 0$ as well from $\alpha \leq \beta$,
+    so this is just the $\alpha = 0$ case again.  When $\alpha \neq 0$ and
+    $\beta \neq 0$, we must prove
+    \begin{align*}
+        \alpha ^ \gamma &\leq \beta ^ \gamma \\
+        \sup\{\alpha ^ \delta \mid \delta < \gamma\}
+        &\leq
+        \sup\{\beta ^ \delta \mid \delta < \gamma\}.
+    \end{align*}
+    The inductive hypothesis tells us that everything in the first set is less
+    than or equal to its corresponding element in the second set, so the result
+    follows by Theorem \ref{ord_sup_leq_sup}.
 \end{proof}
 
 \begin{theorem} \label{ord_pow_le_pow}
@@ -2297,46 +2601,25 @@ multiplication cancellative.
     \leq \beta ^ \alpha$.
 \end{theorem}
 \begin{proof}
-    The proof will be by transfinite induction on $\alpha$.  The inductive
-    hypothesis states that for all $\delta < \alpha$, we have $\delta \leq \beta
-    ^ \delta$.  If $0 = \alpha$, the result follows from all ordinals being
-    positive.  When $0 \neq \alpha$, we will use Theorem
-    \ref{ord_lub_other_leq}.  So let $\varepsilon$ be an upper bound of $\beta ^
-    \delta \beta$ for $\delta < \alpha$.  We must have $\varepsilon \neq 0$,
-    because if it is equal to zero, we would have $\beta^0 \beta = \beta \leq
-    0$, contradicting $1 < \beta$.  We must prove that $\alpha \leq
-    \varepsilon$.
+    This follows directly from Theorem \ref{ord_normal_le}.
+\end{proof}
 
-    To do so, assume that $\varepsilon < \alpha$.  Then by the definition of
-    $\varepsilon$, we have
-    \begin{equation} \label{ord_pow_le_pow_1}
-        \beta ^ \varepsilon \beta \leq \varepsilon.
-    \end{equation}
-    Furthermore, by the inductive hypothesis, we have
-    \begin{equation} \label{ord_pow_le_pow_2}
-        \varepsilon \leq \beta ^ \varepsilon.
-    \end{equation}
-    Multiplying by $\beta$, we get
-    \begin{equation} \label{ord_pow_le_pow_3}
-        \varepsilon \beta \leq \beta ^ \varepsilon \beta.
-    \end{equation}
-    Now by transitivity with (\ref{ord_pow_le_pow_3}) and
-    (\ref{ord_pow_le_pow_1}), we get
-    \begin{equation} \label{ord_pow_le_pow_4}
-        \varepsilon \beta \leq \beta.
-    \end{equation}
-    By Theorem \ref{ord_le_self_rmult}, we have
-    \begin{equation} \label{ord_pow_le_pow_5}
-        \varepsilon \leq \varepsilon \beta.
-    \end{equation}
-    By antisymmetry with (\ref{ord_pow_le_pow_4}) and (\ref{ord_pow_le_pow_5}),
-    we get
-    \[
-        \varepsilon \beta = \varepsilon.
-    \]
-    Cancelling $\varepsilon$, we get $\beta = 1$, contradicting $1 < \beta$.
-    Thus, our original assumption that $\varepsilon < \alpha$ must be false, so
-    we have $\alpha \leq \varepsilon$.
+\begin{theorem} \label{ord_pow_lim_lim}
+    For all $\alpha > 1$ and limit ordinals $\beta$, $\alpha^\beta$ is a limit
+    ordinal.
+\end{theorem}
+\begin{proof}
+    This follows from Theorem \ref{ord_normal_lim_ord}.
+\end{proof}
+
+\begin{theorem} \label{ord_pow_self_le}
+    For all ordinals $\alpha$ and $\beta \neq 0$, we have $\alpha \leq \alpha ^
+    \beta$.
+\end{theorem}
+\begin{proof}
+    When $\alpha = 0$, the result is trivial.  When $\alpha \neq 0$, we can
+    apply Theorem \ref{ord_pow_le} to $1 \leq \beta$ to get $\alpha ^ 1 = \alpha
+    \leq \alpha ^ \beta$.
 \end{proof}
 
 \section{Relationship Between the Ordinals and Natural Numbers}
@@ -2347,97 +2630,44 @@ consequences of thinking of natural numbers as ordinals.  However, the
 definition of $\iN$ is not too useful here, so we will come up with an
 alternative way of thinking of natural numbers in the ordinals.
 
-\begin{lemma} \label{nat_to_ord_lt}
-    For all natural numbers $a$ and $b$, if $a < b$, then $[\N_a] < [\N_b]$.
-\end{lemma}
+\begin{theorem} \label{nat_ord_suc}
+    For all natural numbers $n$, $\iN(S(n)) = S(\iN(n))$.
+\end{theorem}
 \begin{proof}
-    When actually getting down to the nitty gritty details of the types, this
-    lemma is actually really annoying to prove.  However, it's actually quite
-    simple: $\N_a$ is isomorphic to $(\N_b)_a$.  Since the details of the proof
-    in the code are just type theory nonsense for making this trivial fact work,
-    I'm just going to call this proof done.
+    \[
+        \iN(S(n)) = \iN(n + 1) = \iN(n) + 1 = S(\iN(n)).
+    \]
 \end{proof}
 
 \begin{theorem} \label{from_nat_ord}
     For all natural numbers $n$, $\iN(n) = [\N_n]$.
 \end{theorem}
 \begin{proof}
-    The proof will be by induction on $n$.  First, when $n = 0$, we must prove
-    $0 = \N_0$.  There can't be any elements in $\N_0$, so by Theorem
-    \ref{ord_false_0} the base case is true.  For the inductive case, the
-    inductive hypothesis says that $\iN(n) = [\N_n]$, and we must prove that
-    $\iN(n + 1) = [\N_{n + 1}]$.  By the properties of $\iN$ and the inductive
-    hypothesis, we have
+    The proof will be by induction on $n$.  When $n = 0$, we must find an order
+    isomorphism between $\N_0$ and the empty type.  $\N_0$ is empty, so the
+    empty function suffices.  Now assume that $\iN(n) = [\N_n]$.  Then
     \[
-        \iN(n + 1) = \iN(n) + 1 = [\N_n] + 1.
+        \iN(S(n)) = S(\iN(n)) = S([\N_n]).
     \]
-    We will prove that $[\N_n] + 1 = [\N_{n + 1}]$ by Theorem \ref{ord_lsub_eq}.
-    First, for any $\delta < 1$, we must have $\delta = 0$, so $[\N_n] + 0 <
-    [\N_{n + 1}]$ by Lemma \ref{nat_to_ord_lt}.  So $[\N_{n + 1}]$ is an upper
-    bound.  To prove that it is a least upper bound, let $\varepsilon$ be such
-    that for all $\delta < 1$, we have $[\N_n] + \delta < \varepsilon$.  $\delta
-    = 0$ is the only one that works, so we have $[\N_n] < \varepsilon$.  From
-    this, we must prove that $[\N_{n + 1}] \leq \varepsilon$.
-
-    Let $\A$ be an order type for $\varepsilon$.  Then because $[\N_n] <
-    \varepsilon$, we have some $x : \A$ and an order isomorphism $f : \N_n \to
-    \A$.  Now define a new function $g : \N_{n+1} \to \A$ given by
+    By Theorem \ref{ord_suc_type}, this is equal to $[\N_n + \S]$.  We must
+    prove that
     \[
-        g(m) = \begin{cases}
-            f(m) & \text{if $m < n$} \\
-            x & \text{otherwise.}
-        \end{cases}
+        [\N_n + \S] = [\N_{S(n)}].
     \]
-    We will prove that $g$ is injective and orderly.
-
-    To prove that $g$ is injective, let $a$ and $b$ be values in $\N_{n + 1}$
-    such that $g(a) = g(b)$.  We have three cases for if both are less than $n$,
-    one is less than $n$, and neither are less than $n$.
-    \setcounter{case}{0}
-    \begin{case} $a < n$, $b < n$.
-        In this case, we have $f(a) = f(b)$, and by injectivity of $f$ we get $a
-        = b$.
-    \end{case}
-    \begin{case} $a < n$, $b = n$.
-        In this case, we have $f(a) = x$, but this is impossible since $f(a) <
-        x$ by definition.
-    \end{case}
-    \begin{case} $a = n$, $b = n$.
-        Since $a = n$ and $b = n$, we have $a = b$.
-    \end{case}
-
-    To prove that $g$ is injective, let $a$ and $b$ be values in $\N_{n + 1}$
-    such that $a \leq g$.  We must prove that $g(a) \leq g(b)$.  We have four
-    cases for if both are less than $n$, one is less than $n$, and neither are
-    less than $n$.
-    \setcounter{case}{0}
-    \begin{case} $a < n$, $b < n$.
-        In this case, what we need to prove is $f(a) \leq f(b)$, which follows
-        from $f$ being orderly.
-    \end{case}
-    \begin{case} $a < n$, $b = n$.
-        In this case, we need to prove $f(a) \leq x$, which follows from the
-        definition of $f$.
-    \end{case}
-    \begin{case} $a = n$, $b < n$.
-        In this case, we have $n \leq b$ and $b < n$, so this case is
-        impossible.
-    \end{case}
-    \begin{case} $a = n$, $b = n$.
-        In this case, we need to prove $x \leq x$, which is trivial.
-    \end{case}
-
-    Because we have an injective orderly function from $\N_{n+1}$ to $\A$, by
-    Theorem \ref{ord_le_simpl} $[\N_{n+1}] \leq [\A]$.
+    Define a function $f : \N_n + \S \to \N_{S(n)}$ given by
+    \begin{align*}
+        f(\iota_1(m)) &= m \\
+        f(\iota_2(I)) &= n.
+    \end{align*}
+    $f$ is an order isomorphism.
 \end{proof}
 
 \begin{instance}
     The ordinals are characteristic zero.
 \end{instance}
 \begin{proof}
-    If $0 = S(n)$ for some $n$, we would have an order isomorphism $f :
-    \N_{S(n)} \to \E$.  Then $f(n)$ would be a value in the empty type, which is
-    impossible.
+    If $0 = S(n)$ for some $n$, we would have $0 = S(\iN(n))$ in the ordinals,
+    which is impossible.
 \end{proof}
 
 Most proofs of the properties of $\iN$ work just fine for the ordinals, with the
@@ -2447,9 +2677,10 @@ exception of it being orderly.  It is still orderly for the ordinals however.
     $\iN$ is orderly in the ordinals.
 \end{instance}
 \begin{proof}
-    Let $a \leq b$ in the natural numbers.  We must prove that $\iN(a) \leq
-    \iN(b)$.  If $a = b$, then we're done.  If $a \neq b$, then we have $a < b$,
-    so we can use Lemma \ref{nat_to_ord_lt} to get the desired result.
+    Let $a \leq b$ in the natural numbers.  By Theorem \ref{nat_le_ex}, we have
+    a natural number $c$ such that $a + c = b$.  Then adding $\iN(a)$ to both
+    sides of $0 \leq \iN(c)$, we get $\iN(a) \leq \iN(a) + \iN(c) = \iN(a + c) =
+    \iN(b)$.
 \end{proof}
 
 \begin{theorem} \label{from_nat_ord_pow}
@@ -2504,16 +2735,87 @@ exception of it being orderly.  It is still orderly for the ordinals however.
     $0 \neq \omega$.
 \end{proof}
 
+\begin{theorem} \label{omega_lim}
+    $\omega$ is a limit ordinal.
+\end{theorem}
+\begin{proof}
+    We just proved that $\omega \neq 0$, so we only need to prove that $\omega$
+    is not a successor ordinal.  If $\omega = S(n)$ for some ordinal $n$, we
+    would have $n < \omega$.  Thus, by Theorem \ref{ord_lt_omega}, $n$ is a
+    natural number.  Then $S(n) = \omega$ should be a natural number as well,
+    which is impossible.
+\end{proof}
+
+\begin{theorem} \label{ord_lim_omega}
+    $\omega$ is the smallest limit ordinal, that is, for all limit ordinals
+    $\alpha$, we have $\omega \leq \alpha$.
+\end{theorem}
+\begin{proof}
+    Assume that $\alpha < \omega$.  Then $\alpha$ is a natural number, and all
+    natural numbers are either $0$ or a successor, contradicting $\alpha$ being
+    a limit ordinal.
+\end{proof}
+
+\begin{theorem} \label{ord_lim_pow_lim}
+    For all ordinals $\alpha$ and $\beta \neq 0$, if $\alpha$ is a limit
+    ordinal, then $\alpha^\beta$ is a limit ordinal.
+\end{theorem}
+\begin{proof}
+    If $\beta$ is a successor ordinal with $\beta = S(\beta')$, we would have
+    $\alpha^\beta = \alpha^{\beta'} \alpha$, and the result follows from Theorem
+    \ref{ord_mult_lim_lim}.  If $\beta$ is a limit ordinal, we know that $1 <
+    \omega \leq \alpha$, so the result follows from Theorem
+    \ref{ord_pow_lim_lim}.
+\end{proof}
+
 \begin{theorem} \label{nat_plus_omega}
     For all natural numbers $n$, $n + \omega = \omega$.
 \end{theorem}
 \begin{proof}
     The proof will be by antisymmetry.  $\omega \leq n + \omega$ follows
     directly from Theorem \ref{ord_le_self_lplus}.  To prove that $n + \omega
-    \leq \omega$, by Theorem \ref{ord_lsub_least} it suffices to prove that $n +
-    \delta < \omega$ for all $\delta < \omega$.  By Theorem \ref{ord_lt_omega},
-    there is some natural number $m = \delta$.  Then $n + m$ is a natural
-    number, which is less than $\omega$ by Theorem \ref{nat_lt_omega}.
+    \leq \omega$, by Theorem \ref{ord_sup_least} it suffices to prove that $n +
+    \delta \leq \omega$ for all $\delta < \omega$.  By Theorem
+    \ref{ord_lt_omega}, there is some natural number $m = \delta$.  Then $n + m$
+    is a natural number, which is less than $\omega$ by Theorem
+    \ref{nat_lt_omega}.
+\end{proof}
+
+\begin{theorem} \label{ord_plus_eat}
+    For all ordinals $\alpha$ and $\beta$ such that $\alpha \omega \leq \beta$,
+    we have $\alpha + \beta = \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_le_ex}, we have an ordinal $\gamma$ such that $\beta =
+    \alpha \omega + \gamma$.  Then
+    \[
+        \alpha + \beta
+        = \alpha + \alpha \omega + \gamma
+        = \alpha(1 + \omega) + \gamma
+        = \alpha \omega + \gamma
+        = \beta.
+    \]
+\end{proof}
+
+\begin{theorem} \label{ord_plus_no_eat}
+    For all ordinals $\alpha$ and $\beta$, if $\beta < \alpha\omega$, then
+    $\beta < \alpha + \beta$.
+\end{theorem}
+\begin{proof}
+    Because $\beta < \alpha \omega$, by Theorem \ref{ord_sup_in} we have a
+    natural number $m'$ such that $\beta < \alpha m'$.  Let $m$ be the least
+    such natural number.  We can't have $m = 0$ because that would imply $\beta
+    < \alpha 0 = 0$.  So $m = S(n)$ for some natural number $n$.  Then we must
+    have $\alpha n \leq \beta$ by the minimality of $m$.  Adding $\alpha$ to
+    both sides we get
+    \[
+        \alpha + \alpha n \leq \alpha + \beta,
+    \]
+    and along with
+    \[
+        \beta < \alpha m = \alpha S(n) = \alpha(1 + n) = \alpha + \alpha n,
+    \]
+    we get $\beta < \alpha + \beta$ by transitivity.
 \end{proof}
 
 \begin{theorem} \label{nat_mult_omega}
@@ -2522,7 +2824,7 @@ exception of it being orderly.  It is still orderly for the ordinals however.
 \begin{proof}
     The proof will be by antisymmetry.  $\omega \leq n \omega$ follows directly
     from Theorem \ref{ord_le_self_lmult}.  To prove that $n\omega \leq \omega$,
-    by Theorem \ref{ord_lub_least} it suffices to prove that $n \delta + n \leq
+    by Theorem \ref{ord_sup_least} it suffices to prove that $n \delta + n \leq
     \omega$ for all $\delta < \omega$.  By Theorem \ref{ord_lt_omega}, there is
     some natural number $m = \delta$.  Then $nm + n$ is a natural number, which
     is less than $\omega$ by Theorem \ref{nat_lt_omega}.
@@ -2534,10 +2836,82 @@ exception of it being orderly.  It is still orderly for the ordinals however.
 \begin{proof}
     The proof will be by antisymmetry.  $\omega \leq n^\omega$ follows directly
     from Theorem \ref{ord_pow_le_pow}.  To prove that $n^\omega \leq \omega$,
-    by Theorem \ref{ord_lub_least} it suffices to prove that $n^\delta n \leq
+    by Theorem \ref{ord_sup_least} it suffices to prove that $n^\delta n \leq
     \omega$ for all $\delta < \omega$.  By Theorem \ref{ord_lt_omega}, there is
     some natural number $m = \delta$.  Then $n^m n$ is a natural number, which
     is less than $\omega$ by Theorem \ref{nat_lt_omega}.
+\end{proof}
+
+\begin{theorem} \label{ord_nat_plus_limit}
+    For all natural numbers $n$ and limit ordinals $\alpha$, we have $n + \alpha
+    = \alpha$.
+\end{theorem}
+\begin{proof}
+    When $n = 0$, the result is trivial.  When $n \neq 0$, we have $n \omega =
+    \omega \leq \alpha$, so the result follows by Theorem \ref{ord_plus_eat}.
+\end{proof}
+
+\begin{theorem} \label{ord_iterate_suc}
+    For all ordinals $\alpha$ and natural numbers $n$, we have $S^n(\alpha) =
+    \alpha + n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, both sides are equal
+    to $\alpha$.  When $S^n(\alpha) = \alpha + n$,
+    \[
+        S^{S(n)}(\alpha) = S(S^n(\alpha)) = S(\alpha + n) = \alpha + S(n).
+    \]
+\end{proof}
+
+\begin{theorem} \label{ord_lim_omega_times}
+    For all limit ordinals $\alpha$, there exists an ordinal $\beta$ such that
+    $\alpha = \omega \beta$.
+\end{theorem}
+\begin{proof}
+    By ordinal division, we have ordinals $\beta$ and $n < \omega$ such
+    that $\alpha = \omega \beta + n$.  Now if $n = S(n')$, we would have $\alpha
+    = \omega \beta + S(n') = S(\omega \beta + n')$, contradicting $\alpha$ being
+    a limit ordinal.  Thus, $n = 0$, so $\alpha = \omega \beta$.
+\end{proof}
+
+\begin{theorem} \label{ord_nat_mult_limit}
+    For all natural numbers $n \neq 0$ and limit ordinals $\alpha$, we have
+    $n\alpha = \alpha$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lim_omega_times}, we have an ordinal $\beta$ such that
+    $\alpha = \omega \beta$.  Then
+    \[
+        n \alpha = n \omega \beta = \omega \beta = \alpha.
+    \]
+\end{proof}
+
+\begin{theorem} \label{ord_nz_one_plus}
+    For all ordinals $\alpha \neq 0$, there exists an ordinal $\beta$ such that
+    $\alpha = 1 + \beta$.
+\end{theorem}
+\begin{proof}
+    If $\alpha < \omega$, because $\alpha \neq 0$, $\alpha = S(n)$ for some
+    natural number $n$, and $\alpha = 1 + n$.  If $\alpha \geq \omega$, then we
+    have $1 + \alpha = \alpha$ by Theorem \ref{ord_plus_eat}, so in this case
+    $\beta = \alpha$ suffices.
+\end{proof}
+
+\begin{theorem} \label{nat_mult_omega_pow}
+    For all natural numbers $n$ and nonzero ordinals $\alpha$,
+    \[
+        S(n) \omega^\alpha = \omega^\alpha.
+    \]
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_nz_one_plus}, we have an ordinal $\beta$ such that
+    $\alpha = 1 + \beta$.  Then
+    \[
+        S(n) \omega^\alpha = S(n) \omega^{1 + \beta} = S(n) \omega \omega^\beta
+        = \omega \omega^\beta
+        = \omega^{1 + \beta}
+        = \omega^\alpha.
+    \]
 \end{proof}
 
 Now that we have gotten some of the basic properties of $\omega$, we can finally
@@ -2552,17 +2926,7 @@ define the true $\aleph$ function.
     For all ordinals $\alpha \geq \omega^2$, $\aleph_\alpha = \aleph'_\alpha$.
 \end{theorem}
 \begin{proof}
-    By Theorem \ref{ord_le_ex}, there exists an ordinal $\gamma$ such that
-    $\omega^2 + \gamma = \alpha$.  Then
-    \[
-        \aleph_\alpha
-        = \aleph'_{\omega + \alpha}
-        = \aleph'_{\omega + \omega^2 + \gamma}
-        = \aleph'_{\omega(1 + \omega) + \gamma}
-        = \aleph'_{\omega(\omega) + \gamma}
-        = \aleph'_{\omega^2 + \gamma}
-        = \aleph'_{\alpha}.
-    \]
+    We get $\omega + \alpha = \alpha$ directly from Theorem \ref{ord_plus_eat}.
 \end{proof}
 
 \begin{instance}
@@ -2635,6 +2999,14 @@ basic algebraic properties that we like types to have.
 \begin{proof}
     If $2 \omega = \omega 2$, we would have $\omega = \omega 2$, and
     cancelling $\omega$ we get $1 = 2$, which is false.
+\end{proof}
+
+\begin{theorem}
+    Multiplication of ordinals is not right distributive over addition.
+\end{theorem}
+\begin{proof}
+    We have $(1 + 1)\omega = \omega$, but $1 \omega + 1\omega = \omega +
+    \omega$.
 \end{proof}
 
 \begin{theorem}

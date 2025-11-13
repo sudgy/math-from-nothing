@@ -201,21 +201,20 @@ Global Instance ord_mult_zero : MultZero ord.
 Proof.
     split.
     intros α β eq.
-    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+    induction β as [|β|β β_lim] using ord_destruct.
     -   right; reflexivity.
     -   rewrite ord_mult_suc in eq.
         apply ord_plus_zero in eq.
         left; exact (rand eq).
-    -   rewrite <- not_not, not_or.
-        intros [α_nz β_nz].
+    -   left.
         rewrite ord_mult_lim in eq by exact β_lim.
         pose proof (ord_f_sup_ge β (λ δ, α * [δ|])) as leq.
         rewrite <- eq in leq.
         specialize (leq [ord_suc 0|ord_lim_gt β β_lim]); cbn in leq.
-        rewrite ord_mult_suc in leq.
-        rewrite mult_ranni, plus_lid in leq.
+        rewrite ord_suc_zero_one in leq.
+        rewrite mult_rid in leq.
         apply all_neg_eq in leq.
-        contradiction.
+        exact leq.
 Qed.
 
 Global Instance ord_le_lmult : OrderLmult ord.
@@ -291,13 +290,11 @@ Proof.
     -   do 2 rewrite ord_mult_suc.
         apply le_lrplus; assumption.
     -   do 2 rewrite ord_mult_lim by exact γ_lim.
-        apply ord_f_sup_other_leq.
-        intros ε ε_ge.
-        apply ord_f_sup_least.
-        intros [δ δ_lt]; cbn.
-        specialize (ε_ge [δ|δ_lt]); cbn in ε_ge.
-        specialize (IHγ δ δ_lt).
-        exact (trans IHγ ε_ge).
+        apply ord_f_sup_leq_sup.
+        intros δ.
+        exists δ.
+        apply IHγ.
+        exact [|δ].
 Qed.
 
 Theorem ord_le_self_lmult : ∀ α β, 0 ≠ β → α ≤ β * α.
@@ -333,7 +330,7 @@ Proof.
     }
     destruct ε_ex as [ε [ε_ltq ε_least]].
     unfold S in *.
-    induction ε as [|ε IHε|ε ε_lim IHε] using ord_induction.
+    induction ε as [|ε|ε ε_lim] using ord_destruct.
     -   rewrite mult_ranni in ε_ltq.
         contradiction (not_neg ε_ltq).
     -   assert (β * ε ≤ α) as leq.
@@ -350,22 +347,14 @@ Proof.
         rewrite ord_mult_suc in ε_ltq.
         apply lt_plus_lcancel in ε_ltq.
         exact ε_ltq.
-    -   assert (β * ε ≤ α) as α_ge.
-        {
-            rewrite ord_mult_lim by exact ε_lim.
-            apply ord_f_sup_least.
-            intros [ζ ζ_lt]; cbn.
-            rewrite <- ord_le_suc_lt in ζ_lt.
-            order_contradiction ltq.
-            specialize (ε_least _ ltq).
-            apply (rand ε_lim).
-            exists ζ.
-            apply antisym.
-            -   apply (trans ε_least).
-                apply ord_lt_suc.
-            -   exact ζ_lt.
-        }
-        contradiction (irrefl _ (le_lt_trans α_ge ε_ltq)).
+    -   rewrite <- nle_lt in ε_ltq.
+        exfalso; apply ε_ltq; clear ε_ltq.
+        rewrite ord_mult_lim by exact ε_lim.
+        apply ord_f_sup_least.
+        intros [ζ ζ_lt]; cbn.
+        order_contradiction ltq.
+        specialize (ε_least _ ltq).
+        contradiction (irrefl _ (le_lt_trans ε_least ζ_lt)).
 Qed.
 
 Theorem ord_mult_lim_lim : ∀ α β, 0 ≠ α → lim_ord β → lim_ord (α * β).
@@ -381,7 +370,7 @@ Qed.
 Theorem ord_lim_mult_lim : ∀ α β, 0 ≠ β → lim_ord α → lim_ord (α * β).
 Proof.
     intros α β β_nz α_lim.
-    induction β as [|β IHβ|β β_lim IHβ] using ord_induction.
+    induction β as [|β|β β_lim] using ord_destruct.
     -   contradiction.
     -   rewrite ord_mult_suc.
         apply ord_plus_lim_lim.
