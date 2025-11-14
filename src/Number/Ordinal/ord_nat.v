@@ -377,6 +377,46 @@ Proof.
     reflexivity.
 Qed.
 
+Lemma ord_plus_nat_mult_omega : ∀ α n, 0 ≠ α → (α + from_nat n) * ω = α * ω.
+Proof.
+    intros α n α_nz.
+    classic_case (α < ω) as [α_lt|α_ge].
+    -   apply ord_lt_ω in α_lt as [m]; subst α.
+        rewrite <- homo_plus.
+        rewrite nat_mult_omega.
+        +   symmetry; apply nat_mult_omega.
+            intro; subst.
+            rewrite (homo_zero (f := from_nat)) in α_nz.
+            contradiction.
+        +   intro contr.
+            apply nat_plus_zero in contr as [ ]; subst.
+            rewrite (homo_zero (f := from_nat)) in α_nz.
+            contradiction.
+    -   apply antisym.
+        +   rewrite nlt_le in α_ge.
+            pose proof (lt_le_trans (nat_lt_ω n) α_ge) as [leq].
+            apply (le_lplus α) in leq.
+            rewrite <- (mult_rid α) in leq at 2 3.
+            rewrite <- ldist in leq.
+            rewrite <- (homo_two from_nat) in leq.
+            apply (le_rmult ω) in leq.
+            rewrite <- mult_assoc in leq.
+            rewrite nat_mult_omega in leq by apply nat_zero_suc.
+            exact leq.
+        +   apply le_rmult.
+            apply ord_le_self_rplus.
+Qed.
+
+Theorem ord_plus_nat_mult_lim : ∀ α n β, 0 ≠ α → lim_ord β →
+    (α + from_nat n) * β = α * β.
+Proof.
+    intros α n β α_nz β_lim.
+    apply ord_lim_omega_times in β_lim as [γ]; subst β.
+    do 2 rewrite mult_assoc.
+    rewrite ord_plus_nat_mult_omega by exact α_nz.
+    reflexivity.
+Qed.
+
 Definition aleph (α : ord) := aleph' (ω + α).
 
 Theorem aleph_aleph' : ∀ α, ω*ω ≤ α → aleph α = aleph' α.

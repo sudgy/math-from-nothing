@@ -1629,7 +1629,7 @@ Note that we don't need injectivity in the previous theorem.
     all $i \in S$.  We will call $f_i$ a small family of normal functions.
 \end{definition}
 
-\begin{definition}
+\begin{definition} \label{ord_normal_family_fixed_set}
     Let $f_i$ be a small family of normal functions, and let $\alpha$ be an
     ordinal.  Define the set $F(\alpha) : \Ord \to \Prop$ defined by saying that
     $\beta \in F(\alpha)$ if there exists a list $[f_0, f_1, \ldots, f_n]$ of
@@ -1648,7 +1648,7 @@ Note that we don't need injectivity in the previous theorem.
     \Type_n$, so $F(\alpha)$ is small.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem} \label{ord_normal_family_fixed_eq}
     For all small families of normal functions $f_i$ and ordinals $\alpha$, we
     have $f_x(\sup F(\alpha)) = \sup F(\alpha)$ for all $x \in S$.
 \end{theorem}
@@ -1675,7 +1675,7 @@ Note that we don't need injectivity in the previous theorem.
     suffices.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem} \label{ord_normal_family_fixed_leq}
     For all small families of normal functions $f_i$ and ordinals $\alpha$, we
     have $\alpha \leq \sup F(\alpha)$.
 \end{theorem}
@@ -1684,7 +1684,7 @@ Note that we don't need injectivity in the previous theorem.
     to $\alpha$ produces $\alpha$.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem} \label{ord_normal_family_fixed_least}
     For all small families of normal functions $f_i$ and ordinals $\alpha$,
     $\sup F(\alpha)$ is the smallest ordinal greater than or equal to $\alpha$
     that is a fixed point of all $f_i$.
@@ -2914,6 +2914,37 @@ exception of it being orderly.  It is still orderly for the ordinals however.
     \]
 \end{proof}
 
+\begin{theorem} \label{ord_plus_nat_mult_omega}
+    For all nonzero ordinals $\alpha$ and all natural numbers $n$, we have
+    $(\alpha + n)\omega = \alpha \omega$.
+\end{theorem}
+\begin{proof}
+    If $\alpha < \omega$, then $\alpha$ is a nonzero natural number, so $(\alpha
+    + n)\omega = \omega = \alpha \omega$.  If $\alpha \geq \omega$,
+    \[
+        (\alpha + n)\omega
+        \leq (\alpha + \alpha) \omega
+        = \alpha 2 \omega
+        = \alpha \omega
+        \leq (\alpha + n)\omega.
+    \]
+\end{proof}
+
+\begin{theorem} \label{ord_plus_nat_mult_lim}
+    For all nonzero ordinals $\alpha$, natural numbers $n$, and limit ordinals
+    $\beta$, we have $(\alpha + n) \beta = \alpha \beta$.
+\end{theorem}
+\begin{proof}
+    By Theorem \ref{ord_lim_omega_times}, we have an ordinal $\gamma$ such that
+    $\beta = \omega \gamma$.  Then
+    \[
+        (\alpha + n) \beta
+        = (\alpha + n) \omega \gamma
+        = \alpha \omega \gamma
+        = \alpha \beta.
+    \]
+\end{proof}
+
 Now that we have gotten some of the basic properties of $\omega$, we can finally
 define the true $\aleph$ function.
 
@@ -3049,6 +3080,347 @@ basic algebraic properties that we like types to have.
 \end{theorem}
 \begin{proof}
     We have $2 \omega \leq 1 \omega$ but not $2 \leq 1$.
+\end{proof}
+
+\section{Derivatives}
+
+\begin{definition}
+    Let $f_i$ be a small family of normal functions.  We will define the
+    derivative $f'$ of the family by normal recursion where $f'(0)$ is defined
+    to be the first common fixed point of all the $f_i$, and $f'(S(\alpha))$ is
+    defined to be the first common fixed point greater than or equal to
+    $S(f'(\alpha))$.
+\end{definition}
+
+\begin{lemma} \label{ord_family_derivative_base_increasing}
+    For all small families of normal functions $f_i$ and for all $\alpha$, we
+    have $f'(\alpha) < f'(S(\alpha))$.
+\end{lemma}
+\begin{proof}
+    $f'(S(\alpha))$ is defined to be the first common fixed point greater than
+    or equal to $S(f'(\alpha))$.  Thus,
+    \[
+        f'(\alpha) < S(f'(\alpha)) \leq f'(S(\alpha)).
+    \]
+\end{proof}
+
+\begin{lemma} \label{ord_family_derivative_le}
+    For all small families of normal functions $f_i$, $f'$ is orderly.
+\end{lemma}
+\begin{proof}
+    This follows from Theorem \ref{make_ord_normal_le} and Lemma
+    \ref{ord_family_derivative_base_increasing}.
+\end{proof}
+
+\begin{lemma} \label{ord_family_derivative_inj}
+    For all small families of normal functions $f_i$, $f'$ is injective.
+\end{lemma}
+\begin{proof}
+    This follows from Theorem \ref{make_ord_normal_inj} and Lemma
+    \ref{ord_family_derivative_base_increasing}.
+\end{proof}
+
+Thus, the derivative of a family of normal functions is itself normal.
+
+\begin{theorem} \label{ord_family_derivative_fixed}
+    For all small families of normal functions $f_i$ with $i : \X$, all values
+    $x : \X$, and ordinals $\alpha$, we have $f_x(f'(\alpha)) = f'(\alpha)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by ordinal induction on $\alpha$.  $f'$ was defined to
+    make this true when $\alpha$ is $0$ or a successor ordinal, so the only
+    interesting case is when $\alpha$ is a limit ordinal.  The inductive
+    hypothesis says that for all $\delta < \alpha$, we have $f_x(f'(\delta)) =
+    f'(\delta)$.  By definition, we have
+    \[
+        f'(\alpha) = \sup\{f'(\delta) \mid \delta < \alpha\}.
+    \]
+    Since $0 < \alpha$, we have
+    \begin{align*}
+        f(f'(\alpha))
+        &= f(\sup\{f'(\delta) \mid \delta < \alpha\}) \\
+        &= \sup\{f(f'(\delta)) \mid \delta < \alpha\} \\
+        &= \sup\{f'(\delta) \mid \delta < \alpha\} \\
+        &= f'(\alpha).
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_family_derivative_lim_eq}
+    For all small families of normal functions $f_i$ and all limit ordinals
+    $\gamma$, we have $f'(\gamma) = \sup F(f'(\gamma))$, where $F(\gamma)$ is the
+    set given by Definition \ref{ord_normal_family_fixed_set}.
+\end{theorem}
+\begin{proof}
+    The proof will be by antisymmetry.  To prove that $f'(\gamma) \leq \sup
+    F(f'(\gamma))$, by $f'$ being normal, it suffices to prove
+    \[
+        \sup\{f'(\delta) \mid \delta < \gamma\} \leq \sup F(f'(\gamma)),
+    \]
+    which we can do by showing that $\sup F(f'(\gamma))$ is an upper bound of
+    the set.  So let $\delta < \gamma$.  We must show that $f'(\delta) \leq \sup
+    F(f'(\gamma))$.  By Theorem \ref{ord_normal_family_fixed_leq} we have
+    $f'(\gamma) \leq \sup F(f'(\gamma))$, so by transitivity it suffices to
+    prove that $f'(\delta) \leq f'(\gamma)$.  We get this from the fact that
+    $f'$ is orderly and that $\delta < \gamma$.
+
+    For the other direction, $\sup F(f'(\gamma)) \leq f'(\gamma)$ comes directly
+    from Theorems \ref{ord_normal_family_fixed_least} and
+    \ref{ord_family_derivative_fixed}.
+\end{proof}
+
+Like when we were finding the fixed points of a family of normal functions, we
+can define the derivative of a single normal function as well.  Given a normal
+function $f$, we will call its derivative $f'$.
+
+\section{Cantor Normal Form}
+
+Despite what this section is called, I won't be proving the Cantor normal form
+theorem here!  I was just wanting to learn how exactly to do calculations with
+ordinals in Cantor normal form, so I proved a bunch of theorems relating to how
+those calculations are done.
+
+\newcommand{\CNF}{\mathrm{CNF}}
+\begin{definition}
+    Call $\Ord \times \N$ the CNF type.  Given a pair $(\alpha, n)$ in the CNF
+    type, define a function that takes $(\alpha, n)$ to $\omega ^ \alpha S(n)$.
+    Then, given a list $a : \L(\Ord \times \N)$, define the CNF evaluation
+    function $\CNF : \L(\Ord \times \N) \to \Ord$ to be the sum of this function
+    on each element of the list.
+\end{definition}
+
+\begin{theorem} \label{cnf_eval_plus}
+    For all lists $a$ and $b$ of the CNF type, $\CNF(a + b) = \CNF(a) +
+    \CNF(b)$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we have
+    \[
+        \CNF([] + b) = \CNF(b) = 0 + \CNF(b) = \CNF([]) + \CNF(b).
+    \]
+    When $\CNF(a + b) = \CNF(a) + \CNF(b)$, then for all pairs $(\alpha, n)$,
+    \[
+        \CNF((\alpha, n) : a + b)
+        = \omega^\alpha S(n) + \CNF(a + b)
+        = \omega^\alpha S(n) + \CNF(a) + \CNF(b)
+        = \CNF((\alpha, n) : a) + \CNF(b).
+    \]
+\end{proof}
+
+\begin{theorem} \label{cnf_lt_omega_le}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$ and all natural
+    numbers $m$ and $n$,
+    \[
+        \omega^\alpha S(m) \omega \leq \omega^\beta S(n).
+    \]
+\end{theorem}
+\begin{proof}
+    We immediately get
+    \[
+        \omega^\alpha S(m) \omega = \omega^\alpha \omega = \omega^{S(\alpha)}.
+    \]
+    From $\alpha < \beta$, we get $S(\alpha) \leq \beta$, so $\omega^{S(\alpha)}
+    \leq \omega^\beta$.  Because $1 \leq S(n)$, we can multiply these two
+    inequalities to get
+    \[
+        \omega^{S(\alpha)} \leq \omega^\beta S(n).
+    \]
+\end{proof}
+
+By Theorem \ref{ord_plus_eat}, this implies that when $\alpha < \beta$, we have
+$\omega ^ \alpha S(m) + \omega ^ \beta S(n) = \omega ^ \beta S(n)$.
+
+\begin{theorem} \label{cnf_plus_base}
+    For all lists $a$ of the CNF type and ordinals $\alpha$, $\CNF(a) +
+    \omega^\alpha = \CNF(a') + \omega^\alpha$, where $a'$ is the list $a$ with all
+    of the entries $(\beta, n)$ where $\beta < \alpha$ removed.
+\end{theorem}
+\begin{proof}
+    The proof will be by backwards induction on $a$.  When $a = []$, we have $b
+    = []$ as well, so the base case is trivial.  Now assume that
+    \[
+        \CNF(a) + \omega ^ \alpha = \CNF(a') + \omega^\alpha.
+    \]
+    Then for all pairs $(\beta, m)$,
+    \[
+        \CNF(a + [(\beta, m)]) + \omega ^ \alpha
+        = \CNF(a) + \omega^\beta S(m) + \omega ^ \alpha.
+    \]
+    The proof will now have three cases: when $\alpha < \beta$, when $\alpha =
+    \beta$, and when $\alpha > \beta$.
+
+    When $\alpha < \beta$, we have
+    \begin{align*}
+        \CNF(a) + \omega^\beta S(m) + \omega ^ \alpha
+        &= \CNF(a) + \omega^\alpha + \omega^\beta S(m) + \omega ^ \alpha \\
+        &= \CNF(a') + \omega^\alpha + \omega^\beta S(m) + \omega ^ \alpha \\
+        &= \CNF(a') + \omega^\beta S(m) + \omega ^ \alpha \\
+        &= \CNF((a + [(\beta, m)])') + \omega ^ \alpha.
+    \end{align*}
+
+    When $\alpha = \beta$, we have
+    \begin{align*}
+        \CNF(a) + \omega^\beta S(m) + \omega ^ \alpha
+        &= \CNF(a) + \omega^\alpha S(m) + \omega ^ \alpha \\
+        &= \CNF(a) + \omega^\alpha (1 + m) + \omega ^ \alpha \\
+        &= \CNF(a) + \omega^\alpha + \omega^\alpha m + \omega ^ \alpha \\
+        &= \CNF(a') + \omega^\alpha + \omega^\alpha m + \omega ^ \alpha \\
+        &= \CNF(a') + \omega^\beta S(m) + \omega ^ \alpha \\
+        &= \CNF((a + [(\beta, m)])') + \omega ^ \alpha.
+    \end{align*}
+
+    When $\alpha > \beta$, we have
+    \begin{align*}
+        \CNF(a) + \omega^\beta S(m) + \omega ^ \alpha
+        &= \CNF(a) + \omega ^ \alpha \\
+        &= \CNF(a') + \omega ^ \alpha \\
+        &= \CNF((a + [(\beta, m)])') + \omega ^ \alpha \\
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{cnf_plus}
+    For all lists $a$ of the CNF type, ordinals $\alpha$, and natural numbers
+    $n$, $\CNF(a) + \omega^\alpha S(n) = \CNF(a') + \omega^\alpha S(n)$, where
+    $a'$ is the list $a$ with all of the entries $(\beta, n)$ where $\beta <
+    \alpha$ removed.
+\end{theorem}
+\begin{proof}
+    \begin{align*}
+        \CNF(a) + \omega^\alpha S(n)
+        &= \CNF(a) + \omega^\alpha + \omega^\alpha n \\
+        &= \CNF(a') + \omega^\alpha + \omega^\alpha n \\
+        &= \CNF(a') + \omega^\alpha S(n).
+    \end{align*}
+\end{proof}
+
+\begin{lemma} \label{lt_omega_pow_two}
+    For all ordinals $\delta$ and $\beta$ with $\delta < \omega ^\beta$, we have
+    $2\delta < \omega ^ \beta$.
+\end{lemma}
+\begin{proof}
+    If $\beta = 0$, we have $\delta < \omega ^ 0 = 1$, so $\delta = 0$ as well.
+    Then $2\delta = 0 < 1 = \omega^0$.  When $\beta \neq 0$, by Theorem
+    \ref{ord_nz_one_plus} we have an ordinal $\beta'$ such that $\beta = 1 +
+    \beta'$.  Then we can multiply by $2$ on the left of $\delta < \omega^\beta$
+    to get
+    \[
+        2\delta < 2\omega^\beta = 2\omega^{1 + \beta'} = 2\omega \omega^{\beta'}
+        = \omega \omega^{\beta'}
+        = \omega^\beta.
+    \]
+\end{proof}
+
+\begin{lemma} \label{cnf_eval_le1}
+    For all lists $a$ of the CNF type, if for a given ordinal $\alpha$, we have
+    $\beta < \alpha$ for all pairs $(\beta, n)$ in $a$, then there exists a
+    natural number $N$ such that $\CNF(a) \leq \omega^\alpha S(N)$.
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = []$, we have $\CNF(a) = 0
+    \leq \omega^\alpha S(0)$.  Now assume that there exists an $N$ such that
+    $\CNF(a) \leq \omega^\alpha S(N)$, and let $\beta < \alpha$ and let $n$ be a
+    natural number.  We will prove that $\CNF((\beta, n) : a) \leq \omega^\alpha
+    S(S(n) + N)$.
+    \begin{align*}
+        \CNF((\beta, n) : a)
+        &= \omega^\beta S(n) + \CNF(a) \\
+        &\leq \omega^\alpha S(n) + \omega^\alpha S(N) \\
+        &= \omega^\alpha (S(n) + S(N)) \\
+        &= \omega^\alpha S(S(n) + N).
+    \end{align*}
+\end{proof}
+
+\begin{lemma} \label{cnf_eval_le2}
+    For all lists $a$ of the CNF type, if for a given ordinal $\alpha$, we have
+    $\beta < \alpha$ for all pairs $(\beta, n)$ in $a$, then $\CNF(a) \leq
+    \omega^\alpha \omega$.
+\end{lemma}
+\begin{proof}
+    By the previous lemma, we have an $N$ such that $\CNF(a) \leq \omega ^
+    \alpha S(n)$.  Then we also have $\omega ^ \alpha S(n) \leq \omega ^ \alpha
+    \omega$.
+\end{proof}
+
+\begin{theorem} \label{cnf_mult_omega}
+    For all ordinals $\alpha$ and $\beta \neq 0$, natural numbers $n$, and lists
+    $a$ such that $\delta < \alpha$ for all pairs $(\delta, m)$ in $a$,
+    \[
+        \CNF((\alpha, n) : a) \omega^\beta = \omega^{\alpha + \beta}.
+    \]
+\end{theorem}
+\begin{proof}
+    By Lemma \ref{cnf_eval_le1}, we have some $N$ such that $\CNF(a) \leq
+    \omega^\alpha S(N)$.  Then
+    \begin{align*}
+        \CNF((\alpha, n) : a) \omega^\beta
+        &= (\omega^\alpha S(n) + \CNF(a) )\omega^\beta \\
+        &\leq (\omega^\alpha S(n) + \omega^\alpha S(N) )\omega^\beta \\
+        &= \omega^\alpha (S(n) + S(N)) \omega^\beta \\
+        &= \omega^\alpha \omega^\beta \\
+        &= \omega^{\alpha + \beta} \\
+        &= \omega^\alpha \omega^\beta \\
+        &= \omega^\alpha S(n) \omega^\beta \\
+        &\leq (\omega^\alpha S(n) + \CNF(a)) \omega^\beta \\
+        &= \CNF((\alpha, n) : a) \omega^\beta.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{cnf_mult_nat}
+    For all ordinals $\alpha$ and $\beta \neq 0$, natural numbers $n$ and $m$,
+    and lists $a$ such that $\delta < \alpha$ for all pairs $(\delta, m)$ in
+    $a$,
+    \[
+        \CNF((\alpha, n) : a) S(m) = \CNF((\alpha, nS(m) + m) : a).
+    \]
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $m$.  When $m = 0$,
+    \[
+        \CNF((\alpha, n) : a) S(0)
+        = \CNF((\alpha, n S(0) + 0) : a).
+    \]
+    When
+    \[
+        \CNF((\alpha, n) : a) S(m) = \CNF((\alpha, nS(m) + m) : a),
+    \]
+    we have
+    \begin{align*}
+        \CNF((\alpha, n) : a) S(S(m))
+        &= \CNF((\alpha, n) : a) + \CNF((\alpha, n) : a) S(m) \\
+        &= \CNF((\alpha, n) : a) + \CNF((\alpha, nS(m) + m) : a) \\
+        &= \omega^\alpha S(n) + \CNF(a) + \omega^\alpha S(nS(m) + m) + \CNF(a)\\
+        &= \omega^\alpha S(n) + \omega^\alpha S(nS(m) + m) + \CNF(a)\\
+        &= \omega^\alpha (S(n) + S(nS(m) + m)) + \CNF(a)\\
+        &= \omega^\alpha S(n + nS(m) + S(m)) + \CNF(a)\\
+        &= \omega^\alpha S((nS(S(m)) + S(m)) + \CNF(a)\\
+        &= \CNF((\alpha, nS(S(m)) + S(m)) : a).
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{cnf_pow_omega}
+    For all ordinals $\alpha \neq 0$ and $\beta \neq 0$, natural numbers $n$,
+    and lists $a$ such that $\delta < \alpha$ for all pairs $(\delta, m)$ in
+    $a$,
+    \[
+        \CNF((\alpha, n) : a)^{\omega^\beta} = \omega^{\alpha \omega^\beta}.
+    \]
+\end{theorem}
+\begin{proof}
+    By Lemma \ref{cnf_eval_le2}, we have $\CNF(a) \leq \omega^\alpha \omega$.
+    Then
+    \begin{align*}
+        \CNF((\alpha, n) : a)^{\omega^\beta}
+        &= (\omega^\alpha S(n) + \CNF(a))^{\omega^\beta} \\
+        &\leq (\omega^\alpha S(n) + \omega^\alpha \omega)^{\omega^\beta} \\
+        &= (\omega^\alpha (S(n) + \omega))^{\omega^\beta} \\
+        &= (\omega^\alpha \omega)^{\omega^\beta} \\
+        &= (\omega^{\alpha + 1})^{\omega^\beta} \\
+        &= \omega^{(\alpha + 1) \omega^\beta} \\
+        &= \omega^{\alpha \omega^\beta} \\
+        &= (\omega^{\alpha})^{\omega^\beta} \\
+        &\leq (\omega^{\alpha}S(n))^{\omega^\beta} \\
+        &\leq (\omega^{\alpha}S(n) + \CNF(a))^{\omega^\beta} \\
+        &= \CNF((\alpha, n) : a)^{\omega^\beta}.
+    \end{align*}
 \end{proof}
 
 \end{document}

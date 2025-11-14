@@ -110,57 +110,37 @@ Theorem ord_family_derivative_fixed {X} :
     f x (ord_family_derivative S Ss f α) = ord_family_derivative S Ss f α.
 Proof.
     intros S Ss f x α.
-    induction α as [|α IHα | α α_lim IHα] using ord_induction.
+    induction α as [|α _ | α α_lim IHα] using ord_induction.
     -   rewrite ord_family_derivative_zero.
         apply ord_normal_family_fixed_eq.
     -   rewrite ord_family_derivative_suc.
         apply ord_normal_family_fixed_eq.
     -   rewrite ord_family_derivative_lim by exact α_lim.
-        rewrite (ord_normal_sup (f x)).
-        2: {
-            exists (ord_family_derivative S Ss f 0).
-            exists [0|all_pos2 (land α_lim)].
-            reflexivity.
-        }
-        apply antisym; apply ord_sup_leq_sup.
-        +   intros β' [β [[[δ δ_lt]]]]; subst; cbn.
-            exists (ord_family_derivative S Ss f δ).
-            split.
-            *   exists [δ|δ_lt].
-                reflexivity.
-            *   rewrite IHα by exact δ_lt.
-                apply refl.
-        +   intros β' [[δ δ_lt]]; subst β'; cbn.
-            exists (ord_family_derivative S Ss f δ).
-            split; [>|apply refl].
-            unfold image_under.
-            exists (ord_family_derivative S Ss f δ).
-            split.
-            *   exists [δ|δ_lt].
-                reflexivity.
-            *   symmetry; apply IHα.
-                exact δ_lt.
+        rewrite (ord_normal_f_sup (f x)).
+        2: apply α_lim.
+        apply ord_f_sup_f_eq.
+        intros δ.
+        apply IHα.
+        exact [|δ].
 Qed.
 
 Theorem ord_family_derivative_lim_eq {X} :
     ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
     ∀ γ, lim_ord γ → ord_family_derivative S Ss f γ =
-    ord_normal_family_fixed S Ss f
-        (ord_f_sup γ (λ δ, ord_family_derivative S Ss f [δ|])).
+    ord_normal_family_fixed S Ss f (ord_family_derivative S Ss f γ).
 Proof.
     intros S Ss f γ γ_lim.
     apply antisym.
-    -   rewrite ord_family_derivative_lim by exact γ_lim.
+    -   rewrite ord_family_derivative_lim at 1 by exact γ_lim.
         apply ord_f_sup_least.
         intros [δ δ_lt]; cbn.
         apply (trans2 (ord_normal_family_fixed_leq _ _ _ _)).
-        apply (trans2 (ord_f_sup_ge _ _ [δ|δ_lt])).
-        apply refl.
+        apply homo_lt.
+        exact δ_lt.
     -   apply ord_normal_family_fixed_least.
-        +   rewrite ord_family_derivative_lim by exact γ_lim.
-            apply refl.
-        +   intros x.
-            apply ord_family_derivative_fixed.
+        1: apply refl.
+        intros x.
+        apply ord_family_derivative_fixed.
 Qed.
 
 Definition ord_derivative (f : OrdNormalFunction) : OrdNormalFunction :=
@@ -200,8 +180,7 @@ Qed.
 
 Theorem ord_derivative_lim_eq : ∀ f γ, lim_ord γ →
     ord_derivative f γ =
-    ord_normal_fixed f
-        (ord_f_sup γ (λ δ, ord_derivative f [δ|])).
+    ord_normal_fixed f (ord_derivative f γ).
 Proof.
     intros f.
     apply ord_family_derivative_lim_eq.
