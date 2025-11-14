@@ -4,6 +4,7 @@
 \externaldocument{../basics/set}
 \externaldocument{../basics/elementary_algebra}
 \externaldocument{../basics/natural}
+\externaldocument{../basics/list}
 \externaldocument{rational}
 \externaldocument{ordinal}
 
@@ -1842,6 +1843,76 @@ several of the other types we have looked at already.
     This means that $r \in f(b)$ but $r \notin f(a)$, contradicting $f(a) =
     f(b)$.  Thus, we can't have $a < b$, and by the same argument, we can't have
     $b < a$.  This means that $a = b$, so $f$ is injective.
+\end{proof}
+
+\begin{theorem} \label{empty_list_card}
+    For all types $\U$, if $\U$ has no values, then $|\L(\U)| = 1$.
+\end{theorem}
+\begin{proof}
+    The only possible list is $[]$, so the function defined by $f([]) = I$ is a
+    bijection between $\L(\U)$ and $\S$.
+\end{proof}
+
+\begin{theorem} \label{list_infinite}
+    For all nonempty types $\U$, $|\L(\U)| \geq |\N|$.
+\end{theorem}
+\begin{proof}
+    Let $x$ be a value in $\U$.  Then define a function $f$ from $\N$ to
+    $\L(\U)$ defined by $f(n) = [x]_n$.  This is an injection.
+\end{proof}
+
+\begin{theorem} \label{list_card_le}
+    For all types $\U$, we have $|\U| \leq |\L(\U)|$.
+\end{theorem}
+\begin{proof}
+    The function bringing $x : \U$ to $[x]$ is an injection.
+\end{proof}
+
+\begin{theorem} \label{list_size_card}
+    Let $\U$ be a type and $n$ a natural number.  Denote the set of lists of
+    size $n$ as $\L_n(\U)$.  Then $|\L_n(\U)| = |\U|^n$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, we must prove that
+    $|\L_0(\U)| = |\U|^0 = 1$.  The only list of length $0$ is the empty list, so
+    that set has cardinality $1$.
+
+    Now assume that $|\L_n(\U)| = |\U|^n$.  Then $|\U|^{S(n)} = |\U|^n |\U| =
+    |\L_n(\U)| \, |\U|$, so we must find a bijection between $\L_{S(n)}(\U)$ and
+    $\L_n(\U) \times \U$.  Given a list $(x : a) : \L_{S(n)}(\U)$, we can bring
+    it to the pair $(a, x)$.  This mapping is a bijection.
+\end{proof}
+
+\begin{theorem} \label{finite_list_card}
+    For all finite nonempty types $\U$, we have $|\L(\U)| = |\N|$.
+\end{theorem}
+\begin{proof}
+    Define a collection $\mathcal S : (\L(\U) \to \Prop) \to \Prop$ given by
+    \[
+        \mathcal S = \{\L_0(\U), \L_1(\U), \L_2(\U), \ldots\}.
+    \]
+    The cardinality of $\bigcup \mathcal S$ is equal to the cardinality of
+    $|\L(\U)|$, so it suffices to prove that $|\bigcup \mathcal S| = |\N|$.  We
+    already have $|\N| \leq |\L(\U)|$ by Theorem \ref{list_infinite}, so by
+    antisymmetry it suffices to prove that $|\bigcup \mathcal S| \leq |\N|$.
+    The set $\mathcal S$ itself is countable infinite by construction.  Given
+    any $\L_n(\U) \in \mathcal S$, we have $|\L_n(\U)| = |\U|^n$ by Theorem
+    \ref{list_size_card}, and since $|\U|$ and $n$ are both finite, $|\U|^n$ is
+    finite as well.  Thus, $\mathcal S$ is a countable union of finite sets, so
+    by Theorem \ref{countable_union_countable}, $|\bigcup \mathcal S|$ is
+    countable as well.
+\end{proof}
+
+\begin{theorem} \label{infinite_list_card}
+    For all infinite types $\U$, we have $|\L(\U)| = |\U|$.
+\end{theorem}
+\begin{proof}
+    Most of the details of this proof are the same as the previous proof so the
+    details will be ommitted.  We already have $|\U| \leq |\L(\U)|$ by Theorem
+    \ref{list_card_le}.  Furthermore, because $\U$ is infinite, we have $|\U|^n
+    = |\U|$ for all natural numbers $n$.  Then with the same argument as in the
+    previous proof, by Theorem \ref{union_size_mult} we have $|\L(\U)| \leq |\N|
+    \, |\U| = |\U|$.
 \end{proof}
 
 \end{document}
