@@ -417,6 +417,45 @@ Proof.
     reflexivity.
 Qed.
 
+Theorem ord_normal_fixed_sup_eq : ∀ (f : OrdNormalFunction) α,
+    ord_normal_fixed f α =
+    ord_f_sup ω (λ n, iterate_func f (ex_val (ord_lt_ω [n|] [|n])) α).
+Proof.
+    intros f α.
+    unfold ord_normal_fixed.
+    unfold ord_normal_family_fixed.
+    apply antisym; apply ord_sup_leq_sup.
+    -   intros δ [l δ_eq].
+        exists δ.
+        split; [>|apply refl].
+        exists [from_nat (list_size l)|nat_lt_ω (list_size l)].
+        rewrite δ_eq; cbn.
+        rewrite_ex_val n n_eq.
+        apply inj in n_eq.
+        subst n.
+        clear δ_eq.
+        induction l.
+        +   reflexivity.
+        +   rewrite list_size_add, list_image_add, rfold_add.
+            cbn.
+            rewrite IHl.
+            reflexivity.
+    -   intros δ [n'].
+        rewrite_ex_val n n_eq.
+        clear n' n_eq.
+        subst δ.
+        exists (iterate_func f n α).
+        split; [>|apply refl].
+        unfold ord_normal_family_fixed_set.
+        exists (list_constant [0|ord_lt_suc 0] n).
+        nat_induction n.
+        +   reflexivity.
+        +   rewrite list_constant_suc, list_image_add, rfold_add.
+            cbn.
+            rewrite <- IHn.
+            reflexivity.
+Qed.
+
 Definition aleph (α : ord) := aleph' (ω + α).
 
 Theorem aleph_aleph' : ∀ α, ω*ω ≤ α → aleph α = aleph' α.

@@ -1915,4 +1915,490 @@ several of the other types we have looked at already.
     \, |\U| = |\U|$.
 \end{proof}
 
+\section{Large Countable Ordinals}
+
+This topic is more about ordinals, but it requires some stuff about the
+cardinals, so I'm putting this here.  The ordinal chapter got to have stuff
+about the cardinals anyway, so this is just payback.
+
+Large countable ordinals is a massive topic, and I haven't even come close to
+scratching the surface of how big we can get.  I only managed to get up to the
+Feferman-Sch\"utte ordinal, which is what I will be describing here.  First,
+let's look at a bit of the general theory of countable ordinals.  We saw earlier
+that we can convert ordinals to cardinals.  We say that an ordinal is countable
+if its corresponding cardinal is countable, that is, when $|\alpha| \leq |\N|$.
+
+\begin{theorem} \label{ord_countable_suc}
+    For all countable ordinals $\alpha$, $S(\alpha)$ is countable.
+\end{theorem}
+\begin{proof}
+    If $\alpha$ is finite, then $S(\alpha)$ is finite too.  If $|\alpha| =
+    |\N|$, then because $|\N| + 1 = |\N|$, $|S(\alpha)| = |\alpha + \S| =
+    |\alpha| + 1 = |\N|$.
+\end{proof}
+
+\begin{theorem} \label{ord_sup_countable}
+    The supremum of a countable set of countable ordinals is countable.
+\end{theorem}
+\begin{proof}
+    Let $S$ be a countable set of countable ordinals.  Note that because we
+    can't directly form a cardinal from a set of ordinals, when talking about
+    the cardinality of $S$, we are talking about it in terms of Definition
+    \ref{small_set_to_card}, which makes this proof much more complicated than
+    how it is usually presented.
+
+    First, when $\sup S \in S$, we directly have $|\sup S| \leq |\N|$ because
+    $S$ contains countable ordinals, so now consider the case where $\sup S
+    \notin S$.  This means that $\alpha < \sup S$ for all $\alpha \in S$.  Let
+    $\A$ be a well-ordered type with order type $\sup S$.  We must prove that
+    $|\A|$ is countable.
+
+    Consider the collection $\mathcal S : (\A \to \Prop) \to \Prop$ given by
+    \[
+        \mathcal S = \{\A_{\mathcal O_\A^{-1}(\alpha)} \mid \alpha \in S\},
+    \]
+    that is, the initial segments in $\A$ of ordinals $\alpha \in S$, with the
+    correspondence $\mathcal O_\A$ given by Definition \ref{ord_type_init_ord}.
+    Then for any $x : \A$, we know that $\mathcal O_\A(x) < [\A] = \sup S$, so
+    by Theorem \ref{ord_sup_in} we have a $\beta \in S$ such that $\mathcal
+    O_\A(x) < \beta$.  This means that $x < \mathcal O_\A^{-1}(\beta)$, showing
+    that $x \in \A_{\mathcal O_\A^{-1}(\beta)}$, and since $\beta \in S$, we
+    have $x \in \bigcup \mathcal S$.  This argument works for any $x : \A$,
+    showing that $\bigcup \mathcal S$ is equal to the universal set on $\A$.
+    Thus, $|\A| = |\bigcup \mathcal S|$, so we can now apply Theorem
+    \ref{countable_union_countable} on $\mathcal S$ to prove $|\A| = |\N|$.
+
+    To prove that $\mathcal S$ is countable, we know that because $S$ is
+    countable, we have a type $\X$ that is in bijection with $S$ with $|\X| \leq
+    |\N|$.  Let $f : \X \to S$ be such a bijection.  Given a set $\A_{\mathcal
+    O_\A^{-1}(\alpha)} \in \mathcal S$, we can produce a value $f^{-1}(\alpha) :
+    \X$.  If this mapping is injective, we will have proved that $\mathcal S$ is
+    countable.  So let $f^{-1}(\alpha) = f^{-1}(\beta)$, and we must prove that
+    $\A_{\mathcal O_\A^{-1}(\alpha)} = \A_{\mathcal O_\A^{-1}(\beta)}$.  By
+    applying $f$ to $f^{-1}(\alpha) = f^{-1}(\beta)$, we get $\alpha = \beta$,
+    from which the result follows.  Thus, $\mathcal S$ is countable.
+
+    To prove that every $T \in \mathcal S$ is countable, let $\beta \in S$.  We
+    must prove that $\A_{\mathcal O_\A^{-1}(\beta)}$ is countable.  Let $\B$ be
+    a well-ordered type with order type $\beta$.  By assumption, $|\B|$ is
+    countable, so it suffices to prove that $|\A_{\mathcal O_\A^{-1}([\B])}| \leq
+    |\B|$.  Define $f : \A_{\mathcal O_\A^{-1}([\B])} \to \B$ by
+    \[
+        f(a) = \mathcal O_\B^{-1}(\mathcal O_\A(a)).
+    \]
+    We will prove that $f$ is injective.  Let $f(a) = f(b)$.  Then
+    \begin{align*}
+        f(a) &= f(b) \\
+        \mathcal O_\B^{-1}(\mathcal O_\A(a))
+            &= \mathcal O_\B^{-1}(\mathcal O_\A(b)) \\
+        \mathcal O_\A(a) &= \mathcal O_\A(b) \\
+        a &= b.
+    \end{align*}
+    Because $f$ is injective, every set in $\mathcal S$ is countable.
+\end{proof}
+
+\begin{theorem} \label{ord_countable_lt}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$, if $\beta$ is
+    countable, then $\alpha$ is countable.
+\end{theorem}
+\begin{proof}
+    Trivial.
+\end{proof}
+
+\begin{theorem} \label{nat_ord_countable}
+    All natural numbers, as ordinals, are countable.
+\end{theorem}
+\begin{proof}
+    Direct consequence of Theorem \ref{ord_to_card_nat}.
+\end{proof}
+
+\begin{theorem} \label{omega_countable}
+    $\omega$ is countable.
+\end{theorem}
+\begin{proof}
+    $|\omega| = |\N|$.
+\end{proof}
+
+\begin{theorem} \label{ord_normal_countable}
+    For all ordinals functions $f$ that satisfy the normal limit condition, if
+    $f(0)$ is countable and if $f(\alpha)$ being countable implies that
+    $f(S(\alpha))$ is countable, then $f(\alpha)$ is countable for all countable
+    $\alpha$.
+\end{theorem}
+\begin{proof}
+    The proof will be by ordinal induction.  The zero and successor cases follow
+    almost directly by assumption.  The limit case follows from Theorem
+    \ref{ord_sup_countable}.
+\end{proof}
+
+\begin{theorem} \label{ord_countable_plus}
+    If $\alpha$ and $\beta$ are countable, then $\alpha + \beta$ is countable.
+\end{theorem}
+\begin{proof}
+    Because adding $\alpha$ on the left satisfies the normal limit condition, we
+    can use Theorem \ref{ord_normal_countable}.  When $\beta = 0$, we have
+    $\alpha + 0 = \alpha$, which is countable by assumption.  When $\alpha +
+    \beta$ is countable, we have $S(\alpha + \beta) = \alpha + S(\beta)$ being
+    countable by Theorem \ref{ord_countable_suc}.
+\end{proof}
+
+\begin{theorem} \label{ord_countable_mult}
+    If $\alpha$ and $\beta$ are countable, then $\alpha + \beta$ is countable.
+\end{theorem}
+\begin{proof}
+    Because multiplying by $\alpha$ on the left satisfies the normal limit
+    condition, we can use Theorem \ref{ord_normal_countable}.  When $\beta = 0$,
+    we have $\alpha 0 = 0$, which is countable.  When $\alpha \beta$ is
+    countable, we have $\alpha \beta + \alpha = \alpha S(\beta)$ being countable
+    by Theorem \ref{ord_countable_plus}.
+\end{proof}
+
+\begin{theorem} \label{ord_countable_pow}
+    If $\alpha$ and $\beta$ are countable, then $\alpha ^ \beta$ is countable.
+\end{theorem}
+\begin{proof}
+    We will need a special case when $\alpha = 0$.  But here, we have either
+    $0^\beta = 0$ or $0^\beta = 1$, and these are both countable.  When $\alpha
+    \neq 0$, because ordinal exponentiation with $\alpha \neq 0$ satisfies the
+    normal limit condition, we can use Theorem \ref{ord_normal_countable}.  When
+    $\beta = 0$, we have $\alpha^0 = 1$, which is countable.  When
+    $\alpha^\beta$ is countable, we have $\alpha^\beta \alpha =
+    \alpha^{S(\beta)}$ being countable by Theorem \ref{ord_countable_mult}.
+\end{proof}
+
+\begin{definition}
+    Define the ordinal $\varepsilon_0$ as the supremum of the set
+    \[
+        \{1, \omega, \omega^\omega, \omega^{\omega^\omega}, \ldots\}.
+    \]
+\end{definition}
+
+\begin{lemma} \label{omega_epsilon0}
+    $\omega^{\varepsilon_0} = \varepsilon_0$.
+\end{lemma}
+\begin{proof}
+    Let ${}^n\omega$ be a power tower of $n$ $\omega$s.  Then
+    \[
+        \varepsilon_0 = \sup\{{}^n\omega \mid n < \omega\}.
+    \]
+    This means that
+    \begin{align*}
+        \omega^{\varepsilon_0}
+        &= \omega^{\sup\{{}^n\omega \mid n < \omega\}} \\
+        &= \sup\{{}^{S(n)}\omega \mid n < \omega\}.
+    \end{align*}
+    So we must prove that
+    \[
+        \sup\{{}^{S(n)}\omega \mid n < \omega\},
+        = \sup\{{}^n\omega \mid n < \omega\}
+    \]
+    which we will do by antisymmetry and Theorem \ref{ord_sup_leq_sup}.  The
+    reverse direction is trivial.  For the forward direction, let $m < \omega$.
+    Then setting $n = S(m)$ in the second set, we get \[\sup\{{}^{S(m)}\omega
+    \mid n < \omega\} \leq \sup\{{}^{S(m)}\omega \mid n < \omega\}\] as
+    required.
+\end{proof}
+
+\begin{theorem} \label{epsilon0_countable}
+    $\varepsilon_0$ is countable.
+\end{theorem}
+\begin{proof}
+    By induction and Theorem \ref{ord_countable_pow}, ${}^n\omega$ is countable
+    for all $n < \omega$.  Thus by Theorem \ref{ord_sup_countable},
+    $\varepsilon_0 = \sup\{{}^n\omega \mid n < \omega\}$ is countable.
+\end{proof}
+
+\begin{theorem} \label{epsilon0_least}
+    For all $\alpha$ with $\omega^\alpha = \alpha$, we have $\varepsilon_0 \leq
+    \alpha$.
+\end{theorem}
+\begin{proof}
+    It suffices to prove that $\alpha$ is an upper bound of $\{{}^n\omega\}$.
+    So let $n$ be a natural number.  We will prove that ${}^n\omega \leq \alpha$
+    by induction on $n$.  When $n = 0$, this reduces to $1 \leq \alpha$, which
+    is equilavent to $0 < \alpha$.  If $0 = \alpha$, we would have $\omega^0 = 1
+    = 0$, which is impossible, so we must have $0 \neq \alpha$, hence $0 <
+    \alpha$.  So the base case is true.
+
+    Now assume that ${}^n\omega \leq \alpha$.  Then by Theorem \ref{ord_pow_le},
+    \begin{align*}
+        \omega^{{}^n\omega} &\leq \omega^\alpha \\
+        {}^{S(n)}\omega &\leq \alpha.
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{ord_normal_family_fixed_set_card}
+    For all small families $f_i$ with index type $\X$, we have $|F(\alpha)| \leq
+    |\L(\X)|$.
+\end{theorem}
+\begin{proof}
+    We have a bijection $g : \X \to f_i$.  Given a list of functions $[f_0, f_1,
+    \ldots, f_n]$, we can take them to a list in $\X$ $[g^{-1}(f_0),
+    g^{-1}(f_1), \ldots, g^{-1}(f_n)]$.  This process is injective by $g$ being
+    bijective, showing that $|F(\alpha)| \leq |\L(\X)|$.
+\end{proof}
+
+\begin{lemma} \label{small_set_list_countable}
+    For all types $\X$ and small sets $S$ on $\X$, if $S$ is countable, then
+    with $\Y$ a type in bijection with $S$, we have $|\L(\Y)| \leq |\N|$.
+\end{lemma}
+\begin{proof}
+    Because $S$ is countable, $|\Y|$ is countable.  When $\Y$ is empty, the
+    result follows from Theorem \ref{empty_list_card}.  When $\Y$ is nonempty
+    and finite, the result follows from Theorem \ref{finite_list_card}.  When
+    $\Y$ is (countably) infinite, the result follows from Theorem
+    \ref{infinite_list_card}.
+\end{proof}
+
+\begin{theorem} \label{ord_normal_family_fixed_countable}
+    Let $f_i$ be a countable family of normal functions.  If $f_x(\beta)$ is
+    countable for all countable $\beta$ and all $x$, then for any countable
+    $\alpha$, then $\sup F(\alpha)$, the first fixed point of $f_i$ greater than
+    or equal to $\alpha$, is countable.
+\end{theorem}
+\begin{proof}
+    By Lemma \ref{small_set_list_countable}, $F(\alpha)$ is countable.  Then by
+    Theorem \ref{ord_sup_countable}, it suffices to prove that every $\delta \in
+    F(\alpha)$ is countable.  Every such $\delta$ is equal to various $f_i$
+    functions applied to $\alpha$.  Because applying each of these functions to
+    a countable ordinal produces a countable ordinal, and because $\alpha$ is
+    countable, inductively, $\delta$ is countable as well.
+\end{proof}
+
+\begin{theorem} \label{ord_family_derivative_countable}
+                \label{ord_derivative_countable}
+    Let $f_i$ be a countable family of normal functions.  If $f_x(\beta)$ is
+    countable for all countable $\beta$ and all $x$, then for any countable
+    $\alpha$, $f'(\alpha)$ is countable.
+\end{theorem}
+\begin{proof}
+    Because $f'$ is normal, we can use Theorem \ref{ord_normal_countable}.
+    First, $f'(0)$ is equal to $\sup F(0)$, which is countable by Theorem
+    \ref{ord_normal_family_fixed_countable}.  Then when $f'(\alpha)$ is
+    countable, $f'(S(\alpha)) = \sup F(S(f'(\alpha)))$, which is countable by
+    Theorems \ref{ord_normal_family_fixed_countable} and
+    \ref{ord_countable_suc}.
+\end{proof}
+
+\begin{definition}
+    Let $\alpha$ be an ordinal.  We will define the veblen function
+    $\varphi_\alpha : \Ord \to \Ord$ by ordinal recursion such that
+    \begin{align*}
+        \varphi_0(\beta) &= \omega^\beta \\
+        \varphi_{S(\alpha)}(\beta) &= \varphi'_\alpha(\beta) \\
+        \varphi_\gamma(\beta) &= \varphi'_{\delta < \gamma}(\beta).
+    \end{align*}
+    In the limit case, the derivative is the derivative of the family of
+    functions $\varphi_\delta$ for all $\delta < \gamma$.
+\end{definition}
+
+By definition $\varphi_\alpha$ is a normal function for all $\alpha$.
+
+\begin{theorem}
+    $\varphi_1(0) = \varepsilon_0$.
+\end{theorem}
+\begin{proof}
+    Both $\varphi_1(0)$ and $\varepsilon_0$ are the least fixed point of
+    $\omega^\beta$ by Theorems \ref{ord_normal_family_fixed_least} and
+    \ref{epsilon0_least}, so they are equal.
+\end{proof}
+
+\begin{lemma} \label{veblen_gt_eq_nat}
+    For all ordinals $\alpha$ and $\zeta$ and nonzero natural numbers $n$, we
+    have
+    \[
+        \varphi_\alpha(\varphi_{\alpha + n}(\zeta))
+        = \varphi_{\alpha + n}(\zeta).
+    \]
+\end{lemma}
+\begin{proof}
+    The proof will be by induction on $n$.  Because $n$ is nonzero, the base
+    case is $n = 1$.  Then the result follows by $\varphi$ being defined on
+    successors as the derivative of the previous $\varphi$ function.  Now assume
+    that for all $\alpha$ and $\zeta$,
+    \[
+        \varphi_\alpha(\varphi_{\alpha + n}(\zeta))
+        = \varphi_{\alpha + n}(\zeta).
+    \]
+    Then
+    \begin{align*}
+        \varphi_\alpha(\varphi_{\alpha + S(n)}(\zeta))
+        &= \varphi_\alpha(\varphi_{S(\alpha + n)}(\zeta)) \\
+        &= \varphi_\alpha(\varphi_{\alpha + n}(\varphi_{S(\alpha + n)}(\zeta)))\\
+        &= \varphi_{\alpha + n}(\varphi_{S(\alpha + n)}(\zeta)) \\
+        &= \varphi_{S(\alpha + n)}(\zeta) \\
+        &= \varphi_{\alpha + S(n)}(\zeta).
+    \end{align*}
+\end{proof}
+
+\begin{lemma} \label{veblen_gt_eq_lim}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$, if $\beta$ is a
+    limit ordinal, then
+    \[
+        \varphi_\alpha(\varphi_\beta(\zeta)) = \varphi_\beta(\zeta)
+    \]
+    for all ordinals $\zeta$.
+\end{lemma}
+\begin{proof}
+    This is true by definition.
+\end{proof}
+
+\begin{theorem} \label{veblen_gt_eq}
+    For all ordinals $\alpha$ and $\beta$ with $\alpha < \beta$,
+    \[
+        \varphi_\alpha(\varphi_\beta(\zeta)) = \varphi_\beta(\zeta)
+    \]
+    for all ordinals $\zeta$.
+\end{theorem}
+\begin{proof}
+    First, if there exists an $n$ with $\alpha + n = \beta$, the result follows
+    from Lemma \ref{veblen_gt_eq_nat}.  So now consider the case when no such
+    $n$ exists.  By Theorems \ref{ord_near_lim} and \ref{ord_near_lim_lim}, let
+    $\gamma$ be the limit ordinal such that $\alpha < \gamma$ and let $n$ be the
+    natural number such that $\gamma + n = \beta$.  Now if $n = 0$, the result
+    follows directly from Lemma \ref{veblen_gt_eq_lim}.  If $n \neq 0$,
+    \begin{align*}
+        \varphi_\alpha(\varphi_\beta(\zeta))
+        &= \varphi_\alpha(\varphi_{\gamma + n}(\zeta)) \\
+        &= \varphi_\alpha(\varphi_\gamma(\varphi_{\gamma + n}(\zeta))) \\
+        &= \varphi_\gamma(\varphi_{\gamma + n}(\zeta)) \\
+        &= \varphi_{\gamma + n}(\zeta) \\
+        &= \varphi_{\beta}(\zeta).
+    \end{align*}
+\end{proof}
+
+\begin{theorem} \label{veblen_le}
+    $\varphi_\alpha(0)$, as a function of $\alpha$, is orderly.
+\end{theorem}
+\begin{proof}
+    Let $\alpha \leq \beta$.  If $\alpha = \beta$, we are done, so let $\alpha <
+    \beta$.  Then
+    \[
+        \varphi_\alpha(0) \leq \varphi_\alpha(\varphi_\beta(0))
+        = \varphi_\beta(0).
+    \]
+\end{proof}
+
+\begin{theorem} \label{veblen_inj}
+    $\varphi_\alpha(0)$, as a function of $\alpha$, is injective.
+\end{theorem}
+\begin{proof}
+    Let $\varphi_\alpha(0) = \varphi_\beta(0)$.  For a contradiction, assume
+    without loss of generality that $\alpha < \beta$.  Then we would have
+    \[
+        \varphi_\alpha(0) = \varphi_\beta(0) = \varphi_\alpha(\varphi_\beta(0)),
+    \]
+    and because $\varphi_\alpha$ is injective, we have $0 = \varphi_\beta(0)$.
+    Because $\varphi_\alpha(0)$ is orderly, we have $\varphi_0(0) \leq
+    \varphi_\beta(0)$, so $1 \leq 0$, which is impossible.
+\end{proof}
+
+\begin{theorem} \label{veblen_normal}
+    $\varphi_\alpha(0)$, as a function of $\alpha$, satisfies the normal limit
+    condition.
+\end{theorem}
+\begin{proof}
+    Let $\alpha$ be a limit ordinal.  Let $\Phi(\alpha)$ be the set given by
+    Definition \ref{ord_normal_family_fixed_set} on the family of functions
+    $\varphi_\delta$ with $\delta < \alpha$ with the starting value $0$.  Then
+    We have $\varphi_\alpha(0) = \sup\Phi(\alpha)$, and we must show that this
+    is equal to $\sup\{\varphi_\delta(0) \mid \delta < \alpha\}$.  We will do so
+    by antisymmetry.
+
+    To show that
+    \[
+        \sup\Phi(\alpha) \leq \sup\{\varphi_\delta(0) \mid \delta < \alpha\},
+    \]
+    we will use Theorem \ref{ord_normal_family_fixed_least}.  So let $\delta <
+    \alpha$.  We must show that
+    \[
+        \varphi_\delta(\sup\{\varphi_\beta(0) \mid \beta < \alpha\})
+        =
+        \sup\{\varphi_\beta(0) \mid \beta < \alpha\}.
+    \]
+    We know that
+    \[
+        \varphi_\delta(\sup\{\varphi_\beta(0) \mid \beta < \alpha\})
+        =
+        \sup\{\varphi_\delta(\varphi_\beta(0)) \mid \beta < \alpha\},
+    \]
+    so it suffices to prove that
+    \[
+        \sup\{\varphi_\delta(\varphi_\beta(0)) \mid \beta < \alpha\}
+        =
+        \sup\{\varphi_\beta(0) \mid \beta < \alpha\}.
+    \]
+    We will prove this by antisymmetry and Theorem \ref{ord_sup_leq_sup}.
+
+    For the forward direction, let $\beta < \alpha$.  We must prove that there
+    exists an ordinal $\beta' < \alpha$ such that
+    $\varphi_\delta(\varphi_\beta(0)) \leq \varphi_{\beta'}(0)$.  There will be
+    two further cases here: when $\delta < \beta$, and when $\delta \geq \beta$.
+    When $\delta < \beta$, we have $\varphi_\delta(\varphi_\beta(0)) =
+    \varphi_\beta(0)$, so setting $\beta' = \beta$ suffices.  When $\delta \geq
+    \beta$, we have $S(\delta) < \alpha$ by Theorem \ref{ord_lim_suc}, and from
+    $\beta \leq \delta$ we have $\beta \leq S(\delta)$.  Then, setting $\beta' =
+    S(\delta)$, we have
+    \[
+        \varphi_\delta(\varphi_\beta(0))
+        \leq \varphi_\delta(\varphi_{S(\delta)}(0))
+        = \varphi_{S(\delta)}(0).
+    \]
+
+    For the reverse direction, let $\beta < \delta$.  Then
+    \[
+        \varphi_\beta(0) \leq \varphi_\delta(\varphi_\beta(0))
+    \]
+    by Theorem \ref{ord_normal_le}.
+
+    Going all the way back to the original antisymmetry part of the proof, we
+    must finally prove
+    \[
+        \sup\{\varphi_\delta(0) \mid \delta < \alpha\}
+        \leq
+        \sup\Phi(\alpha).
+    \]
+    But this one is easy.  This follows directly from Theorem
+    \ref{ord_sup_least} and the fact that for any $\delta < \alpha$, we have
+    $\varphi_\delta(0) \in \Phi(\alpha)$.
+\end{proof}
+
+\begin{theorem} \label{veblen_countable}
+    For all countable ordinals $\alpha$ and $\beta$, $\varphi_\alpha(\beta)$ is
+    countable.
+\end{theorem}
+\begin{proof}
+    The proof will be by ordinal induction on $\alpha$.  The base case is just
+    proving that $\omega^\beta$ is countable, which is Theorem
+    \ref{ord_countable_pow}.
+
+    For the successor case, assume that for all countable $\beta$, we have
+    $\varphi_\alpha(\beta)$.  We must prove that $\varphi_{S(\alpha)}(\beta) =
+    \varphi'_\alpha(\beta)$ is countable.  This follows by Theorem
+    \ref{ord_derivative_countable}.
+
+    For the limit case, assume that $\alpha$ is a limit ordinal and that for all
+    $\delta < \alpha$ and countable $\varepsilon$, $\varphi_\delta(\varepsilon)$
+    is countable as well.  We must prove that $\varphi_\alpha(\beta)$ is
+    countable.  We have $\varphi_\alpha(\beta) = \varphi'_{\delta <
+    \alpha}(\beta)$, and then the result follows by Theorem
+    \ref{ord_family_derivative_countable}.
+\end{proof}
+
+\begin{definition}
+    Define the Feferman-Sch\"utte ordinal, $\Gamma_0$, to be the first fixed
+    point of the normal function $\varphi_\alpha(0)$.  By definition, we know
+    that $\varphi_{\Gamma_0}(0) = \Gamma_0$ and that $\Gamma_0$ is the least
+    ordinal with this property.
+\end{definition}
+
+\begin{theorem}
+    The Feferman-Sch\"utte ordinal is countable.
+\end{theorem}
+\begin{proof}
+    Inductively, all ordinals of the form $\varphi_0(0)$,
+    $\varphi_{\varphi_0(0)}(0)$, and so on are countable, so $\Gamma_0$ is a
+    countable supremum of countable ordinals.
+\end{proof}
+
 \end{document}

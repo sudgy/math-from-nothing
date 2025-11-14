@@ -2,6 +2,8 @@ Require Import init.
 
 Require Export ord_nat.
 Require Export card_set.
+Require Export ord_derivative.
+Require Import card_list.
 
 Open Scope card_scope.
 
@@ -67,8 +69,8 @@ Proof.
         T = initial_segment (bij_inv (ord_type_init_ord A) [[α|]|α_lt _ [|α]])))
         as eq.
     {
-        apply antisym; [>|apply all_sub].
-        intros x x_in; clear x_in.
+        symmetry; apply all_eq.
+        intros x.
         pose proof [|ord_type_init_ord A x] as x_lt.
         unfold initial_segment in x_lt.
         rewrite A_eq in x_lt.
@@ -228,19 +230,6 @@ Proof.
         exact δ_lt.
 Qed.
 
-Theorem ord_countable_plus_nat : ∀ α n,
-    ord_countable α → ord_countable (α + from_nat n).
-Proof.
-    intros α n α_count.
-    nat_induction n.
-    -   rewrite homo_zero, plus_rid.
-        exact α_count.
-    -   rewrite nat_ord_suc.
-        rewrite ord_plus_suc.
-        apply ord_countable_suc.
-        exact IHn.
-Qed.
-
 Theorem ord_countable_plus : ∀ α β,
     ord_countable α → ord_countable β → ord_countable (α + β).
 Proof.
@@ -344,3 +333,164 @@ Proof.
             *   exact omega_countable.
             *   exact IHn.
 Qed.
+
+Theorem ε0_least : ∀ α, ω ^ α = α → ε0 ≤ α.
+Proof.
+    intros α α_eq.
+    unfold ε0.
+    apply ord_f_sup_least.
+    intros [n' n'_lt]; cbn.
+    rewrite_ex_val n n_eq; subst n'.
+    clear n'_lt.
+    nat_induction n.
+    -   unfold zero, power_tower; cbn.
+        apply ord_pos_one.
+        intros contr; subst.
+        rewrite ord_pow_zero in α_eq.
+        symmetry in α_eq; contradiction (ord_not_trivial α_eq).
+    -   cbn.
+        rewrite <- α_eq.
+        apply ord_pow_le; [>apply ω_lim|].
+        exact IHn.
+Qed.
+
+Open Scope card_scope.
+
+Theorem ord_normal_family_fixed_set_card {X} : ∀ (S : X → Prop) Ss f α,
+    small_set_to_card (ord_normal_family_fixed_set S f α)
+        (ord_normal_family_fixed_small S Ss f α) ≤
+        |list (ex_val (small_bij_ex S Ss))|.
+Proof.
+    intros S Ss f α.
+    rewrite_ex_val Y [g g_bij].
+    unfold ord_normal_family_fixed_set.
+    pose (h (β : set_type (ord_normal_family_fixed_set S f α)) :=
+        list_image (bij_inv g) (ex_val [|β])).
+    apply (small_set_to_card_leq _ _ _ h).
+    unfold h.
+    split.
+    intros [a a_in] [b b_in]; cbn.
+    rewrite_ex_val al a_eq.
+    rewrite_ex_val bl b_eq.
+    intros eq.
+    apply set_type_eq; cbn.
+    subst a b.
+    apply (f_equal (list_image g)) in eq.
+    do 2 rewrite list_image_comp in eq.
+    assert ((λ x, g (bij_inv g x)) = identity) as f_eq.
+    {
+        functional_intros x.
+        apply bij_inv_eq2.
+    }
+    rewrite f_eq in eq.
+    assert (∀ l : list (set_type S), list_image identity l = l) as l_eq.
+    {
+        intros l.
+        induction l as [|a l].
+        -   apply list_image_end.
+        -   rewrite list_image_add.
+            rewrite IHl.
+            reflexivity.
+    }
+    do 2 rewrite l_eq in eq.
+    subst bl.
+    reflexivity.
+Qed.
+
+Lemma small_set_list_countable {X} : ∀ (S : X → Prop) Ss,
+    small_set_to_card S Ss ≤ |nat| →
+    |list (ex_val (small_bij_ex S Ss))| ≤ |nat|.
+Proof.
+    intros S Ss S_count.
+    rewrite_ex_val Y [f f_bij].
+    assert (|Y| ≤ |nat|) as Y_count.
+    {
+        apply (trans2 S_count).
+        unfold small_set_to_card.
+        rewrite_ex_val Z [g g_bij].
+        unfold le; equiv_simpl.
+        exists (λ y, (bij_inv g (f y))).
+        apply inj_comp.
+        -   apply f_bij.
+        -   apply bij_inv_bij.
+    }
+    classic_case (|Y| = |nat|) as [Y_eq|Y_neq].
+    -   rewrite Y_eq in Y_count.
+        rewrite <- Y_eq in Y_count at 2.
+        rewrite infinite_list_card by exact Y_count.
+        rewrite Y_eq.
+        apply refl.
+    -   classic_case (inhabited Y) as [[y]|y_nex].
+        +   rewrite (finite_list_card y) by (split; assumption).
+            apply refl.
+        +   rewrite empty_list_card by exact y_nex.
+            rewrite <- (homo_one (f := from_nat)).
+            apply nat_lt_card.
+Qed.
+
+Theorem ord_normal_family_fixed_countable {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    small_set_to_card S Ss ≤ |nat| →
+    (∀ x α, ord_countable α → ord_countable (f x α)) →
+    ∀ α, ord_countable α → ord_countable (ord_normal_family_fixed S Ss f α).
+Proof.
+    intros S Ss f S_count f_count α α_count.
+    unfold ord_normal_family_fixed.
+    apply ord_sup_countable.
+    -   apply (trans (ord_normal_family_fixed_set_card _ _ _ _ )).
+        apply (small_set_list_countable _ _ S_count).
+    -   intros δ [l]; subst δ.
+        induction l as [|[δ Sδ] l IHl].
+        +   rewrite list_image_end, rfold_end.
+            exact α_count.
+        +   rewrite list_image_add, rfold_add.
+            apply f_count.
+            exact IHl.
+Qed.
+
+Theorem ord_family_derivative_countable {X} :
+    ∀ (S : X → Prop) Ss (f : set_type S → OrdNormalFunction),
+    small_set_to_card S Ss ≤ |nat| →
+    (∀ x α, ord_countable α → ord_countable (f x α)) →
+    ∀ α, ord_countable α → ord_countable (ord_family_derivative S Ss f α).
+Proof.
+    intros S Ss f S_count f_count.
+    apply (ord_normal_countable (ord_family_derivative _ _ _)).
+    -   rewrite ord_family_derivative_zero.
+        apply (ord_normal_family_fixed_countable _ _ _ S_count f_count).
+        exact zero_ord_countable.
+    -   intros α α_count.
+        rewrite ord_family_derivative_suc.
+        apply (ord_normal_family_fixed_countable _ _ _ S_count f_count).
+        apply ord_countable_suc.
+        exact α_count.
+Qed.
+
+Theorem ord_derivative_countable : ∀ f : OrdNormalFunction,
+    (∀ α, ord_countable α → ord_countable (f α)) →
+    ∀ α, ord_countable α → ord_countable (ord_derivative f α).
+Proof.
+    intros f f_count α α_count.
+    apply ord_family_derivative_countable.
+    -   unfold small_set_to_card.
+        rewrite_ex_val X [g g_bij].
+        unfold le; equiv_simpl.
+        exists (λ _, 0).
+        split.
+        intros a b eq.
+        apply (inj (f := g)).
+        pose proof [|g a] as a_eq.
+        pose proof [|g b] as b_eq.
+        cbn in *.
+        rewrite ord_suc_zero_one in a_eq, b_eq.
+        apply ord_lt_one_eq in a_eq, b_eq.
+        apply set_type_eq.
+        rewrite <- a_eq, <- b_eq.
+        reflexivity.
+    -   intros _.
+        apply f_count.
+    -   exact α_count.
+Qed.
+
+Close Scope card_scope.
+Close Scope ord_scope.

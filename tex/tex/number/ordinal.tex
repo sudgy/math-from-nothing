@@ -890,7 +890,7 @@ $\Type_{n + 1}$.
     injective and surjective, it is bijective.
 \end{proof}
 
-\begin{definition}
+\begin{definition} \label{small_set_to_card}
     Given a type $\U : \Type_{n + 1}$ and a small set $S$, we can define the
     cardinality of $S$ as the cardinality of a type $X$ that is in bijection
     with $S$, as given by the previous theorem.  We will write this as $|S|$.
@@ -2943,6 +2943,22 @@ exception of it being orderly.  It is still orderly for the ordinals however.
         = \alpha \omega \gamma
         = \alpha \beta.
     \]
+\end{proof}
+
+\begin{theorem} \label{ord_normal_fixed_sup_eq}
+    For all normal functions $f$ and ordinals $\alpha$, the first fixed point of
+    $f$ greater than or equal to $\alpha$ as given by Theorem
+    \ref{ord_normal_family_fixed_eq} is equal to
+    \[
+        \sup\{f^n(\alpha) \mid n < \omega\}.
+    \]
+\end{theorem}
+\begin{proof}
+    Upon unfolding all the definitions, this fact looks trivial, except for the
+    fact that $F(\alpha)$ uses lists of just $f$, while the form given in this
+    theorem uses iterating $f$.  In the Rocq code I had to do a bunch of stuff
+    to show prove this, but they really are the same thing, so I won't show the
+    proof here.
 \end{proof}
 
 Now that we have gotten some of the basic properties of $\omega$, we can finally
