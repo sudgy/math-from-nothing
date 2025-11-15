@@ -89,10 +89,11 @@ Proof.
     nat_induction n; intros.
     -   unfold one; cbn.
         apply veblen_suc_eq.
-    -   cbn in *.
-        rewrite <- veblen_suc_eq at 1.
+    -   rewrite iterate_func_suc at 1.
+        rewrite <- veblen_suc_eq.
         rewrite IHn.
         rewrite veblen_suc_eq.
+        do 3 rewrite iterate_func_suc.
         reflexivity.
 Qed.
 

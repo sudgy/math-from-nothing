@@ -60,7 +60,8 @@ Proof.
         destruct n; cbn in descendent.
         -   specialize (b_lonely a).
             contradiction.
-        -   apply inj in descendent.
+        -   rewrite iterate_func_suc in descendent.
+            apply inj in descendent.
             exists (iterate_func (λ x, f (g x)) n b).
             symmetry; exact descendent.
     }
@@ -90,7 +91,8 @@ Proof.
             destruct n; cbn in eq.
             -   specialize (b_lonely (g (f a2))).
                 contradiction.
-            -   do 2 apply inj in eq.
+            -   rewrite iterate_func_suc in eq.
+                do 2 apply inj in eq.
                 exists n.
                 exact eq.
         }

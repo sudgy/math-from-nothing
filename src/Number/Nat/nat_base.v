@@ -13,6 +13,13 @@ Fixpoint iterate_func {U} (f : U → U) n :=
     | nat_zero => identity
     | nat_suc n' => λ x, f (iterate_func f n' x)
     end.
+Arguments iterate_func : simpl never.
+
+Theorem iterate_func_suc {U} : ∀ (f : U → U) n x,
+    iterate_func f (nat_suc n) x = f (iterate_func f n x).
+Proof.
+    reflexivity.
+Qed.
 
 Definition sequence (U : Type) := nat → U.
 

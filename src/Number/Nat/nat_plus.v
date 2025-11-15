@@ -43,6 +43,12 @@ Global Instance nat_zero_instance : Zero nat := {
 Ltac nat_induction n := induction n; change nat_zero with zero in *.
 Ltac nat_destruct n := destruct n; change nat_zero with zero in *.
 
+Theorem iterate_func_zero {U} : ∀ (f : U → U) x,
+    iterate_func f 0 x = x.
+Proof.
+    reflexivity.
+Qed.
+
 Theorem nat_zero_eq : nat_zero = 0.
 Proof.
     reflexivity.

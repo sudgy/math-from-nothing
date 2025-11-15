@@ -309,7 +309,7 @@ Proof.
     nat_induction n.
     -   rewrite (homo_zero (f := from_nat)), plus_rid.
         reflexivity.
-    -   cbn.
+    -   rewrite iterate_func_suc.
         rewrite IHn.
         rewrite nat_ord_suc.
         symmetry; apply ord_plus_suc.

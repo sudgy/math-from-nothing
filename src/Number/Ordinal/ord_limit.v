@@ -354,7 +354,7 @@ Proof.
     -   destruct IHα as [n [β [β_lim α_eq]]].
         exists (nat_suc n), β.
         split; [>exact β_lim|].
-        cbn.
+        rewrite iterate_func_suc.
         rewrite α_eq.
         reflexivity.
     -   exists 0, α.
@@ -399,9 +399,9 @@ Proof.
     apply antisym; [>|exact n_ge].
     order_contradiction ltq2.
     nat_destruct n.
-    -   unfold zero in ltq2; cbn in ltq2.
+    -   rewrite iterate_func_zero in ltq2.
         contradiction (irrefl _ (trans ltq ltq2)).
-    -   cbn in ltq2.
+    -   rewrite iterate_func_suc in ltq2.
         rewrite ord_lt_suc_le in ltq2.
         specialize (n_least _ ltq2).
         rewrite <- nlt_le in n_least.
