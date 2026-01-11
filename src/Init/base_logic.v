@@ -28,77 +28,20 @@ Proof.
     exact Py.
 Qed.
 
-(* begin hide *)
-(* This proof is not my own *)
-Module ProofIrrelevance.
-    Lemma prop_eq_self_impl_when_true : ∀ {P : Prop}, P → P = (P → P).
-    Proof.
-        intros P H.
+Theorem proof_irrelevance : ∀ {P : Prop} (a b : P), a = b.
+Proof.
+    intros P a b.
+    assert (P = True) as P_eq.
+    {
         apply propositional_ext.
-        split; intros; exact H.
-    Qed.
-    Record has_fixpoint (P : Prop) : Prop := has_fixpoint_make {
-        has_fixpoint_F : (P → P) → P;
-        has_fixpoint_fix : ∀ f, has_fixpoint_F f = f (has_fixpoint_F f)
-    }.
-    Lemma prop_has_fixpoint_when_true : ∀ P : Prop, P → has_fixpoint P.
-    Proof.
-        intros P H.
-        set (P' := P).
-        assert (P' = P) as P_eq by (unfold P'; reflexivity).
-        pose (g1 (a : P') := a).
-        pose (g2 (a : P') := a).
-        assert (∀ x, g1 (g2 x) = x) as Fix by reflexivity.
-        clearbody g1 g2.
-        unfold P' in g1 at 2.
-        unfold P' in g2 at 1.
-        unfold P' in Fix.
-        generalize dependent g2.
-        generalize dependent g1.
-        rewrite (prop_eq_self_impl_when_true H).
-        subst P'.
-        intros.
-        set (Y := λ f, (λ x, f (g1 x x)) (g2 (λ x, f (g1 x x)))).
-        apply (@has_fixpoint_make P Y).
-        intros f.
-        unfold Y at 1.
-        rewrite Fix.
-        reflexivity.
-    Qed.
-    Inductive boolP : Prop :=
-        | trueP : boolP
-        | falseP : boolP.
-    Lemma trueP_eq_falseP : trueP = falseP.
-    Proof.
-        pose proof (@prop_has_fixpoint_when_true boolP trueP) as [Y Yfix].
-        set (neg := λ b, match b with | trueP => falseP | falseP => trueP end).
-        pose proof (Yfix neg) as F.
-        set (b := Y neg).
-        assert (b = Y neg) as E by reflexivity.
-        destruct b.
-        {
-            change (trueP = neg trueP).
-            rewrite E, <- F.
-            reflexivity.
-        }
-        {
-            change (neg falseP = falseP).
-            rewrite E, <- F.
-            reflexivity.
-        }
-    Qed.
-    Theorem proof_irrelevance : ∀ {P : Prop} (a b : P), a = b.
-    Proof.
-        intros P a b.
-        set (f := λ c, match c with trueP => a | falseP => b end).
-        change a with (f trueP).
-        change b with (f falseP).
-        rewrite trueP_eq_falseP.
-        reflexivity.
-    Qed.
-End ProofIrrelevance.
-(* end hide *)
-Export ProofIrrelevance (proof_irrelevance).
+        split.
+        -   intro; exact true.
+        -   intro; exact a.
+    }
+    subst P.
+    destruct a, b.
+    reflexivity.
+Qed.
 
 Theorem predicate_ext : ∀ {U : Type} (P Q : U → Prop),
     (∀ x, P x ↔ Q x) → P = Q.
@@ -197,8 +140,6 @@ Tactic Notation "rewrite_ex_val2" simple_intropattern(a) simple_intropattern(b)
     | K: context [ex_val2 ?P] |- _ => go P
     end.
 
-(* begin hide *)
-(* This proof is not my own *)
 Module ExcludedMiddle.
     Inductive bool : Set :=
         | true : bool
@@ -206,12 +147,12 @@ Module ExcludedMiddle.
     Theorem em : ∀ (P : Prop), P ∨ ¬P.
     Proof.
         intros P.
-        set (B1 b := b = true ∨ P).
-        set (B2 b := b = false ∨ P).
-        assert (ex B1) as H1 by (exists true; left; reflexivity).
-        assert (ex B2) as H2 by (exists false; left; reflexivity).
-        destruct (ex_proof H1) as [HA|]; try (left; assumption).
-        destruct (ex_proof H2) as [HB|]; try (left; assumption).
+        pose (B1 b := b = true ∨ P).
+        pose (B2 b := b = false ∨ P).
+        assert (∃ x, B1 x) as H1 by (exists true; left; reflexivity).
+        assert (∃ x, B2 x) as H2 by (exists false; left; reflexivity).
+        destruct (ex_proof H1) as [HA|]; [>|left; assumption].
+        destruct (ex_proof H2) as [HB|]; [>|left; assumption].
         right; intros HP.
         assert (B1 = B2) as EB.
         {
@@ -224,18 +165,17 @@ Module ExcludedMiddle.
         rewrite HB in HA.
         inversion HA.
     Qed.
-    Theorem sem : ∀ P, {P} + {¬P}.
-    Proof.
-        intros P.
-        apply indefinite_description.
-        destruct (em P) as [PH|PH].
-        -   split; left; exact PH.
-        -   split; right; exact PH.
-    Qed.
 End ExcludedMiddle.
-(* end hide *)
 Export ExcludedMiddle (em).
-Export ExcludedMiddle (sem).
+
+Theorem sem : ∀ P, {P} + {¬P}.
+Proof.
+    intros P.
+    apply indefinite_description.
+    destruct (em P) as [PH|PH].
+    -   split; left; exact PH.
+    -   split; right; exact PH.
+Qed.
 
 Tactic Notation "classic_case" constr(P) := destruct (sem P).
 Tactic Notation "classic_case" constr(P)

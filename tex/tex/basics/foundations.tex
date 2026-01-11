@@ -195,17 +195,44 @@ gives us:
     be repeated.
 \end{proof}
 
-Several other useful facts can be derived from these axioms, but the proofs are
-more complicated.  I didn't work out the proofs myself so I will not put them
-here.
+Several other useful facts can be derived from these axioms.
 
 \begin{theorem}[Proof Irrelevance]
-    For a given proposition $P$, for all $A, B : P$, $A = B$.
+    For a given proposition $P$, for all $a, b : P$, $a = b$.
 \end{theorem}
+\begin{proof}
+    Because $a : P$, we know that $P$ is true.  Thus, $P \leftrightarrow \True$,
+    so by propositional extensionality, $P = \True$.  Thus, $a$ and $b$ are both
+    proofs of $\True$, which only has one proof by definition.  Thus, $a = b$.
+\end{proof}
 
 \begin{theorem}[Excluded Middle]
     For all propositions $P$, $P \vee \neg P$.
 \end{theorem}
+\begin{proof}
+    Define an inductive type $\T$ with two value constructors $a$ and $b$.  We
+    have $a \neq b$.  Now define sets $S_a$ and $S_b$ given by
+    \begin{align*}
+        S_a &= \{x : \T \mid P \vee x = a\} \\
+        S_b &= \{x : \T \mid P \vee x = b\}.
+    \end{align*}
+    $a \in S_a$ and $b \in S_b$, so $S_a$ and $S_b$ are nonempty.  Let $p_a$ and
+    $p_b$ be the respective proofs.  Let $\varepsilon$ be the function given by
+    indefinite description that takes in a proof that a type is nonempty and
+    produces such a value.  Now consider the values $\varepsilon(p_a)$ and
+    $\varepsilon(p_b)$.  Because $\varepsilon(p_a) \in S_a$, we know that either
+    $P$ is true or $\varepsilon(p_a) = a$.  In the first case, $P \vee \neg P$
+    follows directly.  In the second case, because $\varepsilon(p_b) \in S_b$,
+    we know that either $P$ is true or $\varepsilon(p_b) = b$.  Again, the
+    result follows directly in the first case.  In the second case, we now have
+    $\varepsilon(p_a) = a$ and $\varepsilon(p_b) = b$.  We will prove $\neg P$.
+    So assume $P$.  When $P$ is true, the sets $S_a$ and $S_b$ are equal because
+    every value in $\T$ is in both.  Thus, $p_a$ and $p_b$ are proofs of the
+    same proposition: that $S_a = S_b$ is nonempty.  By proof irrelevance, $p_a
+    = p_b$.  Thus, $\varepsilon(p_a) = \varepsilon(p_b)$, so $a = b$, which is
+    impossible because $a \neq b$.  This is a contradiction, so we must have
+    $\neg P$.
+\end{proof}
 \noindent By Theorem \ref{or_to_strong}, we also have $\{P\} + \{\neg P\}$.
 
 These last several theorems make many of the usual constructions in math work
