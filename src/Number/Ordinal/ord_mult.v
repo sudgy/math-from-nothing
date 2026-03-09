@@ -197,24 +197,12 @@ Proof.
     apply plus_lid.
 Qed.
 
-Global Instance ord_mult_zero : MultZero ord.
+Global Instance ord_mult_lcancel : MultLcancel ord.
 Proof.
     split.
-    intros α β eq.
-    induction β as [|β|β β_lim] using ord_destruct.
-    -   right; reflexivity.
-    -   rewrite ord_mult_suc in eq.
-        apply ord_plus_zero in eq.
-        left; exact (rand eq).
-    -   left.
-        rewrite ord_mult_lim in eq by exact β_lim.
-        pose proof (ord_f_sup_ge β (λ δ, α * [δ|])) as leq.
-        rewrite <- eq in leq.
-        specialize (leq [ord_suc 0|ord_lim_gt β β_lim]); cbn in leq.
-        rewrite ord_suc_zero_one in leq.
-        rewrite mult_rid in leq.
-        apply all_neg_eq in leq.
-        exact leq.
+    intros α β γ γ_nz.
+    apply ord_mult_homo_inj.
+    exact γ_nz.
 Qed.
 
 Global Instance ord_le_lmult : OrderLmult ord.
@@ -275,9 +263,6 @@ Proof.
     apply homo_lt.
     exact ltq.
 Qed.
-
-Definition ord_mult_lcancel := mult_lcancel1 : MultLcancel ord.
-Global Existing Instances ord_mult_lcancel.
 
 Global Instance ord_le_rmult : OrderRmult ord.
 Proof.

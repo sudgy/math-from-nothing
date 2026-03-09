@@ -153,6 +153,8 @@ Proof.
     apply ldist.
 Qed.
 
+Local Remove Hints mult_lanni_ranni : typeclass_instances.
+
 Global Instance mult_lcancel_zero : MultZero U.
 Proof.
     split.
