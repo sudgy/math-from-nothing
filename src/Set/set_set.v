@@ -174,3 +174,50 @@ Proof.
         exists Y.
         split; assumption.
 Qed.
+
+Theorem big_union_union {U} : ∀ SS TT : (U → Prop) → Prop,
+    (⋃ SS) ∪ (⋃ TT) = ⋃ (SS ∪ TT).
+Proof.
+    intros SS TT.
+    apply antisym.
+    -   intros x [SSx|TTx].
+        +   destruct SSx as [S [SS_S Sx]].
+            exists S.
+            split; [>|exact Sx].
+            left.
+            exact SS_S.
+        +   destruct TTx as [T [TT_T Tx]].
+            exists T.
+            split; [>|exact Tx].
+            right.
+            exact TT_T.
+    -   intros x [S [S_in Sx]].
+        destruct S_in as [SS_S|TT_S].
+        +   left.
+            exists S.
+            split; assumption.
+        +   right.
+            exists S.
+            split; assumption.
+Qed.
+
+Theorem big_inter_inter {U} : ∀ SS TT : (U → Prop) → Prop,
+    (⋂ SS) ∩ (⋂ TT) = ⋂ (SS ∪ TT).
+Proof.
+    intros SS TT.
+    apply antisym.
+    -   intros x [SS_x TT_x] A A_in.
+        destruct A_in as [SS_A|TT_A].
+        +   exact (SS_x A SS_A).
+        +   exact (TT_x A TT_A).
+    -   intros x x_in.
+        split.
+        +   intros A SS_A.
+            apply x_in.
+            left.
+            exact SS_A.
+        +   intros A TT_A.
+            apply x_in.
+            right.
+            exact TT_A.
+Qed.
