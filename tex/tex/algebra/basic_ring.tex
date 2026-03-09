@@ -310,6 +310,15 @@ the requisite typeclasses for the definitions.
     showing that $ca \mid cb$.
 \end{proof}
 
+\begin{theorem} \label{div_lrmult}
+    For all $a$, $b$, $c$, and $d$, if $a \mid b$ and $c \mid d$, then $ac \mid
+    bd$.
+\end{theorem}
+\begin{proof}
+    By multiplying $a \mid b$ by $c$ and multiplying $c \mid d$ by $b$, we get
+    $ac \mid bc$ and $bc \mid bd$, and then we get $ac \mid bd$ by transitivity.
+\end{proof}
+
 \begin{theorem} \label{div_rcancel} \label{div_lcancel}
     For all $a$, $b$, and $c$, if $0 \neq c$ and $ac \mid bc$, then $a \mid b$.
 \end{theorem}
@@ -453,6 +462,18 @@ the requisite typeclasses for the definitions.
     cx$, by Theorem \ref{div_lmult} we have $ab \mid acx = x$.  If $b \mid y$,
     then $ab \mid y$ by Theorem \ref{div_unit_mult}.  Either way, we have either
     $ab \mid x$ or $ab \mid y$, so $ab$ is prime.
+\end{proof}
+
+\begin{theorem} \label{prime_back}
+    For all $a$, $b$, and $c$, if $b$ is prime, $a \mid bc$, and $b \nmid a$,
+    then $a \mid c$.
+\end{theorem}
+\begin{proof}
+    By $a \mid bc$, we have a $d$ such that $ad = bc$.  This means that $b \mid
+    da$.  Because $b \mid da$, we have either $b \mid d$ or $b \mid a$, although
+    the second case is impossible by assumption, so we have $b \mid d$.  Thus,
+    we have an $e$ such that $be = d$.  Thus, $abe = bc$, and cancelling $b$ we
+    get $ae = c$, showing that $a \mid c$.
 \end{proof}
 
 \begin{instance}
@@ -714,6 +735,14 @@ quite as trivial.
     Just apply the previous theorem forwards and backwards.
 \end{proof}
 
+\begin{theorem} \label{is_gcd_comm}
+    If $d$ is a greatest common divisor of $a$ and $b$, then $d$ is a greatest
+    common divisor of $b$ and $a$.
+\end{theorem}
+\begin{proof}
+    The definition is symmetric.
+\end{proof}
+
 \begin{theorem} \label{irreducible_prime}
     In a GCD Domain, all irreducible elements are prime.
 \end{theorem}
@@ -740,6 +769,24 @@ quite as trivial.
     have $c'cv = c'p$, so $v = c'p$, showing that $p \mid v$.  Now from $d \mid
     ab$, we have $vb \mid ab$, and by Theorem \ref{div_rcancel} we have $v \mid
     a$.  Since $p \mid v$ and $v \mid a$, we have $p \mid a$.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_common_divisor}
+    $d$ is a common divisor of $a$ and $b$ if and only if $\D(d)$ is a common
+    divisor of $\D(a)$ and $\D(b)$.
+\end{theorem}
+\begin{proof}
+    This follows directly by applying Theorem \ref{div_equiv_div} a couple
+    times.
+\end{proof}
+
+\begin{theorem} \label{div_equiv_gcd}
+    $d$ is the greatest common divisor of $a$ and $b$ if and only if $\D(d)$ is
+    the greatest common divisor of $\D(a)$ and $\D(b)$.
+\end{theorem}
+\begin{proof}
+    This is just like the previous theorem but with more applications of Theorem
+    \ref{div_equiv_div}.
 \end{proof}
 
 \section{Factorization}
