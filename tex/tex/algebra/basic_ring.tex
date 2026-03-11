@@ -1,6 +1,7 @@
 \documentclass[../../math.tex]{subfiles}
 \externaldocument{../../math.tex}
 \externaldocument{../basics/set}
+\externaldocument{../basics/lists}
 
 \begin{document}
 
@@ -626,6 +627,13 @@ quite as trivial.
     This is just a special case of Theorem \ref{div_equiv_div}.
 \end{proof}
 
+\begin{theorem} \label{div_equiv_one}
+    For all $a : \U$, $\D(a) = 1$ if and only if $a \mid 1$.
+\end{theorem}
+\begin{proof}
+    This can be seen as the composition of the previous two theorems.
+\end{proof}
+
 \begin{theorem} \label{div_equiv_zero}
     For all $a : \U$, $a = 0$ if and only if $\D(a) = 0$.
 \end{theorem}
@@ -680,13 +688,30 @@ quite as trivial.
     d$, proving that $a$ is prime.
 \end{proof}
 
-\begin{theorem}
+\begin{theorem} \label{div_unit_eq}
     For all units $a$ and values $x$, $\D(ax) = \D(x)$.
 \end{theorem}
 \begin{proof}
     Because $a$ is a unit, there exists a $b$ with $ba = 1$.  Then $bax = x$,
     showing that $ax \mid x$, and $x \mid ax$ by Theorem \ref{mult_div_rself},
     so $ax$ and $x$ associate.  Thus, $\D(ax) = \D(x)$.
+\end{proof}
+
+\begin{theorem} \label{primes_div_equiv}
+    For all primes $a$ and $b$ in $\D(\U)$, if $a \mid b$, then $a = b$.
+\end{theorem}
+\begin{proof}
+    By $a \mid b$, we have some $u$ such that $au = b$.  If $u$ was not a unit,
+    $b$ would be reducible, contradicting it being prime, so $u$ is a unit.
+    Then $u = 1$ by Theorem \ref{div_equiv_unit}, so $a = b$.
+\end{proof}
+
+\begin{theorem} \label{primes_div}
+    For all prime $a$ and $b$ in $\U$, if $a \mid b$, then $a$ and $b$
+    associate.
+\end{theorem}
+\begin{proof}
+    This is just the previous theorem restated in $\U$.
 \end{proof}
 
 \section{GCDs}
@@ -697,7 +722,7 @@ quite as trivial.
 \end{definition}
 
 \begin{definition}
-    Let $a$ and $b$ be values in an integral domain $\U$.  Then $d$ is the
+    Let $a$ and $b$ be values in an integral domain $\U$.  Then $d$ is a
     greatest common divisor of $a$ and $b$ if it is a common divisor, and if for
     all other common divisors $d'$, we have $d' \mid d$.
 \end{definition}
@@ -793,9 +818,9 @@ quite as trivial.
 
 \begin{class}
     Let $\U$ be an integral domain.  Then we call $\U$ a unique factorization
-    domain (UFD) if for all $x \neq 0$ that is not a unit, there exists a list
-    of primes $a$ such that $x = \prod a$.  This list $a$ will be called the
-    factorization of $x$.
+    domain (UFD) if for all $x \neq 0$ that is not a unit, there exists an
+    unordered list of primes $a$ such that $x = \prod a$.  This list $a$ will be
+    called the factorization of $x$.
 \end{class}
 
 There are a couple notable differences between this definition and the usual
@@ -807,5 +832,200 @@ existence.  Thus, to make it easier to prove that integral domains are UFDs,
 this alternative definition has been used so that uniqueness never has to be
 proved.  It turns out that UFDs are GCD domains, as will be proven below, so the
 distinction between prime and irreducible elements isn't really that important.
+
+Throughout this section, let $\U$ be a UFD.
+
+\begin{theorem} \label{div_factorization_base}
+    If $\U$ is a UFD, then $\D(\U)$ is as well in the following sense: For all
+    nonzero $x : \D(\U)$, there exists an unordered list of primes $a$ such that
+    $x = \prod a$.  Note that $x$ is allowed to be a unit here.
+\end{theorem}
+\begin{proof}
+    If $x = 1$, the empty list is a valid factorization.  So in the following,
+    let $x \neq 1$.  Let $x' : \U$ such that $\D(x') = x$.  Then $x' \neq 0$ and
+    $x' \nmid 1$.  Because $\U$ is a UFD, $x'$ has a factorization $a$.  By
+    Theorem \ref{div_equiv_prime}, $\D(a)$ is an unordered list of primes in
+    $\D(\U)$, and by construction $\prod \D(a) = \D(x') = x$.
+\end{proof}
+
+\begin{theorem} \label{div_factorization_unique}
+    In $\D(\U)$, factorizations are unique.  More explicitly, for all $x :
+    \D(\U)$ and unordered lists of primes $a$ and $b$ such that $x = \prod a$
+    and $x = \prod b$, we have $a = b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$ with all of the other variables part
+    of the induction, including $x$.  For the base case, we have $a = \llbracket
+    \rrbracket$.  We need to prove that $b = \llbracket \rrbracket$.  For a
+    contradiction, assume that $b = y : b'$.  Then because $x = \prod \llbracket
+    \rrbracket = 1$ and $x = \prod (y : b') = y \prod b'$, we have $y \mid 1$,
+    implying that $y$ is a unit.  This contradicts $y$ being prime, so $b$ must
+    be empty.  Thus, the base case is true.
+
+    For the inductive case, assume that for all $y : \D(\U)$ such that $y =
+    \prod a$, for any other unordered list of primes $a'$ with $y = \prod a'$,
+    we have $a = a'$.  We must prove that for all primes $p$ such that $x = p
+    \prod a$, we have $p : a = b$.  Because $p \prod a = x = \prod b$, we have
+    $p \mid \prod b$.  We will now prove that $p \in b$ by induction on $b$.
+
+    For the base case, we have $p \mid \prod \llbracket \rrbracket = 1$,
+    contradicting $p$ being prime.  So the base case is vacously true.  For the
+    inductive case, assume that if $p \mid b'$, then $p \in b'$, and assume that
+    $p \mid q \prod b'$ for some prime $q$.  Because $p$ is prime, we have
+    either $p \mid q$ or $p \mid b'$.  When $p \mid q$, we have $p = q$ by
+    Theorem \ref{primes_div_equiv}, so $p \in q : b'$.  When $p \mid b'$, we
+    have $p \in b'$ by the inductive hypothesis.  Either way, $p \in q : b'$.
+
+    Outside of the induction on $b$, we now have $p \in b$.  Thus, $b = p : b'$
+    for some list $b'$.  We now need to prove that $a = b'$.
+    We have both $p \prod a = x$ and $p \prod b' = x$, so $p \prod a = p \prod
+    b'$.  Because $p$ is prime, $p \neq 0$, so we can cancel $p$ to get $\prod a
+    = \prod b'$.  Set $y = \prod a$.  Then $y = \prod b'$ as well.  By the
+    inductive hypothesis on $a$ with $y$, $a$, and $b'$, we have $a = b'$, so $p
+    : a = p : b'$.  Thus, factorizations in $\D(\U)$ are unique.
+\end{proof}
+
+\begin{theorem} \label{factorization_uni}
+    Factorizations in $\U$ are unique in that all factorizations for a given
+    value are equal when applying $\D$ to them.
+\end{theorem}
+\begin{proof}
+    The whole proof is trivially applying a bunch of theorems to show that all
+    factorizations in $\U$ pass into factorizations in $\D(\U)$.
+\end{proof}
+
+\begin{theorem} \label{factorization_mult}
+    For all values $x$ and $y$ in $\D(\U)$, the factorization of $xy$ is the
+    concatenation of the factorizations of $x$ and $y$.
+\end{theorem}
+\begin{proof}
+    The concatentation of the factorizations of $x$ and $y$ is an unordered list
+    of primes such that its product is $xy$, so by the uniqueness of
+    factorizations this is the factorization of $x$ and $y$.
+\end{proof}
+
+\begin{theorem} \label{factorization_in}
+    For all $x : \D(\U)$ and primes $p$ such that $p \mid x$, $p$ is in the
+    factorization of $x$.
+\end{theorem}
+\begin{proof}
+    Because $p \mid x$, we have some $a$ such that $pa = x$.  Then $p$ added to
+    the factorization of $a$ is a valid factorization of $x$ with $p$ in it.
+\end{proof}
+
+\begin{definition}
+    Let $x : \D(\U)$, and let $p$ be a prime.  Then we define $P_p(x)$ to be the
+    number of times $p$ appears in the factorization of $x$.
+\end{definition}
+
+\begin{theorem} \label{factorization_powers_div}
+    For all nonzero $x$ and $y$ in $\D(\U)$, $x \mid y$ if and only if for all
+    primes $p$, $P_p(x) \leq P_p(y)$.
+\end{theorem}
+\begin{proof}
+    Let $f_x$ be the factorization of $x$ and $f_y$ the factorization of $y$.
+    First assume that $x \mid y$, and let $p$ be a prime.  Because $x \mid y$,
+    then $xc = y$ for some $c$.  We can't have $c = 0$ because then $y = 0$.
+    Thus, $c$ has its own factorization $f_c$.  Then
+    \[
+        P_p(x) = |f_x|_p \leq |f_x|_p + |f_c|_p = |f_x + f_c|_p = |f_y|_p =
+        P_p(y),
+    \]
+    so the forward direction is true.
+
+    For the reverse, assume that for all primes $p$, $P_p(x) \leq P_p(y)$.  By
+    Theorem \ref{ulist_count_sub}, there exists a list $f_c$ such that $f_x +
+    f_c = f_y$.  Then setting $c = \prod f_c$, we have $xc = y$ as required.
+\end{proof}
+
+\begin{lemma} \label{ufd_gcd_ex_div}
+    For all $x$ and $y$ in $\D(\U)$ with $x$ nonzero, there exists a greatest
+    common divisor of $x$ and $y$.
+\end{lemma}
+\begin{proof}
+    First, if $y = 0$, then $x$ would be a greatest common divisor of $x$ and
+    $y$, so consider the case when $y \neq 0$.  Let $f_x$ be the factorization
+    of $x$ and $f_y$ be the factorization of $y$.  Define a function $m : \D(\U)
+    \to \L_U(\D(\U))$ by
+    \[
+        m(p) = [p]_{\min(P_p(x), P_p(y))}.
+    \]
+    Define a list
+\newcommand{\flatten}[1]{\underline{\overline{#1}}}
+    \[
+        f_d = \flatten{m(u(f_x))}.
+    \]
+    As a reminder of all the list notation being used here, $f_d$ is the list we
+    get from taking $f_x$, removing any duplicate elements, and then repeating
+    each element $p$ $\min(P_p(x), P_p(y))$ times.  By Theorems
+    \ref{ulist_prop_flatten}, \ref{image_in_ulist}, \ref{ulist_prop_constant},
+    \ref{ulist_make_unique_in}, and \ref{ulist_prop_in}, $f_d$ is a list of
+    primes.  Define $d = \prod f_d$, so that $f_d$ is the factorization of $d$.
+    We will prove that $d$ is the greatest common divisor of $x$ and $y$.
+
+    First, as a product of primes, $d \neq 0$.  We will now prove that $P_p(d) =
+    \min(P_p(x), P_p(y))$ for all primes $p$.  There will be two cases: when $p
+    \in u(f_x)$, and when $p \notin u(f_x)$.  When $p \in u(f_x)$, we have some
+    list $f_x'$ such that $u(f_x) = p : f_x'$.  Then
+    \begin{align*}
+        P_p(d)
+        &= [f_d]_p \\
+        &= [\flatten{m(u(f_x))}]_p \\
+        &= [\flatten{m(p : f_x')}]_p \\
+        &= [\flatten{m(p) : m(f_x')}]_p \\
+        &= [m(p) + \flatten{m(f_x')}]_p \\
+        &= [m(p)]_p + [\flatten{m(f_x')}]_p \\
+        &= \min(P_p(x), P_p(y)) + [\flatten{m(f_x')}]_p.
+    \end{align*}
+    We now just need to show that $[\flatten{m(f_x')}]_p = 0$.  Assume for a
+    contradiction that $p \in \flatten{m(f_x')}$.  Then we have some list $a \in
+    m(f_x')$ with $p \in a$.  Because $a \in m(f_x')$, we have some prime $q \in
+    f_x'$ such that $a = [q]_{\min(P_p(x), P_p(y))}$.  This implies that $p =
+    q$.  Thus, $p \in f_x'$.  But we have $u(f_x) = p : f_x'$, and since
+    $u(f_x)$ has unique elements, we must have $p \notin f_x$.  This is a
+    contradiction.  Thus, $[\flatten{m(f_x')}]_p = 0$.
+
+    Now consider the case when $p \notin u(f_x)$.  Then $p \notin f_x$, so
+    $[f_x]_p = 0$.  This implies $\min(P_p(x), P_p(y)) = 0$.  So we now need to
+    prove that
+    \[
+        P_p(d)
+        = [f_d]_p
+        = [\flatten{m(u(f_x))}]_p
+    \]
+    is equal to zero.  To do so, assume for a contradiction that $p \in
+    \flatten{m(f_x')}$.  Then we have some list $a \in m(u(f_x))$ such that $p
+    \in a$.  Because $a \in m(u(f_x))$, we have some prime $q \in u(f_x)$ such
+    that $a = [q]_{\min(P_p(x), P_p(y))}$.  This implies that $p = q$.  However,
+    we now have $p \notin u(f_x)$ and $q \in u(f_x)$, which is impossible.
+    Thus, $[\flatten{m(u(f_x))}]_p = 0$.
+
+    We have now proven that $P_p(d) = \min(P_p(x), P_p(y))$.  With this, the
+    properties of the $\min$ function, and Theorem
+    \ref{factorization_powers_div}, $d$ is the greatest common divisor of $x$
+    and $y$.
+\end{proof}
+
+\begin{lemma} \label{ufd_gcd_ex}
+    For all $x$ and $y$ in $\U$ with $x$ nonzero, there exists a greatest common
+    divisor of $x$ and $y$.
+\end{lemma}
+\begin{proof}
+    By Theorem \ref{div_equiv_zero}, $\D(x) \neq 0$.  Then by Lemma
+    \ref{ufd_gcd_ex_div}, $\D(x)$ and $\D(y)$ have a greatest common divisor
+    $\D(d)$.  Then by Theorem \ref{div_equiv_gcd}, $d$ is the greatest common
+    divisor of $x$ and $y$.
+\end{proof}
+
+\begin{instance}
+    All UFDs are GCD domains.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be values in a UFD $\U$.  If $a \neq 0$, use Lemma
+    \ref{ufd_gcd_ex} to get the gcd of $a$ and $b$.  If $a = 0$ and $b \neq 0$,
+    use Lemma \ref{ufd_gcd_ex} to get the gcd of $b$ and $a$.  Otherwise, just
+    pick $1$, since this case doesn't matter when actually checking the
+    conditions for a GCD domain.
+\end{proof}
 
 \end{document}

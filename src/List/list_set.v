@@ -361,6 +361,28 @@ Proof.
         exact x_in.
 Qed.
 
+Theorem list_prop_flatten {U} : ∀ S l,
+    (∀ a : list U, in_list l a → list_prop S a) →
+    list_prop S (list_flatten l).
+Proof.
+    intros S l l_in.
+    induction l as [|a l].
+    -   rewrite list_flatten_end.
+        apply list_prop_end.
+    -   prove_parts IHl.
+        {
+            intros b b_in.
+            apply l_in.
+            apply in_list_add_eq.
+            right; exact b_in.
+        }
+        rewrite list_flatten_add.
+        rewrite list_prop_conc.
+        split; [>|exact IHl].
+        apply l_in.
+        apply in_list_add.
+Qed.
+
 Theorem list_prop2_end {U} : ∀ S : U → U → Prop, list_prop2 S [].
 Proof.
     intros S.

@@ -2,6 +2,7 @@ Require Import init.
 
 Require Export list_base.
 Require Export list_in.
+Require Export list_set.
 
 Require Export nat.
 
@@ -269,4 +270,16 @@ Proof.
         destruct b_in as [eq|b_in].
         +   exact eq.
         +   exact (IHn b_in).
+Qed.
+
+Theorem list_prop_constant {U} : ∀ S (x : U),
+    S x → ∀ n, list_prop S (list_constant x n).
+Proof.
+    intros S x Sx n.
+    nat_induction n.
+    -   rewrite list_constant_zero.
+        apply list_prop_end.
+    -   rewrite list_constant_suc.
+        rewrite list_prop_add.
+        split; assumption.
 Qed.

@@ -331,3 +331,25 @@ Proof.
     apply (ind _ l').
     reflexivity.
 Qed.
+
+Theorem ulist_prop_flatten {U} : ∀ S l,
+    (∀ a : ulist U, in_ulist l a → ulist_prop S a) →
+    ulist_prop S (ulist_flatten l).
+Proof.
+    intros S l l_in.
+    induction l as [|a l] using ulist_induction.
+    -   rewrite ulist_flatten_end.
+        apply ulist_prop_end.
+    -   prove_parts IHl.
+        {
+            intros b b_in.
+            apply l_in.
+            apply in_ulist_add_eq.
+            right; exact b_in.
+        }
+        rewrite ulist_flatten_add.
+        rewrite ulist_prop_conc.
+        split; [>|exact IHl].
+        apply l_in.
+        apply in_ulist_add.
+Qed.

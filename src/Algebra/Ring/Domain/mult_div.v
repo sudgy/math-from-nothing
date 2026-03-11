@@ -534,7 +534,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance to_div_suc : Surjective to_div.
+Global Instance to_div_sur : Surjective to_div.
 Proof.
     split.
     intros y.
@@ -580,6 +580,14 @@ Theorem div_equiv_unit2 : ∀ a, unit a ↔ unit (to_div a).
 Proof.
     intros a.
     apply div_equiv_div.
+Qed.
+
+Theorem div_equiv_one : ∀ a, to_div a = 1 ↔ a ∣ 1.
+Proof.
+    intros a.
+    rewrite <- div_equiv_unit.
+    rewrite <- div_equiv_unit2.
+    reflexivity.
 Qed.
 
 Theorem div_equiv_zero : ∀ a, 0 = a ↔ 0 = to_div a.
@@ -658,3 +666,36 @@ Qed.
 End Div.
 
 Notation "'div_type' U" := (equiv_type (div_equiv (U := U))) (at level 200).
+
+Section Div.
+
+Context {U} `{AllMultClass U}.
+
+Theorem primes_div_equiv : ∀ a b : div_type U, prime a → prime b → a ∣ b → a = b.
+Proof.
+    intros a b a_prime b_prime div.
+    destruct div as [u eq].
+    classic_case (unit u) as [uu|un].
+    -   apply div_equiv_unit in uu.
+        subst u.
+        rewrite mult_lid in eq.
+        exact eq.
+    -   apply prime_irreducible in b_prime.
+        destruct b_prime as [b_nz [b_nu b_neq]].
+        specialize (b_neq a u (land (rand a_prime)) un).
+        symmetry in eq.
+        rewrite mult_comm in eq.
+        contradiction.
+Qed.
+
+Theorem primes_div : ∀ a b : U, prime a → prime b → a ∣ b → associates a b.
+Proof.
+    intros a b a_prime b_prime ab.
+    apply div_equiv_prime in a_prime, b_prime.
+    apply div_equiv_div in ab.
+    pose proof (primes_div_equiv _ _ a_prime b_prime ab) as eq.
+    unfold to_div in eq; equiv_simpl in eq.
+    exact eq.
+Qed.
+
+End Div.

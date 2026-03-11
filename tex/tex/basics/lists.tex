@@ -957,6 +957,20 @@ explicitly saying that every value in a list satisfies a predicate).
     Thus, the theorem is true by induction.
 \end{proof}
 
+\begin{theorem} \label{list_prop_flatten}
+    For all sets $S$ and lists of lists $A$, if $a \in S$ for all $a \in A$,
+    then $\flatten{A} \in S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $A$.  First, $\flatten{[]} = [] \in S$, so
+    the base case is true.  Now assume that if $a \in S$ for all $a \in A$, then
+    $\flatten{A} \in S$.  We must prove that for all lists $b$ such that $a \in
+    S$ for all $a \in b : A$, we have $\flatten{a : A} \in S$.  For any $a \in
+    A$, we have $a \in b : A$, so by the inductive hypothesis, $\flatten{A} \in
+    S$.  Furthermore, because $b \in b : A$, we have $b \in S$.  Thus, $b :
+    \flatten{A} \in S$.
+\end{proof}
+
 \begin{theorem} \label{list_prop2_single}
     For all relations $\usim$ and values $x$, $[x] \in \usim$.
 \end{theorem}
@@ -1202,6 +1216,16 @@ explicitly saying that every value in a list satisfies a predicate).
     \in [x]_n$.  The first case is directly what we are trying to prove, while
     the second case is directly the assumption in the inductive hypothesis.
     Either way, we have $x = y$.
+\end{proof}
+
+\begin{theorem} \label{list_prop_constant}
+    For all sets $S$ and values $x \in S$, for all natural numbers $n$, $[x]_n
+    \in S$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $n$.  When $n = 0$, $[x]_0 = [] \in S$, so
+    the base case is true.  Now assume that $[x]_n \in S$.  Then $[x]_{S(n)} = x
+    : [x]_n$.  We have both $x \in S$ and $[x]_n \in S$, so $[x]_{S(n)} \in S$.
 \end{proof}
 
 \section{Folds}
@@ -2164,6 +2188,16 @@ theorem for lists.
     : \U$, then for all unordered lists $a$, if $a \in S$, then $f(a) \in T$.
 \end{theorem}
 
+\begin{theorem} \label{ulist_prop_flatten}
+    For all sets $S$ and unordered lists of unordered lists $A$, if $a \in S$
+    for all $a \in A$, then $\flatten{A} \in S$.
+\end{theorem}
+\begin{proof}
+    I couldn't find an easy way to prove this directly from the corresponding
+    list theorem, but the proof of that theorem can be duplicated and is still
+    valid here.
+\end{proof}
+
 \begin{theorem} \label{ulist_prop_split}
     For all unordered lists $a$ and sets $S$, if, for all values $x$ and lists
     $b$ such that $a = x : b$, we have $x \in S$, then we have $a \in S$.
@@ -2221,6 +2255,23 @@ theorem for lists.
     $x \in a$, then $|a|_x = 1$.
 \end{theorem}
 
+\begin{theorem} \label{ulist_count_sub}
+    For all unordered lists $a$ and $b$, if $|a|_x \leq |b|_x$ for all $x : \U$,
+    there exists an unordered list $c$ such that $a + c = b$.
+\end{theorem}
+\begin{proof}
+    The proof will be by induction on $a$.  When $a = \llbracket \rrbracket$, $c
+    = b$ suffices.  Now assume that for all unordered lists $b'$ such that
+    $|a|_x \leq |b'|_x$ for all $x : \U$, there exists a list $c$ such that $a +
+    c = b'$.  We must prove that for all values $y : \U$ and unordered lists
+    $b$, if $|y : a|_x \leq |b|_x$ for all $x : \U$, there exists an unordered
+    list $c$ such that $y : a + c = b$.  If $y \notin b$, then $|b|_y = 0$ while
+    $|y : a|_x > 0$, contradicting $|y : a|_x \leq |b|_x$, so $y \in b$.  Then
+    by Theorem \ref{in_ulist_split}, there exists an unordered list $b'$ such
+    that $b = y : b'$.  Then by the inductive hypothesis, there exists an
+    unordered list $c$ such that $a + c = b'$.  Then $y : a + c = y : b'$.
+\end{proof}
+
 \begin{theorem} \label{ulist_constant_one}
     Let $x : \U$.  Then $\llbracket x \rrbracket_1 = \llbracket x\rrbracket$.
 \end{theorem}
@@ -2229,9 +2280,14 @@ theorem for lists.
     For all $x : \U$ and $n : \N$, we have $|\llbracket x\rrbracket_n| = n$.
 \end{theorem}
 
-\begin{theorem} \label{uin_list_constant}
+\begin{theorem} \label{in_ulist_constant}
     For all values $x$ and $y$ in $\U$ and natural numbers $n$, if $y \in
     \llbracket x\rrbracket_n$, then $x = y$.
+\end{theorem}
+
+\begin{theorem} \label{ulist_prop_constant}
+    For all sets $S$ and values $x \in S$, for all natural numbers $n$,
+    $\llbracket x \rrbracket_n \in S$.
 \end{theorem}
 
 \begin{theorem}

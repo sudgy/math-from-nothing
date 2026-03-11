@@ -23,7 +23,7 @@ Theorem div_factorization_base : ∀ x : div_type U, 0 ≠ x → ∃ l,
     ulist_prop prime l ∧ x = ulist_prod l.
 Proof.
     intros x x_nz.
-    classic_case (1 = x) as [x_o|x_no].
+    classic_case (x = 1) as [x_o|x_no].
     {
         subst x.
         exists ⟦⟧.
@@ -34,11 +34,7 @@ Proof.
     pose proof (sur to_div x) as [x' x'_eq].
     subst x.
     rewrite <- div_equiv_zero in x_nz.
-    rewrite neq_sym in x_no.
-    rewrite <- div_equiv_unit in x_no.
-    unfold unit in x_no.
-    unfold one in x_no; cbn in x_no.
-    rewrite <- div_equiv_div in x_no.
+    rewrite div_equiv_one in x_no.
     pose proof (factorization_base x' x_nz x_no) as [l [l_prime l_eq]].
     exists (ulist_image to_div l).
     split.
@@ -75,8 +71,7 @@ Proof.
         subst x.
         rewrite ulist_prop_add in l'_prime.
         destruct l'_prime as [b_prime l'_prime].
-        apply prime_irreducible in b_prime.
-        destruct b_prime as [b_nz [b_nu b_irr]].
+        destruct b_prime as [b_nz [b_nu b_prime]].
         apply b_nu.
         rewrite ulist_prod_add in l'_eq.
         exists (ulist_prod l').
@@ -93,23 +88,16 @@ Proof.
             rewrite mult_comm.
             symmetry; exact l_eq.
         }
-        destruct p_prime as [p_nz [p_nu p_prime]].
+        pose proof p_prime as [p_nz [p_nu p_prime']].
         clear l'_eq.
         ulist_prop_induction l' l'_prime as b b_prime IHl'.
         -   rewrite ulist_prod_end in p_div.
             contradiction.
         -   rewrite ulist_prod_add in p_div.
             apply p_prime in p_div as [p_div|p_div].
-            +   destruct p_div as [u b_eq].
-                classic_case (unit u) as [uu|unu].
-                *   apply div_equiv_unit in uu.
-                    subst u.
-                    rewrite mult_lid in b_eq.
-                    subst b.
-                    apply in_ulist_add.
-                *   apply prime_irreducible in b_prime as [b_nz [b_nu b_prime]].
-                    specialize (b_prime _ _ unu p_nu).
-                    symmetry in b_eq; contradiction.
+            +   apply (primes_div_equiv  _ _ p_prime b_prime) in p_div.
+                subst b.
+                apply in_ulist_add.
             +   specialize (IHl' p_div).
                 rewrite in_ulist_add_eq.
                 right; exact IHl'.
@@ -287,110 +275,14 @@ Proof.
         apply le_plus_0_a_b_ab.
         apply all_pos.
     -   intros x_div.
-        remember (ulist_size (div_factorization x x_nz)) as n.
-        revert x y x_nz y_nz x_div Heqn.
-        nat_induction n; intros.
-        +   remember (div_factorization x x_nz) as xl.
-            rewrite (div_factorization_eq x x_nz).
-            rewrite <- Heqxl.
-            clear - Heqn.
-            destruct xl as [|p xl] using ulist_destruct.
-            *   rewrite ulist_prod_end.
-                apply one_divides.
-            *   rewrite ulist_size_add in Heqn.
-                contradiction (nat_zero_suc Heqn).
-        +   remember (div_factorization x x_nz) as xl.
-            destruct xl as [|p xl] using ulist_destruct.
-            {
-                rewrite ulist_size_end in Heqn.
-                symmetry in Heqn.
-                apply nat_zero_suc in Heqn.
-                contradiction Heqn.
-            }
-            pose proof (div_factorization_prime x x_nz) as all_prime.
-            rewrite <- Heqxl in all_prime.
-            apply ulist_prop_add in all_prime.
-            destruct all_prime as [p_prime xl_prime].
-            assert (p ∣ y) as [y' y'_eq].
-            {
-                specialize (x_div p).
-                rewrite ulist_count_add_eq in x_div.
-                rewrite nat_le_suc_lt in x_div.
-                classic_case (in_ulist (div_factorization y y_nz) p)
-                        as [p_in|p_nin].
-                -   apply in_ulist_split in p_in as [yl yl_eq].
-                    rewrite (div_factorization_eq y y_nz).
-                    rewrite yl_eq.
-                    rewrite ulist_prod_add.
-                    apply mult_div_lself.
-                -   rewrite ulist_count_nin in p_nin.
-                    rewrite <- p_nin in x_div.
-                    contradiction (not_neg x_div).
-            }
-            pose (x' := ulist_prod xl).
-            assert (0 ≠ x') as x'_nz.
-            {
-                unfold x'.
-                clear - xl_prime.
-                ulist_prop_induction xl xl_prime as p p_prime IHxl.
-                -   rewrite ulist_prod_end.
-                    apply not_trivial_one.
-                -   rewrite ulist_prod_add.
-                    apply mult_nz; [>|exact IHxl].
-                    apply p_prime.
-            }
-            assert (0 ≠ y') as y'_nz.
-            {
-                intro; subst y'.
-                rewrite mult_lanni in y'_eq.
-                contradiction.
-            }
-            assert (div_factorization x' x'_nz = xl) as xl_eq.
-            {
-                apply div_factorization_uni.
-                -   pose proof (div_factorization_prime x x_nz) as x_prime.
-                    rewrite <- Heqxl in x_prime.
-                    rewrite ulist_prop_add in x_prime.
-                    apply x_prime.
-                -   reflexivity.
-            }
-            assert (div_factorization y y_nz = p ː div_factorization y' y'_nz)
-                as yl_eq.
-            {
-                apply div_factorization_uni.
-                -   rewrite ulist_prop_add.
-                    split; [>exact p_prime|].
-                    apply div_factorization_prime.
-                -   rewrite ulist_prod_add.
-                    rewrite <- div_factorization_eq.
-                    rewrite mult_comm.
-                    symmetry; exact y'_eq.
-            }
-            specialize (IHn x' y' x'_nz y'_nz).
-            prove_parts IHn.
-            {
-                intros q.
-                rewrite yl_eq in x_div.
-                specialize (x_div q).
-                rewrite <- xl_eq in x_div.
-                do 2 rewrite ulist_count_add in x_div.
-                apply le_plus_lcancel in x_div.
-                exact x_div.
-            }
-            {
-                rewrite xl_eq.
-                rewrite ulist_size_add in Heqn.
-                rewrite nat_suc_eq in Heqn.
-                exact Heqn.
-            }
-            rewrite <- y'_eq.
-            rewrite (div_factorization_eq x x_nz).
-            rewrite <- Heqxl.
-            rewrite ulist_prod_add.
-            fold x'.
-            rewrite mult_comm.
-            apply div_rmult.
-            exact IHn.
+        apply ulist_count_sub in x_div as [yx yx_eq].
+        exists (ulist_prod yx).
+        rewrite mult_comm.
+        rewrite (div_factorization_eq x x_nz).
+        rewrite (div_factorization_eq y y_nz).
+        rewrite <- ulist_prod_conc.
+        rewrite yx_eq.
+        reflexivity.
 Qed.
 
 Lemma ufd_gcd_ex_div : ∀ x y : div_type U, 0 ≠ x → ∃ d, is_gcd x y d.
@@ -420,28 +312,13 @@ Proof.
         pose proof (div_factorization_prime x x_nz) as xl_prime.
         rewrite <- Heqxl in xl_prime.
         clear - xl_prime.
-        ulist_prop_induction xl xl_prime as p p_prime IHxl.
-        -   rewrite ulist_make_unique_end.
-            rewrite ulist_image_end.
-            rewrite ulist_flatten_end.
-            apply ulist_prop_end.
-        -   classic_case (in_ulist xl p) as [p_in|p_nin].
-            +   rewrite (ulist_make_unique_add_in p_in).
-                exact IHxl.
-            +   rewrite (ulist_make_unique_add_nin p_nin).
-                rewrite ulist_image_add.
-                rewrite ulist_flatten_add.
-                rewrite ulist_prop_conc.
-                split; [>|exact IHxl].
-                remember (min _ _) as n.
-                clear - p_prime.
-                nat_induction n.
-                *   rewrite ulist_constant_zero.
-                    apply ulist_prop_end.
-                *   rewrite ulist_constant_suc.
-                    rewrite ulist_prop_add.
-                    split; [>|exact IHn].
-                    exact p_prime.
+        apply ulist_prop_flatten.
+        intros a a_in.
+        apply image_in_ulist in a_in as [p [a_eq p_in]].
+        subst a.
+        apply ulist_prop_constant.
+        rewrite <- ulist_make_unique_in in p_in.
+        exact (ulist_prop_in _ _ xl_prime _ p_in).
     }
     pose (d := ulist_prod dl).
     assert (0 ≠ d) as d_nz.
@@ -539,28 +416,12 @@ Qed.
 Lemma ufd_gcd_ex : ∀ x y : U, 0 ≠ x → ∃ d, is_gcd x y d.
 Proof.
     intros x y x_nz.
-    assert (0 ≠ to_div x) as x_nz'.
-    {
-        intros contr.
-        unfold zero in contr; cbn in contr.
-        unfold to_div in contr; equiv_simpl in contr.
-        apply associates_zero in contr.
-        contradiction.
-    }
-    pose proof (ufd_gcd_ex_div (to_div x) (to_div y) x_nz') as [d d_gcd].
+    rewrite div_equiv_zero in x_nz.
+    pose proof (ufd_gcd_ex_div (to_div x) (to_div y) x_nz) as [d d_gcd].
     equiv_get_value d.
     exists d.
-    unfold is_gcd in d_gcd.
-    unfold common_divisor in d_gcd.
-    change (to_equiv div_equiv) with (to_div (U := U)) in d_gcd.
-    do 2 rewrite <- div_equiv_div in d_gcd.
-    destruct d_gcd as [d_gcd1 d_gcd2].
-    split.
-    -   exact d_gcd1.
-    -   intros d'.
-        specialize (d_gcd2 (to_div d')).
-        do 3 rewrite <- div_equiv_div in d_gcd2.
-        exact d_gcd2.
+    apply div_equiv_gcd.
+    exact d_gcd.
 Qed.
 
 Definition ufd_gcd (a b : U) :=

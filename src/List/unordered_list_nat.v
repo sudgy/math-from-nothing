@@ -3,6 +3,7 @@ Require Import init.
 Require Import list.
 Require Import unordered_list_base.
 Require Import unordered_list_in.
+Require Import unordered_list_set.
 
 Require Import nat.
 Require Import equivalence.
@@ -182,6 +183,46 @@ Proof.
     apply list_count_in_unique.
 Qed.
 
+Theorem ulist_count_sub {U} : ∀ l1 l2,
+    (∀ x : U, ulist_count l1 x ≤ ulist_count l2 x) →
+    ∃ l3, l1 + l3 = l2.
+Proof.
+    induction l1 as [|x l1] using ulist_induction.
+    -   intros l2 sub.
+        exists l2.
+        apply ulist_plus_lid.
+    -   intros l2 sub.
+        assert (in_ulist l2 x) as x_in.
+        {
+            classic_contradiction contr.
+            rewrite ulist_count_nin in contr.
+            specialize (sub x).
+            rewrite ulist_count_add_eq in sub.
+            rewrite <- contr in sub.
+            rewrite <- nlt_le in sub.
+            apply sub.
+            apply nat_pos2.
+        }
+        apply in_ulist_split in x_in as [l2' eq]; subst l2.
+        specialize (IHl1 l2').
+        prove_parts IHl1.
+        {
+            intros y.
+            specialize (sub y).
+            do 2 rewrite ulist_count_add in sub.
+            case_if [eq|neq].
+            -   apply le_plus_lcancel in sub.
+                exact sub.
+            -   do 2 rewrite plus_lid in sub.
+                exact sub.
+        }
+        destruct IHl1 as [l3 eq].
+        exists l3.
+        rewrite ulist_conc_add.
+        apply f_equal.
+        exact eq.
+Qed.
+
 Theorem ulist_constant_zero {U} : ∀ a : U, ulist_constant a 0 = ⟦⟧.
 Proof.
     reflexivity.
@@ -218,4 +259,13 @@ Proof.
     intros a n.
     unfold ulist_count, ulist_constant; equiv_simpl.
     apply list_count_constant.
+Qed.
+
+Theorem ulist_prop_constant {U} : ∀ S (x : U),
+    S x → ∀ n, ulist_prop S (ulist_constant x n).
+Proof.
+    intros S x Sx n.
+    unfold ulist_prop, ulist_constant; equiv_simpl.
+    apply list_prop_constant.
+    exact Sx.
 Qed.
