@@ -3,10 +3,8 @@ Require Import init.
 Require Import nat.
 
 Require Import mult_div.
-Require Export euclidean_domain.
 
-(* begin hide *)
-Lemma nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
+Theorem nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
 Proof.
     intros a b b_nz.
     pose (S n := a < b * n).
@@ -50,11 +48,6 @@ Proof.
         apply lt_plus_rcancel in Sq.
         exact Sq.
 Qed.
-(* end hide *)
-Global Instance nat_euclidean_class : EuclideanDomain nat := {
-    euclidean_f := λ x, x;
-    euclidean_division := nat_euclidean
-}.
 
 Theorem nat_plus_changes_divides : ∀ p a b : nat,
                                     p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
@@ -127,7 +120,7 @@ Theorem nat_odd_plus_one : ∀ a : nat, odd a → ∃ b, a = 2 * b + 1.
 Proof.
     intros a a_odd.
     assert ((0 : nat) ≠ 2) as two_nz by (intro contr; inversion contr).
-    pose proof (euclidean_division a 2 two_nz) as [q [r [eq ltq]]].
+    pose proof (nat_euclidean a 2 two_nz) as [q [r [eq ltq]]].
     cbn in ltq.
     exists q.
     assert (0 ≠ r) as r_nz.

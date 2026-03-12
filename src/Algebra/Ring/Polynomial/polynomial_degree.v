@@ -621,7 +621,8 @@ Proof.
     rewrite Heqm, Heqn.
     reflexivity.
 Qed.
-
+(* This isn't used currently so I'm commenting it out until I reach this file
+ * and have defined polynomials as an integral domain
 Local Program Instance polynomial_euclidean : EuclideanDomain (polynomial F) :={
     euclidean_f := polynomial_degree
 }.
@@ -737,5 +738,6 @@ Next Obligation.
     rewrite plus_rlinv.
     reflexivity.
 Qed.
+*)
 
 End Polynomial.

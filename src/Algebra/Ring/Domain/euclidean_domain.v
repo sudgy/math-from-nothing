@@ -6,8 +6,7 @@ Require Import unordered_list.
 Require Import nat.
 Require Import set.
 
-#[universes(template)]
-Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
+Class EuclideanDomain (U : IntegralDomain) := {
     euclidean_f : U → nat;
     euclidean_division :
         ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧
@@ -16,9 +15,9 @@ Class EuclideanDomain U `{Plus U} `{Zero U} `{Mult U} := {
 
 Section Euclidean.
 
-Context {U : IntegralDomain} `{@EuclideanDomain U _ _ _}.
+Context {U : IntegralDomain} `{EuclideanDomain U}.
 
-Program Instance euclidean_principle_ideal : @PrincipleIdealDomain U.
+Program Instance euclidean_principle_ideal : PrincipleIdealDomain U.
 Next Obligation.
     classic_case (∀ x, cideal_set I x → 0 = x) as [I_z|I_nz].
     {
