@@ -39,10 +39,9 @@ Proof.
     pose (I x := ∃ n, cideal_set (In n) x).
     assert (∃ a, I a) as I_nempty.
     {
-        destruct (cideal_nempty (In 0)) as [a Ia].
-        exists a.
         exists 0.
-        exact Ia.
+        exists 0.
+        apply (cideal_zero (In 0)).
     }
     assert (∀ a b, I a → I b → I (a + b)) as I_plus.
     {
@@ -66,11 +65,7 @@ Proof.
     assert (cideal_set I' a0) as [n0 Ia0].
     {
         rewrite I'_eq.
-        exists ((1, [a0|Logic.eq_refl]) ː ulist_end).
-        rewrite ulist_image_add, ulist_sum_add; cbn.
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite plus_rid.
-        rewrite mult_rid.
+        apply cideal_generated_by_in.
         reflexivity.
     }
     exists n0.
@@ -112,33 +107,26 @@ Proof.
     split.
     +   rewrite <- (principle_ideal_div d).
         rewrite <- d_eq.
-        cbn.
-        exists ((1, [a|make_lor Logic.eq_refl]) ː ulist_end).
-        rewrite ulist_image_add, ulist_sum_add; cbn.
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite plus_rid.
-        rewrite mult_rid.
+        apply cideal_generated_by_in.
+        left.
         reflexivity.
     +   rewrite <- (principle_ideal_div d).
         rewrite <- d_eq.
         cbn.
-        exists ((1, [b|make_ror Logic.eq_refl]) ː ulist_end).
-        rewrite ulist_image_add, ulist_sum_add; cbn.
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite plus_rid.
-        rewrite mult_rid.
+        apply cideal_generated_by_in.
+        right.
         reflexivity.
--   intros a b ab d [da db].
-    rewrite_ex_val d' d'_eq.
-    assert (cideal_set (principle_ideal_by d') d') as d'_in.
+-   intros a b ab d' [d'a d'b].
+    rewrite_ex_val d d_eq.
+    assert (cideal_set (principle_ideal_by d) d) as d_in.
     {
         rewrite principle_ideal_div.
         apply refl.
     }
-    rewrite <- d'_eq in d'_in.
-    destruct d'_in as [l eq].
-    subst d'.
-    clear d'_eq.
+    rewrite <- d_eq in d_in.
+    destruct d_in as [l eq].
+    subst d.
+    clear d_eq.
     induction l as [|c l] using ulist_induction.
     +   rewrite ulist_image_end, ulist_sum_end.
         apply divides_zero.

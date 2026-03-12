@@ -1065,11 +1065,11 @@ Throughout this section, let $\U$ be a UFD.
     conditions for a GCD domain.
 \end{proof}
 
-\begin{instance}
+\begin{theorem} \label{div_factorization_ufd}
     Let $\U$ be an integral domain that we don't know is a UFD.  If for all
     nonzero $x : \D(\U)$, there exists an unordered list of primes in $\D(\U)$
     $a$ such that $x = \prod a$, then $\U$ itself is a UFD.
-\end{instance}
+\end{theorem}
 \begin{proof}
     Let $x : \U$ be nonzero and not a unit.  Let $a$ be the factorization of
     $\D(x)$.  $a$ must not be empty, for if it was, $x$ would be a unit.  So $a
@@ -1249,5 +1249,80 @@ In the following, say that a value $x : \D(\U)$ is \textit{interesting} if $x
 Note that this does not make Noetherian rings UFDs.  UFDs require a
 factorization into products of primes, not irreducibles.  It's possible for
 values in a Noetherian ring to have multiple distinct factorizations.
+
+\section{Principle Ideal Domains}
+
+\begin{class}
+    Let $\U$ be an integral domain.  Then we call $\U$ a principle ideal domain
+    (PID) if all of its ideals are principle ideals.
+\end{class}
+
+\begin{instance}
+    All PIDs are Noetherian.
+\end{instance}
+\begin{proof}
+    Let $I_n$ be a sequence of ideals such that $I_n \subseteq I_{S(n)}$ for all
+    $n$.  By a straightforward induction, $I_n \subseteq I_{n + c}$ for any
+    natural number $c$, so $I_m \subseteq I_n$ whenever $m \leq n$.  Define a
+    new set $I$ that is the union of all of the sets $I_n$.  We will prove that
+    $I$ is an ideal.
+
+    \textit{$I$ is nonempty.}  We have $0 \in I_0 \subseteq I$.
+
+    \textit{If $a \in I$ and $b \in I$, then $a + b \in I$.}  We have $a \in
+    I_m$ and $b \in I_n$ for natural numbers $m$ and $n$.  Assume without loss
+    of generality that $m \leq n$.  Then $a \in I_n$ as well, so $a + b \in I_n
+    \subseteq I$.
+
+    \textit{If $b \in I$, then $ab \in I$.}  We have $b \in I_n$ for some $n$.
+    Then $ab \in I_n \subseteq I$.
+
+    Thus, $I$ is an ideal.  Because $\U$ is a PID, $I = \langle a_0 \rangle$ for
+    some $a_0 : \U$.  Because $a_0 \in I$, we have some $a_0 \in I_{n_0}$ for
+    some $n_0$.  We will prove that $I_{n_0} = I_n$ for all $n \geq n_0$.
+    Because $n_0 \leq n$, we already know that $I_{n_0} \subseteq I_n$, so it
+    suffices to prove that $I_n \subseteq I_{n_0}$.  Because $I_n \subseteq I$,
+    by transitivity it suffices to prove that $I \subseteq I_{n_0}$.  So let $a
+    \in I = \langle a_0 \rangle$.  Then
+    \[
+        a = a_1 a_0 + a_2 a_0 + \cdots + a_n a_0 = (a_1 + a_2 + \cdots + a_n)a_0
+        \in I_{n_0}.
+    \]
+\end{proof}
+
+\begin{instance}
+    All PIDs are GCD domains.
+\end{instance}
+\begin{proof}
+    Let $\U$ be a PID.  Given $a$ and $b$ in $\U$, define $d$ to be a value that
+    generates the ideal $\langle a, b \rangle$.  We prove that $d$ is the GCD of
+    $a$ and $b$.
+
+    To prove that $d$ is a common divisor, note that $d \in \langle a, b
+    \rangle$.  This means that $a \in \langle d \rangle$ and $b \in \langle d
+    \rangle$.  By Theorem \ref{principle_ideal_div}, this means that $d \mid a$
+    and $d \mid b$.
+
+    To prove that $d$ is the greatest common divisor, let $d'$ be another common
+    divisor.  Again, we have $d \in \langle a, b \rangle$, so we have
+    \[
+        d = a_1 a + a_2 a + \cdots + a_m a + b_1 b + b_2 b + \cdots + b_n b.
+    \]
+    Because $d' \mid a$, we have $d' \mid (a_1 + \cdots + a_m)a$, and similarly,
+    $d' \mid (b_1 + \cdots + b_n)b$.  By Theorem \ref{plus_stays_divides},
+    \[
+        d' \mid (a_1 + \cdots + a_m)a + (b_1 + \cdots + b_n)b = d.
+    \]
+\end{proof}
+
+\begin{instance}
+    All PIDs are UFDs.
+\end{instance}
+\begin{proof}
+    Let $\U$ be a PID.  Because all PIDs are Noetherian, every $x : \D(\U)$ can
+    be written as a product of irreducibles.  Because all PIDs are GCD domains,
+    this is a product of primes in $\D(\U)$, so by Theorem
+    \ref{div_factorization_ufd}, $\U$ is a UFD.
+\end{proof}
 
 \end{document}
