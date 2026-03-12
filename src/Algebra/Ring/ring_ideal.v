@@ -606,6 +606,18 @@ Definition ideal_generated_by : Ideal U := make_ideal
     ideal_generated_by_lmult
     ideal_generated_by_rmult.
 
+Theorem ideal_generated_by_in : ∀ a, S a → ideal_generated_by a.
+Proof.
+    intros a Sa.
+    cbn.
+    unfold ideal_generated_by_set.
+    exists ⟦((1, 1), [a|Sa])⟧.
+    rewrite ulist_image_single; cbn.
+    rewrite ulist_sum_add, ulist_sum_end.
+    rewrite mult_lid, mult_rid, plus_rid.
+    reflexivity.
+Qed.
+
 End IdealGenerated.
 
 Section CIdealGenerated.
@@ -653,5 +665,17 @@ Definition cideal_generated_by : CIdeal U := make_cideal
     cideal_generated_by_nempty
     cideal_generated_by_plus
     cideal_generated_by_mult.
+
+Theorem cideal_generated_by_in : ∀ a, S a → cideal_generated_by a.
+Proof.
+    intros a Sa.
+    cbn.
+    unfold cideal_generated_by_set.
+    exists ⟦(1, [a|Sa])⟧.
+    rewrite ulist_image_single; cbn.
+    rewrite ulist_sum_add, ulist_sum_end.
+    rewrite mult_rid, plus_rid.
+    reflexivity.
+Qed.
 
 End CIdealGenerated.
