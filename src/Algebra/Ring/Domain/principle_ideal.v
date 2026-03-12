@@ -22,7 +22,7 @@ Definition principle_ideal (I : CIdeal (domain_to_cring U))
     := ∃ x, I = principle_ideal_by x.
 
 Theorem principle_ideal_div :
-    ∀ a b, cideal_set (principle_ideal_by a) b ↔ a ∣ b.
+    ∀ a b, principle_ideal_by a b ↔ a ∣ b.
 Proof.
     intros a b.
     split.
@@ -45,48 +45,281 @@ Proof.
         symmetry; exact eq.
 Qed.
 
+Theorem principle_ideal_sub : ∀ a b,
+    principle_ideal_by a ⊆ principle_ideal_by b ↔ b ∣ a.
+Proof.
+    intros a b.
+    split.
+    -   intros sub.
+        apply principle_ideal_div.
+        apply sub.
+        apply principle_ideal_div.
+        apply refl.
+    -   intros div x.
+        do 2 rewrite principle_ideal_div.
+        intros div2.
+        exact (trans div div2).
+Qed.
+
 Theorem principle_ideal_associates : ∀ a b,
     principle_ideal_by a = principle_ideal_by b ↔ associates a b.
 Proof.
     intros a b.
     split.
     -   intros eq.
-        assert (cideal_set (principle_ideal_by a) b) as ab.
-        {
-            rewrite eq.
-            rewrite principle_ideal_div.
-            apply refl.
-        }
-        assert (cideal_set (principle_ideal_by b) a) as ba.
-        {
-            rewrite <- eq.
-            rewrite principle_ideal_div.
-            apply refl.
-        }
-        rewrite principle_ideal_div in ab, ba.
-        split; assumption.
+        split.
+        all: rewrite <- principle_ideal_sub.
+        all: rewrite eq.
+        all: apply refl.
     -   intros [ab ba].
-        apply cideal_eq.
-        intros x.
-        do 2 rewrite principle_ideal_div.
-        split; intros x_div.
-        +   exact (trans ba x_div).
-        +   exact (trans ab x_div).
+        apply cideal_eq_set.
+        apply antisym.
+        all: rewrite principle_ideal_sub.
+        all: assumption.
 Qed.
 
 Class PrincipleIdealDomain := {
     ideal_principle : ∀ I : CIdeal (domain_to_cring U), principle_ideal I
 }.
 
+Class Noetherian := {
+    noetherian : ∀ I : nat → CIdeal (domain_to_cring U),
+        (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) →
+        ∃ n, ∀ m, n ≤ m → I n = I m
+}.
+
 End PrincipleIdealDef.
+
+Arguments PrincipleIdealDomain U : clear implicits.
+Arguments Noetherian U : clear implicits.
+
+Section Noetherian.
+
+Context {U : IntegralDomain} `{Noetherian U}.
+
+Theorem noetherian_div : ∀ f : nat → div_type U,
+    (∀ n, f (nat_suc n) ∣ f n) →
+    ∃ n, ∀ m, n ≤ m → f n = f m.
+Proof.
+    intros f f_div.
+    pose proof (noetherian
+        (λ n, principle_ideal_by (ex_val (sur to_div (f n))))) as n_ex.
+    prove_parts n_ex.
+    {
+        intros n.
+        specialize (f_div n).
+        rewrite_ex_val fn fn_eq.
+        rewrite_ex_val fSn fSn_eq.
+        rewrite <- fn_eq, <- fSn_eq in f_div.
+        rewrite <- div_equiv_div in f_div.
+        rewrite principle_ideal_sub.
+        exact f_div.
+    }
+    destruct n_ex as [n n_eq].
+    exists n.
+    intros m leq.
+    specialize (n_eq m leq).
+    rewrite_ex_val fn fn_eq.
+    rewrite_ex_val fm fm_eq.
+    rewrite principle_ideal_associates in n_eq.
+    rewrite <- fn_eq, <- fm_eq.
+    unfold to_div; equiv_simpl.
+    exact n_eq.
+Qed.
+
+Let interesting (x : div_type U) := 0 ≠ x ∧ x ≠ 1.
+
+Lemma noetherian_irreducible_ex :
+    ∀ x : div_type U, interesting x → ∃ p, irreducible p ∧ p ∣ x.
+Proof.
+    assert (∀ x : set_type interesting, ¬irreducible [x|] →
+        ∃ a b : set_type interesting, [x|] = [a|] * [b|]) as factor_ex.
+    {
+        intros [x [x_nz x_no]] x_red; cbn in *.
+        unfold irreducible in x_red.
+        do 2 rewrite not_and_impl in x_red.
+        rewrite div_equiv_unit in x_red.
+        specialize (x_red x_nz x_no).
+        rewrite not_all in x_red.
+        destruct x_red as [a x_red].
+        rewrite not_all in x_red.
+        destruct x_red as [b x_red].
+        do 2 rewrite not_impl in x_red.
+        do 2 rewrite div_equiv_unit in x_red.
+        rewrite not_not in x_red.
+        destruct x_red as [a_no [b_no x_eq]].
+        assert (interesting a) as a_int.
+        {
+            split; [>|exact a_no].
+            intros contr; subst a.
+            rewrite mult_lanni in x_eq.
+            symmetry in x_eq; contradiction.
+        }
+        assert (interesting b) as b_int.
+        {
+            split; [>|exact b_no].
+            intros contr; subst b.
+            rewrite mult_ranni in x_eq.
+            symmetry in x_eq; contradiction.
+        }
+        exists [a|a_int], [b|b_int].
+        exact x_eq.
+    }
+    intros x x_int.
+    pose (f := fix f n :=
+        match n with
+        | nat_zero => [x|x_int]
+        | nat_suc n' =>
+            IfH irreducible [f n'|]
+            then λ _, f n'
+            else λ H, ex_val (factor_ex _ H)
+        end).
+    pose proof (noetherian_div (λ n, [f n|])) as n_ex.
+    prove_parts n_ex.
+    {
+        intros n.
+        cbn.
+        classic_case (irreducible [f n|]) as [fn_irr|fn_red].
+        -   apply refl.
+        -   rewrite_ex_val a [b eq].
+            rewrite eq.
+            apply mult_div_lself.
+    }
+    destruct n_ex as [n n_eq].
+    exists [f n|].
+    split.
+    -   specialize (n_eq (nat_suc n) (nat_le_suc n)).
+        cbn in n_eq.
+        classic_case (irreducible [f n|]) as [fn_irr|fn_red].
+        1: exact fn_irr.
+        rewrite_ex_val a [b eq].
+        rewrite n_eq in eq.
+        rewrite <- (mult_rid [a|]) in eq at 1.
+        apply mult_lcancel in eq; [>|apply [|a]].
+        destruct b as [b [b_nz b_no]].
+        symmetry in eq; contradiction.
+    -   clear n_eq.
+        nat_induction n.
+        +   unfold zero; cbn.
+            apply refl.
+        +   cbn.
+            classic_case (irreducible [f n|]) as [fn_irr|fn_red].
+            *   exact IHn.
+            *   rewrite_ex_val a [b eq].
+                apply (trans2 IHn).
+                rewrite eq.
+                apply mult_div_lself.
+Qed.
+
+Theorem noetherian_factors : ∀ x : div_type U, 0 ≠ x →
+    ∃ l, ulist_prop irreducible l ∧ x = ulist_prod l.
+Proof.
+    pose (get_p x H := ex_val (noetherian_irreducible_ex x H)).
+    pose (get_x' x H
+        := ex_val (rand (ex_proof (noetherian_irreducible_ex x H)))).
+    assert (get_p_irr : ∀ x H, irreducible (get_p x H)).
+    {
+        intros x H'.
+        unfold get_p.
+        apply (ex_proof (noetherian_irreducible_ex x H')).
+    }
+    assert (get_px' : ∀ x H, get_x' x H * get_p x H = x).
+    {
+        intros x H'.
+        unfold get_p, get_x'.
+        exact (ex_proof (rand (ex_proof (noetherian_irreducible_ex x H')))).
+    }
+    intros x x_nz.
+    pose (f := fix f n :=
+        match n with
+        | nat_zero => (⟦⟧, x)
+        | nat_suc n' =>
+            IfH interesting (snd (f n'))
+            then λ H, (get_p _ H ː fst (f n'), get_x' _ H)
+            else λ _, (fst (f n'), 1)
+        end).
+    pose (f1 n := fst (f n)).
+    pose (f2 n := snd (f n)).
+    assert (∀ n, ulist_prop irreducible (f1 n)) as f1_irr.
+    {
+        nat_induction n.
+        +   unfold f1; cbn.
+            unfold zero; cbn.
+            apply ulist_prop_end.
+        +   unfold f1; cbn.
+            classic_case (interesting (snd (f n))) as [fn_int|fn_not]; cbn.
+            *   rewrite ulist_prop_add.
+                split; [>|exact IHn].
+                apply get_p_irr.
+            *   exact IHn.
+    }
+    assert (∀ n, ulist_prod (f1 n) * f2 n = x) as prod_eq.
+    {
+        nat_induction n.
+        -   unfold zero; cbn.
+            rewrite ulist_prod_end.
+            apply mult_lid.
+        -   unfold f1, f2 in *; cbn.
+            classic_case (interesting (snd (f n))) as [fn_int|fn_not]; cbn.
+            +   rewrite ulist_prod_add.
+                rewrite mult_comm, mult_assoc.
+                rewrite get_px'.
+                rewrite mult_comm.
+                exact IHn.
+            +   unfold interesting in fn_not.
+                rewrite not_and in fn_not.
+                do 2 rewrite not_not in fn_not.
+                destruct fn_not as [fn_z|fn_o].
+                *   rewrite <- fn_z in IHn.
+                    rewrite mult_ranni in IHn.
+                    contradiction.
+                *   rewrite fn_o in IHn.
+                    exact IHn.
+    }
+    pose proof (noetherian_div f2) as n_ex.
+    prove_parts n_ex.
+    {
+        intros n.
+        unfold f2; cbn.
+        classic_case (interesting (snd (f n))) as [fn_int|fn_not]; cbn.
+        -   rewrite <- (get_px' _ fn_int).
+            apply mult_div_lself.
+        -   apply one_divides.
+    }
+    destruct n_ex as [n n_eq].
+    assert (f2 n = 1) as f2_one.
+    {
+        specialize (n_eq (nat_suc n) (nat_le_suc n)).
+        unfold f2 in *; cbn in n_eq.
+        classic_case (interesting (snd (f n))) as [fn_int|fn_not].
+        +   cbn in n_eq.
+            pose proof fn_int as x'_int.
+            rewrite n_eq in x'_int.
+            rewrite <- (get_px' _ fn_int) in n_eq at 1.
+            rewrite <- (mult_rid (get_x' _ _)) in n_eq at 2.
+            apply mult_lcancel in n_eq; [>|apply x'_int].
+            pose proof (get_p_irr _ fn_int) as [p_nz [p_nu]].
+            rewrite div_equiv_unit in p_nu.
+            contradiction.
+        +   exact n_eq.
+    }
+    exists (f1 n).
+    split.
+    -   apply f1_irr.
+    -   rewrite <- (prod_eq n).
+        rewrite f2_one.
+        apply mult_rid.
+Qed.
+
+End Noetherian.
+
 Section PrincipleIdeal.
 
-Context {U : IntegralDomain} `{@PrincipleIdealDomain U}.
+Context {U : IntegralDomain} `{PrincipleIdealDomain U}.
 
-Theorem pid_noetherian : ∀ I : nat → CIdeal (domain_to_cring U),
-    (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) →
-    ∃ n0, ∀ n, n0 ≤ n → I n0 = I n.
+Global Instance pid_noetherian : Noetherian U.
 Proof.
+    split.
     intros In I_sub.
     assert (∀ m n, m ≤ n → cideal_set (In m) ⊆ cideal_set (In n)) as I_sub2.
     {
@@ -150,10 +383,10 @@ Proof.
     }
     apply (trans sub1).
     intros a Ia.
-    assert (cideal_set I' a) as I'a by exact Ia.
-    rewrite I'_eq in I'a.
-    destruct I'a as [l a_eq].
-    rewrite a_eq; clear a Ia a_eq.
+    change (I a) with (I' a) in Ia.
+    rewrite I'_eq in Ia.
+    destruct Ia as [l a_eq].
+    rewrite a_eq; clear a a_eq.
     induction l as [|a l] using ulist_induction.
     -   rewrite ulist_image_end, ulist_sum_end.
         apply cideal_zero.
@@ -167,7 +400,7 @@ Qed.
 
 Program Instance pid_gcd : GCDDomain (domain_to_cring U) := {
     gcd (a b : domain_to_cring U) := ex_val (ideal_principle
-        (cideal_generated_by (❴a❵ ∪ ❴b❵)))
+        (cideal_generated_by (❴a, b❵)))
 }.
 Next Obligation.
     rewrite_ex_val d d_eq.
@@ -214,304 +447,20 @@ Next Obligation.
         destruct c2_eq; subst c2; assumption.
 Qed.
 
-Lemma pid_factor_ex : ∀ a : U, 0 ≠ a → ¬unit a → ∃ b, prime b ∧ b ∣ a.
+Instance pid_factorization : UniqueFactorizationDomain U.
 Proof.
-    intros a a_nz au.
-    classic_contradiction contr.
-    rewrite not_ex in contr.
-    assert (∀ p, p ∣ a → ¬prime p) as a_factors.
-    {
-        intros p p_div p_irr.
-        specialize (contr p).
-        rewrite not_and in contr.
-        destruct contr; contradiction.
-    }
-    clear contr.
-    assert (∀ a', ¬unit a' → a' ∣ a →
-            ∃ a1 a2, ¬unit a1 ∧ ¬unit a2 ∧ a' = a1 * a2) as a'_part.
-    {
-        intros a' a'_nu a'_div.
-        specialize (a_factors _ a'_div).
-        assert (¬irreducible a') as a_factors'.
-        {
-            intros a_irr.
-            apply irreducible_prime in a_irr.
-            contradiction.
-        }
-        clear a_factors; rename a_factors' into a_factors.
-        unfold irreducible in a_factors.
-        do 2 rewrite not_and in a_factors.
-        destruct a_factors as [a'_z|[C0|a_factors]]; [>|contradiction|].
-        -   rewrite not_not in a'_z.
-            rewrite <- a'_z in a'_div.
-            destruct a'_div as [c eq].
-            rewrite mult_ranni in eq.
-            contradiction.
-        -   rewrite not_all in a_factors.
-            destruct a_factors as [a1 a_factors].
-            rewrite not_all in a_factors.
-            destruct a_factors as [a2 a_factors].
-            do 2 rewrite not_impl in a_factors.
-            rewrite not_not in a_factors.
-            exists a1, a2.
-            exact a_factors.
-    }
-    pose (S (x : U * U) := ¬unit (fst x) ∧ ¬unit (snd x)).
-    pose (S2 (x : U * U) := ¬unit (fst x) ∧ ¬unit (snd x) ∧ fst x ∣ a).
-    pose (make_S a' a'_nu a'_div
-        := let a_ex := a'_part a' a'_nu a'_div in
-            [(ex_val a_ex, ex_val (ex_proof a_ex)) |
-             make_and (land (ex_proof (ex_proof a_ex)))
-                      (land (rand (ex_proof (ex_proof a_ex))))] : set_type S).
-    assert (∀ a' a'_nu a'_div, S2 [make_S a' a'_nu a'_div|]) as SS2.
-    {
-        intros a' a'_nu a'_div.
-        unfold make_S; cbn.
-        unfold ex_val, ex_proof.
-        destruct (ex_to_type _) as [a1 C0]; cbn.
-        destruct (ex_to_type _) as [a2 [a1_nu [a2_nu a_eq]]]; cbn; clear C0.
-        repeat split.
-        -   exact a1_nu.
-        -   exact a2_nu.
-        -   cbn.
-            apply (trans2 a'_div).
-            exists a2.
-            rewrite mult_comm.
-            symmetry; exact a_eq.
-    }
-    pose (make_S2 a' a'_nu a'_div := [_|SS2 a' a'_nu a'_div]).
-    pose (build_a' := fix build_a (n : nat) :=
-        match n with
-        | nat_zero => make_S2 a au (refl a)
-        | nat_suc n' => make_S2
-            (fst [build_a n'|])
-            (land [|build_a n'])
-            (rand (rand [|build_a n']))
-        end).
-    pose (I n := principle_ideal_by (fst [build_a' n|])).
-    assert (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) as I_sub.
-    {
-Local Arguments principle_ideal_by : simpl never.
-        intros n x Inx.
-        unfold I in Inx; cbn in Inx.
-        unfold I; cbn.
-        rewrite_ex_val x1 [x2 [x1_nu [x2_nu eq]]].
-        rewrite eq in Inx.
-        rewrite principle_ideal_div.
-        rewrite principle_ideal_div in Inx.
-        destruct Inx as [x3 eq'].
-        exists (x3 * x2).
-        rewrite <- eq'.
-        rewrite <- mult_assoc.
-        apply f_equal.
-        apply mult_comm.
-    }
-    pose proof (pid_noetherian I I_sub) as [n n_eq].
-    specialize (n_eq (nat_suc n) (nat_le_suc n)).
-    unfold I in n_eq.
-    rewrite principle_ideal_associates in n_eq.
-    cbn in n_eq.
-    rewrite_ex_val a1 [a2 [a1_nu [a2_nu eq]]].
-    destruct [|build_a' n] as [C0 [C1 a_div]]; clear C0 C1.
-    rewrite eq in n_eq, a_div; clear eq.
-    destruct n_eq as [div1 div2].
-    destruct div1 as [c eq].
-    apply a2_nu.
-    exists c.
-    rewrite (mult_comm a1 a2) in eq.
-    rewrite mult_assoc in eq.
-    rewrite <- (mult_lid a1) in eq at 2.
-    apply mult_rcancel in eq.
-    -   exact eq.
-    -   intros contr.
-        rewrite <- contr in a_div.
-        rewrite mult_lanni in a_div.
-        destruct a_div as [b a_eq].
-        rewrite mult_ranni in a_eq.
-        contradiction.
-Qed.
-
-(* This is just to get the code to compile, I'll make this better soon *)
-Lemma pid_factorization_unit : ∀ x : U, 0 ≠ x → ∃ a l,
-    unit a ∧ ulist_prop prime l ∧ x = a * ulist_prod l.
-Proof.
-    intros a a_nz.
-    classic_case (unit a) as [au|au].
-    {
-        exists a, ulist_end.
-        repeat split.
-        -   exact au.
-        -   apply ulist_prop_end.
-        -   rewrite ulist_prod_end.
-            rewrite mult_rid.
-            reflexivity.
-    }
-    classic_contradiction contr.
-    assert (∀ b l, ulist_prop (λ x, prime x) l → a = b * ulist_prod l →
-            ∃ b' p, ulist_prop (λ x, prime x) (p ː l) ∧
-                a = b' * ulist_prod (p ː l)) as b_ex.
-    {
-        intros b l l_prime a_eq.
-        assert (0 ≠ b) as b_nz.
-        {
-            intro; subst b.
-            rewrite mult_lanni in a_eq.
-            symmetry in a_eq; contradiction.
-        }
-        assert (¬unit b) as bu.
-        {
-            intros bu.
-            rewrite not_ex in contr.
-            specialize (contr b).
-            rewrite not_ex in contr.
-            specialize (contr l).
-            do 2 rewrite not_and in contr.
-            destruct contr as [contr|[contr|contr]]; contradiction.
-        }
-        pose proof (pid_factor_ex b b_nz bu) as [p [p_prime pb]].
-        destruct pb as [b' b_eq]; subst b.
-        exists b', p.
-        split.
-        -   rewrite ulist_prop_add.
-            split; assumption.
-        -   rewrite ulist_prod_add.
-            rewrite mult_assoc.
-            exact a_eq.
-    }
-    pose (S (x : U * ulist U) := ulist_prop (λ x, prime x) (snd x) ∧
-        a = fst x * ulist_prod (snd x)).
-    assert (a = a * ulist_prod ulist_end) as a_eq.
-    {
-        rewrite ulist_prod_end.
-        rewrite mult_rid.
-        reflexivity.
-    }
-    pose (build_p := fix build_p' (n : nat) : set_type S :=
-        match n with
-        | nat_zero => [(a, ulist_end) |
-                       make_and (ulist_prop_end (λ x, prime x)) a_eq]
-        | nat_suc n' =>
-            let bp := build_p' n' in
-            let p_ex := b_ex (fst [bp|]) (snd [bp|]) (land [|bp]) (rand [|bp])in
-            [(ex_val p_ex, ex_val (ex_proof p_ex) ː snd [bp|]) |
-             ex_proof (ex_proof p_ex)]
-        end).
-    pose (I n := principle_ideal_by (fst [build_p n|])).
-    assert (∀ l : ulist U, ulist_prop (λ x, prime x) l → 0 ≠ ulist_prod l)
-        as l_nz.
-    {
-        clear au contr b_ex S a_eq build_p I.
-        intros l l_prime.
-        induction l as [|p l] using ulist_induction.
-        -   rewrite ulist_prod_end.
-            intros triv.
-            rewrite <- (mult_lid a) in a_nz.
-            rewrite <- triv in a_nz.
-            rewrite mult_lanni in a_nz.
-            contradiction.
-        -   apply ulist_prop_add in l_prime as [p_prime l_prime].
-            specialize (IHl l_prime).
-            intros contr.
-            destruct p_prime as [p_nz p_prime].
-            rewrite ulist_prod_add in contr.
-            rewrite <- (mult_ranni p) in contr.
-            apply mult_lcancel in contr.
-            +   contradiction.
-            +   exact p_nz.
-    }
-    assert (∀ n, cideal_set (I n) ⊆ cideal_set (I (nat_suc n))) as I_sub.
-    {
-        intros n.
-        unfold I; cbn.
-        rewrite_ex_val a' p_ex.
-        destruct p_ex as [p [ps_prime a'_eq]].
-        intros x.
-        do 2 rewrite principle_ideal_div.
-        destruct [|build_p n] as [C0 a_eq']; clear C0.
-        remember (fst [build_p n|]) as b; clear Heqb.
-        remember (snd [build_p n|]) as l; clear Heql.
-        intros [c x_eq].
-        rewrite <- x_eq; clear x x_eq.
-        rewrite mult_comm.
-        apply mult_factors_extend.
-        rewrite a_eq' in a'_eq.
-        rewrite ulist_prod_add in a'_eq.
-        rewrite mult_assoc in a'_eq.
-        apply mult_rcancel in a'_eq.
-        -   exists p.
-            rewrite mult_comm.
-            symmetry; exact a'_eq.
-        -   apply ulist_prop_add in ps_prime as [p_prime l_prime].
-            apply l_nz.
-            exact l_prime.
-    }
-    pose proof (pid_noetherian I I_sub) as [n n_eq].
-    specialize (n_eq (nat_suc n) (nat_le_suc n)).
-    unfold I in n_eq.
-    cbn in n_eq.
-    rewrite_ex_val a' p_ex.
-    destruct p_ex as [p [ps_prime a'_eq]].
-    destruct [|build_p n] as [C0 a_eq']; clear C0.
-    remember (fst [build_p n|]) as b; clear Heqb.
-    remember (snd [build_p n|]) as l; clear Heql.
-    assert (cideal_set (principle_ideal_by a') a') as a'_in.
-    {
-        rewrite principle_ideal_div.
-        apply refl.
-    }
-    rewrite <- n_eq in a'_in.
-    rewrite principle_ideal_div in a'_in.
-    destruct a'_in as [c c_eq].
-    rewrite <- c_eq in a'_eq.
-    rewrite a_eq' in a'_eq.
-    clear c_eq.
-    rewrite (mult_comm c b) in a'_eq.
-    rewrite <- mult_assoc in a'_eq.
-    apply mult_lcancel in a'_eq.
-    2: {
-        intro; subst b.
-        rewrite mult_lanni in a_eq'.
-        symmetry in a_eq'; contradiction.
-    }
-    apply ulist_prop_add in ps_prime as [p_prime l_prime].
-    rewrite ulist_prod_add in a'_eq.
-    rewrite mult_assoc in a'_eq.
-    rewrite <- (mult_lid (ulist_prod l)) in a'_eq at 1.
-    apply mult_rcancel in a'_eq.
-    2: {
-        apply l_nz.
-        exact l_prime.
-    }
-    destruct p_prime as [p_nz [pu p_prime]].
-    apply pu.
-    exists c.
-    symmetry; exact a'_eq.
-Qed.
-
-Program Instance pid_factorization : UniqueFactorizationDomain U.
-Next Obligation.
-    rename H0 into x_nz.
-    rename H1 into x_uni.
-    pose proof (pid_factorization_unit x x_nz)
-        as [a [l [a_uni [l_prime x_eq]]]].
-    destruct l as [|p l] using ulist_destruct.
-    -   rewrite ulist_prod_end, mult_rid in x_eq.
-        subst.
-        contradiction.
-    -   rewrite ulist_prop_add in l_prime.
-        destruct l_prime as [p_prime l_prime].
-        rewrite ulist_prod_add in x_eq.
-        exists (a * p ː l).
-        split.
-        +   rewrite ulist_prop_add.
-            split; [>|apply l_prime].
-            apply div_equiv_prime.
-            rewrite div_unit_eq by exact a_uni.
-            rewrite <- div_equiv_prime.
-            exact p_prime.
-        +   rewrite ulist_prod_add.
-            rewrite mult_assoc in x_eq.
-            exact x_eq.
+    apply div_factorization_ufd.
+    intros x x_nz.
+    pose proof (noetherian_factors x x_nz) as [l [l_irr l_eq]].
+    exists l.
+    split; [>|exact l_eq].
+    clear l_eq.
+    ulist_prop_induction l l_irr as p p_irr IHl.
+    -   apply ulist_prop_end.
+    -   rewrite ulist_prop_add.
+        split; [>|exact IHl].
+        apply div_irreducible_prime.
+        exact p_irr.
 Qed.
 
 End PrincipleIdeal.

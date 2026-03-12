@@ -147,6 +147,16 @@ Proof.
         exact (trans pv d2).
 Qed.
 
+Theorem div_irreducible_prime : ∀ a : div_type U, irreducible a → prime a.
+Proof.
+    intros a a_irr.
+    pose proof (sur to_div a) as [x eq]; subst.
+    rewrite <- div_equiv_prime.
+    rewrite <- div_equiv_irreducible in a_irr.
+    apply irreducible_prime.
+    exact a_irr.
+Qed.
+
 Theorem div_equiv_common_divisor : ∀ a b d : U,
     common_divisor a b d ↔ common_divisor (to_div a) (to_div b) (to_div d).
 Proof.

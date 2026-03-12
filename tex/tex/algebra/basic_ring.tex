@@ -24,7 +24,7 @@ about basic group theory, so we will look at ring theory first.
         \item For all $a \in I$ and $b : \U$, $ab \in I$.
         \item For all $a : \U$ and $b \in I$, $ab \in I$.
     \end{itemize}
-    Note that in a commutative ring, only one of the laft two conditions needs
+    Note that in a commutative ring, only one of the last two conditions needs
     to be checked.
 \end{definition}
 
@@ -1026,6 +1026,51 @@ Throughout this section, let $\U$ be a UFD.
     use Lemma \ref{ufd_gcd_ex} to get the gcd of $b$ and $a$.  Otherwise, just
     pick $1$, since this case doesn't matter when actually checking the
     conditions for a GCD domain.
+\end{proof}
+
+\begin{instance}
+    Let $\U$ be an integral domain that we don't know is a UFD.  If for all
+    nonzero $x : \D(\U)$, there exists an unordered list of primes in $\D(\U)$
+    $a$ such that $x = \prod a$, then $\U$ itself is a UFD.
+\end{instance}
+\begin{proof}
+    Let $x : \U$ be nonzero and not a unit.  Let $a$ be the factorization of
+    $\D(x)$.  $a$ must not be empty, for if it was, $x$ would be a unit.  So $a
+    = \D(p) : a'$ for some prime $p$ and unordered list of primes $a'$.  Let
+    $\D^{-1} : \D(\U) \to \U$ be a function that picks out an element of the
+    equivalence class given to it.  We will prove that $\prod a' =
+    \D(\prod\D^{-1}(a'))$ by induction on $a'$.
+
+    \newcommand{\tprod}{{\textstyle \prod}}
+    First, when $a' = \llbracket \rrbracket$, we have
+    \[
+        \D(\tprod\D^{-1}(\llbracket \rrbracket))
+        = \D(\tprod\llbracket \rrbracket)
+        = \D(1)
+        = 1
+        = \tprod \llbracket \rrbracket,
+    \]
+    so the base case is true.  Now assume that $\prod a' =
+    \D(\prod\D^{-1}(a'))$, and let $y$ be a value in $\D(\U)$.  Then
+    \begin{align*}
+        \D(\tprod \D^{-1}(p : a'))
+        &= \D(\tprod (\D^{-1}(p) : \D^{-1}(a'))) \\
+        &= \D(\D^{-1}(p) \tprod \D^{-1}(a')) \\
+        &= \D(\D^{-1}(p)) \D(\tprod \D^{-1}(a')) \\
+        &= p \tprod a' \\
+        &= \tprod (p : a'),
+    \end{align*}
+    so the inductive case is true.  Thus, $\prod a' = \D(\prod\D^{-1}(a'))$.
+
+    Thus, because $a = \D(p) : a'$ is a factorization of $x$, we have
+    \[
+        \D(x) = \D(p) \D(\prod\D^{-1}(a'))
+        = \D(p \prod\D^{-1}(a')),
+    \]
+    so $x$ and $p \prod\D^{-1}(a')$ associate.  By Theorem
+    \ref{associates_unit}, we have a unit $u$ such that $x = up
+    \prod\D^{-1}(a')$.  The list $(up) : \D^{-1}(a')$ is now a list of primes in
+    $\U$ whose product is $x$, so $\U$ is a UFD.
 \end{proof}
 
 \end{document}

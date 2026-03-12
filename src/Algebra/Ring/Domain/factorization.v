@@ -464,4 +464,66 @@ Qed.
 
 End UniqueFactorization.
 
+Theorem div_factorization_ufd {U : IntegralDomain} :
+    (∀ x : div_type U, 0 ≠ x → ∃ l, ulist_prop prime l ∧ x = ulist_prod l) →
+    UniqueFactorizationDomain U.
+Proof.
+    intros div_ex.
+    split.
+    intros x x_nz x_nu.
+    rewrite div_equiv_zero in x_nz.
+    specialize (div_ex _ x_nz) as [l [l_prime l_prod]].
+    destruct l as [|p' l] using ulist_destruct.
+    {
+        rewrite ulist_prod_end in l_prod.
+        rewrite div_equiv_one in l_prod.
+        contradiction.
+    }
+    rewrite ulist_prop_add in l_prime.
+    destruct l_prime as [p_prime l_prime].
+    rewrite ulist_prod_add in l_prod.
+    pose proof (sur to_div p') as [p]; subst p'.
+    pose (l' := ulist_image (λ a, ex_val (sur to_div a)) l).
+    assert (ulist_prod l = to_div (ulist_prod l')) as l_eq.
+    {
+        unfold l'; clear.
+        induction l as [|a l] using ulist_induction.
+        -   rewrite ulist_image_end.
+            do 2 rewrite ulist_prod_end.
+            reflexivity.
+        -   rewrite ulist_image_add.
+            do 2 rewrite ulist_prod_add.
+            rewrite (homo_mult (f := to_div)).
+            rewrite <- IHl.
+            apply rmult.
+            rewrite_ex_val a' a'_eq.
+            symmetry; exact a'_eq.
+    }
+    rewrite l_eq in l_prod; clear l_eq.
+    symmetry in l_prod.
+    unfold mult, to_div in l_prod; equiv_simpl in l_prod.
+    apply associates_unit in l_prod as [u [u_u u_eq]].
+    rewrite mult_assoc in u_eq.
+    exists ((u * p) ː l').
+    split.
+    -   clear u_eq.
+        unfold l'; clear l'.
+        rewrite ulist_prop_add.
+        split.
+        +   rewrite <- div_equiv_prime in p_prime.
+            apply prime_unit; assumption.
+        +   ulist_prop_induction l l_prime as a a_prime IHl.
+            *   rewrite ulist_image_end.
+                apply ulist_prop_end.
+            *   rewrite ulist_image_add, ulist_prop_add.
+                split; [>|exact IHl].
+                rewrite_ex_val b eq; subst.
+                rewrite div_equiv_prime.
+                exact a_prime.
+    -   clear l_prime.
+        unfold l' in *; clear l'.
+        rewrite ulist_prod_add.
+        symmetry; exact u_eq.
+Qed.
+
 Close Scope nat_scope.
