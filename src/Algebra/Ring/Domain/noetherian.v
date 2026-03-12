@@ -13,78 +13,12 @@ Class Noetherian (U : IntegralDomain) := {
         ∃ n, ∀ m, n ≤ m → I n = I m
 }.
 
-Section PrincipleIdeal.
-
-Context {U : IntegralDomain}.
-
-Definition principle_ideal_by (x : domain_to_cring U)
-    := cideal_generated_by ❴x❵.
-
-Definition principle_ideal (I : CIdeal (domain_to_cring U))
-    := ∃ x, I = principle_ideal_by x.
-
-Theorem principle_ideal_div :
-    ∀ a b, principle_ideal_by a b ↔ a ∣ b.
-Proof.
-    intros a b.
-    split.
-    -   intros [l eq].
-        subst b.
-        induction l as [|b l] using ulist_induction.
-        +   rewrite ulist_image_end, ulist_sum_end.
-            apply divides_zero.
-        +   rewrite ulist_image_add, ulist_sum_add.
-            apply plus_stays_divides.
-            *   destruct b as [b1 [b2 b2_eq]]; cbn.
-                rewrite singleton_eq in b2_eq; subst b2.
-                apply mult_div_lself.
-            *   exact IHl.
-    -   intros [c eq].
-        exists ((c, [a|Logic.eq_refl]) ː ulist_end).
-        rewrite ulist_image_add, ulist_sum_add; cbn.
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite plus_rid, mult_comm.
-        symmetry; exact eq.
-Qed.
-
-Theorem principle_ideal_sub : ∀ a b,
-    principle_ideal_by a ⊆ principle_ideal_by b ↔ b ∣ a.
-Proof.
-    intros a b.
-    split.
-    -   intros sub.
-        apply principle_ideal_div.
-        apply sub.
-        apply principle_ideal_div.
-        apply refl.
-    -   intros div x.
-        do 2 rewrite principle_ideal_div.
-        intros div2.
-        exact (trans div div2).
-Qed.
-
-Theorem principle_ideal_associates : ∀ a b,
-    principle_ideal_by a = principle_ideal_by b ↔ associates a b.
-Proof.
-    intros a b.
-    split.
-    -   intros eq.
-        split.
-        all: rewrite <- principle_ideal_sub.
-        all: rewrite eq.
-        all: apply refl.
-    -   intros [ab ba].
-        apply cideal_eq_set.
-        apply antisym.
-        all: rewrite principle_ideal_sub.
-        all: assumption.
-Qed.
-
-End PrincipleIdeal.
-
 Section Noetherian.
 
 Context {U : IntegralDomain} `{Noetherian U}.
+Local Existing Instances div_zero_class div_one_class div_mult_class
+    div_mult_comm div_mult_assoc div_mult_lid div_mult_lanni div_mult_lcancel
+    div_not_trivial to_div_zero to_div_one to_div_mult to_div_sur.
 
 Theorem noetherian_div : ∀ f : nat → div_type U,
     (∀ n, f (nat_suc n) ∣ f n) →
@@ -92,7 +26,8 @@ Theorem noetherian_div : ∀ f : nat → div_type U,
 Proof.
     intros f f_div.
     pose proof (noetherian
-        (λ n, principle_ideal_by (ex_val (sur to_div (f n))))) as n_ex.
+        (λ n, principle_ideal_by (U := domain_to_cring U)
+        (ex_val (sur to_div (f n))))) as n_ex.
     prove_parts n_ex.
     {
         intros n.

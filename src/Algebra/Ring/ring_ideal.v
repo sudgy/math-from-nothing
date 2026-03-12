@@ -2,6 +2,7 @@ Require Import init.
 
 Require Export plus_group.
 Require Export ring_category.
+Require Export mult_div.
 
 Require Import set.
 Require Import unordered_list.
@@ -679,3 +680,72 @@ Proof.
 Qed.
 
 End CIdealGenerated.
+
+Section PrincipleIdeal.
+
+Context {U : CRing}.
+
+Definition principle_ideal_by (x : U)
+    := cideal_generated_by ❴x❵.
+
+Definition principle_ideal (I : CIdeal U)
+    := ∃ x, I = principle_ideal_by x.
+
+Theorem principle_ideal_div :
+    ∀ a b, principle_ideal_by a b ↔ a ∣ b.
+Proof.
+    intros a b.
+    split.
+    -   intros [l eq].
+        subst b.
+        induction l as [|b l] using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end.
+            apply divides_zero.
+        +   rewrite ulist_image_add, ulist_sum_add.
+            apply plus_stays_divides.
+            *   destruct b as [b1 [b2 b2_eq]]; cbn.
+                rewrite singleton_eq in b2_eq; subst b2.
+                apply mult_div_lself.
+            *   exact IHl.
+    -   intros [c eq].
+        exists ((c, [a|Logic.eq_refl]) ː ulist_end).
+        rewrite ulist_image_add, ulist_sum_add; cbn.
+        rewrite ulist_image_end, ulist_sum_end.
+        rewrite plus_rid, mult_comm.
+        symmetry; exact eq.
+Qed.
+
+Theorem principle_ideal_sub : ∀ a b,
+    principle_ideal_by a ⊆ principle_ideal_by b ↔ b ∣ a.
+Proof.
+    intros a b.
+    split.
+    -   intros sub.
+        apply principle_ideal_div.
+        apply sub.
+        apply principle_ideal_div.
+        apply refl.
+    -   intros div x.
+        do 2 rewrite principle_ideal_div.
+        intros div2.
+        exact (trans div div2).
+Qed.
+
+Theorem principle_ideal_associates : ∀ a b,
+    principle_ideal_by a = principle_ideal_by b ↔ associates a b.
+Proof.
+    intros a b.
+    split.
+    -   intros eq.
+        split.
+        all: rewrite <- principle_ideal_sub.
+        all: rewrite eq.
+        all: apply refl.
+    -   intros [ab ba].
+        apply cideal_eq_set.
+        apply antisym.
+        all: rewrite principle_ideal_sub.
+        all: assumption.
+Qed.
+
+End PrincipleIdeal.

@@ -18,6 +18,9 @@ Arguments factorization_base {U UniqueFactorizationDomain}.
 Section UniqueFactorization.
 
 Context {U : IntegralDomain} `{UniqueFactorizationDomain U}.
+Local Existing Instances div_zero_class div_one_class div_mult_class
+    div_mult_comm div_mult_assoc div_mult_lid div_mult_lanni div_mult_lcancel
+    div_not_trivial to_div_zero to_div_one to_div_mult to_div_sur.
 
 Theorem div_factorization_base : ∀ x : div_type U, 0 ≠ x → ∃ l,
     ulist_prop prime l ∧ x = ulist_prod l.
@@ -464,7 +467,14 @@ Qed.
 
 End UniqueFactorization.
 
-Theorem div_factorization_ufd {U : IntegralDomain} :
+Section DivFactorization.
+
+Context {U : IntegralDomain}.
+Local Existing Instances div_zero_class div_one_class div_mult_class
+    div_mult_comm div_mult_assoc div_mult_lid div_mult_lanni div_mult_lcancel
+    div_not_trivial to_div_zero to_div_one to_div_mult to_div_sur.
+
+Theorem div_factorization_ufd :
     (∀ x : div_type U, 0 ≠ x → ∃ l, ulist_prop prime l ∧ x = ulist_prod l) →
     UniqueFactorizationDomain U.
 Proof.
@@ -525,5 +535,7 @@ Proof.
         rewrite ulist_prod_add.
         symmetry; exact u_eq.
 Qed.
+
+End DivFactorization.
 
 Close Scope nat_scope.

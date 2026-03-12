@@ -3,7 +3,7 @@ Require Import init.
 Require Export ring_ideal.
 Require Export domain_category.
 Require Import factorization.
-Require Export noetherian.
+Require Import noetherian.
 
 Require Import gcd.
 Require Import mult_div.
@@ -12,7 +12,6 @@ Require Import set.
 Require Import unordered_list.
 Require Import order_minmax.
 
-(* The definition of principle ideals is in noetherian.v *)
 Class PrincipleIdealDomain (U : IntegralDomain) := {
     ideal_principle : ∀ I : CIdeal (domain_to_cring U), principle_ideal I
 }.

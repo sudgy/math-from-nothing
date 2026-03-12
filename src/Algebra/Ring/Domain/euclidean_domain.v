@@ -18,7 +18,7 @@ Section Euclidean.
 
 Context {U : IntegralDomain} `{@EuclideanDomain U _ _ _}.
 
-Program Instance euclidean_principle_ideal : @PrincipleIdealDomain U. 
+Program Instance euclidean_principle_ideal : @PrincipleIdealDomain U.
 Next Obligation.
     classic_case (∀ x, cideal_set I x → 0 = x) as [I_z|I_nz].
     {
@@ -29,7 +29,7 @@ Next Obligation.
         -   intros Ix.
             apply I_z in Ix.
             rewrite <- Ix.
-            apply (cideal_zero (principle_ideal_by 0)).
+            apply (cideal_zero (U := domain_to_cring U) (principle_ideal_by 0)).
         -   intros [l x_eq].
             assert (0 = x) as x_z.
             {

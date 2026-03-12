@@ -434,19 +434,19 @@ Proof.
         exact (trans ba dc).
 Qed.
 
-Global Instance div_zero_class : Zero div_type := {
+Local Instance div_zero_class : Zero div_type := {
     zero := to_div 0
 }.
 
-Global Instance div_one_class : One div_type := {
+Local Instance div_one_class : One div_type := {
     one := to_div 1
 }.
 
-Global Instance div_mult_class : Mult div_type := {
+Local Instance div_mult_class : Mult div_type := {
     mult := binary_op (binary_self_wd div_mult_wd)
 }.
 
-Global Instance div_mult_comm : MultComm div_type.
+Local Instance div_mult_comm : MultComm div_type.
 Proof.
     split.
     intros a b.
@@ -456,7 +456,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance div_mult_assoc : MultAssoc div_type.
+Local Instance div_mult_assoc : MultAssoc div_type.
 Proof.
     split.
     intros a b c.
@@ -466,7 +466,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance div_mult_lid : MultLid div_type.
+Local Instance div_mult_lid : MultLid div_type.
 Proof.
     split.
     intros a.
@@ -476,7 +476,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance div_mult_lanni : MultLanni div_type.
+Local Instance div_mult_lanni : MultLanni div_type.
 Proof.
     split.
     intros a.
@@ -486,7 +486,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance div_mult_lcancel : MultLcancel div_type.
+Local Instance div_mult_lcancel : MultLcancel div_type.
 Proof.
     split.
     intros a b c.
@@ -505,7 +505,7 @@ Proof.
 Qed.
 
 #[refine]
-Global Instance div_not_trivial : NotTrivial div_type := {
+Local Instance div_not_trivial : NotTrivial div_type := {
     not_trivial_a := to_div 0;
     not_trivial_b := to_div 1;
 }.
@@ -516,17 +516,17 @@ Proof.
     contradiction (not_trivial_one contr).
 Qed.
 
-Global Instance to_div_zero : HomomorphismZero to_div.
+Local Instance to_div_zero : HomomorphismZero to_div.
 Proof.
     split; reflexivity.
 Qed.
 
-Global Instance to_div_one : HomomorphismOne to_div.
+Local Instance to_div_one : HomomorphismOne to_div.
 Proof.
     split; reflexivity.
 Qed.
 
-Global Instance to_div_mult : HomomorphismMult to_div.
+Local Instance to_div_mult : HomomorphismMult to_div.
 Proof.
     split.
     intros a b.
@@ -534,7 +534,7 @@ Proof.
     apply refl.
 Qed.
 
-Global Instance to_div_sur : Surjective to_div.
+Local Instance to_div_sur : Surjective to_div.
 Proof.
     split.
     intros y.
@@ -670,6 +670,9 @@ Notation "'div_type' U" := (equiv_type (div_equiv (U := U))) (at level 200).
 Section Div.
 
 Context {U} `{AllMultClass U}.
+Local Existing Instances div_zero_class div_one_class div_mult_class
+    div_mult_comm div_mult_assoc div_mult_lid div_mult_lanni div_mult_lcancel
+    div_not_trivial to_div_zero to_div_one to_div_mult to_div_sur.
 
 Theorem primes_div_equiv : ∀ a b : div_type U, prime a → prime b → a ∣ b → a = b.
 Proof.

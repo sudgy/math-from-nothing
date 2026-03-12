@@ -17,6 +17,9 @@ Class GCDDomain (U : IntegralDomain) := {
 Section GCD.
 
 Context {U : IntegralDomain}.
+Local Existing Instances div_zero_class div_one_class div_mult_class
+    div_mult_comm div_mult_assoc div_mult_lid div_mult_lanni div_mult_lcancel
+    div_not_trivial to_div_zero to_div_one to_div_mult to_div_sur.
 
 Theorem gcd_associates :
     ∀ a b d1 d2 : U, is_gcd a b d1 → is_gcd a b d2 → associates d1 d2.
