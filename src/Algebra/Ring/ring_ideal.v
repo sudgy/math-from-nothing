@@ -681,6 +681,34 @@ Qed.
 
 End CIdealGenerated.
 
+Theorem cideal_generated_by_single {U : CRing} :
+    ∀ a b : U, cideal_generated_by ❴a❵ b ↔ a ∣ b.
+Proof.
+    intros a b.
+    split.
+    -   intros [l eq].
+        subst b.
+        induction l as [|[c a'] l] using ulist_induction.
+        +   rewrite ulist_image_end, ulist_sum_end.
+            apply divides_zero.
+        +   destruct IHl as [c' IHl].
+            exists (c + c').
+            rewrite ulist_image_add, ulist_sum_add; cbn.
+            rewrite <- IHl.
+            destruct a' as [a' a'_eq]; cbn.
+            rewrite singleton_eq in a'_eq.
+            subst a'.
+            rewrite rdist.
+            apply rplus.
+            apply mult_comm.
+    -   intros [c eq]; subst b.
+        exists ⟦(c, [a|Logic.eq_refl])⟧.
+        rewrite ulist_image_single; cbn.
+        rewrite ulist_sum_add, ulist_sum_end.
+        rewrite plus_rid.
+        apply mult_comm.
+Qed.
+
 Section PrincipleIdeal.
 
 Context {U : CRing}.
@@ -694,25 +722,7 @@ Definition principle_ideal (I : CIdeal U)
 Theorem principle_ideal_div :
     ∀ a b, principle_ideal_by a b ↔ a ∣ b.
 Proof.
-    intros a b.
-    split.
-    -   intros [l eq].
-        subst b.
-        induction l as [|b l] using ulist_induction.
-        +   rewrite ulist_image_end, ulist_sum_end.
-            apply divides_zero.
-        +   rewrite ulist_image_add, ulist_sum_add.
-            apply plus_stays_divides.
-            *   destruct b as [b1 [b2 b2_eq]]; cbn.
-                rewrite singleton_eq in b2_eq; subst b2.
-                apply mult_div_lself.
-            *   exact IHl.
-    -   intros [c eq].
-        exists ((c, [a|Logic.eq_refl]) ː ulist_end).
-        rewrite ulist_image_add, ulist_sum_add; cbn.
-        rewrite ulist_image_end, ulist_sum_end.
-        rewrite plus_rid, mult_comm.
-        symmetry; exact eq.
+    apply cideal_generated_by_single.
 Qed.
 
 Theorem principle_ideal_sub : ∀ a b,

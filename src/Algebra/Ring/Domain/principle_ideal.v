@@ -83,17 +83,10 @@ Proof.
     intros a Ia.
     change (I a) with (I' a) in Ia.
     rewrite I'_eq in Ia.
-    destruct Ia as [l a_eq].
-    rewrite a_eq; clear a a_eq.
-    induction l as [|a l] using ulist_induction.
-    -   rewrite ulist_image_end, ulist_sum_end.
-        apply cideal_zero.
-    -   rewrite ulist_image_add, ulist_sum_add; cbn.
-        apply (cideal_plus (In n0)); [>clear IHl|exact IHl].
-        destruct a as [a1 [a2 a2_eq]]; cbn.
-        apply (cideal_mult (In n0)).
-        rewrite singleton_eq in a2_eq; subst.
-        exact Ia0.
+    apply cideal_generated_by_single in Ia as [c eq]; subst a.
+    rewrite mult_comm.
+    apply cideal_mult.
+    exact Ia0.
 Qed.
 
 #[refine]
