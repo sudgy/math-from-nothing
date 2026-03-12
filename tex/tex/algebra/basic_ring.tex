@@ -3,6 +3,8 @@
 \externaldocument{../basics/set}
 \externaldocument{../basics/lists}
 
+\newcommand{\tprod}{{\textstyle \prod}}
+
 \begin{document}
 
 \setcounter{chapter}{12}
@@ -1076,7 +1078,6 @@ Throughout this section, let $\U$ be a UFD.
     equivalence class given to it.  We will prove that $\prod a' =
     \D(\prod\D^{-1}(a'))$ by induction on $a'$.
 
-    \newcommand{\tprod}{{\textstyle \prod}}
     First, when $a' = \llbracket \rrbracket$, we have
     \[
         \D(\tprod\D^{-1}(\llbracket \rrbracket))
@@ -1099,13 +1100,154 @@ Throughout this section, let $\U$ be a UFD.
 
     Thus, because $a = \D(p) : a'$ is a factorization of $x$, we have
     \[
-        \D(x) = \D(p) \D(\prod\D^{-1}(a'))
-        = \D(p \prod\D^{-1}(a')),
+        \D(x) = \D(p) \D(\tprod\D^{-1}(a'))
+        = \D(p \tprod\D^{-1}(a')),
     \]
     so $x$ and $p \prod\D^{-1}(a')$ associate.  By Theorem
     \ref{associates_unit}, we have a unit $u$ such that $x = up
     \prod\D^{-1}(a')$.  The list $(up) : \D^{-1}(a')$ is now a list of primes in
     $\U$ whose product is $x$, so $\U$ is a UFD.
 \end{proof}
+
+\section{Noetherian Rings}
+
+\begin{class}
+    Let $\U$ be an integral domain.  Then we call $\U$ Noetherian if for all
+    sequences $I_n$ of ideals in $\U$ such that $I_n \subseteq I_{S(n)}$ for all
+    natural numbers $n$, there exists a natural number $n_0$ such that for all
+    $m \geq n_0$, we have $I_{n_0} = I_m$.  This condition is called the
+    ascending chain condition.
+\end{class}
+
+Throughout this section, let $\U$ be a Noetherian ring.
+
+\begin{theorem} \label{noetherian_div}
+    Let $f_n$ be a sequence of values in $\D(\U)$.  If $f_{S(n)} \mid f_n$ for
+    all natural numbers $n$, then there exists a natural number $n_0$ such that
+    for all $m \geq n_0$, we have $f_{n_0} = f_m$.
+\end{theorem}
+\begin{proof}
+    Let $I_n = \langle \D^{-1}(f_n) \rangle$.  By Theorems \ref{div_equiv_div}
+    and \ref{principle_ideal_sub}, $I_n$ is an ascending chain, so because $\U$
+    is Noetherian, there exists a natural number $n_0$ such that $I_{n_0} = I_m$
+    for all $m \geq n_0$.  By Theorem \ref{principle_ideal_associates}, this
+    means that $\D^{-1}(f_{n_0})$ and $\D^{-1}(f_m)$ associate, so
+    \begin{align*}
+        \D(\D^{-1}(f_{n_0})) &= \D(\D^{-1}(f_m)) \\
+        f_{n_0} &= f_m
+    \end{align*}
+    as required.
+\end{proof}
+
+In the following, say that a value $x : \D(\U)$ is \textit{interesting} if $x
+\neq 0$ and $x \neq 1$.
+
+\begin{lemma} \label{ring_factor_ex}
+    Let $x$ be interesting and not irreducible.  Then there exist interesting
+    values $a$ and $b$ such that $x = ab$.
+\end{lemma}
+\begin{proof}
+    Because $x$ is interesting and irreducible, we have non-unit values $a$ and
+    $b$ such that $x = ab$.  By Theorem \ref{div_equiv_unit}, we have $a \neq 1$
+    and $b \neq 1$.  If $a = 0$ or $b = 0$, we would have $x = 0$, contradicting
+    $x$ being interesting, so we must have $a \neq 0$ and $b \neq 0$.  Thus, $a$
+    and $b$ are interesting.
+\end{proof}
+
+\begin{lemma} \label{noetherian_irreducible_ex}
+    For all interesting $x : \D(\U)$, there exists an irreducible $p : \D(\U)$
+    such that $p \mid x$.
+\end{lemma}
+\begin{proof}
+    Define a sequence $f_n$ of interesting values defined by
+    \begin{align*}
+        f_0 &= x \\
+        f_{S(n)} &= f_n \text{ if $f_n$ is irreducible} \\
+        f_{S(n)} &= \text{the value $a$ given by Lemma \ref{ring_factor_ex} on
+            $f_n$ otherwise.}
+    \end{align*}
+    By construction, $f_{S(n)} \mid f_n$ for all $n$, so by Theorem
+    \ref{noetherian_div}, we have a natural number $n_0$ such that for all $m
+    \geq n_0$, we have $f_{n_0} = f_m$.  We will prove that $f_{n_0}$ is
+    irreducible and divides $x$.
+
+    We know that $f_{S(n_0)} = f_{n_0}$.  If $f_{n_0}$ was not irreducible, we
+    would have $f_{n_0} = ab$ and $f_{S(n_0)} = f_{n_0} = a$ for interesting
+    values $a$ and $b$.  Thus, $ab = a$, and cancelling $a$ we get $b = 1$,
+    contradicting $a$ being interesting.  Thus, $f_{n_0}$ is irreducible.
+
+    To prove that $f_{n_0} \mid x$, we will use induction on $n_0$.  When $n_0
+    = 0$, we have $f_0 = x \mid x$.  Now assume that $f_{n_0} \mid x$.  We must
+    prove that $f_{S(n_0)} \mid x$.  When $f_{n_0}$ is irreducible, we have
+    $f_{S(n_0)} = f_{n_0} \mid x$ by the inductive hypothesis.  When $f_{n_0}$
+    is not ireducible, we have values $a$ and $b$ such that $f_{n_0} = ab$ and
+    $f_{S(n_0)} = a$.  Then
+    \[
+        f_{S(n_0)} = a \mid ab = f_{n_0} \mid x.
+    \]
+\end{proof}
+
+\begin{theorem} \label{noetherian_factors}
+    For all nonzero $x : \D(\U)$, there exists an unordered list of irreducibles
+    $a$ such that $x = \prod a$.
+\end{theorem}
+\begin{proof}
+    By the previous lemma, for any interesting values $x$, we have an
+    irreducible $p$ and value $x'$ such that $x = px'$.  Define functions $p$
+    and $x'$ that take in an interesting value $x$ and produce these two
+    factors.  By definition, $p(x)$ is irreducible for all $x$, and $p(x)x'(x) =
+    x$ for all $x$.
+
+    Now let $x \neq 0$.  Define a function $f : \N \to \L_U(\D(\U)) \times
+    \D(\U)$ given by
+    \begin{align*}
+        f(0) &= (\llbracket \rrbracket, x) \\
+        f(S(n)) &= (p(\pi_2(f(n))) : \pi_1(f(n)), x'(\pi_2(f(n))))
+            \text{ if $\pi_2(f(n))$ is interesting} \\
+        f(S(n)) &= f(n) \text{ otherwise.}
+    \end{align*}
+    Define functions $f_1(n) = \pi_1(f(n))$ and $f_2(n) = \pi_2(f(n))$.
+    $f_1(n)$ always contains irreducible values by construction.
+
+    We will now prove that $(\prod f_1(n)) f_2(n) = x$ for all $n$ by induction
+    on $n$.  First, when $n = 0$, we have
+    \[
+        (\tprod f_1(0)) f_2(0) = (\tprod \llbracket \rrbracket) x = 1x = x,
+    \]
+    so the base case is true.  Now assume that $(\prod f_1(n)) f_2(n) = x$.
+    When $f_2(n)$ is interesting,
+    \begin{align*}
+        (\tprod f_1(S(n))) f_2(S(n))
+        &= (\tprod (p(f_2(n)) : f_1(n))) x'(f_2(n)) \\
+        &= p(f_2(n)) (\tprod f_1(n)) x'(f_2(n)) \\
+        &= p(f_2(n)) x'(f_2(n)) (\tprod f_1(n)) \\
+        &= f_2(n) (\tprod f_1(n)) \\
+        &= x.
+    \end{align*}
+    When $f_2(n)$ is not interesting, the inductive hypothesis is precisely what
+    we are trying to prove.  Thus, for all $n$, $(\prod f_1(n)) f_2(n) = x$.
+
+    By construction, $f_2(S(n)) \mid f_2(n)$ for all $n$.  Thus, by Theorem
+    \ref{noetherian_div}, we have some natural number $n_0$ such that $f_2(n_0)
+    = f_2(m)$ for all $m \geq n_0$.  We will now prove that $f_2(n_0) = 1$.  We
+    know that $f_2(n_0) = f_2(S(n_0))$.  If $f_2(n_0)$ was interesting, we would
+    have $f_2(S(n_0)) = f_2(n_0) = x'(f_2(n_0))$, and $f_2(n_0) = p(f_2(n_0))
+    x'(f_2(n_0))$, so $p(f_2(n_0)) x'(f_2(n_0)) = x'(f_2(n_0))$.  Cancelling
+    $x'(f_2(n_0))$, we get $p(f_2(n_0)) = 1$, contradicting $p(f_2(n_0))$ being
+    irreducible.  Thus, $f_2(n_0)$ is not interesting.  Now if $f_2(n_0) = 0$,
+    we would have $x = (\prod f_1(n_0)) f_2(n_0) = (\prod f_1(n_0))0 = 0$ as
+    well, contradicting $x \neq 0$.  Thus, because $f_2(n_0)$ is interesting and
+    not equal to zero, we have $f_2(n_0) = 1$.
+
+    We now have
+    \[
+        x = (\prod f_1(n_0)) f_2(n_0) = \prod f_1(n_0),
+    \]
+    so $f_1(n_0)$ is a list of irreducibles such that its product is $x$.
+\end{proof}
+
+Note that this does not make Noetherian rings UFDs.  UFDs require a
+factorization into products of primes, not irreducibles.  It's possible for
+values in a Noetherian ring to have multiple distinct factorizations.
 
 \end{document}

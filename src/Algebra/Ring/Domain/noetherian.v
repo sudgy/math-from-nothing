@@ -53,42 +53,43 @@ Qed.
 
 Let interesting (x : div_type U) := 0 ≠ x ∧ x ≠ 1.
 
+Lemma ring_factor_ex : ∀ x : set_type interesting, ¬irreducible [x|] →
+    ∃ a b : set_type interesting, [x|] = [a|] * [b|].
+Proof.
+    intros [x [x_nz x_no]] x_red; cbn in *.
+    unfold irreducible in x_red.
+    do 2 rewrite not_and_impl in x_red.
+    rewrite div_equiv_unit in x_red.
+    specialize (x_red x_nz x_no).
+    rewrite not_all in x_red.
+    destruct x_red as [a x_red].
+    rewrite not_all in x_red.
+    destruct x_red as [b x_red].
+    do 2 rewrite not_impl in x_red.
+    do 2 rewrite div_equiv_unit in x_red.
+    rewrite not_not in x_red.
+    destruct x_red as [a_no [b_no x_eq]].
+    assert (interesting a) as a_int.
+    {
+        split; [>|exact a_no].
+        intros contr; subst a.
+        rewrite mult_lanni in x_eq.
+        symmetry in x_eq; contradiction.
+    }
+    assert (interesting b) as b_int.
+    {
+        split; [>|exact b_no].
+        intros contr; subst b.
+        rewrite mult_ranni in x_eq.
+        symmetry in x_eq; contradiction.
+    }
+    exists [a|a_int], [b|b_int].
+    exact x_eq.
+Qed.
+
 Lemma noetherian_irreducible_ex :
     ∀ x : div_type U, interesting x → ∃ p, irreducible p ∧ p ∣ x.
 Proof.
-    assert (∀ x : set_type interesting, ¬irreducible [x|] →
-        ∃ a b : set_type interesting, [x|] = [a|] * [b|]) as factor_ex.
-    {
-        intros [x [x_nz x_no]] x_red; cbn in *.
-        unfold irreducible in x_red.
-        do 2 rewrite not_and_impl in x_red.
-        rewrite div_equiv_unit in x_red.
-        specialize (x_red x_nz x_no).
-        rewrite not_all in x_red.
-        destruct x_red as [a x_red].
-        rewrite not_all in x_red.
-        destruct x_red as [b x_red].
-        do 2 rewrite not_impl in x_red.
-        do 2 rewrite div_equiv_unit in x_red.
-        rewrite not_not in x_red.
-        destruct x_red as [a_no [b_no x_eq]].
-        assert (interesting a) as a_int.
-        {
-            split; [>|exact a_no].
-            intros contr; subst a.
-            rewrite mult_lanni in x_eq.
-            symmetry in x_eq; contradiction.
-        }
-        assert (interesting b) as b_int.
-        {
-            split; [>|exact b_no].
-            intros contr; subst b.
-            rewrite mult_ranni in x_eq.
-            symmetry in x_eq; contradiction.
-        }
-        exists [a|a_int], [b|b_int].
-        exact x_eq.
-    }
     intros x x_int.
     pose (f := fix f n :=
         match n with
@@ -96,7 +97,7 @@ Proof.
         | nat_suc n' =>
             IfH irreducible [f n'|]
             then λ _, f n'
-            else λ H, ex_val (factor_ex _ H)
+            else λ H, ex_val (ring_factor_ex _ H)
         end).
     pose proof (noetherian_div (λ n, [f n|])) as n_ex.
     prove_parts n_ex.
@@ -160,7 +161,7 @@ Proof.
         | nat_suc n' =>
             IfH interesting (snd (f n'))
             then λ H, (get_p _ H ː fst (f n'), get_x' _ H)
-            else λ _, (fst (f n'), 1)
+            else λ _, f n'
         end).
     pose (f1 n := fst (f n)).
     pose (f2 n := snd (f n)).
@@ -190,15 +191,7 @@ Proof.
                 rewrite get_px'.
                 rewrite mult_comm.
                 exact IHn.
-            +   unfold interesting in fn_not.
-                rewrite not_and in fn_not.
-                do 2 rewrite not_not in fn_not.
-                destruct fn_not as [fn_z|fn_o].
-                *   rewrite <- fn_z in IHn.
-                    rewrite mult_ranni in IHn.
-                    contradiction.
-                *   rewrite fn_o in IHn.
-                    exact IHn.
+            +   exact IHn.
     }
     pose proof (noetherian_div f2) as n_ex.
     prove_parts n_ex.
@@ -208,7 +201,7 @@ Proof.
         classic_case (interesting (snd (f n))) as [fn_int|fn_not]; cbn.
         -   rewrite <- (get_px' _ fn_int).
             apply mult_div_lself.
-        -   apply one_divides.
+        -   apply refl.
     }
     destruct n_ex as [n n_eq].
     assert (f2 n = 1) as f2_one.
@@ -225,7 +218,15 @@ Proof.
             pose proof (get_p_irr _ fn_int) as [p_nz [p_nu]].
             rewrite div_equiv_unit in p_nu.
             contradiction.
-        +   exact n_eq.
+        +   unfold interesting in fn_not.
+            rewrite not_and in fn_not.
+            do 2 rewrite not_not in fn_not.
+            destruct fn_not as [fn_z|fn_o].
+            2: exact fn_o.
+            specialize (prod_eq n).
+            rewrite <- fn_z in prod_eq.
+            rewrite mult_ranni in prod_eq.
+            contradiction.
     }
     exists (f1 n).
     split.
