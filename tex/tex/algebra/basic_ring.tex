@@ -3,8 +3,7 @@
 \externaldocument{../basics/set}
 \externaldocument{../basics/lists}
 \externaldocument{../basics/natural}
-
-\newcommand{\tprod}{{\textstyle \prod}}
+\externaldocument{../number/integer}
 
 \begin{document}
 
@@ -1467,5 +1466,131 @@ domains can be applied to the natural numbers directly.
     \]
     so this case is impossible.
 \end{proof}
+
+There are other ring-like facts for the natural numbers, but for these facts
+it's easier to appeal to the integers.
+
+\section{The Integers}
+
+Unlike the natural numbers, the integers are a ring, so we can utilize all of
+the theory developed in this chapter.  We will prove that the integers are a
+Euclidean domain.  A note is in order about the absolute value function on the
+integers.  Technically speaking, the absolute value of an integer is another
+integer.  However, the absolute value is always positive, so by Theorem
+\ref{int_pos_nat_ex} there will always be a corresponding natural number.  In
+the Rocq code, there has to be a special \verb|int_abs| function that turns an
+integer into its absolute value as a natural number, but here we can cheat a
+little and just say that the absolute value function is a function from the
+integers to the natural numbers.
+
+\begin{lemma} \label{int_div_pos}
+    For all integers $a$ and $b$ with $b > 0$, there exist integers $q$ and $r$
+    such that $a = bq + r$ and $0 \leq r < b$.
+\end{lemma}
+\begin{proof}
+    When $a \geq 0$, both $a$ and $b$ are natural numbers, so the result follows
+    directly by Theorem \ref{nat_euclidean}.  So consider the case $a \leq 0$.
+    Then $-a \geq 0$, so be Theorem \ref{nat_euclidean} we have natural numbers
+    $q$ and $r$ such that $-a = bq + r$ with $r < b$.  The proof will now be
+    split into two cases: when $r = 0$, and when $r \neq 0$.
+
+    When $r = 0$, we have $-a = bq$.  Then $a = b(-q)$, so with $q' = -q$ and
+    $r' = 0$, we have $a = bq' + r'$ and $r' < b$.
+
+    When $r \neq 0$, set $q' = -1 - q$ and $r' = b - r$.  Then
+    \begin{align*}
+        -a &= bq + r \\
+        a &= -bq - r \\
+          &= -b(q + 1 - 1) - r \\
+          &= -b(q + 1) + b - r \\
+          &= b(-1 - q) + (b - r) \\
+          &= bq' + r',
+    \end{align*}
+    \begin{align*}
+        r &< b \\
+        0 &< b - r \\
+          &= r',
+    \end{align*}
+    and
+    \begin{align*}
+        0 &< r \\
+        -r &< 0 \\
+        b - r &< b \\
+        r' &< b.
+    \end{align*}
+\end{proof}
+
+\begin{instance}
+    The integers are an integral domain with the function $f(n) = |n|$.
+\end{instance}
+\begin{proof}
+    Let $a$ and $b$ be integers with $b$ not zero.  If $b \geq 0$, the result
+    follows directly from Lemma \ref{int_div_pos}, so consider the case $b < 0$.
+    Then $-b > 0$, so by Lemma \ref{int_div_pos}, we have integers $q$ and $r$
+    such that $a = -bq + r$ and $0 \leq r < -b$.  Then setting $q' = -q$ and $r'
+    = r$, we have
+    \[
+        a = -bq + r = b(-q) + r = bq' + r'
+    \]
+    and
+    \[
+        |r| = r < -b = |b|.
+    \]
+\end{proof}
+
+Thus, the integers are also a PID, Noetherian, a UFD, and a GCD domain.
+
+\begin{lemma} \label{int_mult_one_sign}
+    For all integers $a$ and $b$ with $ab = 1$, if $a \geq 0$, then $b \geq 0$.
+\end{lemma}
+\begin{proof}
+    If $b \leq 0$, we would have $ab \leq a0 = 0$, so $1 \leq 0$, which is
+    impossible.
+\end{proof}
+
+\begin{lemma} \label{int_unit_pos}
+    For all positive units $a$ in the integers, $a = 1$.
+\end{lemma}
+\begin{proof}
+    Let $ab = 1$ with $a \geq 0$.  By Lemma \ref{int_mult_one_sign}, $b \geq 0$
+    as well.  Thus, $a$ and $b$ are natural numbers, so $a$ is a unit in the
+    natural numbers.  Thus, by Theorem \ref{nat_unit}, $a = 1$.
+\end{proof}
+
+\begin{theorem} \label{int_unit}
+    In the integers, all units are either $1$ or $-1$.
+\end{theorem}
+\begin{proof}
+    Let $ab = 1$.  We must prove that either $a = 1$ or $a = -1$.  If $a \geq
+    0$, then we get $a = 1$ by Lemma \ref{int_unit_pos}.  If $a \leq 0$, then
+    $-a \geq 0$, so by Lemma \ref{int_unit_pos} $-a = 1$, or $a = -1$.
+\end{proof}
+
+We will now utilize unique factorization in the integers to prove unique
+factorization in the natural numbers.  The main gist of the proof is that
+$\D(\Z)$ is isomorphic to the natural numbers.  So, we will first define the
+isomorphism between the two types.
+
+\begin{lemma} \label{int_div_to_nat_wd}
+    For all integers $a$ and $b$ that associate, $|a| = |b|$.
+\end{lemma}
+\begin{proof}
+    By Theorem \ref{associates_unit}, there exists a unit $c$ such that $b =
+    ac$.  By Lemma \ref{int_unit}, $c = 1$ or $c = -1$.  When $c = 1$, we have
+    $b = a$.  When $c = -1$, we have $b = -a$, so $|a| = |b|$.
+\end{proof}
+
+By the previous lemma, we have a function $f : \D(\Z) \to \N$ such that
+$f(\D(n)) = |n|$.  Defining a function $g : \N \to \D(\Z)$ by $g(n) =
+\D(\iN(n))$, we have $f(g(n)) = f(\D(\iN(n))) = |\iN(n)| = n$ and $g(f(\D(n))) =
+g(|n|) = \D(\iN(|n|)) = \D(n)$, so $f$ and $g$ are inverses.  By elementary
+arguments, they are both nullitive, unital, and multiplicative.  Thus, $f$ and
+$g$ are isomorphisms between $\N$ and $\D(\Z)$ in regards to their
+multiplicative structure.  Thus, any multiplicative properties that are true in
+$\D(\Z)$ are true in $\N$ as well.  There are a ton of theorems in the Rocq code
+specifying exactly what this entails, but they are all elementary and will take
+too long to write here.  In $\N$, every irreducible value is prime, and there
+exists a unique factorization of any nonzero element in $\N$ into a product of
+primes/irreducibles.
 
 \end{document}

@@ -254,6 +254,14 @@ Proof.
     exact eq.
 Qed.
 
+Theorem unit_neg : ∀ a, unit a → unit (-a).
+Proof.
+    intros a [b eq].
+    exists (-b).
+    rewrite mult_neg_neg.
+    exact eq.
+Qed.
+
 Theorem prime_irreducible : ∀ p, prime p → irreducible p.
 Proof.
     intros p [p_nz [p_nu p_prime]].
