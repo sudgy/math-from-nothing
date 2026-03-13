@@ -2,6 +2,7 @@
 \externaldocument{../../math.tex}
 \externaldocument{../basics/set}
 \externaldocument{../basics/lists}
+\externaldocument{../basics/natural}
 
 \newcommand{\tprod}{{\textstyle \prod}}
 
@@ -1366,6 +1367,105 @@ values in a Noetherian ring to have multiple distinct factorizations.
 
     Now assume that $b \mid a$.  Then we have some $c$ such that $bc = a$.
     Because $b \in I$, we have $bc = a \in I$ as required.
+\end{proof}
+
+\section{The Natural Numbers}
+
+The natural numbers aren't a ring, but many of the concepts above still apply to
+the natural numbers, although none of the proofs involving the various kinds of
+domains can be applied to the natural numbers directly.
+
+\begin{theorem} \label{nat_euclidean}
+    The natural numbers are a ``Euclidean domain''.  More explicitly, for all
+    natural numbers $a$ and $b$ with $b \neq 0$, there exist natural numbers $q$
+    and $r$ such that $a = bq + r$ and $r < b$.
+\end{theorem}
+\begin{proof}
+    Define a set $S$ by
+    \[
+        S = \{n : \N \mid a < b S(n)\}.
+    \]
+    Because $b \neq 0$, we have $b > 0$ and $a \leq ba$, and adding the
+    equations, we get $a < b + ba = b S(a)$.  Thus, $S$ is not empty, so be the
+    well-ordering principle it has a least element $q$.  Assume for a
+    contradiction that $a < bq$.  In this case, we can't have $q = 0$ because
+    then $a < 0$.  When $q \neq 0$, we then have $q - 1 \in S$, contradicting
+    the minimality of $q$.  Either way, the assumption $a < bq$ is false, so we
+    must have $a \geq bq$.  By Theorem \ref{nat_le_ex}, we have some $r$ such
+    that $a = bq + r$.  By $q \in S$, we have $a < bS(q) = bq + b$, so $bq + r <
+    bq + b$, and cancelling $bq$ we get $r < b$ as required.
+\end{proof}
+
+\begin{theorem} \label{nat_plus_changes_divides}
+    For all natural numbers $p$, $a$, and $b$, if $p \mid a$ and $p \nmid b$,
+    then $p \nmid a + b$.
+\end{theorem}
+\begin{proof}
+    Because $p \mid a$, we have some $c$ such that $pc = a$.  For a
+    contradiction, assume that $p \mid a + b$.  Then there exists a $d$ such
+    that $pd = a + b = pc + b$.  The basic idea here is that we can write $p(d -
+    c) = b$, contradicting $p \nmid b$, but we can't subtract in the natural
+    numbers so we will have to take a different approach.  Instead, consider the
+    two cases $d \leq c$ and $c \leq d$.
+
+    When $d \leq c$, we have some natural number $x$ such that $d + x = c$.
+    Thus, $pd = p(d + x) + b = pd + px + b$, and cancelling $pd$, we get $0 = px
+    + b$.  This implies $b = 0$, contradicting $p \nmid b$.
+
+    When $c \leq d$, we have some natural number $x$ such that $c + x = d$.
+    Then $p(c + x) = pc + b$, so $pc + px = pc + b$.  Cancelling $pc$, we get
+    $px = b$, contradicting $p \nmid b$.
+\end{proof}
+
+\begin{theorem} \label{nat_even_neq_odd}
+    For all natural numbers $m$ and $n$, $2m \neq 2n + 1$.
+\end{theorem}
+\begin{proof}
+    First, we will prove that $2 \nmid 1$.  Assume that $2 \mid 1$.  Then there
+    exists some $c$ such that $2c = 1$.  If $c = 0$, we would have $0 = 1$,
+    which is impossible.  If $c = S(c')$, we would have $2c = 2S(c') = 2 + 2c' =
+    1$, and cancelling $1$ we get $1 + 2c' = S(2c') = 0$, which is impossible
+    because no natural number is equal to its successor.  Either way, we have a
+    contradiction, so $2 \nmid 1$.
+
+    Now by Theorem \ref{nat_plus_changes_divides}, because $2 \mid 2n$ and $2
+    \nmid 1$, we have $2 \nmid 2n + 1$.  If we have $2m = 2n + 1$, we would have
+    $2 \nmid 2m$, a contradiction.  Thus, $2m \neq 2n + 1$.
+\end{proof}
+
+\begin{theorem} \label{nat_odd_plus_one}
+    For all odd natural numbers $a$, there exists a natural number $b$ such that
+    $a = 2b + 1$.
+\end{theorem}
+\begin{proof}
+    By Euclidean division, $a = 2b + r$ for some $r < 2$.  If $r = 0$, $a$ would
+    be even, contradicting $a$ being odd.  If $r \geq 2$ contradicts $r < 2$.
+    The only possibility left is $r = 1$, so $a = 2b + 1$.
+\end{proof}
+
+\begin{theorem} \label{nat_div_le}
+    For all natural numbers $a$ and $b$ with $b \neq 0$, if $a \mid b$, then $a
+    \leq b$.
+\end{theorem}
+\begin{proof}
+    Because $a \mid b$, there exists a $c$ such that $ac = b$.  If $c = 0$, then
+    $a0 = 0 = b$, which is impossible, so $c \neq 0$.  Thus, by Theorem
+    \ref{nat_le_self_lmult}, $a \leq ac = b$.
+\end{proof}
+
+\begin{theorem} \label{nat_unit}
+    In the natural numbers, all units are equal to one.
+\end{theorem}
+\begin{proof}
+    Let $a$ be a unit.  Then there exists a natural number $b$ such that $ab =
+    1$.  If $a = 0$, $0b = 0 = 1$, which is impossible, so $a \neq 0$.  By the
+    same argument, $b \neq 0$ as well.  If $a = 1$ we would be done, so consider
+    the case when $a = S(S(a'))$ and $b = S(b')$ for natural numbers $a'$ and
+    $b'$.  Then
+    \[
+        S(b') S(S(a')) = S(S(a')) + b'S(S(a')) = S(S(a' + b'S(S(a')))) > 1,
+    \]
+    so this case is impossible.
 \end{proof}
 
 \end{document}

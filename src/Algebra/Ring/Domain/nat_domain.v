@@ -5,84 +5,64 @@ Require Export nat.
 Require Export mult_div.
 
 Theorem nat_euclidean :
-    ∀ a b : nat, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
+    ∀ a b : nat, 0 ≠ b → ∃ q r, a = b*q + r ∧ r < b.
 Proof.
     intros a b b_nz.
-    pose (S n := a < b * n).
+    pose (S n := a < b * nat_suc n).
     assert (∃ n, S n) as S_ex.
     {
-        exists (nat_suc a).
+        exists a.
         unfold S.
         rewrite nat_mult_rsuc.
         pose proof (nat_le_self_lmult a b b_nz) as eq.
         assert (0 < b) as b_pos by (split; try assumption; apply nat_pos).
-        apply le_lplus with b in eq.
-        apply lt_rplus with a in b_pos.
-        rewrite plus_lid in b_pos.
-        exact (lt_le_trans b_pos eq).
+        pose proof (le_lt_lrplus eq b_pos) as ltq.
+        rewrite plus_rid in ltq.
+        rewrite plus_comm.
+        exact ltq.
     }
     pose proof (well_ordered _ S_ex) as [q [Sq q_min]].
-    nat_destruct q.
-    {
-        unfold S in Sq.
-        rewrite mult_ranni in Sq.
-        contradiction (not_neg Sq).
-    }
     assert (b * q ≤ a) as leq.
     {
         classic_contradiction contr.
         rewrite nle_lt in contr.
-        specialize (q_min _ contr).
-        rewrite <- nlt_le in q_min.
-        contradiction (q_min (nat_lt_suc q)).
+        nat_destruct q.
+        -   rewrite mult_ranni in contr.
+            contradiction (not_neg contr).
+        -   specialize (q_min _ contr).
+            rewrite <- nlt_le in q_min.
+            contradiction (q_min (nat_lt_suc q)).
     }
     apply nat_le_ex in leq as [r r_eq].
     exists q, r.
     symmetry in r_eq.
-    split.
-    -   exact r_eq.
-    -   right.
-        unfold S in Sq.
-        rewrite nat_mult_rsuc in Sq.
-        rewrite r_eq in Sq.
-        rewrite plus_comm in Sq.
-        apply lt_plus_rcancel in Sq.
-        exact Sq.
+    split; [>exact r_eq|].
+    unfold S in Sq.
+    rewrite nat_mult_rsuc in Sq.
+    rewrite r_eq in Sq.
+    rewrite plus_comm in Sq.
+    apply lt_plus_rcancel in Sq.
+    exact Sq.
 Qed.
 
 Theorem nat_plus_changes_divides : ∀ p a b : nat,
                                     p ∣ a → ¬(p ∣ b) → ¬(p ∣ (a + b)).
 Proof.
     intros p a b [c c_eq] not [d d_eq].
-    rewrite <- c_eq in d_eq.
-    destruct (trichotomy d c) as [[ltq|eq]|ltq].
-    -   apply nat_lt_ex in ltq.
-        destruct ltq as [x x_eq].
-        rewrite <- x_eq in d_eq.
+    subst a.
+    destruct (connex d c) as [leq|leq].
+    -   apply nat_le_ex in leq as [x x_eq]; subst c.
         rewrite rdist, <- plus_assoc in d_eq.
         rewrite <- (plus_rid (d * p)) in d_eq at 1.
         apply plus_lcancel in d_eq.
         apply nat_plus_zero in d_eq as [eq1 eq2].
-        apply mult_zero in eq1 as [x_z|p_z];
-            [>contradiction (nat_zero_suc x_z)|].
-        subst.
-        apply not.
-        apply refl.
-    -   subst.
-        rewrite <- (plus_rid (c * p)) in d_eq at 1.
-        apply plus_lcancel in d_eq.
-        subst.
-        apply not.
-        apply divides_zero.
-    -   apply nat_lt_ex in ltq.
-        destruct ltq as [x x_eq].
-        rewrite <- x_eq in d_eq.
+        subst b.
+        contradiction (not (divides_zero p)).
+    -   apply nat_le_ex in leq as [x x_eq]; subst d.
         rewrite rdist in d_eq.
         apply plus_lcancel in d_eq.
         subst.
-        apply not.
-        exists (nat_suc x).
-        reflexivity.
+        contradiction (not (mult_div_rself _ _)).
 Qed.
 
 Theorem nat_even_neq_odd : ∀ m n : nat, m * 2 ≠ n * 2 + 1.
@@ -90,27 +70,17 @@ Proof.
     intros m n eq.
     assert (even (m * 2)) as m_even by (exists m; reflexivity).
     assert (even (n * 2)) as n_even by (exists n; reflexivity).
-    assert (¬2 ∣ (one (U := nat))) as ndiv.
+    assert (¬2 ∣ (1 : nat)) as ndiv.
     {
         intros [c c_eq].
         nat_destruct c.
         -   rewrite mult_lanni in c_eq.
-            inversion c_eq.
+            contradiction (not_trivial_one c_eq).
         -   rewrite nat_mult_lsuc in c_eq.
-            assert ((one (U := nat)) < 2) as leq.
-            {
-                split.
-                -   unfold one; cbn.
-                    unfold plus; cbn.
-                    unfold le; cbn.
-                    exact true.
-                -   intro contr; inversion contr.
-            }
-            pose proof (all_pos (c * 2)) as leq2.
-            apply le_lplus with 2 in leq2.
-            rewrite plus_rid in leq2.
-            pose proof (lt_le_trans leq leq2) as [C0 C1].
-            symmetry in c_eq; contradiction.
+            do 2 rewrite nat_plus_lsuc in c_eq.
+            change 1 with (nat_suc 0) in c_eq at 3.
+            rewrite nat_suc_eq in c_eq.
+            symmetry in c_eq; contradiction (nat_zero_suc c_eq).
     }
     pose proof (nat_plus_changes_divides 2 (n * 2) 1 n_even ndiv).
     rewrite <- eq in H.
@@ -120,52 +90,28 @@ Qed.
 Theorem nat_odd_plus_one : ∀ a : nat, odd a → ∃ b, a = 2 * b + 1.
 Proof.
     intros a a_odd.
-    assert ((0 : nat) ≠ 2) as two_nz by (intro contr; inversion contr).
+    assert ((0 : nat) ≠ 2) as two_nz by apply nat_zero_suc.
     pose proof (nat_euclidean a 2 two_nz) as [q [r [eq ltq]]].
-    cbn in ltq.
     exists q.
-    assert (0 ≠ r) as r_nz.
-    {
-        intro contr.
-        subst.
-        rewrite plus_rid in a_odd.
-        unfold odd, divides in a_odd.
-        rewrite not_ex in a_odd.
-        apply (a_odd q).
-        apply mult_comm.
-    }
-    rewrite eq.
-    apply lplus.
-    apply antisym.
-    -   change 2 with (nat_suc 1) in ltq.
-        rewrite nat_lt_suc_le in ltq.
-        destruct ltq as [r_z|ltq].
-        +   contradiction.
-        +   exact ltq.
-    -   classic_contradiction contr.
-        rewrite nle_lt in contr.
-        unfold one in contr; cbn in contr.
-        rewrite nat_lt_suc_le in contr.
-        contradiction (all_neg_eq contr).
+    nat_destruct r.
+    -   rewrite plus_rid in eq.
+        exfalso; apply a_odd.
+        rewrite eq.
+        apply mult_div_lself.
+    -   nat_destruct r; [>exact eq|].
+        change 2 with (nat_suc (nat_suc 0)) in ltq.
+        do 2 rewrite nat_sucs_lt in ltq.
+        contradiction (not_neg ltq).
 Qed.
 
 Theorem nat_div_le : ∀ a b : nat, 0 ≠ b → a ∣ b → a ≤ b.
 Proof.
     intros a b b_nz [c c_eq].
     rewrite <- c_eq.
-    nat_destruct a.
-    -   rewrite mult_ranni.
-        apply refl.
-    -   rewrite <- (mult_lid (nat_suc a)) at 1.
-        apply nat_le_rmult.
-        classic_contradiction contr.
-        rewrite nle_lt in contr.
-        change 1 with (nat_suc 0) in contr.
-        rewrite nat_lt_suc_le in contr.
-        apply all_neg_eq in contr.
-        subst c.
-        rewrite mult_lanni in c_eq.
-        contradiction.
+    apply nat_le_self_lmult.
+    intros contr; subst.
+    rewrite mult_lanni in b_nz.
+    contradiction.
 Qed.
 
 Theorem nat_unit : ∀ a : nat, unit a → a = 1.

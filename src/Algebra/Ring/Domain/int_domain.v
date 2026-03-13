@@ -34,9 +34,7 @@ Proof.
         +   apply from_nat_pos2.
         +   rewrite (abs_pos_eq _ (from_nat_pos2 _)).
             rewrite <- homo_lt2.
-            destruct r_lt as [r_z|r_lt].
-            *   subst; apply nat_pos2.
-            *   exact r_lt.
+            exact r_lt.
     -   rewrite nle_lt in a_neg.
         apply neg_pos2 in a_neg.
         pose proof (int_pos_nat_ex _ (land a_neg)) as [a' a_eq].
@@ -72,8 +70,7 @@ Proof.
                 rewrite (homo_plus (f := from_nat)).
                 rewrite (homo_mult (f := from_nat)).
                 reflexivity.
-            *   destruct r_lt as [r_z|r_lt]; [>contradiction|].
-                rewrite le_plus_0_anb_b_a.
+            *   rewrite le_plus_0_anb_b_a.
                 rewrite <- homo_le2.
                 apply r_lt.
             *   rewrite (abs_pos_eq _ (from_nat_pos2 _)); cbn.
