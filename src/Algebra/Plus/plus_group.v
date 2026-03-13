@@ -451,6 +451,15 @@ Proof.
     contradiction.
 Qed.
 
+Theorem inj_zero_iff : ∀ a, 0 ≠ a ↔ 0 ≠ f a.
+Proof.
+    intros a.
+    split; [>apply inj_zero|].
+    intros eq contr; subst a.
+    apply eq.
+    symmetry; apply homo_zero.
+Qed.
+
 Global Instance group_homo_zero : HomomorphismZero f.
 Proof.
     split.

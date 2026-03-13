@@ -167,6 +167,7 @@
 ./src/Algebra/Ring/Domain/principle_ideal.v
 ./src/Algebra/Ring/Domain/factorization.v
 ./src/Algebra/Ring/Domain/nat_domain.v
+./src/Algebra/Ring/Domain/int_domain.v
 
 ./src/Algebra/Group/group_subgroup.v
 ./src/Algebra/Group/group_order.v

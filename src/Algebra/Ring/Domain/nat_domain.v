@@ -1,10 +1,11 @@
 Require Import init.
 
-Require Import nat.
+Require Export nat.
 
-Require Import mult_div.
+Require Export mult_div.
 
-Theorem nat_euclidean : ∀ a b, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
+Theorem nat_euclidean :
+    ∀ a b : nat, 0 ≠ b → ∃ q r, a = b*q + r ∧ (0 = r ∨ r < b).
 Proof.
     intros a b b_nz.
     pose (S n := a < b * n).
@@ -148,7 +149,7 @@ Proof.
         contradiction (all_neg_eq contr).
 Qed.
 
-Theorem nat_div_le : ∀ a b, 0 ≠ b → a ∣ b → a ≤ b.
+Theorem nat_div_le : ∀ a b : nat, 0 ≠ b → a ∣ b → a ≤ b.
 Proof.
     intros a b b_nz [c c_eq].
     rewrite <- c_eq.
@@ -165,4 +166,20 @@ Proof.
         subst c.
         rewrite mult_lanni in c_eq.
         contradiction.
+Qed.
+
+Theorem nat_unit : ∀ a : nat, unit a → a = 1.
+Proof.
+    intros a [b eq].
+    nat_destruct a.
+    1: rewrite mult_ranni in eq; contradiction (nat_zero_suc eq).
+    nat_destruct a.
+    1: reflexivity.
+    nat_destruct b.
+    1: rewrite mult_lanni in eq; contradiction (nat_zero_suc eq).
+    rewrite nat_mult_lsuc in eq.
+    do 2 rewrite nat_plus_lsuc in eq.
+    change 1 with (nat_suc 0) in eq.
+    rewrite nat_suc_eq in eq.
+    symmetry in eq; contradiction (nat_zero_suc eq).
 Qed.

@@ -263,6 +263,12 @@ Proof.
     rewrite mult_lneg, mult_rneg.
     reflexivity.
 Qed.
+Theorem mult_neg_neg : ∀ a b, (-a) * (-b) = a * b.
+Proof.
+    intros a b.
+    rewrite mult_lneg, mult_rneg.
+    apply neg_neg.
+Qed.
 
 Theorem mult_neg_one : ∀ a, -1 * a = -a.
 Proof.
