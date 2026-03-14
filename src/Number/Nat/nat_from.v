@@ -7,6 +7,8 @@ Require Export nat_order.
 Require Export nat_abstract.
 Require Import set_order.
 
+Open Scope nat_scope.
+
 Fixpoint from_nat {U} `{Plus U, Zero U, One U} a :=
     match a with
     | nat_zero => 0
@@ -36,8 +38,6 @@ Class Archimedean U `{Plus U, Zero U, Order U} := {
     archimedean : ∀ x y, 0 < x → 0 < y → ∃ n, x < n × y
 }.
 (* begin hide *)
-
-Open Scope nat_scope.
 
 Section FromNat.
 

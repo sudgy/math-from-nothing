@@ -11,7 +11,7 @@ Fixpoint nat_mult {U} `{Plus U, Zero U} (a : nat) (b : U) :=
     | nat_zero => 0
     | nat_suc a' => b + nat_mult a' b
     end.
-Infix "×" := nat_mult (at level 40, left associativity).
+Infix "×" := nat_mult (at level 40, left associativity) : nat_scope.
 Arguments nat_mult : simpl never.
 
 Fixpoint nat_pow {U} `{Mult U} `{One U} a b :=

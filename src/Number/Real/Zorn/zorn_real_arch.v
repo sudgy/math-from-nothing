@@ -259,7 +259,7 @@ Next Obligation.
     pose proof (archimedean _ _ x_pos y_pos) as [n n_gt].
     exists n.
     rewrite aof_ex_lt.
-    assert (aof_ex_f_inv (n × y) = n × aof_ex_f_inv y) as eq.
+    assert (aof_ex_f_inv (n × y) = n × aof_ex_f_inv y)%nat as eq.
     {
         clear n_gt.
         nat_induction n.

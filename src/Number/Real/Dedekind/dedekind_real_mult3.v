@@ -14,6 +14,7 @@ Require Import dedekind_real_mult2.
 (** This file contains the definition of division *)
 
 Open Scope real_scope.
+Open Scope nat_scope.
 
 Definition real_div_base (a : rat → Prop) := λ p, p ≤ 0 ∨ (∃ r, 0 < r ∧ ¬(a (div p + -r))).
 Notation "⊘ a" := (real_div_base a) : real_scope.
@@ -524,5 +525,6 @@ Global Instance real_not_trivial : NotTrivial real := {
 }.
 
 (* begin hide *)
+Close Scope nat_scope.
 Close Scope real_scope.
 (* end hide *)

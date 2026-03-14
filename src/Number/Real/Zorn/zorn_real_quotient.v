@@ -17,6 +17,7 @@ Section Quotient.
 Let PG := polynomial_grade real_cring.
 
 Local Existing Instances PG.
+Local Open Scope nat_scope.
 
 Theorem top_of_cut_ex_wlog : ∀ (cut : real → Prop) b,
     cut 0 → ¬cut b → (∀ l u, cut u → l ≤ u → cut l) →

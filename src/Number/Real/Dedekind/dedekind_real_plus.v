@@ -10,6 +10,7 @@ Require Import dedekind_real_order.
 
 (* begin hide *)
 Open Scope real_scope.
+Open Scope nat_scope.
 (* end hide *)
 Definition real_plus_base (a b : rat → Prop) := λ x, ∃ r s, a r ∧ b s ∧ x = r + s.
 Infix "⊕" := real_plus_base : real_scope.
@@ -476,5 +477,6 @@ Global Instance real_le_lplus : OrderLplus real := {
     le_lplus := real_le_lplus_;
 }.
 (* begin hide *)
+Close Scope nat_scope.
 Close Scope real_scope.
 (* end hide *)

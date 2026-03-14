@@ -12,6 +12,7 @@ Require Import nat.
 Section IntAbstract.
 
 Local Open Scope int_scope.
+Local Open Scope nat_scope.
 
 Context {U} `{
     OrderedFieldClass U,
@@ -38,6 +39,7 @@ Qed.
 Definition int_mult (a : int) b := unary_op (int_mult_wd b) a.
 Infix "×" := int_mult : int_scope.
 Arguments int_mult : simpl never.
+Close Scope nat_scope.
 
 Theorem int_mult_lanni : ∀ a, 0 × a = 0.
 Proof.
@@ -211,6 +213,19 @@ Proof.
     intros a b c.
     rewrite int_mult_lneg.
     apply int_mult_commute.
+Qed.
+
+Theorem int_mult_nat : ∀ m a, (m × a)%nat = (from_nat m × a)%int.
+    intros m a.
+    nat_induction m.
+    -   rewrite nat_mult_lanni, int_mult_lanni.
+        reflexivity.
+    -   rewrite nat_mult_suc.
+        rewrite from_nat_suc.
+        rewrite int_mult_rdist.
+        rewrite int_mult_lid.
+        apply lplus.
+        exact IHm.
 Qed.
 
 End IntAbstract.
