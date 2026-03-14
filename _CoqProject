@@ -173,6 +173,7 @@
 ./src/Algebra/Group/group_order.v
 ./src/Algebra/Group/group_lagrange.v
 ./src/Algebra/Group/group_quotient.v
+./src/Algebra/Group/group_first_iso.v
 
 ./src/Algebra/Linear/Base/linear_base.v
 ./src/Algebra/Linear/Base/module_category.v
