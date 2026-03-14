@@ -5,7 +5,7 @@ Require Export group_category.
 Require Import set.
 
 Record Subgroup (G : Group) := make_subgroup {
-    subgroup_set : G → Prop;
+    subgroup_set :> G → Prop;
     subgroup_zero : subgroup_set 0;
     subgroup_plus : ∀ a b, subgroup_set a → subgroup_set b → subgroup_set (a+b);
     subgroup_neg : ∀ a, subgroup_set a → subgroup_set (-a);
