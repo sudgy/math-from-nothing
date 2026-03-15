@@ -16,9 +16,9 @@ Arguments normal_subgroup_aha {G}.
 
 Section QuotientGroup.
 
-Context {G : Group} (H : NormalSubgroup G).
+Context {G : Group} (N : NormalSubgroup G).
 
-Let quotient_eq a b := H (a - b).
+Let quotient_eq a b := N (a - b).
 Local Infix "~" := quotient_eq : algebra_scope.
 
 Local Instance quotient_group_eq_reflexive : Reflexive quotient_eq.
@@ -46,7 +46,7 @@ Proof.
     split.
     unfold quotient_eq.
     intros a b c ab bc.
-    pose proof (subgroup_plus H _ _ ab bc) as eq.
+    pose proof (subgroup_plus N _ _ ab bc) as eq.
     rewrite plus_assoc in eq.
     rewrite plus_rlinv in eq.
     exact eq.
@@ -65,7 +65,7 @@ Proof.
     cbn; unfold quotient_eq.
     intros a b c d ab cd.
     rewrite neg_plus_group.
-    pose proof (normal_subgroup_aha H a (c - d) cd) as eq.
+    pose proof (normal_subgroup_aha N a (c - d) cd) as eq.
     pose proof (subgroup_plus _ _ _ eq ab) as eq2.
     rewrite <- plus_assoc in eq2.
     rewrite plus_llinv in eq2.
@@ -116,7 +116,7 @@ Lemma qgroup_neg_wd : ∀ a b, a ~ b → -a ~ -b.
 Proof.
     cbn; unfold quotient_eq.
     intros a b eq.
-    pose proof (normal_subgroup_aha H (-b) _ eq) as eq2.
+    pose proof (normal_subgroup_aha N (-b) _ eq) as eq2.
     rewrite <- plus_assoc in eq2.
     rewrite plus_rrinv in eq2.
     rewrite <- neg_plus_group.
@@ -163,7 +163,7 @@ Definition quotient_group : Group := make_group qgroup_type quotient_group_plus
 Definition to_qgroup : morphism G quotient_group :=
     make_group_homomorphism G quotient_group to_qgroup_type to_qgroup_plus.
 
-Theorem to_qgroup_eq : ∀ a b, H (a - b) ↔ to_qgroup a = to_qgroup b.
+Theorem to_qgroup_eq : ∀ a b, N (a - b) ↔ to_qgroup a = to_qgroup b.
 Proof.
     intros a b.
     cbn; unfold to_qgroup_type.
@@ -171,7 +171,7 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem to_qgroup_zero : ∀ a, H a ↔ 0 = to_qgroup a.
+Theorem to_qgroup_zero : ∀ a, N a ↔ 0 = to_qgroup a.
     intros a.
     assert (0 = to_qgroup a ↔ to_qgroup a = 0) as eq
         by (split; intro; symmetry; assumption).
@@ -182,14 +182,14 @@ Theorem to_qgroup_zero : ∀ a, H a ↔ 0 = to_qgroup a.
     reflexivity.
 Qed.
 
-Theorem qgroup_unary_op {U} : ∀ (f : G → U) (wd : ∀ a b, a ~ b → f a = f b),
+Theorem qgroup_unary_op {H} : ∀ (f : G → H) (wd : ∀ a b, a ~ b → f a = f b),
     ∀ x, unary_op wd (to_qgroup x) = f x.
 Proof.
     intros f wd x.
     apply unary_op_eq.
 Qed.
 
-Theorem qgroup_binary_op {U} : ∀ (f : G → G → U)
+Theorem qgroup_binary_op {H} : ∀ (f : G → G → H)
     (wd : ∀ a b c d , a ~ b → c ~ d → f a c = f b d),
     ∀ x y, binary_op wd (to_qgroup x) (to_qgroup y) = f x y.
 Proof.
@@ -205,10 +205,10 @@ Proof.
     reflexivity.
 Qed.
 
-Theorem qgroup_f_ex : ∀ {U} (f : morphism G U), (∀ x, H x → 0 = f x) →
-    ∃ g : morphism quotient_group U, ∀ x, f x = g (to_qgroup x).
+Theorem qgroup_f_ex : ∀ {H} (f : morphism G H), (∀ x, N x → 0 = f x) →
+    ∃ g : morphism quotient_group H, ∀ x, f x = g (to_qgroup x).
 Proof.
-    intros U f f_kern.
+    intros H f f_kern.
     assert (∀ a b, a ~ b → f a = f b) as wd.
     {
         intros a b eq.
@@ -218,7 +218,7 @@ Proof.
         apply f_kern.
         exact eq.
     }
-    pose (g := unary_op wd : quotient_group → U).
+    pose (g := unary_op wd : quotient_group → H).
     assert (g_plus : HomomorphismPlus g).
     {
         split.
@@ -234,15 +234,15 @@ Proof.
     reflexivity.
 Qed.
 
-Definition qgroup_f {U} {f : morphism G U} (wd : ∀ x, H x → 0 = f x)
+Definition qgroup_f {H} {f : morphism G H} (wd : ∀ x, N x → 0 = f x)
     := ex_val (qgroup_f_ex f wd).
-Definition qgroup_f_eq {U} {f : morphism G U} {wd : ∀ x, H x → 0 = f x}
+Definition qgroup_f_eq {H} {f : morphism G H} {wd : ∀ x, N x → 0 = f x}
     := ex_proof (qgroup_f_ex f wd) : ∀ x, f x = qgroup_f wd (to_qgroup x).
 
 End QuotientGroup.
 
-Arguments qgroup_f {G} {H} {U} {f}.
-Arguments qgroup_f_eq {G} {H} {U} {f} {wd}.
+Arguments qgroup_f {G} {N} {H} {f}.
+Arguments qgroup_f_eq {G} {N} {H} {f} {wd}.
 
 Arguments quotient_group : simpl never.
 Arguments to_qgroup : simpl never.

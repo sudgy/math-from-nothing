@@ -18,18 +18,21 @@ Definition left_coset := image left_coset_by.
 Theorem lagrange : |set_type H| * |set_type left_coset| = |G|.
 Proof.
     unfold mult; equiv_simpl.
-    exists (λ p : _ * _ left_coset, ex_val [|snd p] + [fst p|]).
+    pose (g (A : set_type left_coset) := ex_val [|A]).
+    assert (∀ A, [A|] = left_coset_by (g A)) as g_eq.
+    {
+        intros A.
+        apply (ex_proof [|A]).
+    }
+    exists (λ p : _ * _ left_coset, g (snd p) + [fst p|]).
     split; split.
-    -   intros [[h1 h1_in] [A A_coset]] [[h2 h2_in] [B B_coset]]; cbn.
+    -   intros [[h1 h1_in] A] [[h2 h2_in] B]; cbn.
         intros eq.
-        pose proof (ex_proof A_coset : A = left_coset_by (ex_val A_coset))
-            as A_eq.
-        pose proof (ex_proof B_coset : B = left_coset_by (ex_val B_coset))
-            as B_eq.
         assert (A = B) as AB_eq.
         {
-            rewrite A_eq, B_eq.
-            apply antisym.
+            apply set_type_eq.
+            rewrite (g_eq A), (g_eq B).
+           apply antisym.
             -   intros x [a [Ha x_eq]].
                 rewrite x_eq.
                 exists (h2 - h1 + a).
@@ -60,21 +63,19 @@ Proof.
                     symmetry; exact eq.
         }
         subst B.
-        apply prod_combine; cbn; rewrite set_type_eq2; [>|reflexivity].
-        rewrite (proof_irrelevance A_coset B_coset) in eq.
+        apply prod_combine; [>|reflexivity]; cbn.
+        rewrite set_type_eq2.
         apply plus_lcancel in eq.
         exact eq.
     -   intros y.
         assert (left_coset (left_coset_by y)) as y_coset
             by (exists y; reflexivity).
-        pose (y' := ex_val y_coset).
+        pose (y' := g [_|y_coset]).
         assert (H (-y' + y)) as y'_in.
         {
-            pose proof (ex_proof y_coset
-                : left_coset_by y = left_coset_by y') as y_eq.
             assert (left_coset_by y' y) as y_in.
             {
-                rewrite <- y_eq.
+                rewrite <- g_eq.
                 exists 0.
                 split; [>apply subgroup_zero|].
                 symmetry; apply plus_rid.

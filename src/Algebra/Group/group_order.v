@@ -173,8 +173,11 @@ Proof.
         split.
         intros x y eq.
         rewrite set_type_eq2 in eq.
-        destruct (connex x y) as [leq|leq].
-        +   apply nat_le_ex in leq as [c]; subst.
+        assert (∀ x y, x × a = y × a → x ≤ y → x = y) as wlog.
+        {
+            clear x y eq.
+            intros x y eq leq.
+            apply nat_le_ex in leq as [c]; subst y.
             rewrite nat_mult_rdist in eq.
             rewrite <- (plus_rid (x × a)) in eq at 1.
             apply plus_lcancel in eq.
@@ -182,15 +185,11 @@ Proof.
             *   subst.
                 symmetry; apply plus_rid.
             *   contradiction (never_eq c c_nz eq).
-        +   apply nat_le_ex in leq as [c]; subst.
-            rewrite nat_mult_rdist in eq.
-            rewrite <- (plus_rid (y × a)) in eq at 2.
-            apply plus_lcancel in eq.
-            classic_case (0 = c) as [c_z|c_nz].
-            *   subst.
-                apply plus_rid.
-            *   symmetry in eq.
-                contradiction (never_eq c c_nz eq).
+        }
+        destruct (connex x y) as [leq|leq].
+        +   exact (wlog x y eq leq).
+        +   symmetry in eq; symmetry.
+            exact (wlog y x eq leq).
 Qed.
 
 Theorem group_order_fin : ∀ n : nat, group_order = from_nat n ↔ is_least le K n.

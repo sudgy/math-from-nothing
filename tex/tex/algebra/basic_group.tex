@@ -1,0 +1,393 @@
+\documentclass[../../math.tex]{subfiles}
+\externaldocument{../../math.tex}
+\externaldocument{../basics/natural}
+
+\begin{document}
+
+\setcounter{chapter}{13}
+
+\chapter{Basic Group Theory}
+
+There really isn't much group theory here.  I just proved the main results from
+my undergraduate group theory class.  Note that because it is more common to
+turn the addition in other types into a group than multiplication, the notation
+used in the Rocq code is additive and not multiplicative.  Thus, the notation
+used here will be additive as well, despite not being my own personal
+preference.
+
+\section{Subgroups}
+
+\begin{definition}
+    Let $G$ be a group.  Then we call a set $S : G \to \Prop$ a subgroup of $G$
+    if:
+    \begin{itemize}
+        \item $0 \in S$.
+        \item For all $a \in S$ and $b \in S$, we have $a + b \in S$.
+        \item For all $a \in S$, we have $-a \in S$.
+    \end{itemize}
+\end{definition}
+
+\begin{theorem}
+    Given a group $G$ and a subgroup $S$, $\T(S)$ is a group, where the
+    operation, inverses, and identity are defined to be the same as in $G$.
+\end{theorem}
+\begin{proof}
+    The conditions of a subgroup are precisely the ones needed to allow the
+    definitions in $G$ to pass through to $\T(S)$.  Then all of the required
+    conditions are trivially true because they are true in $G$.
+\end{proof}
+
+\section{Order}
+
+\begin{definition}
+    Let $G$ be a group and let $a : G$.  We will define the cyclic subgroup
+    $\langle a \rangle$ to be the set $\{na \mid n : \Z\}$.
+\end{definition}
+
+\begin{theorem}
+    For any $G$ and $a$, the cyclic subgroup is in fact a subgroup.
+\end{theorem}
+\begin{proof}
+    We have $0 = 0a \in \langle a \rangle$, so $0 \in \langle a \rangle$.  When
+    $ma \in \langle a \rangle$ and $na \in \langle a \rangle$, we have $ma + na
+    = (m + n)a \in \langle a \rangle$.  Finally, when $ma \in \langle a
+    \rangle$, we have $-ma = (-m)a \in \langle a \rangle$.
+\end{proof}
+
+\begin{definition}
+    Let $G$ be a group and let $a : G$.  We will define the order of $a$,
+    written $|a|$, to be the cardinality of $\langle a \rangle$.
+\end{definition}
+
+\begin{theorem} \label{group_order_countable}
+    The order of any value in a group is countable.
+\end{theorem}
+\begin{proof}
+    It suffices to prove that $|\langle a \rangle| \leq |\Z|$.  Every element in
+    $\langle a \rangle$ can be written in the form $na$ for some integer $n$.
+    Define a function $f : \langle a \rangle \to \Z$ that produces such an
+    integer $n$.  Then if $f(x) = f(y)$, we have $x = f(x)a = f(y)a = y$, so $f$
+    is injective.
+\end{proof}
+
+\begin{theorem} \label{group_order_nz}
+    The order of a value in a group is not zero.
+\end{theorem}
+\begin{proof}
+    We have $0 \in \langle a \rangle$, proving that the cardinality of $\langle
+    a \rangle$ is at least one.
+\end{proof}
+
+In the following, let $a$ be a value in a group $G$, and let $K$ be the set
+$\{m : \N \mid m \neq 0 \wedge ma = 0\}$.
+
+\begin{lemma} \label{group_order_fin1}
+    If a natural number $n$ is the least value of $K$, then $|a| = n$.
+\end{lemma}
+\begin{proof}
+    Define $f : \N_n \to \langle a \rangle$ by $f(m) = ma$.  We will prove that
+    $f$ is bijective.  First, let $f(x) = f(y)$ with $x < n$ and $y < n$.  Then
+    $xa = ya$.  Without loss of generality, assume that $x \leq y$.  Then by
+    Theorem \ref{nat_le_ex}, we have a natural number $c$ with $x + c = y$.
+    Then
+    \begin{align*}
+        xa &= (x + c)a \\
+        xa &= xa + ca \\
+        0 &= ca.
+    \end{align*}
+    Now if $c \neq 0$, we would have $c \in K$, so by the minimality of $n$, we
+    have $n \leq c$.  However, $x + c < n$ so $c < n$, a contradiction.  Thus,
+    $c = 0$, meaning that $y = x + c = x$, so $f$ is injective.
+
+    To prove that $f$ is surjective, let $ma \in \langle a \rangle$.  Because $n
+    \in K$, we have $n \neq 0$, so because the integers are a Euclidean domain
+    we have integers $q$ and $r$ such that $m = nq + r$ and $0 \leq r < |n| =
+    n$.  Then
+    \[
+        f(r) = ra = 0 + ra = q0 + ra = q(na) + ra = nqa + ra = (nq + r)a = ma.
+    \]
+\end{proof}
+
+\begin{theorem} \label{group_order_inf}
+    $|a| = |\N|$ if and only if $0 \neq na$ for all nonzero natural numbers $n$.
+\end{theorem}
+\begin{proof}
+    First assume that $|a| = |\N|$.  For a contradiction, assume that there does
+    exist a nonzero $n$ with $0 = na$.  Then $K$ is nonempty, so it has a least
+    element $m$.  By Lemma \ref{group_order_fin1}, this means that $|a| = m$,
+    contradicting $|a| = |\N|$.  Thus, there $0 \neq na$ for all natural numbers
+    $n$.
+
+    Now assume that $0 \neq na$ for all natural numbers $n$.  We already know
+    that $|a| \leq |\N|$ by Theorem \ref{group_order_countable}, so we only need
+    to prove that $|\N| \leq |a|$.  Define $f : \N \to \langle a \rangle a$ by
+    $f(n) = na$.  We will prove that $f$ is injective.  Let $f(x) = f(y)$.  Then
+    $xa = ya$.  Without loss of generality, assume that $x \leq y$.  Then by
+    Theorem \ref{nat_le_ex}, we have a natural number $c$ such that $x + c = y$.
+    Then
+    \begin{align*}
+        xa &= (x + c)a \\
+        xa &= xa + ca \\
+        0 &= ca.
+    \end{align*}
+    If $c = 0$, we have $x = x + c = y$ as required.  If $c \neq 0$, we also
+    have $ca = 0$, contradicting an assumption of the theorem.  Thus, $f$ is
+    injective.
+\end{proof}
+
+\begin{theorem} \label{group_order_fin}
+    A natural number $n$ is the least value of $K$ if and only if $|a| = n$.
+\end{theorem}
+\begin{proof}
+    The forward direction was Lemma \ref{group_order_fin1} so we only need to
+    prove the reverse direction.  Assume that $|a| = n$.  We need to prove that
+    $n$ is the least value of $K$.  There are three things to prove: that $|a|
+    \neq 0$, that $|a|a = 0$, and that $|a|$ is the least value satisfying these
+    two conditions.  $|a| \neq 0$ was precisely Theorem \ref{group_order_nz}.
+
+    To prove that $|a|a = 0$, we will have two further cases for when $K$ is
+    empty or nonempty.  If $K$ was not empty, it would have a least value $m$.
+    By Lemma \ref{group_order_fin1}, this means that $|a| = m$, and since $ma =
+    0$, we have $|a|a = 0$ as well.  If $K$ was empty, by Theorem
+    \ref{group_order_inf} we would have $|a| = |\N|$, contradicting $|a| = n$.
+
+    To prove that $|a|$ is the least value in $K$, let $y \in K$, and assume for
+    a contradiction that $y < |a|$.  Since $y \in K$, $K$ has a least element
+    $m$.  By Lemma \ref{group_order_fin1}, we have $|a| = m$.  However, we now
+    have $y < |a|$ and $|a| = m \leq y$, which is impossible.  Thus, we must
+    have $|a| \leq y$, showing that $|a|$ is the least value in $K$.
+\end{proof}
+
+\section{Lagrange's Theorem}
+
+\begin{definition}
+    Let $G$ be a group, $H$ a subgroup of $G$, and $a$ a value in $G$.  Then we
+    define the left coset by $a$, denoted $a + H$, as the image of the function
+    $f(h) = a + h$ under $H$.  We will say that a set in $G$ is a left coset of
+    $H$ if there exsits some $a$ such that the set equals $a + H$.
+\end{definition}
+
+\begin{theorem}[Lagrange's Theorem]
+    Let $G$ be a group and $H$ a subgroup of $G$.  Let $\mathcal C$ be the
+    collection of all left cosets in $G$.  Then
+    \[
+        |H|\, |\mathcal C| = |G|.
+    \]
+    In particular, $|H|$ divides $|G|$.
+\end{theorem}
+\begin{proof}
+    Let $g : \mathcal C \to G$ be a function that picks out a value $a$ such
+    that $A = a + H$.  So for all $A \in \mathcal C$, we have $A = g(A) + H$.
+    Then define a function $f : H \to \mathcal C \to G$ by
+    \[
+        f(h, A) = g(A) + h.
+    \]
+    We will prove that $f$ is a bijection.
+
+    For injectivity, let $f(h_1, A) = f(h_2, B)$.  So $g(A) + h_1 = g(B) + h_2$.
+    We will first prove that $A = B$.  By the definition of $g$, this is
+    equivalent to proving that $g(A) + H = g(B) + H$, which we will do by
+    antisymmetry.  First, let $x \in g(A) + H$.  Then $x = g(A) + a$ for some $a
+    \in H$.  Then
+    \[
+        x
+        = g(A) + a
+        = g(A) + h_1 - h_1 + a
+        = g(B) + h_2 - h_1 + a,
+    \]
+    and since $h_2 - h_1 + a \in H$, we have $x \in g(B) + H$.  Thus, $g(A) + H
+    \subseteq g(B) + H$.  Now let $x \in g(B) + H$.  Then $x = g(B) + a$ for
+    some $a \in H$.  Then
+    \[
+        x
+        = g(B) + a
+        = g(B) + h_2 - h_2 + a
+        = g(A) + h_1 - h_2 + a,
+    \]
+    and since $h_1 - h_2 + a \in H$, we have $x \in g(A) + H$.  Thus, $g(B) + H
+    \subseteq g(A) + H$.  By antisymmetry, we have $g(A) + H = g(B) + H$, so $A
+    = B$.  Now that $A = B$, from $g(A) + h_1 = g(B) + h_2$, we can cancel to
+    get $h_1 = h_2$.  Thus, $(h_1, A) = (h_2, B)$, showing that $f$ is
+    injective.
+
+    For surjectivity, let $y : G$.  Define $y' = g(y + H)$.  We know that $y + H
+    = y' + H$, so $y \in y' + H$.  This means that there exists an $h : H$ such
+    that $y = y' + h$.  Then $-y' + y = h$, showing that $-y' + y \in H$.  Then
+    \[
+        f(-y' + y, y + H) = g(y + H) - y' + y = y' - y' + y = y,
+    \]
+    showing that $f$ is surjective.
+\end{proof}
+
+\section{Quotient Groups}
+
+\begin{definition}
+    Let $G$ be a group, and let $N$ be a subgroup.  Then we call $N$ a normal
+    subgroup of $G$ if for all $a : G$ and $h \in N$, $a + h - a \in N$ as well.
+\end{definition}
+
+Throughout this whole section, let $G$ be a group and $N$ a normal subgroup.
+
+\begin{definition}
+    Define a relation $\sim$ on $G$ by saying that $a \sim b$ if $a - b \in N$.
+\end{definition}
+
+\begin{instance}
+    $\sim$ is an equivalence relation.
+\end{instance}
+\begin{proof}
+    For any $x : G$, $x - x = 0 \in N$, so $\sim$ is reflexive.  If $a - b \in
+    N$, then $-(a - b) = b - a \in N$, so $\sim$ is symmetry.  If $a - b \in N$
+    and $b - c \in N$, then $(a - b) + (b - c) = a - c \in N$, so $\sim$ is
+    transitive.
+\end{proof}
+
+\begin{lemma}
+    Addition is well-defined in the quotient by $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a \sim b$ and $c \sim d$.  We must prove that $a + c \sim b + d$.  So
+    we have $a - b \in N$ and $c - d \in N$.  Then because $N$ is a normal
+    subgroup, we have $a + c - d - a \in N$.  Then, adding $a - b$, we get
+    \[
+        a + c - d - a + a - b
+        = a + c - d - b
+        = a + c - (b + d) \in N,
+    \]
+    so $a + c \sim b + d$.
+\end{proof}
+
+\begin{lemma}
+    Additive inverses are well-defined in the quotient by $\sim$.
+\end{lemma}
+\begin{proof}
+    Let $a \sim b$.  We must prove that $-a \sim -b$.  So we have $a - b \in N$.
+    Because $N$ is a normal subgroup, we have $-b + a - b + b = -b + a = -(-a -
+    -b) \in N$.  Thus, $-a - -b \in N$, so $-a \sim -b$.
+\end{proof}
+
+\begin{definition}
+    Consider the type $G/{\sim}$.  With addition and additive inverses as given
+    by the previous lemmas.  $G/{\sim}$ forms a group called the quotient group
+    by $N$, denoted $G/N$.  Furthermore, the map $\phi(x) = [x]$ is trivially
+    additive, so it is a group homomorphism from $G$ to $G/N$.
+\end{definition}
+
+\begin{theorem} \label{to_qgroup_eq}
+    For all $a$ and $b$ in $G$, $a - b \in N$ if and only if $\phi(a) =
+    \phi(b)$.
+\end{theorem}
+\begin{proof}
+    This is true by the definition of $\sim$.
+\end{proof}
+
+\begin{theorem} \label{to_qgroup_zero}
+    For all $a : G$, $a \in N$ if and only if $\phi(a) = 0$.
+\end{theorem}
+\begin{proof}
+    We have $\phi(a) = \phi(0)$, so by the previous theorem this is true if and
+    only if $a - 0 = a \in N$.
+\end{proof}
+
+\begin{theorem} \label{qgroup_f_ex}
+    For all groups $H$ and group homomorphisms $f : G \to H$, if $f(x) = 0$ for
+    all $x \in N$, then there exists a group homomorphism $g : G/N \to H$ such
+    that $f(x) = g(\phi(x))$ for all $x : G$.
+\end{theorem}
+\begin{proof}
+    First, given $a$ and $b$ such that $a \sim b$, we have $b - a \in N$.  So
+    \begin{align*}
+        f(b - a) &= 0 \\
+        f(b) - f(a) &= 0 \\
+        f(b) &= f(a).
+    \end{align*}
+    Thus, $f$ is well-defined under the equation relation $\sim$, so we can
+    transfor $f$ into a group homomorphism $g : G/N \to H$ such that $f(x) =
+    g(\phi(x))$ for all $x : G$.
+\end{proof}
+
+Whenever possible, the previous theorem will be used when working with group
+quotients instead of the general theory of quotients developed previously.
+
+\section{The First Isomorphism Theorem}
+
+In this section, let $G$ and $H$ be groups, and let $f$ be a group homomorphism.
+
+\begin{definition}
+    Define the kernel of $f$, denoted $\ker f$, as the set $\{a : G \mid f(a) =
+    0\}$.
+\end{definition}
+
+\begin{theorem}
+    The kernel of $f$ is a normal subgroup of $G$.
+\end{theorem}
+\begin{proof}
+    We have $f(0) = 0$, so $0 \in \ker f$.
+
+    When $f(a) = 0$ and $f(b) = 0$, we have $f(a + b) = f(a) + f(b) = 0$, so $a
+    + b \in \ker f$.
+
+    When $f(a) = 0$, then $f(-a) = -f(a) = -0 = 0$, so $-a \in \ker f$.
+
+    Let $f(h) = 0$, and let $a : G$.  Then $f(a + h - a) = f(a) + f(h) - f(a) =
+    f(a) + 0 - f(a) = 0$, so $a + h - a \in \ker f$.
+\end{proof}
+
+\begin{theorem}
+    The image of $f$ is a subgroup of $H$.
+\end{theorem}
+\begin{proof}
+    Because $f(0) = 0$, we have $0 \in f(G)$.
+
+    Because $f(x) + f(y) = f(x + y)$, we have $f(x) + f(y) \in f(G)$.
+
+    Because $-f(a) = f(-a)$, we have $-f(a) \in f(G)$.
+\end{proof}
+
+\begin{definition}
+    Define a homomorphism $g : G/{\ker f} \to f(G)$ given by Theorem
+    \ref{qgroup_f_ex} on $f$ itself.  This is well-defined by the definition of
+    the kernel.
+\end{definition}
+
+\begin{instance}
+    $g$ is bijective.
+\end{instance}
+\begin{proof}
+    For injectivity, let $a$ and $b$ be in $G/{\ker f}$ such that $g(a) = g(b)$.
+    We have values $x$ and $y$ in $G$ such that $\phi(x) = a$ and $\phi(y) = b$.
+    Then $g(\phi(x)) = g(\phi(y))$, and by the definition of $g$, we have $f(x)
+    = f(y)$.  Then $f(x - y) = 0$, so $x - y \in N$.  This means that $\phi(x) =
+    \phi(y)$, so $a = b$.  Thus, $g$ is injective.
+
+    For surjectivity, let $y$ be in the image of $f$, so that there exists an
+    $x$ such that $f(x) = y$.  Then $g(\phi(x)) = f(x) = y$ by the definition of
+    $g$.
+\end{proof}
+
+\begin{instance}
+    $g^{-1}$ is a group homomorphism.
+\end{instance}
+\begin{proof}
+    \[
+        g(g^{-1}(a) + g^{-1}(b))
+        = g(g^{-1}(a)) + g(g^{-1}(b))
+        = a + b
+        = g(g^{-1}(a + b)),
+    \]
+    and since $g$ is injective,
+    \[
+        g^{-1}(a) + g^{-1}(b)
+        = g^{-1}(a + b).
+    \]
+\end{proof}
+
+\begin{theorem} \label{group_first_iso}
+    $G/{\ker f}$ is isomorphic to $f(G)$.
+\end{theorem}
+\begin{proof}
+    $g$ and $g^{-1}$ are group homomorphisms between the two groups that are
+    inverses.
+\end{proof}
+
+\end{document}
